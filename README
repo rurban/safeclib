@@ -1,0 +1,2 @@
+To setup the source tree for the first time do:
+autoreconf -Wall -i
