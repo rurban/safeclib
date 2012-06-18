@@ -1,0 +1,42 @@
+#!/bin/sh
+
+make -f make_test_strcasecmp_s   
+make -f make_test_strcasestr_s   
+make -f make_test_strcat_s   
+make -f make_test_strcmp_s   
+make -f make_test_strcmpfld_s   
+make -f make_test_strcpy_s   
+make -f make_test_strcpyfld_s   
+make -f make_test_strcpyfldin_s   
+make -f make_test_strcpyfldout_s   
+make -f make_test_strcspn_s   
+make -f make_test_strfirstchar_s   
+make -f make_test_strfirstdiff_s   
+make -f make_test_strfirstsame_s   
+make -f make_test_strisalphanumeric_s   
+make -f make_test_strisascii_s   
+make -f make_test_strisdigit_s   
+make -f make_test_strishex_s   
+make -f make_test_strislowercase_s   
+make -f make_test_strismixed_s   
+make -f make_test_strispassword_s   
+make -f make_test_strisuppercase_s   
+make -f make_test_strlastchar_s   
+make -f make_test_strlastdiff_s   
+make -f make_test_strlastsame_s   
+make -f make_test_strljustify_s   
+make -f make_test_strncat_s   
+make -f make_test_strncpy_s   
+make -f make_test_strnlen_s   
+make -f make_test_strnterminate_s   
+make -f make_test_strpbrk_s   
+make -f make_test_strprefix_s   
+make -f make_test_strremovews_s   
+make -f make_test_strspn_s   
+make -f make_test_strstr_s   
+make -f make_test_strtok_s   
+make -f make_test_strtolowercase_s   
+make -f make_test_strtouppercase_s   
+make -f make_test_strzero_s   
+
+

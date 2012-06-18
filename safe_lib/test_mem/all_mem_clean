@@ -1,0 +1,21 @@
+#!/bin/sh
+
+make -f make_perf_memcpy32_s  clean  
+make -f make_perf_memcpy_s  clean  
+make -f make_test_memcmp16_s  clean  
+make -f make_test_memcmp32_s  clean  
+make -f make_test_memcmp_s  clean  
+make -f make_test_memcpy16_s  clean  
+make -f make_test_memcpy32_s  clean  
+make -f make_test_memcpy_s  clean  
+make -f make_test_memmove16_s  clean  
+make -f make_test_memmove32_s  clean  
+make -f make_test_memmove_s  clean  
+make -f make_test_memset16_s  clean  
+make -f make_test_memset32_s  clean  
+make -f make_test_memset_s  clean  
+make -f make_test_memzero16_s  clean  
+make -f make_test_memzero32_s  clean  
+make -f make_test_memzero_s  clean  
+
+

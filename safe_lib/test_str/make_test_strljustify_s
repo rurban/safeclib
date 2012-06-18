@@ -1,0 +1,30 @@
+# 
+# 
+#
+INCLUDE = -I. \
+           -I../../safe_base/include \
+           -I../include
+
+LIB =   ../lib/safe_str.a
+
+SRC = test_strljustify_s.c
+
+OBJ = $(SRC:.c=.o) 
+
+IMAGE = t_strljustify_s   
+
+
+CC = gcc  
+DEBUG = -g
+CFLAGS = -Wall -c $(DEBUG)
+LFLAGS = -Wall $(DEBUG)
+
+
+$(IMAGE): 
+	$(CC) $(INCLUDE) $(LFLAGS) $(SRC) $(LIB) -o $(IMAGE)
+
+clean:
+	rm -f $(OBJ)  $(IMAGE)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
