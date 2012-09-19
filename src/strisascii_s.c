@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -44,9 +44,9 @@
  *    strisascii_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
- *    This function checks if the entire string contains ascii 
+ *    This function checks if the entire string contains ascii
  *    characters.  The scanning stops at the first null or
- *    at most dmax characters. 
+ *    at most dmax characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -59,40 +59,40 @@
  *    dmax       maximum length of string
  *
  * OUTPUT PARAMETERS
- *    none 
- * 
+ *    none
+ *
  * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer. 
- *    dmax shall not equal zero. 
+ *    dest shall not be a null pointer.
+ *    dmax shall not equal zero.
  *    dmax shall not be greater than RSIZE_MAX_STR.
  *
  * RETURN VALUE
  *    TRUE, string is ascii
  *    FALSE, string contains one or more non-ascii or an error occurred
- * 
+ *
  * ALSO SEE
- *    strisalphanumeric_s(), strisdigit_s(), strishex_s(), 
- *    strislowercase_s(), strismixedcase_s(), strisuppercase_s() 
+ *    strisalphanumeric_s(), strisdigit_s(), strishex_s(),
+ *    strislowercase_s(), strismixedcase_s(), strisuppercase_s()
  *-
  */
 boolean_t
 strisascii_s (const char *dest, rsize_t dmax)
 {
     if (!dest) {
-        invoke_safe_str_constraint_handler("strisascii_s: dest is null", 
+        invoke_safe_str_constraint_handler("strisascii_s: dest is null",
                    NULL, ESNULLP);
         return (FALSE);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strisascii_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strisascii_s: dmax is 0",
                    NULL, ESZEROL);
         return (FALSE);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strisascii_s: dmax "
-                   "exceeds max", 
+                   "exceeds max",
                    NULL, ESLEMAX);
         return (FALSE);
     }
@@ -107,4 +107,3 @@ strisascii_s (const char *dest, rsize_t dmax)
 
     return (TRUE);
 }
-

@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strncpy_s   
+ * test_strncpy_s
  *
  *
  *------------------------------------------------------------------
@@ -91,7 +91,7 @@ int main()
 
 #if 1
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-   strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"); 
+   strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
     if (rc != ESLEMAX) {
@@ -121,8 +121,8 @@ int main()
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     nlen = 5;
- 
-    /* test overlap */ 
+
+    /* test overlap */
     rc = strncpy_s(str1, LEN, str1, nlen);
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -171,7 +171,7 @@ int main()
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
-   
+
     nlen = 20;
     rc = strncpy_s(str1, LEN, str2, nlen);
     if (rc != EOK) {
@@ -242,7 +242,7 @@ int main()
 /*--------------------------------------------------*/
 /* TR example */
 
-    strcpy(dest, "                            "); 
+    strcpy(dest, "                            ");
     strcpy(str1, "hello");
 
     rc = strncpy_s(dest, 6, str1, 100);
@@ -261,7 +261,7 @@ int main()
 /*--------------------------------------------------*/
 /* TR example */
 
-    strcpy(dest, "                            "); 
+    strcpy(dest, "                            ");
     strcpy(str2, "goodbye");
 
     rc = strncpy_s(dest, 5, str2, 7);
@@ -273,7 +273,7 @@ int main()
 /*--------------------------------------------------*/
 /* TR example */
 
-    strcpy(dest, "                            "); 
+    strcpy(dest, "                            ");
     strcpy(str2, "goodbye");
 
     rc = strncpy_s(dest, 5, str2, 4);
@@ -294,7 +294,7 @@ int main()
     strcpy(dest, "                            ");
     strcpy(str2, "good");
 
-    /*   strnlen("good") < 5   */ 
+    /*   strnlen("good") < 5   */
     rc = strncpy_s(dest, 5, str2, 8);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -331,4 +331,3 @@ int main()
 
     return (0);
 }
-

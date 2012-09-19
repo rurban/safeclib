@@ -22,7 +22,7 @@ int main()
 {
     errno_t rc;
     uint32_t i;
-    uint32_t len; 
+    uint32_t len;
 
     uint32_t  mem1[LEN];
     uint32_t  mem2[LEN];
@@ -80,8 +80,8 @@ int main()
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    /* a valid move */ 
-    len = LEN; 
+    /* a valid move */
+    len = LEN;
     rc = memmove32_s(mem1, len, mem2, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -91,7 +91,7 @@ int main()
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
             printf("%d m1=%d  m2=%d  \n",
-                 i, mem1[i], mem2[i]);  
+                 i, mem1[i], mem2[i]);
         }
     }
 
@@ -219,4 +219,3 @@ int main()
 
     return (0);
 }
-

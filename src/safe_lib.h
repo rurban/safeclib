@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------
- * safe_lib.h -- Use to abstract platform environment 
+ * safe_lib.h -- Use to abstract platform environment
  *
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,31 +33,31 @@
 #define __SAFE_LIB_H__
 
 /*
- * This is a Safe C Lib internal include file used to abstract the 
- * libraries from the platform environment to ease portability. 
+ * This is a Safe C Lib internal include file used to abstract the
+ * libraries from the platform environment to ease portability.
  */
- 
+
 /*
- * CONFIGURE: Define a macro for your environment. The library was 
+ * CONFIGURE: Define a macro for your environment. The library was
  * initially developed on Mac-OS.
- */ 
- 
-/* #define YOUR_OS */ 
+ */
+
+/* #define YOUR_OS */
 
 #define MAC_OS_X
 
 
 #ifdef YOUR_OS
 
-#include <stdio.h> 
+#include <stdio.h>
 #include "safe_lib_errno.h"
-#include "safe_types.h" 
+#include "safe_types.h"
 
-#elif defined (MAC_OS_X) 
+#elif defined (MAC_OS_X)
 
 #include <stdio.h>
 #include "safe_lib_errno.h"
-#include "safe_types.h" 
+#include "safe_types.h"
 
 #else
 
@@ -67,7 +67,7 @@
 
 
 
-#ifndef rsize_t 
+#ifndef rsize_t
 typedef unsigned int  rsize_t;
 #endif
 

@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,22 +33,22 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strcpyfld_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t 
+ *    errno_t
  *    strcpyfld_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
  *
  * DESCRIPTION
- *    The strcpyfld_s function copies slen characters from the character 
+ *    The strcpyfld_s function copies slen characters from the character
  *    array pointed to by src into the character array pointed to by dest.
- *    The copy operation does not stop on the null character as the  
- *    function copies slen characters.  
+ *    The copy operation does not stop on the null character as the
+ *    function copies slen characters.
  *
- * EXTENSION TO    
+ * EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -61,34 +61,34 @@
  *    src       pointer to the character array that will be copied
  *              to dest
  *
- *    slen      maximum length of src  
+ *    slen      maximum length of src
  *
  * OUTPUT PARAMETERS
- *    dest      updated 
+ *    dest      updated
  *
  * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer. 
- *    dmax shall not equal zero. 
- *    dmax shall not be greater than RSIZE_MAX_STR.  
- *    slen shall not equal zero. 
+ *    Neither dest nor src shall be a null pointer.
+ *    dmax shall not equal zero.
+ *    dmax shall not be greater than RSIZE_MAX_STR.
+ *    slen shall not equal zero.
  *    slen shall not exceed dmax
- *    Copying shall not take place between objects that overlap. 
+ *    Copying shall not take place between objects that overlap.
  *    If there is a runtime-constraint violation, then if dest
- *       is not a null pointer and destmax is greater than zero and 
- *       not greater than RSIZE_MAX_STR, then strcpyfld_s nulls dest. 
- * 
+ *       is not a null pointer and destmax is greater than zero and
+ *       not greater than RSIZE_MAX_STR, then strcpyfld_s nulls dest.
+ *
  * RETURN VALUE
  *    EOK        successful operation
  *    ESNULLP    NULL pointer
  *    ESZEROL    zero length
  *    ESLEMAX    length exceeds max limit
- *    ESOVRLP    strings overlap 
+ *    ESOVRLP    strings overlap
  *
- * ALSO SEE 
- *    strcpyfldin_s(), strcpyfldout_s()  
- * 
+ * ALSO SEE
+ *    strcpyfldin_s(), strcpyfldout_s()
+ *
  */
-errno_t 
+errno_t
 strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 {
     rsize_t orig_dmax;
@@ -96,19 +96,19 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     const char *overlap_bumper;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strcpyfld_s: dest is null", 
+        invoke_safe_str_constraint_handler("strcpyfld_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strcpyfld_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strcpyfld_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strcpyfld_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strcpyfld_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -117,7 +117,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
-        invoke_safe_str_constraint_handler("strcpyfld_s: src is null", 
+        invoke_safe_str_constraint_handler("strcpyfld_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
@@ -141,7 +141,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     }
 
 
-    /* hold base of dest in case src was not copied */  
+    /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
     orig_dest = dest;
 
@@ -158,9 +158,9 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 
                 invoke_safe_str_constraint_handler(
-                          "strcpyfld_s: overlapping objects", 
+                          "strcpyfld_s: overlapping objects",
                            NULL, ESOVRLP);
-                return (ESOVRLP); 
+                return (ESOVRLP);
             }
 
             *dest++ = *src++;
@@ -168,7 +168,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
             dmax--;
         }
 
-    } else { 
+    } else {
         overlap_bumper = dest;
 
         while (slen > 0) {
@@ -181,19 +181,18 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 
                 invoke_safe_str_constraint_handler(
-                          "strcpyfld_s: overlapping objects", 
+                          "strcpyfld_s: overlapping objects",
                            NULL, ESOVRLP);
-                return (ESOVRLP); 
+                return (ESOVRLP);
             }
 
             *dest++ = *src++;
             slen--;
             dmax--;
         }
-    } 
+    }
 
     /* null slack space in the field */
     while (dmax) { *dest = '\0'; dmax--; dest++; }
     return (EOK);
 }
-

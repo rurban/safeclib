@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strremovews_s   
+ * test_strremovews_s
  *
  *
  *------------------------------------------------------------------
@@ -51,9 +51,9 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "ABCDEFGHIJK");
-    len = 1; 
+    len = 1;
     rc = strremovews_s(str, len);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
@@ -67,7 +67,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "ABCDEFGHIJK");
     len = 2;
 
@@ -96,7 +96,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "      ABCDEFGHIJK");
     len = 9;
 
@@ -108,11 +108,11 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "A");
     len = 1;
 
-    /* a one char string will be emptied - str[0]=='\0' */ 
+    /* a one char string will be emptied - str[0]=='\0' */
     rc = strremovews_s(str, len);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
@@ -143,7 +143,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy(str, "   B");
     len = strlen(str);
 
@@ -160,7 +160,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy(str, "  C       ");
     len = strlen(str);
 
@@ -178,7 +178,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy(str, "   NowISTHETimE 1 2   ");
     len = strlen(str);
 
@@ -196,7 +196,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "  q q21ego");
     len = strlen(str);
 
@@ -214,7 +214,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "  1 2 3 4   ");
     len = strlen(str);
 
@@ -234,5 +234,3 @@ int main()
 
     return (0);
 }
-
-

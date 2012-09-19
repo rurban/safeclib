@@ -38,22 +38,22 @@ LT_INIT
 #   no)  enable_gcov=false ;;
 #   *)   AC_MSG_ERROR(bad value ${enableval} for --enable-gcov) ;;
 # esac], [enable_gcov=false ])
-# 
+#
 # if test x$enable_gcov = xtrue ; then
 #   if test -n "$GCC"; then
 #     AC_MSG_ERROR([gcov only works if gcc is used])
 #   fi
-# 
+#
 #   GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
 #   AC_SUBST(GCOV_CFLAGS)
-# 
+#
 #   dnl libtool 1.5.22 and lower strip -fprofile-arcs from the flags
 #   dnl passed to the linker, which is a bug; -fprofile-arcs implicitly
 #   dnl links in -lgcov, so we do it explicitly here for the same effect
 #   GCOV_LIBS=-lgcov
 #   AC_SUBST(GCOV_LIBS)
 # fi
-# 
+#
 # AM_CONDITIONAL(ENABLE_GCOV, test x"$enable_gcov" = "xtrue")
 
 # Checks for programs.

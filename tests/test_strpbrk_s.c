@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strpbrk_s   
+ * test_strpbrk_s
  *
  *
  *------------------------------------------------------------------
@@ -110,7 +110,7 @@ int main()
     str1[0] = '\0';
     str2[0] = '\0';
 
-    /* not to be found */ 
+    /* not to be found */
     rc = strpbrk_s(str1, LEN, str2, LEN, &first);
     if (rc != ESNOTFND) {
         printf("%s %u  Error  first=%p  rc=%d \n",
@@ -283,4 +283,3 @@ int main()
 
     return (0);
 }
-

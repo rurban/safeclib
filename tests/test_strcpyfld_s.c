@@ -53,8 +53,8 @@ int main()
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        } 
-    } 
+        }
+    }
 
 /*--------------------------------------------------*/
 

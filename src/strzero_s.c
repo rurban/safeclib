@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,20 +33,20 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strzero_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t 
+ *    errno_t
  *    strzero_s(char *dest, rsize_t dmax)
  *
  * DESCRIPTION
- *    Nulls dmax characters of dest.  This function can be used 
- *    to clear strings that contained sensitive data. 
+ *    Nulls dmax characters of dest.  This function can be used
+ *    to clear strings that contained sensitive data.
  *
- * EXTENSION TO  
+ * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -57,7 +57,7 @@
  *    dmax     restricted maximum length of dest
  *
  * OUTPUT PARAMETERS
- *    dest     updated string 
+ *    dest     updated string
  *
  * RETURN VALUE
  *    EOK        successful operation
@@ -66,26 +66,26 @@
  *    ESLEMAX    length exceeds max limit
  *
  * ALSO SEE
- *    strispassword_s() 
- * 
+ *    strispassword_s()
+ *
  */
-errno_t 
+errno_t
 strzero_s (char *dest, rsize_t dmax)
 {
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strzero_s: dest is null", 
+        invoke_safe_str_constraint_handler("strzero_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strzero_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strzero_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strzero_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strzero_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -95,8 +95,7 @@ strzero_s (char *dest, rsize_t dmax)
         *dest = '\0';
         dmax--;
         dest++;
-    } 
+    }
 
     return (EOK);
 }
-

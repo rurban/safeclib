@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,20 +33,20 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strlastsame_s  
+ *    strlastsame_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strlastsame_s(const char *dest, rsize_t dmax,
  *                  const char *src, rsize_t *index)
  *
  * DESCRIPTION
  *    Returns the index of the last character that is the
- *    same between dest and src. The scanning stops at the 
- *    first nul in dest or src, or after dmax characters.  
+ *    same between dest and src. The scanning stops at the
+ *    first nul in dest or src, or after dmax characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -78,15 +78,15 @@
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
- *    ESNOTFND    not found 
- *    ESUNTERM    string unterminated 
+ *    ESNOTFND    not found
+ *    ESUNTERM    string unterminated
  *
  * ALSO SEE
- *    strfirstchar_s(), strfirstdiff_s(), strfirstsame_s(),     
- *    strlastchar_s(), strlastdiff_s() 
- * 
+ *    strfirstchar_s(), strfirstdiff_s(), strfirstsame_s(),
+ *    strlastchar_s(), strlastdiff_s()
+ *
  */
-errno_t 
+errno_t
 strlastsame_s (const char *dest, rsize_t dmax,
                const char *src, rsize_t *index)
 {
@@ -138,7 +138,7 @@ strlastsame_s (const char *dest, rsize_t dmax,
             *index = (uint32_t)(dest - rp);
         }
 
-        dest++; 
+        dest++;
         src++;
         dmax--;
     }
@@ -149,4 +149,3 @@ strlastsame_s (const char *dest, rsize_t dmax,
         return (ESNOTFND);
     }
 }
-

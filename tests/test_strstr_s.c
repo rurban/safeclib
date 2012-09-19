@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strstr_s   
+ * test_strstr_s
  *
  *
  *------------------------------------------------------------------
@@ -36,7 +36,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub) { 
+    if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -49,7 +49,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub) { 
+    if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -70,7 +70,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub) { 
+    if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -83,7 +83,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub) { 
+    if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -96,7 +96,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub) { 
+    if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -109,7 +109,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub) { 
+    if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -134,14 +134,14 @@ int main()
 
     strcpy(str1, "keep it all together");
     *str2 = '\0';
-    
+
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub != str1) { 
+    if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -168,7 +168,7 @@ int main()
     strcpy(str1, "keep it all together");
     strcpy(str2, "eep it");
 
-    /* substring in the middle - left */ 
+    /* substring in the middle - left */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
@@ -185,7 +185,7 @@ int main()
     strcpy(str1, "keep it all together");
     strcpy(str2, "ethe");
 
-    /* substring in the middle - right */ 
+    /* substring in the middle - right */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
@@ -198,7 +198,7 @@ int main()
     }
 
 /*--------------------------------------------------*/
-               // 012345678901234567890 
+               // 012345678901234567890
     strcpy(str1, "keep it all together");
     strcpy(str2, "he");
 
@@ -239,7 +239,7 @@ int main()
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
-  
+
     rc = strstr_s(str1, 3, str2, LEN, &sub);
     if (rc != ESNOTFND) {
         printf("%s %u  Error rc=%d \n",
@@ -313,7 +313,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    /* compare to legacy */ 
+    /* compare to legacy */
     std_sub = strstr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
@@ -324,4 +324,3 @@ int main()
 
     return (0);
 }
-

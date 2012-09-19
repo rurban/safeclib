@@ -125,7 +125,7 @@ int main()
     strcpy (str, "1abzd");
     len = strlen(str);
 
-    /* non hex char in string */ 
+    /* non hex char in string */
     rc = strishex_s(str, len);
     if (rc != FALSE) {
         printf("%s %u   Error rc=%u \n",
@@ -136,4 +136,3 @@ int main()
 
     return (0);
 }
-

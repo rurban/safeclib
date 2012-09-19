@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,19 +33,19 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strpbrk_s 
+ *    strpbrk_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strpbrk_s(char *dest, rsize_t dmax,
  *              char *src,  rsize_t slen, char **first)
  *
  * DESCRIPTION
  *    Returns a pointer, first, to the first ocurrence of any character
- *    in src which is contained in dest. 
+ *    in src which is contained in dest.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -64,14 +64,14 @@
  *    first    returned pointer to first occurence
  *
  * OUTPUT PARAMETERS
- *    none 
+ *    none
  *
  * RUNTIME CONSTRAINTS
  *    Neither dest nor src shall be a null pointer.
  *    first shall not be a null pointer.
  *    dmax shall not be 0
  *    dmax shall not be greater than RSIZE_MAX_STR
- * 
+ *
  * RETURN VALUE
  *    pointer to the first ocurrence of any character
  *    contained in src
@@ -82,11 +82,11 @@
  *    ESLEMAX     length exceeds max limit
  *
  * ALSO SEE
- *    strfirstchar_s(), strlastchar_s(), strfirstdiff_s(), 
- *    strfirstsame_s(), strlastdiff_s(), strlastsame_s()  
- * 
+ *    strfirstchar_s(), strlastchar_s(), strfirstdiff_s(),
+ *    strfirstsame_s(), strlastdiff_s(), strlastsame_s()
+ *
  */
-errno_t 
+errno_t
 strpbrk_s (char *dest, rsize_t dmax,
            char *src,  rsize_t slen, char **first)
 {
@@ -137,7 +137,7 @@ strpbrk_s (char *dest, rsize_t dmax,
     }
 
     /*
-     * look for a matching char in the substring src 
+     * look for a matching char in the substring src
      */
     while (*dest && dmax) {
 
@@ -145,7 +145,7 @@ strpbrk_s (char *dest, rsize_t dmax,
         len = slen;
         while (*ps) {
 
-            /* check for a match with the substring */ 
+            /* check for a match with the substring */
             if (*dest == *ps) {
                 *first = dest;
                 return (EOK);
@@ -159,4 +159,3 @@ strpbrk_s (char *dest, rsize_t dmax,
 
     return (ESNOTFND);
 }
-

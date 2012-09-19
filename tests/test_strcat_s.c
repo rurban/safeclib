@@ -76,13 +76,13 @@ int main()
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
-    } 
+    }
 
 /*--------------------------------------------------*/
-    
+
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
-    
+
     rc = strcat_s(str1, 2, str2);
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -92,13 +92,13 @@ int main()
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
-    } 
+    }
 
 /*--------------------------------------------------*/
-    
+
     strcpy(&str1[0], "aaaaaaaaaa");
     strcpy(&str2[0], "keep it simple");
-    
+
     len1 = strlen(str1);
     len2 = strlen(str2);
 
@@ -112,7 +112,7 @@ int main()
     if (len3 != (len1+len2)) {
         debug_printf("%s %u lengths wrong: %u  %u  %u \n",
                      __FUNCTION__, __LINE__, len1, len2, len3);
-    } 
+    }
 
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/

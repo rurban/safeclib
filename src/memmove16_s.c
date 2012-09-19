@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------
- * memmove16_s.c  
+ * memmove16_s.c
  *
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,12 +30,12 @@
  */
 
 #include "safe_mem_lib.h"
-#include "safe_mem_constraint.h" 
+#include "safe_mem_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    memmove16_s 
+ *    memmove16_s
  *
  * SYNOPSIS
  *    #include "safe_mem_lib.h"
@@ -44,15 +44,15 @@
  *                const uint16_t *src, rsize_t smax)
  *
  * DESCRIPTION
- *    The memmove16_s function copies smax uint16_t from the region 
- *    pointed to by src into the region pointed to by dest. This 
- *    copying takes place as if the smax uint16_t from the region 
- *    pointed to by src are ﬁrst copied into a temporary array of 
- *    smax uint16_t that does not overlap the regions pointed to 
- *    by dest or src, and then the smax uint16_t from the temporary 
- *    array are copied into the region pointed to by dest.   
+ *    The memmove16_s function copies smax uint16_t from the region
+ *    pointed to by src into the region pointed to by dest. This
+ *    copying takes place as if the smax uint16_t from the region
+ *    pointed to by src are ﬁrst copied into a temporary array of
+ *    smax uint16_t that does not overlap the regions pointed to
+ *    by dest or src, and then the smax uint16_t from the temporary
+ *    array are copied into the region pointed to by dest.
  *
- * EXTENSION TO  
+ * EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -60,7 +60,7 @@
  * INPUT PARAMETERS
  *    dest       pointer to the memory that will be replaced by src.
  *
- *    dmax       maximum length of the resulting dest, in uint16_t  
+ *    dmax       maximum length of the resulting dest, in uint16_t
  *
  *    src        pointer to the memory that will be copied
  *               to dest
@@ -68,17 +68,17 @@
  *    smax       maximum number uint16_t of src that can be copied
  *
  *  OUTPUT PARAMETERS
- *    dest      is updated 
+ *    dest      is updated
  *
  * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer. 
+ *    Neither dest nor src shall be a null pointer.
  *    Neither dmax nor smax shall be 0.
  *    dmax shall not be greater than RSIZE_MAX_MEM.
- *    smax shall not be greater than dmax. 
+ *    smax shall not be greater than dmax.
  *    If there is a runtime-constraint violation, the memmove_s function
- *      stores zeros in the ﬁrst dmax characters of the regionpointed to 
- *      by dest if dest is not a null pointer and dmax is not greater 
- *      than RSIZE_MAX_MEM. 
+ *      stores zeros in the ﬁrst dmax characters of the regionpointed to
+ *      by dest if dest is not a null pointer and dmax is not greater
+ *      than RSIZE_MAX_MEM.
  *
  * RETURN VALUE
  *    EOK        successful operation
@@ -88,7 +88,7 @@
  *
  * ALSO SEE
  *    memmove_s(), memmove32_s(), memcpy_s(), memcpy16_s() memcpy32_s()
- * 
+ *
  */
 errno_t
 memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
@@ -100,40 +100,40 @@ memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
     sp = src;
 
     if (dp == NULL) {
-        invoke_safe_mem_constraint_handler("memove16_s: dest is null", 
+        invoke_safe_mem_constraint_handler("memove16_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_mem_constraint_handler("memove16_s: dmax is 0", 
+        invoke_safe_mem_constraint_handler("memove16_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_MEM16) {
-        invoke_safe_mem_constraint_handler("memove16_s: dmax  exceeds max", 
+        invoke_safe_mem_constraint_handler("memove16_s: dmax  exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
     if (smax == 0) {
         mem_prim_set16(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memove16_s: smax is 0", 
+        invoke_safe_mem_constraint_handler("memove16_s: smax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (smax > dmax) {
         mem_prim_set16(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memove16_s: smax exceeds dmax", 
+        invoke_safe_mem_constraint_handler("memove16_s: smax exceeds dmax",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
     if (sp == NULL) {
         mem_prim_set16(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memove16_s: src is null", 
+        invoke_safe_mem_constraint_handler("memove16_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
@@ -146,4 +146,3 @@ memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
 
     return (EOK);
 }
-

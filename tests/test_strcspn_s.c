@@ -139,7 +139,7 @@ int main()
     strcpy (str2, "KEEP");
 
     rc = strcspn_s(str1, 1, str2, LEN, &count);
-    if (rc != EOK) {   
+    if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -155,7 +155,7 @@ int main()
     strcpy (str2, "KEEP");
 
     rc = strcspn_s(str1, 2, str2, LEN, &count);
-    if (rc != EOK) {   
+    if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -171,7 +171,7 @@ int main()
     strcpy (str2, "KEEP");
 
     rc = strcspn_s(str1, 3, str2, LEN, &count);
-    if (rc != EOK) {   
+    if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -188,7 +188,7 @@ int main()
     strcpy (str2, "KEEP");
 
     rc = strcspn_s(str1, 6, str2, LEN, &count);
-    if (rc != EOK) { 
+    if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
@@ -269,4 +269,3 @@ int main()
 
     return (0);
 }
-

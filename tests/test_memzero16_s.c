@@ -21,7 +21,7 @@ int main()
 {
     errno_t rc;
     uint32_t i;
-    uint32_t len; 
+    uint32_t len;
 
     uint16_t mem1[LEN];
 
@@ -53,7 +53,7 @@ int main()
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
 
-    len = 1; 
+    len = 1;
     rc = memzero16_s(mem1, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -130,4 +130,3 @@ int main()
 
     return (0);
 }
-

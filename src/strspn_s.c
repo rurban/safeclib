@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,20 +33,20 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strspn_s 
+ *    strspn_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strspn_s(const char *dest, rsize_t dmax,
  *             const char *src,  rsize_t slen, rsize_t *count)
  *
  * DESCRIPTION
- *    This function computes the prefix length of the string 
- *    pointed to by dest which consists entirely of characters 
- *    that are included from the string pointed to by src.  
+ *    This function computes the prefix length of the string
+ *    pointed to by dest which consists entirely of characters
+ *    that are included from the string pointed to by src.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -66,7 +66,7 @@
  *              with the dest substring length
  *
  * OUTPUT PARAMETERS
- *    count    updated count 
+ *    count    updated count
  *
  * RUNTIME CONSTRAINTS
  *    Neither dest nor src shall be a null pointer.
@@ -75,16 +75,16 @@
  *    dmax shall not be greater than RSIZE_MAX_STR
  *
  * RETURN VALUE
- *    EOK         count 
+ *    EOK         count
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
  *
  * ALSO SEE
  *    strcspn_s(), strpbrk_s(), strstr_s(), strprefix_s()
- * 
+ *
  */
-errno_t 
+errno_t
 strspn_s (const char *dest, rsize_t dmax,
           const char *src,  rsize_t slen, rsize_t *count)
 {
@@ -138,32 +138,31 @@ strspn_s (const char *dest, rsize_t dmax,
     while (*dest && dmax) {
 
         /*
-         * Scan the entire src string for each dest character, counting 
+         * Scan the entire src string for each dest character, counting
          * inclusions.
-         */ 
-        match_found = FALSE; 
+         */
+        match_found = FALSE;
         smax = slen;
-        scan2 = src; 
-        while (*scan2 && smax) { 
+        scan2 = src;
+        while (*scan2 && smax) {
 
             if (*dest == *scan2) {
                 match_found = TRUE;
-                break; 
-            } 
-            scan2++; 
-            smax--; 
-        } 
+                break;
+            }
+            scan2++;
+            smax--;
+        }
 
-        if (match_found) { 
+        if (match_found) {
             (*count)++;
         } else {
-            break; 
-        } 
+            break;
+        }
 
         dest++;
-        dmax--; 
-    } 
+        dmax--;
+    }
 
     return (EOK);
 }
-

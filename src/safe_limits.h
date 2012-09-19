@@ -3,8 +3,8 @@
  *
  * February 2009, Bo Berry
  *
- * Copyright (c) 2009-2011 by Cisco Systems 
- * All rights reserved. 
+ * Copyright (c) 2009-2011 by Cisco Systems
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,12 +33,12 @@
 #define __SAFE_LIMITS__
 
 /*
- * Abstract header file for portability. 
- */ 
+ * Abstract header file for portability.
+ */
 
 
 /*
- * ANSI C - number of bits by type  
+ * ANSI C - number of bits by type
  */
 #ifndef CHAR_BIT
 #define CHAR_BIT        ( 8 )
@@ -71,21 +71,21 @@
 
 
 
-#ifndef BYTE_MAX 
+#ifndef BYTE_MAX
 #define BYTE_MAX        ( 255 )
 #endif
 
-#ifndef SCHAR_MAX  
+#ifndef SCHAR_MAX
 #define SCHAR_MAX       (  127 )
 #define SCHAR_MIN       ( -SCHAR_MAX - 1 )
 #endif
 
-#ifndef CHAR_MAX  
+#ifndef CHAR_MAX
 #define CHAR_MAX        ( 127 )
 #define CHAR_MIN        ( -CHAR_MAX - 1 )
 #endif
 
-#ifndef UCHAR_MAX 
+#ifndef UCHAR_MAX
 #define UCHAR_MAX       ( 0xff )
 #endif
 
@@ -94,32 +94,32 @@
 #define SHRT_MIN        ( -SHRT_MAX - 1 )
 #endif
 
-#ifndef USHRT_MAX    
+#ifndef USHRT_MAX
 #define USHRT_MAX       ( 0xffff )
 #endif
- 
-#ifndef INT_MAX   
+
+#ifndef INT_MAX
 #define INT_MAX         (  2147483647 )
 #define INT_MIN         ( -INT_MAX - 1 )
 #endif
 
-#ifndef UINT_MAX    
+#ifndef UINT_MAX
 #define UINT_MAX        ( 0xffffffff )
 #endif
 
-#ifndef LLONG_MAX 
+#ifndef LLONG_MAX
 #define LLONG_MAX       (  9223372036854775807 )
 #define LLONG_MIN       ( -LLONG_MAX - 1 )
 #endif
 
-#ifndef ULLONG_MAX  
+#ifndef ULLONG_MAX
 #define ULLONG_MAX      ( 0xffffffffffffffff )
 #endif
 
 
-#if LONG_BIT == INT_BIT 
+#if LONG_BIT == INT_BIT
 
-#ifndef LONG_MAX  
+#ifndef LONG_MAX
 #define LONG_MAX        (  INT_MAX)
 #define LONG_MIN        ( -LONG_MAX - 1 )
 #endif
@@ -142,54 +142,53 @@
 #endif
 
 
-#ifndef INT8_MIN  
+#ifndef INT8_MIN
 #define INT8_MIN        ( SCHAR_MIN )
 #endif
 
-#ifndef INT8_MAX 
+#ifndef INT8_MAX
 #define INT8_MAX        ( SCHAR_MAX )
 #endif
 
-#ifndef UINT8_MAX 
+#ifndef UINT8_MAX
 #define UINT8_MAX       ( UCHAR_MAX )
 #endif
 
-#ifndef INT16_MIN  
+#ifndef INT16_MIN
 #define INT16_MIN       ( SHRT_MIN )
 #endif
 
-#ifndef INT16_MAX 
+#ifndef INT16_MAX
 #define INT16_MAX       ( SHRT_MAX )
 #endif
 
-#ifndef UINT16_MAX 
+#ifndef UINT16_MAX
 #define UINT16_MAX      ( USHRT_MAX )
 #endif
 
-#ifndef INT32_MIN  
+#ifndef INT32_MIN
 #define INT32_MIN       ( INT_MIN )
 #endif
 
-#ifndef INT32_MAX    
+#ifndef INT32_MAX
 #define INT32_MAX       ( INT_MAX )
 #endif
 
-#ifndef UINT32_MAX    
+#ifndef UINT32_MAX
 #define UINT32_MAX      ( UINT_MAX )
 #endif
 
-#ifndef INT64_MIN      
+#ifndef INT64_MIN
 #define INT64_MIN       ( LLONG_MIN )
-#endif 
+#endif
 
-#ifndef INT64_MAX    
+#ifndef INT64_MAX
 #define INT64_MAX       ( LLONG_MAX )
-#endif 
+#endif
 
-#ifndef UINT64_MAX    
+#ifndef UINT64_MAX
 #define UINT64_MAX      ( ULLONG_MAX )
-#endif 
+#endif
 
 
 #endif /* __SAFE_LIMITS__ */
-

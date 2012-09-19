@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -38,10 +38,10 @@
 
 
 /*
- * CONFIGURE: Define this macro to null slack space in the string 
+ * CONFIGURE: Define this macro to null slack space in the string
  * copy and cat functions.
- */ 
-/* #define SAFE_LIB_STR_NULL_SLACK */ 
+ */
+/* #define SAFE_LIB_STR_NULL_SLACK */
 
 
 /*
@@ -57,20 +57,19 @@ extern void invoke_safe_str_constraint_handler(
 
 /*
  * Safe C Lib internal string routine to consolidate error handling
- */ 
+ */
 static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
                          char *err_msg, errno_t err_code)
 {
-#ifdef SAFE_LIB_STR_NULL_SLACK 
+#ifdef SAFE_LIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
     while (orig_dmax) { *orig_dest = '\0'; orig_dmax--; orig_dest++; }
 #else
-    *orig_dest = '\0'; 
-#endif 
+    *orig_dest = '\0';
+#endif
 
     invoke_safe_str_constraint_handler(err_msg, NULL, err_code);
     return;
 }
 
 #endif   /* __SAFE_STR_CONSTRAINT_H__ */
-

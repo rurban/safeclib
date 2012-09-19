@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------
  * safe_mem_constraint.h
  *
- * October 2008, Bo Berry 
+ * October 2008, Bo Berry
  *
- * Copyright (c) 2008, 2009 by Cisco Systems, Inc. 
- * All rights reserved. 
+ * Copyright (c) 2008, 2009 by Cisco Systems, Inc.
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -36,14 +36,13 @@
 
 
 /*
- * Function used by the libraries to invoke the registered 
- * runtime-constraint handler. Always needed. 
- */ 
-extern void invoke_safe_mem_constraint_handler( 
-                           const char *msg, 
-                           void *ptr, 
-                           errno_t error); 
+ * Function used by the libraries to invoke the registered
+ * runtime-constraint handler. Always needed.
+ */
+extern void invoke_safe_mem_constraint_handler(
+                           const char *msg,
+                           void *ptr,
+                           errno_t error);
 
 
 #endif /* __SAFE_MEM_CONSTRAINT_H__ */
-

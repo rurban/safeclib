@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -40,8 +40,8 @@
 /*
  * These are prototypes for _unguarded_ memory routines.  The caller must
  * validate all parameters prior to invocation.  Useful for diagnostics
- * and system initialization processing. 
- */ 
+ * and system initialization processing.
+ */
 
 /* moves (handles overlap) memory  */
 extern void
@@ -75,4 +75,3 @@ mem_prim_set32(uint32_t *dest, uint32_t dmax, uint32_t value);
 
 
 #endif  /* __MEM_PRIMITIVES_LIB__ */
-

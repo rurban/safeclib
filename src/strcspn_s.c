@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,23 +33,23 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strcspn_s 
+ *    strcspn_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strcspn_s(const char *dest, rsize_t dmax,
  *              const char *src,  rsize_t slen, rsize_t *count)
  *
  * DESCRIPTION
  *    This function computes the prefix length of the string pointed
- *    to by dest which consists entirely of characters that are 
+ *    to by dest which consists entirely of characters that are
  *    excluded from the string pointed to by src. The scanning stops
  *    at the first null in dest or after dmax characters. The
  *    exclusion string is checked to the null or after slen
- *    characters.  
+ *    characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -69,7 +69,7 @@
  *              with the dest substring length
  *
  * OUTPUT PARAMETERS
- *    count    updated count variable 
+ *    count    updated count variable
  *
  * RUNTIME CONSTRAINTS
  *    Neither dest nor src shall be a null pointer.
@@ -78,16 +78,16 @@
  *    dmax shall not be greater than RSIZE_MAX_STR
  *
  * RETURN VALUE
- *    EOK         count 
+ *    EOK         count
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
- * 
- * ALSO SEE 
- *    strspn_s(), strpbrk_s(), strstr_s() 
- * 
+ *
+ * ALSO SEE
+ *    strspn_s(), strpbrk_s(), strstr_s()
+ *
  */
-errno_t 
+errno_t
 strcspn_s (const char *dest, rsize_t dmax,
            const char *src,  rsize_t slen, rsize_t *count)
 {
@@ -139,26 +139,25 @@ strcspn_s (const char *dest, rsize_t dmax,
 
     while (*dest && dmax) {
 
-        /* 
-         * Scanning for exclusions, so if there is a match, 
-         * we're done!  
-         */ 
+        /*
+         * Scanning for exclusions, so if there is a match,
+         * we're done!
+         */
         smax = slen;
-        scan2 = src; 
-        while (*scan2 && smax) { 
+        scan2 = src;
+        while (*scan2 && smax) {
 
              if (*dest == *scan2) {
                  return (EOK);
              }
              scan2++;
-             smax--; 
-        } 
+             smax--;
+        }
 
         (*count)++;
         dest++;
-        dmax--; 
-    } 
+        dmax--;
+    }
 
     return (EOK);
 }
-

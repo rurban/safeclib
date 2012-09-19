@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -39,9 +39,9 @@
 
 
 /*
- * The shortest string is a null string!! 
+ * The shortest string is a null string!!
  */
-#ifndef RSIZE_MIN_STR 
+#ifndef RSIZE_MIN_STR
 #define RSIZE_MIN_STR      ( 1 )
 #endif
 
@@ -49,24 +49,24 @@
 /*
  * CONFIGURE: maximum sring length
  */
-#ifndef RSIZE_MAX_STR 
+#ifndef RSIZE_MAX_STR
 #define RSIZE_MAX_STR      ( 4096 )
 #endif
 
 
 /*
- * CONFIGURE: The makeup of a password 
+ * CONFIGURE: The makeup of a password
  */
 #define SAFE_STR_MIN_LOWERCASE     ( 2 )
 #define SAFE_STR_MIN_UPPERCASE     ( 2 )
 #define SAFE_STR_MIN_NUMBERS       ( 1 )
 #define SAFE_STR_MIN_SPECIALS      ( 1 )
 
-#ifndef SAFE_STR_PASSWORD_MIN_LENGTH 
+#ifndef SAFE_STR_PASSWORD_MIN_LENGTH
 #define SAFE_STR_PASSWORD_MIN_LENGTH   ( 6 )
 #endif
 
-#ifndef SAFE_STR_PASSWORD_MAX_LENGTH 
+#ifndef SAFE_STR_PASSWORD_MAX_LENGTH
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 #endif
 
@@ -74,13 +74,13 @@
 
 /* string compare */
 extern errno_t
-strcasecmp_s(const char *dest, rsize_t dmax, 
+strcasecmp_s(const char *dest, rsize_t dmax,
              const char *src, int *indicator);
 
 
-/* find a substring _ case insensitive */ 
+/* find a substring _ case insensitive */
 extern errno_t
-strcasestr_s(char *dest, rsize_t dmax, 
+strcasestr_s(char *dest, rsize_t dmax,
              const char *src, rsize_t slen, char **substring);
 
 
@@ -91,7 +91,7 @@ strcat_s(char *dest, rsize_t dmax, const char *src);
 
 /* string compare */
 extern errno_t
-strcmp_s(const char *dest, rsize_t dmax, 
+strcmp_s(const char *dest, rsize_t dmax,
          const char *src, int *indicator);
 
 
@@ -121,61 +121,61 @@ extern errno_t
 strcpyfldout_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
 
 
-/* computes excluded prefix length */ 
+/* computes excluded prefix length */
 extern errno_t
 strcspn_s(const char *dest, rsize_t dmax,
-          const char *src,  rsize_t slen, rsize_t *count); 
+          const char *src,  rsize_t slen, rsize_t *count);
 
 
-/* returns a pointer to the first occurrence of c in dest */ 
+/* returns a pointer to the first occurrence of c in dest */
 extern errno_t
-strfirstchar_s(char *dest, rsize_t dmax, char c, char **first); 
+strfirstchar_s(char *dest, rsize_t dmax, char c, char **first);
 
 
-/* returns index of first difference */ 
+/* returns index of first difference */
 extern  errno_t
-strfirstdiff_s(const char *dest, rsize_t dmax, 
+strfirstdiff_s(const char *dest, rsize_t dmax,
                const char *src, rsize_t *index);
 
 
-/* validate alphanumeric string */ 
+/* validate alphanumeric string */
 extern boolean_t
-strisalphanumeric_s(const char *str, rsize_t slen);  
+strisalphanumeric_s(const char *str, rsize_t slen);
 
 
-/* validate ascii string */ 
+/* validate ascii string */
 extern boolean_t
-strisascii_s(const char *str, rsize_t slen);  
+strisascii_s(const char *str, rsize_t slen);
 
 
-/* validate string of digits */ 
+/* validate string of digits */
 extern boolean_t
-strisdigit_s(const char *str, rsize_t slen);  
+strisdigit_s(const char *str, rsize_t slen);
 
 
-/* validate hex string */ 
+/* validate hex string */
 extern boolean_t
-strishex_s(const char *str, rsize_t slen);  
+strishex_s(const char *str, rsize_t slen);
 
 
-/* validate lower case */ 
+/* validate lower case */
 extern boolean_t
-strislowercase_s(const char *str, rsize_t slen); 
+strislowercase_s(const char *str, rsize_t slen);
 
 
-/* validate mixed case */ 
+/* validate mixed case */
 extern boolean_t
-strismixedcase_s(const char *str, rsize_t slen); 
+strismixedcase_s(const char *str, rsize_t slen);
 
 
-/* validate password */ 
+/* validate password */
 extern boolean_t
-strispassword_s(const char *str, rsize_t slen);  
+strispassword_s(const char *str, rsize_t slen);
 
 
-/* validate upper case */ 
+/* validate upper case */
 extern boolean_t
-strisuppercase_s(const char *str, rsize_t slen); 
+strisuppercase_s(const char *str, rsize_t slen);
 
 
 /* returns  a pointer to the last occurrence of c in s1 */
@@ -185,13 +185,13 @@ strlastchar_s(char *str, rsize_t smax, char c, char **first);
 
 /* returns index of last difference */
 extern  errno_t
-strlastdiff_s(const char *dest, rsize_t dmax, 
+strlastdiff_s(const char *dest, rsize_t dmax,
               const char *src, rsize_t *index);
 
 
 /* left justify */
 extern errno_t
-strljustify_s(char *dest, rsize_t dmax); 
+strljustify_s(char *dest, rsize_t dmax);
 
 
 /* fitted string concatenate */
@@ -214,62 +214,61 @@ extern rsize_t
 strnterminate_s (char *s, rsize_t smax);
 
 
-/* get pointer to first occurrence from set of char */ 
+/* get pointer to first occurrence from set of char */
 extern errno_t
 strpbrk_s(char *dest, rsize_t dmax,
-          char *src,  rsize_t slen, char **first);  
+          char *src,  rsize_t slen, char **first);
 
 
 extern errno_t
 strfirstsame_s(const char *dest, rsize_t dmax,
-               const char *src,  rsize_t *index); 
+               const char *src,  rsize_t *index);
 
-extern errno_t 
+extern errno_t
 strlastsame_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *index); 
+              const char *src, rsize_t *index);
 
 
-/* searches for a prefix */ 
+/* searches for a prefix */
 extern errno_t
 strprefix_s(const char *dest, rsize_t dmax, const char *src);
 
 
-/* removes leading and trailing white space */ 
+/* removes leading and trailing white space */
 extern errno_t
-strremovews_s(char *dest, rsize_t dmax); 
+strremovews_s(char *dest, rsize_t dmax);
 
 
-/* computes inclusive prefix length */ 
+/* computes inclusive prefix length */
 extern errno_t
 strspn_s(const char *dest, rsize_t dmax,
-         const char *src,  rsize_t slen, rsize_t *count); 
+         const char *src,  rsize_t slen, rsize_t *count);
 
 
-/* find a substring */ 
+/* find a substring */
 extern errno_t
-strstr_s(char *dest, rsize_t dmax, 
+strstr_s(char *dest, rsize_t dmax,
          const char *src, rsize_t slen, char **substring);
 
 
 /* string tokenizer */
-extern char * 
+extern char *
 strtok_s(char *s1, rsize_t *s1max, const char *src, char **ptr);
 
 
-/* convert string to lowercase */ 
+/* convert string to lowercase */
 extern errno_t
-strtolowercase_s(char *str, rsize_t slen); 
+strtolowercase_s(char *str, rsize_t slen);
 
 
-/* convert string to uppercase */ 
+/* convert string to uppercase */
 extern errno_t
-strtouppercase_s(char *str, rsize_t slen); 
+strtouppercase_s(char *str, rsize_t slen);
 
 
 /* zero an entire string with nulls */
 extern errno_t
-strzero_s(char *dest, rsize_t dmax); 
+strzero_s(char *dest, rsize_t dmax);
 
 
 #endif   /* __SAFE_STR_LIB_H__ */
-

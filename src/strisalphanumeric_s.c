@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,19 +33,19 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strisalphanumeric_s
  *
  * SYNOPSIS
  *    #include "safe_dest_lib.h"
- *    boolean_t 
+ *    boolean_t
  *    strisalphanumeric_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
- *    This function checks if the entire string contains 
+ *    This function checks if the entire string contains
  *    alphanumerics.  The scanning stops at the first null
- *    or after dmax characters. 
+ *    or after dmax characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -59,41 +59,41 @@
  *
  * OUTPUT PARAMETERS
  *    none
- * 
+ *
  * Runtime-condestaints
  *    dest shall not be a null pointer.
  *    dmax shall not equal zero.
  *    dmax shall not be greater than RSIZE_MAX_STR.
  *
  * RETURN VALUE
- *    TRUE      dest is alphanumeric 
+ *    TRUE      dest is alphanumeric
  *    FALSE     dest is not alphanumeric or an error occurred
- * 
- * ALSO SEE 
- *    strisascii_s(), strisdigit_s(), strishex_s(), strislowercase_s(), 
+ *
+ * ALSO SEE
+ *    strisascii_s(), strisdigit_s(), strishex_s(), strislowercase_s(),
  *    strismixedcase_s(), strisuppercase_s()
- * 
+ *
  */
 boolean_t
 strisalphanumeric_s (const char *dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strisalphanumeric_s: "
-                   "dest is null", 
+                   "dest is null",
                    NULL, ESNULLP);
         return (FALSE);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strisalphanumeric_s: "
-                   "dmax is 0", 
+                   "dmax is 0",
                    NULL, ESZEROL);
         return (FALSE);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strisalphanumeric_s: "
-                   "dmax exceeds max", 
+                   "dmax exceeds max",
                    NULL, ESLEMAX);
         return (FALSE);
     }
@@ -116,4 +116,3 @@ strisalphanumeric_s (const char *dest, rsize_t dmax)
 
     return (TRUE);
 }
-

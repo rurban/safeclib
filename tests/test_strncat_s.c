@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strncat_s  
+ * test_strncat_s
  *
  *
  *------------------------------------------------------------------
@@ -79,13 +79,13 @@ int main()
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
-    } 
+    }
 
 /*--------------------------------------------------*/
-    
+
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
-    
+
     rc = strncat_s(str1, 2, str2, LEN);
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -95,7 +95,7 @@ int main()
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
-    } 
+    }
 
 /*--------------------------------------------------*/
 
@@ -131,10 +131,10 @@ int main()
     }
 
 /*--------------------------------------------------*/
-    
+
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
-    
+
     rc = strncat_s(str1, 50, str2, LEN);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -149,7 +149,7 @@ int main()
 
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
-/* TR example */ 
+/* TR example */
 
     strcpy(str1, "good");
     strcpy(str2, "bye");
@@ -167,7 +167,7 @@ int main()
     }
 
 /*--------------------------------------------------*/
-/* TR example */ 
+/* TR example */
 
     strcpy(str1, "hello");
 
@@ -220,4 +220,3 @@ int main()
 
     return (0);
 }
-

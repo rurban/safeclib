@@ -124,7 +124,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    /*   K - k ==  -32  */ 
+    /*   K - k ==  -32  */
     strcpy (str1, "Keep it simple");
     strcpy (str2, "keep it simple");
 
@@ -147,7 +147,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    /*   p - P ==  32  */ 
+    /*   p - P ==  32  */
     strcpy (str1, "keep it simple");
     strcpy (str2, "keeP it simple");
 
@@ -240,4 +240,3 @@ int main()
 
     return (0);
 }
-

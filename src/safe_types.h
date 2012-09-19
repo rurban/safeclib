@@ -4,7 +4,7 @@
  * March 2007, Bo Berry
  *
  * Copyright (c) 2007-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -38,15 +38,15 @@
 
 
 /*
- * Abstract header file for portability. 
- */ 
+ * Abstract header file for portability.
+ */
 
 #ifndef TRUE
-#define TRUE   ( 1 )  
+#define TRUE   ( 1 )
 #endif
 
 #ifndef FALSE
-#define FALSE  ( 0 )  
+#define FALSE  ( 0 )
 #endif
 
 #ifndef NULL
@@ -91,22 +91,22 @@ typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
 #endif
 
-#if POINTER_BIT == 64 
-#ifndef intptr_t 
-typedef long long intptr_t; 
+#if POINTER_BIT == 64
+#ifndef intptr_t
+typedef long long intptr_t;
 #endif
 
-#ifndef uintptr_t 
-typedef unsigned long long uintptr_t; 
+#ifndef uintptr_t
+typedef unsigned long long uintptr_t;
 #endif
 
-#else 
+#else
 
-#ifndef intptr_t 
-typedef signed int intptr_t; 
+#ifndef intptr_t
+typedef signed int intptr_t;
 #endif
-#ifndef uintptr_t 
-typedef unsigned int uintptr_t; 
+#ifndef uintptr_t
+typedef unsigned int uintptr_t;
 #endif
 
 #endif

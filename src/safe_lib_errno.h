@@ -4,7 +4,7 @@
  * Octobber 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,10 +33,10 @@
 #define __SAFE_LIB_ERRNO_H__
 
 /*
- * CONFIGURE: If these errno codes are added to errno.h, then 
+ * CONFIGURE: If these errno codes are added to errno.h, then
  * enable this macro
- */ 
-/* #define USING_ERRNO_H  */ 
+ */
+/* #define USING_ERRNO_H  */
 
 #ifdef USING_ERRNO_H
 
@@ -44,53 +44,52 @@
 
 #else
 
-/* 
+/*
  * Safe Lib specific errno codes.  These can be added to the errno.h file
- * if desired. 
+ * if desired.
  */
-#undef  ESNULLP 
-#define ESNULLP         ( 400 )       /* null ptr                    */  
+#undef  ESNULLP
+#define ESNULLP         ( 400 )       /* null ptr                    */
 
 #undef  ESZEROL
-#define ESZEROL         ( 401 )       /* length is zero              */  
+#define ESZEROL         ( 401 )       /* length is zero              */
 
-#undef  ESLEMIN  
-#define ESLEMIN         ( 402 )       /* length is below min         */  
+#undef  ESLEMIN
+#define ESLEMIN         ( 402 )       /* length is below min         */
 
-#undef  ESLEMAX 
-#define ESLEMAX         ( 403 )       /* length exceeds max          */  
+#undef  ESLEMAX
+#define ESLEMAX         ( 403 )       /* length exceeds max          */
 
-#undef  ESOVRLP 
-#define ESOVRLP         ( 404 )       /* overlap undefined           */ 
+#undef  ESOVRLP
+#define ESOVRLP         ( 404 )       /* overlap undefined           */
 
-#undef  ESEMPTY 
-#define ESEMPTY         ( 405 )       /* empty string                */ 
+#undef  ESEMPTY
+#define ESEMPTY         ( 405 )       /* empty string                */
 
-#undef  ESNOSPC 
-#define ESNOSPC         ( 406 )       /* not enough space for s2     */  
+#undef  ESNOSPC
+#define ESNOSPC         ( 406 )       /* not enough space for s2     */
 
-#undef  ESUNTERM 
-#define ESUNTERM        ( 407 )       /* unterminated string         */  
+#undef  ESUNTERM
+#define ESUNTERM        ( 407 )       /* unterminated string         */
 
-#undef  ESNODIFF 
-#define ESNODIFF        ( 408 )       /* no difference               */ 
+#undef  ESNODIFF
+#define ESNODIFF        ( 408 )       /* no difference               */
 
 #undef  ESNOTFND
-#define ESNOTFND        ( 409 )       /* not found                   */ 
+#define ESNOTFND        ( 409 )       /* not found                   */
 
-#endif 
-
-
-/* errno_t may or may not be defined in errno.h */ 
-#ifndef errno_t
-typedef int errno_t;  
 #endif
 
-/* EOK may or may not be defined in errno.h */ 
-#ifndef EOK 
+
+/* errno_t may or may not be defined in errno.h */
+#ifndef errno_t
+typedef int errno_t;
+#endif
+
+/* EOK may or may not be defined in errno.h */
+#ifndef EOK
 #define EOK   0
 #endif
 
 
 #endif /* __SAFE_LIB_ERRNO_H__ */
-

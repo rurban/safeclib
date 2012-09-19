@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,9 +33,9 @@
 #include "safe_mem_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    memzero_s 
+ *    memzero_s
  *
  * SYNOPSIS
  *    #include "safe_mem_lib.h"
@@ -45,7 +45,7 @@
  * DESCRIPTION
  *    Zeros len bytes starting at dest.
  *
- * EXTENSION TO  
+ * EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -56,12 +56,12 @@
  *    len          number of bytes to be zeroed
  *
  * OUTPUT PARAMETERS
- *    dest      is updated 
- * 
+ *    dest      is updated
+ *
  * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.                
+ *    dest shall not be a null pointer.
  *    len shall not be 0 nor greater than RSIZE_MAX_MEM.
- *    If there is a runtime constraint, the operation is not performed. 
+ *    If there is a runtime constraint, the operation is not performed.
  *
  * RETURN VALUE
  *    EOK        successful operation
@@ -70,31 +70,31 @@
  *    ESLEMAX    length exceeds max limit
  *
  * ALSO SEE
- *    memzero16_s(), memzero32_s() 
- * 
+ *    memzero16_s(), memzero32_s()
+ *
  */
 errno_t
 memzero_s (void *dest, rsize_t len)
 {
     if (dest == NULL) {
-        invoke_safe_mem_constraint_handler("memzero_s: dest is null", 
+        invoke_safe_mem_constraint_handler("memzero_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (len == 0) {
-        invoke_safe_mem_constraint_handler("memzero_s: len is 0", 
+        invoke_safe_mem_constraint_handler("memzero_s: len is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (len > RSIZE_MAX_MEM) {
-        invoke_safe_mem_constraint_handler("memzero_s: len exceeds max", 
+        invoke_safe_mem_constraint_handler("memzero_s: len exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    /* 
+    /*
      * mem_prim_set(dest, len, 0xA5);
      * mem_prim_set(dest, len, 0x5A);
      */
@@ -102,4 +102,3 @@ memzero_s (void *dest, rsize_t len)
 
     return (EOK);
 }
-

@@ -130,7 +130,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    /* compare to legacy */ 
+    /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
@@ -153,7 +153,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    /* compare to legacy */ 
+    /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
@@ -165,19 +165,19 @@ int main()
     strcpy(str1, "keep it all together");
     *str2 = '\0';
 
-    /* str2 being empty, must return str1 */  
+    /* str2 being empty, must return str1 */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
 
-    if (sub != str1) { 
+    if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
     }
 
-    /* compare to legacy */ 
+    /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
@@ -206,7 +206,7 @@ int main()
     strcpy(str1, "keep it all together");
     strcpy(str2, "eep it");
 
-    /* substring in the middle */ 
+    /* substring in the middle */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
@@ -223,7 +223,7 @@ int main()
     strcpy(str1, "keep it all together");
     strcpy(str2, "ethe");
 
-    /* substring in the middle */ 
+    /* substring in the middle */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
@@ -243,7 +243,7 @@ int main()
     len1 = strlen(str1);
     len2 = strlen(str2);
 
-    /* substring at the end */ 
+    /* substring at the end */
     rc = strcasestr_s(str1, len1, str2, len2, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
@@ -255,12 +255,12 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    /* compare to legacy */ 
+    /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
-    } 
+    }
 
 /*--------------------------------------------------*/
 
@@ -293,7 +293,7 @@ int main()
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
-  
+
     rc = strcasestr_s(str1, 3, str2, LEN, &sub);
     if (rc != ESNOTFND) {
         printf("%s %u  Error rc=%d \n",
@@ -391,7 +391,7 @@ int main()
     strcpy(str1, "keep it all together");
     strcpy(str2, "EEP");
 
-    /* validate */ 
+    /* validate */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
     if (rc != EOK) {
         printf("%s %u  Error rc=%u \n",
@@ -403,7 +403,7 @@ int main()
                      __FUNCTION__, __LINE__, rc);
     }
 
-    /* compare to legacy */ 
+    /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
@@ -414,4 +414,3 @@ int main()
 
     return (0);
 }
-

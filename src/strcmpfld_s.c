@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,23 +30,23 @@
  */
 
 #include "safe_str_lib.h"
-#include "safe_str_constraint.h" 
+#include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strcmpfld_s 
+ *    strcmpfld_s
  *
- * SYNOPSIS 
+ * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strcmpfld_s(const char *dest, rsize_t dmax,
  *                const char *src, int *indicator)
  *
  * DESCRIPTION
- *    Compares the character array pointed to by src to the character array 
+ *    Compares the character array pointed to by src to the character array
  *    pointed to by dest for dmax characters.  The null terminator does not
- *    stop the comparison.  
+ *    stop the comparison.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -57,22 +57,22 @@
  *    dest       pointer to character array to compare against
  *
  *    dmax       restricted maximum length of dest.  The length is
- *                used for the comparison of src against dest. 
+ *                used for the comparison of src against dest.
  *
  *    src        pointer to the character array to be compared to dest
  *
- *    indicator  pointer to result indicator, greater than, equal 
+ *    indicator  pointer to result indicator, greater than, equal
  *               to or less than 0, if the character array pointed
  *                to by dest is greater than, equal to or less
  *                than the character array pointed to by src.
- * OUTPUT 
+ * OUTPUT
  *    indicator  updated result indicator
  *
  * RUNTIME CONSTRAINTS
  *    Neither dest nor src shall be a null pointer.
  *    indicator shall not be a null pointer.
  *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR 
+ *    dmax shall not be greater than RSIZE_MAX_STR
  *
  * RETURN VALUE
  *    indicator, when the return code is OK
@@ -81,57 +81,57 @@
  *        <0   dest less than src
  *
  *    EOK
- *    ESNULLP     pointer was null 
- *    ESZEROL     length was zero 
- *    ESLEMAX     length exceeded max 
+ *    ESNULLP     pointer was null
+ *    ESZEROL     length was zero
+ *    ESLEMAX     length exceeded max
  *
- * ALSO SEE 
+ * ALSO SEE
  *    strcpyfld_s(), strcpyfldin_s(), strcpyfldout_s()
- * 
+ *
  */
-errno_t 
+errno_t
 strcmpfld_s (const char *dest, rsize_t dmax,
              const char *src, int *indicator)
 {
     if (indicator == NULL) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: indicator is null", 
+        invoke_safe_str_constraint_handler("strcmpfld_s: indicator is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *indicator = 0;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: dest is null", 
+        invoke_safe_str_constraint_handler("strcmpfld_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (src == NULL) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: src is null", 
+        invoke_safe_str_constraint_handler("strcmpfld_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strcmpfld_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strcmpfld_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    /* compare for dmax charactrers, not the null! */ 
+    /* compare for dmax charactrers, not the null! */
     while (dmax) {
 
         if (*dest != *src) {
             break;
         }
 
-        dest++; 
+        dest++;
         src++;
         dmax--;
     }
@@ -139,4 +139,3 @@ strcmpfld_s (const char *dest, rsize_t dmax,
     *indicator = *dest - *src;
     return (EOK);
 }
-

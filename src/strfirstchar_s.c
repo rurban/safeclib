@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,22 +30,22 @@
  */
 
 #include "safe_str_lib.h"
-#include "safe_str_constraint.h" 
+#include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strfirstchar_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strfirstchar_s(char *dest, rsize_t dmax, char c, char **first)
  *
  * DESCRIPTION
- *    This function returns a pointer to the first occurrence 
- *    of character c in dest. The scanning stops at the first null 
- *    or after dmax characters. 
+ *    This function returns a pointer to the first occurrence
+ *    of character c in dest. The scanning stops at the first null
+ *    or after dmax characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -55,14 +55,14 @@
  * INPUT PARAMETERS
  *    dest    pointer to string to compare against
  *
- *    dmax    restricted maximum length of string 
+ *    dmax    restricted maximum length of string
  *
  *    c       character to locate
  *
- *    first   returned pointer to first occurrence of c 
+ *    first   returned pointer to first occurrence of c
  *
  * OUTPUT PARAMETERS
- *    first   updated pointer to first occurrence of c 
+ *    first   updated pointer to first occurrence of c
  *
  * RUNTIME CONSTRAINTS
  *    dest shall not be a null pointer.
@@ -71,43 +71,43 @@
  *    dmax shall not be greater than RSIZE_MAX_STR
  *
  * RETURN VALUE
- *    pointer to first occurence of c, NULL if not found  
+ *    pointer to first occurence of c, NULL if not found
  *
  *    EOK         pointer to first occurrence is returned
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
- * 
+ *
  * ALSO SEE
- *    strlastchar_s(), strfirstdiff_s(), strfirstsame_s(), 
- *    strlastdiff_s(), strlastsame_s(), 
- * 
+ *    strlastchar_s(), strfirstdiff_s(), strfirstsame_s(),
+ *    strlastdiff_s(), strlastsame_s(),
+ *
  */
-errno_t 
+errno_t
 strfirstchar_s (char *dest, rsize_t dmax, char c, char **first)
 {
 
     if (first == NULL) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: index is null", 
+        invoke_safe_str_constraint_handler("strfirstchar_s: index is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *first = NULL;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: dest is null", 
+        invoke_safe_str_constraint_handler("strfirstchar_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0 ) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strfirstchar_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strfirstchar_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -119,9 +119,8 @@ strfirstchar_s (char *dest, rsize_t dmax, char c, char **first)
             return (EOK);
         }
         dest++;
-        dmax--; 
+        dmax--;
     }
 
     return (ESNOTFND);
 }
-

@@ -39,7 +39,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    len = 5; 
+    len = 5;
     rc = strcpyfldin_s(str1, len, NULL, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -50,8 +50,8 @@ int main()
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        } 
-    } 
+        }
+    }
 
 /*--------------------------------------------------*/
 
@@ -96,7 +96,7 @@ int main()
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     strcpy(str2, "01234567890123456789");
 
-    len = 1; 
+    len = 1;
     rc = strcpyfldin_s(str1, len, str2, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -153,8 +153,8 @@ int main()
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
-    /* same string in dest and src */ 
-    len = LEN; 
+    /* same string in dest and src */
+    len = LEN;
     rc = strcpyfldin_s(str1, len, str1, len);
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -165,15 +165,15 @@ int main()
         if (str1[i] != '\0') {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-        } 
-    } 
+        }
+    }
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it simple for best results ");
-    len = strlen(str1); 
+    len = strlen(str1);
 
-    /* overlap */ 
+    /* overlap */
     rc = strcpyfldin_s(&str1[0], len, &str1[5], len);
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -184,15 +184,15 @@ int main()
         if (str1[i] != '\0') {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-        } 
-    } 
+        }
+    }
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it simple for best results ");
     len = 20;
 
-    /* overlap */ 
+    /* overlap */
     rc = strcpyfldin_s(&str1[10], len, &str1[0], len);
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -209,7 +209,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it simple");
-    len = strlen(str1); 
+    len = strlen(str1);
 
     strcpy(str2, "KEEP IT SIMPLE PLEASE");
 
@@ -223,13 +223,13 @@ int main()
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-        } 
-    } 
+        }
+    }
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "always keep it simple");
-    len = strlen(str1);    
+    len = strlen(str1);
 
     strcpy(str2, "keep it simple");
     slen = strlen(str2);
@@ -244,11 +244,10 @@ int main()
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-        }            
-    }   
+        }
+    }
 
 /*--------------------------------------------------*/
 
     return (0);
 }
-

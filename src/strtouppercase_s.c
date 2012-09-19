@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,22 +33,22 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strtouppercase_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t 
+ *    errno_t
  *    strlouppercase_s(char *dest, rsize_t dmax)
  *
  * DESCRIPTION
  *    Scans the string converting lowercase characters to
  *    uppercase, leaving all other characters unchanged.
- *    The scanning stops at the first null or after dmax 
- *    characters. 
+ *    The scanning stops at the first null or after dmax
+ *    characters.
  *
- * Extenstion to:  
+ * Extenstion to:
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -73,29 +73,29 @@
  *    ESLEMAX    length exceeds max limit
  *
  * ALSO SEE
- *    strtolowercase_s() 
- * 
+ *    strtolowercase_s()
+ *
  */
-errno_t 
+errno_t
 strtouppercase_s (char *dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strtouppercase_s: "
-                   "dest is null", 
+                   "dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strtouppercase_s: "
-                   "dmax is 0", 
+                   "dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strtouppercase_s: "
-                   "dmax exceeds max", 
+                   "dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -111,4 +111,3 @@ strtouppercase_s (char *dest, rsize_t dmax)
 
     return (EOK);
 }
-
