@@ -29,12 +29,12 @@
  *------------------------------------------------------------------
  */
 
-#include <stdlib.h>
 #include "mem_primitives_lib.h"
+#include "safeclib_private.h"
 
 /*
  * mem_primitives_lib.c  provides unguarded memory routines
- * that are used by the safe_mem_ library.   These routines
+ * that are used by the safe_mem_library.   These routines
  * may also be used by an application, but the application
  * is responsible for all parameter validation and alignment.
  */

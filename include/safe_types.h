@@ -1,9 +1,10 @@
 /*------------------------------------------------------------------
- * safe_types.h
+ * safe_types.h - C99 std types & defs or Linux kernel equivalents
  *
  * March 2007, Bo Berry
+ * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2007-2011 by Cisco Systems, Inc
+ * Copyright (c) 2007-2012 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -29,108 +30,110 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __SAFE_TYPES__
-#define __SAFE_TYPES__
+#ifndef __SAFE_TYPES_H__
+#define __SAFE_TYPES_H__
 
-#include <stdlib.h>
-
-#include "safe_limits.h"
-
-
-/*
- * Abstract header file for portability.
+/* Supported environments are:
+ * - Linux kerenl
+ * - C99 std. C library compiler
+ * other environments require a custom header to be included, which can be
+ * done automatically via the build system.
  */
 
-#ifndef TRUE
-#define TRUE   ( 1 )
+#ifdef __KERNEL__
+/* linux kernel environment */
+
+/*#warning Compiling for Linux kernel*/
+#include <linux/stddef.h>
+#include <linux/types.h>
+#include <linux/errno.h>
+#define LACKS_ERRNO_T    1
+#define LACKS_BOOLEAN_T  1
+
+/* C99 standard c library compiler support */
+#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+
+/*#warning Compiling for standard C library*/
+#include <stdlib.h>
+#include <stddef.h>
+#include <inttypes.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <limits.h>
+#define LACKS_BOOLEAN_T  1
+
+#endif /* __KERNEL__ */
+
+/*
+ * Note: We only redefine types that we use in the library here, don't add
+ * new types or defines if they are not used in the library.
+ */
+
+#ifdef LACKS_ERRNO_T
+typedef int errno_t;
 #endif
 
-#ifndef FALSE
-#define FALSE  ( 0 )
+/*
+ * TODO: eventually do a search and replace of the code and remove
+ * references to boolean_t in favor of the C99 standard _Bool or bool
+ */
+#ifdef LACKS_BOOL
+typedef unsigned char bool;
 #endif
 
-#ifndef NULL
-#define NULL ((void *) 0)
+#ifdef LACKS_BOOLEAN_T
+typedef bool boolean_t;
 #endif
 
-#ifndef boolean_t
-typedef unsigned char boolean_t;
-#endif
-
-
-
-#ifndef int8_t
-typedef signed char int8_t;
-#endif
-
-#ifndef int16_t
-typedef short int16_t;
-#endif
-
-#ifndef int32_t
+#ifdef LACKS_INT32_T
 typedef int int32_t;
 #endif
 
-#ifndef uchar_t
-typedef unsigned char uchar_t;
-#endif
-
-#ifndef uint8_t
+#ifdef LACKS_UINT8_T
 typedef unsigned char uint8_t;
 #endif
 
-#ifndef uint16_t
+#ifdef LACKS_UINT16_T
 typedef unsigned short uint16_t;
 #endif
 
-#ifndef uint32_t
+#ifdef LACKS_UINT32_T
 typedef unsigned int uint32_t;
 #endif
 
-#ifndef uint64_t
-typedef unsigned long long uint64_t;
-#endif
-
+#ifdef LACKS_UINTPTR_T
 #if POINTER_BIT == 64
-#ifndef intptr_t
-typedef long long intptr_t;
-#endif
-
-#ifndef uintptr_t
 typedef unsigned long long uintptr_t;
-#endif
-
 #else
-
-#ifndef intptr_t
-typedef signed int intptr_t;
-#endif
-#ifndef uintptr_t
 typedef unsigned int uintptr_t;
-#endif
+#endif /* POINTER_BIT */
+#endif /* LACKS_UINTPTR_T */
 
-#endif
+/*
+ * The following definitions are not part of C99 so we always test for them.
+ */
 
+/* TODO: eventually do a search and replace for TRUE & FALSE and change to the
+   C99 'true' & 'false' */
+#ifndef TRUE
+#  ifndef true
+#    define TRUE   ( 1 )
+#  else
+#    define TRUE   ( true )
+#  endif /* true */
+#endif /* TRUE */
 
-#ifndef ushort
-typedef unsigned short ushort;
-#endif
+#ifndef FALSE
+#  ifndef false
+#    define FALSE  ( 0 )
+#  else
+#    define FALSE  ( false )
+#  endif /* false */
+#endif /* FALSE */
 
-#ifndef int_t
-typedef int int_t;
-#endif
+#ifndef NULL
+#define NULL ((void *) 0)
+#endif /* NULL */
 
-#ifndef uint_t
-typedef unsigned int uint_t;
-#endif
-
-#ifndef ulong
-typedef unsigned long ulong;
-#endif
-
-#ifndef ulonglong
-typedef unsigned long long ullong;
-#endif
-
-
-#endif /* __SAFE_TYPES__ */
+#endif /* __SAFE_TYPES_H__ */

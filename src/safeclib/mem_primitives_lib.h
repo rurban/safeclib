@@ -29,13 +29,10 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __MEM_PRIMITIVES_LIB__
-#define __MEM_PRIMITIVES_LIB__
+#ifndef __MEM_PRIMITIVES_LIB_H__
+#define __MEM_PRIMITIVES_LIB_H__
 
-#include "safe_types.h"
 #include "safe_lib.h"
-
-
 
 /*
  * These are prototypes for _unguarded_ memory routines.  The caller must
@@ -74,4 +71,4 @@ extern void
 mem_prim_set32(uint32_t *dest, uint32_t dmax, uint32_t value);
 
 
-#endif  /* __MEM_PRIMITIVES_LIB__ */
+#endif  /* __MEM_PRIMITIVES_LIB_H__ */

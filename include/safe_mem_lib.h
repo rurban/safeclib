@@ -2,8 +2,9 @@
  * safe_mem_lib.h -- Safe C Library Memory APIs
  *
  * October 2008, Bo Berry
+ * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc.
+ * Copyright (c) 2008-2012 by Cisco Systems, Inc.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -32,19 +33,10 @@
 #ifndef __SAFE_MEM_LIB_H__
 #define __SAFE_MEM_LIB_H__
 
-
-/* Thi include file is used to promote portability to other environments */
 #include "safe_lib.h"
 
-
-#include "mem_primitives_lib.h"
-
-
-/*
- * CONFIGURE: Adjust the RSIZE_MAX_MEM memory macros
- */
 #ifndef RSIZE_MAX_MEM
-#define RSIZE_MAX_MEM      ( 0xFFFFFFF )
+#define RSIZE_MAX_MEM      ( 256UL << 20 )     /* 256MB */
 #endif
 #ifndef RSIZE_MAX_MEM16
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )

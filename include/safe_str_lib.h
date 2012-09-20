@@ -32,11 +32,7 @@
 #ifndef __SAFE_STR_LIB_H__
 #define __SAFE_STR_LIB_H__
 
-
-/* This include file is used to promote portability to other environments */
 #include "safe_lib.h"
-
-
 
 /*
  * The shortest string is a null string!!
@@ -46,17 +42,13 @@
 #endif
 
 
-/*
- * CONFIGURE: maximum sring length
- */
+/* maximum sring length */
 #ifndef RSIZE_MAX_STR
-#define RSIZE_MAX_STR      ( 4096 )
+#define RSIZE_MAX_STR      ( 4UL << 10 )      /* 4KB */
 #endif
 
 
-/*
- * CONFIGURE: The makeup of a password
- */
+/* The makeup of a password */
 #define SAFE_STR_MIN_LOWERCASE     ( 2 )
 #define SAFE_STR_MIN_UPPERCASE     ( 2 )
 #define SAFE_STR_MIN_NUMBERS       ( 1 )

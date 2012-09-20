@@ -31,12 +31,7 @@
 
 #include "safe_lib.h"
 #include "safe_mem_constraint.h"
-
-
-/*
- * CONFIGURE: This file is conditionally compiled for the platform specific
- * constraint handler.
- */
+#include "safeclib_private.h"
 
 
 /**
@@ -75,36 +70,12 @@ invoke_safe_mem_constraint_handler (const char *msg,
                                  void *ptr,
                                  errno_t error)
 {
-#if defined YOUR_OS
-/*
- * CONFIGURE: Create your platform specific constraint handler.
- */
     if (msg) {
-        fprintf(stderr,
-                "%%SAFE_MEM CONSTRAINT: %s, error code=%u \n",
+       slprintf("%%SAFE_MEM CONSTRAINT: %s, error code=%u \n",
                 msg, error);
     } else {
-        fprintf(stderr,
-                "%%SAFE_MEM CONSTRAINT: Null message, error code=%u \n",
+        slprintf("%%SAFE_MEM CONSTRAINT: Null message, error code=%u \n",
                 error);
     }
-
-#elif defined MAC_OS_X
-    /*
-     * For Mac testing, write the constraint to stderr.
-     */
-    if (msg) {
-        fprintf(stderr,
-                "%%SAFE_MEM CONSTRAINT: %s, error code=%u \n",
-                msg, error);
-    } else {
-        fprintf(stderr,
-                "%%SAFE_MEM CONSTRAINT: Null message, error code=%u \n",
-                error);
-    }
-
-#else
-#error Safe mem lib environment not defined.
-#endif
     return;
 }

@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -99,23 +100,23 @@ strcpy_s (char *dest, rsize_t dmax, const char *src)
     if (dest == NULL) {
         invoke_safe_str_constraint_handler("strcpy_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strcpy_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strcpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     if (src == NULL) {
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 #else
@@ -123,11 +124,11 @@ strcpy_s (char *dest, rsize_t dmax, const char *src)
 #endif
         invoke_safe_str_constraint_handler("strcpy_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dest == src) {
-        return (EOK);
+        return RCNEGATE(EOK);
     }
 
     /* hold base of dest in case src was not copied */
@@ -142,16 +143,16 @@ strcpy_s (char *dest, rsize_t dmax, const char *src)
                 handle_error(orig_dest, orig_dmax, "strcpy_s: "
                              "overlapping objects",
                              ESOVRLP);
-                return (ESOVRLP);
+                return RCNEGATE(ESOVRLP);
             }
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
-                return (EOK);
+                return RCNEGATE(EOK);
             }
 
             dmax--;
@@ -167,16 +168,16 @@ strcpy_s (char *dest, rsize_t dmax, const char *src)
                 handle_error(orig_dest, orig_dmax, "strcpy_s: "
                       "overlapping objects",
                       ESOVRLP);
-                return (ESOVRLP);
+                return RCNEGATE(ESOVRLP);
             }
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
-                return (EOK);
+                return RCNEGATE(EOK);
             }
 
             dmax--;
@@ -192,5 +193,6 @@ strcpy_s (char *dest, rsize_t dmax, const char *src)
     handle_error(orig_dest, orig_dmax, "strcpy_s: not "
                  "enough space for src",
                  ESNOSPC);
-    return (ESNOSPC);
+    return RCNEGATE(ESNOSPC);
 }
+EXPORT_SYMBOL(strcpy_s);

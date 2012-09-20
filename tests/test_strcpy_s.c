@@ -5,25 +5,20 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "safe_str_lib.h"
-
-
-#define debug_printf   printf
+#include "test_private.h"
 
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
+static char   str1[LEN];
+static char   str2[LEN];
 
-int main()
+int test_strcpy_s (void)
 {
     errno_t rc;
     uint32_t i;
     int32_t  ind;
-    char   str1[LEN];
-    char   str2[LEN];
 
 /*--------------------------------------------------*/
 

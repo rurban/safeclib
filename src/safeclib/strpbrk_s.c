@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -96,44 +97,44 @@ strpbrk_s (char *dest, rsize_t dmax,
     if (first == NULL) {
         invoke_safe_str_constraint_handler("strpbrk_s: count is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
     *first = NULL;
 
     if (dest == NULL) {
         invoke_safe_str_constraint_handler("strpbrk_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (src == NULL) {
         invoke_safe_str_constraint_handler("strpbrk_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dmax == 0 ) {
         invoke_safe_str_constraint_handler("strpbrk_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strpbrk_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     if (slen == 0 ) {
         invoke_safe_str_constraint_handler("strpbrk_s: slen is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (slen > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     /*
@@ -148,7 +149,7 @@ strpbrk_s (char *dest, rsize_t dmax,
             /* check for a match with the substring */
             if (*dest == *ps) {
                 *first = dest;
-                return (EOK);
+                return RCNEGATE(EOK);
             }
             ps++;
             len--;
@@ -157,5 +158,6 @@ strpbrk_s (char *dest, rsize_t dmax,
         dmax--;
     }
 
-    return (ESNOTFND);
+    return RCNEGATE(ESNOTFND);
 }
+EXPORT_SYMBOL(strpbrk_s);

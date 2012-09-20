@@ -44,5 +44,4 @@ extern void invoke_safe_mem_constraint_handler(
                            void *ptr,
                            errno_t error);
 
-
 #endif /* __SAFE_MEM_CONSTRAINT_H__ */

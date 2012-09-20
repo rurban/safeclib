@@ -5,25 +5,18 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "safe_str_lib.h"
-
-
-#define debug_printf   printf
-
+#include "test_private.h"
 
 #define LEN   ( 128 )
 
+static char   str1[LEN];
+static char   str2[LEN];
 
-int main()
+int test_strncat_s (void)
 {
     errno_t rc;
     int32_t ind;
-    char   str1[LEN];
-    char   str2[LEN];
 
 /*--------------------------------------------------*/
 

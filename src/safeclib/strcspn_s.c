@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -97,44 +98,44 @@ strcspn_s (const char *dest, rsize_t dmax,
     if (count== NULL) {
         invoke_safe_str_constraint_handler("strcspn_s: count is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
     *count = 0;
 
     if (dest == NULL) {
         invoke_safe_str_constraint_handler("strcspn_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (src == NULL) {
         invoke_safe_str_constraint_handler("strcspn_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dmax == 0 ) {
         invoke_safe_str_constraint_handler("strcspn_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strcspn_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     if (slen == 0 ) {
         invoke_safe_str_constraint_handler("strcspn_s: slen is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (slen > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strcspn_s: slen exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     while (*dest && dmax) {
@@ -148,7 +149,7 @@ strcspn_s (const char *dest, rsize_t dmax,
         while (*scan2 && smax) {
 
              if (*dest == *scan2) {
-                 return (EOK);
+                 return RCNEGATE(EOK);
              }
              scan2++;
              smax--;
@@ -159,5 +160,6 @@ strcspn_s (const char *dest, rsize_t dmax,
         dmax--;
     }
 
-    return (EOK);
+    return RCNEGATE(EOK);
 }
+EXPORT_SYMBOL(strcspn_s);

@@ -30,6 +30,7 @@
  */
 
 #include "safe_mem_lib.h"
+#include "safeclib_private.h"
 #include "safe_mem_constraint.h"
 
 
@@ -102,44 +103,44 @@ memcmp_s (const void *dest, rsize_t dmax,
     if (diff == NULL) {
         invoke_safe_mem_constraint_handler("memcmp_s: diff is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
     *diff = -1;  /* default diff */
 
     if (dp == NULL) {
         invoke_safe_mem_constraint_handler("memcmp_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (sp == NULL) {
         invoke_safe_mem_constraint_handler("memcmp_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (dmax == 0) {
         invoke_safe_mem_constraint_handler("memcmp_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (dmax > RSIZE_MAX_MEM) {
         invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     if (smax == 0) {
         invoke_safe_mem_constraint_handler("memcmp_s: smax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (smax > dmax) {
         invoke_safe_mem_constraint_handler("memcmp_s: smax exceeds dmax",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     /*
@@ -147,7 +148,7 @@ memcmp_s (const void *dest, rsize_t dmax,
      */
     if (dp == sp) {
         *diff = 0;
-        return (EOK);
+        return (RCNEGATE(EOK));
     }
 
     /*
@@ -168,5 +169,6 @@ memcmp_s (const void *dest, rsize_t dmax,
         sp++;
     }
 
-    return (EOK);
+    return (RCNEGATE(EOK));
 }
+EXPORT_SYMBOL(memcmp_s);

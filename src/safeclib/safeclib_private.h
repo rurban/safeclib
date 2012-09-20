@@ -1,10 +1,9 @@
 /*------------------------------------------------------------------
- * safe_lib.h -- Safe C Library
+ * safeclib_private.h - Internal library references
  *
- * October 2008, Bo Berry
- * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2008-2012 by Cisco Systems, Inc
+ * Copyright (c) 2012 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -30,33 +29,46 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __SAFE_LIB_H__
-#define __SAFE_LIB_H__
+#ifndef __SAFECLIB_PRIVATE_H__
+#define __SAFECLIB_PRIVATE_H__
 
-#include "safe_types.h"
-#include "safe_lib_errno.h"
+#ifdef __KERNEL__
 
-/* C11 appendix K types - specific for bounds checking */
-#ifndef HAVE_RSIZE_T
-typedef size_t  rsize_t;
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/ctype.h>
+
+#define RCNEGATE(x)  ( -(x) )
+
+#define slprintf(...) printk(KERN_EMERG __VA_ARGS__)
+#define slabort()
+#ifdef DEBUG
+#define sldebug_printf(...) printk(KERN_DEBUG __VA_ARGS__)
 #endif
 
-/*
- * We depart from the standard and allow memory and string operations to
- * have different max sizes. See the repective safe_mem_lib.h or
- * safe_str_lib.h files.
- */
-#ifndef RSIZE_MAX
-#define RSIZE_MAX (~(rsize_t)0)
+#else  /* !__KERNEL__ */
+
+#ifndef LACKS_STDIO_H
+#include <stdio.h>
 #endif
 
-#ifndef HAVE_CONSTRAINT_HANDLER_T
-typedef void (*constraint_handler_t) (const char * /* msg */,
-                                      void *       /* ptr */,
-                                      errno_t      /* error */);
+#ifndef LACKS_CTYPE_H
+#include <ctype.h>
 #endif
 
-#include "safe_mem_lib.h"
-#include "safe_str_lib.h"
+#define EXPORT_SYMBOL(sym)
+#define RCNEGATE(x)
 
-#endif /* __SAFE_LIB_H__ */
+#define slprintf(...) fprintf(stderr, __VA_ARGS__)
+#define slabort()     abort()
+#ifdef DEBUG
+#define sldebug_printf(...) printf(__VA_ARGS__)
+#endif
+
+#endif /* __KERNEL__ */
+
+#ifndef sldebug_printf
+#define sldebug_printf(...)
+#endif
+
+#endif /* __SAFECLIB_PRIVATE_H__ */

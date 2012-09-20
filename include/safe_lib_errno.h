@@ -1,9 +1,10 @@
 /*------------------------------------------------------------------
  * safe_lib_errno.h -- Safe C Lib Error codes
  *
- * Octobber 2008, Bo Berry
+ * October 2008, Bo Berry
+ * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2012 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -32,64 +33,59 @@
 #ifndef __SAFE_LIB_ERRNO_H__
 #define __SAFE_LIB_ERRNO_H__
 
-/*
- * CONFIGURE: If these errno codes are added to errno.h, then
- * enable this macro
- */
-/* #define USING_ERRNO_H  */
-
-#ifdef USING_ERRNO_H
-
-#include "errno.h"
-
+#ifdef __KERNEL__
+#include <linux/errno.h>
 #else
+#include <errno.h>
+#endif /* __KERNEL__ */
 
 /*
  * Safe Lib specific errno codes.  These can be added to the errno.h file
  * if desired.
  */
-#undef  ESNULLP
+#ifndef ESNULLP
 #define ESNULLP         ( 400 )       /* null ptr                    */
-
-#undef  ESZEROL
-#define ESZEROL         ( 401 )       /* length is zero              */
-
-#undef  ESLEMIN
-#define ESLEMIN         ( 402 )       /* length is below min         */
-
-#undef  ESLEMAX
-#define ESLEMAX         ( 403 )       /* length exceeds max          */
-
-#undef  ESOVRLP
-#define ESOVRLP         ( 404 )       /* overlap undefined           */
-
-#undef  ESEMPTY
-#define ESEMPTY         ( 405 )       /* empty string                */
-
-#undef  ESNOSPC
-#define ESNOSPC         ( 406 )       /* not enough space for s2     */
-
-#undef  ESUNTERM
-#define ESUNTERM        ( 407 )       /* unterminated string         */
-
-#undef  ESNODIFF
-#define ESNODIFF        ( 408 )       /* no difference               */
-
-#undef  ESNOTFND
-#define ESNOTFND        ( 409 )       /* not found                   */
-
 #endif
 
+#ifndef ESZEROL
+#define ESZEROL         ( 401 )       /* length is zero              */
+#endif
 
-/* errno_t may or may not be defined in errno.h */
-#ifndef errno_t
-typedef int errno_t;
+#ifndef ESLEMIN
+#define ESLEMIN         ( 402 )       /* length is below min         */
+#endif
+
+#ifndef ESLEMAX
+#define ESLEMAX         ( 403 )       /* length exceeds max          */
+#endif
+
+#ifndef ESOVRLP
+#define ESOVRLP         ( 404 )       /* overlap undefined           */
+#endif
+
+#ifndef ESEMPTY
+#define ESEMPTY         ( 405 )       /* empty string                */
+#endif
+
+#ifndef ESNOSPC
+#define ESNOSPC         ( 406 )       /* not enough space for s2     */
+#endif
+
+#ifndef ESUNTERM
+#define ESUNTERM        ( 407 )       /* unterminated string         */
+#endif
+
+#ifndef ESNODIFF
+#define ESNODIFF        ( 408 )       /* no difference               */
+#endif
+
+#ifndef ESNOTFND
+#define ESNOTFND        ( 409 )       /* not found                   */
 #endif
 
 /* EOK may or may not be defined in errno.h */
 #ifndef EOK
 #define EOK   0
 #endif
-
 
 #endif /* __SAFE_LIB_ERRNO_H__ */

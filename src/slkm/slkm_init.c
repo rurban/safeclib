@@ -1,10 +1,9 @@
 /*------------------------------------------------------------------
- * safe_lib.h -- Safe C Library
+ * slk_init.c - example kernel module skeleton
  *
- * October 2008, Bo Berry
- * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2008-2012 by Cisco Systems, Inc
+ * Copyright (c) 2012 Cisco Systems, Inc.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -30,33 +29,53 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __SAFE_LIB_H__
-#define __SAFE_LIB_H__
+#include <linux/module.h>
+#include <linux/kernel.h>
 
-#include "safe_types.h"
-#include "safe_lib_errno.h"
+#define DRV_NAME        "slk"
+#define DRV_VERSION     "0.0"
+#define DRV_DESCRIPTION "Safe C Library Kernel Module"
+#define DRV_COPYRIGHT   "Copyright(c) 2012 cisco Systems, Inc."
 
-/* C11 appendix K types - specific for bounds checking */
-#ifndef HAVE_RSIZE_T
-typedef size_t  rsize_t;
-#endif
+MODULE_DESCRIPTION(DRV_DESCRIPTION);
+MODULE_AUTHOR(DRV_COPYRIGHT);
+MODULE_LICENSE("MIT");
+MODULE_VERSION(DRV_VERSION);
+MODULE_ALIAS("slk");
 
 /*
- * We depart from the standard and allow memory and string operations to
- * have different max sizes. See the repective safe_mem_lib.h or
- * safe_str_lib.h files.
+ * // example match table... show how to properally mark the table
+ *static const struct of_device_id _match[] __devinitconst = {
+ *        {
+ *                .compatible = "blah",
+ *                .data       = (void *) (&_ops),
+ *        },
+ *        {},
+ *};
+ *MODULE_DEVICE_TABLE(of, _match);
  */
-#ifndef RSIZE_MAX
-#define RSIZE_MAX (~(rsize_t)0)
-#endif
 
-#ifndef HAVE_CONSTRAINT_HANDLER_T
-typedef void (*constraint_handler_t) (const char * /* msg */,
-                                      void *       /* ptr */,
-                                      errno_t      /* error */);
-#endif
 
-#include "safe_mem_lib.h"
-#include "safe_str_lib.h"
+/**
+ * @brief Module initialization function.
+ *
+ * @return 0 on success; < 0 on failure
+ */
+static int __init slk_init(void)
+{
+	printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
+	       DRV_COPYRIGHT);
+	return 0;
+}
 
-#endif /* __SAFE_LIB_H__ */
+/**
+ * @brief Module exit function.
+ */
+static void __exit slk_exit(void)
+{
+	printk(KERN_INFO "%s called\n", __func__);
+}
+
+/* Module entry and exit points */
+module_init(slk_init);
+module_exit(slk_exit);

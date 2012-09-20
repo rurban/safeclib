@@ -30,7 +30,9 @@
  */
 
 #include "safe_mem_lib.h"
+#include "safeclib_private.h"
 #include "safe_mem_constraint.h"
+#include "mem_primitives_lib.h"
 
 
 /**
@@ -81,22 +83,23 @@ memset_s (void *dest, rsize_t len, uint8_t value)
     if (dest == NULL) {
         invoke_safe_mem_constraint_handler("memset_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (len == 0) {
         invoke_safe_mem_constraint_handler("memset_s: len is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (len > RSIZE_MAX_MEM) {
         invoke_safe_mem_constraint_handler("memset_s: len exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     mem_prim_set(dest, len, value);
 
-    return (EOK);
+    return (RCNEGATE(EOK));
 }
+EXPORT_SYMBOL(memset_s);

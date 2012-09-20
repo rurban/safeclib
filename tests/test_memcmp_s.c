@@ -5,27 +5,20 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "safe_mem_lib.h"
-
-#define debug_printf  printf
+#include "test_private.h"
 
 #define LEN   ( 128 )
 
+static uint8_t  mem1[LEN];
+static uint8_t  mem2[LEN];
 
-
-int main()
+int test_memcmp_s (void)
 {
     errno_t rc;
     int32_t  ind;
     int32_t  std_ind;
     uint32_t len;
-
-    uint8_t  mem1[LEN];
-    uint8_t  mem2[LEN];
-
 
 /*--------------------------------------------------*/
 

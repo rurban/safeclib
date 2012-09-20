@@ -30,7 +30,9 @@
  */
 
 #include "safe_mem_lib.h"
+#include "safeclib_private.h"
 #include "safe_mem_constraint.h"
+#include "mem_primitives_lib.h"
 
 
 /**
@@ -79,19 +81,19 @@ memzero16_s (uint16_t *dest, rsize_t len)
     if (dest == NULL) {
         invoke_safe_mem_constraint_handler("memzero16_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (len == 0) {
         invoke_safe_mem_constraint_handler("memzero16_s: len is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (len > RSIZE_MAX_MEM16) {
         invoke_safe_mem_constraint_handler("memzero16_s: len exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     /*
@@ -100,5 +102,6 @@ memzero16_s (uint16_t *dest, rsize_t len)
      */
     mem_prim_set16(dest, len, 0);
 
-    return (EOK);
+    return (RCNEGATE(EOK));
 }
+EXPORT_SYMBOL(memzero16_s);

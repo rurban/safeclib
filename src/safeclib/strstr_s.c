@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -94,44 +95,44 @@ strstr_s (char *dest, rsize_t dmax,
     if (substring == NULL) {
         invoke_safe_str_constraint_handler("strstr_s: substring is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
     *substring = NULL;
 
     if (dest == NULL) {
         invoke_safe_str_constraint_handler("strstr_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strstr_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strstr_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     if (src == NULL) {
         invoke_safe_str_constraint_handler("strstr_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (slen == 0) {
         invoke_safe_str_constraint_handler("strstr_s: slen is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (slen > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strstr_s: slen exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     /*
@@ -140,7 +141,7 @@ strstr_s (char *dest, rsize_t dmax,
      */
     if (*src == '\0' || dest == src) {
         *substring = dest;
-        return (EOK);
+        return RCNEGATE(EOK);
     }
 
     while (*dest && dmax) {
@@ -162,7 +163,7 @@ strstr_s (char *dest, rsize_t dmax,
 
             if (src[i] == '\0' || !len) {
                 *substring = dest;
-                return (EOK);
+                return RCNEGATE(EOK);
             }
         }
         dest++;
@@ -173,5 +174,6 @@ strstr_s (char *dest, rsize_t dmax,
      * substring was not found, return NULL
      */
     *substring = NULL;
-    return (ESNOTFND);
+    return RCNEGATE(ESNOTFND);
 }
+EXPORT_SYMBOL(strstr_s);

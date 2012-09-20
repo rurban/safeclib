@@ -5,15 +5,12 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "safe_str_lib.h"
+#include "test_private.h"
 
 #define LEN   ( 128 )
 
-
-int main()
+int test_strnlen_s (void)
 {
     rsize_t len;
     rsize_t std_len;

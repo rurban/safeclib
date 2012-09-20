@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -94,32 +95,32 @@ strcmp_s (const char *dest, rsize_t dmax,
     if (indicator == NULL) {
         invoke_safe_str_constraint_handler("strcmp_s: indicator is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
     *indicator = 0;
 
     if (dest == NULL) {
         invoke_safe_str_constraint_handler("strcmp_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (src == NULL) {
         invoke_safe_str_constraint_handler("strcmp_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strcmp_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strcmp_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     while (*dest && *src && dmax) {
@@ -134,5 +135,6 @@ strcmp_s (const char *dest, rsize_t dmax,
     }
 
     *indicator = *dest - *src;
-    return (EOK);
+    return RCNEGATE(EOK);
 }
+EXPORT_SYMBOL(strcmp_s);

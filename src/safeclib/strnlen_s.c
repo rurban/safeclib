@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -84,19 +85,19 @@ strnlen_s (const char *dest, rsize_t dmax)
     rsize_t count;
 
     if (dest == NULL) {
-        return (0);
+        return RCNEGATE(0);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strnlen_s: dmax is 0",
                    NULL, ESZEROL);
-        return (0);
+        return RCNEGATE(0);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strnlen_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (0);
+        return RCNEGATE(0);
     }
 
     count = 0;
@@ -106,5 +107,6 @@ strnlen_s (const char *dest, rsize_t dmax)
         dest++;
     }
 
-    return (count);
+    return RCNEGATE(count);
 }
+EXPORT_SYMBOL(strnlen_s);

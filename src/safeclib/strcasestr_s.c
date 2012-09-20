@@ -30,9 +30,8 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
-
-#include "ctype.h"
 
 
 /**

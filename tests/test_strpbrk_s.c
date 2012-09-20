@@ -5,24 +5,20 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "safe_str_lib.h"
-
+#include "test_private.h"
 
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 
+static char   str1[LEN];
+static char   str2[LEN];
 
-int main()
+int test_strpbrk_s (void)
 {
     errno_t rc;
     char *first;
     char *std_first;
-
-    char   str1[LEN];
-    char   str2[LEN];
 
 /*--------------------------------------------------*/
 

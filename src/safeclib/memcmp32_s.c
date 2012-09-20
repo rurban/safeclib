@@ -30,8 +30,8 @@
  */
 
 #include "safe_mem_lib.h"
+#include "safeclib_private.h"
 #include "safe_mem_constraint.h"
-
 
 /**
  * NAME
@@ -96,7 +96,7 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
     if (diff == NULL) {
         invoke_safe_mem_constraint_handler("memcmp32_s: diff is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
     *diff = -1;  /* default diff */
 
@@ -104,37 +104,37 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
     if (dest == NULL) {
         invoke_safe_mem_constraint_handler("memcmp32_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (src == NULL) {
         invoke_safe_mem_constraint_handler("memcmp32_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (dmax == 0) {
         invoke_safe_mem_constraint_handler("memcmp32_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (dmax > RSIZE_MAX_MEM32) {
         invoke_safe_mem_constraint_handler("memcmp32_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     if (smax == 0) {
         invoke_safe_mem_constraint_handler("memcmp32_s: smax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (smax > dmax) {
        invoke_safe_mem_constraint_handler("memcmp32_s: smax exceeds dmax",
                   NULL, ESLEMAX);
-       return (ESLEMAX);
+       return (RCNEGATE(ESLEMAX));
     }
 
     /*
@@ -142,7 +142,7 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
      */
     if (dest == src) {
         *diff = 0;
-        return (EOK);
+        return (RCNEGATE(EOK));
     }
 
     /*
@@ -162,5 +162,6 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
         src++;
     }
 
-    return (EOK);
+    return (RCNEGATE(EOK));
 }
+EXPORT_SYMBOL(memcmp32_s);

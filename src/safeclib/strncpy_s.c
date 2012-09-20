@@ -30,6 +30,7 @@
  */
 
 #include "safe_str_lib.h"
+#include "safeclib_private.h"
 #include "safe_str_constraint.h"
 
 
@@ -106,19 +107,19 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     if (dest == NULL) {
         invoke_safe_str_constraint_handler("strncpy_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
     /* hold base in case src was not copied */
@@ -129,21 +130,21 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "src is null",
                      ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (slen == 0) {
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "slen is zero",
                      ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (slen > RSIZE_MAX_STR) {
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "slen exceeds max",
                      ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
 
@@ -155,7 +156,7 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                 handle_error(orig_dest, orig_dmax, "strncpy_s: "
                         "overlapping objects",
                         ESOVRLP);
-                return (ESOVRLP);
+                return RCNEGATE(ESOVRLP);
             }
 
 	    if (slen == 0) {
@@ -163,21 +164,21 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #else
                 *dest = '\0';
 #endif
-                return (EOK);
+                return RCNEGATE(EOK);
             }
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
                 /* null slack */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
-                return (EOK);
+                return RCNEGATE(EOK);
             }
 
             dmax--;
@@ -194,7 +195,7 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                 handle_error(orig_dest, orig_dmax, "strncpy_s: "
                         "overlapping objects",
                         ESOVRLP);
-                return (ESOVRLP);
+                return RCNEGATE(ESOVRLP);
             }
 
 	    if (slen == 0) {
@@ -202,21 +203,21 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #else
                 *dest = '\0';
 #endif
-                return (EOK);
+                return RCNEGATE(EOK);
             }
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
                 /* null slack */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
-                return (EOK);
+                return RCNEGATE(EOK);
             }
 
             dmax--;
@@ -232,5 +233,6 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     handle_error(orig_dest, orig_dmax, "strncpy_s: not enough "
                  "space for src",
                  ESNOSPC);
-    return (ESNOSPC);
+    return RCNEGATE(ESNOSPC);
 }
+EXPORT_SYMBOL(strncpy_s);

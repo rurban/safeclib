@@ -5,27 +5,19 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "safe_types.h"
 #include "safe_mem_lib.h"
-
-
-#define debug_printf  printf
-
+#include "test_private.h"
 
 #define LEN   ( 1024 )
 
+static uint8_t  mem1[LEN+2];
+static uint8_t  mem2[LEN+2];
 
-int main()
+int test_memcpy_s (void)
 {
     errno_t rc;
     uint32_t i;
     rsize_t len;
-
-    uint8_t  mem1[LEN+2];
-    uint8_t  mem2[LEN+2];
 
 /*--------------------------------------------------*/
 

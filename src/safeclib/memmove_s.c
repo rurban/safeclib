@@ -30,7 +30,9 @@
  */
 
 #include "safe_mem_lib.h"
+#include "safeclib_private.h"
 #include "safe_mem_constraint.h"
+#include "mem_primitives_lib.h"
 
 
 /**
@@ -101,40 +103,40 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
     if (dp == NULL) {
         invoke_safe_mem_constraint_handler("memmove_s: dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     if (dmax == 0) {
         invoke_safe_mem_constraint_handler("memmove_s: dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (dmax > RSIZE_MAX_MEM) {
         invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     if (smax == 0) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: smax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return (RCNEGATE(ESZEROL));
     }
 
     if (smax > dmax) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: smax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     if (sp == NULL) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return (RCNEGATE(ESNULLP));
     }
 
     /*
@@ -142,5 +144,6 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
      */
     mem_prim_move(dp, sp, smax);
 
-    return (EOK);
+    return (RCNEGATE(EOK));
 }
+EXPORT_SYMBOL(memmove_s);

@@ -5,26 +5,20 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "safe_types.h"
 #include "safe_mem_lib.h"
-
-#define debug_printf  printf
-
+#include "test_private.h"
 
 #define LEN   ( 256 )
 
+static uint8_t mem1[LEN];
 
-int main()
+int test_memset_s (void)
 {
     errno_t rc;
     uint32_t len;
     uint32_t i;
 
     uint8_t value;
-    uint8_t mem1[LEN];
 
 /*--------------------------------------------------*/
 
