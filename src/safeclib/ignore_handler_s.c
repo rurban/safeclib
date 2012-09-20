@@ -1,10 +1,9 @@
 /*------------------------------------------------------------------
- * safe_lib.h -- Safe C Library
+ * ignore_handler_s.c
  *
- * October 2008, Bo Berry
- * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2008-2012 by Cisco Systems, Inc
+ * Copyright (c) 2012 Cisco Systems
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -30,40 +29,45 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __SAFE_LIB_H__
-#define __SAFE_LIB_H__
+#include "safe_lib.h"
+#include "safeclib_private.h"
 
-#include "safe_types.h"
-#include "safe_lib_errno.h"
-
-/* C11 appendix K types - specific for bounds checking */
-#ifndef HAVE_RSIZE_T
-typedef size_t  rsize_t;
-#endif
-
-/*
- * We depart from the standard and allow memory and string operations to
- * have different max sizes. See the repective safe_mem_lib.h or
- * safe_str_lib.h files.
+/**
+ * NAME
+ *    ignore_handler_s
+ *
+ * SYNOPSIS
+ *    #include "safe_lib.h"
+ *    void ignore_handler_s(const char *msg, void *ptr, errno_t error)
+ *
+ * DESCRIPTION
+ *    This function simply returns to the caller.
+ *
+ * SPECIFIED IN
+ *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
+ *    and system software interfaces, Extensions to the C Library,
+ *    Part I: Bounds-checking interfaces
+ *
+ * INPUT PARAMETERS
+ *    msg       Pointer to the message describing the error
+ *
+ *    ptr       Pointer to aassociated data.  Can be NULL.
+ *
+ *    error     The error code encountered.
+ *
+ * RETURN VALUE
+ *    Returns no value.
+ *
+ * ALSO SEE
+ *    abort_handler_s()
+ *
  */
-#ifndef RSIZE_MAX
-#define RSIZE_MAX (~(rsize_t)0)
-#endif
 
-#ifndef HAVE_CONSTRAINT_HANDLER_T
-typedef void (*constraint_handler_t) (const char * /* msg */,
-                                      void *       /* ptr */,
-                                      errno_t      /* error */);
-#endif
+void ignore_handler_s(const char *msg, void *ptr, errno_t error)
+{
 
-extern void abort_handler_s(const char *msg, void *ptr, errno_t error);
-extern void ignore_handler_s(const char *msg, void *ptr, errno_t error);
-
-#ifndef sl_default_handler
-#define sl_default_handler ignore_handler_s
-#endif
-
-#include "safe_mem_lib.h"
-#include "safe_str_lib.h"
-
-#endif /* __SAFE_LIB_H__ */
+	sldebug_printf("IGNORE CONSTRAINT HANDLER: (%u) %s\n", error,
+		       (msg) ? msg : "Null message");
+	return;
+}
+EXPORT_SYMBOL(ignore_handler_s);

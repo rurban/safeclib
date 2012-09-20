@@ -62,6 +62,9 @@
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 #endif
 
+/* set string constraint handler */
+extern constraint_handler_t
+set_str_constraint_handler_s(constraint_handler_t handler);
 
 
 /* string compare */

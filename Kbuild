@@ -54,6 +54,8 @@ slkm-y     := src/slkm/slkm_init.o
 slkm-y     += src/safeclib/mem_primitives_lib.o
 slkm-y     += src/safeclib/safe_mem_constraint.o
 slkm-y     += src/safeclib/safe_str_constraint.o
+slkm-y     += src/safeclib/ignore_handler_s.o
+slkm-y     += src/safeclib/abort_handler_s.o
 
 # Memory Routines
 slkm-y     += src/safeclib/memset_s.o

@@ -31,6 +31,7 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
+#include "safe_lib.h"
 
 #define DRV_NAME        "slk"
 #define DRV_VERSION     "0.0"
@@ -65,6 +66,8 @@ static int __init slk_init(void)
 {
 	printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
 	       DRV_COPYRIGHT);
+	(void) set_mem_constraint_handler_s(abort_handler_s);
+	(void) set_str_constraint_handler_s(abort_handler_s);
 	return 0;
 }
 

@@ -45,6 +45,9 @@
 #define RSIZE_MAX_MEM32    ( RSIZE_MAX_MEM/4 )
 #endif
 
+/* set memory constraint handler */
+extern constraint_handler_t
+set_mem_constraint_handler_s(constraint_handler_t handler);
 
 
 /* compare memory */
