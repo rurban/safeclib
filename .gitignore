@@ -12,7 +12,9 @@
 .*
 *.o
 *.o.*
+*.lo
 *.a
+*.la
 *.s
 *.ko
 *.so
@@ -23,6 +25,9 @@
 *.symtypes
 *.order
 modules.builtin
+Makefile
+Makefile.in
+*.pc
 *.elf
 *.bin
 *.gz
@@ -44,6 +49,13 @@ modules.builtin
 /System.map
 /Module.markers
 /Module.symvers
+/config.log
+/config.status
+/configure
+/libtool
+/stamp-h1
+/aclocal.m4
+/autom4te.cache/
 
 #
 # Debian directory (make deb-pkg)
@@ -60,8 +72,7 @@ modules.builtin
 #
 # Generated include files
 #
-include/config
-include/version.h
+/config.h*
 
 # stgit generated dirs
 patches-*
@@ -80,6 +91,7 @@ GRTAGS
 GSYMS
 GTAGS
 
+# Editor backup files
 *.orig
 *~
 \#*#
