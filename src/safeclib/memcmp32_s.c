@@ -29,9 +29,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_mem_lib.h"
 #include "safeclib_private.h"
 #include "safe_mem_constraint.h"
+#include "safe_mem_lib.h"
 
 /**
  * NAME

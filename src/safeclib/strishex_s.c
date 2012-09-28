@@ -29,9 +29,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
 #include "safeclib_private.h"
 #include "safe_str_constraint.h"
+#include "safe_str_lib.h"
 
 
 /**
@@ -103,9 +103,9 @@ strishex_s (const char *dest, rsize_t dmax)
 
     while (*dest && dmax) {
 
-        if ((*dest >= '0') && (*dest <= '9') ||
-            (*dest >= 'a') && (*dest <= 'f') ||
-            (*dest >= 'A') && (*dest <= 'F')) {
+        if (((*dest >= '0') && (*dest <= '9')) ||
+            ((*dest >= 'a') && (*dest <= 'f')) ||
+            ((*dest >= 'A') && (*dest <= 'F'))) {
             dest++;
             dmax--;
 

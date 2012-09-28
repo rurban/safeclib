@@ -30,7 +30,6 @@
  */
 
 #include "mem_primitives_lib.h"
-#include "safeclib_private.h"
 
 /*
  * mem_primitives_lib.c  provides unguarded memory routines

@@ -29,9 +29,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
 #include "safeclib_private.h"
 #include "safe_str_constraint.h"
+#include "safe_str_lib.h"
 
 
 /**
@@ -165,7 +165,7 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
@@ -207,7 +207,7 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif

@@ -5,8 +5,8 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
 #include "test_private.h"
+#include "safe_str_lib.h"
 
 #define LEN   ( 128 )
 
@@ -213,3 +213,12 @@ int test_strncat_s (void)
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_strncat_s());
+}
+#endif

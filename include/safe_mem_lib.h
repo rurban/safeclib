@@ -35,15 +35,9 @@
 
 #include "safe_lib.h"
 
-#ifndef RSIZE_MAX_MEM
 #define RSIZE_MAX_MEM      ( 256UL << 20 )     /* 256MB */
-#endif
-#ifndef RSIZE_MAX_MEM16
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )
-#endif
-#ifndef RSIZE_MAX_MEM32
 #define RSIZE_MAX_MEM32    ( RSIZE_MAX_MEM/4 )
-#endif
 
 /* set memory constraint handler */
 extern constraint_handler_t

@@ -33,107 +33,87 @@
 #ifndef __SAFE_TYPES_H__
 #define __SAFE_TYPES_H__
 
-/* Supported environments are:
- * - Linux kerenl
- * - C99 std. C library compiler
- * other environments require a custom header to be included, which can be
- * done automatically via the build system.
- */
+/* NOTE: the config.h file must be included before this file! */
 
 #ifdef __KERNEL__
 /* linux kernel environment */
 
-/*#warning Compiling for Linux kernel*/
 #include <linux/stddef.h>
 #include <linux/types.h>
 #include <linux/errno.h>
-#define LACKS_ERRNO_T    1
-#define LACKS_BOOLEAN_T  1
 
-/* C99 standard c library compiler support */
-#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+/* these arn't defined in the kernel */
+typedef int errno_t;
+typedef bool boolean_t;
 
-/*#warning Compiling for standard C library*/
-#include <stdlib.h>
-#include <stddef.h>
-#include <inttypes.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <errno.h>
-#include <limits.h>
-#define LACKS_BOOLEAN_T  1
+#else
+
+#include <stdio.h>
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#ifdef STDC_HEADERS
+# include <stdlib.h>
+# include <stddef.h>
+#else
+# ifdef HAVE_STDLIB_H
+#  include <stdlib.h>
+# endif
+#endif
+#ifdef HAVE_STRING_H
+# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
+#  include <memory.h>
+# endif
+# include <string.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#endif
+#ifdef HAVE_ERRNO_H
+# include <errno.h>
+#else
+# ifndef HAVE_ERRNO_T
+typedef int errno_t;
+# endif
+#endif
+#ifdef HAVE_LIMITS_H
+# include <limits.h>
+#endif
+
+#ifdef HAVE_STDBOOL_H
+# include <stdbool.h>
+#else
+# ifndef HAVE__BOOL
+#  ifdef __cplusplus
+typedef bool _Bool;
+#  else
+#   define _Bool unsigned char
+#  endif
+# endif
+# define bool _Bool
+# define false 0
+# define true 1
+# define __bool_true_false_are_defined 1
+#endif
+
+#ifndef HAVE_BOOLEAN_T
+typedef bool boolean_t;
+#endif
 
 #endif /* __KERNEL__ */
 
 /*
- * Note: We only redefine types that we use in the library here, don't add
- * new types or defines if they are not used in the library.
- */
-
-#ifdef LACKS_ERRNO_T
-typedef int errno_t;
-#endif
-
-/*
- * TODO: eventually do a search and replace of the code and remove
- * references to boolean_t in favor of the C99 standard _Bool or bool
- */
-#ifdef LACKS_BOOL
-typedef unsigned char bool;
-#endif
-
-#ifdef LACKS_BOOLEAN_T
-typedef bool boolean_t;
-#endif
-
-#ifdef LACKS_INT32_T
-typedef int int32_t;
-#endif
-
-#ifdef LACKS_UINT8_T
-typedef unsigned char uint8_t;
-#endif
-
-#ifdef LACKS_UINT16_T
-typedef unsigned short uint16_t;
-#endif
-
-#ifdef LACKS_UINT32_T
-typedef unsigned int uint32_t;
-#endif
-
-#ifdef LACKS_UINTPTR_T
-#if POINTER_BIT == 64
-typedef unsigned long long uintptr_t;
-#else
-typedef unsigned int uintptr_t;
-#endif /* POINTER_BIT */
-#endif /* LACKS_UINTPTR_T */
-
-/*
  * The following definitions are not part of C99 so we always test for them.
  */
-
-/* TODO: eventually do a search and replace for TRUE & FALSE and change to the
-   C99 'true' & 'false' */
 #ifndef TRUE
-#  ifndef true
-#    define TRUE   ( 1 )
-#  else
-#    define TRUE   ( true )
-#  endif /* true */
+# define TRUE   ( true )
 #endif /* TRUE */
 
 #ifndef FALSE
-#  ifndef false
-#    define FALSE  ( 0 )
-#  else
-#    define FALSE  ( false )
-#  endif /* false */
+# define FALSE  ( false )
 #endif /* FALSE */
-
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif /* NULL */
 
 #endif /* __SAFE_TYPES_H__ */

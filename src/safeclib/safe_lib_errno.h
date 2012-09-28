@@ -32,11 +32,14 @@
 
 #ifndef __SAFE_LIB_ERRNO_H__
 #define __SAFE_LIB_ERRNO_H__
+/* NOTE: the config.h file must be included before this file! */
 
 #ifdef __KERNEL__
 #include <linux/errno.h>
 #else
+#ifdef STDC_HEADERS
 #include <errno.h>
+#endif
 #endif /* __KERNEL__ */
 
 /*
@@ -85,7 +88,7 @@
 
 /* EOK may or may not be defined in errno.h */
 #ifndef EOK
-#define EOK   0
+#define EOK             ( 0 )
 #endif
 
 #endif /* __SAFE_LIB_ERRNO_H__ */

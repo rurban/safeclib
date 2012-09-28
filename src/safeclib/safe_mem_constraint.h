@@ -32,8 +32,7 @@
 #ifndef __SAFE_MEM_CONSTRAINT_H__
 #define __SAFE_MEM_CONSTRAINT_H__
 
-#include "safe_lib.h"
-
+#include "safeclib_private.h"
 
 /*
  * Function used by the libraries to invoke the registered

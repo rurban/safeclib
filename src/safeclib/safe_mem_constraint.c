@@ -30,9 +30,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_mem_lib.h"
-#include "safe_mem_constraint.h"
 #include "safeclib_private.h"
+#include "safe_mem_constraint.h"
+#include "safe_mem_lib.h"
 
 
 static constraint_handler_t mem_handler = NULL;

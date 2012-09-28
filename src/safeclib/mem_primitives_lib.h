@@ -32,7 +32,7 @@
 #ifndef __MEM_PRIMITIVES_LIB_H__
 #define __MEM_PRIMITIVES_LIB_H__
 
-#include "safe_lib.h"
+#include "safeclib_private.h"
 
 /*
  * These are prototypes for _unguarded_ memory routines.  The caller must

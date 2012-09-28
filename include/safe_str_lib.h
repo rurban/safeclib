@@ -37,15 +37,10 @@
 /*
  * The shortest string is a null string!!
  */
-#ifndef RSIZE_MIN_STR
 #define RSIZE_MIN_STR      ( 1 )
-#endif
-
 
 /* maximum sring length */
-#ifndef RSIZE_MAX_STR
 #define RSIZE_MAX_STR      ( 4UL << 10 )      /* 4KB */
-#endif
 
 
 /* The makeup of a password */
@@ -54,13 +49,9 @@
 #define SAFE_STR_MIN_NUMBERS       ( 1 )
 #define SAFE_STR_MIN_SPECIALS      ( 1 )
 
-#ifndef SAFE_STR_PASSWORD_MIN_LENGTH
 #define SAFE_STR_PASSWORD_MIN_LENGTH   ( 6 )
-#endif
-
-#ifndef SAFE_STR_PASSWORD_MAX_LENGTH
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
-#endif
+
 
 /* set string constraint handler */
 extern constraint_handler_t

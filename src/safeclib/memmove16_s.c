@@ -29,10 +29,10 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_mem_lib.h"
 #include "safeclib_private.h"
 #include "safe_mem_constraint.h"
 #include "mem_primitives_lib.h"
+#include "safe_mem_lib.h"
 
 
 /**

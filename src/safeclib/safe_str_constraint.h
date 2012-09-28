@@ -32,14 +32,7 @@
 #ifndef __SAFE_STR_CONSTRAINT_H__
 #define __SAFE_STR_CONSTRAINT_H__
 
-#include "safe_lib.h"
-
-/*
- * CONFIGURE: Define this macro to null slack space in the string
- * copy and cat functions.
- */
-/* #define CONFIG_SAFECLIB_STR_NULL_SLACK */
-
+#include "safeclib_private.h"
 
 /*
  * Function used by the libraries to invoke the registered
@@ -57,7 +50,7 @@ extern void invoke_safe_str_constraint_handler(
 static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
                                 char *err_msg, errno_t err_code)
 {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
     while (orig_dmax) { *orig_dest = '\0'; orig_dmax--; orig_dest++; }
 #else

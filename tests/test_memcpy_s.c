@@ -5,8 +5,8 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_mem_lib.h"
 #include "test_private.h"
+#include "safe_mem_lib.h"
 
 #define LEN   ( 1024 )
 
@@ -306,3 +306,12 @@ int test_memcpy_s (void)
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_memcpy_s());
+}
+#endif

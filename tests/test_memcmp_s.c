@@ -5,8 +5,8 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_mem_lib.h"
 #include "test_private.h"
+#include "safe_mem_lib.h"
 
 #define LEN   ( 128 )
 
@@ -208,3 +208,10 @@ int test_memcmp_s (void)
 
     return (0);
 }
+
+#ifndef __KERNEL__
+int main (void)
+{
+    return (test_memcmp_s());
+}
+#endif

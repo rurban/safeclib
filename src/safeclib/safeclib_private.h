@@ -48,16 +48,17 @@
 
 #else  /* !__KERNEL__ */
 
-#ifndef LACKS_STDIO_H
-#include <stdio.h>
+#if HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-#ifndef LACKS_CTYPE_H
+#include <stdio.h>
+#ifdef STDC_HEADERS
 #include <ctype.h>
 #endif
 
 #define EXPORT_SYMBOL(sym)
-#define RCNEGATE(x)
+#define RCNEGATE(x)  (x)
 
 #define slprintf(...) fprintf(stderr, __VA_ARGS__)
 #define slabort()     abort()
@@ -70,5 +71,9 @@
 #ifndef sldebug_printf
 #define sldebug_printf(...)
 #endif
+
+#include "safe_types.h"
+#include "safe_lib_errno.h"
+#include "safe_lib.h"
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

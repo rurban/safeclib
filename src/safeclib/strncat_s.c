@@ -29,9 +29,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
 #include "safeclib_private.h"
 #include "safe_str_constraint.h"
+#include "safe_str_lib.h"
 
 
 /**
@@ -173,7 +173,7 @@ strncat_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
              * Copying truncated before the source null is encountered
              */
             if (slen == 0) {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #else
@@ -184,7 +184,7 @@ strncat_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
@@ -229,7 +229,7 @@ strncat_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
              * Copying truncated
              */
             if (slen == 0) {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #else
@@ -240,7 +240,7 @@ strncat_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif

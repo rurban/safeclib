@@ -5,9 +5,7 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "test_private.h"
 #include "safe_str_lib.h"
 
 #define LEN   ( 128 )

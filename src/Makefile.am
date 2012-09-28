@@ -1,98 +1,135 @@
-## Process this file with automake to produce Makefile.in
+# Makefile.am - Process with automake to produce Makefile.in
+#
+# 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+#
+# Copyright (c) 2012 Cisco Systems
+# All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
 
-lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
+MEM_PRIM_FILES = \
+	safeclib/mem_primitives_lib.h  \
+	safeclib/mem_primitives_lib.c
 
-include_HEADERS      = safec.h
+CORE_FILES = \
+	safeclib/safeclib_private.h    \
+	safeclib/safe_lib_errno.h      \
+	safeclib/safe_types.h          \
+	safeclib/abort_handler_s.c     \
+	safeclib/ignore_handler_s.c
 
-EXTRA_DIST           = safec.h.in
+STD_MEM_FILES = \
+	safeclib/safe_mem_constraint.h \
+	safeclib/safe_mem_constraint.c \
+	safeclib/memset_s.c            \
+	safeclib/memcpy_s.c            \
+	safeclib/memmove_s.c
 
-#AM_CFLAGS            = @GCOV_CFLAGS@
+EXT_MEM_FILES = \
+	safeclib/memset16_s.c          \
+	safeclib/memset32_s.c          \
+	safeclib/memcpy16_s.c          \
+	safeclib/memcpy32_s.c          \
+	safeclib/memmove16_s.c         \
+	safeclib/memmove32_s.c         \
+	safeclib/memcmp_s.c            \
+	safeclib/memcmp16_s.c          \
+	safeclib/memcmp32_s.c          \
+	safeclib/memzero_s.c           \
+	safeclib/memzero16_s.c         \
+	safeclib/memzero32_s.c
 
-CFILES = \
-	strisdigit_s.c        \
-	strzero_s.c           \
-	strisalphanumeric_s.c \
-	safe_str_constraint.c \
-	strcmp_s.c            \
-	strfirstsame_s.c      \
-	strstr_s.c            \
-	strcpy_s.c            \
-	strcpyfld_s.c         \
-	strtolowercase_s.c    \
-	strspn_s.c            \
-	strnlen_s.c           \
-	strisascii_s.c        \
-	strcspn_s.c           \
-	strlastchar_s.c       \
-	strfirstdiff_s.c      \
-	strljustify_s.c       \
-	strlastsame_s.c       \
-	strcmpfld_s.c         \
-	strnterminate_s.c     \
-	strfirstchar_s.c      \
-	strishex_s.c          \
-	strpbrk_s.c           \
-	strcpyfldin_s.c       \
-	strncat_s.c           \
-	strremovews_s.c       \
-	strcasestr_s.c        \
-	strisuppercase_s.c    \
-	strcasecmp_s.c        \
-	strispassword_s.c     \
-	strtouppercase_s.c    \
-	strprefix_s.c         \
-	strncpy_s.c           \
-	strcpyfldout_s.c      \
-	strismixedcase_s.c    \
-	strislowercase_s.c    \
-	strcat_s.c            \
-	strlastdiff_s.c       \
-	strtok_s.c            \
-	safe_mem_constraint.c \
-	mem_primitives_lib.c  \
-	memset_s.c            \
-	memset16_s.c          \
-	memset32_s.c          \
-	memcmp_s.c            \
-	memcmp16_s.c          \
-	memcmp32_s.c          \
-	memmove_s.c           \
-	memmove16_s.c         \
-	memmove32_s.c         \
-	memzero_s.c           \
-	memzero32_s.c         \
-	memzero16_s.c         \
-	memcpy_s.c            \
-	memcpy16_s.c          \
-	memcpy32_s.c
+STD_STR_FILES = \
+	safeclib/safe_str_constraint.h \
+	safeclib/safe_str_constraint.c \
+	safeclib/strnlen_s.c           \
+	safeclib/strcat_s.c            \
+	safeclib/strncat_s.c           \
+	safeclib/strcpy_s.c            \
+	safeclib/strncpy_s.c           \
+	safeclib/strtok_s.c
 
-HFILES = \
-	safec.h               \
-	safe_lib_errno.h      \
-	mem_primitives_lib.h  \
-	safe_mem_lib.h        \
-	safe_lib.h            \
-	safe_limits.h         \
-	safe_types.h          \
-	safe_str_lib.h        \
-	safe_str_constraint.h \
-	safe_mem_constraint.h
+EXT_STR_FILES = \
+	safeclib/strcmp_s.c            \
+	safeclib/strcmpfld_s.c         \
+	safeclib/strspn_s.c            \
+	safeclib/strcspn_s.c           \
+	safeclib/strstr_s.c            \
+	safeclib/strpbrk_s.c           \
+	safeclib/strnterminate_s.c     \
+	safeclib/strprefix_s.c         \
+	safeclib/strremovews_s.c       \
+	safeclib/strcasecmp_s.c        \
+	safeclib/strcasestr_s.c        \
+	safeclib/strzero_s.c           \
+	safeclib/strisalphanumeric_s.c \
+	safeclib/strisascii_s.c        \
+	safeclib/strisdigit_s.c        \
+	safeclib/strishex_s.c          \
+	safeclib/strislowercase_s.c    \
+	safeclib/strismixedcase_s.c    \
+	safeclib/strispassword_s.c     \
+	safeclib/strisuppercase_s.c    \
+	safeclib/strfirstchar_s.c      \
+	safeclib/strfirstdiff_s.c      \
+	safeclib/strfirstsame_s.c      \
+	safeclib/strcpyfld_s.c         \
+	safeclib/strcpyfldin_s.c       \
+	safeclib/strcpyfldout_s.c      \
+	safeclib/strtolowercase_s.c    \
+	safeclib/strtouppercase_s.c    \
+	safeclib/strlastchar_s.c       \
+	safeclib/strlastdiff_s.c       \
+	safeclib/strlastsame_s.c       \
+	safeclib/strljustify_s.c
 
-## Additional flags to pass to aclocal when it is invoked automatically at
-## make time. The ${ACLOCAL_FLAGS} variable is picked up from the environment
-## to provide a way for the user to supply additional arguments.
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+# Not all the code can support -Werror yet so we specifically enable it
+# for where it works
+AM_CFLAGS += -Werror
+
+noinst_LTLIBRARIES = \
+	libmemprims.la   \
+	libsafeccore.la
+#	libsafecmem.la   \
+#	libsafecstr.la
+libmemprims_la_SOURCES  = $(MEM_PRIM_FILES)
+libsafeccore_la_SOURCES = $(CORE_FILES)
+#libsafecmem_la_SOURCES  = $(STD_MEM_FILES) $(EXT_MEM_FILES)
+#libsafecstr_la_SOURCES  = $(STD_STR_FILES) $(EXT_STR_FILES)
 
 #EXPORT_SYM      = exported.sym
 #$(EXPORT_SYM): safec.h.in
 #        sed -n -e 's/^..*SAFEC_EXPORT[[:space:]][[:space:]]*\([[:alnum:]_][[:alnum:]_]*\)..*$$/\1/p' @top_srcdir@/src/safec.h.in > $@
 
-#libsafec_@SAFEC_API_VERSION@_la_DEPENDENCIES = $(EXPORT_SYM)
+lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
+libsafec_@SAFEC_API_VERSION@_la_SOURCES      = $(STD_MEM_FILES) $(EXT_MEM_FILES) \
+					       $(STD_STR_FILES) $(EXT_STR_FILES)
+libsafec_@SAFEC_API_VERSION@_la_LIBADD       = libmemprims.la libsafeccore.la
 libsafec_@SAFEC_API_VERSION@_la_LDFLAGS      = -version-info $(SAFEC_SO_VERSION) \
 	                                       -no-undefined
 #	                                       -export-symbols $(EXPORT_SYM)
-libsafec_@SAFEC_API_VERSION@_la_SOURCES      = $(CFILES) $(HFILES)
-#libsafec_@SAFEC_API_VERSION@_la_LIBADD       = @GCOV_LIBS@
+#libsafec_@SAFEC_API_VERSION@_la_DEPENDENCIES = $(EXPORT_SYM)
+
 
 CLEANFILES      = *~ *.gcno $(EXPORT_SYM)
 

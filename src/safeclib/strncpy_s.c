@@ -29,9 +29,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
 #include "safeclib_private.h"
 #include "safe_str_constraint.h"
+#include "safe_str_lib.h"
 
 
 /*
@@ -164,7 +164,7 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #else
                 *dest = '\0';
@@ -174,7 +174,7 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif
@@ -203,7 +203,7 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #else
                 *dest = '\0';
@@ -213,7 +213,7 @@ strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
             *dest = *src;
             if (*dest == '\0') {
-#ifdef CONFIG_SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 #endif

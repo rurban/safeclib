@@ -30,9 +30,9 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
 #include "safeclib_private.h"
+#include "safe_str_constraint.h"
+#include "safe_str_lib.h"
 
 
 static constraint_handler_t str_handler = NULL;

@@ -5,8 +5,8 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_str_lib.h"
 #include "test_private.h"
+#include "safe_str_lib.h"
 
 #define MAX   ( 128 )
 #define LEN   ( 128 )
@@ -324,3 +324,12 @@ int test_strncpy_s (void)
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_strncpy_s());
+}
+#endif

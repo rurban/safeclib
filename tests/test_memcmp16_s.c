@@ -4,17 +4,10 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "test_private.h"
 #include "safe_mem_lib.h"
 
-#define debug_printf  printf
-
-
 #define LEN   ( 128 )
-
-
 
 int main()
 {

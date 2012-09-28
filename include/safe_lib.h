@@ -33,35 +33,24 @@
 #ifndef __SAFE_LIB_H__
 #define __SAFE_LIB_H__
 
-#include "safe_types.h"
-#include "safe_lib_errno.h"
-
 /* C11 appendix K types - specific for bounds checking */
-#ifndef HAVE_RSIZE_T
 typedef size_t  rsize_t;
-#endif
 
 /*
  * We depart from the standard and allow memory and string operations to
- * have different max sizes. See the repective safe_mem_lib.h or
+ * have different max sizes. See the respective safe_mem_lib.h or
  * safe_str_lib.h files.
  */
-#ifndef RSIZE_MAX
-#define RSIZE_MAX (~(rsize_t)0)
-#endif
+/* #define RSIZE_MAX (~(rsize_t)0)  - leave here for completeness */
 
-#ifndef HAVE_CONSTRAINT_HANDLER_T
 typedef void (*constraint_handler_t) (const char * /* msg */,
                                       void *       /* ptr */,
                                       errno_t      /* error */);
-#endif
 
 extern void abort_handler_s(const char *msg, void *ptr, errno_t error);
 extern void ignore_handler_s(const char *msg, void *ptr, errno_t error);
 
-#ifndef sl_default_handler
 #define sl_default_handler ignore_handler_s
-#endif
 
 #include "safe_mem_lib.h"
 #include "safe_str_lib.h"
