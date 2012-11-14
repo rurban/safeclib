@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,24 +33,24 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strcpyfldin_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t 
- *    strcpyfldin_s(char *dest, rsize_t dmax, 
+ *    errno_t
+ *    strcpyfldin_s(char *dest, rsize_t dmax,
  *                  const char *src, rsize_t slen)
  *
  * DESCRIPTION
- *    The strcpyfldin_s function copies at most slen characters from the 
- *    null terminated string pointed to by src into the fixed character 
- *    array pointed to by dest. The copy operation stops on the  null 
- *    character if encountered and then continues to fill the field 
- *    with nulls up to dmax characters. 
+ *    The strcpyfldin_s function copies at most slen characters from the
+ *    null terminated string pointed to by src into the fixed character
+ *    array pointed to by dest. The copy operation stops on the  null
+ *    character if encountered and then continues to fill the field
+ *    with nulls up to dmax characters.
  *
- * EXTENSION TO    
+ * EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -63,34 +63,34 @@
  *    src       pointer to the null terminated string that will be copied
  *               into the character array pointed to by dest
  *
- *    slen      length of source 
+ *    slen      length of source
  *
  * OUTPUT PARAMETERS
- *    dest      updated 
+ *    dest      updated
  *
  * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer. 
- *    dmax shall not equal zero. 
- *    dmax shall not be greater than RSIZE_MAX_STR.  
+ *    Neither dest nor src shall be a null pointer.
+ *    dmax shall not equal zero.
+ *    dmax shall not be greater than RSIZE_MAX_STR.
  *    slen shall not equal zero.
  *    slen shall not exceed dmax
- *    Copying shall not take place between objects that overlap. 
+ *    Copying shall not take place between objects that overlap.
  *    If there is a runtime-constraint violation, then if dest
- *       is not a null pointer and dmax is greater than zero and 
- *       not greater than RSIZE_MAX_STR, then strcpyfldin_s nulls dest. 
- * 
+ *       is not a null pointer and dmax is greater than zero and
+ *       not greater than RSIZE_MAX_STR, then strcpyfldin_s nulls dest.
+ *
  * RETURN VALUE
  *    EOK        successful operation
  *    ESNULLP    NULL pointer
  *    ESZEROL    zero length
  *    ESLEMAX    length exceeds max limit
- *    ESOVRLP    strings overlap 
+ *    ESOVRLP    strings overlap
  *
- * ALSO SEE 
- *    strcpyfld_s(), strcpyfldout_s(),    
- * 
+ * ALSO SEE
+ *    strcpyfld_s(), strcpyfldout_s(),
+ *
  */
-errno_t 
+errno_t
 strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 {
     rsize_t orig_dmax;
@@ -98,19 +98,19 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     const char *overlap_bumper;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strcpyfldin_s: dest is null", 
+        invoke_safe_str_constraint_handler("strcpyfldin_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strcpyfldin_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strcpyfldin_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strcpyfldin_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strcpyfldin_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -119,7 +119,7 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
-        invoke_safe_str_constraint_handler("strcpyfldin_s: src is null", 
+        invoke_safe_str_constraint_handler("strcpyfldin_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
@@ -143,7 +143,7 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     }
 
 
-    /* hold base of dest in case src was not copied */  
+    /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
     orig_dest = dest;
 
@@ -160,16 +160,16 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 
                 invoke_safe_str_constraint_handler(
-                          "strcpyfldin_s: overlapping objects", 
+                          "strcpyfldin_s: overlapping objects",
                            NULL, ESOVRLP);
-                return (ESOVRLP); 
+                return (ESOVRLP);
             }
 
             dmax--;
             *dest++ = *src++;
         }
 
-    } else { 
+    } else {
         overlap_bumper = dest;
 
         while (dmax > 0 && *src) {
@@ -182,15 +182,15 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
 
                 invoke_safe_str_constraint_handler(
-                          "strcpyfldin_s: overlapping objects", 
+                          "strcpyfldin_s: overlapping objects",
                            NULL, ESOVRLP);
-                return (ESOVRLP); 
+                return (ESOVRLP);
             }
 
             dmax--;
             *dest++ = *src++;
         }
-    } 
+    }
 
     /*
      * finish filling in the field with nulls if there is slack space
@@ -199,4 +199,3 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
     return (EOK);
 }
-

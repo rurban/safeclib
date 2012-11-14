@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008, 2009 Cisco Systems
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,21 +35,21 @@
 
 /*
  * CONFIGURE: This file is conditionally compiled for the platform specific
- * constraint handler.  
- */ 
+ * constraint handler.
+ */
 
 
-/** 
+/**
  * NAME
- *    invoke_safe_str_constraint_handler 
+ *    invoke_safe_str_constraint_handler
  *
- * SYNOPSIS 
- *    #include "safe_mem_constraint.h" 
- *    void 
+ * SYNOPSIS
+ *    #include "safe_mem_constraint.h"
+ *    void
  *    invoke_safe_str_constraint_handler (const char *msg,
- *                                void *ptr, 
+ *                                void *ptr,
  *                                errno_t error)
- * 
+ *
  * DESCRIPTION
  *    This handler simply prints the constraint to stderr. The platform
  *    could dictate that this be a syslog, abort or otherwise.
@@ -57,29 +57,29 @@
  *    based upon the error code.
  *
  * INPUT PARAMETERS
- *   *msg            Pointer to the message describing the error 
+ *   *msg            Pointer to the message describing the error
  *
- *   *ptr            Pointer to aassociated data.  Can be NULL. 
+ *   *ptr            Pointer to aassociated data.  Can be NULL.
  *
- *    error          The error code encountered. 
+ *    error          The error code encountered.
  *
  * OUTPUT PARAMETERS
  *    none
  *
  * RETURN VALUE
  *    none
- * 
- * 
+ *
+ *
  */
-void 
+void
 invoke_safe_str_constraint_handler (const char *msg,
-                                 void *ptr, 
+                                 void *ptr,
                                  errno_t error)
 {
-#if defined YOUR_OS 
-/* 
- * CONFIGURE: Create your platform specific constraint handler. 
- */ 
+#if defined YOUR_OS
+/*
+ * CONFIGURE: Create your platform specific constraint handler.
+ */
     if (msg) {
         fprintf(stderr, "%%SAFE_STR CONSTRAINT: %s, "
                      "error code=%u \n",
@@ -87,13 +87,13 @@ invoke_safe_str_constraint_handler (const char *msg,
     } else {
         fprintf(stderr, "%%SAFE_STR CONSTRAINT: Null message, "
                      "error code=%u \n",
-                     error);  
-    } 
+                     error);
+    }
 
-#elif defined MAC_OS_X 
-    /* 
-     * For Mac testing, write the constraint to stderr. 
-     */ 
+#elif defined MAC_OS_X
+    /*
+     * For Mac testing, write the constraint to stderr.
+     */
     if (msg) {
         fprintf(stderr, "%%SAFE_STR CONSTRAINT: %s, error code=%u \n",
                      msg, error);
@@ -101,11 +101,10 @@ invoke_safe_str_constraint_handler (const char *msg,
         fprintf(stderr, "%%SAFE_STR CONSTRAINT: Null message, "
                      "error code=%u \n",
                      error);
-    } 
+    }
 
 #else
-#error Safe str lib environment not defined. 
-#endif 
+#error Safe str lib environment not defined.
+#endif
     return;
 }
-

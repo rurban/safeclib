@@ -183,7 +183,7 @@ int main()
 
     strcpy (str1, "keep it simple");
 
-    /* same string for src and dest */ 
+    /* same string for src and dest */
     rc = strfirstsame_s(str1, LEN, str1, &ind);
     if (rc != EOK) {
         printf("%s %u  Error ind=%d  rc=%d \n",
@@ -247,4 +247,3 @@ int main()
 
     return (0);
 }
-

@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,9 +33,9 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strispassword_s 
+ *    strispassword_s
  *
  * SYNOPSIS
  *    #include "strlib.h"
@@ -59,7 +59,7 @@
  * INPUT PARAMETERS
  *    dest       pointer to string
  *
- *    dmax       length of password string 
+ *    dmax       length of password string
  *
  * OUTPUT PARAMETERS
  *    none
@@ -71,14 +71,14 @@
  *    dest shall not be unterminated
  *
  * RETURN VALUE
- *    TRUE, string has valid password makeup 
+ *    TRUE, string has valid password makeup
  *    FALSE, string does not meet requirements or an error occurred
  *
  * ALSO SEE
- *    strzero_s() 
- * 
+ *    strzero_s()
+ *
  */
-boolean_t  
+boolean_t
 strispassword_s (const char *dest, rsize_t dmax)
 {
     uint32_t cnt_all;
@@ -88,22 +88,22 @@ strispassword_s (const char *dest, rsize_t dmax)
     uint32_t cnt_specials;
 
     if (!dest) {
-        invoke_safe_str_constraint_handler("strispassword_s: " 
-                   "dest is null", 
+        invoke_safe_str_constraint_handler("strispassword_s: "
+                   "dest is null",
                    NULL, ESNULLP);
         return (FALSE);
     }
 
     if (dmax < SAFE_STR_PASSWORD_MIN_LENGTH) {
         invoke_safe_str_constraint_handler("strispassword_s: "
-                   "dest is too short", 
+                   "dest is too short",
                    NULL, ESLEMIN);
         return (FALSE);
     }
 
     if (dmax > SAFE_STR_PASSWORD_MAX_LENGTH) {
         invoke_safe_str_constraint_handler("strispassword_s: "
-                   "dest exceeds max", 
+                   "dest exceeds max",
                    NULL, ESLEMAX);
         return (FALSE);
     }
@@ -119,7 +119,7 @@ strispassword_s (const char *dest, rsize_t dmax)
 
         if (dmax == 0) {
             invoke_safe_str_constraint_handler(
-                      "strispassword_s: dest is unterminated", 
+                      "strispassword_s: dest is unterminated",
                        NULL, ESUNTERM);
             return (FALSE);
         }
@@ -165,4 +165,3 @@ strispassword_s (const char *dest, rsize_t dmax)
         return (FALSE);
     }
 }
-

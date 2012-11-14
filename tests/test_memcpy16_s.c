@@ -109,7 +109,7 @@ int main()
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
             printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);  
+                 __LINE__, i, mem1[i], mem2[i]);
         }
     }
 
@@ -118,18 +118,18 @@ int main()
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    /* slen greater than dmax */ 
+    /* slen greater than dmax */
     rc = memcpy16_s(mem1, LEN/2, mem2, LEN);
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
     }
 
-    /* verify mem1 was zeroed */ 
+    /* verify mem1 was zeroed */
     for (i=0; i<LEN/2; i++) {
         if (mem1[i] != 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);  
+                 __LINE__, i, mem1[i], mem2[i]);
         }
     }
 
@@ -188,7 +188,7 @@ int main()
     for (i=0; i<100; i++) { mem1[i] = 25; }
     for (i=10; i<100; i++) { mem1[i] = 35; }
 
-    /* overlap */ 
+    /* overlap */
     rc = memcpy16_s(&mem1[0], 100, &mem1[10], 100);
     if (rc != ESOVRLP) {
         debug_printf("%s %u  Error rc=%u \n",

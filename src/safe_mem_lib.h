@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,7 +33,7 @@
 #define __SAFE_MEM_LIB_H__
 
 
-/* Thi include file is used to promote portability to other environments */ 
+/* Thi include file is used to promote portability to other environments */
 #include "safe_lib.h"
 
 
@@ -41,15 +41,15 @@
 
 
 /*
- * CONFIGURE: Adjust the RSIZE_MAX_MEM memory macros 
+ * CONFIGURE: Adjust the RSIZE_MAX_MEM memory macros
  */
 #ifndef RSIZE_MAX_MEM
 #define RSIZE_MAX_MEM      ( 0xFFFFFFF )
 #endif
-#ifndef RSIZE_MAX_MEM16 
+#ifndef RSIZE_MAX_MEM16
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )
 #endif
-#ifndef RSIZE_MAX_MEM32 
+#ifndef RSIZE_MAX_MEM32
 #define RSIZE_MAX_MEM32    ( RSIZE_MAX_MEM/4 )
 #endif
 
@@ -115,4 +115,3 @@ extern errno_t memzero32_s(uint32_t *dest, rsize_t dmax);
 
 
 #endif  /* __SAFE_MEM_LIB_H__ */
-

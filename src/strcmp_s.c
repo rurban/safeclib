@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------
- * strcmp_s.c -- string compare 
+ * strcmp_s.c -- string compare
  *
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,21 +30,21 @@
  */
 
 #include "safe_str_lib.h"
-#include "safe_str_constraint.h" 
+#include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strcmp_s 
+ *    strcmp_s
  *
  * Synpsos
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strcmp_s(const char *dest, rsize_t dmax,
  *             const char *src, int *indicator)
  *
  * DESCRIPTION
- *    Compares string src to string dest. 
+ *    Compares string src to string dest.
  *
  * EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -64,13 +64,13 @@
  *               than the string pointed to by src respectively.
  *
  * OUTPUT PARAMETERS
- *    indicator  updated result indicator 
+ *    indicator  updated result indicator
  *
  * RUNTIME CONSTRAINTS
  *    Neither dest nor src shall be a null pointer.
  *    indicator shall not be a null pointer.
  *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR 
+ *    dmax shall not be greater than RSIZE_MAX_STR
  *
  * RETURN VALUE
  *    indicator, when the return code is OK
@@ -79,56 +79,56 @@
  *        <0   dest less than src
  *
  *    EOK
- *    ESNULLP     pointer was null 
- *    ESZEROL     length was zero 
- *    ESLEMAX     length exceeded max 
+ *    ESNULLP     pointer was null
+ *    ESZEROL     length was zero
+ *    ESLEMAX     length exceeded max
  *
- * ALSO SEE 
- *    strcasecmp_s() 
- * 
+ * ALSO SEE
+ *    strcasecmp_s()
+ *
  */
-errno_t 
+errno_t
 strcmp_s (const char *dest, rsize_t dmax,
           const char *src, int *indicator)
 {
     if (indicator == NULL) {
-        invoke_safe_str_constraint_handler("strcmp_s: indicator is null", 
+        invoke_safe_str_constraint_handler("strcmp_s: indicator is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *indicator = 0;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strcmp_s: dest is null", 
+        invoke_safe_str_constraint_handler("strcmp_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (src == NULL) {
-        invoke_safe_str_constraint_handler("strcmp_s: src is null", 
+        invoke_safe_str_constraint_handler("strcmp_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strcmp_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strcmp_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strcmp_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strcmp_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
     while (*dest && *src && dmax) {
-  
+
         if (*dest != *src) {
             break;
         }
 
-        dest++; 
+        dest++;
         src++;
         dmax--;
     }
@@ -136,4 +136,3 @@ strcmp_s (const char *dest, rsize_t dmax,
     *indicator = *dest - *src;
     return (EOK);
 }
-

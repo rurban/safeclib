@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strzero_s     
+ * test_strzero_s
  *
  *
  *------------------------------------------------------------------
@@ -61,7 +61,7 @@ int main()
            printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
        }
-    } 
+    }
 
 /*--------------------------------------------------*/
 
@@ -77,7 +77,7 @@ int main()
            printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
        }
-    } 
+    }
 
 /*--------------------------------------------------*/
 
@@ -93,7 +93,7 @@ int main()
            printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
        }
-    } 
+    }
 
 /*--------------------------------------------------*/
 
@@ -114,7 +114,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(str1, "Now is the time for all data to be zeroed");
-    max_len = strlen("Now is the "); 
+    max_len = strlen("Now is the ");
 
     rc = strzero_s(str1, max_len);
     if (rc != EOK) {
@@ -123,14 +123,13 @@ int main()
     }
 
     if (strcmp(&str1[max_len], "time for all data to be zeroed") ) {
-        printf("%s %u ERROR  --%s-- \n", 
-               __FUNCTION__, __LINE__, 
-               &str1[max_len]); 
-    } 
+        printf("%s %u ERROR  --%s-- \n",
+               __FUNCTION__, __LINE__,
+               &str1[max_len]);
+    }
 
 /*--------------------------------------------------*/
 
 
     return (0);
 }
-

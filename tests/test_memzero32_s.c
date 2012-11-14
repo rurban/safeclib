@@ -21,7 +21,7 @@ int main()
 {
     errno_t rc;
     uint32_t i;
-    uint32_t len; 
+    uint32_t len;
 
     uint32_t mem1[LEN];
 
@@ -130,4 +130,3 @@ int main()
 
     return (0);
 }
-

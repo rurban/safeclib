@@ -101,22 +101,22 @@ CLEANFILES      = *~ *.gcno $(EXPORT_SYM)
 ## LCOV_HTML       = lcov_html
 ## LCOV_LCOV       = @LCOV@
 ## LCOV_GENHTML    = @GENHTML@
-## 
+##
 ## lcov: $(LCOV_HTML)
-## 
+##
 ## $(LCOV_INPUT): libcheck.la libcheckinternal.la
 ##         @$(MAKE) -C $(top_builddir)/tests check
-## 
+##
 ## $(LCOV_OUTPUT): $(LCOV_INPUT)
 ##         $(LCOV_LCOV) --capture --directory . --base-directory . --output-file $@
-## 
+##
 ## $(LCOV_HTML): $(LCOV_OUTPUT)
 ##         -$(RM) -r $@
 ##         LANG=C $(LCOV_GENHTML) --output-directory $@ --title "Check Code Coverage" --show-details $<
 ##         @echo "Point a web browser at $(LCOV_HTML)/index.html to see results."
-## 
+##
 ## clean-local: lcov-clean
-## 
+##
 ## .PHONY: lcov-clean
 ## lcov-clean:
 ##         -$(RM) -r $(LCOV_HTML) $(LCOV_OUTPUT)

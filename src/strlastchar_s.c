@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,19 +33,19 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strlastchar_s 
+ *    strlastchar_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t 
+ *    errno_t
  *    strlastchar_s(char *dest, rsize_t dmax, char c, char **last)
  *
  * DESCRIPTION
- *    Returns a pointer to the last occurrence of character c in 
- *    dest.  The scanning stops at the first null or after dmax 
- *    characters.   
+ *    Returns a pointer to the last occurrence of character c in
+ *    dest.  The scanning stops at the first null or after dmax
+ *    characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -55,7 +55,7 @@
  * INPUT PARAMETERS
  *    dest    pointer to string
  *
- *    dmax    restricted maximum length of string 
+ *    dmax    restricted maximum length of string
  *
  *    c       character to locate
  *
@@ -63,51 +63,51 @@
  *
  * OUTPUT PARAMETERS
  *    last    updated pointer to last occurrence
- * 
+ *
  * RUNTIME CONSTRAINTS
  *    dest shall not be a null pointer.
  *    last shall not be a null pointer.
  *    dmax shall not be 0
  *    dmax shall not be greater than RSIZE_MAX_STR
  *
- * RETURN VALUE 
+ * RETURN VALUE
  *    pointer to the last occurrence, when the return code is OK
  *
  *    EOK         pointer to the last occurence is returned
- *    ESNOTFND    c not found in dest   
+ *    ESNOTFND    c not found in dest
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
  *
  * ALSO SEE
- *    strfirstchar_s(), strfirstdiff_s(), strfirstsame_s(),     
+ *    strfirstchar_s(), strfirstdiff_s(), strfirstsame_s(),
  *    strlastdiff_s(), strlastsame_s()
- * 
+ *
  */
-errno_t   
+errno_t
 strlastchar_s(char *dest, rsize_t dmax, char c, char **last)
 {
     if (last == NULL) {
-        invoke_safe_str_constraint_handler("strlastchar_s: last is null", 
+        invoke_safe_str_constraint_handler("strlastchar_s: last is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *last = NULL;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strlastchar_s: dest is null", 
+        invoke_safe_str_constraint_handler("strlastchar_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0 ) {
-        invoke_safe_str_constraint_handler("strlastchar_s: dmax is 0",  
+        invoke_safe_str_constraint_handler("strlastchar_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strlastchar_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strlastchar_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -128,4 +128,3 @@ strlastchar_s(char *dest, rsize_t dmax, char c, char **last)
         return (EOK);
     }
 }
-

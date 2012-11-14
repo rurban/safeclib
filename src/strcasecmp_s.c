@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -32,22 +32,22 @@
 #include "safe_str_lib.h"
 #include "safe_str_constraint.h"
 
-#include "ctype.h" 
+#include "ctype.h"
 
 
-/** 
+/**
  * NAME
  *    strcasecmp_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strcasecmp_s(const char *dest, rsize_t dmax,
  *                 const char *src,  int *indicator)
  *
  * DESCRIPTION
- *    Case insensitive string comparison by converting 
- *    to uppercase prior to the compare. 
+ *    Case insensitive string comparison by converting
+ *    to uppercase prior to the compare.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -81,16 +81,16 @@
  *         0   strings the same
  *        <0   dest less than src
  *
- *    EOK          comparison complete 
- *    ESNULLP      pointer was null 
- *    ESZEROL      length was zero 
- *    ESLEMAX      length exceeded max  
- * 
- * ALSO SEE 
- *    strcmp_s() 
- * 
+ *    EOK          comparison complete
+ *    ESNULLP      pointer was null
+ *    ESZEROL      length was zero
+ *    ESLEMAX      length exceeded max
+ *
+ * ALSO SEE
+ *    strcmp_s()
+ *
  */
-errno_t 
+errno_t
 strcasecmp_s (const char *dest, rsize_t dmax,
               const char *src, int *indicator)
 {
@@ -98,39 +98,39 @@ strcasecmp_s (const char *dest, rsize_t dmax,
     const unsigned char *usrc = (const unsigned char *) src;
 
     if (indicator == NULL) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: indicator is null", 
+        invoke_safe_str_constraint_handler("strcasecmp_s: indicator is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *indicator = 0;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: dest is null", 
+        invoke_safe_str_constraint_handler("strcasecmp_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (src == NULL) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: src is null", 
+        invoke_safe_str_constraint_handler("strcasecmp_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strcasecmp_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strcasecmp_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
     while (*udest && *usrc && dmax) {
 
-        if (toupper(*udest) != toupper(*usrc)) { 
+        if (toupper(*udest) != toupper(*usrc)) {
             break;
         }
 
@@ -142,4 +142,3 @@ strcasecmp_s (const char *dest, rsize_t dmax,
     *indicator = (toupper(*udest) - toupper(*usrc));
     return (EOK);
 }
-

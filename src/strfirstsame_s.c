@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,20 +33,20 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
- *    strfirstsame_s 
+ *    strfirstsame_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strfirstsame_s(const char *dest, rsize_t dmax,
  *                   const char *src,  rsize_t *index)
  *
  * DESCRIPTION
  *    Returns the index of the first character that is the
  *    same between dest and src.  The scanning stops at the
- *    fisrt null in dest or src, or after dmax characters. 
+ *    fisrt null in dest or src, or after dmax characters.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -70,7 +70,7 @@
  *    indicator shall not be a null pointer.
  *    dmax shall not be 0
  *    dmax shall not be greater than RSIZE_MAX_STR
- * 
+ *
  * RETURN VALUE
  *    index to first same char, when the return code is OK
  *
@@ -78,14 +78,14 @@
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
- *    ESNOTFND    not found 
+ *    ESNOTFND    not found
  *
- * ALSO SEE 
- *    strfirstchar_s(), strfirstdiff_s(), strlastchar_s(), 
- *    strlastdiff_s(), strlastsame_s() 
- * 
+ * ALSO SEE
+ *    strfirstchar_s(), strfirstdiff_s(), strlastchar_s(),
+ *    strlastdiff_s(), strlastsame_s()
+ *
  */
-errno_t 
+errno_t
 strfirstsame_s (const char *dest, rsize_t dmax,
                 const char *src,  rsize_t *index)
 {
@@ -94,7 +94,7 @@ strfirstsame_s (const char *dest, rsize_t dmax,
     if (index == NULL) {
         invoke_safe_str_constraint_handler("strfirstsame_s: index is null",
                    NULL, ESNULLP);
-        return (ESNULLP); 
+        return (ESNULLP);
     }
     *index = 0;
 
@@ -135,11 +135,10 @@ strfirstsame_s (const char *dest, rsize_t dmax,
             return (EOK);
         }
 
-        dest++; 
+        dest++;
         src++;
-        dmax--; 
+        dmax--;
     }
 
     return (ESNOTFND);
 }
-

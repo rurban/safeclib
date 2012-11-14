@@ -4,7 +4,7 @@
  * February 2005, Bo Berry
  *
  * Copyright (c) 2005-2009 Cisco Systems
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -39,7 +39,7 @@
  * is responsible for all parameter validation and alignment.
  */
 
-/** 
+/**
  * NAME
  *    mem_prim_set - Sets memory to value
  *
@@ -59,11 +59,11 @@
  *    value - byte value
  *
  * OUTPUT PARAMETERS
- *    dest - is updated 
+ *    dest - is updated
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_set (void *dest, uint32_t len, uint8_t value)
@@ -126,7 +126,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
         case 2:  *lp++ = value32;
         case 1:  *lp++ = value32;
             lcount = 0;
-            break; 
+            break;
         }
     } /* end while */
 
@@ -149,7 +149,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 }
 
 
-/** 
+/**
  * NAME
  *    mem_prim_set16 - Sets memory to value
  *
@@ -170,11 +170,11 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
  *    value - uint16_t value
  *
  * OUTPUT PARAMETERS
- *    dest - is updated 
+ *    dest - is updated
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_set16 (uint16_t *dp, uint32_t len, uint16_t value)
@@ -212,7 +212,7 @@ mem_prim_set16 (uint16_t *dp, uint32_t len, uint16_t value)
         case 2:  *dp++ = value;
         case 1:  *dp++ = value;
             len = 0;
-            break; 
+            break;
         }
     } /* end while */
 
@@ -220,7 +220,7 @@ mem_prim_set16 (uint16_t *dp, uint32_t len, uint16_t value)
 }
 
 
-/** 
+/**
  * NAME
  *    mem_prim_set32 - Sets memory to the uint32_t value
  *
@@ -241,11 +241,11 @@ mem_prim_set16 (uint16_t *dp, uint32_t len, uint16_t value)
  *    value - uint32_t value
  *
  * OUTPUT PARAMETERS
- *    dest - is updated 
+ *    dest - is updated
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_set32 (uint32_t *dp, uint32_t len, uint32_t value)
@@ -283,7 +283,7 @@ mem_prim_set32 (uint32_t *dp, uint32_t len, uint32_t value)
         case 2:  *dp++ = value;
         case 1:  *dp++ = value;
             len = 0;
-            break; 
+            break;
         }
     } /* end while */
 
@@ -291,7 +291,7 @@ mem_prim_set32 (uint32_t *dp, uint32_t len, uint32_t value)
 }
 
 
-/** 
+/**
  * NAME
  *    mem_prim_move - Move (handles overlap) memory
  *
@@ -313,11 +313,11 @@ mem_prim_set32 (uint32_t *dp, uint32_t len, uint32_t value)
  *    len - maximum number bytes of src that can be copied
  *
  * OUTPUT PARAMETERS
- *    dest - is updated 
+ *    dest - is updated
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_move (void *dest, const void *src, uint32_t len)
@@ -464,7 +464,7 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
 }
 
 
-/** 
+/**
  * NAME
  *    mem_prim_move8 - Move (handles overlap) memory
  *
@@ -490,7 +490,7 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_move8 (uint8_t *dp, const uint8_t *sp, uint32_t len)
@@ -536,7 +536,7 @@ mem_prim_move8 (uint8_t *dp, const uint8_t *sp, uint32_t len)
              case 2:  *dp++ = *sp++;
              case 1:  *dp++ = *sp++;
                  len = 0;
-                 break; 
+                 break;
              }
          } /* end while */
 
@@ -586,7 +586,7 @@ mem_prim_move8 (uint8_t *dp, const uint8_t *sp, uint32_t len)
             case 2:  *--dp = *--sp;
             case 1:  *--dp = *--sp;
                 len = 0;
-                break; 
+                break;
             }
         } /* end while */
     }
@@ -595,7 +595,7 @@ mem_prim_move8 (uint8_t *dp, const uint8_t *sp, uint32_t len)
 }
 
 
-/** 
+/**
  * NAME
  *    mem_prim_move16 - Move (handles overlap) memory
  *
@@ -617,11 +617,11 @@ mem_prim_move8 (uint8_t *dp, const uint8_t *sp, uint32_t len)
  *    len - maximum number uint16_t of sp that can be copied
  *
  * OUTPUT PARAMETERS
- *    dp - is updated 
+ *    dp - is updated
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_move16 (uint16_t *dp, const uint16_t *sp, uint32_t len)
@@ -716,7 +716,7 @@ mem_prim_move16 (uint16_t *dp, const uint16_t *sp, uint32_t len)
             case 2:  *--dp = *--sp;
             case 1:  *--dp = *--sp;
                 len = 0;
-                break; 
+                break;
             }
         } /* end while */
     }
@@ -725,7 +725,7 @@ mem_prim_move16 (uint16_t *dp, const uint16_t *sp, uint32_t len)
 }
 
 
-/** 
+/**
  * NAME
  *    mem_prim_move32 - Move (handles overlap) memory
  *
@@ -747,11 +747,11 @@ mem_prim_move16 (uint16_t *dp, const uint16_t *sp, uint32_t len)
  *    len - maximum number uint32_t of sp that can be copied
  *
  * OUTPUT PARAMETERS
- *    dp - is updated 
+ *    dp - is updated
  *
  * RETURN VALUE
  *    none
- * 
+ *
  */
 void
 mem_prim_move32 (uint32_t *dp, const uint32_t *sp, uint32_t len)
@@ -845,11 +845,10 @@ mem_prim_move32 (uint32_t *dp, const uint32_t *sp, uint32_t len)
             case 2:  *--dp = *--sp;
             case 1:  *--dp = *--sp;
                 len = 0;
-                break; 
+                break;
             }
         } /* end while */
     }
 
     return;
 }
-

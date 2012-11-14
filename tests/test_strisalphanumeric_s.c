@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strisalphanumeric_s.c 
+ * test_strisalphanumeric_s.c
  *
  *
  *------------------------------------------------------------------
@@ -116,10 +116,10 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(str, "1234");
-    str[2] = 132;          /* special char */ 
+    str[2] = 132;          /* special char */
     len = strlen(str);
 
-    /* special char embedded */ 
+    /* special char embedded */
     rc = strisalphanumeric_s(str, len);
     if (rc != FALSE) {
         printf("%s %u   Error rc=%u \n",
@@ -141,4 +141,3 @@ int main()
 
     return (0);
 }
-

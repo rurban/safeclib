@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strcmpfld_s  
+ * test_strcmpfld_s
  *
  *
  *------------------------------------------------------------------
@@ -39,7 +39,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    len = 5; 
+    len = 5;
     rc = strcmpfld_s(str1, len, NULL, &ind);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -199,10 +199,10 @@ int main()
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     len = strlen(str1);
-    str1[3] = '\0';   /* now place a null */ 
+    str1[3] = '\0';   /* now place a null */
 
     strcpy(str2, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    str2[3] = '\0'; 
+    str2[3] = '\0';
 
     rc = strcmpfld_s(str1, len, str2, &ind);
     if (rc != EOK) {
@@ -221,11 +221,11 @@ int main()
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     len = strlen(str1);
-    str1[1] = '\0';  /* now place nulls */ 
+    str1[1] = '\0';  /* now place nulls */
     str1[20] = '\0';
 
     strcpy(str2, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    str2[1] = '\0'; 
+    str2[1] = '\0';
     str2[20] = '\0';
 
     rc = strcmpfld_s(str1, len, str2, &ind);

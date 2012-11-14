@@ -50,7 +50,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    /* empty string */ 
+    /* empty string */
     rc = strisascii_s("", 2);
     if (rc != TRUE) {
         printf("%s %u   Error rc=%u \n",
@@ -116,7 +116,7 @@ int main()
     str[2] = 132;   /* special char */
     len = strlen(str);
 
-    /* special char embedded */ 
+    /* special char embedded */
     rc = strisascii_s(str, len);
     if (rc != FALSE) {
         printf("%s %u   Error rc=%u \n",
@@ -127,4 +127,3 @@ int main()
 
     return (0);
 }
-

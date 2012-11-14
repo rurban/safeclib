@@ -131,8 +131,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = i; } 
-    for (i=0; i<LEN; i++) { mem2[i] = i; } 
+    for (i=0; i<LEN; i++) { mem1[i] = i; }
+    for (i=0; i<LEN; i++) { mem2[i] = i; }
 
     rc = memcmp32_s(mem1, LEN, mem2, LEN, &ind);
     if (rc != EOK) {
@@ -174,4 +174,3 @@ int main()
 
     return (0);
 }
-

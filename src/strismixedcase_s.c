@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,21 +30,21 @@
  */
 
 #include "safe_str_lib.h"
-#include "safe_str_constraint.h" 
+#include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strismixedcase_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    boolean_t  
+ *    boolean_t
  *    strismixedcase_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
- *    This function checks that the entire string is mixed 
- *    case.  The scanning stops at the first null or after 
+ *    This function checks that the entire string is mixed
+ *    case.  The scanning stops at the first null or after
  *    dmax characters.
  *
  * EXTENSION TO
@@ -58,7 +58,7 @@
  *    dmax       maximum length of string
  *
  * OUTPUT PARAMETERS
- *    none 
+ *    none
  *
  * RUNTIME CONSTRAINTS
  *    dest shall not be a null pointer.
@@ -66,35 +66,35 @@
  *    dmax shall not be greater than RSIZE_MAX_STR.
  *
  * RETURN VALUE
- *    TRUE       string is mixed case  
- *    FALSE      string is not mixed case or error 
+ *    TRUE       string is mixed case
+ *    FALSE      string is not mixed case or error
  *
  * ALSO SEE
  *    strisalphanumeric_s(), strisascii_s(), strisdigit_s(),
- *    strishex_s(), strislowercase_s(),   
+ *    strishex_s(), strislowercase_s(),
  *    strisuppercase_s()
- * 
+ *
  */
-boolean_t 
+boolean_t
 strismixedcase_s (const char *dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strismixedcase_s: "
-                   "dest is null", 
+                   "dest is null",
                    NULL, ESNULLP);
         return (FALSE);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strismixedcase_s: "
-                   "dmax is 0", 
+                   "dmax is 0",
                    NULL, ESZEROL);
         return (FALSE);
-    } 
+    }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strismixedcase_s: "
-                   "dmax exceeds max", 
+                   "dmax exceeds max",
                    NULL, ESLEMAX);
         return (FALSE);
     }
@@ -116,4 +116,3 @@ strismixedcase_s (const char *dest, rsize_t dmax)
 
     return (TRUE);
 }
-

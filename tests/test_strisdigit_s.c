@@ -59,7 +59,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(str, "123456789");
-    len = 4; 
+    len = 4;
 
     rc = strisdigit_s(str, len);
     if (rc != TRUE) {
@@ -115,4 +115,3 @@ int main()
 
     return (0);
 }
-

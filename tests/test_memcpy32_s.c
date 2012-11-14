@@ -21,7 +21,7 @@
 int main()
 {
     errno_t rc;
-    uint32_t len; 
+    uint32_t len;
     uint32_t i;
 
     uint32_t  mem1[LEN];
@@ -77,10 +77,10 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 44; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    len = 1; 
+    len = 1;
     rc = memcpy32_s(mem1, len, mem2, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -96,10 +96,10 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 44; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    len = 2; 
+    len = 2;
     rc = memcpy32_s(mem1, len, mem2, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
@@ -115,8 +115,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 44; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     /* slen greater than dmax */
     rc = memcpy32_s(mem1, LEN/2, mem2, LEN);
@@ -135,8 +135,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 44; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy32_s(mem1, LEN, mem2, 0);
     if (rc != ESZEROL) {
@@ -144,7 +144,7 @@ int main()
                      __FUNCTION__, __LINE__,  rc);
     }
 
-    /* verify mem1 was zeroed */ 
+    /* verify mem1 was zeroed */
     for (i=0; i<LEN; i++) {
         if (mem1[i] != 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
@@ -154,8 +154,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 44; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy32_s(mem1, LEN, mem2, RSIZE_MAX_MEM32+1);
     if (rc != ESLEMAX) {
@@ -173,8 +173,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 25; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 35; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 25; }
+    for (i=0; i<LEN; i++) { mem2[i] = 35; }
 
     /* same ptr */
     rc = memcpy32_s(mem1, LEN, mem1, LEN);
@@ -185,10 +185,10 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 25; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 35; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 25; }
+    for (i=0; i<LEN; i++) { mem2[i] = 35; }
 
-    /* overlap */ 
+    /* overlap */
     rc = memcpy32_s(&mem1[0], 100, &mem1[10], 100);
     if (rc != ESOVRLP) {
         debug_printf("%s %u  Error rc=%u \n",
@@ -205,8 +205,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 65; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 75; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 65; }
+    for (i=0; i<LEN; i++) { mem2[i] = 75; }
 
     /* overlap */
     rc = memcpy32_s(&mem1[10], 100, &mem1[0], 100);
@@ -225,8 +225,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 65; } 
-    for (i=0; i<LEN; i++) { mem2[i] = 75; } 
+    for (i=0; i<LEN; i++) { mem1[i] = 65; }
+    for (i=0; i<LEN; i++) { mem2[i] = 75; }
 
     rc = memcpy32_s(mem1, LEN, mem2, LEN/2);
     if (rc != EOK) {
@@ -246,4 +246,3 @@ int main()
 
     return (0);
 }
-

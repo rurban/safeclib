@@ -4,7 +4,7 @@
  * November 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights resevered. 
+ * All rights resevered.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,25 +30,25 @@
  */
 
 #include "safe_str_lib.h"
-#include "safe_str_constraint.h" 
+#include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strremovews_s
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    errno_t  
+ *    errno_t
  *    strremovews_s(char *dest, rsize_t dmax)
  *
  * DESCRIPTION
  *    Removes beginning and trailing whitespace from the string pointed to by
- *    dest by shifting the text left over writting the beginning whitespace.  
- *    The shifted-trimmed text is null terminated. 
+ *    dest by shifting the text left over writting the beginning whitespace.
+ *    The shifted-trimmed text is null terminated.
  *
  *    The text is shifted so the original pointer can continue to be used. This
- *    is useful when the memory was malloc'ed and will need to be freed. 
+ *    is useful when the memory was malloc'ed and will need to be freed.
  *
  * EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -56,28 +56,28 @@
  *    Part I: Bounds-checking interfaces
  *
  * INPUT PARAMETERS
- *    dest    pointer to string to remove whitespace 
+ *    dest    pointer to string to remove whitespace
  *
- *    dmax    restricted maximum length of string 
+ *    dmax    restricted maximum length of string
  *
  * RUNTIME CONSTRAINTS
  *    dest shall not be a null pointer.
  *    dmax shall not be 0
  *    dmax shall not be greater than RSIZE_MAX_STR
- *    dest shall be null terminated 
+ *    dest shall be null terminated
  *
  * RETURN VALUE
- *    EOK        
+ *    EOK
  *    ESNULLP     NULL pointer
  *    ESZEROL     zero length
  *    ESLEMAX     length exceeds max limit
- *    ESUNTERM    dest was not null terminated 
- * 
- * SEE ALSO 
- *    strljustify_s(), 
- * 
+ *    ESUNTERM    dest was not null terminated
+ *
+ * SEE ALSO
+ *    strljustify_s(),
+ *
  */
-errno_t 
+errno_t
 strremovews_s (char *dest, rsize_t dmax)
 {
     char *orig_dest;
@@ -85,26 +85,26 @@ strremovews_s (char *dest, rsize_t dmax)
     rsize_t orig_dmax;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strremovews_s: dest is null", 
+        invoke_safe_str_constraint_handler("strremovews_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0 ) {
-        invoke_safe_str_constraint_handler("strremovews_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strremovews_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strremovews_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strremovews_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    /*  
-     * corner case, a dmax of one requires a null 
-     */ 
+    /*
+     * corner case, a dmax of one requires a null
+     */
     if (*dest == '\0' || dmax <= RSIZE_MIN_STR) {
         *dest = '\0';
         return (EOK);
@@ -115,49 +115,48 @@ strremovews_s (char *dest, rsize_t dmax)
 
      /*
       * scan the string to be sure it is properly terminated
-      */ 
+      */
      while (*dest) {
         if (dmax == 0) {
             while (orig_dmax) { *orig_dest++ = '\0';  orig_dmax--; }
 
             invoke_safe_str_constraint_handler(
-                      "strremovews_s: dest is unterminated", 
+                      "strremovews_s: dest is unterminated",
                        NULL, ESUNTERM);
             return (ESUNTERM);
         }
         dmax--;
         dest++;
-    } 
+    }
 
     /*
-     * find first non-white space char 
-     */ 
+     * find first non-white space char
+     */
     orig_end = dest-1;
-    dest = orig_dest; 
+    dest = orig_dest;
     while ((*dest == ' ') || (*dest == '\t')) {
         dest++;
-    } 
+    }
 
     /*
-     * shift the text over the leading spaces 
-     */ 
-    if (orig_dest != dest && *dest) { 
+     * shift the text over the leading spaces
+     */
+    if (orig_dest != dest && *dest) {
         while (*dest) {
             *orig_dest++ = *dest;
-            *dest++ = ' '; 
-        } 
+            *dest++ = ' ';
+        }
         *dest = '\0';
-     } 
+     }
 
     /*
-     * strip trailing whitespace  
-     */ 
+     * strip trailing whitespace
+     */
     dest = orig_end;
     while ((*dest == ' ') || (*dest == '\t')) {
-        *dest = '\0'; 
+        *dest = '\0';
         dest--;
-    } 
+    }
 
     return (EOK);
 }
-

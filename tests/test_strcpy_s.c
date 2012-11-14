@@ -48,13 +48,13 @@ int main()
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        } 
-    } 
+        }
+    }
 #else
     if (str1[0] != '\0') {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-    } 
+    }
 #endif
 
 /*--------------------------------------------------*/
@@ -96,7 +96,7 @@ int main()
     if (str1[0] != '\0') {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-    } 
+    }
 #endif
 
 /*--------------------------------------------------*/
@@ -124,13 +124,13 @@ int main()
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        } 
-    } 
+        }
+    }
 #else
     if (str1[0] != '\0') {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-    } 
+    }
 #endif
 
 /*--------------------------------------------------*/
@@ -255,7 +255,7 @@ int main()
 
     for (i=0; i<10; i++) {
         printf("str1[%i] = %d \n", i, str1[i]);
-    }  
+    }
 
 /*--------------------------------------------------*/
 

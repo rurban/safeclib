@@ -120,7 +120,7 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
-    } 
+    }
 
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
@@ -154,4 +154,3 @@ int main()
 
     return (0);
 }
-

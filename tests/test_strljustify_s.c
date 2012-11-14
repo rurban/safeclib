@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strljustify_s    
+ * test_strljustify_s
  *
  *
  *------------------------------------------------------------------
@@ -50,7 +50,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    /* empty string */ 
+    /* empty string */
     rc = strljustify_s(" ", 12);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
@@ -64,11 +64,11 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "ABCDEFGHIJK");
     len = 2;
 
-    /* unterminated */ 
+    /* unterminated */
     rc = strljustify_s(str, len);
     if (rc != ESUNTERM) {
         printf("%s %u   Error rc=%u \n",
@@ -82,7 +82,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "      ABCDEFGHIJK");
     len = 5;
 
@@ -100,11 +100,11 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "A");
     len = 1;
 
-    /* a one char string will be emptied - str[0]=='\0' */ 
+    /* a one char string will be emptied - str[0]=='\0' */
     rc = strljustify_s(str, len);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
@@ -122,7 +122,7 @@ int main()
     strcpy (str, "ABC");
     len = 2;
 
-    /* this will be unterminated */ 
+    /* this will be unterminated */
     rc = strljustify_s(str, len);
     if (rc != ESUNTERM) {
         printf("%s %u   Error rc=%u \n",
@@ -155,7 +155,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy(str, "   B ");
     len = strlen(str);
 
@@ -173,7 +173,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy(str, "   B ");
     len = strlen(str);
 
@@ -209,9 +209,9 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy(str, "   NowISTHETimE       ");
-    len = strlen(str); 
+    len = strlen(str);
 
     rc = strljustify_s(str, len);
     if (rc != EOK) {
@@ -227,7 +227,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, " qq21ego ");
     len = strlen(str);
 
@@ -239,7 +239,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN); 
+    strzero_s(str, LEN);
     strcpy (str, "   1234   ");
     len = strlen(str);
 
@@ -253,4 +253,3 @@ int main()
 
     return (0);
 }
-

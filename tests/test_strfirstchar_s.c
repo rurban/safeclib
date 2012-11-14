@@ -118,7 +118,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simpleZ");
-    len = strlen(str1); 
+    len = strlen(str1);
 
     rc = strfirstchar_s(str1, len, 'Z', &first);
     if (rc != EOK) {
@@ -150,4 +150,3 @@ int main()
 
     return (0);
 }
-

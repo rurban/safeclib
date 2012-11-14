@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * All rights reserved. 
+ * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -34,7 +34,7 @@
 #include "safe_str_constraint.h"
 
 
-/** 
+/**
  * NAME
  *    strcat_s
  *
@@ -44,17 +44,17 @@
  *    strcat_s(char *dest, rsize_t dmax, const char *src)
  *
  * DESCRIPTION
- *    The strcat_s function appends a copy of the string pointed 
- *    to by src (including the terminating null character) to the 
- *    end of the string pointed to by dest. The initial character 
- *    from src overwrites the null character at the end ofdest. 
+ *    The strcat_s function appends a copy of the string pointed
+ *    to by src (including the terminating null character) to the
+ *    end of the string pointed to by dest. The initial character
+ *    from src overwrites the null character at the end ofdest.
  *
- *    All elements following the terminating null character (if 
- *    any) written by strcat_s in the array of dmax characters 
- *    pointed to by dest take unspeciﬁed values when strcat_s 
+ *    All elements following the terminating null character (if
+ *    any) written by strcat_s in the array of dmax characters
+ *    pointed to by dest take unspeciﬁed values when strcat_s
  *    returns.
  *
- * SPECIFIED IN  
+ * SPECIFIED IN
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -72,30 +72,30 @@
  *              to string dest
  *
  * OUTPUT PARAMETERS
- *    dest      is updated 
+ *    dest      is updated
  *
- * RUNTIME CONSTRAINTS 
+ * RUNTIME CONSTRAINTS
  *    Neither dest nor src shall be a null pointer
  *    dmax shall not equal zero
- *    dmax shall not be greater than RSIZE_MAX_STR  
- *    dmax shall be greater than strnlen_s(src,m). 
- *    Copying shall not takeplace between objects that overlap 
- *    If there is a runtime-constraint violation, then if dest is 
- *       not a null pointer and dmax is greater than zero and not 
+ *    dmax shall not be greater than RSIZE_MAX_STR
+ *    dmax shall be greater than strnlen_s(src,m).
+ *    Copying shall not takeplace between objects that overlap
+ *    If there is a runtime-constraint violation, then if dest is
+ *       not a null pointer and dmax is greater than zero and not
  *       greater than RSIZE_MAX_STR, then strcat_s nulls dest.
  *
  * RETURN VALUE
  *    EOK        successful operation, all the characters from src
  *                were appended to dest and the result in dest is
- *                 null terminated. 
+ *                 null terminated.
  *    ESNULLP    NULL pointer
  *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max    
- *    ESUNTERM   dest not terminated 
+ *    ESLEMAX    length exceeds max
+ *    ESUNTERM   dest not terminated
  *
- * ALSO SEE 
- *    strncat_s(), strcpy_s(), strncpy_s()  
- * 
+ * ALSO SEE
+ *    strncat_s(), strcpy_s(), strncpy_s()
+ *
  */
 errno_t
 strcat_s (char *dest, rsize_t dmax, const char *src)
@@ -105,25 +105,25 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
     const char *overlap_bumper;
 
     if (dest == NULL) {
-        invoke_safe_str_constraint_handler("strcat_s: dest is null", 
+        invoke_safe_str_constraint_handler("strcat_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (src == NULL) {
-        invoke_safe_str_constraint_handler("strcat_s: src is null", 
+        invoke_safe_str_constraint_handler("strcat_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
     if (dmax == 0) {
-        invoke_safe_str_constraint_handler("strcat_s: dmax is 0", 
+        invoke_safe_str_constraint_handler("strcat_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
     if (dmax > RSIZE_MAX_STR) {
-        invoke_safe_str_constraint_handler("strcat_s: dmax exceeds max", 
+        invoke_safe_str_constraint_handler("strcat_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
@@ -137,11 +137,11 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
 
         /* Find the end of dest */
         while (*dest != '\0') {
- 
+
             if (dest == overlap_bumper) {
                 handle_error(orig_dest, orig_dmax, "strcat_s: "
-                             "overlapping objects", 
-                             ESOVRLP); 
+                             "overlapping objects",
+                             ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -149,8 +149,8 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
             dmax--;
             if (dmax == 0) {
                 handle_error(orig_dest, orig_dmax, "strcat_s: "
-                             "dest unterminated", 
-                             ESUNTERM); 
+                             "dest unterminated",
+                             ESUNTERM);
                 return (ESUNTERM);
             }
         }
@@ -158,8 +158,8 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
         while (dmax > 0) {
             if (dest == overlap_bumper) {
                 handle_error(orig_dest, orig_dmax, "strcat_s: "
-                             "overlapping objects", 
-                             ESOVRLP); 
+                             "overlapping objects",
+                             ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -168,7 +168,7 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
 #ifdef SAFE_LIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
-#endif 
+#endif
                 return (EOK);
             }
 
@@ -191,17 +191,17 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
             dmax--;
             if (dmax == 0) {
                 handle_error(orig_dest, orig_dmax, "strcat_s: "
-                             "dest unterminated", 
-                             ESUNTERM); 
+                             "dest unterminated",
+                             ESUNTERM);
                 return (ESUNTERM);
             }
         }
 
         while (dmax > 0) {
             if (src == overlap_bumper) {
-                handle_error(orig_dest, orig_dmax, "strcat_s: " 
-                             "overlapping objects", 
-                             ESOVRLP); 
+                handle_error(orig_dest, orig_dmax, "strcat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -210,7 +210,7 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
 #ifdef SAFE_LIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
-#endif 
+#endif
                 return (EOK);
             }
 
@@ -218,15 +218,14 @@ strcat_s (char *dest, rsize_t dmax, const char *src)
             dest++;
             src++;
         }
-    } 
+    }
 
     /*
-     * the entire src was not copied, so null the string 
+     * the entire src was not copied, so null the string
      */
     handle_error(orig_dest, orig_dmax, "strcat_s: not enough "
-                      "space for src", 
-                      ESNOSPC); 
+                      "space for src",
+                      ESNOSPC);
 
     return (ESNOSPC);
 }
-
