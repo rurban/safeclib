@@ -5,15 +5,11 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "test_private.h"
 #include "safe_str_lib.h"
-
 
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
-
 
 int main()
 {

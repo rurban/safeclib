@@ -5,18 +5,11 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "test_private.h"
 #include "safe_str_lib.h"
-
-
-#define debug_printf   printf
 
 #define MAX   ( 128 )
 #define LEN   ( 128 )
-
-
 
 int main()
 {

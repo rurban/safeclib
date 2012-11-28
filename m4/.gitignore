@@ -5,6 +5,9 @@
 # Ignore files provided by autotools, but NOT any M4 scripts we may
 # write.
 #
+# Ignore m4 files provided to use by autotools but NOT any
+# m4 scripts we write.
+#
 /libtool.m4
 /ltoptions.m4
 /ltsugar.m4

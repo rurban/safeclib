@@ -5,26 +5,20 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "safe_types.h"
+#include "test_private.h"
 #include "safe_mem_lib.h"
-
-#define debug_printf  printf
-
 
 #define LEN   ( 256 )
 
+static uint8_t mem1[LEN];
 
-int main()
+int test_memset_s (void)
 {
     errno_t rc;
     uint32_t len;
     uint32_t i;
 
     uint8_t value;
-    uint8_t mem1[LEN];
 
 /*--------------------------------------------------*/
 
@@ -151,3 +145,12 @@ int main()
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_memset_s());
+}
+#endif

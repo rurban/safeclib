@@ -2,13 +2,23 @@
  * perf_memcpy_s.c
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-
-#include "safe_types.h"
+#include "test_private.h"
 #include "safe_mem_lib.h"
 
+#ifndef __KERNEL__
+# ifdef TIME_WITH_SYS_TIME
+#  include <sys/time.h>
+#  include <time.h>
+# else
+#  ifdef HAVE_SYS_TIME_H
+#   include <sys/time.h>
+#  else
+#   include <time.h>
+#  endif
+# endif
+#else
+# error Not supported in Linux kernel space
+#endif
 
 #define LEN   ( 1024 * 10 )
 

@@ -5,15 +5,12 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "test_private.h"
 #include "safe_str_lib.h"
 
 #define LEN   ( 128 )
 
-
-int main()
+int test_strnlen_s (void)
 {
     rsize_t len;
     rsize_t std_len;
@@ -128,3 +125,12 @@ int main()
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_strnlen_s());
+}
+#endif

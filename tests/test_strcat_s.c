@@ -5,29 +5,21 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include "test_private.h"
 #include "safe_str_lib.h"
-
-#define debug_printf   printf
-
-
 
 #define LEN   ( 128 )
 
+static char   str1[LEN];
+static char   str2[LEN];
 
-int main()
+int test_strcat_s (void)
 {
     errno_t rc;
     int32_t  ind;
     int32_t  len1;
     int32_t  len2;
     int32_t  len3;
-
-    char   str1[LEN];
-    char   str2[LEN];
 
 /*--------------------------------------------------*/
 
@@ -311,3 +303,12 @@ int main()
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_strcat_s());
+}
+#endif

@@ -5,27 +5,19 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "safe_types.h"
+#include "test_private.h"
 #include "safe_mem_lib.h"
-
-
-#define debug_printf  printf
-
 
 #define LEN   ( 1024 )
 
+static uint8_t  mem1[LEN+2];
+static uint8_t  mem2[LEN+2];
 
-int main()
+int test_memcpy_s (void)
 {
     errno_t rc;
     uint32_t i;
     rsize_t len;
-
-    uint8_t  mem1[LEN+2];
-    uint8_t  mem2[LEN+2];
 
 /*--------------------------------------------------*/
 
@@ -314,3 +306,12 @@ int main()
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_memcpy_s());
+}
+#endif

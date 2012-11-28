@@ -5,24 +5,21 @@
  *------------------------------------------------------------------
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "test_private.h"
 #include "safe_str_lib.h"
-
 
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 
+static char   str1[LEN];
+static char   str2[LEN];
 
-int main()
+int test_strspn_s (void)
 {
-    errno_t rc;
-    rsize_t count;
-    int32_t std_count;
+    errno_t rc = 0;
+    rsize_t count = 0;
+    int32_t std_count = 0;
 
-    char   str1[LEN];
-    char   str2[LEN];
 
 /*--------------------------------------------------*/
 
@@ -281,3 +278,12 @@ int main()
 
     return (0);
 }
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+    return (test_strspn_s());
+}
+#endif
