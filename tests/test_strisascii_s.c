@@ -13,7 +13,7 @@
 
 int main()
 {
-    boolean_t rc;
+    bool rc;
 
     uint32_t len;
     char   str[LEN];
@@ -22,7 +22,7 @@ int main()
 
     len = 5;
     rc = strisascii_s(NULL, len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -31,7 +31,7 @@ int main()
 
     len = 0;
     rc = strisascii_s("test", len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -40,7 +40,7 @@ int main()
 
     len = 99999;
     rc = strisascii_s("test", len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -49,7 +49,7 @@ int main()
 
     /* empty string */
     rc = strisascii_s("", 2);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -59,7 +59,7 @@ int main()
     strcpy (str, "ABCDEFGHIJK");
 
     rc = strisascii_s(str, 2);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -70,7 +70,7 @@ int main()
     len = strlen(str);
 
     rc = strisascii_s(str, 1);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -81,7 +81,7 @@ int main()
     len = strlen(str);
 
     rc = strisascii_s(str, 2);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -92,7 +92,7 @@ int main()
     len = strlen(str);
 
     rc = strisascii_s(str, len);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -102,7 +102,7 @@ int main()
     strcpy (str, "qq21ego");
 
     rc = strisascii_s(str, 33);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -115,7 +115,7 @@ int main()
 
     /* special char embedded */
     rc = strisascii_s(str, len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }

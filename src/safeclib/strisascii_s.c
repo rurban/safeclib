@@ -3,7 +3,7 @@
  *
  * October 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -41,7 +41,7 @@
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    boolean_t
+ *    bool
  *    strisascii_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
@@ -68,43 +68,43 @@
  *    dmax shall not be greater than RSIZE_MAX_STR.
  *
  * RETURN VALUE
- *    TRUE, string is ascii
- *    FALSE, string contains one or more non-ascii or an error occurred
+ *    true, string is ascii
+ *    false, string contains one or more non-ascii or an error occurred
  *
  * ALSO SEE
  *    strisalphanumeric_s(), strisdigit_s(), strishex_s(),
  *    strislowercase_s(), strismixedcase_s(), strisuppercase_s()
  *-
  */
-boolean_t
+bool
 strisascii_s (const char *dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strisascii_s: dest is null",
                    NULL, ESNULLP);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strisascii_s: dmax is 0",
                    NULL, ESZEROL);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strisascii_s: dmax "
                    "exceeds max",
                    NULL, ESLEMAX);
-        return (FALSE);
+        return (false);
     }
 
     while (*dest && dmax) {
         if ((unsigned char)*dest > 127) {
-            return (FALSE);
+            return (false);
         }
         dest++;
         dmax--;
     }
 
-    return (TRUE);
+    return (true);
 }

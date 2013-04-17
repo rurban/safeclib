@@ -3,7 +3,7 @@
  *
  * November 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -92,7 +92,7 @@ strlastsame_s (const char *dest, rsize_t dmax,
                const char *src, rsize_t *index)
 {
     const char *rp;
-    boolean_t similarity;
+    bool similarity;
 
     if (index == NULL) {
         invoke_safe_str_constraint_handler("strlastsame_s: index is null",
@@ -131,11 +131,11 @@ strlastsame_s (const char *dest, rsize_t dmax,
     /*
      * find the last offset
      */
-    similarity = FALSE;
+    similarity = false;
     while (*dest && *src && dmax) {
 
         if (*dest == *src) {
-            similarity = TRUE;
+            similarity = true;
             *index = (uint32_t)(dest - rp);
         }
 

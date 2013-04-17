@@ -13,7 +13,7 @@
 
 int main()
 {
-    boolean_t rc;
+    bool rc;
     rsize_t len;
     char   str[LEN];
 
@@ -21,7 +21,7 @@ int main()
 
     len = 5;
     rc = strismixedcase_s(NULL, len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -30,7 +30,7 @@ int main()
 
     len = 0;
     rc = strismixedcase_s("test", len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -39,7 +39,7 @@ int main()
 
     len = RSIZE_MAX_STR+1;
     rc = strismixedcase_s("test", len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -48,7 +48,7 @@ int main()
 
     len = 9;
     rc = strismixedcase_s("", len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -59,7 +59,7 @@ int main()
     len = 5;
 
     rc = strismixedcase_s(str, len);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -70,7 +70,7 @@ int main()
     len = strlen(str);
 
     rc = strismixedcase_s(str, len);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -81,7 +81,7 @@ int main()
     len = strlen(str);
 
     rc = strismixedcase_s(str, len);
-    if (rc != TRUE) {
+    if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -92,7 +92,7 @@ int main()
     len = strlen(str);
 
     rc = strismixedcase_s(str, len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }
@@ -103,7 +103,7 @@ int main()
     len = strlen(str);
 
     rc = strismixedcase_s(str, len);
-    if (rc != FALSE) {
+    if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
     }

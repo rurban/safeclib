@@ -3,7 +3,7 @@
  *
  * November 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -91,7 +91,7 @@ strspn_s (const char *dest, rsize_t dmax,
 {
     const char *scan2;
     rsize_t smax;
-    boolean_t match_found;
+    bool match_found;
 
     if (count== NULL) {
         invoke_safe_str_constraint_handler("strspn_s: count is null",
@@ -142,13 +142,13 @@ strspn_s (const char *dest, rsize_t dmax,
          * Scan the entire src string for each dest character, counting
          * inclusions.
          */
-        match_found = FALSE;
+        match_found = false;
         smax = slen;
         scan2 = src;
         while (*scan2 && smax) {
 
             if (*dest == *scan2) {
-                match_found = TRUE;
+                match_found = true;
                 break;
             }
             scan2++;

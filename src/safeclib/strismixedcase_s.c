@@ -3,7 +3,7 @@
  *
  * November 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -40,7 +40,7 @@
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    boolean_t
+ *    bool
  *    strismixedcase_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
@@ -67,8 +67,8 @@
  *    dmax shall not be greater than RSIZE_MAX_STR.
  *
  * RETURN VALUE
- *    TRUE       string is mixed case
- *    FALSE      string is not mixed case or error
+ *    true       string is mixed case
+ *    false      string is not mixed case or error
  *
  * ALSO SEE
  *    strisalphanumeric_s(), strisascii_s(), strisdigit_s(),
@@ -76,32 +76,32 @@
  *    strisuppercase_s()
  *
  */
-boolean_t
+bool
 strismixedcase_s (const char *dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strismixedcase_s: "
                    "dest is null",
                    NULL, ESNULLP);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strismixedcase_s: "
                    "dmax is 0",
                    NULL, ESZEROL);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strismixedcase_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
-        return (FALSE);
+        return (false);
     }
 
     if (*dest == '\0') {
-        return (FALSE);
+        return (false);
     }
 
     while (*dest) {
@@ -111,9 +111,9 @@ strismixedcase_s (const char *dest, rsize_t dmax)
             dest++;
             dmax--;
         } else {
-            return (FALSE);
+            return (false);
         }
     }
 
-    return (TRUE);
+    return (true);
 }

@@ -3,7 +3,7 @@
  *
  * October 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -40,7 +40,7 @@
  *
  * SYNOPSIS
  *    #include "strlib.h"
- *    boolean_t
+ *    bool
  *    strispassword_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
@@ -72,14 +72,14 @@
  *    dest shall not be unterminated
  *
  * RETURN VALUE
- *    TRUE, string has valid password makeup
- *    FALSE, string does not meet requirements or an error occurred
+ *    true, string has valid password makeup
+ *    false, string does not meet requirements or an error occurred
  *
  * ALSO SEE
  *    strzero_s()
  *
  */
-boolean_t
+bool
 strispassword_s (const char *dest, rsize_t dmax)
 {
     uint32_t cnt_all;
@@ -92,25 +92,25 @@ strispassword_s (const char *dest, rsize_t dmax)
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest is null",
                    NULL, ESNULLP);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax < SAFE_STR_PASSWORD_MIN_LENGTH) {
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest is too short",
                    NULL, ESLEMIN);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax > SAFE_STR_PASSWORD_MAX_LENGTH) {
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest exceeds max",
                    NULL, ESLEMAX);
-        return (FALSE);
+        return (false);
     }
 
     if (*dest == '\0') {
-        return (FALSE);
+        return (false);
     }
 
     cnt_all = cnt_lowercase = cnt_uppercase = 0;
@@ -122,7 +122,7 @@ strispassword_s (const char *dest, rsize_t dmax)
             invoke_safe_str_constraint_handler(
                       "strispassword_s: dest is unterminated",
                        NULL, ESUNTERM);
-            return (FALSE);
+            return (false);
         }
         dmax--;
 
@@ -151,7 +151,7 @@ strispassword_s (const char *dest, rsize_t dmax)
 
         } else {
             /* illegal char in password string */
-            return (FALSE);
+            return (false);
         }
         dest++;
     }
@@ -161,8 +161,8 @@ strispassword_s (const char *dest, rsize_t dmax)
         cnt_lowercase >= SAFE_STR_MIN_LOWERCASE &&
         cnt_uppercase >= SAFE_STR_MIN_UPPERCASE &&
         cnt_specials >= SAFE_STR_MIN_SPECIALS ) {
-        return (TRUE);
+        return (true);
     } else {
-        return (FALSE);
+        return (false);
     }
 }

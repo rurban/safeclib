@@ -3,7 +3,7 @@
  *
  * February 2005, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -40,7 +40,7 @@
  *
  * SYNOPSIS
  *    #include "safe_str_lib.h"
- *    boolean_t
+ *    bool
  *    strislowercase_s(const char *dest, rsize_t dmax)
  *
  * DESCRIPTION
@@ -68,8 +68,8 @@
  *    dmax shall not be greater than RSIZE_MAX_STR.
  *
  * RETURN VALUE
- *    TRUE      string is lowercase
- *    FALSE     string is not lowercase or an error occurred
+ *    true      string is lowercase
+ *    false     string is not lowercase or an error occurred
  *
  * ALSO SEE
  *    strisalphanumeric_s(), strisascii_s(), strisdigit_s(),
@@ -77,42 +77,42 @@
  *    strisuppercase_s()
  *
  */
-boolean_t
+bool
 strislowercase_s (const char *dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strislowercase_s: "
                    "dest is null",
                    NULL, ESNULLP);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax == 0) {
         invoke_safe_str_constraint_handler("strislowercase_s: "
                    "dmax is 0",
                    NULL, ESZEROL);
-        return (FALSE);
+        return (false);
     }
 
     if (dmax > RSIZE_MAX_STR) {
         invoke_safe_str_constraint_handler("strislowercase_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
-        return (FALSE);
+        return (false);
     }
 
     if (*dest == '\0') {
-        return (FALSE);
+        return (false);
     }
 
     while (*dest && dmax) {
 
         if ((*dest < 'a') || (*dest > 'z')) {
-            return (FALSE);
+            return (false);
         }
         dest++;
         dmax--;
     }
 
-    return (TRUE);
+    return (true);
 }

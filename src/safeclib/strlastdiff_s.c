@@ -3,7 +3,7 @@
  *
  * November 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -92,7 +92,7 @@ strlastdiff_s(const char *dest, rsize_t dmax,
               const char *src, rsize_t *index)
 {
     const char *rp;
-    boolean_t there_is_a_diff = FALSE;
+    bool there_is_a_diff = false;
 
     if (index == NULL) {
         invoke_safe_str_constraint_handler("strlastdiff_s: index is null",
@@ -134,7 +134,7 @@ strlastdiff_s(const char *dest, rsize_t dmax,
     while (*dest && *src && dmax) {
 
         if (*dest != *src) {
-            there_is_a_diff = TRUE;
+            there_is_a_diff = true;
             *index = dest - rp;
         }
 

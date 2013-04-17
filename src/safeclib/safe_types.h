@@ -4,7 +4,7 @@
  * March 2007, Bo Berry
  * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2007-2012 by Cisco Systems, Inc
+ * Copyright (c) 2007-2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -44,7 +44,7 @@
 
 /* these arn't defined in the kernel */
 typedef int errno_t;
-typedef bool boolean_t;
+typedef bool bool;
 
 #else
 
@@ -100,20 +100,8 @@ typedef bool _Bool;
 #endif
 
 #ifndef HAVE_BOOLEAN_T
-typedef bool boolean_t;
+typedef bool bool;
 #endif
 
 #endif /* __KERNEL__ */
-
-/*
- * The following definitions are not part of C99 so we always test for them.
- */
-#ifndef TRUE
-# define TRUE   ( true )
-#endif /* TRUE */
-
-#ifndef FALSE
-# define FALSE  ( false )
-#endif /* FALSE */
-
 #endif /* __SAFE_TYPES_H__ */

@@ -3,7 +3,7 @@
  *
  * October 2008, Bo Berry
  *
- * Copyright (c) 2008-2011 by Cisco Systems, Inc.
+ * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc.
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -125,42 +125,42 @@ strfirstdiff_s(const char *dest, rsize_t dmax,
 
 
 /* validate alphanumeric string */
-extern boolean_t
+extern bool
 strisalphanumeric_s(const char *str, rsize_t slen);
 
 
 /* validate ascii string */
-extern boolean_t
+extern bool
 strisascii_s(const char *str, rsize_t slen);
 
 
 /* validate string of digits */
-extern boolean_t
+extern bool
 strisdigit_s(const char *str, rsize_t slen);
 
 
 /* validate hex string */
-extern boolean_t
+extern bool
 strishex_s(const char *str, rsize_t slen);
 
 
 /* validate lower case */
-extern boolean_t
+extern bool
 strislowercase_s(const char *str, rsize_t slen);
 
 
 /* validate mixed case */
-extern boolean_t
+extern bool
 strismixedcase_s(const char *str, rsize_t slen);
 
 
 /* validate password */
-extern boolean_t
+extern bool
 strispassword_s(const char *str, rsize_t slen);
 
 
 /* validate upper case */
-extern boolean_t
+extern bool
 strisuppercase_s(const char *str, rsize_t slen);
 
 
