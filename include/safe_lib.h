@@ -4,7 +4,7 @@
  * October 2008, Bo Berry
  * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2008-2012 by Cisco Systems, Inc
+ * Copyright (c) 2008-2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -32,6 +32,9 @@
 
 #ifndef __SAFE_LIB_H__
 #define __SAFE_LIB_H__
+
+#include "safe_types.h"
+#include "safe_lib_errno.h"
 
 /* C11 appendix K types - specific for bounds checking */
 typedef size_t  rsize_t;

@@ -2,7 +2,7 @@
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
 #
-# Copyright (c) 2012 Cisco Systems
+# Copyright (c) 2012, 2013 Cisco Systems
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -37,17 +37,39 @@ ACLOCAL_AMFLAGS = -I m4 --install ${ACLOCAL_FLAGS}
 SUBDIRS = src tests
 
 # Library header files
-pkginclude_HEADERS    = include/safe_lib.h \
-			include/safe_mem_lib.h \
-			include/safe_str_lib.h
+pkginclude_HEADERS    = \
+	include/safe_lib.h     \
+	include/safe_mem_lib.h \
+	include/safe_str_lib.h
+
+# generated package headers that need to be generated every time
+nodist_pkginclude_HEADERS = \
+	include/safe_types.h   \
+	include/safe_lib_errno.h
+
+
+# Support files
+SAFEC_INFRA = \
+	${top_srcdir}/build-tools/autogen.sh       \
+	$(top_srcdir)/build-tools/version-gen.sh   \
+	$(top_srcdir)/doc                          \
+	$(top_srcdir)/scripts                      \
+	$(top_srcdir)/.version                     \
+	$(top_srcdir)/safec.pc.in
+
+SAFEC_GENHEADERS = \
+	$(top_srcdir)/include/safe_types.h.in      \
+	$(top_srcdir)/include/safe_lib_errno.h.in
+
+SAFEC_SLKM = \
+	$(top_srcdir)/tests/test_slkm.c            \
+	$(top_srcdir)/src/slkm                     \
+	$(top_srcdir)/Kbuild                       \
+	$(top_srcdir)/Makefile.kernel
+
 
 # Additional things to distribute
-EXTRA_DIST = \
-	$(top_srcdir)/safec.pc.in \
-	$(top_srcdir)/build-tools/version-gen.sh \
-	$(top_srcdir)/doc \
-	$(top_srcdir)/scripts \
-	$(top_srcdir)/.version
+EXTRA_DIST = $(SAFEC_INFRA) $(SAFEC_GENHEADERS) $(SAFEC_SLKM)
 
 BUILT_SOURCES = $(top_srcdir)/.version
 

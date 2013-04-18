@@ -2,7 +2,7 @@
 #
 # Aug 2012, Jonathan Toppins
 #
-# Copyright (c) 2005-2009 Cisco Systems
+# Copyright (c) 2012 Cisco Systems
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person

@@ -2,7 +2,7 @@
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
 #
-# Copyright (c) 2012 Cisco Systems
+# Copyright (c) 2012, 2013 Cisco Systems
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -33,10 +33,10 @@ AC_PREREQ([2.60])
 
 # information on the package
 AC_INIT([Safe C Library],
-	m4_esyscmd([build-tools/version-gen.sh .tarball-version]),
-	[https://sourceforge.net/projects/safeclib/support],
-	[libsafec],
-	[http://sourceforge.net/projects/safeclib/])
+         m4_esyscmd([build-tools/version-gen.sh .tarball-version]),
+        [https://sourceforge.net/projects/safeclib/support],
+        [libsafec],
+        [http://sourceforge.net/projects/safeclib/])
 
 # Configure the configure script
 # ===============================================
@@ -112,8 +112,8 @@ AM_CFLAGS="-Wall"
 
 AC_ARG_ENABLE(debug,
 	AS_HELP_STRING([--enable-debug],
-		       [compile library w/ debugging symbols (-g)
-			@<:@default=no@:>@]),
+	               [compile library w/ debugging symbols (-g)
+	                @<:@default=no@:>@]),
 	[case "${enableval}" in
 	yes) enable_debug=true ;;
 	no)  enable_debug=false ;;
@@ -133,9 +133,9 @@ if test "-g -O2" == "$CFLAGS"; then
 	CFLAGS="${DEBUG_CFLAGS}"
 else
 	AC_MSG_WARN([CFLAGS is not empty, will attempt to apply optimization
-		     flags to 'AM_CFLAGS' but depending on the contents of
-		     CFLAGS these may be overridden.
-		     CFLAGS = '$CFLAGS'])
+	             flags to 'AM_CFLAGS' but depending on the contents of
+	             CFLAGS these may be overridden.
+	             CFLAGS = '$CFLAGS'])
 	AM_CFLAGS="${AM_CFLAGS} ${DEBUG_CFLAGS}"
 fi
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
@@ -208,8 +208,8 @@ AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
 # Maintainer switches
 AC_ARG_ENABLE(debug-build,
 	AS_HELP_STRING([--enable-debug-build],
-		       [turn on build debugging, generally is not needed
-			unless you are the maintainer @<:@default=no@:>@]),
+	               [turn on build debugging, generally is not needed
+	                unless you are the maintainer @<:@default=no@:>@]),
 	[case "${enableval}" in
 	yes) enable_debug_build=true ;;
 	no)  enable_debug_build=false ;;
@@ -221,8 +221,10 @@ AM_CONDITIONAL(ENABLE_DEBUG_BUILD, test "x$enable_debug_build" = "xtrue")
 AC_MSG_NOTICE([Check programs])
 # ===============================================
 AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_CC_C_O
+AC_PROG_CC_C99
 
 # Checks for libraries
 # ===============================================
@@ -233,10 +235,62 @@ AC_MSG_NOTICE([Check header files])
 AC_HEADER_STDC
 AC_HEADER_STDBOOL
 AC_HEADER_TIME
-AC_CHECK_HEADERS([inttypes.h limits.h stddef.h stdlib.h string.h], [], [],
-[[
-#include <stdio.h>
-]])
+AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_HEADERS([stdlib.h     \
+                  memory.h     \
+                  string.h     \
+                  limits.h     \
+                  sys/types.h  \
+                  inttypes.h   \
+                  stdint.h     \
+                  errno.h
+                 ])
+
+INSERT_SYS_TYPES_H=""
+if test "x$ac_cv_header_sys_types_h" = "xyes"; then
+	INSERT_SYS_TYPES_H="#include <sys/types.h>"
+fi
+AC_SUBST(INSERT_SYS_TYPES_H)
+
+INSERT_INTTYPES_H=""
+if test "x$ac_cv_header_inttypes_h" = "xyes"; then
+	INSERT_INTTYPES_H="#include <inttypes.h>"
+fi
+AC_SUBST(INSERT_INTTYPES_H)
+
+INSERT_STDINT_H=""
+if test "x$ac_cv_header_stdint_h" = "xyes"; then
+	INSERT_STDINT_H="#include <stdint.h>"
+fi
+AC_SUBST(INSERT_STDINT_H)
+
+INSERT_ERRNO_H=""
+if test "x$ac_cv_header_errno_h" = "xyes"; then
+	INSERT_ERRNO_H="#include <errno.h>"
+fi
+AC_SUBST(INSERT_ERRNO_H)
+
+INSERT_BOOL_SUPPORT="#include <stdbool.h>"
+if test "x$ac_cv_header_stdbool_h" = "xno"; then
+	INSERT_BOOL_SUPPORT="
+# define bool _Bool
+# define false 0
+# define true 1
+# define __bool_true_false_are_defined 1
+"
+	if test "x$ac_cv_type__bool" = "xno"; then
+		INSERT_BOOL_SUPPORT="
+#ifdef __cplusplus
+typedef bool _Bool;
+#else
+# define _Bool unsigned char
+#endif
+$INSERT_BOOL_SUPPORT
+"
+	fi
+fi
+AC_SUBST(INSERT_BOOL_SUPPORT)
+
 
 AC_MSG_NOTICE([Check typedefs, structures, and compiler characteristics])
 # ===============================================
@@ -249,14 +303,13 @@ AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINTPTR_T
-AC_CHECK_TYPES([errno_t, boolean_t], [], [],
-[[
-#include <stdio.h>
-#include <errno.h>
-#ifdef HAVE_STDBOOL_H
-# include <stdbool.h>
-#endif
-]])
+AC_CHECK_TYPE([errno_t], [], [], [[#include <errno.h>]])
+
+FALLBACK_ERRNO_T=""
+if test "x$ac_cv_type_errno_t" = "xno"; then
+	FALLBACK_ERRNO_T="typedef int errno_t;"
+fi
+AC_SUBST(FALLBACK_ERRNO_T)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
@@ -271,6 +324,16 @@ AC_CHECK_FUNCS([memset strcasecmp strcspn strpbrk strspn strstr])
 # ===============================================
 # This section emits all variables that are expected/needed by other tools
 # mainly automake.
+
+AH_TOP([
+#ifndef __SAFECLIB_CONF_H__
+#define __SAFECLIB_CONF_H__
+])
+
+AH_BOTTOM([
+#endif /* __SAFECLIB_CONF_H__ */
+])
+
 
 AC_SUBST([TARBALL_VERSION_FILE])
 
@@ -307,6 +370,8 @@ AC_CONFIG_HEADERS([config.h])
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
 AC_CONFIG_FILES([safec-${SAFEC_API_VERSION}.pc:safec.pc.in
+                 include/safe_lib_errno.h
+                 include/safe_types.h
                  Makefile
                  src/Makefile
                  tests/Makefile])

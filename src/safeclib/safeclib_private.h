@@ -3,7 +3,7 @@
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2012 by Cisco Systems, Inc
+ * Copyright (c) 2012, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -33,6 +33,7 @@
 #define __SAFECLIB_PRIVATE_H__
 
 #ifdef __KERNEL__
+/* linux kernel environment */
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -54,7 +55,22 @@
 
 #include <stdio.h>
 #ifdef STDC_HEADERS
-#include <ctype.h>
+# include <ctype.h>
+# include <stdlib.h>
+# include <stddef.h>
+#else
+# ifdef HAVE_STDLIB_H
+#  include <stdlib.h>
+# endif
+#endif
+#ifdef HAVE_STRING_H
+# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
+#  include <memory.h>
+# endif
+# include <string.h>
+#endif
+#ifdef HAVE_LIMITS_H
+# include <limits.h>
 #endif
 
 #define EXPORT_SYMBOL(sym)
@@ -72,8 +88,6 @@
 #define sldebug_printf(...)
 #endif
 
-#include "safe_types.h"
-#include "safe_lib_errno.h"
 #include "safe_lib.h"
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

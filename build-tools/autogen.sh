@@ -4,7 +4,7 @@
 # in a sane and repeatable way. It is really easy, but just so no one
 # forgets...
 #
-# WARNING! You DON NOT want to run this when you have uncommitted changes!!
+# WARNING! You DO NOT want to run this when you have uncommitted changes!!
 
 require_clean_work_tree () {
 	git rev-parse --verify HEAD >/dev/null || exit 1

@@ -3,7 +3,7 @@
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
- * Copyright (c) 2012 by Cisco Systems, Inc
+ * Copyright (c) 2012, 2013 by Cisco Systems, Inc
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -32,10 +32,11 @@
 #ifndef __TEST_PRIVATE_H__
 #define __TEST_PRIVATE_H__
 
-/* include the private header from the library (includes the config.h file) */
-#include "../src/safeclib/safeclib_private.h"
-
 #ifdef __KERNEL__
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/ctype.h>
 
 #include <linux/string.h>
 #define printf(...) printk(KERN_INFO __VA_ARGS__)
@@ -43,9 +44,7 @@
 #else
 
 #include <stdio.h>
-#ifdef STDC_HEADERS
 #include <string.h>
-#endif
 
 #endif
 

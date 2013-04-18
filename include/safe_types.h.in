@@ -33,8 +33,6 @@
 #ifndef __SAFE_TYPES_H__
 #define __SAFE_TYPES_H__
 
-/* NOTE: the config.h file must be included before this file! */
-
 #ifdef __KERNEL__
 /* linux kernel environment */
 
@@ -42,66 +40,20 @@
 #include <linux/types.h>
 #include <linux/errno.h>
 
-/* these arn't defined in the kernel */
+/* errno_t isn't defined in the kernel */
 typedef int errno_t;
-typedef bool bool;
 
 #else
 
 #include <stdio.h>
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-# include <stddef.h>
-#else
-# ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-# endif
-#endif
-#ifdef HAVE_STRING_H
-# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
-#  include <memory.h>
-# endif
-# include <string.h>
-#endif
-#ifdef HAVE_INTTYPES_H
-# include <inttypes.h>
-#endif
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#endif
-#ifdef HAVE_ERRNO_H
-# include <errno.h>
-#else
-# ifndef HAVE_ERRNO_T
-typedef int errno_t;
-# endif
-#endif
-#ifdef HAVE_LIMITS_H
-# include <limits.h>
-#endif
+@INSERT_SYS_TYPES_H@
+@INSERT_INTTYPES_H@
+@INSERT_STDINT_H@
+@INSERT_ERRNO_H@
 
-#ifdef HAVE_STDBOOL_H
-# include <stdbool.h>
-#else
-# ifndef HAVE__BOOL
-#  ifdef __cplusplus
-typedef bool _Bool;
-#  else
-#   define _Bool unsigned char
-#  endif
-# endif
-# define bool _Bool
-# define false 0
-# define true 1
-# define __bool_true_false_are_defined 1
-#endif
+@FALLBACK_ERRNO_T@
 
-#ifndef HAVE_BOOLEAN_T
-typedef bool bool;
-#endif
+@INSERT_BOOL_SUPPORT@
 
 #endif /* __KERNEL__ */
 #endif /* __SAFE_TYPES_H__ */

@@ -156,6 +156,7 @@ build the kernel module.
 
 .To build do the following:
 ----
+prompt$ ./configure
 prompt$ make -f Makefile.kernel
 ----
 
@@ -163,9 +164,9 @@ This assumes you are compiling on a Linux box and this makefile supports the
 standard kernel build system infrastructure documented in:
 <linux-kernel-src-tree>/Documentation/kbuild/modules.txt
 
-NOTE: You do not need autotools support to build the kernel module and can
-      skip all steps related to autotools if you wish to just build the kernel
-      module.
+NOTE: If you build the kernel module then wish to build the userspace library
+      or vice versa you will need to do a +make clean+ otherwise a +make check+
+      will fail to build.
 
 
 === Installing

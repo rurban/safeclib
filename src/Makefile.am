@@ -2,7 +2,7 @@
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
 #
-# Copyright (c) 2012 Cisco Systems
+# Copyright (c) 2012, 2013 Cisco Systems
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -33,8 +33,6 @@ MEM_PRIM_FILES = \
 
 CORE_FILES = \
 	safeclib/safeclib_private.h    \
-	safeclib/safe_lib_errno.h      \
-	safeclib/safe_types.h          \
 	safeclib/abort_handler_s.c     \
 	safeclib/ignore_handler_s.c
 
