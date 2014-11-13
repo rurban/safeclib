@@ -48,7 +48,7 @@ extern void invoke_safe_str_constraint_handler(
  * Safe C Lib internal string routine to consolidate error handling
  */
 static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
-                                char *err_msg, errno_t err_code)
+                                const char *err_msg, errno_t err_code)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
