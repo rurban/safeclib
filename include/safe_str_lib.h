@@ -32,6 +32,10 @@
 #ifndef __SAFE_STR_LIB_H__
 #define __SAFE_STR_LIB_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "safe_lib.h"
 
 /*
@@ -259,5 +263,8 @@ strtouppercase_s(char *str, rsize_t slen);
 extern errno_t
 strzero_s(char *dest, rsize_t dmax);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif   /* __SAFE_STR_LIB_H__ */

@@ -33,6 +33,10 @@
 #ifndef __SAFE_MEM_LIB_H__
 #define __SAFE_MEM_LIB_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "safe_lib.h"
 
 #define RSIZE_MAX_MEM      ( 256UL << 20 )     /* 256MB */
@@ -104,5 +108,8 @@ extern errno_t memzero16_s(uint16_t *dest, rsize_t dmax);
 /* uint32_t zero */
 extern errno_t memzero32_s(uint32_t *dest, rsize_t dmax);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __SAFE_MEM_LIB_H__ */

@@ -33,6 +33,10 @@
 #ifndef __SAFE_LIB_H__
 #define __SAFE_LIB_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "safe_types.h"
 #include "safe_lib_errno.h"
 
@@ -57,5 +61,9 @@ extern void ignore_handler_s(const char *msg, void *ptr, errno_t error);
 
 #include "safe_mem_lib.h"
 #include "safe_str_lib.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __SAFE_LIB_H__ */

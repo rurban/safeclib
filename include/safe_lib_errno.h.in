@@ -33,6 +33,10 @@
 #ifndef __SAFE_LIB_ERRNO_H__
 #define __SAFE_LIB_ERRNO_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef __KERNEL__
 # include <linux/errno.h>
 #else
@@ -86,6 +90,10 @@
 /* EOK may or may not be defined in errno.h */
 #ifndef EOK
 #define EOK             ( 0 )
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* __SAFE_LIB_ERRNO_H__ */
