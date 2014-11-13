@@ -99,7 +99,8 @@ EXT_STR_FILES = \
 	safeclib/strlastchar_s.c       \
 	safeclib/strlastdiff_s.c       \
 	safeclib/strlastsame_s.c       \
-	safeclib/strljustify_s.c
+	safeclib/strljustify_s.c       \
+    safeclib/sprintf_s.c
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
