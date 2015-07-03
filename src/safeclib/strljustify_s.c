@@ -147,7 +147,7 @@ strljustify_s (char *dest, rsize_t dmax)
    /*
     * shift text, removing spaces, to left justify
     */
-    if (orig_dest != dest && *dest) {
+    if (orig_dest != dest) {
         while (*dest) {
             *orig_dest++ = *dest;
             *dest++ = ' ';
