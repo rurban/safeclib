@@ -56,6 +56,12 @@ This library only implements a subset of the functions defined in the
 specification.  Included in the library are extensions to the specification to
 provide a complementary set of functions with like behavior.
 
+Austin Group Review of ISO/IEC WDTR 24731
+http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt
+
+Stackoverflow discussion:
+https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions
+
 
 === Use of errno
 
