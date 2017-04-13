@@ -17,7 +17,7 @@ static char   str2[LEN];
 int test_strcspn_s (void)
 {
     errno_t rc;
-    uint32_t count;
+    rsize_t count;
     int std_count;
 
 /*--------------------------------------------------*/
