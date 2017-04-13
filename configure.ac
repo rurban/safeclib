@@ -53,6 +53,8 @@ AC_CONFIG_AUX_DIR([build-tools])
 # Other tool initializations
 # ===============================================
 
+AM_PROG_AR
+
 # really severe build strictness also place generated object files (.o)
 # into the same directory as their source files, in order to avoid
 # collisions when non-recursive make is used.
