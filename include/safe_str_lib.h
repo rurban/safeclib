@@ -56,7 +56,7 @@ extern "C" {
 #define SAFE_STR_PASSWORD_MIN_LENGTH   ( 6 )
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 
-/* defined  sprintf_s */
+/* safe sprintf_s */
 extern errno_t 
 sprintf_s(char *buffer, rsize_t bufsize, const char *fmt, ...);
 

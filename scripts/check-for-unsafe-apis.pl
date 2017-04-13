@@ -131,7 +131,7 @@ my %gFuncConvertMap = (
     "strlen"   => {"convert" => "strnlen_s",  "num_found" => 0},
 
     # C11 std APIs (Input/Output)
-    "sprintf"  => {"convert" => "NO REPLACEMENT", "num_found" => 0},
+    "sprintf"  => {"convert" => "sprintf_s", "num_found" => 0},
     "snprintf" => {"convert" => "NO REPLACEMENT", "num_found" => 0},
 
     # Extensions
