@@ -31,7 +31,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -44,7 +44,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -65,7 +65,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -78,7 +78,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -94,7 +94,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -110,7 +110,7 @@ int main()
 
     if (ind != 6) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -126,7 +126,7 @@ int main()
 
     if (ind != 1) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -142,7 +142,7 @@ int main()
 
     if (ind != 10) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -157,7 +157,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -173,7 +173,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -189,7 +189,7 @@ int main()
 
     if (ind != 13) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/

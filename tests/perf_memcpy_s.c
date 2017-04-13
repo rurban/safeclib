@@ -28,7 +28,6 @@ uint8_t  mem2[LEN];
 
 static void timing_loop (uint32_t len, uint32_t loops)
 {
-    errno_t rc;
     uint32_t i;
 
     clock_t clock_start;
@@ -51,7 +50,7 @@ static void timing_loop (uint32_t len, uint32_t loops)
      */
     clock_start = clock();
     for (i=0;i<loops; i++) {
-       rc = memcpy_s(mem1, len, mem2, len);
+      (void)memcpy_s(mem1, len, mem2, len);
     }
     clock_end = clock();
 

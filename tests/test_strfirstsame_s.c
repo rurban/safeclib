@@ -30,7 +30,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -43,7 +43,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -64,7 +64,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -77,7 +77,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -93,7 +93,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
+                     __FUNCTION__, __LINE__, (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -109,7 +109,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+               __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -125,7 +125,7 @@ int main()
 
     if (ind != 1) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -141,7 +141,7 @@ int main()
 
     if (ind != 4) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -157,7 +157,7 @@ int main()
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -173,7 +173,7 @@ int main()
 
     if (ind != 13) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -184,12 +184,12 @@ int main()
     rc = strfirstsame_s(str1, LEN, str1, &ind);
     if (rc != EOK) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -200,12 +200,12 @@ int main()
     rc = strfirstsame_s(str1, 1, str2, &ind);
     if (rc != ESNOTFND) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -216,12 +216,12 @@ int main()
     rc = strfirstsame_s(str1, 5, str2, &ind);
     if (rc != ESNOTFND) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/
@@ -232,12 +232,12 @@ int main()
     rc = strfirstsame_s(str1, LEN, str2, &ind);
     if (rc != ESNOTFND) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
     if (ind != 0) {
         printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
+                     __FUNCTION__, __LINE__,  (int)ind, rc);
     }
 
 /*--------------------------------------------------*/

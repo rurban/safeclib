@@ -24,7 +24,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = strcpyfldout_s(NULL, LEN, str2, slen);
+    rc = strcpyfldout_s(NULL, LEN, str2, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
@@ -33,7 +33,7 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
-    rc = strcpyfldout_s(str1, len, NULL, len);
+    rc = strcpyfldout_s(str1, len, NULL, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );

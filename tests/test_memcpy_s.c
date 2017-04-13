@@ -88,7 +88,7 @@ int test_memcpy_s (void)
 
     if (mem1[i] != 33) {
         printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, len, mem1[len], mem2[len]);
+               __LINE__, (int)len, mem1[len], mem2[len]);
     }
 
     }
@@ -115,7 +115,7 @@ int test_memcpy_s (void)
 
     if (mem1[i] != 33) {
         printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, len, mem1[len], mem2[len]);
+                 __LINE__, (int)len, mem1[len], mem2[len]);
     }
 
     }
@@ -142,7 +142,7 @@ int test_memcpy_s (void)
 
     if (mem1[len] != 33) {
             printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, len, mem1[len], mem2[len]);
+                 __LINE__, (int)len, mem1[len], mem2[len]);
     }
     }
 
@@ -169,7 +169,7 @@ int test_memcpy_s (void)
 
     if (mem1[len] != 33) {
             printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, len, mem1[len], mem2[len]);
+                 __LINE__, (int)len, mem1[len], mem2[len]);
     }
 
     }

@@ -110,7 +110,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy (str, "1234");
-    str[2] = 132;   /* special char */
+    str[2] = -124;   /* special char: 132 */
     len = strlen(str);
 
     /* special char embedded */

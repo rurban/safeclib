@@ -30,7 +30,7 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -43,7 +43,7 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -64,7 +64,7 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -77,7 +77,7 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -90,7 +90,7 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -103,7 +103,7 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -119,13 +119,13 @@ int test_strcspn_s (void)
 
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
     std_count = strcspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  count, std_count, rc);
+                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -141,7 +141,7 @@ int test_strcspn_s (void)
 
     if (count != 1) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -157,7 +157,7 @@ int test_strcspn_s (void)
 
     if (count != 2) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -173,7 +173,7 @@ int test_strcspn_s (void)
 
     if (count != 3) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 
@@ -190,7 +190,7 @@ int test_strcspn_s (void)
 
     if (count != 6) {
         printf("%s %u  Error  count=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, count, rc);
+                     __FUNCTION__, __LINE__, (int)count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -206,7 +206,7 @@ int test_strcspn_s (void)
 
     if (count != 6) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  count, std_count, rc);
+                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -223,7 +223,7 @@ int test_strcspn_s (void)
     std_count = strcspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  count, std_count, rc);
+                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -240,7 +240,7 @@ int test_strcspn_s (void)
     std_count = strcspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  count, std_count, rc);
+                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
     }
 
 /*--------------------------------------------------*/
@@ -257,7 +257,7 @@ int test_strcspn_s (void)
     std_count = strcspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  count, std_count, rc);
+                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
     }
 
 /*--------------------------------------------------*/

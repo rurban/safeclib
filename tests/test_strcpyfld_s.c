@@ -24,7 +24,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = strcpyfld_s(NULL, LEN, str2, slen);
+    rc = strcpyfld_s(NULL, LEN, str2, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );

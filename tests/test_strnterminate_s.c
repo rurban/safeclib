@@ -26,7 +26,7 @@ int main()
     len = strnterminate_s(NULL, max_len);
     if (len != 0) {
         printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  len);
+                     __FUNCTION__, __LINE__,  (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -36,7 +36,7 @@ int main()
     len = strnterminate_s(dest, max_len);
     if (len != 0) {
         printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  len);
+                     __FUNCTION__, __LINE__,  (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -46,7 +46,7 @@ int main()
     len = strnterminate_s(dest, max_len);
     if (len != 0) {
         printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  len);
+                     __FUNCTION__, __LINE__,  (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -59,7 +59,7 @@ int main()
 
     if (std_len != len) {
         printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  std_len, len);
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -69,7 +69,7 @@ int main()
 
     if (len != 0 ) {
         printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  std_len, len);
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -80,7 +80,7 @@ int main()
 
     if (len != 1 ) {
         printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  std_len, len);
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -91,7 +91,7 @@ int main()
 
     if (len != 1 ) {
         printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  std_len, len);
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -102,7 +102,7 @@ int main()
 
     if (len != 2) {
         printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  std_len, len);
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -113,7 +113,7 @@ int main()
 
     if (len != 4) {
         printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  std_len, len);
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -124,7 +124,7 @@ int main()
 
     if (len != 0) {
         printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, len);
+                     __FUNCTION__, __LINE__, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -135,7 +135,7 @@ int main()
 
     if (len != max_len-1) {
         printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, len);
+                     __FUNCTION__, __LINE__, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -146,7 +146,7 @@ int main()
 
     if (len != max_len-1) {
         printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, len);
+                     __FUNCTION__, __LINE__, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -157,7 +157,7 @@ int main()
 
     if (len != strlen(dest)) {
         printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, len);
+                     __FUNCTION__, __LINE__, (unsigned)len);
     }
 
 /*--------------------------------------------------*/
@@ -166,11 +166,11 @@ int main()
     len = 21;
 
     while (len) {
-        printf(" strnterminate_s()  len=%u \n", len);
+      printf(" strnterminate_s()  len=%u \n", (unsigned)len);
         len = strnterminate_s (dest, len);
         if (len != strlen(dest)) {
             printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, len);
+                     __FUNCTION__, __LINE__, (unsigned)len);
         }
     }
 

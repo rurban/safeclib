@@ -13,7 +13,7 @@
 
 int main()
 {
-    errno_t rc;
+    errno_t rc = 0;
     char *p2str;
     char *p2tok;
 
@@ -27,8 +27,8 @@ int main()
 
     p2tok = strtok_s(str1, NULL, str2,  &p2str);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
+        printf("%s %u   Error rc=%d \n",
+               __FUNCTION__, __LINE__,  rc );
     }
 
 /*--------------------------------------------------*/
@@ -37,8 +37,8 @@ int main()
     len = 0;
     p2tok = strtok_s(str1, &len, str2,  &p2str);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
+        printf("%s %u   Error rc=%d \n",
+               __FUNCTION__, __LINE__,  rc );
     }
 
 /*--------------------------------------------------*/
@@ -194,7 +194,7 @@ int main()
     strcpy(str2, ",");   /* change the tokenizer string */
 
     printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, len);
+    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
     printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
@@ -218,7 +218,7 @@ int main()
     strcpy(str2, ",.;*");
 
     printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, len);
+    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
     printf("String of delimiters str2 = \"%s\" \n", str2);
 
     printf("  p2tok = strtok_s(str1, &len, str2, &p2str); \n");
@@ -261,7 +261,7 @@ int main()
     strcpy(str2, ",.;*");
 
     printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, len);
+    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
     printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
@@ -284,7 +284,7 @@ int main()
     strcpy(str2, ",.;*");
 
     printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, len);
+    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
     printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
@@ -307,7 +307,7 @@ int main()
     strcpy(str2, ",.;*");
 
     printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, len);
+    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
     printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;

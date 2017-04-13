@@ -14,7 +14,6 @@ int main()
     errno_t rc;
     uint32_t len;
     int32_t  ind;
-    int32_t  std_ind;
     uint32_t i;
 
     uint32_t  mem1[LEN];
@@ -93,7 +92,7 @@ int main()
                      __FUNCTION__, __LINE__,  ind, rc );
     }
 
-    std_ind = memcmp(mem1, mem2, len*4);
+    ind = memcmp(mem1, mem2, len*4);
     if (ind != 0) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
                      __FUNCTION__, __LINE__,  ind, rc );
@@ -116,7 +115,7 @@ int main()
                      __FUNCTION__, __LINE__,  ind, rc );
     }
 
-    std_ind = memcmp(mem1, mem2, len*4);
+    ind = memcmp(mem1, mem2, len*4);
     if (ind != 0) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
                      __FUNCTION__, __LINE__,  ind, rc );
