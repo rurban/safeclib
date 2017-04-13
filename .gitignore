@@ -57,6 +57,10 @@ Makefile.in
 /aclocal.m4
 /autom4te.cache/
 
+# More generated files
+build-tools/ar-lib
+build-tools/test-driver
+tests/test-suite.log
 #
 # Debian directory (make deb-pkg)
 #
