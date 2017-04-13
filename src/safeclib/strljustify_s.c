@@ -110,10 +110,13 @@ strljustify_s (char *dest, rsize_t dmax)
     }
 
     /*
-     * corner case, a dmax of one allows only for a null
+     * corner cases, a dmax of one allows only for a null
      */
-    if (*dest == '\0' || dmax <= RSIZE_MIN_STR) {
+    if (dmax <= RSIZE_MIN_STR) {
         *dest = '\0';
+        return (EOK);
+    }
+    if (*dest == '\0') {
         return (EOK);
     }
 
@@ -147,7 +150,7 @@ strljustify_s (char *dest, rsize_t dmax)
    /*
     * shift text, removing spaces, to left justify
     */
-    if (orig_dest != dest) {
+    if (orig_dest != dest && *dest) {
         while (*dest) {
             *orig_dest++ = *dest;
             *dest++ = ' ';

@@ -48,6 +48,18 @@ int main()
 /*--------------------------------------------------*/
 
     /* empty string */
+    rc = strljustify_s("", 12);
+    if (rc != EOK) {
+        printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+    }
+
+    if (str[0] != '\0') {
+        printf("%s %u   Error -%s- \n",
+                     __FUNCTION__, __LINE__,  str);
+    }
+
+    /* whitespace only */
     rc = strljustify_s(" ", 12);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
