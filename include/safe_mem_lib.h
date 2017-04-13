@@ -89,10 +89,10 @@ extern errno_t memset_s(void *dest, rsize_t dmax, uint8_t value, rsize_t n);
 #endif
 
 /* set uint16_t */
-extern errno_t memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value);
+extern errno_t memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n);
 
 /* set uint32_t */
-extern errno_t memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value);
+extern errno_t memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n);
 
 
 /* byte zero */

@@ -2,6 +2,7 @@
  * memset32_s
  *
  * October 2008, Bo Berry
+ * Copyright (c) 2017 Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
  * All rights reserved.
@@ -42,7 +43,7 @@
  * SYNOPSIS
  *    #include "safe_mem_lib.h"
  *    errno_t
- *    memset32_s(uint32_t *dest, rsize_t len, uint32_t value)
+ *    memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
  *
  * DESCRIPTION
  *    Sets len uint32_t starting at dest to the specified value.
@@ -55,17 +56,25 @@
  * INPUT PARAMETERS
  *    dest       pointer to memory that will be set to the value
  *
- *    len        number of uint32_t to be set
+ *    smax       maximum number of bytes to be written
  *
  *    value      uint32_t value to be written
+ *
+ *    n          number of uint32_t values to be written
  *
  * OUTPUT PARAMETERS
  *    dest      is updated
  *
  * RUNTIME CONSTRAINTS
  *    dest shall not be a null pointer.
- *    len shall not be 0 nor greater than RSIZE_MAX_MEM32.
- *    If there is a runtime constraint, the operation is not performed.
+ *    smax shall not be 0 nor greater than RSIZE_MAX_MEM.
+ *    n shall not be 0 nor greater than RSIZE_MAX_MEM32.
+ *    smax*4 may not be smaller than n.
+ *
+ *    If there is a runtime-constraints violation, and if dest is not a null
+ *    pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
+ *    reporting the runtime-constraints violation, memset32_s() copies
+ *    smax bytes to the destination.
  *
  * RETURN VALUE
  *    EOK        successful operation
@@ -78,28 +87,44 @@
  *
  */
 errno_t
-memset32_s (uint32_t *dest, rsize_t len, uint32_t value)
+memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
 {
+    errno_t err = EOK;
+
     if (dest == NULL) {
         invoke_safe_mem_constraint_handler("memset32_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (len == 0) {
-        invoke_safe_mem_constraint_handler("memset32_s: len is 0",
+    if (n == 0) {
+        invoke_safe_mem_constraint_handler("memset32_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (len > RSIZE_MAX_MEM32) {
-        invoke_safe_mem_constraint_handler("memset32_s: len  exceeds max",
+    if (smax > RSIZE_MAX_MEM) {
+        invoke_safe_mem_constraint_handler("memset32_s: smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    mem_prim_set32(dest, len, value);
+    if (n > RSIZE_MAX_MEM16) {
+        invoke_safe_mem_constraint_handler("memset32_s: n exceeds max",
+                   NULL, ESLEMAX);
+        err = ESLEMAX;
+        n = smax/4;
+    }
 
-    return (RCNEGATE(EOK));
+    if (n > smax/4) {
+        invoke_safe_mem_constraint_handler("memset32_s: n exceeds smax/4",
+                   NULL, ESLEMAX);
+        err = ESLEMAX;
+        n = smax/4;
+    }
+
+    mem_prim_set32(dest, n, value);
+
+    return (RCNEGATE(err));
 }
 EXPORT_SYMBOL(memset32_s);

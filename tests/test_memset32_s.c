@@ -19,13 +19,14 @@ int main()
     uint32_t i;
     uint32_t  value;
 
+    rsize_t MAX = LEN*4;
     uint32_t  mem1[LEN];
 
 /*--------------------------------------------------*/
 
     value = 34;
 
-    rc = memset32_s(NULL, LEN, value);
+    rc = memset32_s(NULL, MAX, value, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -37,7 +38,7 @@ int main()
 
     value = 34;
 
-    rc = memset32_s(mem1, 0, value);
+    rc = memset32_s(mem1, MAX, value, 0);
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -50,7 +51,7 @@ int main()
     len = 1;
     value = 34;
 
-    rc = memset32_s(mem1, len, value);
+    rc = memset32_s(mem1, MAX, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -70,7 +71,7 @@ int main()
     len = 2;
     value = 34;
 
-    rc = memset32_s(mem1, len, value);
+    rc = memset32_s(mem1, MAX, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -90,7 +91,7 @@ int main()
     len = 12;
     value = 34;
 
-    rc = memset32_s(mem1, len, value);
+    rc = memset32_s(mem1, MAX, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -110,7 +111,7 @@ int main()
     len = 31;
     value = 34;
 
-    rc = memset32_s(mem1, len, value);
+    rc = memset32_s(mem1, MAX, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -130,7 +131,7 @@ int main()
     len = 133;
     value = 34;
 
-    rc = memset32_s(mem1, len, value);
+    rc = memset32_s(mem1, MAX, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);

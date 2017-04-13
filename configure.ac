@@ -34,9 +34,9 @@ AC_PREREQ([2.60])
 # information on the package
 AC_INIT([Safe C Library],
          m4_esyscmd([build-tools/version-gen.sh .tarball-version]),
-        [https://sourceforge.net/projects/safeclib/support],
+        [https://github.com/rurban/safeclib/issues],
         [libsafec],
-        [http://sourceforge.net/projects/safeclib/])
+        [http://github.com/rurban/safeclib/])
 
 # Configure the configure script
 # ===============================================
