@@ -57,8 +57,8 @@ extern "C" {
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 
 /* safe sprintf_s */
-extern errno_t 
-sprintf_s(char *buffer, rsize_t bufsize, const char *fmt, ...);
+extern int
+sprintf_s(char *dest, rsize_t dmax, const char *fmt, ...);
 
 /* set string constraint handler */
 extern constraint_handler_t
