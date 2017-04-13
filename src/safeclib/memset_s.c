@@ -2,6 +2,7 @@
  * memset_s
  *
  * October 2008, Bo Berry
+ * Copyright (c) 2017 Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
  * All rights reserved.
@@ -42,10 +43,11 @@
  * SYNOPSIS
  *    #include "safe_mem_lib.h"
  *    errno_t
- *    memset_s(void *dest, rsize_t len, uint8_t value)
+ *    memset_s(void *dest, rsize_t smax, uint8_t value, rsize_t n)
  *
  * DESCRIPTION
- *    Sets len bytes starting at dest to the specified value.
+ *    Sets the first n bytes starting at dest to the specified value,
+ *    but maximal smax bytes.
  *
  * SPECIFIED IN
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -55,17 +57,24 @@
  * INPUT PARAMETERS
  *    dest       pointer to memory that will be set to the value
  *
- *    len        number of bytes to be set
+ *    smax       maximum number of bytes to be written
  *
- *    value      byte value
+ *    value      byte value to be written
+ *
+ *    n          number of bytes to be set
  *
  * OUTPUT PARAMETERS
  *    dest      is updated
  *
  * RUNTIME CONSTRAINTS
  *    dest shall not be a null pointer.
- *    len shall not be 0 nor greater than RSIZE_MAX_MEM.
- *    If there is a runtime constraint, the operation is not performed.
+ *    smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
+ *    smax may not be smaller than n.
+
+ *    If there is a runtime-constraints violation, and if dest is not a null
+ *    pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
+ *    reporting the runtime-constraints violation, memset_s() copies
+ *    smax bytes to the destination.
  *
  * RETURN VALUE
  *    EOK        successful operation
@@ -77,29 +86,47 @@
  *    memset16_s(), memset32_s()
  *
  */
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
 errno_t
-memset_s (void *dest, rsize_t len, uint8_t value)
+memset_s (void *dest, rsize_t smax, uint8_t value, rsize_t n)
 {
+    errno_t err = EOK;
+
     if (dest == NULL) {
         invoke_safe_mem_constraint_handler("memset_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (len == 0) {
-        invoke_safe_mem_constraint_handler("memset_s: len is 0",
+    if (n == 0) {
+        invoke_safe_mem_constraint_handler("memset_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (len > RSIZE_MAX_MEM) {
-        invoke_safe_mem_constraint_handler("memset_s: len exceeds max",
+    if (smax > RSIZE_MAX_MEM) {
+        invoke_safe_mem_constraint_handler("memset_s: smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    mem_prim_set(dest, len, value);
+    if (n > RSIZE_MAX_MEM) {
+        invoke_safe_mem_constraint_handler("memset_s: n exceeds max",
+                   NULL, ESLEMAX);
+        err = ESLEMAX;
+        n = smax;
+    }
 
-    return (RCNEGATE(EOK));
+    if (n > smax) {
+        invoke_safe_mem_constraint_handler("memset_s: n exceeds smax",
+                   NULL, ESLEMAX);
+        err = ESLEMAX;
+        n = smax;
+    }
+
+    mem_prim_set(dest, n, value);
+
+    return (RCNEGATE(err));
 }
 EXPORT_SYMBOL(memset_s);
+#endif

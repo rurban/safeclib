@@ -83,8 +83,10 @@ extern errno_t memmove32_s(uint32_t *dest, rsize_t dmax,
                             const uint32_t *src, rsize_t slen);
 
 
-/* set bytes */
-extern errno_t memset_s(void *dest, rsize_t dmax, uint8_t value);
+/* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+extern errno_t memset_s(void *dest, rsize_t dmax, uint8_t value, rsize_t n);
+#endif
 
 /* set uint16_t */
 extern errno_t memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value);

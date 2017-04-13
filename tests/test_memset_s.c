@@ -23,8 +23,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     value = 34;
-
-    rc = memset_s(NULL, LEN, value);
+    rc = memset_s(NULL, LEN, value, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -34,7 +33,7 @@ int test_memset_s (void)
 
     value = 34;
 
-    rc = memset_s(mem1, 0, value);
+    rc = memset_s(mem1, LEN, value, 0);
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -47,7 +46,7 @@ int test_memset_s (void)
     len = 1;
     value = 34;
 
-    rc = memset_s(mem1, len, value);
+    rc = memset_s(mem1, LEN, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -67,7 +66,7 @@ int test_memset_s (void)
     len = 2;
     value = 34;
 
-    rc = memset_s(mem1, len, value);
+    rc = memset_s(mem1, LEN, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -87,7 +86,7 @@ int test_memset_s (void)
     len = 12;
     value = 34;
 
-    rc = memset_s(mem1, len, value);
+    rc = memset_s(mem1, LEN, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -107,7 +106,7 @@ int test_memset_s (void)
     len = 31;
     value = 34;
 
-    rc = memset_s(mem1, len, value);
+    rc = memset_s(mem1, LEN, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
@@ -127,7 +126,7 @@ int test_memset_s (void)
     len = 133;
     value = 34;
 
-    rc = memset_s(mem1, len, value);
+    rc = memset_s(mem1, LEN, value, len);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
