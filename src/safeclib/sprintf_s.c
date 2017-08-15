@@ -76,9 +76,9 @@ int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...
 
     if (ret >= (int)dmax) {
         invoke_safe_str_constraint_handler("sprintf_s: len exceeds dmax",
-                   NULL, ESLEMAX);
+                   NULL, ESNOSPC);
         *dest = 0;
-        ret = RCNEGATE(ESLEMAX);
+        ret = RCNEGATE(ESNOSPC);
     }
 
     va_end(ap);

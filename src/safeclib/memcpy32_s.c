@@ -118,8 +118,8 @@ memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
     if (smax > dmax) {
         mem_prim_set32(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: smax exceeds dmax",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   NULL, ESNOSPC);
+        return (RCNEGATE(ESNOSPC));
     }
 
     if (src == NULL) {

@@ -137,8 +137,8 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
         invoke_safe_str_constraint_handler("strcpyfld_s: src exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+                   NULL, ESNOSPC);
+        return (ESNOSPC);
     }
 
 

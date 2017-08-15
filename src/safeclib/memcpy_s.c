@@ -124,8 +124,8 @@ memcpy_s(void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t 
     if (smax > dmax) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy_s: smax exceeds dmax",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+                   NULL, ESNOSPC);
+        return RCNEGATE(ESNOSPC);
     }
 
     if (sp == NULL) {

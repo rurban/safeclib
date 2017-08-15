@@ -118,8 +118,8 @@ memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
 
     if (n > smax/4) {
         invoke_safe_mem_constraint_handler("memset32_s: n exceeds smax/4",
-                   NULL, ESLEMAX);
-        err = ESLEMAX;
+                   NULL, ESNOSPC);
+        err = ESNOSPC;
         n = smax/4;
     }
 
