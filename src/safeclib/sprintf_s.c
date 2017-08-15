@@ -10,7 +10,7 @@
  * SYNOPSIS
  *    #include "safe_str_lib.h"
  *    errno_t 
- *    sprintf_s(char *dest, rsize_t dmax, const char *fmt, ...)
+ *    sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
  *
  * DESCRIPTION
  *    The sprintf_s function composes a string with same test that 
@@ -42,7 +42,7 @@
  *     ESLEMAX    length exceeds max limit
  */
 
-int sprintf_s(char *dest, rsize_t dmax, const char *fmt, ...)
+int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 {
     va_list ap;
     int ret = -1;

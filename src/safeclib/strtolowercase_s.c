@@ -41,7 +41,7 @@
  * SYNOPSIS
  *    #include "safe_str_lib.h"
  *    errno_t
- *    strlolowercase_s(char *dest, rsize_t dmax)
+ *    strlolowercase_s(char * restrict dest, rsize_t dmax)
  *
  * DESCRIPTION
  *    Scans the string converting uppercase characters to
@@ -78,7 +78,7 @@
  *
  */
 errno_t
-strtolowercase_s (char *dest, rsize_t dmax)
+strtolowercase_s(char * restrict dest, rsize_t dmax)
 {
     if (!dest) {
         invoke_safe_str_constraint_handler("strtolowercase_s: "
