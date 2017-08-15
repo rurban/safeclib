@@ -176,4 +176,4 @@ strstr_s (char *dest, rsize_t dmax,
     *substring = NULL;
     return RCNEGATE(ESNOTFND);
 }
-EXPORT_SYMBOL(strstr_s);
+EXPORT_SYMBOL(strstr_s)

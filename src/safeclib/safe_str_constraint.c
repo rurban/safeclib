@@ -102,7 +102,7 @@ set_str_constraint_handler_s (constraint_handler_t handler)
     }
     return prev_handler;
 }
-EXPORT_SYMBOL(set_str_constraint_handler_s);
+EXPORT_SYMBOL(set_str_constraint_handler_s)
 
 
 /**

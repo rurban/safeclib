@@ -54,6 +54,7 @@ static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
     /* null string to eliminate partial copy */
     while (orig_dmax) { *orig_dest = '\0'; orig_dmax--; orig_dest++; }
 #else
+    (void)orig_dmax;
     *orig_dest = '\0';
 #endif
 

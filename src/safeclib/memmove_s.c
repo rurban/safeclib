@@ -146,4 +146,4 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memmove_s);
+EXPORT_SYMBOL(memmove_s)

@@ -154,4 +154,4 @@ memcpy_s(void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t 
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(memcpy_s);
+EXPORT_SYMBOL(memcpy_s)

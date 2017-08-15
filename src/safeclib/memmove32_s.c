@@ -147,4 +147,4 @@ memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memmove32_s);
+EXPORT_SYMBOL(memmove32_s)

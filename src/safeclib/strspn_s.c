@@ -167,4 +167,4 @@ strspn_s (const char *dest, rsize_t dmax,
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strspn_s);
+EXPORT_SYMBOL(strspn_s)

@@ -104,4 +104,4 @@ memzero_s (void *dest, rsize_t len)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memzero_s);
+EXPORT_SYMBOL(memzero_s)

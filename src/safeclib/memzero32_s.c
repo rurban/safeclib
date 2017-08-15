@@ -105,4 +105,4 @@ memzero32_s (uint32_t *dest, rsize_t len)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memzero32_s);
+EXPORT_SYMBOL(memzero32_s)

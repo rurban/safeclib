@@ -1,0 +1,31 @@
+
+                ChangeLog file for safeclib
+
+Changes in v15082017 2.0.0
+        - Add restrict to all pointer args, where applicable
+        - Change ESLEMAX to ESNOSPC for `(smax > dmax)` overflows
+        - Made it -Wall -pedantic safe
+        - Fix strljustify_s for empty src
+        - Fix various test errors: wrong printf format types, mostly on 64bit.
+        uninitialized variables, wrong variable types, wrong variables.
+        - test_strcspn_s.c: fix for g++
+        - Fixup sprintf_s: Use the established API, call the str_constraint_handler,
+        return the proper error values. Add tests.
+        - Add guards to prevent name mangaling when headers are used in c++ code.
+        - change memset_s to __STDC_WANT_LIB_EXT1__
+        - memset16_s, memset32_s: change API analog to memset_s.
+        Also add the smax C11 argument there, to be consistent.
+        smax denotes the max. number of bytes, the max size.
+        - add missing AM_PROG_AR to configure.ac
+
+Changes in v10052013 1.0.0
+        - Autogenerate safe_lib_errno.h safe_types.h
+        - use C99 stdbool instead of boolean_t, replace TRUE/FALSE with true/false
+
+Changes in v04122012 1.0.0
+        - Update documentation
+        - Support slkm: linux kernel module
+
+Changes in v08112011 0.0
+        - autotoolized
+        - taken from http://sourceforge.net/projects/safeclib/

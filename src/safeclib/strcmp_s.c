@@ -137,4 +137,4 @@ strcmp_s (const char *dest, rsize_t dmax,
     *indicator = *dest - *src;
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strcmp_s);
+EXPORT_SYMBOL(strcmp_s)

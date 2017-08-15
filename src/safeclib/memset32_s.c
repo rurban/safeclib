@@ -127,4 +127,4 @@ memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
 
     return (RCNEGATE(err));
 }
-EXPORT_SYMBOL(memset32_s);
+EXPORT_SYMBOL(memset32_s)

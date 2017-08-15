@@ -170,4 +170,4 @@ memcmp16_s (const uint16_t *dest, rsize_t dmax,
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memcmp16_s);
+EXPORT_SYMBOL(memcmp16_s)

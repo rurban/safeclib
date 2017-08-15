@@ -128,4 +128,4 @@ memset16_s(uint16_t *dest, rsize_t smax, uint16_t value, rsize_t n)
 
     return (RCNEGATE(err));
 }
-EXPORT_SYMBOL(memset16_s);
+EXPORT_SYMBOL(memset16_s)

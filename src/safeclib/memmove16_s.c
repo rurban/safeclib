@@ -148,4 +148,4 @@ memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memmove16_s);
+EXPORT_SYMBOL(memmove16_s)

@@ -171,4 +171,4 @@ memcmp_s (const void *dest, rsize_t dmax,
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memcmp_s);
+EXPORT_SYMBOL(memcmp_s)

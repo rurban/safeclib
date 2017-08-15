@@ -109,4 +109,4 @@ strnlen_s (const char *dest, rsize_t dmax)
 
     return RCNEGATE(count);
 }
-EXPORT_SYMBOL(strnlen_s);
+EXPORT_SYMBOL(strnlen_s)

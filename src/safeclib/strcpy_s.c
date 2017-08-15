@@ -195,4 +195,4 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
-EXPORT_SYMBOL(strcpy_s);
+EXPORT_SYMBOL(strcpy_s)

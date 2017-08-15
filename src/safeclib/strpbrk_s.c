@@ -160,4 +160,4 @@ strpbrk_s (char *dest, rsize_t dmax,
 
     return RCNEGATE(ESNOTFND);
 }
-EXPORT_SYMBOL(strpbrk_s);
+EXPORT_SYMBOL(strpbrk_s)
