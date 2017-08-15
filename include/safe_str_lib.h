@@ -58,7 +58,7 @@ extern "C" {
 
 /* safe sprintf_s */
 extern int
-sprintf_s(char *dest, rsize_t dmax, const char *fmt, ...);
+sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 
 /* set string constraint handler */
 extern constraint_handler_t
@@ -79,7 +79,7 @@ strcasestr_s(char *dest, rsize_t dmax,
 
 /* string concatenate */
 extern errno_t
-strcat_s(char *dest, rsize_t dmax, const char *src);
+strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
 
 
 /* string compare */
@@ -96,7 +96,7 @@ strcmpfld_s(const char *dest, rsize_t dmax,
 
 /* string copy */
 extern errno_t
-strcpy_s(char *dest, rsize_t dmax, const char *src);
+strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src);
 
 
 /* fixed char array copy */
@@ -189,12 +189,12 @@ strljustify_s(char *dest, rsize_t dmax);
 
 /* fitted string concatenate */
 extern errno_t
-strncat_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
+strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
 
 
 /* fitted string copy */
 extern errno_t
-strncpy_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
+strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
 
 
 /* string length */
@@ -246,12 +246,12 @@ strstr_s(char *dest, rsize_t dmax,
 
 /* string tokenizer */
 extern char *
-strtok_s(char *s1, rsize_t *s1max, const char *src, char **ptr);
+strtok_s(char * restrict s1, rsize_t *restrict s1max, const char * restrict src, char ** restrict ptr);
 
 
 /* convert string to lowercase */
 extern errno_t
-strtolowercase_s(char *str, rsize_t slen);
+strtolowercase_s(char * restrict str, rsize_t slen);
 
 
 /* convert string to uppercase */
