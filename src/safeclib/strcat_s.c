@@ -41,7 +41,7 @@
  * SYNOPSIS
  *    #include "safe_str_lib.h"
  *    errno_t
- *    strcat_s(char *dest, rsize_t dmax, const char *src)
+ *    strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src)
  *
  * DESCRIPTION
  *    The strcat_s function appends a copy of the string pointed
@@ -98,7 +98,7 @@
  *
  */
 errno_t
-strcat_s (char *dest, rsize_t dmax, const char *src)
+strcat_s (char * restrict dest, rsize_t dmax, const char * restrict src)
 {
     rsize_t orig_dmax;
     char *orig_dest;

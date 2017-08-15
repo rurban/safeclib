@@ -119,8 +119,8 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
     if (smax > dmax) {
         mem_prim_set16(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy16_s: smax exceeds dmax",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   NULL, ESNOSPC);
+        return (RCNEGATE(ESNOSPC));
     }
 
     if (src == NULL) {

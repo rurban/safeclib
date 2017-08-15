@@ -129,8 +129,8 @@ memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
     if (smax > dmax) {
         mem_prim_set16(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memove16_s: smax exceeds dmax",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   NULL, ESNOSPC);
+        return (RCNEGATE(ESNOSPC));
     }
 
     if (sp == NULL) {

@@ -37,7 +37,7 @@
  *
  * SYNOPSIS
  *    #include "safe_lib.h"
- *    void abort_handler_s(const char *msg, void *ptr, errno_t error)
+ *    void abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
  *
  * DESCRIPTION
  *    This function writes a message on the standard error stream in
@@ -65,7 +65,7 @@
  *
  */
 
-void abort_handler_s(const char *msg, void *ptr, errno_t error)
+void abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
 {
 	slprintf("ABORT CONSTRAINT HANDLER: (%u) %s\n", error,
 		 (msg) ? msg : "Null message");

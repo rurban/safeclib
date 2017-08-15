@@ -42,7 +42,7 @@
  * SYNOPSIS
  *    #include "safe_mem_lib.h"
  *    errno_t
- *    memcpy_s(void *dest, rsize_t dmax, const void *src, rsize_t smax)
+ *    memcpy_s(void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t smax)
  *
  * DESCRIPTION
  *    This function copies at most smax bytes from src to dest, up to
@@ -88,7 +88,7 @@
  *
  */
 errno_t
-memcpy_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
+memcpy_s(void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t smax)
 {
     uint8_t *dp;
     const uint8_t  *sp;
@@ -124,8 +124,8 @@ memcpy_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
     if (smax > dmax) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy_s: smax exceeds dmax",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+                   NULL, ESNOSPC);
+        return RCNEGATE(ESNOSPC);
     }
 
     if (sp == NULL) {

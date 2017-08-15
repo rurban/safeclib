@@ -41,7 +41,7 @@
  * SYNOPSIS
  *    #include "safe_str_lib.h"
  *    errno_t
- *    strcpy_s(char *dest, rsize_t dmax, const char *src)
+ *    strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src)
  *
  * DESCRIPTION
  *    The strcpy_s function copies the string pointed to by src
@@ -91,7 +91,7 @@
  *
  */
 errno_t
-strcpy_s (char *dest, rsize_t dmax, const char *src)
+strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
 {
     rsize_t orig_dmax;
     char *orig_dest;

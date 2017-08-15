@@ -41,7 +41,7 @@
  * SYNOPSIS
  *    #include "safe_str_lib.h"
  *    errno_t
- *    strncpy_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
+ *    strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
  *
  * DESCRIPTION
  *    The strncpy_s function copies not more than slen successive characters
@@ -98,7 +98,7 @@
  *-
  */
 errno_t
-strncpy_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
+strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
 {
     rsize_t orig_dmax;
     char *orig_dest;

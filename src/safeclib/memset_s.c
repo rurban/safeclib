@@ -119,8 +119,8 @@ memset_s (void *dest, rsize_t smax, uint8_t value, rsize_t n)
 
     if (n > smax) {
         invoke_safe_mem_constraint_handler("memset_s: n exceeds smax",
-                   NULL, ESLEMAX);
-        err = ESLEMAX;
+                   NULL, ESNOSPC);
+        err = ESNOSPC;
         n = smax;
     }
 

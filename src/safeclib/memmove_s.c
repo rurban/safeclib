@@ -128,8 +128,8 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
     if (smax > dmax) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: smax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   NULL, ESNOSPC);
+        return (RCNEGATE(ESNOSPC));
     }
 
     if (sp == NULL) {

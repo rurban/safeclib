@@ -139,8 +139,8 @@ memcmp_s (const void *dest, rsize_t dmax,
 
     if (smax > dmax) {
         invoke_safe_mem_constraint_handler("memcmp_s: smax exceeds dmax",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   NULL, ESNOSPC);
+        return (RCNEGATE(ESNOSPC));
     }
 
     /*

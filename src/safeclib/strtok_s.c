@@ -41,7 +41,7 @@
  * SYNOPSIS
  *    #include "safe_str_lib.h"
  *    char *
- *    strtok_s(char *dest, rsize_t *dmax, char *src, char **ptr)
+ *    strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict src, char ** restrict ptr)
  *
  * DESCRIPTION
  *    A sequence of calls to the strtok_s function breaks the string
@@ -169,7 +169,7 @@
  *-
  */
 char *
-strtok_s(char *dest, rsize_t *dmax, const char *src, char **ptr)
+strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict src, char ** restrict ptr)
 {
 
 /*

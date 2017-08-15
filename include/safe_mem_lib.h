@@ -62,8 +62,8 @@ extern errno_t memcmp32_s(const uint32_t *dest, rsize_t dmax,
 
 
 /* copy memory */
-extern errno_t memcpy_s(void *dest, rsize_t dmax,
-                        const void *src, rsize_t slen);
+extern errno_t memcpy_s(void * restrict dest, rsize_t dmax,
+                        const void * restrict src, rsize_t slen);
 
 /* copy uint16_t memory */
 extern errno_t memcpy16_s(uint16_t *dest, rsize_t dmax,
