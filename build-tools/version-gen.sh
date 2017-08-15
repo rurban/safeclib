@@ -36,8 +36,8 @@
 # Parameters
 # ----------
 # tarball-version   - file name of the version file released with a source
-#		      distrobution.
-# sed-normilization - sed normilization script passed to sed via '-e'
+#		      distribution.
+# sed-normalization - sed normalization script passed to sed via '-e'
 #
 # Version Numbering
 # -----------------
@@ -99,7 +99,7 @@
 #	git tag -d "test1.2"; git checkout -- README
 #
 
-SCRIPTVERSION=2012-10-05
+SCRIPTVERSION=2017-08-15
 
 prog=$0
 
@@ -176,7 +176,7 @@ fi
 # read git version, if the repo has uncommitted changes append
 # '-dirty' to version.
 if test -z "$v"; then
-	v=$(git describe --match "$prefix*" --abbrev=$abbrev \
+	v=$(git describe --long --tags --always --match "$prefix*" --abbrev=$abbrev \
 		--dirty 2>/dev/null) || v=UNKNOWN
 	v=$(echo "$v" | sed "$tag_sed_script" | sed "s/^$prefix//")
 fi

@@ -4,4 +4,5 @@ Jonathan Toppins <jtoppins@users.sourceforge.net>
     Author of safe Linux kernel module (SLKM)
 Reini Urban <rurban@cpan.org>
     github fork
- 
+Arjun Gour, Jeremy Hannon: Johnson Controls, Inc.
+    Added restrict, use ESNOSPC for overflows
