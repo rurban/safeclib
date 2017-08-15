@@ -60,7 +60,7 @@ extern "C" {
 #endif
 
 #ifndef ESLEMAX
-#define ESLEMAX         ( 403 )       /* length exceeds max          */
+#define ESLEMAX         ( 403 )       /* length exceeds RSIZE_MAX    */
 #endif
 
 #ifndef ESOVRLP

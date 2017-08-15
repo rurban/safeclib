@@ -119,8 +119,8 @@ memset16_s(uint16_t *dest, rsize_t smax, uint16_t value, rsize_t n)
 
     if (n > smax/2) {
         invoke_safe_mem_constraint_handler("memset16_s: n exceeds smax/2",
-                   NULL, ESLEMAX);
-        err = ESLEMAX;
+                   NULL, ESNOSPC);
+        err = ESNOSPC;
         n = smax/2;
     }
 

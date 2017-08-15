@@ -133,8 +133,8 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
 
     if (smax > dmax) {
        invoke_safe_mem_constraint_handler("memcmp32_s: smax exceeds dmax",
-                  NULL, ESLEMAX);
-       return (RCNEGATE(ESLEMAX));
+                  NULL, ESNOSPC);
+       return (RCNEGATE(ESNOSPC));
     }
 
     /*
