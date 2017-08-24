@@ -36,42 +36,27 @@
 
 
 /**
- * NAME
- *    memzero_s
- *
- * SYNOPSIS
- *    #include "safe_mem_lib.h"
- *    errno_t
- *    memzero_s(void *dest, rsize_t len)
- *
- * DESCRIPTION
+ * @brief
  *    Zeros len bytes starting at dest.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest         pointer to memory to be zeroed.
+ * @param[out] dest  pointer to memory to be zeroed.
+ * @param[in]  len   number of bytes to be zeroed
  *
- *    len          number of bytes to be zeroed
+ * @pre   dest shall not be a null pointer.
+ * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM.
  *
- * OUTPUT PARAMETERS
- *    dest      is updated
+ * @return  If there is a runtime constraint, the operation is not performed.
+ * @retval  EOK         when operation is successful
+ * @retval  ESNULLP     when dest is NULL POINTER
+ * @retval  ESZEROL     when len = ZERO
+ * @retval  ESLEMAX     when len > RSIZE_MAX_MEM
  *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    len shall not be 0 nor greater than RSIZE_MAX_MEM.
- *    If there is a runtime constraint, the operation is not performed.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *
- * ALSO SEE
+ * @see 
  *    memzero16_s(), memzero32_s()
  *
  */

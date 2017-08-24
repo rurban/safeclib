@@ -32,32 +32,19 @@
 #include "safeclib_private.h"
 
 /**
- * NAME
- *    ignore_handler_s
- *
- * SYNOPSIS
- *    #include "safe_lib.h"
- *    void ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
- *
- * DESCRIPTION
+ * @brief
  *    This function simply returns to the caller.
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    msg       Pointer to the message describing the error
+ * @param[in] msg    Pointer to the message describing the error
+ * @param[in] ptr    Pointer to aassociated data.  Can be NULL.
+ * @param[in] error  The error code encountered.
  *
- *    ptr       Pointer to aassociated data.  Can be NULL.
- *
- *    error     The error code encountered.
- *
- * RETURN VALUE
- *    Returns no value.
- *
- * ALSO SEE
+ * @see 
  *    abort_handler_s()
  *
  */

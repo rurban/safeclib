@@ -35,46 +35,34 @@
 
 
 /**
- * NAME
- *    strremovews_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strremovews_s(char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief 
  *    Removes beginning and trailing whitespace from the string pointed to by
  *    dest by shifting the text left over writting the beginning whitespace.
+ * @details
  *    The shifted-trimmed text is null terminated.
- *
  *    The text is shifted so the original pointer can continue to be used. This
  *    is useful when the memory was malloc'ed and will need to be freed.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest    pointer to string to remove whitespace
+ * @param[out]  dest  pointer to string to left justify
+ * @param[in]   dmax  restricted maximum length of string
  *
- *    dmax    restricted maximum length of string
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not be 0
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dest shall be null terminated
  *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR
- *    dest shall be null terminated
+ * @retval  EOK         when successful operation
+ * @retval  ESNULLP     when dest is NULL pointer
+ * @retval  ESZEROL     when dmax = 0
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESUNTERM    when dest was not null terminated
  *
- * RETURN VALUE
- *    EOK
- *    ESNULLP     NULL pointer
- *    ESZEROL     zero length
- *    ESLEMAX     length exceeds max limit
- *    ESUNTERM    dest was not null terminated
- *
- * SEE ALSO
+ * @see
  *    strljustify_s(),
  *
  */

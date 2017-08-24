@@ -37,52 +37,35 @@
 
 
 /**
- * NAME
- *    memset_s
- *
- * SYNOPSIS
- *    #include "safe_mem_lib.h"
- *    errno_t
- *    memset_s(void *dest, rsize_t smax, uint8_t value, rsize_t n)
- *
- * DESCRIPTION
+ * @brief
  *    Sets the first n bytes starting at dest to the specified value,
  *    but maximal smax bytes.
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to memory that will be set to the value
+ * @param[out]  dest   pointer to memory that will be set to the value
+ * @param[in]   smax   maximum number of bytes to be written
+ * @param[in]   value  byte value to be written
+ * @param[in]   n      number of bytes to be set
  *
- *    smax       maximum number of bytes to be written
+ * @pre  dest shall not be a null pointer.
+ * @pre  smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
+ * @pre  smax may not be smaller than n.
+ *   
+ * @return  If there is a runtime-constraints violation, and if dest is not a null
+ *          pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
+ *          reporting the runtime-constraints violation, memset_s() copies
+ *          smax bytes to the destination. 
+ * @retval  EOK         when operation is successful
+ * @retval  ESNULLP     when dest is NULL POINTER
+ * @retval  ESZEROL     when n = ZERO
+ * @retval  ESLEMAX     when smax/n > RSIZE_MAX_MEM
+ * @retval  ESNOSPC     when smax < n
  *
- *    value      byte value to be written
- *
- *    n          number of bytes to be set
- *
- * OUTPUT PARAMETERS
- *    dest      is updated
- *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
- *    smax may not be smaller than n.
-
- *    If there is a runtime-constraints violation, and if dest is not a null
- *    pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
- *    reporting the runtime-constraints violation, memset_s() copies
- *    smax bytes to the destination.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *
- * ALSO SEE
+ * @see 
  *    memset16_s(), memset32_s()
  *
  */

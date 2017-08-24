@@ -36,55 +36,37 @@
 
 
 /**
- * NAME
- *    memcpy16_s
- *
- * SYNOPSIS
- *    #include "safe_mem_lib.h"
- *    errno_t
- *    memcpy16_s(uint16_t *dest, rsize_t dmax,
- *               const uint16_t *src, rsize_t smax)
- *
- * DESCRIPTION
+ * @brief 
  *    This function copies at most smax uint16_ts from src to dest, up to
  *    dmax.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to memory that will be replaced by src.
+ * @param[out] dest   pointer to the memory that will be replaced by src.
+ * @param[in]  dmax   maximum length of the resulting dest, in bytes
+ * @param[in]  src    pointer to the memory that will be copied to dest
+ * @param[in]  smax   maximum number bytes of src that can be copied
  *
- *    dmax      maximum length of the resulting dest
+ * @pre   Neither dest nor src shall be a null pointer.
+ * @pre   Neither dmax nor smax shall be 0.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre   smax shall not be greater than dmax.
+ * @pre   Copying shall not take place between regions that overlap.
+ *    
+ * @return  If there is a runtime-constraint violation, the memcpy_s function
+ *          stores zeros in the ﬁrst dmax bytes of the region pointed to
+ *          by dest if dest is not a null pointer and smax is valid.
+ * @retval  EOK         when operation is successful
+ * @retval  ESNULLP     when dst/src is NULL POINTER
+ * @retval  ESZEROL     when dmax/smax = ZERO
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESNOSPC     when dmax < smax
+ * @retval  ESOVRLP     when src memory overlaps dst
  *
- *    src       pointer to the memory that will be copied to dest
- *
- *    smax      maximum number uint16_t of src to copy
- *
- *
- *  OUTPUT PARAMETERS
- *    dest      is updated
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    Neither dmax nor smax shall be 0.
- *    dmax shall not be greater than RSIZE_MAX_MEM16.
- *    smax shall not be greater than dmax.
- *    Copying shall not take place between objects that overlap.
- *    If there is a runtime-constraint violation, the memcpy_s function stores
- *      zeros in the ﬁrst dmax bytes of the object pointed to by dest
- *      if dest is not a null pointer and smax is valid.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *    ESOVRLP    source memory overlaps destination
- *
- * ALSO SEE
+ * @see 
  *    memcpy_s(), memcpy32_s(), memmove_s(), memmove16_s(), memmove32_s()
  *
  */

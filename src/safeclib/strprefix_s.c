@@ -35,49 +35,34 @@
 
 
 /**
- * NAME
- *    strprefix_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strprefix_s(const char *dest, rsize_t dmax, const char *src)
- *
- * DESCRIPTION
+ * @brief
  *    Determines if the prefix pointed to by src is at the
  *    beginning of string pointed to by dest.  The prefix
  *    must be a complete match in dest.  Useful for command
  *    or user input parsing.  The scanning stops at the first
  *    null in dest or src, or after dmax characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to string to compare against
+ * @param  dest  pointer to string to compare against
+ * @param  dmax  restricted maximum length of dest
+ * @param  src   pointer to the prefix
  *
- *    dmax       restricted maximum length of dest
  *
- *    src        pointer to the prefix
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  Neither dmax nor slen shall not be 0.
+ * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
  *
- * OUTPUT PARAMETERS
- *    none
+ * @retval  EOK        when successful operation, substring found.
+ * @retval  ESNULLP    when dest/src/substring is NULL pointer
+ * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESNOTFND   when prefix not found in dest
  *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    dmax shall not equal zero.
- *    dmax shall not be greater than RSIZE_MAX_STR.
- *
- * RETURN VALUE
- *    EOK        successful operation, prefix present in dest
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *    ESNOTFND   prefix not found in dest
- *
- * ALSO SEE
+ * @see
  *    strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
  *
  */

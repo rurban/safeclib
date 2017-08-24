@@ -35,54 +35,35 @@
 
 
 /**
- * NAME
- *    strfirstdiff_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strfirstdiff_s(const char *dest, rsize_t dmax,
- *                   const char *src, rsize_t *index)
- *
- * DESCRIPTION
+ * @brief
  *    Returns the index of the first character that is different
  *    between dest and src. Index is valid only for OK.
  *    The scanning stops at the first null in dest or src, or
  *    after dmax characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest     pointer to string to compare against
+ * @param[in]   dest   pointer to string to compare against
+ * @param[in]   dmax   restricted maximum length of string dest
+ * @param[in]   src    pointer to the string to be compared to dest
+ * @param[out]  index  pointer to returned index to first difference
  *
- *    dmax     restricted maximum length of string dest
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  indicator shall not be a null pointer.
+ * @pre  dmax shall not be 0.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
- *    src      pointer to the string to be compared to dest
+ * @return  index to first difference, when the return code is OK
+ * @retval  EOK         when index to first diff is returned
+ * @retval  ESNODIFF    when no difference
+ * @retval  ESNULLP     when dest/src/index is NULL pointer
+ * @retval  ESZEROL     when dmax = 0
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
  *
- *    index    pointer to returned index to first difference
- *
- * OUTPUT PARAMETERS
- *    index    returned index to first difference
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    indicator shall not be a null pointer.
- *    dmax shall not be 0.
- *    dmax shall not be greater than RSIZE_MAX_STR.
- *
- * RETURN VALUE
- *    index to first difference, when the return code is OK
- *
- *    EOK         index to first diff is returned
- *    ESNODIFF    no difference
- *    ESNULLP     NULL pointer
- *    ESZEROL     zero length
- *    ESLEMAX     length exceeds max limit
- *
- * ALSO SEE
+ * @see
  *    strfirstchar_s(), strfirstsame_s(), strlastchar_s(),
  *    strlastdiff_s(), strlastsame_s()
  *

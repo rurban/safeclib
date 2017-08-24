@@ -35,43 +35,29 @@
 
 
 /**
- * NAME
- *    strislowercase_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    bool
- *    strislowercase_s(const char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief
  *    This function checks if entire string is lowercase.
  *    The scanning stops at the first null or after dmax
  *    characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string
+ * @param  dest  pointer to string
+ * @param  dmax  maximum length of string
  *
- *    dmax      maximum length of string
+ * @pre  dest shall not be a null pointer.
+ * @pre  dest shall be a null terminated.
+ * @pre  dmax shall not equal zero.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
- * OUTPUT PARAMETERS
- *    none
  *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    dest shal be null terminated.
- *    dmax shall not equal zero.
- *    dmax shall not be greater than RSIZE_MAX_STR.
+ * @return  true   when string is lowercase
+ * @return  false  when string is not lowercase or an error occurred
  *
- * RETURN VALUE
- *    true      string is lowercase
- *    false     string is not lowercase or an error occurred
- *
- * ALSO SEE
+ * @see
  *    strisalphanumeric_s(), strisascii_s(), strisdigit_s(),
  *    strishex_s(), strismixedcase_s(),
  *    strisuppercase_s()

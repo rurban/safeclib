@@ -35,51 +35,33 @@
 
 
 /**
- * NAME
- *    strfirstchar_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strfirstchar_s(char *dest, rsize_t dmax, char c, char **first)
- *
- * DESCRIPTION
+ * @brief
  *    This function returns a pointer to the first occurrence
  *    of character c in dest. The scanning stops at the first null
  *    or after dmax characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest    pointer to string to compare against
+ * @param[in]   dest   pointer to string to compare against
+ * @param[in]   dmax   restricted maximum length of string
+ * @param[in]   c      character to locate
+ * @param[out]  first  returned pointer to first occurrence of c
  *
- *    dmax    restricted maximum length of string
+ * @pre  dest shall not be a null pointer.
+ * @pre  first shall not be a null pointer.
+ * @pre  dmax shall not be 0
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR
  *
- *    c       character to locate
+ * @return  pointer to first occurence of c, NULL if not found
+ * @retval  EOK         when pointer to first occurrence is returned
+ * @retval  ESNULLP     when dst/first is NULL pointer
+ * @retval  ESZEROL     when dmax = 0
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
  *
- *    first   returned pointer to first occurrence of c
- *
- * OUTPUT PARAMETERS
- *    first   updated pointer to first occurrence of c
- *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    first shall not be a null pointer.
- *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR
- *
- * RETURN VALUE
- *    pointer to first occurence of c, NULL if not found
- *
- *    EOK         pointer to first occurrence is returned
- *    ESNULLP     NULL pointer
- *    ESZEROL     zero length
- *    ESLEMAX     length exceeds max limit
- *
- * ALSO SEE
+ * @see
  *    strlastchar_s(), strfirstdiff_s(), strfirstsame_s(),
  *    strlastdiff_s(), strlastsame_s(),
  *

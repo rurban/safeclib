@@ -35,47 +35,34 @@
 
 
 /**
- * NAME
- *    strispassword_s
- *
- * SYNOPSIS
- *    #include "strlib.h"
- *    bool
- *    strispassword_s(const char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief
  *    This function validates the make-up of a password string.
- *    -SAFE_STR_PASSWORD_MIN_LENGTH character minimum
- *    -SAFE_STR_PASSWORD_MAX_LENGTH character maximum
- *    -at least SAFE_STR_MIN_LOWERCASE lower case characters
- *    -at least SAFE_STR_MIN_UPPERCASE upper case characters
- *    -at least SAFE_STR_MIN_NUMBERS number
- *    -at least SAFE_STR_MIN_SPECIALS special
+ * @details
+ *       -Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters 
+ *    \n -Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters
+ *    \n -Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters
+ *    \n -Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters
+ *    \n -Password must have at least SAFE_STR_MIN_NUMBERS numbers
+ *    \n -Password must have at least SAFE_STR_MIN_SPECIALS special characters
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to string
+ * @param  dest  pointer to string
+ * @param  dmax  maximum length of password string
  *
- *    dmax       length of password string
  *
- * OUTPUT PARAMETERS
- *    none
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax > SAFE_STR_PASSWORD_MIN_LENGTH
+ * @pre  dmax < SAFE_STR_PASSWORD_MAX_LENGTH
+ * @pre  dest shall not be unterminated
  *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    length > SAFE_STR_PASSWORD_MIN_LENGTH
- *    length < SAFE_STR_PASSWORD_MAX_LENGTH
- *    dest shall not be unterminated
+ * @return  true   when string has valid password makeup
+ * @return  false  when string does not meet requirements or an error occurred
  *
- * RETURN VALUE
- *    true, string has valid password makeup
- *    false, string does not meet requirements or an error occurred
- *
- * ALSO SEE
+ * @see
  *    strzero_s()
  *
  */

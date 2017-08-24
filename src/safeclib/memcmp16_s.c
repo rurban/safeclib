@@ -34,55 +34,37 @@
 #include "safe_mem_lib.h"
 
 /**
- * NAME
- *    memcmp16_s
- *
- * SYNOPSIS
- *    #include "safe_mem_lib.h"
- *    errno_t
- *    memcmp16_s(const uint16_t *dest, rsize_t dmax,
- *               const uint16_t *src,  rsize_t smax, int *diff)
- *
- * DESCRIPTION
+ * @brief
  *    Compares memory until they differ, and their difference is
  *    returned in diff.  If the block of memory is the same, diff=0.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- *  INPUT PARAMETERS
- *    dest      pointer to memory to compare against
+ * @param  dest   pointer to memory to compare against
+ * @param  src    pointer to the source memory to compare with dest 
+ * @param  dmax   maximum length of dest, in bytess
+ * @param  smax   length of the source memory block
+ * @param  *diff  pointer to the diff which is an integer greater
+ *                than, equal to or less than zero according to
+ *                whether the object pointed to by dest is
+ *                greater than, equal to or less than the object
+ *                pointed to by src.
  *
- *    dmax      maximum length of dest, in uint16_t
+ * @pre   Neither dest nor src shall be a null pointer.
+ * @pre   Neither dmax nor smax shall be 0.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre   smax shall not be greater than dmax.
  *
- *    src       pointer to the source memory to compare with dest
+ * @retval  EOK         when operation is successful
+ * @retval  ESNULLP     when dst/src is NULL POINTER
+ * @retval  ESZEROL     when dmax/smax = ZERO
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESNOSPC     when dmax < smax
  *
- *    smax      maximum length of src, in uint16_t
- *
- *    *diff     pointer to the diff which is an integer greater
- *              than, equal to or less than zero according to
- *              whether the object pointed to by dest is
- *              greater than, equal to or less than the object
- *              pointed to by src.
- *
- *  OUTPUT PARAMETERS
- *    none
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    Neither dmax nor smax shall be zero.
- *    dmax shall not be greater than RSIZE_MAX_MEM.
- *    smax shall not be greater than dmax.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *
- * ALSO SEE
+ * @see 
  *    memcmp_s(), memcmp32_s()
  *
  */

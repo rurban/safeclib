@@ -35,38 +35,24 @@
 
 
 /**
- * NAME
- *    strzero_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strzero_s(char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief
  *    Nulls dmax characters of dest.  This function can be used
  *    to clear strings that contained sensitive data.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest     pointer to string that will be nulled.
+ * @param[out]  dest  pointer to string that will be nulled.
+ * @param[in]   dmax  restricted maximum length of dest
  *
- *    dmax     restricted maximum length of dest
+ * @retval  EOK         when successful operation
+ * @retval  ESNULLP     when dest is NULL pointer
+ * @retval  ESZEROL     when dmax = 0
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
  *
- * OUTPUT PARAMETERS
- *    dest     updated string
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *
- * ALSO SEE
+ * @see
  *    strispassword_s()
  *
  */

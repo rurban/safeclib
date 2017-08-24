@@ -35,57 +35,40 @@
 
 
 /**
- * NAME
- *    strcpyfld_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strcpyfld_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
- *
- * DESCRIPTION
+ * @brief
  *    The strcpyfld_s function copies slen characters from the character
  *    array pointed to by src into the character array pointed to by dest.
  *    The copy operation does not stop on the null character as the
  *    function copies slen characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to character array that will be replaced by src.
+ * @param[out]  dest  pointer to string that will be replaced by src.
+ * @param[in]   dmax  restricted maximum length of dest
+ * @param[in]   src   pointer to the character array that will be copied to dest
+ * @param[in]   slen  maximum length of src
  *
- *    dmax      restricted maximum length of dest
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  dmax shall not equal zero.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  slen shall not equal zero.
+ * @pre  slen shall not exceed dmax
+ * @pre  Copying shall not take place between objects that overlap.
+ *    
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and destmax is greater than zero and
+ *          not greater than RSIZE_MAX_STR, then strcpyfld_s nulls dest.
+ * @retval  EOK        when successful operation
+ * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESOVRLP    when strings overlap
+ * @retval  ESNOSPC    when dmax < slen
  *
- *    src       pointer to the character array that will be copied
- *              to dest
- *
- *    slen      maximum length of src
- *
- * OUTPUT PARAMETERS
- *    dest      updated
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    dmax shall not equal zero.
- *    dmax shall not be greater than RSIZE_MAX_STR.
- *    slen shall not equal zero.
- *    slen shall not exceed dmax
- *    Copying shall not take place between objects that overlap.
- *    If there is a runtime-constraint violation, then if dest
- *       is not a null pointer and destmax is greater than zero and
- *       not greater than RSIZE_MAX_STR, then strcpyfld_s nulls dest.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *    ESOVRLP    strings overlap
- *
- * ALSO SEE
+ * @see
  *    strcpyfldin_s(), strcpyfldout_s()
  *
  */

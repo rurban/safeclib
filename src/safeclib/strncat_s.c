@@ -35,66 +35,47 @@
 
 
 /**
- * NAME
- *    strncat_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
- *
- * DESCRIPTION
+ * @brief
  *    The strncat_s function appends a copy of the string pointed
  *    to by src (including the terminating null character) to the
  *    end of the string pointed to by dest. The initial character
  *    from src overwrites the null character at the end of dest.
- *
+ * @details
  *    All elements following the terminating null character (if
  *    any) written by strncat_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strncat_s returns.
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string that will be extended by src
- *              if dmax allows. The string is null terminated.
- *              If the resulting concatenated string is less
- *              than dmax, the remaining slack space is nulled.
+ * @param[out]  dest  pointer to string that will be extended by src
+ *                    if dmax allows. The string is null terminated.
+ *                    If the resulting concatenated string is less
+ *                    than dmax, the remaining slack space is nulled.
+ * @param[in]   dmax  restricted maximum length of the resulting dest,
+ *                    including the null
+ * @param[in]   src   pointer to the string that will be concatenaed
+ *                    to string dest
+ * @param[in]   slen  maximum characters to append
  *
- *    dmax      restricted maximum length of the resulting dest,
- *              including the null
- *
- *    src       pointer to the string that will be concatenaed
- *              to string dest
- *
- *    slen      maximum characters to append
- *
- * OUTPUT PARAMETERS
- *    dest      updated string
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer
- *    dmax shall not equal zero
- *    dmax shall not be greater than RSIZE_STR_MAX
- *    dmax shall be greater than strnlen_s(src,m).
- *    Copying shall not takeplace between objects that overlap
- *    If there is a runtime-constraint violation, then if dest is
- *       not a null pointer and dmax is greater than zero and not
- *       greater thanRSIZE_MAX, then strncat_s sets dest[0] to the
- *       null character.
- *
- * RETURN VALUE
- *     EOK        successful operation, all the characters from src
- *                   were appended to dest and the result in dest is
- *                   null terminated.
- *     ESNULLP    NULL pointer
- *     ESZEROL    zero length
- *     ESLEMAX    length exceeds max limit
- *     ESUNTERM   dest not terminated
- *
+ * @pre  Neither dest nor src shall be a null pointer
+ * @pre  dmax shall not equal zero
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre   dmax shall be greater than strnlen_s(src,m).
+ * @pre   Copying shall not takeplace between objects that overlap
+ *  
+ * @returns  If there is a runtime-constraint violation, then if dest is
+ *           not a null pointer and dmax is greater than zero and not
+ *           greater than RSIZE_MAX, then strncat_s sets dest[0] to the
+ *           null character. 
+ * @retval  EOK        successful operation, all the characters from src
+ *                     null terminated.
+ * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESUNTERM   when dest not terminated
  *
  */
 errno_t

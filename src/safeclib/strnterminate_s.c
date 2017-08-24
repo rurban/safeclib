@@ -35,43 +35,29 @@
 
 
 /**
- * NAME
- *    strnterminate_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    rsize_t
- *    strnterminate_s(char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief
  *    The strnterminate_s function will terminate the string if a
  *    null is not encountered before dmax characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest - pointer to string
+ * @param  dest  pointer to string
+ * @param  dmax  maximum length of string
  *
- *    dmax - restricted maximum length
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not equal zero.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
- * OUTPUT PARAMETERS
- *    dest - dest is terminated if needed
- *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer
- *    dmax shall not be greater than RSIZE_MAX_STR
- *    dmax shall not equal zero
- *
- * RETURN VALUE
+ * @return
  *    The function returns a terminated string.  If a null is not
  *    encountered prior to dmax characters, the dmax character is
  *    set to null terminating the string. The string length is
  *    also returned.
  *
- * ALSO SEE
+ * @see
  *    strnlen_s()
  *
  */

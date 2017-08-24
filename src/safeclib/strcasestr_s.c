@@ -35,53 +35,34 @@
 
 
 /**
- * NAME
- *    strcasestr_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strcasestr_s(char *dest, rsize_t dmax,
- *                 const char *src, rsize_t slen, char **substring)
- *
- * DESCRIPTION
+ * @brief
  *    The strcasestr_s() function locates the first occurrence of
  *    the substring pointed to by src which would be located in
  *    the string pointed to by dest.  The comparison is case
  *    insensitive.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string to be searched for the substring
+ * @param[in]  dest       pointer to string to be searched for the substring
+ * @param[in]  dmax       restricted maximum length of dest string
+ * @param[in]  src        pointer to the sub string
+ * @param[in]  slen       maximum length of src string
+ * @param[out] substring  returned pointer to the substring
  *
- *    dmax      restricted maximum length of dest string
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  Neither dmax nor slen shall equal zero.
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
  *
- *    src       pointer to the sub string
+ * @retval  EOK        when successful operation, substring found.
+ * @retval  ESNULLP    when dst/src/substring is NULL pointer
+ * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESNOTFND   when substring not found
  *
- *    slen      maximum length of src string
- *
- *    substring  returned pointer to the substring
- *
- * OUTPUT PARAMETERS
- *     substring  pointer to the substring
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    Neither dmax nor slen shall equal zero.
- *    Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
- *
- * RETURN VALUE
- *    EOK        successful operation, substring found.
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *    ESNOTFND   substring not found
- *
- * ALSO SEE
+ * @see
  *    strstr_s(), strprefix_s()
  *
  */

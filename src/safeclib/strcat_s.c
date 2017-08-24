@@ -35,65 +35,48 @@
 
 
 /**
- * NAME
- *    strcat_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src)
- *
- * DESCRIPTION
+ * @brief
  *    The strcat_s function appends a copy of the string pointed
  *    to by src (including the terminating null character) to the
  *    end of the string pointed to by dest. The initial character
  *    from src overwrites the null character at the end ofdest.
- *
+ * @details
  *    All elements following the terminating null character (if
  *    any) written by strcat_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strcat_s
  *    returns.
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string that will be extended by src
- *              if dmax allows. The string is null terminated.
- *              If the resulting concatenated string is less
- *              than dmax, the remaining slack space is nulled.
+ * @param[out]  dest      pointer to string that will be extended by src
+ *                        if dmax allows. The string is null terminated.
+ *                        If the resulting concatenated string is less
+ *                        than dmax, the remaining slack space is nulled.
+ * @param[in]   dmax      restricted maximum length of the resulting dest,
+ *                        including the null
+ * @param[in]   src       pointer to the string that will be concatenaed
+ *                        to string dest
  *
- *    dmax      restricted maximum length of the resulting dest,
- *              including the null
+ * @pre  Neither dest nor src shall be a null pointer
+ * @pre  dmax shall not equal zero
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall be greater than strnlen_s(src,m).
+ * @pre  Copying shall not takeplace between objects that overlap
  *
- *    src       pointer to the string that will be concatenaed
- *              to string dest
+ * @return  If there is a runtime-constraint violation, then if dest is
+ *          not a null pointer and dmax is greater than zero and not
+ *          greater than RSIZE_MAX_STR, then strcat_s nulls dest.
+ * @retval  EOK        when successful operation, all the characters from src
+ *                     were appended to dest and the result in dest is null terminated.
+ * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESUNTERM   when dest not terminated
  *
- * OUTPUT PARAMETERS
- *    dest      is updated
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer
- *    dmax shall not equal zero
- *    dmax shall not be greater than RSIZE_MAX_STR
- *    dmax shall be greater than strnlen_s(src,m).
- *    Copying shall not takeplace between objects that overlap
- *    If there is a runtime-constraint violation, then if dest is
- *       not a null pointer and dmax is greater than zero and not
- *       greater than RSIZE_MAX_STR, then strcat_s nulls dest.
- *
- * RETURN VALUE
- *    EOK        successful operation, all the characters from src
- *                were appended to dest and the result in dest is
- *                 null terminated.
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max
- *    ESUNTERM   dest not terminated
- *
- * ALSO SEE
+ * @see
  *    strncat_s(), strcpy_s(), strncpy_s()
  *
  */

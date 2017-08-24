@@ -35,42 +35,27 @@
 
 
 /**
- * NAME
- *    strishex_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    bool
- *    strishex_s(const char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief
  *    This function checks that the entire string contains
  *    hex characters.  The scanning stops at the first null
  *    or after dmax characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to string
+ * @param  dest  pointer to string
+ * @param  dmax  maximum length of string
  *
- *    dmax       maximum length of string
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not equal zero.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
- * OUTPUT PARAMETERS
- *    none
+ * @return  true   when string is hex
+ * @return  false  when string is not hex or an error occurred
  *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    dmax shall not equal zero.
- *    dmax shall not be greater than RSIZE_MAX_STR.
- *
- * RETURN VALUE
- *    true      string is hex
- *    false     string is not hex or an error occurred
- *
- * ALSO SEE
+ * @see
  *    strisalphanumeric_s(), strisascii_s(), strisdigit_s(),
  *    strislowercase_s(), strismixedcase_s(),
  *    strisuppercase_s()

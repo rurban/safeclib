@@ -35,50 +35,35 @@
 
 
 /**
- * NAME
- *    strljustify_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strljustify_s(char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief 
  *    Removes beginning whitespace from the string pointed to by
  *    dest by shifting the text left over writting the beginning
- *    whitespace, left justifying the text.  The left justified
- *    text is null terminated.
- *
+ *    whitespace, left justifying the text.  
+ * @details
+ *    The left justified text is null terminated.
  *    The text is shifted so the original pointer can continue
  *    to be used.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest    pointer to string to left justify
+ * @param[out]  dest  pointer to string to left justify
+ * @param[in]   dmax  restricted maximum length of string
  *
- *    dmax    restricted maximum length of string
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not be 0
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dest shall be null terminated
  *
- * OUTPUT PARAMETERS
- *    dest    left justified
+ * @retval  EOK         when successful operation
+ * @retval  ESNULLP     when dest is NULL pointer
+ * @retval  ESZEROL     when dmax = 0
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESUNTERM    when dest was not null terminated
  *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR
- *    dest shall be null terminated
- *
- * RETURN VALUE
- *    EOK
- *    ESNULLP     NULL pointer
- *    ESZEROL     zero length
- *    ESLEMAX     length exceeds max limit
- *    ESUNTERM    dest was not null terminated
- *
- * ALSO SEE
+ * @see
  *    strremovews_s(),
  *
  */

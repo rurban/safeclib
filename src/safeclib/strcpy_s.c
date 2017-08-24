@@ -35,15 +35,7 @@
 
 
 /**
- * NAME
- *    strcpy_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src)
- *
- * DESCRIPTION
+ * @brief
  *    The strcpy_s function copies the string pointed to by src
  *    (including the terminating null character) into the array
  *    pointed to by dest. All elements following the terminating
@@ -51,42 +43,33 @@
  *    of dmax characters pointed to by dest are nulled when
  *    strcpy_s returns.
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string that will be replaced by src.
+ * @param[out]  dest  pointer to string that will be replaced by src.
+ * @param[in]   dmax  restricted maximum length of dest
+ * @param[in]   src   pointer to the string that will be copied to dest
  *
- *    dmax      restricted maximum length of dest
+ * @pre Neither dest nor src shall be a null pointer.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not equal zero.
+ * @pre dmax shall be greater than strnlen_s(src, dmax).
+ * @pre Copying shall not take place between objects that overlap.
  *
- *    src       pointer to the string that will be copied
- *               to dest
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and destmax is greater than zero and
+ *          not greater than RSIZE_MAX_STR, then strcpy_s nulls dest.
+ * @retval  EOK        when successful operation, the characters in src were
+ *                     copied into dest and the result is null terminated.
+ * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESOVRLP    when strings overlap
+ * @retval  ESNOSPC    when dest < src
  *
- * OUTPUT PARAMETERS
- *    dest      updated
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    dmax shall not be greater than RSIZE_MAX_STR.
- *    dmax shall not equal zero.
- *    dmax shall be greater than strnlen_s(src, dmax).
- *    Copying shall not take place between objects that overlap.
- *    If there is a runtime-constraint violation, then if dest
- *       is not a null pointer and destmax is greater than zero and
- *       not greater than RSIZE_MAX_STR, then strcpy_s nulls dest.
- *
- * RETURN VALUE
- *    EOK        successful operation, the characters in src were
- *               copied into dest and the result is null terminated.
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *    ESOVRLP    strings overlap
- *    ESNOSPC    not enough space to copy src
- *
- * ALSO SEE
+ * @see
  *    strcat_s(), strncat_s(), strncpy_s()
  *
  */

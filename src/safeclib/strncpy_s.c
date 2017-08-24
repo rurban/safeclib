@@ -34,71 +34,50 @@
 #include "safe_str_lib.h"
 
 
-/*
- * NAME
- *    strncpy_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
- *
- * DESCRIPTION
+/**
+ * @brief
  *    The strncpy_s function copies not more than slen successive characters
  *    (characters that follow a null character are not copied) from the
  *    array pointed to by src to the array pointed to by dest. If no null
  *    character was copied from src, then dest[n] is set to a null character.
- *
+ * @details
  *    All elements following the terminating null character (if any)
  *    written by strncpy_s in the array of dmax characters pointed to
  *    by dest take on the null value when strncpy_s returns.
  *
- * Specicified in:
+ * @remark SPECIFIED IN
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string that will be replaced by src.
- *              The resulting string is null terminated.
+ * @param[out]  dest  pointer to string that will be replaced by src.
+ * @param[in]   dmax  restricted maximum length of dest
+ * @param[in]   src   pointer to the string that will be copied to dest
+ * @param[in]   slen  the maximum number of characters to copy from src
  *
- *    dmax      restricted maximum length of the resulting dest,
- *              including the null
+ * @pre  Neither dmax nor slen shall be equal to zero.
+ * @pre  Neither dmax nor slen shall be equal zero.
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
+ * @pre  If slen is either greater than or equal to dmax, then dmax should be more than strnlen_s(src,dmax)
+ * @pre  Copying shall not take place between objects that overlap.
  *
- *    src       pointer to the string that will be copied
- *              to string dest
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and dmax greater than RSIZE_MAX_STR,
+ *          then strncpy_s nulls dest.
+ * @retval  EOK        successful operation, the characters in src were copied
+ *                     to dest and the result is null terminated.
+ * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESOVRLP    when strings overlap
+ * @retval  ESNOSPC    when dest < src
  *
- *    slen      the maximum number of characters to copy from src
- *
- * OUTPUT PARAMETERS
- *    dest      updated with src string
- *
- * RUNTIME CONSTRAINTS
- *    Neither dmax nor slen shall be equal to zero.
- *    Neither dmax nor slen shall be equal zero.
- *    Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
- *    If slen is either greater than or equal to dmax, then dmax
- *     should be more than strnlen_s(src,dmax)
- *    Copying shall not take place between objects that overlap.
- *    If there is a runtime-constraint violation, then if dest
- *       is not a null pointer and dmax greater than RSIZE_MAX_STR,
- *       then strncpy_s nulls dest.
- *
- * RETURN VALUE
- *    EOK        successful operation, the characters in src were copied
- *                  to dest and the result is null terminated.
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *    ESOVRLP    strings overlap
- *    ESNOSPC    not enough space to copy src
- *
- * ALSO SEE
+ * @see
  *    strcat_s(), strncat_s(), strcpy_s()
- *-
+ *
  */
 errno_t
-strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
+strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
 {
     rsize_t orig_dmax;
     char *orig_dest;

@@ -35,54 +35,32 @@
 
 
 /**
- * NAME
- *    strpbrk_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strpbrk_s(char *dest, rsize_t dmax,
- *              char *src,  rsize_t slen, char **first)
- *
- * DESCRIPTION
+ * @brief
  *    Returns a pointer, first, to the first ocurrence of any character
  *    in src which is contained in dest.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest     pointer to string
+ * @param  dest   pointer to string to compare against
+ * @param  dmax   restricted maximum length of string dest
+ * @param  src    pointer to the string
+ * @param  slen   restricted length of string src
+ * @param  first  returned pointer to first occurence
  *
- *    dmax     restricted maximum length of string dest
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  Neither dmax nor slen shall not be 0.
+ * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
  *
- *    src      pointer to string
+ * @return  pointer to the first ocurrence of any character contained in src
+ * @retval  EOK         when successful operation
+ * @retval  ESNULLP     when dest/src/first is NULL pointer
+ * @retval  ESZEROL     when dmax/slen = 0
+ * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_STR
  *
- *    slen     restricted length of string src
- *
- *    first    returned pointer to first occurence
- *
- * OUTPUT PARAMETERS
- *    none
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    first shall not be a null pointer.
- *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR
- *
- * RETURN VALUE
- *    pointer to the first ocurrence of any character
- *    contained in src
- *
- *    EOK         count
- *    ESNULLP     NULL pointer
- *    ESZEROL     zero length
- *    ESLEMAX     length exceeds max limit
- *
- * ALSO SEE
+ * @see
  *    strfirstchar_s(), strlastchar_s(), strfirstdiff_s(),
  *    strfirstsame_s(), strlastdiff_s(), strlastsame_s()
  *

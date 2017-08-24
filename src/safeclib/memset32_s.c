@@ -37,52 +37,35 @@
 
 
 /**
- * NAME
- *    memset32_s - Sets a block of memory to value
- *
- * SYNOPSIS
- *    #include "safe_mem_lib.h"
- *    errno_t
- *    memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
- *
- * DESCRIPTION
+ * @brief
  *    Sets len uint32_t starting at dest to the specified value.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to memory that will be set to the value
+ * @param[out]  dest   pointer to memory that will be set to the value
+ * @param[in]   smax   maximum number of bytes to be written
+ * @param[in]   value  byte value to be written
+ * @param[in]   n      number of bytes to be set
  *
- *    smax       maximum number of bytes to be written
+ * @pre  dest shall not be a null pointer.
+ * @pre  smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
+ * @pre  n shall not be 0 nor greater than RSIZE_MAX_MEM32.
+ * @pre  smax*4 may not be smaller than n.
  *
- *    value      uint32_t value to be written
+ * @return  If there is a runtime-constraints violation, and if dest is not a null
+ *          pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
+ *          reporting the runtime-constraints violation, memset32_s() copies
+ *          smax bytes to the destination.
+ * @retval  EOK         when operation is successful
+ * @retval  ESNULLP     when dest is NULL POINTER
+ * @retval  ESZEROL     when n = ZERO
+ * @retval  ESLEMAX     when smax/n > RSIZE_MAX_MEM
+ * @retval  ESNOSPC     when smax/4 < n
  *
- *    n          number of uint32_t values to be written
- *
- * OUTPUT PARAMETERS
- *    dest      is updated
- *
- * RUNTIME CONSTRAINTS
- *    dest shall not be a null pointer.
- *    smax shall not be 0 nor greater than RSIZE_MAX_MEM.
- *    n shall not be 0 nor greater than RSIZE_MAX_MEM32.
- *    smax*4 may not be smaller than n.
- *
- *    If there is a runtime-constraints violation, and if dest is not a null
- *    pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
- *    reporting the runtime-constraints violation, memset32_s() copies
- *    smax bytes to the destination.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *
- * ALSO SEE
+ * @see 
  *    memset_s(), memset16_s()
  *
  */

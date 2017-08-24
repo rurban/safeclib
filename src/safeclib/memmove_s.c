@@ -34,63 +34,47 @@
 #include "mem_primitives_lib.h"
 #include "safe_mem_lib.h"
 
-
 /**
- * NAME
- *    memmove_s
+ * @brief 
+ *    The memmove_s function copies smax bytes from the region pointed to by 
+ *    src into the region pointed to by dest. 
+ * @details
+ *    This copying takes place as if the smax bytes from the region pointed 
+ *    to by src are ﬁrst copied into a temporary array of smax bytes that does 
+ *    not overlap the region pointed to by dest or src, and then the smax 
+ *    bytes from the temporary array are copied into the object region to by 
+ *    dest.
  *
- * SYNOPSIS
- *    #include "safe_mem_lib.h"
- *    errno_t
- *    memmove_s(void *dest, rsize_t dmax,
- *              const void *src, rsize_t smax)
- *
- * DESCRIPTION
- *    The memmove_s function copies smax bytes from the region pointed
- *    to by src into the region pointed to by dest. This copying takes place
- *    as if the smax bytes from the region pointed to by src are ﬁrst copied
- *    into a temporary array of smax bytes that does not overlap the region
- *    pointed to by dest or src, and then the smax bytes from the temporary
- *    array are copied into the object region to by dest.
- *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to the memory that will be replaced by src.
+ * @param[out] dest  pointer to the memory that will be replaced by src.
+ * @param[in]  dmax  maximum length of the resulting dest, in bytes
+ * @param[in]  src   pointer to the memory that will be copied to dest
+ * @param[in]  smax  maximum number bytes of src that can be copied
  *
- *    dmax       maximum length of the resulting dest, in bytes
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  Neither dmax nor smax shall be 0.
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre  smax shall not be greater than dmax.
  *
- *    src        pointer to the memory that will be copied
- *                to dest
+ * @return  If there is a runtime-constraint violation, the memmove_s function
+ *          stores zeros in the ﬁrst dmax characters of the region pointed to
+ *          by dest if dest is not a null pointer and dmax is not greater
+ *          than RSIZE_MAX_MEM.
+ * @retval  EOK         when operation is successful
+ * @retval  ESNULLP     when dst/src is NULL POINTER
+ * @retval  ESZEROL     when dmax/smax = ZERO
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESNOSPC     when dmax < smax
  *
- *    smax       maximum number bytes of src that can be copied
- *
- *  OUTPUT PARAMETERS
- *    dest      is updated
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    Neither dmax nor smax shall be 0.
- *    dmax shall not be greater than RSIZE_MAX_MEM.
- *    smax shall not be greater than dmax.
- *    If there is a runtime-constraint violation, the memmove_s function
- *      stores zeros in the ﬁrst dmax characters of the regionpointed to
- *      by dest if dest is not a null pointer and dmax is not greater
- *      than RSIZE_MAX_MEM.
- *
- * RETURN VALUE
- *    EOK        successful operation
- *    ESNULLP    NULL pointer
- *    ESZEROL    zero length
- *    ESLEMAX    length exceeds max limit
- *
- * ALSO SEE
+ * @see 
  *    memmove16_s(), memmove32_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
+
 errno_t
 memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
 {

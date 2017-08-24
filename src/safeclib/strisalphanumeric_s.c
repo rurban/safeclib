@@ -35,42 +35,28 @@
 
 
 /**
- * NAME
- *    strisalphanumeric_s
- *
- * SYNOPSIS
- *    #include "safe_dest_lib.h"
- *    bool
- *    strisalphanumeric_s(const char *dest, rsize_t dmax)
- *
- * DESCRIPTION
+ * @brief
  *    This function checks if the entire string contains
  *    alphanumerics.  The scanning stops at the first null
  *    or after dmax characters.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest         pointer to string
+ * @param dest  pointer to string
+ * @param dmax  maximum length of string
  *
- *    dmax         maximum length of string
  *
- * OUTPUT PARAMETERS
- *    none
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not equal zero.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
- * Runtime-condestaints
- *    dest shall not be a null pointer.
- *    dmax shall not equal zero.
- *    dmax shall not be greater than RSIZE_MAX_STR.
+ * @return  true   when dest is alphanumeric
+ * @return  false  when dest is not alphanumeric or an error occurred
  *
- * RETURN VALUE
- *    true      dest is alphanumeric
- *    false     dest is not alphanumeric or an error occurred
- *
- * ALSO SEE
+ * @see
  *    strisascii_s(), strisdigit_s(), strishex_s(), strislowercase_s(),
  *    strismixedcase_s(), strisuppercase_s()
  *

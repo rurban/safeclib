@@ -35,22 +35,14 @@
 
 
 /**
- * NAME
- *    strtok_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    char *
- *    strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict src, char ** restrict ptr)
- *
- * DESCRIPTION
+ * @brief
  *    A sequence of calls to the strtok_s function breaks the string
  *    pointed to by dest into a sequence of tokens, each of which is
  *    delimited by a character from the string pointed to by src. The
  *    fourth argument points to a caller-provided char pointer into
  *    which the strtok_s function stores information necessary for
  *    it to continue scanning the same string.
- *
+ * @details
  *    The first call in a sequence has a non-null first argument and
  *    dmax points to an object whose value is the number of elements
  *    in the character array pointed to by the first argument. The
@@ -85,88 +77,70 @@
  *    for ptr, shall start searching just past the element overwritten
  *    by a null character (if any).
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest      pointer to string to tokenize
+ * @param[in]   dest  pointer to string to tokenize
+ * @param[in]   src   pointer to delimiter string (len < 255)
+ * @param[out]  dmax  restricted maximum length of dest string
+ * @param[out]  ptr   returned pointer to token
  *
- *    dmax      restricted maximum length of dest string
+ * @pre  src shall not be a null pointer.
+ * @pre  ptr shall not be a null pointer.
+ * @pre  dmax shall not be a null pointer.
+ * @pre  *dmax shall not be 0.
+ * @pre  If dest is a null pointer, then *ptr shall not be a null pointer.
+ * @pre  dest must not be unterminated.
+ * @pre  The value of *dmax shall not be greater than RSIZE_MAX_STR. The
+ *       end of the token found shall occur within the first *dmax
+ *       characters of dest for the first call, and shall occur within
+ *       the first *dmax characters of where searching resumes on
+ *       subsequent calls.
  *
- *    src       pointer to delimiter string (len < 255)
+ * @return  The strtok_s function returns a pointer to the first character
+ *          of a token; or a null pointer if there is no token or there
+ *          is a runtime-constraint violation.
+ * @retval  ESNULLP     when dest/src/ptr is NULL pointer
+ * @retval  ESZEROL     when *dmax = 0
+ * @retval  ESLEMAX     when *dmax > RSIZE_MAX_STR
+ * @retval  ESUNTERM    when unterminated string
  *
- *    ptr       returned pointer to token
+ * @remarks 
+ * Example to demonstrate usage of strtok_s() to tokenize a string
+ * @code{.c}
+ *   // Approach1: sequential strtok_s() calls
+ *   str1 = ",.:*one,two;three,;four*.*.five-six***"; // String to tokenize 
+ *   len = 38;
+ *   str2 = ",.;*"; // String of delimiters
  *
- * OUTPUT PARAMETERS
- *    dmax      update length
+ *   p2tok = strtok_s(str1, &len, str2, &p2str); 
+ *   // token: one, remaining: two;three,;four*.*.five-six***, len: 30
  *
- *    ptr       update pointer to token
+ *   p2tok = strtok_s(NULL, &len, str2, &p2str);
+ *   // token: two, remaining: three,;four*.*.five-six***, len: 26
  *
- * RUNTIME CONSTRAINTS
- *    src shall not be a null pointer.
- *    ptr shall not be a null pointer.
- *    dmax shall not be a null pointer.
- *    *dmax shall not be 0.
+ *   p2tok = strtok_s(NULL, &len, str2, &p2str);
+ *   // token: three,  remaining: ;four*.*.five-six***, len: 20
  *
- *    If dest is a null pointer, then *ptr shall not be a null pointer.
+ *   p2tok = strtok_s(NULL, &len, str2, &p2str);
+ *   // token: four, remaining .*.five-six***, len: 14
  *
- *    dest must not be unterminated.
- *
- *    The value of *dmax shall not be greater than RSIZE_MAX_STR. The
- *    end of the token found shall occur within the first *dmax
- *    characters of dest for the first call, and shall occur within
- *    the first *dmax characters of where searching resumes on
- *    subsequent calls.
- *
- * RETURN VALUE
- *     The strtok_s function returns a pointer to the first character
- *     of a token; or a null pointer if there is no token or there
- *     is a runtime-constraint violation.
- *
- *     EOK
- *     ESNULLP     NULL pointer
- *     ESZEROL     zero length
- *     ESLEMAX     length exceeds max limit
- *     ESUNTERM    unterminated string
- *
- * EXAMPLES
- * [1] Sequencial strtok_s() calls to tokenize a string
- *
- *    String to tokenize str1 = ",.:*one,two;three,;four*.*.five-six***"
- *           len=38
- *    String of delimiters str2 = ",.;*"
- *
- *    p2tok = strtok_s(str1, &len, str2, &p2str);
- *    token -one-  remaining -two;three,;four*.*.five-six***- len=30
+ *   p2tok = strtok_s(NULL, &len, str2, &p2str);
+ *   // token: five-six, remaining: **, len: 2
  *
  *    p2tok = strtok_s(NULL, &len, str2, &p2str);
- *    token -two-  remaining -three,;four*.*.five-six***- len=26
+ *    // token: (null), remaining: **, len: 0
  *
- *    p2tok = strtok_s(NULL, &len, str2, &p2str);
- *    token -three-  remaining -;four*.*.five-six***- len=20
- *
- *    p2tok = strtok_s(NULL, &len, str2, &p2str);
- *    token -four-  remaining -.*.five-six***- len=14
- *
- *    p2tok = strtok_s(NULL, &len, str2, &p2str);
- *    token -five-six-  remaining -**- len=2
- *
- *    p2tok = strtok_s(NULL, &len, str2, &p2str);
- *    token -(null)-  remaining -**- len=0
- *
- *
- * [2] While loop with same entry data as [1]
- *
- *     p2tok = str1;
- *     while (p2tok && len) {
- *         p2tok = strtok_s(NULL, &len, str2, &p2str);
- *         printf("  token --   remaining --  len=0 \n",
- *                 p2tok, p2str, (int)len );
- *     }
- *
- *-
+ *    // Approach2: Use of while loop with same entry data as used above
+ *    p2tok = str1;
+ *    while (p2tok && len) 
+ *    {
+ *      p2tok = strtok_s(NULL, &len, str2, &p2str);
+ *      printf("  token --   remaining --  len=0 \n", p2tok, p2str, (int)len );
+ *    }
+ * @endcode
  */
 char *
 strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict src, char ** restrict ptr)

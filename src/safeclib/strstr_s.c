@@ -35,52 +35,33 @@
 
 
 /**
- * NAME
- *    strstr_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strstr_s(char *dest, rsize_t dmax,
- *             const char *src, rsize_t slen, char **substring)
- *
- * DESCRIPTION
+ * @brief
  *    The strstr_s() function locates the first occurrence of the
  *    substring pointed to by src which would be located in the
  *    string pointed to by dest.
  *
- * EXTENSION TO
- *     ISO/IEC TR 24731, Programming languages, environments
- *     and system software interfaces, Extensions to the C Library,
- *     Part I: Bounds-checking interfaces
+ * @remark EXTENSION TO
+ *    ISO/IEC TR 24731, Programming languages, environments
+ *    and system software interfaces, Extensions to the C Library,
+ *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *     dest      pointer to string to be searched for the substring
+ * @param[in]   dest       pointer to string to be searched for the substring
+ * @param[in]   dmax       restricted maximum length of dest string
+ * @param[in]   src        pointer to the sub string
+ * @param[in]   slen       the maximum number of characters to copy from src
+ * @param[out]  substring  the returned substring pointer
  *
- *     dmax      restricted maximum length of dest string
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  Neither dmax nor slen shall not be 0.
+ * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
  *
- *     src       pointer to the sub string
+ * @retval  EOK        when successful operation, substring found.
+ * @retval  ESNULLP    when dest/src/substring is NULL pointer
+ * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESNOTFND   when substring not found
  *
- *     slen      the maximum number of characters to copy from src
- *
- *     substring the returned substring pointer
- *
- * OUTPUT PARAMETERS
- *     substring  returned substring pointer
- *
- * RUNTIME CONSTRAINTS
- *     Neither dest nor src shall be a null pointer.
- *     Meither dmax nor slen shall be zero.
- *     Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
- *
- * RETURN VALUE
- *     EOK        successful operation, substring found.
- *     ESNULLP    NULL pointer
- *     ESZEROL    zero length
- *     ESLEMAX    length exceeds max limit
- *     ESNOTFND   substring not found
- *
- * ALSO SEE
+ * @see
  *     strprefix_s(), strspn_s(), strcspn_s(), strpbrk_s()
  *
  */

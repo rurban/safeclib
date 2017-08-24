@@ -35,56 +35,37 @@
 
 
 /**
- * NAME
- *    strcmp_s
- *
- * Synpsos
- *    #include "safe_str_lib.h"
- *    errno_t
- *    strcmp_s(const char *dest, rsize_t dmax,
- *             const char *src, int *indicator)
- *
- * DESCRIPTION
+ * @brief
  *    Compares string src to string dest.
  *
- * EXTENSION TO
+ * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *    dest       pointer to string to compare against
+ * @param[in]   dest       pointer to string to compare against
+ * @param[in]   dmax       restricted maximum length of string dest
+ * @param[in]   src        pointer to the string to be compared to dest
+ * @param[out]  indicator  pointer to result indicator, greater than 0,
+ *                         equal to 0 or less than 0, if the string pointed
+ *                         to by dest is greater than, equal to or less
+ *                         than the string pointed to by src respectively.
  *
- *    dmax       restricted maximum length of string dest
+ * @pre   Neither dest nor src shall be a null pointer.
+ * @pre   indicator shall not be a null pointer.
+ * @pre   dmax shall not be 0
+ * @pre   dmax shall not be greater than RSIZE_MAX_STR
  *
- *    src        pointer to the string to be compared to dest
+ * @return  indicator (when the return code is OK)
+ * @retval  >0 when dest greater than src
+ * @retval  0 when strings the same
+ * @retval  <0 when dest less than src
+ * @retval  EOK          when comparison is complete
+ * @retval  ESNULLP      when dest/src/indicator is NULL pointer
+ * @retval  ESZEROL      when dmax = 0
+ * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
  *
- *    indicator  pointer to result indicator, greater than,
- *               equal to or less than 0, if the string pointed
- *               to by dest is greater than, equal to or less
- *               than the string pointed to by src respectively.
- *
- * OUTPUT PARAMETERS
- *    indicator  updated result indicator
- *
- * RUNTIME CONSTRAINTS
- *    Neither dest nor src shall be a null pointer.
- *    indicator shall not be a null pointer.
- *    dmax shall not be 0
- *    dmax shall not be greater than RSIZE_MAX_STR
- *
- * RETURN VALUE
- *    indicator, when the return code is OK
- *        >0   dest greater than src
- *         0   strings the same
- *        <0   dest less than src
- *
- *    EOK
- *    ESNULLP     pointer was null
- *    ESZEROL     length was zero
- *    ESLEMAX     length exceeded max
- *
- * ALSO SEE
+ * @see
  *    strcasecmp_s()
  *
  */

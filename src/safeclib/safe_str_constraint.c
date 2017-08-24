@@ -39,17 +39,11 @@ static constraint_handler_t str_handler = NULL;
 
 
 /**
- * NAME
- *    set_str_constraint_handler_s
- *
- * SYNOPSIS
- *    #include "safe_str_lib.h"
- *    constraint_handler_t
- *    set_str_constraint_handler_s(constraint_handler_t handler)
- *
- * DESCRIPTION
+ * @brief
  *    The set_str_constraint_handler_s function sets the runtime-constraint
- *    handler to be handler. The runtime-constraint handler is the function to
+ *    handler to be handler. 
+ * @details
+ *    The runtime-constraint handler is the function to
  *    be called when a library function detects a runtime-constraint
  *    violation. Only the most recent handler registered with
  *    set_str_constraint_handler_s is called when a runtime-constraint
@@ -70,25 +64,12 @@ static constraint_handler_t str_handler = NULL;
  *    set_constraint_handler_s is a null pointer, the implementation default
  *    handler becomes the current constraint handler.
  *
- * SPECIFIED IN
+ * @remark SPECIFIED IN
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * INPUT PARAMETERS
- *   *msg            Pointer to the message describing the error
- *
- *   *ptr            Pointer to aassociated data.  Can be NULL.
- *
- *    error          The error code encountered.
- *
- * OUTPUT PARAMETERS
- *    none
- *
- * RETURN VALUE
- *    none
- *
- * ALSO SEE
+ * @see
  *    set_str_constraint_handler_s()
  */
 constraint_handler_t
@@ -106,31 +87,12 @@ EXPORT_SYMBOL(set_str_constraint_handler_s)
 
 
 /**
- * NAME
- *    invoke_safe_str_constraint_handler
- *
- * SYNOPSIS
- *    #include "safe_str_constraint.h"
- *    void
- *    invoke_safe_str_constraint_handler (const char *msg,
- *                                void *ptr,
- *                                errno_t error)
- *
- * DESCRIPTION
+ * @brief
  *    Invokes the currently set constraint handler or the default.
  *
- * INPUT PARAMETERS
- *   *msg            Pointer to the message describing the error
- *
- *   *ptr            Pointer to aassociated data.  Can be NULL.
- *
- *    error          The error code encountered.
- *
- * OUTPUT PARAMETERS
- *    none
- *
- * RETURN VALUE
- *    none
+ * @param *msg    Pointer to the message describing the error
+ * @param *ptr    Pointer to aassociated data. Can be NULL.
+ * @param error  The error code encountered.
  *
  */
 void
