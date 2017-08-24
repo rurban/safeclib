@@ -349,7 +349,7 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # version information, refer to the libtool manual, section "Updating
 # library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([SAFEC_SO_VERSION], [2:0:0])
+AC_SUBST([SAFEC_SO_VERSION], [2:0:1])
 AC_SUBST([SAFEC_API_VERSION], [2.0])
 
 # Automake variables, these variables get automagically included at the top

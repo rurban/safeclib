@@ -1,6 +1,12 @@
 
                 ChangeLog file for safeclib
 
+Changes in v24082017 2.0.1
+        - Added man (3) pages and proper documentation.
+        See https://rurban.github.io/safeclib/
+        - Added a safe_config.h for some new configure options:
+        strmax, memmax, nullstack and STRTOK_DELIM_MAX_LEN
+
 Changes in v15082017 2.0.0
         - Add restrict to all pointer args, where applicable
         - Change ESLEMAX to ESNOSPC for `(smax > dmax)` overflows
@@ -11,7 +17,7 @@ Changes in v15082017 2.0.0
         - test_strcspn_s.c: fix for g++
         - Fixup sprintf_s: Use the established API, call the str_constraint_handler,
         return the proper error values. Add tests.
-        - Add guards to prevent name mangaling when headers are used in c++ code.
+        - Add guards to prevent name mangleing when headers are used in c++ code.
         - change memset_s to __STDC_WANT_LIB_EXT1__
         - memset16_s, memset32_s: change API analog to memset_s.
         Also add the smax C11 argument there, to be consistent.
