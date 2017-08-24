@@ -9,6 +9,11 @@
  *    would be printed if format was used on printf. Instead of being 
  *    printed, the content is stored in dest.
  *
+ * @remark SPECIFIED IN
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.5.3.6 The sprintf_s function (p: 595-596)
+ *    http://en.cppreference.com/w/c/string/byte/sprintf
+ *
  * @param dest  storage location for output buffer.
  * @param dmax  maximum number of characters to store in buffer.
  * @param fmt   format-control string.
