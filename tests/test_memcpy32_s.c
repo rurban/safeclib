@@ -115,7 +115,7 @@ int main()
 
     /* slen greater than dmax */
     rc = memcpy32_s(mem1, LEN/2, mem2, LEN);
-    if (rc != ESLEMAX) {
+    if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
@@ -239,7 +239,6 @@ int main()
         }
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     return (errs);

@@ -62,7 +62,7 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  * @retval  ESOVRLP     when src memory overlaps dst
  *
@@ -85,8 +85,8 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM16) {
-        invoke_safe_mem_constraint_handler("memcpy16_s: dmax exceeds max",
+    if (dmax > RSIZE_MAX_MEM16 || smax > RSIZE_MAX_MEM16) {
+        invoke_safe_mem_constraint_handler("memcpy16_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
