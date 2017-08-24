@@ -49,6 +49,9 @@ and the following can be added...
   security
 - provide a library of functions that are efficient
 
+The C11 Standard adopted many of these points, and added some secure
+_s variants in the Annex K.
+
 
 Design Considerations
 ---------------------
@@ -62,6 +65,8 @@ http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt
 Stackoverflow discussion:
 https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions
 
+C11 standard (ISO/IEC 9899:2011)
+http://en.cppreference.com/w/c
 
 === Use of errno
 
@@ -187,7 +192,7 @@ kernel.
 Tested Platforms
 ----------------
 .The library has been tested on the following systems
-- Mac OSX 10.6.8 w/ Apple developer tools installed
+- Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc+clang)
 - Linux Ubuntu 10.04 kernel version v2.6.32-42-generic
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
@@ -212,3 +217,4 @@ Known Issues
           http://pubs.opengroup.org/onlinepubs/9699919799/functions/contents.html
 - [[[4]]] CERT C Secure Coding Standard
           https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard
+- [[[5]]] C11 Standard (ISO/IEC 9899:2011) Annex K

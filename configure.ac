@@ -228,6 +228,10 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_CC_C_O
 AC_PROG_CC_C99
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+if test -z "$DOXYGEN";
+   then AC_MSG_WARN([doxygen not found - continuing without doxygen support])
+fi
 
 # Checks for libraries
 # ===============================================
@@ -378,4 +382,9 @@ AC_CONFIG_FILES([safec-${SAFEC_API_VERSION}.pc:safec.pc.in
                  Makefile
                  src/Makefile
                  tests/Makefile])
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([Doxyfile])])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/footer])])
+
 AC_OUTPUT

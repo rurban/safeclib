@@ -77,8 +77,13 @@
  *    for ptr, shall start searching just past the element overwritten
  *    by a null character (if any).
  *
+ *    src uses a STRTOK_DELIM_MAX_LEN of 16.
+ *
  * @remark SPECIFIED IN
- *    ISO/IEC TR 24731-1, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.7.3.1 The strtok_s function (p: 620-621)
+ *    http://en.cppreference.com/w/c/string/byte/strok
+ *    * ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
@@ -98,6 +103,10 @@
  *       characters of dest for the first call, and shall occur within
  *       the first *dmax characters of where searching resumes on
  *       subsequent calls.
+ * @pre  src must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
+ *
+ *
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  The strtok_s function returns a pointer to the first character
  *          of a token; or a null pointer if there is no token or there
@@ -150,8 +159,9 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
  * CONFIGURE: The spec does not call out a maximum for the src
  * string, so one is defined here.
  */
-#define  STRTOK_DELIM_MAX_LEN   ( 16 )
-
+#ifndef STRTOK_DELIM_MAX_LEN
+#define  STRTOK_DELIM_MAX_LEN  16
+#endif
 
     const char *pt;
     char *ptoken;

@@ -41,7 +41,10 @@
  *    dmax.
  *
  * @remark SPECIFIED IN
- *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.7.1.1 The memcpy_s function (p: 614)
+ *    http://en.cppreference.com/w/c/string/byte/memcpy
+ *    * ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
@@ -56,6 +59,8 @@
  * @pre  smax shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
  *    
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
+ *
  * @return  If there is a runtime-constraint violation, the memcpy_s function
  *          stores zeros in the ﬁrst dmax bytes of the region pointed to
  *          by dest if dest is not a null pointer and smax is valid.

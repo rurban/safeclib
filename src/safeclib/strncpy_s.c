@@ -41,12 +41,17 @@
  *    array pointed to by src to the array pointed to by dest. If no null
  *    character was copied from src, then dest[n] is set to a null character.
  * @details
- *    All elements following the terminating null character (if any)
- *    written by strncpy_s in the array of dmax characters pointed to
- *    by dest take on the null value when strncpy_s returns.
+ *    All elements following the terminating null character (if
+ *    any) written by strncpy_s in the array of dmax characters
+ *    pointed to by dest take unspeciﬁed values when strncpy_s returns.
+ *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
+ *    NULL bytes.
  *
  * @remark SPECIFIED IN
- *    ISO/IEC TR 24731-1, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    7.21.2.4 The strncpy function (p: 326-327)
+ *    http://en.cppreference.com/w/c/string/byte/strncpy
+ *    * ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
@@ -58,8 +63,11 @@
  * @pre  Neither dmax nor slen shall be equal to zero.
  * @pre  Neither dmax nor slen shall be equal zero.
  * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
- * @pre  If slen is either greater than or equal to dmax, then dmax should be more than strnlen_s(src,dmax)
+ * @pre  If slen is either greater than or equal to dmax, then dmax should
+ *       be more than strnlen_s(src,dmax) to avoid truncation.
  * @pre  Copying shall not take place between objects that overlap.
+ *
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax greater than RSIZE_MAX_STR,

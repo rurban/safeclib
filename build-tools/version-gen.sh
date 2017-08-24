@@ -99,7 +99,7 @@
 #	git tag -d "test1.2"; git checkout -- README
 #
 
-SCRIPTVERSION=2017-08-15
+SCRIPTVERSION=2017-08-24
 
 prog=$0
 

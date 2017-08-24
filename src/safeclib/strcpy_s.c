@@ -38,13 +38,17 @@
  * @brief
  *    The strcpy_s function copies the string pointed to by src
  *    (including the terminating null character) into the array
- *    pointed to by dest. All elements following the terminating
- *    null character (if any) written by strcpy_s in the array
- *    of dmax characters pointed to by dest are nulled when
+ *    pointed to by dest.
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written by strcpy_s in the
+ *    array of dmax characters pointed to by dest are nulled when
  *    strcpy_s returns.
  *
  * @remark SPECIFIED IN
- *    ISO/IEC TR 24731, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.7.1.3 The strcpy_s function (p: 615-616)
+ *    http://en.cppreference.com/w/c/string/byte/strcpy
+ *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
@@ -58,12 +62,14 @@
  * @pre dmax shall be greater than strnlen_s(src, dmax).
  * @pre Copying shall not take place between objects that overlap.
  *
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
+ *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and destmax is greater than zero and
  *          not greater than RSIZE_MAX_STR, then strcpy_s nulls dest.
  * @retval  EOK        when successful operation, the characters in src were
  *                     copied into dest and the result is null terminated.
- * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  ESOVRLP    when strings overlap
@@ -171,7 +177,7 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
 
     /*
      * the entire src must have been copied, if not reset dest
-     * to null the string.
+     * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
     handle_error(orig_dest, orig_dmax, "strcpy_s: not "
                  "enough space for src",
