@@ -41,7 +41,7 @@
  *    string pointed to by dest.
  *
  * @remark EXTENSION TO
- *    ISO/IEC TR 24731, Programming languages, environments
+ *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *

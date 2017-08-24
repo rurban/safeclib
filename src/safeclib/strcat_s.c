@@ -45,9 +45,14 @@
  *    any) written by strcat_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strcat_s
  *    returns.
+ *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
+ *    NULL bytes.
  *
  * @remark SPECIFIED IN
- *    ISO/IEC TR 24731, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.7.2.1 The strcat_s function (p: 617-618)
+ *    http://en.cppreference.com/w/c/string/byte/strcat
+ *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
@@ -64,17 +69,20 @@
  * @pre  dmax shall not equal zero
  * @pre  dmax shall not be greater than RSIZE_MAX_STR
  * @pre  dmax shall be greater than strnlen_s(src,m).
- * @pre  Copying shall not takeplace between objects that overlap
+ * @pre  Copying shall not take place between objects that overlap
+ *
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  If there is a runtime-constraint violation, then if dest is
  *          not a null pointer and dmax is greater than zero and not
  *          greater than RSIZE_MAX_STR, then strcat_s nulls dest.
  * @retval  EOK        when successful operation, all the characters from src
  *                     were appended to dest and the result in dest is null terminated.
- * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
- * @retval  ESUNTERM   when dest not terminated
+ * @retval  ESUNTERM   when dest not terminated in the first dmax bytes
+ * @retval  ESOVRLP    when src overlaps with dest
  *
  * @see
  *    strncat_s(), strcpy_s(), strncpy_s()

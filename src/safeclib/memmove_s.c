@@ -46,7 +46,10 @@
  *    dest.
  *
  * @remark SPECIFIED IN
- *    ISO/IEC TR 24731, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.7.1.2 The memmove_s function (p: 615)
+ *    http://en.cppreference.com/w/c/string/byte/memmove
+ *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
@@ -59,6 +62,8 @@
  * @pre  Neither dmax nor smax shall be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
  * @pre  smax shall not be greater than dmax.
+ *
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
  *
  * @return  If there is a runtime-constraint violation, the memmove_s function
  *          stores zeros in the ﬁrst dmax characters of the region pointed to

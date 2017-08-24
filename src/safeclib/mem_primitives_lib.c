@@ -40,15 +40,15 @@
 
 /**
  * @brief
- *    Sets dmax bytes starting at dest to the specified value
+ *    Sets len bytes starting at dest to the specified value
  *
  * @param[out] dest   pointer to memory that will be set to value
- * @param[in]  dmax   number of bytes to be set
+ * @param[in]  len    number of bytes to be set
  * @param[in]  value  byte value
  *
  */
 void
-mem_prim_set (void *dest, uint32_t dmax, uint8_t value)
+mem_prim_set (void *dest, uint32_t len, uint8_t value)
 {
     uint8_t *dp;
     uint32_t count;
@@ -57,7 +57,7 @@ mem_prim_set (void *dest, uint32_t dmax, uint8_t value)
     uint32_t *lp;
     uint32_t value32;
 
-    count = dmax;
+    count = len;
 
     dp = (uint8_t*) dest;
 
@@ -133,22 +133,22 @@ mem_prim_set (void *dest, uint32_t dmax, uint8_t value)
 
 /**
  * @brief
- *    Sets dmax uint16_ts starting at dest to the specified value.
+ *    Sets len uint16_t's starting at dest to the specified value.
  *    Pointers must meet system alignment requirements.
  *
  * @param[out] dest  pointer to memory that will be set to value
- * @param[in]  dmax  number of uint16_ts to be set
+ * @param[in]  len   number of uint16_ts to be set
  * @param[in]  value uint16_t value
  *
  */
 void
-mem_prim_set16 (uint16_t *dest, uint32_t dmax, uint16_t value)
+mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
 {
 
     uint16_t *dp = dest;
-    while (dmax != 0) {
+    while (len != 0) {
 
-        switch (dmax) {
+        switch (len) {
         /*
          * Here we do blocks of 8.  Once the remaining count
          * drops below 8, take the fast track to finish up.
@@ -158,7 +158,7 @@ mem_prim_set16 (uint16_t *dest, uint32_t dmax, uint16_t value)
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            dmax -= 16;
+            len -= 16;
             break;
 
         case 15:  *dp++ = value;
@@ -177,7 +177,7 @@ mem_prim_set16 (uint16_t *dest, uint32_t dmax, uint16_t value)
         case 3:  *dp++ = value;
         case 2:  *dp++ = value;
         case 1:  *dp++ = value;
-            dmax = 0;
+            len = 0;
             break;
         }
     } /* end while */
@@ -188,22 +188,22 @@ mem_prim_set16 (uint16_t *dest, uint32_t dmax, uint16_t value)
 
 /**
  * @brief
- *    Sets dmax uint32_ts starting at dest to the specified value
+ *    Sets len uint32_t's starting at dest to the specified value.
  *    Pointers must meet system alignment requirements.
  *
  * @param[out] dest   pointer to memory that will be set to value
- * @param[in]  dmax   number of uint32_ts to be set
+ * @param[in]  len    number of uint32_t's to be set
  * @param[in]  value  uint32_t value
  *
  *
  */
 void
-mem_prim_set32 (uint32_t *dest, uint32_t dmax, uint32_t value)
+mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
 {
     uint32_t *dp = dest;
-    while (dmax != 0) {
+    while (len != 0) {
 
-        switch (dmax) {
+        switch (len) {
         /*
          * Here we do blocks of 8.  Once the remaining count
          * drops below 8, take the fast track to finish up.
@@ -213,7 +213,7 @@ mem_prim_set32 (uint32_t *dest, uint32_t dmax, uint32_t value)
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            dmax -= 16;
+            len -= 16;
             break;
 
         case 15:  *dp++ = value;
@@ -232,7 +232,7 @@ mem_prim_set32 (uint32_t *dest, uint32_t dmax, uint32_t value)
         case 3:  *dp++ = value;
         case 2:  *dp++ = value;
         case 1:  *dp++ = value;
-            dmax = 0;
+            len = 0;
             break;
         }
     } /* end while */
@@ -243,16 +243,16 @@ mem_prim_set32 (uint32_t *dest, uint32_t dmax, uint32_t value)
 
 /**
  * @brief
- *    Moves at most length of bytes from src to dest, up to dmax bytes. 
+ *    Moves at most len of bytes from src to dest.
  *    Dest may overlap with src.
  *
  * @param[out] dest     pointer to the memory that will be replaced by src.
  * @param[in]  src      pointer to the memory that will be copied to dest
- * @param[in]  length   maximum number bytes of src that can be copied
+ * @param[in]  len      maximum number bytes of src that can be copied
  *
  */
 void
-mem_prim_move (void *dest, const void *src, uint32_t length)
+mem_prim_move (void *dest, const void *src, uint32_t len)
 {
 
 #define wsize   sizeof(uint32_t)
@@ -284,14 +284,14 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
             /*
              * determine how many bytes to copy to align operands
              */
-            if ((tsp ^ (uintptr_t)dp) & wmask || length < wsize) {
-                tsp = length;
+            if ((tsp ^ (uintptr_t)dp) & wmask || len < wsize) {
+                tsp = len;
 
             } else {
                 tsp = wsize - (tsp & wmask);
             }
 
-            length -= tsp;
+            len -= tsp;
 
             /*
              * make the alignment
@@ -304,7 +304,7 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
         /*
          * Now copy, then mop up any trailing bytes.
          */
-        tsp = length / wsize;
+        tsp = len / wsize;
 
         if (tsp > 0) {
 
@@ -319,7 +319,7 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
         /*
          * copy over the remaining bytes and we're done
          */
-        tsp = length & wmask;
+        tsp = len & wmask;
 
         if (tsp > 0) {
             do {
@@ -337,8 +337,8 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
         /*
          * go to end of the memory to copy
          */
-        sp += length;
-        dp += length;
+        sp += len;
+        dp += len;
 
         /*
          * get a working copy of src for bit operations
@@ -350,13 +350,13 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
          */
         if ((tsp | (uintptr_t)dp) & wmask) {
 
-            if ((tsp ^ (uintptr_t)dp) & wmask || length <= wsize) {
-                tsp = length;
+            if ((tsp ^ (uintptr_t)dp) & wmask || len <= wsize) {
+                tsp = len;
             } else {
                 tsp &= wmask;
             }
 
-            length -= tsp;
+            len -= tsp;
 
             /*
              * make the alignment
@@ -369,7 +369,7 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
         /*
          * Now copy in uint32_t units, then mop up any trailing bytes.
          */
-        tsp = length / wsize;
+        tsp = len / wsize;
 
         if (tsp > 0) {
             do {
@@ -383,9 +383,9 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
         /*
          * copy over the remaining bytes and we're done
          */
-        tsp = length & wmask;
+        tsp = len & wmask;
         if (tsp > 0) {
-            tsp = length & wmask;
+            tsp = len & wmask;
             do {
                 *--dp = *--sp;
             } while (--tsp);
@@ -398,17 +398,17 @@ mem_prim_move (void *dest, const void *src, uint32_t length)
 
 /**
  * @brief
- *    Moves at most length of uint8_ts from src to dest.
+ *    Moves at most len of uint8_t's from src to dest.
  *    The destination may overlap with source.
  *
  * @param[out] dest    pointer to the memory that will be replaced by src
  * @param[in]  src     pointer to the memory that will be copied to dest
- * @param[in]  length  maximum number uint8_t of src that can be copied
+ * @param[in]  len     maximum number uint8_t of src that can be copied
  *
  *
  */
 void
-mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
+mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
 {
     uint8_t *dp = dest;
 	const uint8_t *sp = src;
@@ -420,9 +420,9 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
          * Copy forward.
          */
 
-         while (length != 0) {
+         while (len != 0) {
 
-             switch (length) {
+             switch (len) {
              /*
               * Here we do blocks of 8.  Once the remaining count
               * drops below 8, take the fast track to finish up.
@@ -432,7 +432,7 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  length -= 16;
+                  len -= 16;
                   break;
 
              case 15:  *dp++ = *sp++;
@@ -451,7 +451,7 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
              case 3:  *dp++ = *sp++;
              case 2:  *dp++ = *sp++;
              case 1:  *dp++ = *sp++;
-                 length = 0;
+                 len = 0;
                  break;
              }
          } /* end while */
@@ -467,12 +467,12 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
         /*
          * go to end of the memory to copy
          */
-        sp += length;
-        dp += length;
+        sp += len;
+        dp += len;
 
-        while (length != 0) {
+        while (len != 0) {
 
-            switch (length) {
+            switch (len) {
             /*
              * Here we do blocks of 8.  Once the remaining count
              * drops below 8, take the fast track to finish up.
@@ -482,7 +482,7 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 length -= 16;
+                 len -= 16;
                  break;
 
             case 15:  *--dp = *--sp;
@@ -501,7 +501,7 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
             case 3:  *--dp = *--sp;
             case 2:  *--dp = *--sp;
             case 1:  *--dp = *--sp;
-                length = 0;
+                len = 0;
                 break;
             }
         } /* end while */
@@ -513,16 +513,16 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t length)
 
 /**
  * @brief
- *    Moves at most length uint16_ts from src to dest.
+ *    Moves at most len uint16_t's from src to dest.
  *    The destination may overlap with source.
  *
  * @param[out] dest    pointer to the memory that will be replaced by src.
  * @param[in]  src     pointer to the memory that will be copied to dest
- * @param[in]  length  maximum number uint16_t of src that can be copied
+ * @param[in]  len     maximum number uint16_t of src that can be copied
  *
  */
 void
-mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
+mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
 {
     uint16_t *dp = dest;
     const uint16_t *sp = src;
@@ -534,9 +534,9 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
          * Copy forward.
          */
 
-         while (length != 0) {
+         while (len != 0) {
 
-             switch (length) {
+             switch (len) {
              /*
               * Here we do blocks of 8.  Once the remaining count
               * drops below 8, take the fast track to finish up.
@@ -546,7 +546,7 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  length -= 16;
+                  len -= 16;
                   break;
 
              case 15:  *dp++ = *sp++;
@@ -565,7 +565,7 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
              case 3:  *dp++ = *sp++;
              case 2:  *dp++ = *sp++;
              case 1:  *dp++ = *sp++;
-                 length = 0;
+                 len = 0;
                  break;
              }
          } /* end while */
@@ -580,12 +580,12 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
         /*
          * go to end of the memory to copy
          */
-        sp += length;
-        dp += length;
+        sp += len;
+        dp += len;
 
-        while (length != 0) {
+        while (len != 0) {
 
-            switch (length) {
+            switch (len) {
             /*
              * Here we do blocks of 8.  Once the remaining count
              * drops below 8, take the fast track to finish up.
@@ -595,7 +595,7 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 length -= 16;
+                 len -= 16;
                  break;
 
             case 15:  *--dp = *--sp;
@@ -614,7 +614,7 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
             case 3:  *--dp = *--sp;
             case 2:  *--dp = *--sp;
             case 1:  *--dp = *--sp;
-                length = 0;
+                len = 0;
                 break;
             }
         } /* end while */
@@ -626,16 +626,16 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t length)
 
 /**
  * @brief 
- *    Moves at most length of uint32_ts from src to dest.
+ *    Moves at most len of uint32_t's from src to dest.
  *    The destination may overlap with source.
  *
  * @param[out] dest    pointer to the memory that will be replaced by src.
  * @param[in]  src     pointer to the memory that will be copied to dest
- * @param[in]  length  maximum number uint32_t of sp that can be copied
+ * @param[in]  len     maximum number uint32_t of sp that can be copied
  *
  */
 void
-mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
+mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t len)
 {
     uint32_t *dp = dest;
     const uint32_t *sp = src;
@@ -647,9 +647,9 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
          * Copy forward.
          */
 
-         while (length != 0) {
+         while (len != 0) {
 
-             switch (length) {
+             switch (len) {
              /*
               * Here we do blocks of 8.  Once the remaining count
               * drops below 8, take the fast track to finish up.
@@ -659,7 +659,7 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  length -= 16;
+                  len -= 16;
                   break;
 
              case 15:  *dp++ = *sp++;
@@ -678,7 +678,7 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
              case 3:  *dp++ = *sp++;
              case 2:  *dp++ = *sp++;
              case 1:  *dp++ = *sp++;
-                 length = 0;
+                 len = 0;
                  break;
              }
          } /* end while */
@@ -692,12 +692,12 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
         /*
          * go to end of the memory to copy
          */
-        sp += length;
-        dp += length;
+        sp += len;
+        dp += len;
 
-        while (length != 0) {
+        while (len != 0) {
 
-            switch (length) {
+            switch (len) {
             /*
              * Here we do blocks of 8.  Once the remaining count
              * drops below 8, take the fast track to finish up.
@@ -707,7 +707,7 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 length -= 16;
+                 len -= 16;
                  break;
 
             case 15:  *--dp = *--sp;
@@ -726,7 +726,7 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t length)
             case 3:  *--dp = *--sp;
             case 2:  *--dp = *--sp;
             case 1:  *--dp = *--sp;
-                length = 0;
+                len = 0;
                 break;
             }
         } /* end while */

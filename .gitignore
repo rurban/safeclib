@@ -61,6 +61,12 @@ Makefile.in
 build-tools/ar-lib
 build-tools/test-driver
 tests/test-suite.log
+Doxyfile
+README.md
+doc/footer
+doc/html
+doc/man
+
 #
 # Debian directory (make deb-pkg)
 #
@@ -99,3 +105,4 @@ GTAGS
 *.orig
 *~
 \#*#
+doc/Doxyfile.bak
