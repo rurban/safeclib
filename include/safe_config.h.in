@@ -1,10 +1,9 @@
 /*------------------------------------------------------------------
- * safe_lib.h -- Safe C Library
+ * safe_config.h -- Safe C Lib configs
  *
- * October 2008, Bo Berry
- * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * August 2017, Reini Urban
  *
- * Copyright (c) 2008-2013 by Cisco Systems, Inc
+ * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -30,38 +29,46 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __SAFE_LIB_H__
-#define __SAFE_LIB_H__
+#ifndef __SAFE_LIB_CONFIG_H__
+#define __SAFE_LIB_CONFIG_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "safe_config.h"
-#include "safe_types.h"
-#include "safe_lib_errno.h"
+/*
+ * Safe Lib specific configuration values.
+ */
 
-/* C11 appendix K types - specific for bounds checking */
-typedef size_t  rsize_t;
+/*
+ * We depart from the C11 standard and allow memory and string
+ * operations to have different max sizes. See the respective
+ * safe_mem_lib.h or safe_str_lib.h files.
+ */
 
-#ifndef RSIZE_MAX
-# define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
+#ifndef RSIZE_MAX_MEM
+/* maximum buffer length. default: 256UL << 20 (256MB) */
+#define RSIZE_MAX_MEM @RSIZE_MAX_MEM@
 #endif
-  
-typedef void (*constraint_handler_t) (const char * restrict /* msg */,
-                                      void * restrict       /* ptr */,
-                                      errno_t               /* error */);
 
-extern void abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error);
-extern void ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error);
+#ifndef RSIZE_MAX_STR
+/* maximum string length. default: 4UL << 10 (4KB) */
+#define RSIZE_MAX_STR @RSIZE_MAX_STR@
+#endif
 
-#define sl_default_handler ignore_handler_s
+/* null out the remaining part of a string buffer if it is not completely used */
+@INSERT_NULLSLACK@
 
-#include "safe_mem_lib.h"
-#include "safe_str_lib.h"
+/*
+ * The spec does not call out a maximum len for the strtok src
+ * string (the max delims size), so one is defined here.
+ */
+#ifndef STRTOK_DELIM_MAX_LEN
+#define  STRTOK_DELIM_MAX_LEN  16
+#endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SAFE_LIB_H__ */
+#endif /* __SAFE_LIB_CONFIG_H__ */

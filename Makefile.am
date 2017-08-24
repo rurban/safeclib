@@ -44,6 +44,7 @@ pkginclude_HEADERS    = \
 
 # generated package headers that need to be generated every time
 dist_pkginclude_HEADERS = \
+	include/safe_config.h   \
 	include/safe_types.h   \
 	include/safe_lib_errno.h
 
@@ -57,6 +58,7 @@ SAFEC_INFRA = \
 	$(top_srcdir)/safec.pc.in
 
 SAFEC_GENHEADERS = \
+	$(top_srcdir)/include/safe_config.h.in     \
 	$(top_srcdir)/include/safe_types.h.in      \
 	$(top_srcdir)/include/safe_lib_errno.h.in
 

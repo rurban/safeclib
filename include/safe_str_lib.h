@@ -43,10 +43,6 @@ extern "C" {
  */
 #define RSIZE_MIN_STR      ( 1 )
 
-/* maximum sring length */
-#define RSIZE_MAX_STR      ( 4UL << 10 )      /* 4KB */
-
-
 /* The makeup of a password */
 #define SAFE_STR_MIN_LOWERCASE     ( 2 )
 #define SAFE_STR_MIN_UPPERCASE     ( 2 )

@@ -155,10 +155,6 @@ char *
 strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict src, char ** restrict ptr)
 {
 
-/*
- * CONFIGURE: The spec does not call out a maximum for the src
- * string, so one is defined here.
- */
 #ifndef STRTOK_DELIM_MAX_LEN
 #define  STRTOK_DELIM_MAX_LEN  16
 #endif

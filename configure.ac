@@ -143,70 +143,70 @@ else
 fi
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
 
-# AC_ARG_ENABLE(extensions,
-# 	AS_HELP_STRING([--enable-extensions],
-# 		       [This library contains additional functions not defined
-# 			in the C11 specification, enable this to have access
-# 			to those functions @<:@default=no@:>@]),
-# 	[case "${enableval}" in
-# 	yes) enable_extensions=true ;;
-# 	no)  enable_extensions=false ;;
-# 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-extensions]) ;;
-# 	esac], [enable_extensions=false ])
-#
-# if test "x$enable_extensions" = "xtrue" ; then
-# 	AC_DEFINE([ENABLE_EXTS], [ 1 ],
-# 		  [Define to 1 to enable additional functions not defined
-# 		   in the C11 appendix K specification])
-# fi
-# AM_CONDITIONAL(ENABLE_EXTS, test "x$enable_extensions" = "xtrue")
-#
-# AC_ARG_ENABLE(memmax,
-# 	AS_HELP_STRING([--enable-memmax],
-# 		       [specify the largest object size allowed for the
-# 			mem* functions @<:@default=256MB@:>@]),
-# 	[case "${enableval}" in
-# 	[0-9]*) enable_memmax=${enableval} ;;
-# 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-memmax]) ;;
-# 	esac], [enable_memmax="(256UL << 20)" ])
-#
-# AC_DEFINE([RSIZE_MAX_MEM], [ $enable_memmax ],
-# 	  [Maximum object size the mem* functions will allow,
-# 	   default is 256MB])
-#
-# AC_ARG_ENABLE(strmax,
-# 	AS_HELP_STRING([--enable-strmax],
-# 		       [specify the largest object size allowed for the
-# 			str* functions @<:@default=4KB@:>@]),
-# 	[case "${enableval}" in
-# 	[0-9]*) enable_memstr=${enableval} ;;
-# 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-memstr]) ;;
-# 	esac], [enable_memstr="(4UL << 10)" ])
-#
-# AC_DEFINE([RSIZE_MAX_STR], [ $enable_memstr ],
-# 	  [Maximum object size the str* functions will allow,
-# 	   default is 4KB])
-#
+AC_ARG_ENABLE(extensions,
+	AS_HELP_STRING([--disable-extensions],
+		       [This library contains additional functions not defined
+			in the C11 specification. Disable to omit these.
+			@<:@default=no@:>@]),
+	[case "${disableval}" in
+	yes) disable_extensions=true ;;
+	no)  disable_extensions=false ;;
+	*)   AC_MSG_ERROR([bad value ${disableval} for --disable-extensions]) ;;
+	esac], [disable_extensions=false ])
 
-# This option works however, it doesn't make sense to enable it until the
-# header files are built and this value is added to it. That way users of
-# the library will know what options have been enabled.
-#
-# AC_ARG_ENABLE(nullslack,
-# 	AS_HELP_STRING([--disable-nullslack],
-# 		       [Null out the remaining part of a string if it is
-# 			not completely used @<:@default=yes@:>@]),
-# 	[case "${enableval}" in
-# 	yes) enable_nullslack=true ;;
-# 	no)  enable_nullslack=false ;;
-# 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-nullslack]) ;;
-# 	esac], [enable_nullslack=true ])
-#
-# if test "x$enable_nullslack" = "xtrue" ; then
-# 	AC_DEFINE([SAFECLIB_STR_NULL_SLACK], [ 1 ],
-# 		  [Define to 1 to null out the remaining part of a string
-# 		   buffer if it is not completely used])
-# fi
+if test "x$disable_extensions" = "xtrue" ; then
+	AC_DEFINE([DISABLE_EXTS], [ 1 ],
+		  [Define to 1 to disable additional functions not defined
+		   in the C11 appendix K specification])
+fi
+AM_CONDITIONAL(DISABLE_EXTS, test "x$disable_extensions" = "xtrue")
+
+AC_ARG_ENABLE(memmax,
+	AS_HELP_STRING([--enable-memmax],
+		       [specify the largest object size allowed for the
+			mem* functions @<:@default=256MB@:>@]),
+	[case "${enableval}" in
+	@<:@0-9@:>@*) enable_memmax=${enableval} ;;
+	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-memmax]) ;;
+	esac], [enable_memmax="(256UL << 20)" ])
+
+# AC_DEFINE([RSIZE_MAX_MEM], [ $enable_memmax ],
+#	  [Maximum object size the mem* functions will allow,
+#	   default is 256MB])
+RSIZE_MAX_MEM=$enable_memmax
+AC_SUBST(RSIZE_MAX_MEM)
+
+AC_ARG_ENABLE(strmax,
+	AS_HELP_STRING([--enable-strmax],
+		       [specify the largest object size allowed for the
+			str* functions @<:@default=4KB@:>@]),
+	[case "${enableval}" in
+	@<:@0-9@:>@*) enable_memstr=${enableval} ;;
+	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-memstr]) ;;
+	esac], [enable_memstr="(4UL << 10)" ])
+
+RSIZE_MAX_STR=$enable_memstr
+AC_SUBST(RSIZE_MAX_STR)
+
+AC_ARG_ENABLE(nullslack,
+	AS_HELP_STRING([--disable-nullslack],
+		       [Null out the remaining part of a string if it is
+			not completely used @<:@default=yes@:>@]),
+	[case "${enableval}" in
+	yes) enable_nullslack=true ;;
+	no)  enable_nullslack=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-nullslack]) ;;
+	esac], [enable_nullslack=true ])
+
+if test "x$enable_nullslack" = "xtrue" ; then
+	INSERT_NULLSLACK="#define SAFECLIB_STR_NULL_SLACK 1"
+	# AC_DEFINE([SAFECLIB_STR_NULL_SLACK], [ 1 ],
+	# 	  [Define to 1 to null out the remaining part of a string
+	# 	   buffer if it is not completely used])
+else
+	INSERT_NULLSLACK="#undef SAFECLIB_STR_NULL_SLACK"
+fi
+AC_SUBST(INSERT_NULLSLACK)
 
 # Maintainer switches
 AC_ARG_ENABLE(debug-build,
@@ -371,12 +371,12 @@ fi
 # Generate two configuration headers; one for building the library
 # itself with an autogenerated template, and a second one that will
 # be installed alongside the library.
-# AC_CONFIG_HEADERS([config.h safecconfig.h])
 AC_CONFIG_HEADERS([config.h])
 
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
 AC_CONFIG_FILES([safec-${SAFEC_API_VERSION}.pc:safec.pc.in
+                 include/safe_config.h
                  include/safe_lib_errno.h
                  include/safe_types.h
                  Makefile
