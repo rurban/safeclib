@@ -124,6 +124,10 @@ AC_ARG_ENABLE(debug,
 	esac], [enable_debug=false ])
 if test "x$enable_debug" = "xtrue" ; then
 	DEBUG_CFLAGS="-g -O2"
+        if test "x`uname -o`" = "xDarwin" ; then
+            enable_shared=no
+            enable_shared_with_static_runtimes=no
+        fi
 	AM_CPPFLAGS="${AM_CPPFLAGS} -DDEBUG"
 else
 	# default release optimization
