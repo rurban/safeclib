@@ -17,7 +17,7 @@ int main()
     rsize_t std_len;
     rsize_t max_len;
     char  dest[LEN];
-
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -27,8 +27,8 @@ int main()
     if (len != 0) {
         printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"test");
@@ -37,8 +37,8 @@ int main()
     if (len != 0) {
         printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"test");
@@ -47,8 +47,8 @@ int main()
     if (len != 0) {
         printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"ff");
@@ -60,8 +60,8 @@ int main()
     if (std_len != len) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"ff");
@@ -70,8 +70,8 @@ int main()
     if (len != 0 ) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"f");
@@ -81,8 +81,8 @@ int main()
     if (len != 1 ) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"f");
@@ -92,8 +92,8 @@ int main()
     if (len != 1 ) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"ff");
@@ -103,8 +103,8 @@ int main()
     if (len != 2) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"test");
@@ -114,8 +114,8 @@ int main()
     if (len != 4) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"testing");
@@ -125,8 +125,8 @@ int main()
     if (len != 0) {
         printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"testing");
@@ -136,8 +136,8 @@ int main()
     if (len != max_len-1) {
         printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"testing");
@@ -147,8 +147,8 @@ int main()
     if (len != max_len-1) {
         printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"testing");
@@ -158,8 +158,8 @@ int main()
     if (len != strlen(dest)) {
         printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest,"012345678901234567890");
@@ -178,5 +178,5 @@ int main()
 
 
 
-    return (0);
+    return (errs);
 }

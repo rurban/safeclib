@@ -22,6 +22,7 @@ int test_strstr_s (void)
 
     rsize_t len1;
     rsize_t len2;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -29,86 +30,87 @@ int test_strstr_s (void)
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
 
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, NULL, LEN, &sub);
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, LEN, NULL);
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, 0, str2, LEN, &sub);
     if (rc != ESZEROL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     if (rc != ESLEMAX) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, 0, &sub);
     if (rc != ESZEROL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
     if (rc != ESLEMAX) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     *str1 = '\0';
@@ -118,13 +120,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -134,13 +136,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -151,13 +153,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[0]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -168,13 +170,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[1]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -185,13 +187,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[15]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
                // 012345678901234567890
     strcpy(str1, "keep it all together");
@@ -204,13 +206,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[17]) {
         printf("%s %u  Error rc=%d  sub=%s \n",
                      __FUNCTION__, __LINE__, rc, sub);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -223,13 +225,13 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[18]) {
         printf("%s %u  Error rc=%d  sub=%s \n",
                      __FUNCTION__, __LINE__, rc, sub);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -239,8 +241,8 @@ int test_strstr_s (void)
     if (rc != ESNOTFND) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -250,8 +252,8 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -261,8 +263,8 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -274,13 +276,13 @@ int test_strstr_s (void)
     if (rc != ESNOTFND) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != NULL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -290,8 +292,8 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -301,23 +303,23 @@ int test_strstr_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[1]) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     /* compare to legacy */
     std_sub = strstr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

@@ -18,6 +18,7 @@ int main()
 
     uint32_t len;
     char   str[LEN];
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -26,8 +27,8 @@ int main()
     if (rc != ESNULLP) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 0;
@@ -35,8 +36,8 @@ int main()
     if (rc != ESZEROL) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 99999;
@@ -44,8 +45,8 @@ int main()
     if (rc != ESLEMAX) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -55,13 +56,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (str[0] != '\0') {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -72,8 +73,8 @@ int main()
     if (rc != ESUNTERM) {
         printf("%s %u   Error rc=%u --%s--\n",
                      __FUNCTION__, __LINE__,  rc, str );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -84,13 +85,13 @@ int main()
     if (rc != ESUNTERM) {
         printf("%s %u   Error rc=%u --%s--\n",
                      __FUNCTION__, __LINE__,  rc, str );
+        errs++;
     }
-
     if (str[0] != '\0') {
         printf("%s %u   Error rc=%u --%s--\n",
                      __FUNCTION__, __LINE__,  rc, str );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -101,8 +102,8 @@ int main()
     if (rc != ESUNTERM) {
         printf("%s %u   Error rc=%u --%s--\n",
                      __FUNCTION__, __LINE__,  rc, str );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -114,13 +115,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (str[0] != '\0') {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -131,13 +132,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (str[0] != 'A') {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -148,13 +149,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (str[0] != 'B') {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -165,14 +166,14 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     ind = strcmp(str, "C");
     if (ind != 0) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -183,14 +184,14 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     ind = strcmp(str, "NowISTHETimE 1 2");
     if (ind != 0) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -201,14 +202,14 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     ind = strcmp(str, "q q21ego");
     if (ind != 0) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
@@ -219,15 +220,15 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     ind = strcmp(str, "1 2 3 4");
     if (ind != 0) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

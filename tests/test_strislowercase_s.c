@@ -16,6 +16,7 @@ int main()
     bool rc;
     uint32_t len;
     char   str[LEN];
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -24,8 +25,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 99999;
@@ -33,8 +34,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 0;
@@ -42,8 +43,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     str[0] = '\0';
@@ -51,8 +52,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "qqweqeqeqeq");
@@ -62,8 +63,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "qqweqeqeqeq");
@@ -73,8 +74,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "qqWe go");
@@ -84,8 +85,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "1234");
@@ -95,9 +96,9 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

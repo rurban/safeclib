@@ -20,7 +20,7 @@ int main()
 
     char   str1[LEN];
     char   str2[LEN];
-
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -28,8 +28,8 @@ int main()
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -40,12 +40,13 @@ int main()
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+            errs++;
         }
     }
 
@@ -57,8 +58,8 @@ int main()
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 5;
@@ -67,8 +68,8 @@ int main()
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 5;
@@ -77,8 +78,8 @@ int main()
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 5;
@@ -87,8 +88,8 @@ int main()
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
@@ -103,12 +104,13 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i],  rc );
+            errs++;
         }
     }
 
@@ -125,12 +127,13 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i],  rc );
+            errs++;
         }
     }
 
@@ -147,12 +150,13 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i],  rc );
+            errs++;
         }
     }
 
@@ -169,12 +173,13 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i],  rc );
+            errs++;
         }
     }
 
@@ -193,17 +198,18 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     for (i=0; i<slen; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
                      __FUNCTION__, __LINE__, i, str1[i], i, str2[i],  rc );
+            errs++;
         }
     }
 
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

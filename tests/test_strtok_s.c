@@ -20,6 +20,7 @@ int main()
     rsize_t len;
     char   str1[LEN];
     char   str2[LEN];
+    int errs = 0;
 
 
 /*--------------------------------------------------*/
@@ -29,8 +30,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u   Error rc=%d \n",
                __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -39,8 +40,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u   Error rc=%d \n",
                __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -49,8 +50,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -59,8 +60,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -68,8 +69,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -83,8 +84,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -97,12 +98,12 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
+        errs++;
     }
-
     if (p2tok != NULL) {
         printf("token -%s-  -%s- \n", p2tok, p2str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
     printf("test: %u \n", __LINE__);
 
@@ -115,8 +116,8 @@ int main()
     if (p2tok == NULL) {
         printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /** [1] **/
     printf("test: %u \n", __LINE__);
@@ -130,13 +131,13 @@ int main()
     if (p2tok == NULL) {
         printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
+        errs++;
     }
-
     if (strcmp(p2tok, "mnopqrst")) {
         printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
+        errs++;
     }
-
     //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
 /*--------------------------------------------------*/
@@ -146,8 +147,8 @@ int main()
     if (p2tok != NULL) {
         printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
+        errs++;
     }
-
     //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
 /*--------------------------------------------------*/
@@ -165,8 +166,8 @@ int main()
     if (strcmp(p2tok, "a") ) {
         printf("%s %u token -%s-  -%s- len=%d \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
+        errs++;
     }
-
     //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
 /*--------------------------------------------------*/
@@ -182,8 +183,8 @@ int main()
     if (strcmp(p2tok, "??b") ) {
         printf("%s %u token -%s-  -%s- len=%d \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
+        errs++;
     }
-
     //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
 /*--------------------------------------------------*/
@@ -208,7 +209,6 @@ int main()
 
         printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, ",.*;one,two;three,;four*.*.five-six***");
@@ -274,7 +274,6 @@ int main()
 
         printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, ",.*;one,two;three,;four*.*.five-six***");
@@ -297,7 +296,6 @@ int main()
 
         printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, ",.*;one,two;three,;four*.*.five-six***");
@@ -321,8 +319,7 @@ int main()
 
         printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

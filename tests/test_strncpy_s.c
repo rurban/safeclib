@@ -20,6 +20,7 @@ int test_strncpy_s (void)
     errno_t rc;
     rsize_t nlen;
     int32_t ind;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -28,8 +29,8 @@ int test_strncpy_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -39,12 +40,13 @@ int test_strncpy_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
-        if (str1[0] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
+    if (str1[0] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        }
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -53,17 +55,17 @@ int test_strncpy_s (void)
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -73,12 +75,13 @@ int test_strncpy_s (void)
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
-        if (str1[0] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
+    if (str1[0] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        }
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -90,6 +93,7 @@ int test_strncpy_s (void)
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
 #endif
 
@@ -103,12 +107,13 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
-        if (str1[0] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
+    if (str1[0] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        }
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -120,12 +125,13 @@ int test_strncpy_s (void)
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
-        if (str1[0] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
+    if (str1[0] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        }
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -136,12 +142,13 @@ int test_strncpy_s (void)
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
-        if (str1[0] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
+    if (str1[0] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        }
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -153,12 +160,13 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
-        if (str1[0] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
+    if (str1[0] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
-        }
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -170,15 +178,15 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     /* be sure the results are the same as strcmp */
     ind = strcmp(str1, str2);
     if (ind != 0) {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 
 /*--------------------------------------------------*/
 
@@ -190,15 +198,15 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     /* be sure the results are the same as strcmp */
     ind = strcmp(str1, str2);
     if (ind != 0) {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
@@ -209,13 +217,13 @@ int test_strncpy_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (*str1 != '\0') {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
@@ -225,13 +233,13 @@ int test_strncpy_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (*str1 != '\0') {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -242,15 +250,15 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     /* be sure the results are the same as strcmp */
     ind = strcmp(dest, str1);
     if (ind != 0) {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -261,8 +269,8 @@ int test_strncpy_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -273,15 +281,15 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     /* be sure the results are the same as strcmp */
     ind = strcmp(dest, "good");
     if (ind != 0) {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(dest, "                            ");
@@ -292,15 +300,15 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     /* be sure the results are the same as strcmp */
     ind = strcmp(dest, "good");
     if (ind != 0) {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "qq12345weqeqeqeq");
@@ -311,18 +319,18 @@ int test_strncpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     /* be sure the results are the same as strcmp */
     ind = strcmp(str1, str2);
     if (ind != 0) {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

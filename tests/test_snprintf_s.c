@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_strcat_s
+ * test_snprintf_s
  *
  *
  *------------------------------------------------------------------
@@ -13,7 +13,7 @@
 static char   str1[LEN];
 static char   str2[LEN];
 
-int test_strcat_s (void)
+int test_snprintf_s (void)
 {
     errno_t rc;
     int32_t  ind;
@@ -24,69 +24,76 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = strcat_s(NULL, LEN, str2);
+    rc = snprintf_s(NULL, LEN, "%s", NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
-    rc = strcat_s(str1, LEN, NULL);
+    rc = snprintf_s(str1, LEN, "%s", NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
-    rc = strcat_s(str1, 0, str2);
+    rc = snprintf_s(str1, 0, "%s", str2);
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
-    rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
+    rc = snprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
-/*--------------------------------------------------*/
-/*--------------------------------------------------*/
 
-    strcpy(str1, "aaaaaaaaaa");
-    strcpy(str2, "keep it simple");
-
-    rc = strcat_s(str1, 1, str2);
-    if (rc != ESUNTERM) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, 2, str2);
+    rc = snprintf_s(str1, 1, "%s", str2);
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
         errs++;
     }
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaaaaaaa");
+    strcpy(str2, "keep it simple");
+
+    rc = snprintf_s(str1, 2, "%s", str2);
+    if (rc != ESUNTERM) {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc);
+        errs++;
+    }
+
+    if (str1[0] != '\0') {
+        debug_printf("%s %u  Expected null  \n",
+                     __FUNCTION__, __LINE__);
+        errs++;
+    }
+
 /*--------------------------------------------------*/
 
     strcpy(&str1[0], "aaaaaaaaaa");
@@ -95,211 +102,233 @@ int test_strcat_s (void)
     len1 = strlen(str1);
     len2 = strlen(str2);
 
-    rc = strcat_s(str1, 50, str2);
+    rc = snprintf_s(str1, 50, "%s", str2);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     len3 = strlen(str1);
     if (len3 != (len1+len2)) {
         debug_printf("%s %u lengths wrong: %u  %u  %u \n",
                      __FUNCTION__, __LINE__, len1, len2, len3);
         errs++;
     }
-/*--------------------------------------------------*/
+
 /*--------------------------------------------------*/
 
-    str1[0] = '\0';
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, 1, str2);
-    if (rc != ESNOSPC) {
+    rc = snprintf_s(str1, 5, "%s", str2);
+    if (rc <= 0) { /* no ENOSPC */
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
-/*--------------------------------------------------*/
 
-    str1[0] = '\0';
-    strcpy(str2, "keep it simple");
-
-    rc = strcat_s(str1, 2, str2);
-    if (rc != ESNOSPC) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
-/*--------------------------------------------------*/
-
-    str1[0] = '\0';
-    strcpy(str2, "keep it simple");
-
-    rc = strcat_s(str1, 20, str2);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
-    ind = strcmp(str1, str2 );
+    ind = strcmp(str1, "keep");
     if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
+        debug_printf("%s %u  Expected keep, got %s  \n",
+                     __FUNCTION__, __LINE__, str1);
         errs++;
     }
-/*--------------------------------------------------*/
-/*--------------------------------------------------*/
 
-    str1[0] = '\0';
-    str2[0] = '\0';
-
-    rc = strcat_s(str1, LEN, str2);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, LEN, str2);
-    if (rc != EOK) {
+    rc = snprintf_s(str1, 2, "%s", str2);
+    if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
+    if (str1[0] != '\0') {
+        debug_printf("%s %u  Expected null  \n",
+                     __FUNCTION__, __LINE__);
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    str1[0] = '\0';
+    strcpy(str2, "keep it simple");
+
+    rc = snprintf_s(str1, 20, "%s", str2);
+    if (rc != EOK) {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc);
+    }
+
     ind = strcmp(str1, str2);
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
-    strcpy(str1, "qqweqq");
-    strcpy(str2, "keep it simple");
+    str1[0] = '\0';
+    str2[0] = '\0';
 
-    rc = strcat_s(str1, LEN, str2);
+    rc = snprintf_s(str1, LEN, "%s", str2);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
+    if (str1[0] != '\0') {
+        debug_printf("%s %u  Expected null  \n",
+                     __FUNCTION__, __LINE__);
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    str1[0] = '\0';
+    strcpy(str2, "keep it simple");
+
+    rc = snprintf_s(str1, LEN, "%s", str2);
+    if (rc != EOK) {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc);
+        errs++;
+    }
+
+    ind = strcmp(str1, str2);
+    if (ind != 0) {
+        debug_printf("%s %u   Error -%s- \n",
+                     __FUNCTION__, __LINE__,  str1);
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "qqweqq");
+    strcpy(str2, "keep it simple");
+
+    rc = snprintf_s(str1, LEN, "%s", str2);
+    if (rc != EOK) {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc);
+        errs++;
+    }
+
     ind = strcmp(str1, "qqweqqkeep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, 12, str2);
+    rc = snprintf_s(str1, 12, "%s", str2);
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, 52, str2);
+    rc = snprintf_s(str1, 52, "%s", str2);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     ind = strcmp(str1, "1234keep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
 
-    rc = strcat_s(str1, 8, &str1[7]);
+    rc = snprintf_s(str1, 8, "%s", &str1[7]);
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "123456789");
 
-    rc = strcat_s(str1, 9, &str1[8]);
+    rc = snprintf_s(str1, 9, "%s", &str1[8]);
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
 
-    rc = strcat_s(str2, 31, &str1[0]);
+    rc = snprintf_s(str2, 31, "%s", &str1[0]);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     ind = strcmp(str2, "123keep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str2, "1234");
     strcpy(str1, "56789");
 
-    rc = strcat_s(str2, 10, str1);
+    rc = snprintf_s(str2, 10, "%s", str1);
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
     }
+
     ind = strcmp(str2, "123456789");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     return (errs);
@@ -310,6 +339,6 @@ int test_strcat_s (void)
    until a better solution can be created. */
 int main (void)
 {
-    return (test_strcat_s());
+    return (test_snprintf_s());
 }
 #endif

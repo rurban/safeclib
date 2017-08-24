@@ -22,6 +22,7 @@ int main()
 
     char   str1[LEN];
     char   str2[LEN];
+    int errs = 0;
 
 
 /*--------------------------------------------------*/
@@ -30,86 +31,86 @@ int main()
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, NULL, LEN, &sub);
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, LEN, NULL);
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, 0, str2, LEN, &sub);
     if (rc != ESZEROL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     if (rc != ESLEMAX) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, 0, &sub);
     if (rc != ESZEROL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
     if (rc != ESLEMAX) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     *str1 = '\0';
@@ -119,20 +120,19 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
-    /* compare to legacy */
+    /* compare to legacy (not counting as error) */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
-
 /*--------------------------------------------------*/
 
     *str1 = '\0';
@@ -142,20 +142,19 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -166,20 +165,19 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != str1) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -190,13 +188,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[0]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -207,13 +205,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[1]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -224,13 +222,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[15]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -244,20 +242,19 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[18]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -271,20 +268,19 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[18]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -294,13 +290,13 @@ int main()
     if (rc != ESNOTFND) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != NULL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -310,13 +306,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[5]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -326,13 +322,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[5]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -342,13 +338,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[5]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -359,13 +355,13 @@ int main()
     if (rc != ESNOTFND) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != NULL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -375,13 +371,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[5]) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -392,21 +388,20 @@ int main()
     if (rc != EOK) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (sub != &str1[1]) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     /* compare to legacy */
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
         printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

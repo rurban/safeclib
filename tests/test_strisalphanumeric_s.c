@@ -18,6 +18,7 @@ int main()
 
     uint32_t len;
     char   str[LEN];
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -26,8 +27,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 0;
@@ -35,8 +36,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     /* exceeds max */
@@ -45,8 +46,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     /* empty string */
@@ -54,8 +55,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "123456789");
@@ -65,8 +66,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "N");
@@ -75,8 +76,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "N");
@@ -86,8 +87,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "NowISTHETimE4us");
@@ -97,8 +98,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "qq21ego");
@@ -108,8 +109,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "1234");
@@ -121,8 +122,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "!@#$%^&*(){}[]:;\"'?/.>,<");
@@ -132,9 +133,9 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

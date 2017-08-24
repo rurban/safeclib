@@ -19,6 +19,7 @@ int test_memset_s (void)
     uint32_t i;
 
     uint8_t value;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -27,8 +28,8 @@ int test_memset_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     value = 34;
@@ -37,8 +38,8 @@ int test_memset_s (void)
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 99; }
@@ -50,12 +51,13 @@ int test_memset_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
+            errs++;
         }
     }
 
@@ -70,12 +72,13 @@ int test_memset_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
+            errs++;
         }
     }
 
@@ -90,12 +93,13 @@ int test_memset_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
+            errs++;
         }
     }
 
@@ -110,12 +114,13 @@ int test_memset_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
+            errs++;
         }
     }
 
@@ -130,19 +135,19 @@ int test_memset_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
+            errs++;
         }
     }
 
 /*--------------------------------------------------*/
-/*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

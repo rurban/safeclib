@@ -44,6 +44,7 @@ SAFEC_BUILT_TESTS = \
 	t_memzero16_s         \
 	t_memzero_s           \
 	t_sprintf_s           \
+	t_snprintf_s          \
 	t_strcasecmp_s        \
 	t_strcasestr_s        \
 	t_strcat_s            \
@@ -118,6 +119,7 @@ t_memzero32_s_SOURCES         = test_memzero32_s.c $(SAFEC_TEST_COMMON)
 t_memzero16_s_SOURCES         = test_memzero16_s.c $(SAFEC_TEST_COMMON)
 t_memzero_s_SOURCES           = test_memzero_s.c $(SAFEC_TEST_COMMON)
 t_sprintf_s_SOURCES           = test_sprintf_s.c $(SAFEC_TEST_COMMON)
+t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_strcasecmp_s_SOURCES        = test_strcasecmp_s.c $(SAFEC_TEST_COMMON)
 t_strcasestr_s_SOURCES        = test_strcasestr_s.c $(SAFEC_TEST_COMMON)
 t_strcat_s_SOURCES            = test_strcat_s.c $(SAFEC_TEST_COMMON)

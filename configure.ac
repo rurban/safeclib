@@ -1,8 +1,10 @@
 # configure.ac - Process with autoconf to produce a configure script
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+# 2017  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
+# Copyright (c) 2017 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -88,30 +90,30 @@ AM_CFLAGS="-Wall"
 # ===============================================
 
 # User switches
-# AC_ARG_ENABLE(gcov,
-# 	AS_HELP_STRING([--enable-gcov],
-# 		       [turn on test coverage @<:@default=no@:>@]),
-# 	[case "${enableval}" in
-# 	yes) enable_gcov=true ;;
-# 	no)  enable_gcov=false ;;
-# 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-gcov]) ;;
-# 	esac], [enable_gcov=false ])
-#
-# if test "x$enable_gcov" = "xtrue" ; then
-# 	if test -n "$GCC"; then
-# 		AC_MSG_ERROR([gcov only works if gcc is used])
-# 	fi
-#
-# 	GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
-# 	AC_SUBST(GCOV_CFLAGS)
-#
-# 	dnl libtool 1.5.22 and lower strip -fprofile-arcs from the flags
-# 	dnl passed to the linker, which is a bug; -fprofile-arcs implicitly
-# 	dnl links in -lgcov, so we do it explicitly here for the same effect
-# 	GCOV_LIBS=-lgcov
-# 	AC_SUBST(GCOV_LIBS)
-# fi
-# AM_CONDITIONAL(ENABLE_GCOV, test "x$enable_gcov" = "xtrue")
+AC_ARG_ENABLE(gcov,
+	AS_HELP_STRING([--enable-gcov],
+		       [turn on test coverage @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_gcov=true ;;
+	no)  enable_gcov=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-gcov]) ;;
+	esac], [enable_gcov=false ])
+
+if test "x$enable_gcov" = "xtrue" ; then
+	if test -n "$GCC"; then
+		AC_MSG_ERROR([gcov only works if gcc is used])
+	fi
+
+	GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
+	AC_SUBST(GCOV_CFLAGS)
+
+	dnl libtool 1.5.22 and lower strip -fprofile-arcs from the flags
+	dnl passed to the linker, which is a bug; -fprofile-arcs implicitly
+	dnl links in -lgcov, so we do it explicitly here for the same effect
+	GCOV_LIBS=-lgcov
+	AC_SUBST(GCOV_LIBS)
+fi
+AM_CONDITIONAL(ENABLE_GCOV, test "x$enable_gcov" = "xtrue")
 
 AC_ARG_ENABLE(debug,
 	AS_HELP_STRING([--enable-debug],

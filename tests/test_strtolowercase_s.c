@@ -16,6 +16,7 @@ int main()
     errno_t rc;
     rsize_t len;
     char str[LEN];
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -24,8 +25,8 @@ int main()
     if (rc != ESNULLP) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 0;
@@ -33,8 +34,8 @@ int main()
     if (rc != ESZEROL) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 99999;
@@ -42,8 +43,8 @@ int main()
     if (rc != ESLEMAX) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "N");
@@ -53,13 +54,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (strcmp(str, "n") ) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "n");
@@ -69,13 +70,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (strcmp(str, "n") ) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "NOWISTHETIM3");
@@ -84,13 +85,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (strcmp(str, "nowisthetim3") ) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "NOWISTHETIME");
@@ -100,13 +101,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (strcmp(str, "nowisthetime") ) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "qqeRo");
@@ -116,13 +117,13 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
     if (strcmp(str, "qqero") ) {
         printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str, "1234");
@@ -132,10 +133,10 @@ int main()
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
 
-    return (0);
+    return (errs);
 }

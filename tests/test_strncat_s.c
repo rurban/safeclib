@@ -17,6 +17,7 @@ int test_strncat_s (void)
 {
     errno_t rc;
     int32_t ind;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -24,40 +25,40 @@ int test_strncat_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, LEN, NULL, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, 0, str2, LEN);
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
@@ -67,13 +68,13 @@ int test_strncat_s (void)
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
@@ -83,13 +84,13 @@ int test_strncat_s (void)
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
@@ -99,13 +100,13 @@ int test_strncat_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
@@ -115,14 +116,14 @@ int test_strncat_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     ind = strcmp(str1, "ab");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
@@ -132,15 +133,15 @@ int test_strncat_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     ind = strcmp(str1, "aaaaaaaaaakeep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -151,14 +152,14 @@ int test_strncat_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     ind = strcmp(str1, "goodbye");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -168,14 +169,14 @@ int test_strncat_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     ind = strcmp(str1, "hello");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -185,13 +186,13 @@ int test_strncat_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -201,17 +202,17 @@ int test_strncat_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
     ind = strcmp(str1, "abcdef");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

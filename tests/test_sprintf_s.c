@@ -20,6 +20,7 @@ int test_sprintf_s (void)
     int32_t  len1;
     int32_t  len2;
     int32_t  len3;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -27,6 +28,7 @@ int test_sprintf_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -35,6 +37,7 @@ int test_sprintf_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -43,6 +46,7 @@ int test_sprintf_s (void)
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -51,6 +55,7 @@ int test_sprintf_s (void)
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -63,11 +68,13 @@ int test_sprintf_s (void)
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -79,11 +86,13 @@ int test_sprintf_s (void)
     if (rc != ESUNTERM) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -98,12 +107,14 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     len3 = strlen(str1);
     if (len3 != (len1+len2)) {
         debug_printf("%s %u lengths wrong: %u  %u  %u \n",
                      __FUNCTION__, __LINE__, len1, len2, len3);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -116,11 +127,13 @@ int test_sprintf_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -132,11 +145,13 @@ int test_sprintf_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -148,15 +163,16 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     ind = strcmp(str1, str2);
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
@@ -166,11 +182,13 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -182,12 +200,14 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     ind = strcmp(str1, str2);
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -199,12 +219,14 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     ind = strcmp(str1, "qqweqqkeep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -216,6 +238,7 @@ int test_sprintf_s (void)
     if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -227,12 +250,14 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     ind = strcmp(str1, "1234keep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -243,11 +268,13 @@ int test_sprintf_s (void)
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -258,11 +285,13 @@ int test_sprintf_s (void)
     if (rc != ESOVRLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     if (str1[0] != '\0') {
         debug_printf("%s %u  Expected null  \n",
                      __FUNCTION__, __LINE__);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -274,12 +303,14 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     ind = strcmp(str2, "123keep it simple");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -291,17 +322,19 @@ int test_sprintf_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
 
     ind = strcmp(str2, "123456789");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str1);
+        errs++;
     }
 
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

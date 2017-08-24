@@ -19,7 +19,7 @@ int test_strspn_s (void)
     errno_t rc = 0;
     rsize_t count = 0;
     int std_count = 0;
-
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -27,86 +27,86 @@ int test_strspn_s (void)
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, LEN, NULL, LEN, &count);
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, LEN, str2, LEN, NULL);
     if (rc != ESNULLP) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, 0, str2, LEN, &count);
     if (rc != ESZEROL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, LEN, str2, 0, &count);
     if (rc != ESZEROL) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, RSIZE_MAX_STR+1, str2, LEN, &count);
     if (rc != ESLEMAX) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &count);
     if (rc != ESLEMAX) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
@@ -116,13 +116,13 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 0) {
         printf("%s %u  Error  count=%d rc=%d \n",
                __FUNCTION__, __LINE__, (int)count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -132,13 +132,13 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 1) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -148,13 +148,13 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 2) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -164,13 +164,13 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     if (count != 3) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -180,14 +180,14 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     std_count = strspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -197,30 +197,13 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     std_count = strspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
-    }
-
-
-/*--------------------------------------------------*/
-
-    strcpy (str1, "keep it simple");
-    strcpy (str2, "keep");
-
-    rc = strspn_s(str1, LEN, str2, LEN, &count);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-    }
-
-    std_count = strspn(str1, str2);
-    if (count != std_count) {
-        printf("%s %u  count=%d  std_count=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -232,14 +215,31 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     std_count = strspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
+/*--------------------------------------------------*/
 
+    strcpy (str1, "keep it simple");
+    strcpy (str2, "keep");
+
+    rc = strspn_s(str1, LEN, str2, LEN, &count);
+    if (rc != EOK) {
+        printf("%s %u  Error rc=%d \n",
+                     __FUNCTION__, __LINE__, rc);
+        errs++;
+    }
+    std_count = strspn(str1, str2);
+    if (count != std_count) {
+        printf("%s %u  count=%d  std_count=%d  rc=%d \n",
+                     __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
+    }
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -249,14 +249,14 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     std_count = strspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
@@ -266,17 +266,17 @@ int test_strspn_s (void)
     if (rc != EOK) {
         printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     std_count = strspn(str1, str2);
     if (count != std_count) {
         printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

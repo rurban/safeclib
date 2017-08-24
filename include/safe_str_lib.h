@@ -55,6 +55,16 @@ extern "C" {
 /* safe sprintf_s */
 extern int
 sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+extern int
+snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+#if 0
+swprintf_s
+snwprintf_s
+vswprintf_s
+vsprintf_s
+vsnwprintf_s
+vsnprintf_s
+#endif
 
 /* set string constraint handler */
 extern constraint_handler_t

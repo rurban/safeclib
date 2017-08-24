@@ -15,6 +15,7 @@ int test_strnlen_s (void)
     rsize_t len;
     rsize_t std_len;
     rsize_t max_len;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -23,8 +24,8 @@ int test_strnlen_s (void)
     if (len != 0) {
         printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     max_len = 0;
@@ -32,8 +33,8 @@ int test_strnlen_s (void)
     if (len != 0) {
         printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     max_len = RSIZE_MAX_STR+1;
@@ -41,8 +42,8 @@ int test_strnlen_s (void)
     if (len != 0) {
         printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     std_len = strlen("");
@@ -53,8 +54,8 @@ int test_strnlen_s (void)
     if (std_len != len) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     std_len = strlen("t");
@@ -65,8 +66,8 @@ int test_strnlen_s (void)
     if (std_len != len) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     std_len = strlen("to");
@@ -77,8 +78,8 @@ int test_strnlen_s (void)
     if (std_len != len) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     std_len = strlen("testing");
@@ -89,8 +90,8 @@ int test_strnlen_s (void)
     if (std_len != len) {
         printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     max_len = 1;
@@ -99,8 +100,8 @@ int test_strnlen_s (void)
     if (len != max_len) {
         printf("%s %u   len=%u  \n",
                __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     max_len = 2;
@@ -109,8 +110,8 @@ int test_strnlen_s (void)
     if (len != max_len) {
         printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     max_len = 3;
@@ -119,11 +120,11 @@ int test_strnlen_s (void)
     if (len != max_len) {
         printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__

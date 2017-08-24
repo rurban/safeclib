@@ -16,6 +16,7 @@ int main()
     bool rc;
     uint32_t len;
     char   str[LEN];
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -24,8 +25,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     str[0] = '\0';
@@ -33,8 +34,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 0;
@@ -42,8 +43,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 99999;
@@ -51,8 +52,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     len = 9;
@@ -60,8 +61,8 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "123456789");
@@ -71,8 +72,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "1");
@@ -82,8 +83,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "12");
@@ -93,8 +94,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "1Af");
@@ -104,8 +105,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "FF");
@@ -115,8 +116,8 @@ int main()
     if (rc != true) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     strcpy (str, "1abzd");
@@ -127,9 +128,9 @@ int main()
     if (rc != false) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

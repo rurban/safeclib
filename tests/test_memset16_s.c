@@ -20,6 +20,7 @@ int main()
 
     rsize_t MAX = LEN*2;
     uint16_t mem1[LEN];
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -29,8 +30,8 @@ int main()
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     value = 34;
@@ -39,8 +40,8 @@ int main()
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 99; }
@@ -52,8 +53,8 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
@@ -72,8 +73,8 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
@@ -92,8 +93,8 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
@@ -112,8 +113,8 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
@@ -132,8 +133,8 @@ int main()
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     }
-
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             printf("%d - %d m1=%d \n",
@@ -144,5 +145,5 @@ int main()
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }

@@ -18,6 +18,7 @@ int test_memcpy_s (void)
     errno_t rc;
     uint32_t i;
     rsize_t len;
+    int errs = 0;
 
 /*--------------------------------------------------*/
 
@@ -25,48 +26,48 @@ int test_memcpy_s (void)
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 0, mem2, LEN);
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, NULL, LEN);
     if (rc != ESNULLP) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 10, mem2, 0);
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
@@ -77,20 +78,22 @@ int test_memcpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     } else {
 
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
+            errs++;
         }
     }
 
     if (mem1[i] != 33) {
         printf("%d - %d m1=%d  m2=%d  \n",
                __LINE__, (int)len, mem1[len], mem2[len]);
+        errs++;
     }
-
     }
 
 /*--------------------------------------------------*/
@@ -103,6 +106,7 @@ int test_memcpy_s (void)
     if (rc == EOK) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
 
     } else {
 
@@ -110,14 +114,15 @@ int test_memcpy_s (void)
         if (mem1[i] != 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
+            errs++;
         }
     }
 
     if (mem1[i] != 33) {
         printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, (int)len, mem1[len], mem2[len]);
+        errs++;
     }
-
     }
 
 /*--------------------------------------------------*/
@@ -127,9 +132,10 @@ int test_memcpy_s (void)
 
     len = LEN/2;
     rc = memcpy_s(mem1, len, mem2, LEN);
-    if (rc != ESLEMAX) {
+    if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
 
     } else {
 
@@ -137,12 +143,14 @@ int test_memcpy_s (void)
         if (mem1[i] != 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
+            errs++;
         }
     }
 
     if (mem1[len] != 33) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, (int)len, mem1[len], mem2[len]);
+        errs++;
     }
     }
 
@@ -156,6 +164,7 @@ int test_memcpy_s (void)
     if (rc != ESZEROL) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
 
     } else {
 
@@ -170,8 +179,8 @@ int test_memcpy_s (void)
     if (mem1[len] != 33) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, (int)len, mem1[len], mem2[len]);
+        errs++;
     }
-
     }
 
 /*--------------------------------------------------*/
@@ -184,6 +193,7 @@ int test_memcpy_s (void)
     if (rc != ESLEMAX) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
+        errs++;
     } else {
 
     /* verify mem1 was zeroed */
@@ -191,14 +201,15 @@ int test_memcpy_s (void)
         if (mem1[i] != 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
+            errs++;
         }
     }
 
     if (mem1[len] == 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
+        printf("%d - %d m1=%d  m2=%d  \n",
+             __LINE__, i, mem1[i], mem2[i]);
+        errs++;
     }
-
     }
 
 /*--------------------------------------------------*/
@@ -210,8 +221,8 @@ int test_memcpy_s (void)
     if (rc != EOK) {
         debug_printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     }
-
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 55; }
@@ -223,20 +234,22 @@ int test_memcpy_s (void)
     if (rc != ESOVRLP) {
         debug_printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
+        errs++;
     } else {
 
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
+            errs++;
         }
     }
 
     if (mem1[len] == 0) {
             printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
+        errs++;
     }
-
     }
 
 /*--------------------------------------------------*/
@@ -304,7 +317,7 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
-    return (0);
+    return (errs);
 }
 
 #ifndef __KERNEL__
