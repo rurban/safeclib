@@ -78,7 +78,7 @@ int main()
     len = 5;
     slen = 6;
     rc = strcpyfldout_s(str1, len, str2, slen);
-    if (rc != ESLEMAX) {
+    if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
