@@ -2,6 +2,8 @@
 #include "safe_str_constraint.h"
 #include <stdarg.h>
 
+/* TODO: error when fmt contains %n, or encoding errors occur.
+ */
 
 /** 
  * @brief

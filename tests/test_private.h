@@ -58,4 +58,8 @@
 #define debug_printf(...)
 #endif
 
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#  define NO_C11
+#endif
+
 #endif /* __TEST_PRIVATE_H__ */

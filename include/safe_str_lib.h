@@ -53,10 +53,12 @@ extern "C" {
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 
 /* safe sprintf_s */
+/* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 extern int
 sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 extern int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+
 #if 0
 swprintf_s
 snwprintf_s
