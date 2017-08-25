@@ -61,7 +61,7 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  *
  * @see 
@@ -101,8 +101,8 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM32) {
-        invoke_safe_mem_constraint_handler("memcmp32_s: dmax exceeds max",
+    if (dmax > RSIZE_MAX_MEM32 || smax > RSIZE_MAX_MEM32) {
+        invoke_safe_mem_constraint_handler("memcmp32_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
