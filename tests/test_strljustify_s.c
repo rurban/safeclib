@@ -49,7 +49,8 @@ int main()
 /*--------------------------------------------------*/
 
     /* empty string */
-    rc = strljustify_s("", 12);
+    str[0] = '\0';
+    rc = strljustify_s(str, 12);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
@@ -60,8 +61,10 @@ int main()
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
+
     /* whitespace only */
-    rc = strljustify_s(" ", 12);
+    strcpy (str, " ");
+    rc = strljustify_s(str, 12);
     if (rc != EOK) {
         printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );

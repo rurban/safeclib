@@ -108,10 +108,10 @@ strljustify_s (char *dest, rsize_t dmax)
     orig_dmax = dmax;
     orig_dest = dest;
 
-     /*
-      * scan the string to be sure it is properly terminated
-      */
-     while (*dest) {
+    /*
+     * scan the string to be sure it is properly terminated
+     */
+    while (*dest) {
         if (dmax == 0) {
             while (orig_dmax) { *orig_dest++ = '\0';  orig_dmax--; }
 
@@ -132,10 +132,10 @@ strljustify_s (char *dest, rsize_t dmax)
         dest++;
     }
 
-   /*
-    * shift text, removing spaces, to left justify
-    */
-    if (orig_dest != dest && *dest) {
+    /*
+     * shift text, removing spaces, to left justify
+     */
+    if (orig_dest != dest) {
         while (*dest) {
             *orig_dest++ = *dest;
             *dest++ = ' ';
