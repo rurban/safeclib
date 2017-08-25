@@ -30,14 +30,17 @@
 #include "safe_str_constraint.h"
 #include <stdarg.h>
 
+/* TODO: error when fmt contains %n, or encoding errors occur.
+ */
 
 /** 
  * @brief
  *    The snprintf_s function composes a string with same test that 
  *    would be printed if format was used on printf. Instead of being 
  *    printed, the content is stored in dest.
- *    At most dmax - 1 characters are written. The resulting
- *    character string will be terminated with a null character,
+ *    More than dmax - 1 characters might be written, so this variant is unsafe!
+ *    Always use sprintf_s instead.
+ *    The resulting character string will be terminated with a null character,
  *    unless dmax is zero. If dmax is zero, nothing is written and
  *    dest may be a null pointer, however the return value (number
  *    of bytes that would be written) is still calculated and
@@ -53,14 +56,13 @@
  * @param fmt   format-control string.
  * @param ...   optional arguments
  *
- * @return  On success the total number of characters written is returned. 
- * @return  On failure a negative number is returned. 
- * @return  If the buffer dest is too small for the formatted text,
- *          including the terminating null, then the buffer is set to an
- *          empty string by placing a null character at dest[0], and the
- *          invalid parameter handler is invoked.
- *          snprintf_s does not guarantees that the buffer will be
- *          null-terminated unless the buffer size is zero.
+ * @return Number of characters not including the terminating null
+ *         character (which is always written as long as buffer is not
+ *         a null pointer and bufsz is not zero and not greater than
+ *         RSIZE_MAX_STR), which would have been written to buffer if
+ *         bufsz was ignored, or a negative value if a runtime
+ *         constraints violation or an encoding error occurred.
+ *
  * @retval  ESNULLP when dest/fmt is NULL pointer
  * @retval  ESZEROL when dmax = 0
  * @retval  ESLEMAX when dmax > RSIZE_MAX_STR
