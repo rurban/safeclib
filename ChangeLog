@@ -1,6 +1,21 @@
 
                 ChangeLog file for safeclib
 
+Changes in v25082017 2.1.0
+        - Fixed many tests. They were not enabled at all. See #10.
+        sprintf_s, snprintf_s, memcpy16_s, memcpy32_s,
+        memmove_s, memmove16_s, memmove32_s, memset_s,
+        strcpyfldout_s, strljustify_s,
+        - Changed some errors: Throw ESLEMAX when smax exceeds max,
+        before the smax>dmax check (ESNOSPC):
+        memcpy_s, memcpy16_s, memcpy32_s, memcmp_s, memcmp16_s,
+        memcmp32_s, memmove_s, memmove16_s, memmov32_s.
+        - Reverted a strljustify_s change by me.
+        - Document that memset_s on C11 allows n = ZERO, and
+        ESNULLP will be EINVAL
+        - --enable-debug on Darwin disables shared
+        - add snprintf_s, which is the unsafe variant of sprintf_s
+
 Changes in v24082017 2.0.1
         - Added man (3) pages and proper documentation.
         See https://rurban.github.io/safeclib/
