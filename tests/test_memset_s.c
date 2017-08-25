@@ -25,7 +25,12 @@ int test_memset_s (void)
 
     value = 34;
     rc = memset_s(NULL, LEN, value, LEN);
-    if (rc != ESNULLP) {
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+    if (rc != ESNULLP)
+#else
+    if (rc != EINVAL)
+#endif
+    {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
@@ -34,8 +39,14 @@ int test_memset_s (void)
 
     value = 34;
 
+    /* no error with C11 */
     rc = memset_s(mem1, LEN, value, 0);
-    if (rc != ESZEROL) {
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+    if (rc != ESZEROL)
+#else
+    if (rc != 0)
+#endif
+    {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;

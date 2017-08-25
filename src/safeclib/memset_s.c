@@ -55,22 +55,24 @@
  * @param[in]   n      number of bytes to be set
  *
  * @pre  dest shall not be a null pointer.
- * @pre  dmax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
+ * @pre  dmax and n shall not be greater than RSIZE_MAX_MEM.
  * @pre  dmax may not be smaller than n.
+ * @pre  Without C11 dmax and n shall not be 0
  *
  * @note The behavior is undefined if the size of the character
  * array pointed to by dest < count <= dmax; in other words, an
  * erroneous value of dmax does not expose the impending buffer
  * overflow.
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
+ * @note C11 returns 0 when n = ZERO.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
  *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
  *          reporting the runtime-constraints violation, memset_s() copies
  *          dmax bytes to the destination. 
  * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dest is NULL POINTER
- * @retval  ESZEROL     when n = ZERO
+ * @retval  ESNULLP     when dest is NULL POINTER (EINVAL with C11)
+ * @retval  ESZEROL     when n = ZERO (unless C11)
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < n
  *
@@ -90,6 +92,7 @@ memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
         return (RCNEGATE(ESNULLP));
     }
 
+    /* different on C11! */
     if (n == 0) {
         invoke_safe_mem_constraint_handler("memset_s: n is 0",
                    NULL, ESZEROL);
