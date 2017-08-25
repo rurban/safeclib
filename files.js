@@ -21,6 +21,7 @@ var files =
     [ "safe_mem_constraint.c", "d6/da6/safe__mem__constraint_8c.html", "d6/da6/safe__mem__constraint_8c" ],
     [ "safe_str_constraint.c", "d1/d53/safe__str__constraint_8c.html", "d1/d53/safe__str__constraint_8c" ],
     [ "slkm_init.c", "d4/d6a/slkm__init_8c.html", "d4/d6a/slkm__init_8c" ],
+    [ "snprintf_s.c", "d8/d3c/snprintf__s_8c.html", "d8/d3c/snprintf__s_8c" ],
     [ "sprintf_s.c", "d3/d21/sprintf__s_8c.html", "d3/d21/sprintf__s_8c" ],
     [ "strcasecmp_s.c", "d4/d7c/strcasecmp__s_8c.html", "d4/d7c/strcasecmp__s_8c" ],
     [ "strcasestr_s.c", "d6/d9e/strcasestr__s_8c.html", "d6/d9e/strcasestr__s_8c" ],

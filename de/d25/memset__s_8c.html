@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">safec
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1</span>
    </div>
    <div id="projectbrief">Safe C Library - ISO TR24731 Bounds Checking Interface</div>
   </td>
@@ -163,18 +163,22 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section pre"><dt>Precondition</dt><dd>dest shall not be a null pointer. </dd>
 <dd>
-dmax and n shall not be 0 nor greater than RSIZE_MAX_MEM. </dd>
+dmax and n shall not be greater than RSIZE_MAX_MEM. </dd>
 <dd>
-dmax may not be smaller than n.</dd></dl>
+dmax may not be smaller than n. </dd>
+<dd>
+Without C11 dmax and n shall not be 0</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The behavior is undefined if the size of the character array pointed to by dest &lt; count &lt;= dmax; in other words, an erroneous value of dmax does not expose the impending buffer overflow. </dd>
 <dd>
-C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.</dd></dl>
+C11 uses RSIZE_MAX, not RSIZE_MAX_MEM. </dd>
+<dd>
+C11 returns 0 when n = ZERO.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before reporting the runtime-constraints violation, <a class="el" href="../../de/d25/memset__s_8c.html#a624a7b8eeb1838825dc25781574c9927" title="Sets the first n bytes starting at dest to the specified value, but maximal dmax bytes. ">memset_s()</a> copies dmax bytes to the destination. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>when operation is successful </td></tr>
-    <tr><td class="paramname">ESNULLP</td><td>when dest is NULL POINTER </td></tr>
-    <tr><td class="paramname">ESZEROL</td><td>when n = ZERO </td></tr>
+    <tr><td class="paramname">ESNULLP</td><td>when dest is NULL POINTER (EINVAL with C11) </td></tr>
+    <tr><td class="paramname">ESZEROL</td><td>when n = ZERO (unless C11) </td></tr>
     <tr><td class="paramname">ESLEMAX</td><td>when dmax/n &gt; RSIZE_MAX_MEM </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when dmax &lt; n</td></tr>
   </table>
@@ -182,13 +186,13 @@ C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../da/d22/memset16__s_8c.html#a32090a59e19c3194528dc4d3c0a6f33c" title="Sets the first n uint16_t values starting at dest to the specified value, but maximal smax bytes...">memset16_s()</a>, <a class="el" href="../../d1/d57/memset32__s_8c.html#ab2b87f4c715c862163d37ee23610b4d4" title="Sets len uint32_t starting at dest to the specified value. ">memset32_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../de/d25/memset__s_8c_source.html#l00083">83</a> of file <a class="el" href="../../de/d25/memset__s_8c_source.html">memset_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../de/d25/memset__s_8c_source.html#l00085">85</a> of file <a class="el" href="../../de/d25/memset__s_8c_source.html">memset_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 15082017.2-g26cfec 2.0
+Generated for Safe C Library 25082017.0-g82392e 2.1
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

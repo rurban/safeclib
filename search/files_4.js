@@ -3,6 +3,7 @@ var searchData=
   ['safe_5fmem_5fconstraint_2ec',['safe_mem_constraint.c',['../d6/da6/safe__mem__constraint_8c.html',1,'']]],
   ['safe_5fstr_5fconstraint_2ec',['safe_str_constraint.c',['../d1/d53/safe__str__constraint_8c.html',1,'']]],
   ['slkm_5finit_2ec',['slkm_init.c',['../d4/d6a/slkm__init_8c.html',1,'']]],
+  ['snprintf_5fs_2ec',['snprintf_s.c',['../d8/d3c/snprintf__s_8c.html',1,'']]],
   ['sprintf_5fs_2ec',['sprintf_s.c',['../d3/d21/sprintf__s_8c.html',1,'']]],
   ['strcasecmp_5fs_2ec',['strcasecmp_s.c',['../d4/d7c/strcasecmp__s_8c.html',1,'']]],
   ['strcasestr_5fs_2ec',['strcasestr_s.c',['../d6/d9e/strcasestr__s_8c.html',1,'']]],

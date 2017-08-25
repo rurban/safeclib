@@ -8,6 +8,8 @@ var searchData=
   ['slk_5fexit',['slk_exit',['../d4/d6a/slkm__init_8c.html#a4697453c839303891a47a9b443bcae26',1,'slkm_init.c']]],
   ['slk_5finit',['slk_init',['../d4/d6a/slkm__init_8c.html#af27c6fcdadb4c452114d7eae1605b60e',1,'slkm_init.c']]],
   ['slkm_5finit_2ec',['slkm_init.c',['../d4/d6a/slkm__init_8c.html',1,'']]],
+  ['snprintf_5fs',['snprintf_s',['../d8/d3c/snprintf__s_8c.html#a96cc4074796353f082680fa67fc3a45f',1,'snprintf_s.c']]],
+  ['snprintf_5fs_2ec',['snprintf_s.c',['../d8/d3c/snprintf__s_8c.html',1,'']]],
   ['sprintf_5fs',['sprintf_s',['../d3/d21/sprintf__s_8c.html#af4904e3203c6092aed7c41566276c3c6',1,'sprintf_s.c']]],
   ['sprintf_5fs_2ec',['sprintf_s.c',['../d3/d21/sprintf__s_8c.html',1,'']]],
   ['str_5fhandler',['str_handler',['../d1/d53/safe__str__constraint_8c.html#a9fff171d415e4d088afce2264c9debec',1,'safe_str_constraint.c']]],

@@ -4,6 +4,7 @@ var searchData=
   ['set_5fstr_5fconstraint_5fhandler_5fs',['set_str_constraint_handler_s',['../d1/d53/safe__str__constraint_8c.html#ac9a282c5c2008c02b78e14a764090b67',1,'safe_str_constraint.c']]],
   ['slk_5fexit',['slk_exit',['../d4/d6a/slkm__init_8c.html#a4697453c839303891a47a9b443bcae26',1,'slkm_init.c']]],
   ['slk_5finit',['slk_init',['../d4/d6a/slkm__init_8c.html#af27c6fcdadb4c452114d7eae1605b60e',1,'slkm_init.c']]],
+  ['snprintf_5fs',['snprintf_s',['../d8/d3c/snprintf__s_8c.html#a96cc4074796353f082680fa67fc3a45f',1,'snprintf_s.c']]],
   ['sprintf_5fs',['sprintf_s',['../d3/d21/sprintf__s_8c.html#af4904e3203c6092aed7c41566276c3c6',1,'sprintf_s.c']]],
   ['strcasecmp_5fs',['strcasecmp_s',['../d4/d7c/strcasecmp__s_8c.html#ab7d0aa66aa92a4079520c378faf232a0',1,'strcasecmp_s.c']]],
   ['strcasestr_5fs',['strcasestr_s',['../d6/d9e/strcasestr__s_8c.html#af9eb2586cac42fc8f5471aad6c7cf71d',1,'strcasestr_s.c']]],
