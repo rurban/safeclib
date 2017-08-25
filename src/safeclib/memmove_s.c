@@ -72,7 +72,7 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  *
  * @see 
@@ -101,8 +101,8 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM) {
-        invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds max",
+    if (dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM) {
+        invoke_safe_mem_constraint_handler("memmove_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }

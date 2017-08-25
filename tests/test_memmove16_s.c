@@ -100,7 +100,7 @@ int main()
     /* length error */
     len = LEN/2;
     rc = memmove16_s(mem1, len, mem2, LEN);
-    if (rc != ESLEMAX) {
+    if (rc != ESNOSPC) {
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
