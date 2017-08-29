@@ -99,6 +99,12 @@
                      __FUNCTION__, __LINE__, ind, rc); \
         errs++;                                    \
     }
+#define INDCMP(cmp)                                \
+    if (ind cmp) {                                 \
+        printf("%s %u  Error  ind=%d rc=%d \n",    \
+                     __FUNCTION__, __LINE__, ind, rc); \
+        errs++;                                    \
+    }
 #define SUBNULL()                                  \
     if (sub) {                                     \
         printf("%s %u  Error  sub=\"%s\" rc=%d \n",    \

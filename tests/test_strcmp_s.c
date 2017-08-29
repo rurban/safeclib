@@ -7,6 +7,41 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include "config.h"
+
+#define sgn(i) ((i)>0 ? 1 : ((i)<0 ? -1 : 0))
+
+#if defined(__has_feature)
+# if __has_feature(address_sanitizer)
+/* asan wrongly intercepts those, and flats them to signum */
+#define STDCMP()                                                 \
+    std_ind = strcmp(str1, str2);                                \
+    if (ind != std_ind) {                                        \
+        printf("%s %u  ind=%d  asan strcmp()=%d  rc=%d \n",      \
+               __FUNCTION__, __LINE__,  ind, std_ind, rc);       \
+    }                                                            \
+    if (sgn(ind) != std_ind) {                                   \
+        printf("%s %u  sgn(ind)=%d  std_ind=%d  rc=%d \n",       \
+               __FUNCTION__, __LINE__,  sgn(ind), std_ind, rc);  \
+        errs++;                                                  \
+    }
+# endif
+#endif
+#if !defined(STDCMP)
+#if defined(HAVE_STRCMP)
+#define STDCMP()                                                 \
+    std_ind = strcmp(str1, str2);                                \
+    if (ind != std_ind) {                                        \
+        printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",            \
+               __FUNCTION__, __LINE__,  ind, std_ind, rc);       \
+        errs++;                                                  \
+    }
+#else
+#define STDCMP()  \
+    debug_printf("%s %u  have no strcmp()\n", __FUNCTION__, __LINE__);
+#endif
+#endif
+
 
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
@@ -24,101 +59,52 @@ int test_strcmp_s (void)
 /*--------------------------------------------------*/
 
     rc = strcmp_s(NULL, LEN, str2, &ind);
-    if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+    INDNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcmp_s(str1, LEN, NULL, &ind);
-    if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+    INDNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcmp_s(str1, LEN, str2, NULL);
-    if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = strcmp_s(str1, 0, str2, &ind);
-    if (rc != ESZEROL) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
+    INDNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcmp_s(str1, RSIZE_MAX_STR+1, str2, &ind);
-    if (rc != ESLEMAX) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
+    INDNULL()
+
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
     str2[0] = '\0';
 
     rc = strcmp_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-    std_ind = strcmp(str1, str2);
-    if (ind != std_ind) {
-        printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind, rc);
-        errs++;
-    }
+    ERR(EOK)
+    INDNULL()
+
+    STDCMP()
+
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
     strcpy (str2, "keep it simple");
 
     rc = strcmp_s(str1, 5, str2, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
+    ERR(EOK)
+    INDNULL()
+
 /*--------------------------------------------------*/
 
     /*   K - k ==  -32  */
@@ -126,22 +112,10 @@ int test_strcmp_s (void)
     strcpy (str2, "keep it simple");
 
     rc = strcmp_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != (-32)) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
-    std_ind = strcmp(str1, str2);
-    if (ind != std_ind) {
-        printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind, rc);
-        errs++;
-    }
+    ERR(EOK)
+    INDCMP(!= (-32))
+    STDCMP()
+
 /*--------------------------------------------------*/
 
     /*   p - P ==  32  */
@@ -149,90 +123,46 @@ int test_strcmp_s (void)
     strcpy (str2, "keeP it simple");
 
     rc = strcmp_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 32) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
-    std_ind = strcmp(str1, str2);
-    if (ind != std_ind) {
-        printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind, rc);
-        errs++;
-    }
+    ERR(EOK)
+    INDCMP(!= 32)
+    STDCMP()
+
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
 
     rc = strcmp_s(str1, LEN, str1, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
-    /* be sure the results are the same as strcmp */
+    ERR(EOK)
+    INDNULL()
+    /* be sure the results are the same as strcmp. */
     std_ind = strcmp(str1, str1);
     if (ind != std_ind) {
         printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind, rc);
-        errs++;
+               __FUNCTION__, __LINE__,  ind, std_ind, rc);
     }
+
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simplified");
     strcpy (str2, "keep it simple");
 
     rc = strcmp_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind <= 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
+    ERR(EOK)
+    INDCMP(<= 0)
     /* be sure the results are the same as strcmp */
-    std_ind = strcmp(str1, str2);
-    if (ind != std_ind) {
-        printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind, rc);
-        errs++;
-    }
+    STDCMP()
+
 /*--------------------------------------------------*/
 
     strcpy (str1, "keep it simple");
     strcpy (str2, "keep it simplified");
 
     rc = strcmp_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (ind >= 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
+    ERR(EOK)
+    INDCMP(>= 0)
     /* be sure the results are the same as strcmp */
-    std_ind = strcmp(str1, str2);
-    if (ind != std_ind) {
-        printf("%s %u  ind=%d  std_ind=%d  rc=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind, rc);
-        errs++;
-    }
+    STDCMP()
+
 /*--------------------------------------------------*/
 
     return (errs);
