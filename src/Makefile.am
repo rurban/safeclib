@@ -3,6 +3,7 @@
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
+# Copyright (c) 2017 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -65,7 +66,11 @@ STD_STR_FILES = \
 	safeclib/strncat_s.c           \
 	safeclib/strcpy_s.c            \
 	safeclib/strncpy_s.c           \
-	safeclib/strtok_s.c
+	safeclib/strtok_s.c            \
+	safeclib/sprintf_s.c 	       \
+	safeclib/snprintf_s.c 	       \
+	safeclib/vsprintf_s.c 	       \
+	safeclib/vsnprintf_s.c
 
 EXT_STR_FILES = \
 	safeclib/strcmp_s.c            \
@@ -99,9 +104,7 @@ EXT_STR_FILES = \
 	safeclib/strlastchar_s.c       \
 	safeclib/strlastdiff_s.c       \
 	safeclib/strlastsame_s.c       \
-	safeclib/strljustify_s.c       \
-	safeclib/sprintf_s.c	       \
-	safeclib/snprintf_s.c
+	safeclib/strljustify_s.c
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works

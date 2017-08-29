@@ -37,6 +37,7 @@ extern "C" {
 #endif
 
 #include "safe_lib.h"
+#include <stdarg.h>
 
 /*
  * The shortest string is a null string!!
@@ -58,14 +59,16 @@ extern int
 sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 extern int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
-
+extern int
+vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+extern int
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+  
 #if 0
 swprintf_s
 snwprintf_s
 vswprintf_s
-vsprintf_s
 vsnwprintf_s
-vsnprintf_s
 #endif
 
 /* set string constraint handler */

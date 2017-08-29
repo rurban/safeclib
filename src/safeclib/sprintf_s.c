@@ -16,13 +16,21 @@
  *    K.3.5.3.6 The sprintf_s function (p: 595-596)
  *    http://en.cppreference.com/w/c/string/byte/sprintf
  *
- * @param dest  storage location for output buffer.
- * @param dmax  maximum number of characters to store in buffer.
- * @param fmt   format-control string.
- * @param ...   optional arguments
+ * @param[out] dest  storage location for output buffer.
+ * @param[in]  dmax  maximum number of characters to store in buffer.
+ * @param[in]  fmt   format-control string.
+ * @param[in]  ...   optional arguments
+ *
+ * @pre Neither dest nor fmt shall be a null pointer.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not equal zero.
+ * @pre dmax shall be greater than strnlen_s(dest, dmax).
+ * @pre fmt  shall not contain the conversion specifier %n
+ * @pre None of the arguments corresponding to %s is a null pointer
+ * @pre No encoding error shall occur.
  *
  * @return  On success the total number of characters written is returned. 
- * @return  On failure a negative number is returned. 
+ * @return  On failure a negative number is returned.
  * @return  If the buffer dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
  *          empty string by placing a null character at dest[0], and the

@@ -82,7 +82,9 @@ SAFEC_BUILT_TESTS = \
 	t_strtok_s            \
 	t_strtolowercase_s    \
 	t_strtouppercase_s    \
-	t_strzero_s
+	t_strzero_s           \
+	t_vsprintf_s          \
+	t_vsnprintf_s          
 
 SAFEC_BUILT_PERFS = p_memcpy32_s p_memcpy_s
 
@@ -158,5 +160,7 @@ t_strtok_s_SOURCES            = test_strtok_s.c $(SAFEC_TEST_COMMON)
 t_strtolowercase_s_SOURCES    = test_strtolowercase_s.c $(SAFEC_TEST_COMMON)
 t_strtouppercase_s_SOURCES    = test_strtouppercase_s.c $(SAFEC_TEST_COMMON)
 t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
+t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
+t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
 
 CLEANFILES  = *~
