@@ -1,30 +1,30 @@
 language: c
 sudo: false
-cache:
-  ccache: true
+#cache:
+#  ccache: true
 os:
   - linux
   - osx
 env:
-  - CC="ccache gcc"
-  - CC="ccache g++"
-  - CC="ccache clang"
-  - CC="ccache clang -fsanitize=address"
+  - XCC="gcc"
+  - XCC="c++" CONF="--disable-nullslack"
+  - XCC="clang"
+  - XCC="clang -fsanitize=address" CONF="--enable-debug"
 
 # clang++ does not allow c anymore
 
 branches:
   except:
-  - /^v?[0-9]+\.[0-9]+/
+  - /^v[0-9]+/
 
 install:
   - build-tools/autogen.sh
 
 script:
   # skip duplicate compilers and clang++
-  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$CC" = "clang" ]; then exit 0; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$CC" = "g++" ]; then exit 0; fi
-  - ./configure
+  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "c++" ]; then exit 0; fi
+  - CC="$XCC" ./configure $CONF
   - make -j4
   - make check
 
