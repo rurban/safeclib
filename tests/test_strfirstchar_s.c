@@ -24,12 +24,12 @@ int main()
 
     rc = strfirstchar_s(NULL, LEN, 'a', &first);
     if (rc != ESNULLP) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -37,7 +37,7 @@ int main()
 
     rc = strfirstchar_s(str1, LEN, 'a', NULL);
     if (rc != ESNULLP) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -45,12 +45,12 @@ int main()
 
     rc = strfirstchar_s(str1, 0, 'a', &first);
     if (rc != ESZEROL) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -58,12 +58,12 @@ int main()
 
     rc = strfirstchar_s(str1, RSIZE_MAX_STR+1, 'a', &first);
     if (rc != ESLEMAX) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -73,12 +73,12 @@ int main()
 
     rc = strfirstchar_s(str1, LEN, 'a', &first);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -88,12 +88,12 @@ int main()
 
     rc = strfirstchar_s(str1, LEN, 'z', &first);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -103,12 +103,12 @@ int main()
 
     rc = strfirstchar_s(str1, LEN, 'E', &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first != &str1[1]) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -119,12 +119,12 @@ int main()
 
     rc = strfirstchar_s(str1, len, 'Z', &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first != &str1[14]) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
@@ -134,12 +134,12 @@ int main()
 
     rc = strfirstchar_s(str1, LEN, 'Z', &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first != &str1[14]) {
-        printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }

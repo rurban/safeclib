@@ -24,55 +24,55 @@ int main()
 
 
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     p2tok = strtok_s(str1, NULL, str2,  &p2str);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%d \n",
+        debug_printf("%s %u   Error rc=%d \n",
                __FUNCTION__, __LINE__,  rc );
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     len = 0;
     p2tok = strtok_s(str1, &len, str2,  &p2str);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%d \n",
+        debug_printf("%s %u   Error rc=%d \n",
                __FUNCTION__, __LINE__,  rc );
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     len = RSIZE_MAX_STR + 1;
     p2tok = strtok_s(str1, &len, str2,  &p2str);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     len = 0;
     p2tok = strtok_s(str1, &len, NULL,  &p2str);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     p2tok = strtok_s(str1, &len, str2,  NULL);
     if (p2tok != NULL) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     /* no token test */
     strcpy(str1, "aaaaaaaa");
@@ -82,12 +82,12 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok != NULL) {
-        printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     strcpy(str1, "jklmnopqrst");
     len = strlen(str1) - 2;             /* cheat on len */
@@ -96,16 +96,16 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok != NULL) {
-        printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
     if (p2tok != NULL) {
-        printf("token -%s-  -%s- \n", p2tok, p2str);
+        debug_printf("token -%s-  -%s- \n", p2tok, p2str);
         errs++;
     }
 /*--------------------------------------------------*/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     strcpy(str1, "aaamnopqrst");
     len = strlen(str1);
@@ -114,13 +114,13 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok == NULL) {
-        printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
 /*--------------------------------------------------*/
 /** [1] **/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     strcpy(str1, "aaamnopqrstfedcba");
     len = strlen(str1);
@@ -129,12 +129,12 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok == NULL) {
-        printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
     if (strcmp(p2tok, "mnopqrst")) {
-        printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -145,7 +145,7 @@ int main()
 
     p2tok = strtok_s(p2str, &len, str2, &p2str);
     if (p2tok != NULL) {
-        printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s-  \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -154,7 +154,7 @@ int main()
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 /** [1] **/
-    printf("test: %u \n", __LINE__);
+    debug_printf("test: %u \n", __LINE__);
 
     strcpy(str1, "?a???b,,,#c");
     len = strlen(str1);
@@ -164,7 +164,7 @@ int main()
     p2tok = strtok_s(str1, &len, str2, &p2str);
 
     if (strcmp(p2tok, "a") ) {
-        printf("%s %u token -%s-  -%s- len=%d \n",
+        debug_printf("%s %u token -%s-  -%s- len=%d \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
@@ -181,7 +181,7 @@ int main()
     p2tok = strtok_s(NULL, &len, str2, &p2str);
 
     if (strcmp(p2tok, "??b") ) {
-        printf("%s %u token -%s-  -%s- len=%d \n",
+        debug_printf("%s %u token -%s-  -%s- len=%d \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
@@ -194,20 +194,20 @@ int main()
 
     strcpy(str2, ",");   /* change the tokenizer string */
 
-    printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    printf("String of delimiters str2 = \"%s\" \n", str2);
+    debug_printf("\n");
+    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
 
-        printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         p2tok = strtok_s(p2str, &len, str2, &p2str);
 
-        printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+        debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 
@@ -217,40 +217,40 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    printf("String of delimiters str2 = \"%s\" \n", str2);
+    debug_printf("\n");
+    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
-    printf("  p2tok = strtok_s(str1, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(str1, &len, str2, &p2str); \n");
     p2tok = strtok_s(str1, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
     /* len is zero at this point */
-    printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    printf("\n");
+    debug_printf("\n");
 
 /*--------------------------------------------------*/
 
@@ -260,19 +260,19 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    printf("String of delimiters str2 = \"%s\" \n", str2);
+    debug_printf("\n");
+    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-        printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         p2tok = strtok_s(p2str, &len, str2, &p2str);
 
-        printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+        debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 
@@ -282,19 +282,19 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    printf("String of delimiters str2 = \"%s\" \n", str2);
+    debug_printf("\n");
+    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-        printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         p2tok = strtok_s(p2str, &len, str2, &p2str);
 
-        printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+        debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 
@@ -304,20 +304,20 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    printf("\n");
-    printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    printf("String of delimiters str2 = \"%s\" \n", str2);
+    debug_printf("\n");
+    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-        printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
 //        p2tok = strtok_s(p2str, &len, str2, &p2str);
         p2tok = strtok_s(NULL, &len, str2, &p2str);
 
-        printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+        debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 

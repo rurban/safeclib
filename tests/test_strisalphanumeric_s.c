@@ -25,7 +25,7 @@ int main()
     len = 5;
     rc = strisalphanumeric_s(NULL, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -34,7 +34,7 @@ int main()
     len = 0;
     rc = strisalphanumeric_s("test", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -44,7 +44,7 @@ int main()
     len = 99999;
     rc = strisalphanumeric_s("test", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -53,7 +53,7 @@ int main()
     /* empty string */
     rc = strisalphanumeric_s("", LEN);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -64,7 +64,7 @@ int main()
 
     rc = strisalphanumeric_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -74,7 +74,7 @@ int main()
 
     rc = strisalphanumeric_s(str, 1);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -85,7 +85,7 @@ int main()
 
     rc = strisalphanumeric_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -96,7 +96,7 @@ int main()
 
     rc = strisalphanumeric_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -107,7 +107,7 @@ int main()
 
     rc = strisalphanumeric_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -120,7 +120,7 @@ int main()
     /* special char embedded */
     rc = strisalphanumeric_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -131,7 +131,7 @@ int main()
 
     rc = strisalphanumeric_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

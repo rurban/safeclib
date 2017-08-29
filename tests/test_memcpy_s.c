@@ -23,51 +23,33 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 
     rc = memcpy_s(NULL, LEN, mem2, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 0, mem2, LEN);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
+
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, NULL, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 10, mem2, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
@@ -75,22 +57,19 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    } else {
+    ERR(EOK)
+    else {
 
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
     }
 
     if (mem1[i] != 33) {
-        printf("%d - %d m1=%d  m2=%d  \n",
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
                __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
     }
@@ -112,14 +91,14 @@ int test_memcpy_s (void)
 
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
     }
 
     if (mem1[i] != 33) {
-        printf("%d - %d m1=%d  m2=%d  \n",
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
     }
@@ -132,23 +111,19 @@ int test_memcpy_s (void)
 
     len = LEN/2;
     rc = memcpy_s(mem1, len, mem2, LEN);
-    if (rc != ESNOSPC) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-
-    } else {
+    ERR(ESNOSPC)
+    else {
 
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
     }
 
     if (mem1[len] != 33) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
     }
@@ -161,23 +136,19 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-
-    } else {
+    ERR(ESZEROL)
+    else {
 
     /* verify mem1 was zeroed */
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
         }
     }
 
     if (mem1[len] != 33) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
     }
@@ -190,23 +161,20 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    } else {
+    ERR(ESLEMAX)
+    else {
 
     /* verify mem1 was zeroed */
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
     }
 
     if (mem1[len] == 0) {
-        printf("%d - %d m1=%d  m2=%d  \n",
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
              __LINE__, i, mem1[i], mem2[i]);
         errs++;
     }
@@ -218,11 +186,8 @@ int test_memcpy_s (void)
 
     /* same ptr - no move */
     rc = memcpy_s(mem1, LEN, mem1, LEN);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(EOK)
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 55; }
@@ -231,25 +196,22 @@ int test_memcpy_s (void)
     /* overlap */
     len = 100;
     rc = memcpy_s(&mem1[0], len, &mem1[10], len);
-    if (rc != ESOVRLP) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    } else {
+    ERR(ESOVRLP)
+    else {
 
-    for (i=0; i<len; i++) {
+      for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
-    }
+      }
 
-    if (mem1[len] == 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+      if (mem1[len] == 0) {
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
         errs++;
-    }
+      }
     }
 
 /*--------------------------------------------------*/
@@ -260,17 +222,15 @@ int test_memcpy_s (void)
     /* overlap */
     len = 100;
     rc = memcpy_s(&mem1[10], len, &mem1[0], len);
-    if (rc != ESOVRLP) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-    } else {
+    ERR(ESOVRLP)
+    else {
 
-    for (i=10; i<len+10; i++) {
+      for (i=10; i<len+10; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+          debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
         }
-    }
+      }
 
     }
 
@@ -281,17 +241,15 @@ int test_memcpy_s (void)
 
     len = 5;
     rc = memcpy_s(mem1, len, mem2, len);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-    } else {
+    ERR(EOK)
+    else {
 
-    for (i=0; i<len; i++) {
+      for (i=0; i<len; i++) {
         if (mem1[i] != 55) {
-            printf("%d - %d m1=%d\n",
+            debug_printf("%d - %d m1=%d\n",
                  __LINE__, i, mem1[i]);
         }
-    }
+      }
 
     }
 
@@ -301,20 +259,17 @@ int test_memcpy_s (void)
     for (i=0; i<LEN; i++) { mem2[i] = 55; }
 
     rc = memcpy_s(mem1, LEN, mem2, LEN/2);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-    } else {
+    ERR(EOK)
+    else {
 
-    for (i=0; i<LEN/2; i++) {
+      for (i=0; i<LEN/2; i++) {
         if (mem1[i] != 55) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
         }
-    }
+      }
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     return (errs);

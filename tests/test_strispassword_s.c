@@ -22,7 +22,7 @@ int main()
 
     rc = strispassword_s(NULL, LEN);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -30,7 +30,7 @@ int main()
 
     rc = strispassword_s("", LEN);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -38,7 +38,7 @@ int main()
 
     rc = strispassword_s("Test4You&", 0);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -46,7 +46,7 @@ int main()
 
     rc = strispassword_s("Test4You&", 999);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -54,7 +54,7 @@ int main()
 
     rc = strispassword_s("", 9);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -65,7 +65,7 @@ int main()
 
     rc = strispassword_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -76,7 +76,7 @@ int main()
 
     rc = strispassword_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -87,7 +87,7 @@ int main()
 
     rc = strispassword_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -98,7 +98,7 @@ int main()
 
     rc = strispassword_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -109,7 +109,7 @@ int main()
 
     rc = strispassword_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -120,7 +120,7 @@ int main()
 
     rc = strispassword_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

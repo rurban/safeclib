@@ -23,7 +23,7 @@ int main()
     len = 5;
     rc = strishex_s(NULL, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -32,7 +32,7 @@ int main()
     str[0] = '\0';
     rc = strishex_s(str, 5);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -41,7 +41,7 @@ int main()
     len = 0;
     rc = strishex_s("1234", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -50,7 +50,7 @@ int main()
     len = 99999;
     rc = strishex_s("1234", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -59,7 +59,7 @@ int main()
     len = 9;
     rc = strishex_s("", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -70,7 +70,7 @@ int main()
 
     rc = strishex_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -81,7 +81,7 @@ int main()
 
     rc = strishex_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -92,7 +92,7 @@ int main()
 
     rc = strishex_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -103,7 +103,7 @@ int main()
 
     rc = strishex_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -114,7 +114,7 @@ int main()
 
     rc = strishex_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -126,7 +126,7 @@ int main()
     /* non hex char in string */
     rc = strishex_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

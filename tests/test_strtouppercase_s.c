@@ -21,20 +21,20 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
-    printf("debug - 01\n");
+    debug_printf("debug - 01\n");
     rc = strtouppercase_s(NULL, len);
     if (rc != ESNULLP) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
 /*--------------------------------------------------*/
 
     len = 0;
-    printf("debug - 02\n");
+    debug_printf("debug - 02\n");
     rc = strtouppercase_s("test", len);
     if (rc != ESZEROL) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -42,10 +42,10 @@ int main()
 
     /* empty string */
     len = 5;
-    printf("debug - 03\n");
+    debug_printf("debug - 03\n");
     rc = strtouppercase_s("", len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -57,7 +57,7 @@ int main()
 	printf("debug - 04\n");
     rc = strtouppercase_s("test", len);
     if (rc != ESLEMAX) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -66,17 +66,17 @@ int main()
     strcpy (str, "n");
     len = strlen(str);
 
-    printf("debug - 05\n");
+    debug_printf("debug - 05\n");
     rc = strtouppercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
-    printf("debug - 06\n");
+    debug_printf("debug - 06\n");
 
     if (strcmp(str, "N") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -85,16 +85,16 @@ int main()
     strcpy (str, "N");
     len = strlen(str);
 
-    printf("debug - 07\n");
+    debug_printf("debug - 07\n");
     rc = strtouppercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
-    printf("debug - 08\n");
+    debug_printf("debug - 08\n");
     if (strcmp(str, "N") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -103,16 +103,16 @@ int main()
     strcpy (str, "nowisthetime");
     len = strlen(str);
 
-    printf("debug - 09\n");
+    debug_printf("debug - 09\n");
     rc = strtouppercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
-    printf("debug - 10\n");
+    debug_printf("debug - 10\n");
     if (strcmp(str, "NOWISTHETIME") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -121,16 +121,16 @@ int main()
     strcpy (str, "qqeRo");
     len = strlen(str);
 
-    printf("debug - 11\n");
+    debug_printf("debug - 11\n");
     rc = strtouppercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
-    printf("debug - 12\n");
+    debug_printf("debug - 12\n");
     if (strcmp(str, "QQERO") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -139,10 +139,10 @@ int main()
     strcpy (str, "1234");
     len = strlen(str);
 
-    printf("debug - 13\n");
+    debug_printf("debug - 13\n");
     rc = strtouppercase_s(str, 22);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

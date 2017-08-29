@@ -23,7 +23,7 @@ int main()
     len = 5;
     rc = strtolowercase_s(NULL, len);
     if (rc != ESNULLP) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -32,7 +32,7 @@ int main()
     len = 0;
     rc = strtolowercase_s("test", len);
     if (rc != ESZEROL) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -41,7 +41,7 @@ int main()
     len = 99999;
     rc = strtolowercase_s("test", len);
     if (rc != ESLEMAX) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -52,12 +52,12 @@ int main()
 
     rc = strtolowercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
     if (strcmp(str, "n") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -68,12 +68,12 @@ int main()
 
     rc = strtolowercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
     if (strcmp(str, "n") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -83,12 +83,12 @@ int main()
 
     rc = strtolowercase_s(str, 25);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
     if (strcmp(str, "nowisthetim3") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -99,12 +99,12 @@ int main()
 
     rc = strtolowercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
     if (strcmp(str, "nowisthetime") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -115,12 +115,12 @@ int main()
 
     rc = strtolowercase_s(str, len);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
     if (strcmp(str, "qqero") ) {
-        printf("%s %u   Error -%s- \n",
+        debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
         errs++;
     }
@@ -131,7 +131,7 @@ int main()
 
     rc = strtolowercase_s(str, 4);
     if (rc != EOK) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

@@ -8,19 +8,6 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
-#define ERR(n)                                     \
-    if (rc != (n)) {                               \
-        debug_printf("%s %u   Error rc=%u \n",     \
-                     __FUNCTION__, __LINE__,  rc); \
-        errs++;                                    \
-    }
-#define NOERR()                                    \
-    if (rc < 0) {                                  \
-        debug_printf("%s %u   Error rc=%u \n",     \
-                 __FUNCTION__, __LINE__,  rc);     \
-        errs++;                                    \
-    }
-
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -73,11 +60,7 @@ int test_vsnprintf_s (void)
 
     rc = vtprintf_s(str1, 1, "%s", str2);
     ERR(14)
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
+    EXPNULL(str1)
 
 /*--------------------------------------------------*/
 
@@ -110,13 +93,8 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 5, "%s", str2);
-    NOERR() /* no ENOSPC */
-    ind = strcmp(str1, "keep");
-    if (ind != 0) {
-        debug_printf("%s %u  Expected keep, got %s  \n",
-                     __FUNCTION__, __LINE__, str1);
-        errs++;
-    }
+    NOERRNULL() /* no ENOSPC */
+    EXPSTR(str1, "keep")
 
 /*--------------------------------------------------*/
 
@@ -125,6 +103,7 @@ int test_vsnprintf_s (void)
 
     rc = vtprintf_s(str1, 2, "%s", str2);
     ERR(14)
+    EXPSTR(str1, "k")
 
 /*--------------------------------------------------*/
 
@@ -132,13 +111,8 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 20, "%s", str2);
-    NOERR()
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    NOERRNULL()
+    EXPSTR(str1, str2)
 
 /*--------------------------------------------------*/
 
@@ -147,11 +121,7 @@ int test_vsnprintf_s (void)
 
     rc = vtprintf_s(str1, LEN, "%s", str2);
     ERR(0)
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
+    EXPNULL(str1)
 
 /*--------------------------------------------------*/
 
@@ -160,12 +130,7 @@ int test_vsnprintf_s (void)
 
     rc = vtprintf_s(str1, LEN, "%s", str2);
     NOERR()
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, str2)
 
 /*--------------------------------------------------*/
 
@@ -173,13 +138,8 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, LEN, "%s", str2);
-    NOERR()
-    ind = strcmp(str1, "keep it simple");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    NOERRNULL()
+    EXPSTR(str1, str2)
 
 /*--------------------------------------------------*/
 
@@ -195,13 +155,8 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 52, "%s", str2);
-    NOERR()
-    ind = strcmp(str1, "keep it simple");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    NOERRNULL()
+    EXPSTR(str1, str2)
 
 /*--------------------------------------------------*/
 
@@ -216,12 +171,7 @@ int test_vsnprintf_s (void)
 
     rc = vtprintf_s(str1, 9, "%s", &str1[8]);
     ERR(1) /* overlapping allowed */
-    ind = strcmp(str1, "9");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, "9")
 
 /*--------------------------------------------------*/
 
@@ -229,13 +179,8 @@ int test_vsnprintf_s (void)
     strcpy(str1, "keep it simple");
 
     rc = vtprintf_s(str2, 31, "%s", &str1[0]);
-    NOERR()
-    ind = strcmp(str2, "keep it simple");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    NOERRNULL()
+    EXPSTR(str2, "keep it simple")
 
 /*--------------------------------------------------*/
 
@@ -243,13 +188,8 @@ int test_vsnprintf_s (void)
     strcpy(str1, "56789");
 
     rc = vtprintf_s(str2, 10, "%s", str1);
-    NOERR()
-    ind = strcmp(str2, "56789");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    NOERRNULL()
+    EXPSTR(str2, "56789")
 
 /*--------------------------------------------------*/
 

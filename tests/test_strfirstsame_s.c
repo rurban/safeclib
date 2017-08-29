@@ -25,12 +25,12 @@ int main()
 
     rc = strfirstsame_s(NULL, LEN, str2, &ind);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
+        debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
         errs++;
     }
@@ -38,12 +38,12 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, NULL, &ind);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
+        debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
         errs++;
     }
@@ -51,7 +51,7 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, str2, NULL);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
@@ -59,12 +59,12 @@ int main()
 
     rc = strfirstsame_s(str1, 0, str2, &ind);
     if (rc != ESZEROL) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
+        debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
         errs++;
     }
@@ -72,12 +72,12 @@ int main()
 
     rc = strfirstsame_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     if (rc != ESLEMAX) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
+        debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
         errs++;
     }
@@ -88,12 +88,12 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error  ind=%d rc=%d \n",
+        debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
         errs++;
     }
@@ -104,12 +104,12 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -120,12 +120,12 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 1) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -136,12 +136,12 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 4) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -152,12 +152,12 @@ int main()
 
     rc = strfirstsame_s(str1, 13, str2, &ind);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -168,12 +168,12 @@ int main()
 
     rc = strfirstsame_s(str1, 14, str2, &ind);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (ind != 13) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -184,12 +184,12 @@ int main()
     /* same string for src and dest */
     rc = strfirstsame_s(str1, LEN, str1, &ind);
     if (rc != EOK) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -200,12 +200,12 @@ int main()
 
     rc = strfirstsame_s(str1, 1, str2, &ind);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -216,12 +216,12 @@ int main()
 
     rc = strfirstsame_s(str1, 5, str2, &ind);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
@@ -232,12 +232,12 @@ int main()
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }
     if (ind != 0) {
-        printf("%s %u  Error ind=%d  rc=%d \n",
+        debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
         errs++;
     }

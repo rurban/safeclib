@@ -25,7 +25,7 @@ int main()
     max_len = 3;
     len = strnterminate_s(NULL, max_len);
     if (len != 0) {
-        printf("%s %u   Len=%u \n",
+        debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
@@ -35,7 +35,7 @@ int main()
     max_len = 0;
     len = strnterminate_s(dest, max_len);
     if (len != 0) {
-        printf("%s %u   Len=%u \n",
+        debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
@@ -45,7 +45,7 @@ int main()
     max_len = RSIZE_MAX_STR+1;
     len = strnterminate_s(dest, max_len);
     if (len != 0) {
-        printf("%s %u   Len=%u \n",
+        debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
@@ -58,7 +58,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (std_len != len) {
-        printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -68,7 +68,7 @@ int main()
     len = strnterminate_s (dest, 1);
 
     if (len != 0 ) {
-        printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -79,7 +79,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != 1 ) {
-        printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -90,7 +90,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != 1 ) {
-        printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -101,7 +101,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != 2) {
-        printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -112,7 +112,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != 4) {
-        printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -123,7 +123,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != 0) {
-        printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -134,7 +134,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != max_len-1) {
-        printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -145,7 +145,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != max_len-1) {
-        printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -156,7 +156,7 @@ int main()
     len = strnterminate_s (dest, max_len);
 
     if (len != strlen(dest)) {
-        printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -166,11 +166,12 @@ int main()
     len = 21;
 
     while (len) {
-      printf(" strnterminate_s()  len=%u \n", (unsigned)len);
+        debug_printf(" strnterminate_s()  len=%u \n", (unsigned)len);
         len = strnterminate_s (dest, len);
         if (len != strlen(dest)) {
-            printf("%s %u   len=%u  \n",
+            debug_printf("%s %u   len=%u  \n",
                      __FUNCTION__, __LINE__, (unsigned)len);
+            errs++;
         }
     }
 

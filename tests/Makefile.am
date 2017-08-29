@@ -1,8 +1,10 @@
 # Makefile.am - Process with automake to produce Makefile.in
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+# 2017, Reini Urban
 #
 # Copyright (c) 2012 Cisco Systems
+# Copyright (c) 2017 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -163,4 +165,4 @@ t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
 
-CLEANFILES  = *~
+CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs

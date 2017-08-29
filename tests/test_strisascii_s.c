@@ -24,7 +24,7 @@ int main()
     len = 5;
     rc = strisascii_s(NULL, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -33,7 +33,7 @@ int main()
     len = 0;
     rc = strisascii_s("test", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -42,7 +42,7 @@ int main()
     len = 99999;
     rc = strisascii_s("test", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -51,7 +51,7 @@ int main()
     /* empty string */
     rc = strisascii_s("", 2);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -61,7 +61,7 @@ int main()
 
     rc = strisascii_s(str, 2);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -72,7 +72,7 @@ int main()
 
     rc = strisascii_s(str, 1);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -83,7 +83,7 @@ int main()
 
     rc = strisascii_s(str, 2);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -94,7 +94,7 @@ int main()
 
     rc = strisascii_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -104,7 +104,7 @@ int main()
 
     rc = strisascii_s(str, 33);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -117,7 +117,7 @@ int main()
     /* special char embedded */
     rc = strisascii_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

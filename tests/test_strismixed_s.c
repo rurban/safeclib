@@ -23,7 +23,7 @@ int main()
     len = 5;
     rc = strismixedcase_s(NULL, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -32,7 +32,7 @@ int main()
     len = 0;
     rc = strismixedcase_s("test", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -41,7 +41,7 @@ int main()
     len = RSIZE_MAX_STR+1;
     rc = strismixedcase_s("test", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -50,7 +50,7 @@ int main()
     len = 9;
     rc = strismixedcase_s("", len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -61,7 +61,7 @@ int main()
 
     rc = strismixedcase_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -72,7 +72,7 @@ int main()
 
     rc = strismixedcase_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -83,7 +83,7 @@ int main()
 
     rc = strismixedcase_s(str, len);
     if (rc != true) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -94,7 +94,7 @@ int main()
 
     rc = strismixedcase_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }
@@ -105,7 +105,7 @@ int main()
 
     rc = strismixedcase_s(str, len);
     if (rc != false) {
-        printf("%s %u   Error rc=%u \n",
+        debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;
     }

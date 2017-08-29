@@ -24,12 +24,12 @@ int main()
 
     rc = strlastchar_s(NULL, LEN, 'a', &last);
     if (rc != ESNULLP) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
     if (last) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -37,7 +37,7 @@ int main()
 
     rc = strlastchar_s(str1, LEN, 'a', NULL);
     if (rc != ESNULLP) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -45,12 +45,12 @@ int main()
 
     rc = strlastchar_s(str1, 0, 'a', &last);
     if (rc != ESZEROL) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
     if (last) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -58,12 +58,12 @@ int main()
 
     rc = strlastchar_s(str1, RSIZE_MAX_STR+1, 'a', &last);
     if (rc != ESLEMAX) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
     if (last) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -73,12 +73,12 @@ int main()
 
     rc = strlastchar_s(str1, LEN, 'a', &last);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
     if (last) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -88,12 +88,12 @@ int main()
 
     rc = strlastchar_s(str1, 5, 'z', &last);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
     if (last) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -103,12 +103,12 @@ int main()
 
     rc = strlastchar_s(str1, LEN, 'z', &last);
     if (rc != EOK) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
     if (last != &str1[15]) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -118,12 +118,12 @@ int main()
 
     rc = strlastchar_s(str1, LEN, 'K', &last);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (last != &str1[0]) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -133,12 +133,12 @@ int main()
 
     rc = strlastchar_s(str1, LEN, 'E', &last);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (last != &str1[2]) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }
@@ -148,12 +148,12 @@ int main()
 
     rc = strlastchar_s(str1, LEN, 'S', &last);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (last != &str1[8]) {
-        printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
+        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
         errs++;
     }

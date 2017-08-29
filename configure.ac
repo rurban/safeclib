@@ -327,7 +327,7 @@ AC_SUBST(FALLBACK_ERRNO_T)
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
-AC_CHECK_FUNCS([memset strcasecmp strcspn strpbrk strspn strstr])
+AC_CHECK_FUNCS([memset strcasecmp strcasestr strcspn strpbrk strspn strstr])
 
 # Checks for system services
 # ===============================================

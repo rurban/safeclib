@@ -24,137 +24,80 @@ int main()
     char   str2[LEN];
     int errs = 0;
 
-
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(NULL, LEN, str2, LEN, &sub);
-    if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, NULL, LEN, &sub);
-    if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, LEN, NULL);
-    if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, 0, str2, LEN, &sub);
-    if (rc != ESZEROL) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
-    if (rc != ESLEMAX) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, 0, &sub);
-    if (rc != ESZEROL) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
-    if (rc != ESLEMAX) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     *str1 = '\0';
     *str2 = '\0';
 
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != str1) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, str1)
+
     /* compare to legacy (not counting as error) */
+#ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
-        printf("%s %u  Error rc=%u \n",
+        debug_printf("%s %u  Legacy difference rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
+#endif
+
 /*--------------------------------------------------*/
 
     *str1 = '\0';
     strcpy(str1, "key");
 
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != str1) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, str1)
+
     /* compare to legacy */
+#ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
-    if (sub != std_sub) {
-        printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-    }
+    PTREQ(sub, std_sub)
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -162,22 +105,14 @@ int main()
 
     /* str2 being empty, must return str1 */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != str1) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, str1)
     /* compare to legacy */
+#ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
-    if (sub != std_sub) {
-        printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-    }
+    PTREQ(sub, std_sub)
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -185,16 +120,9 @@ int main()
 
     /* substring at beginning */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[0]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[0])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -202,16 +130,9 @@ int main()
 
     /* substring in the middle */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[1]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[1])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -219,16 +140,9 @@ int main()
 
     /* substring in the middle */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[15]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[15])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -239,22 +153,14 @@ int main()
 
     /* substring at the end */
     rc = strcasestr_s(str1, len1, str2, len2, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[18]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[18])
     /* compare to legacy */
+#ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
-    if (sub != std_sub) {
-        printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-    }
+    PTREQ(sub, std_sub)
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -265,86 +171,50 @@ int main()
 
     /* substring at the end */
     rc = strcasestr_s(str1, len1, str2, 2, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[18]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[18])
     /* compare to legacy */
+#ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
-    if (sub != std_sub) {
-        printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-    }
+    PTREQ(sub, std_sub)
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strcasestr_s(str1, 3, str2, LEN, &sub);
-    if (rc != ESNOTFND) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != NULL) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNOTFND)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strcasestr_s(str1, LEN, str2, 1, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[5]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[5])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strcasestr_s(str1, LEN, str2, 2, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[5]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[5])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strcasestr_s(str1, LEN, str2, 5, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[5]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[5])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -352,32 +222,18 @@ int main()
 
     len1 = strlen(str1);
     rc = strcasestr_s(str1, len1, str2, LEN, &sub);
-    if (rc != ESNOTFND) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != NULL) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNOTFND)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "IT ALL");
 
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[5]) {
-        printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[5])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -385,22 +241,18 @@ int main()
 
     /* validate */
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-    if (sub != &str1[1]) {
-        printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
+    PTREQ(sub, &str1[1])
+
     /* compare to legacy */
+#ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
-        printf("%s %u  Error rc=%u \n",
+        debug_printf("%s %u  Legacy difference rc=%u \n",
                      __FUNCTION__, __LINE__, rc);
     }
+#endif
+
 /*--------------------------------------------------*/
 
     return (errs);

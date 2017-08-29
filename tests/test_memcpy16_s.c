@@ -83,7 +83,7 @@ int main()
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
@@ -103,7 +103,7 @@ int main()
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
@@ -124,7 +124,7 @@ int main()
     /* verify mem1 was zeroed */
     for (i=0; i<LEN/2; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
@@ -144,7 +144,7 @@ int main()
     /* verify mem1 was zeroed */
     for (i=0; i<LEN; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
@@ -164,7 +164,7 @@ int main()
     /* verify mem1 was zeroed */
     for (i=0; i<LEN; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
@@ -197,7 +197,7 @@ int main()
     /* verify mem1 was zeroed */
     for (i=0; i<100; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  \n",
+            debug_printf("%d - %d m1=%d  \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
@@ -218,7 +218,7 @@ int main()
     /* verify mem1 was zeroed */
     for (i=10; i<100; i++) {
         if (mem1[i] != 0) {
-            printf("%d - %d m1=%d  \n",
+            debug_printf("%d - %d m1=%d  \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
@@ -237,7 +237,7 @@ int main()
     }
     for (i=10; i<LEN/2; i++) {
         if (mem1[i] != 44) {
-            printf("%d - %d m1=%d  m2=%d  \n",
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
                  __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }

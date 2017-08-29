@@ -25,7 +25,7 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, LEN, NULL);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
@@ -33,12 +33,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(NULL, LEN, str2, LEN, &first);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -46,12 +46,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, NULL, LEN, &first);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -59,7 +59,7 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, LEN, NULL);
     if (rc != ESNULLP) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
@@ -67,12 +67,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, 0, str2, LEN, &first);
     if (rc != ESZEROL) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -80,12 +80,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, RSIZE_MAX_STR+1, str2, LEN, &first);
     if (rc != ESLEMAX) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -93,12 +93,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &first);
     if (rc != ESLEMAX) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -110,18 +110,18 @@ int test_strpbrk_s (void)
     /* not to be found */
     rc = strpbrk_s(str1, LEN, str2, LEN, &first);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
     if (first) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -132,13 +132,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, 2, str2, LEN, &first);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -149,13 +149,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, 2, str2, LEN, &first);
     if (rc != EOK) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -166,13 +166,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, LEN, &first);
     if (rc != EOK) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -183,12 +183,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, 2, &first);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first != 0) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -199,12 +199,12 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, 1, &first);
     if (rc != ESNOTFND) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     if (first != 0) {
-        printf("%s %u  Error  first=%p  rc=%d \n",
+        debug_printf("%s %u  Error  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
@@ -215,13 +215,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, 1, &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -232,13 +232,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, 2, &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -249,13 +249,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, LEN, &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }
@@ -266,13 +266,13 @@ int test_strpbrk_s (void)
 
     rc = strpbrk_s(str1, LEN, str2, LEN, &first);
     if (rc != EOK) {
-        printf("%s %u  Error rc=%d \n",
+        debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
     std_first = strpbrk(str1, str2);
     if (first != std_first) {
-        printf("%s %u  first=%p  std_first=%p  rc=%d \n",
+        debug_printf("%s %u  first=%p  std_first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  first, std_first, rc);
         errs++;
     }

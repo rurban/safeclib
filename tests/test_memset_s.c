@@ -66,7 +66,7 @@ int test_memset_s (void)
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
-            printf("%d - %d m1=%d \n",
+            debug_printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
@@ -87,7 +87,7 @@ int test_memset_s (void)
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
-            printf("%d - %d m1=%d \n",
+            debug_printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
@@ -108,7 +108,7 @@ int test_memset_s (void)
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
-            printf("%d - %d m1=%d \n",
+            debug_printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
@@ -129,7 +129,7 @@ int test_memset_s (void)
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
-            printf("%d - %d m1=%d \n",
+            debug_printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
@@ -150,7 +150,7 @@ int test_memset_s (void)
     }
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
-            printf("%d - %d m1=%d \n",
+            debug_printf("%d - %d m1=%d \n",
                  __LINE__, i, mem1[i]);
             errs++;
         }
