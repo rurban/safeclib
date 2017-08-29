@@ -1,6 +1,17 @@
 
                 ChangeLog file for safeclib
 
+Changes in v30082017 2.1.1
+        - Added vsprintf_s, vsnprintf_s. They are C11.
+        - Fixed travis smoking with different compilers.
+        - Fixed test with wrong -fsanitize=address strcmp() results.
+          asan returns just sgn(strcmp()), not the position.
+        - Macrofied some tests, use probed stdlib defines for fallbacks,
+          and add missing headers.
+        - Added empty stubs for all missing safe C11 functions
+        - Fixed C++ support for sprintf* and bool. Resolve restrict from
+        config.h before the header declarations.
+
 Changes in v25082017 2.1.0
         - Fixed many tests. They were not enabled at all. See #10.
         sprintf_s, snprintf_s, memcpy16_s, memcpy32_s,
