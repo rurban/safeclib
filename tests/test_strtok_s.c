@@ -10,7 +10,6 @@
 
 #define LEN   ( 128 )
 
-
 int main()
 {
     errno_t rc = 0;
@@ -21,7 +20,6 @@ int main()
     char   str1[LEN];
     char   str2[LEN];
     int errs = 0;
-
 
 /*--------------------------------------------------*/
     debug_printf("test: %u \n", __LINE__);

@@ -23,38 +23,22 @@ int main()
 /*--------------------------------------------------*/
 
     rc = memzero16_s(NULL, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = memzero16_s(mem1, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     rc = memzero16_s(mem1, RSIZE_MAX_MEM16+1);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
 
     len = 1;
     rc = memzero16_s(mem1, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     /* verify mem1 was zeroed */
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
@@ -70,11 +54,7 @@ int main()
 
     len = 2;
     rc = memzero16_s(mem1, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     /* verify mem1 was zeroed */
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
@@ -90,11 +70,7 @@ int main()
 
     len = 3;
     rc = memzero16_s(mem1, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     /* verify mem1 was zeroed */
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {
@@ -110,11 +86,7 @@ int main()
 
     len = LEN;
     rc = memzero16_s(mem1, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     /* verify mem1 was zeroed */
     for (i=0; i<len; i++) {
         if (mem1[i] != 0) {

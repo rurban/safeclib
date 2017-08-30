@@ -10,7 +10,6 @@
 
 #define LEN   ( 1024 )
 
-
 int main()
 {
     errno_t rc;
@@ -24,51 +23,27 @@ int main()
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(NULL, LEN, mem2, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(mem1, 0, mem2, LEN);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(mem1, RSIZE_MAX_MEM16+1, mem2, LEN);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(mem1, LEN, NULL, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(mem1, 10, mem2, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(mem1, LEN, mem2, RSIZE_MAX_MEM16+1);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
@@ -76,11 +51,7 @@ int main()
 
     len = 1;
     rc = memcpy16_s(mem1, len, mem2, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
             debug_printf("%d - %d m1=%d  m2=%d  \n",
@@ -96,11 +67,7 @@ int main()
 
     len = 2;
     rc = memcpy16_s(mem1, len, mem2, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != mem2[i]) {
             debug_printf("%d - %d m1=%d  m2=%d  \n",
@@ -116,11 +83,7 @@ int main()
 
     /* slen greater than dmax */
     rc = memcpy16_s(mem1, LEN/2, mem2, LEN);
-    if (rc != ESNOSPC) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESNOSPC)
     /* verify mem1 was zeroed */
     for (i=0; i<LEN/2; i++) {
         if (mem1[i] != 0) {
@@ -136,11 +99,7 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy16_s(mem1, LEN, mem2, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESZEROL)
     /* verify mem1 was zeroed */
     for (i=0; i<LEN; i++) {
         if (mem1[i] != 0) {
@@ -156,11 +115,7 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy16_s(mem1, LEN, mem2, RSIZE_MAX_MEM16+1);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
     /* verify mem1 was zeroed */
     for (i=0; i<LEN; i++) {
         if (mem1[i] != 0) {
@@ -177,11 +132,7 @@ int main()
 
     /* same ptr - no move */
     rc = memcpy16_s(mem1, LEN, mem1, LEN);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(EOK)
 /*--------------------------------------------------*/
 
     for (i=0; i<100; i++) { mem1[i] = 25; }
@@ -189,11 +140,7 @@ int main()
 
     /* overlap */
     rc = memcpy16_s(&mem1[0], 100, &mem1[10], 100);
-    if (rc != ESOVRLP) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESOVRLP)
     /* verify mem1 was zeroed */
     for (i=0; i<100; i++) {
         if (mem1[i] != 0) {
@@ -210,11 +157,7 @@ int main()
 
     /* overlap error */
     rc = memcpy16_s(&mem1[10], 100, &mem1[0], 100);
-    if (rc != ESOVRLP) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(ESOVRLP)
     /* verify mem1 was zeroed */
     for (i=10; i<100; i++) {
         if (mem1[i] != 0) {
@@ -230,11 +173,7 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy16_s(mem1, LEN, mem2, LEN/2);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=10; i<LEN/2; i++) {
         if (mem1[i] != 44) {
             debug_printf("%d - %d m1=%d  m2=%d  \n",

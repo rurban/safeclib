@@ -42,7 +42,6 @@
 #endif
 #endif
 
-
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 

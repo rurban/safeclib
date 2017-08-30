@@ -22,49 +22,28 @@ int main()
     char   str2[LEN];
     int errs = 0;
 
-
 /*--------------------------------------------------*/
 
     rc = strcmpfld_s(NULL, LEN, str2, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     len = 5;
     rc = strcmpfld_s(str1, len, NULL, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     len = 5;
     rc = strcmpfld_s(str1, len, str2, NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = strcmpfld_s(str1, 0, str2, &ind);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     rc = strcmpfld_s(str1, (RSIZE_MAX_STR+1), str2, &ind);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
@@ -73,11 +52,7 @@ int main()
 
     len = 1;
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -93,11 +68,7 @@ int main()
 
     len = 2;
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -113,11 +84,7 @@ int main()
 
     len = 3;
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -133,11 +100,7 @@ int main()
 
     len = strlen(str1);
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -157,11 +120,7 @@ int main()
 
     len = strlen(str1);
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -182,11 +141,7 @@ int main()
     str2[15] = '\0';
 
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -205,11 +160,7 @@ int main()
     str2[3] = '\0';
 
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",
@@ -230,11 +181,7 @@ int main()
     str2[20] = '\0';
 
     rc = strcmpfld_s(str1, len, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  ind=%d  rc=%u \n",

@@ -10,7 +10,6 @@
 
 #define LEN   ( 128 )
 
-
 int main()
 {
     errno_t rc;
@@ -22,36 +21,20 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strzero_s(NULL, 5);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = strzero_s(str1, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     rc = strzero_s(str1, RSIZE_MAX_STR+1);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     max_len = 1;
     rc = strzero_s(str1, max_len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<max_len; i++) {
        if (str1[i] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
@@ -64,11 +47,7 @@ int main()
 
     max_len = 2;
     rc = strzero_s(str1, max_len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<max_len; i++) {
        if (str1[i] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
@@ -81,11 +60,7 @@ int main()
 
     max_len = 3;
     rc = strzero_s(str1, max_len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<max_len; i++) {
        if (str1[i] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
@@ -98,11 +73,7 @@ int main()
 
     max_len = LEN;
     rc = strzero_s(str1, max_len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<max_len; i++) {
        if (str1[i] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
@@ -117,11 +88,7 @@ int main()
     max_len = strlen("Now is the ");
 
     rc = strzero_s(str1, max_len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     if (strcmp(&str1[max_len], "time for all data to be zeroed") ) {
         debug_printf("%s %u ERROR  --%s-- \n",
                __FUNCTION__, __LINE__,
@@ -129,7 +96,6 @@ int main()
         errs++;
     }
 /*--------------------------------------------------*/
-
 
     return (errs);
 }

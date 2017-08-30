@@ -24,11 +24,7 @@ int test_strspn_s (void)
 /*--------------------------------------------------*/
 
     rc = strspn_s(NULL, LEN, str2, LEN, &count);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
     if (count != 0) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -37,11 +33,7 @@ int test_strspn_s (void)
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, LEN, NULL, LEN, &count);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
     if (count != 0) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -50,19 +42,11 @@ int test_strspn_s (void)
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, LEN, str2, LEN, NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, 0, str2, LEN, &count);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
     if (count != 0) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -71,11 +55,7 @@ int test_strspn_s (void)
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, LEN, str2, 0, &count);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
     if (count != 0) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -84,11 +64,7 @@ int test_strspn_s (void)
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, RSIZE_MAX_STR+1, str2, LEN, &count);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
     if (count != 0) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -97,11 +73,7 @@ int test_strspn_s (void)
 /*--------------------------------------------------*/
 
     rc = strspn_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &count);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
     if (count != 0) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -113,11 +85,7 @@ int test_strspn_s (void)
     str2[0] = '\0';
 
     rc = strspn_s(str1, LEN, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (count != 0) {
         debug_printf("%s %u  Error  count=%d rc=%d \n",
                __FUNCTION__, __LINE__, (int)count, rc);
@@ -129,11 +97,7 @@ int test_strspn_s (void)
     strcpy (str2, "keep");
 
     rc = strspn_s(str1, 1, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (count != 1) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -145,11 +109,7 @@ int test_strspn_s (void)
     strcpy (str2, "keep");
 
     rc = strspn_s(str1, 2, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (count != 2) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -161,11 +121,7 @@ int test_strspn_s (void)
     strcpy (str2, "keep");
 
     rc = strspn_s(str1, 3, str2, 12, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (count != 3) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
@@ -177,11 +133,7 @@ int test_strspn_s (void)
     strcpy (str2, "k");
 
     rc = strspn_s(str1, LEN, str2, 1, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     std_count = strspn(str1, str2);
     if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
@@ -194,11 +146,7 @@ int test_strspn_s (void)
     strcpy (str2, "ke");
 
     rc = strspn_s(str1, LEN, str2, 2, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     std_count = strspn(str1, str2);
     if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
@@ -212,11 +160,7 @@ int test_strspn_s (void)
     strcpy (str2, "keep");
 
     rc = strspn_s(str1, LEN, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     std_count = strspn(str1, str2);
     if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
@@ -229,11 +173,7 @@ int test_strspn_s (void)
     strcpy (str2, "keep");
 
     rc = strspn_s(str1, LEN, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     std_count = strspn(str1, str2);
     if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
@@ -246,11 +186,7 @@ int test_strspn_s (void)
     strcpy (str2, "notincluded");
 
     rc = strspn_s(str1, LEN, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     std_count = strspn(str1, str2);
     if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
@@ -263,11 +199,7 @@ int test_strspn_s (void)
     strcpy (str2, "1234567890");
 
     rc = strspn_s(str1, LEN, str2, LEN, &count);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     std_count = strspn(str1, str2);
     if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",

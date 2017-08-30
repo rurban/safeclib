@@ -25,11 +25,7 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strcpyfld_s(NULL, LEN, str2, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -37,11 +33,7 @@ int main()
     len = 5;
     slen = 5;
     rc = strcpyfld_s(str1, len, NULL, slen);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
     for (i=0; i<len; i++) {
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
@@ -55,41 +47,25 @@ int main()
     len = 5;
     slen = 5;
     rc = strcpyfld_s(str1, 0, str2, slen);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     len = 5;
     slen = 5;
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     len = 5;
     slen = 0;
     rc = strcpyfld_s(str1, len, str2, slen);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     len = 5;
     slen = len+1;
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
@@ -101,11 +77,7 @@ int main()
     str2[0] = '\0';
 
     rc = strcpyfld_s(str1, len, str2, slen);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
@@ -124,11 +96,7 @@ int main()
     str2[0] = '\0';
 
     rc = strcpyfld_s(str1, len, str2, slen);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
@@ -147,11 +115,7 @@ int main()
     str2[0] = '\0';
 
     rc = strcpyfld_s(str1, len, str2, slen);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
@@ -170,11 +134,7 @@ int main()
     str2[0] = '\0';
 
     rc = strcpyfld_s(str1, len, str2, slen);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
@@ -195,11 +155,7 @@ int main()
     str2[20] = '\0';
 
     rc = strcpyfld_s(str1, len, str2, slen);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<slen; i++) {
         if (str1[i] != str2[i]) {
             debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",

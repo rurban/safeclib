@@ -27,11 +27,7 @@ int test_strstr_s (void)
 /*--------------------------------------------------*/
 
     rc = strstr_s(NULL, LEN, str2, LEN, &sub);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 
     if (sub) {
         debug_printf("%s %u  Error rc=%d \n",
@@ -41,11 +37,7 @@ int test_strstr_s (void)
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, NULL, LEN, &sub);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
     if (sub) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -54,19 +46,11 @@ int test_strstr_s (void)
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, LEN, NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, 0, str2, LEN, &sub);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
     if (sub) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -75,11 +59,7 @@ int test_strstr_s (void)
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
     if (sub) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -88,11 +68,7 @@ int test_strstr_s (void)
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, 0, &sub);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
     if (sub) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -101,11 +77,7 @@ int test_strstr_s (void)
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
     if (sub) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -117,11 +89,7 @@ int test_strstr_s (void)
     *str2 = '\0';
 
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != str1) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -133,11 +101,7 @@ int test_strstr_s (void)
     *str2 = '\0';
 
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != str1) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -150,11 +114,7 @@ int test_strstr_s (void)
 
     /* substring at beginning */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != &str1[0]) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -167,11 +127,7 @@ int test_strstr_s (void)
 
     /* substring in the middle - left */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != &str1[1]) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -184,11 +140,7 @@ int test_strstr_s (void)
 
     /* substring in the middle - right */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != &str1[15]) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -203,11 +155,7 @@ int test_strstr_s (void)
     len2 = strlen(str2);
 
     rc = strstr_s(str1, len1, str2, len2, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != &str1[17]) {
         debug_printf("%s %u  Error rc=%d  sub=%s \n",
                      __FUNCTION__, __LINE__, rc, sub);
@@ -222,11 +170,7 @@ int test_strstr_s (void)
     len2 = strlen(str2);
 
     rc = strstr_s(str1, len1, str2, len2, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != &str1[18]) {
         debug_printf("%s %u  Error rc=%d  sub=%s \n",
                      __FUNCTION__, __LINE__, rc, sub);
@@ -238,33 +182,21 @@ int test_strstr_s (void)
     strcpy(str2, "it all");
 
     rc = strstr_s(str1, 3, str2, LEN, &sub);
-    if (rc != ESNOTFND) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNOTFND)
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strstr_s(str1, 333, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strstr_s(str1, LEN, str2, 5, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -273,11 +205,7 @@ int test_strstr_s (void)
     len1 = strlen(str1);
 
     rc = strstr_s(str1, len1, str2, LEN, &sub);
-    if (rc != ESNOTFND) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNOTFND)
     if (sub != NULL) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__, rc);
@@ -289,22 +217,14 @@ int test_strstr_s (void)
     strcpy(str2, "it all");
 
     rc = strstr_s(str1, LEN, str2, 2, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "eep");
 
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (sub != &str1[1]) {
         debug_printf("%s %u  Error rc=%u \n",
                      __FUNCTION__, __LINE__, rc);

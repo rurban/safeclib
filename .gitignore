@@ -41,8 +41,8 @@ Makefile.in
 #
 # Top-level generic files
 #
-/tags
-/TAGS
+tags
+TAGS
 /linux
 /vmlinux
 /vmlinuz

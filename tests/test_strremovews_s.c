@@ -10,7 +10,6 @@
 
 #define LEN   ( 128 )
 
-
 int main()
 {
     errno_t rc;
@@ -24,40 +23,24 @@ int main()
 
     len = 5;
     rc = strremovews_s(NULL, len);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     len = 0;
     rc = strremovews_s("test", len);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     len = 99999;
     rc = strremovews_s("test", len);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     strzero_s(str, LEN);
     strcpy (str, "ABCDEFGHIJK");
     len = 1;
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     if (str[0] != '\0') {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
@@ -112,11 +95,7 @@ int main()
 
     /* a one char string will be emptied - str[0]=='\0' */
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     if (str[0] != '\0') {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
@@ -129,11 +108,7 @@ int main()
     len = 8;
 
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     if (str[0] != 'A') {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
@@ -146,11 +121,7 @@ int main()
     len = strlen(str);
 
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     if (str[0] != 'B') {
         debug_printf("%s %u   Error -%s- \n",
                      __FUNCTION__, __LINE__,  str);
@@ -163,11 +134,7 @@ int main()
     len = strlen(str);
 
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     ind = strcmp(str, "C");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
@@ -181,11 +148,7 @@ int main()
     len = strlen(str);
 
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     ind = strcmp(str, "NowISTHETimE 1 2");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
@@ -199,11 +162,7 @@ int main()
     len = strlen(str);
 
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     ind = strcmp(str, "q q21ego");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",
@@ -217,11 +176,7 @@ int main()
     len = strlen(str);
 
     rc = strremovews_s(str, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(EOK)
     ind = strcmp(str, "1 2 3 4");
     if (ind != 0) {
         debug_printf("%s %u   Error -%s- \n",

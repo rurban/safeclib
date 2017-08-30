@@ -102,11 +102,7 @@ int main()
     strcpy (str1, "kEEp it simple");
 
     rc = strfirstchar_s(str1, LEN, 'E', &first);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (first != &str1[1]) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
@@ -118,11 +114,7 @@ int main()
     len = strlen(str1);
 
     rc = strfirstchar_s(str1, len, 'Z', &first);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (first != &str1[14]) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);
@@ -133,11 +125,7 @@ int main()
     strcpy (str1, "keep it simpleZZ");
 
     rc = strfirstchar_s(str1, LEN, 'Z', &first);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (first != &str1[14]) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, first, rc);

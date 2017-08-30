@@ -11,7 +11,6 @@
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 
-
 int main()
 {
     errno_t rc;
@@ -117,11 +116,7 @@ int main()
     strcpy (str1, "Keep it simple");
 
     rc = strlastchar_s(str1, LEN, 'K', &last);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (last != &str1[0]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
@@ -132,11 +127,7 @@ int main()
     strcpy (str1, "kEEp it simple");
 
     rc = strlastchar_s(str1, LEN, 'E', &last);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (last != &str1[2]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);
@@ -147,11 +138,7 @@ int main()
     strcpy (str1, "kEep it Simple");
 
     rc = strlastchar_s(str1, LEN, 'S', &last);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (last != &str1[8]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, last, rc);

@@ -9,7 +9,6 @@
 
 #define LEN   ( 128 )
 
-
 int main()
 {
     bool rc;
@@ -22,93 +21,57 @@ int main()
 
     len = 5;
     rc = strisdigit_s(NULL, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 0;
     rc = strisdigit_s("1234", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 99999;
     rc = strisdigit_s("1234", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 9;
     rc = strisdigit_s("", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy(str, "123456789");
     len = 4;
 
     rc = strisdigit_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "1");
     len = strlen(str);
 
     rc = strisdigit_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "12");
     len = strlen(str);
 
     rc = strisdigit_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "1abcd");
     len = strlen(str);
 
     rc = strisdigit_s(str, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy(str, "abcd");
     len = strlen(str);
 
     rc = strisdigit_s(str, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     return (errs);

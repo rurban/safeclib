@@ -59,11 +59,7 @@ int test_memset_s (void)
     value = 34;
 
     rc = memset_s(mem1, LEN, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -80,11 +76,7 @@ int test_memset_s (void)
     value = 34;
 
     rc = memset_s(mem1, LEN, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -101,11 +93,7 @@ int test_memset_s (void)
     value = 34;
 
     rc = memset_s(mem1, LEN, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -122,11 +110,7 @@ int test_memset_s (void)
     value = 34;
 
     rc = memset_s(mem1, LEN, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -143,11 +127,7 @@ int test_memset_s (void)
     value = 34;
 
     rc = memset_s(mem1, LEN, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",

@@ -5,12 +5,10 @@
  *------------------------------------------------------------------
  */
 
-
 #include "test_private.h"
 #include "safe_str_lib.h"
 
 #define LEN   ( 128 )
-
 
 int main()
 {
@@ -24,93 +22,57 @@ int main()
 
     len = 5;
     rc = strisalphanumeric_s(NULL, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 0;
     rc = strisalphanumeric_s("test", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     /* exceeds max */
     len = 99999;
     rc = strisalphanumeric_s("test", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     /* empty string */
     rc = strisalphanumeric_s("", LEN);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy(str, "123456789");
     len = 4;
 
     rc = strisalphanumeric_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "N");
 
     rc = strisalphanumeric_s(str, 1);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "N");
     len = strlen(str);
 
     rc = strisalphanumeric_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "NowISTHETimE4us");
     len = strlen(str);
 
     rc = strisalphanumeric_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "qq21ego");
     len = strlen(str);
 
     rc = strisalphanumeric_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy(str, "1234");
@@ -119,22 +81,14 @@ int main()
 
     /* special char embedded */
     rc = strisalphanumeric_s(str, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy(str, "!@#$%^&*(){}[]:;\"'?/.>,<");
     len = strlen(str);
 
     rc = strisalphanumeric_s(str, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     return (errs);

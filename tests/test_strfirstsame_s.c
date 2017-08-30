@@ -11,7 +11,6 @@
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 
-
 int main()
 {
     errno_t rc;
@@ -24,11 +23,7 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strfirstsame_s(NULL, LEN, str2, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
     if (ind != 0) {
         debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
@@ -37,11 +32,7 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strfirstsame_s(str1, LEN, NULL, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
     if (ind != 0) {
         debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
@@ -50,19 +41,11 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strfirstsame_s(str1, LEN, str2, NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     rc = strfirstsame_s(str1, 0, str2, &ind);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
     if (ind != 0) {
         debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
@@ -71,11 +54,7 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strfirstsame_s(str1, RSIZE_MAX_STR+1, str2, &ind);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESLEMAX)
     if (ind != 0) {
         debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
@@ -87,11 +66,7 @@ int main()
     str2[0] = '\0';
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
-    if (rc != ESNOTFND) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNOTFND)
     if (ind != 0) {
         debug_printf("%s %u  Error  ind=%d rc=%d \n",
                      __FUNCTION__, __LINE__, (int)ind, rc);
@@ -103,11 +78,7 @@ int main()
     strcpy (str2, "keep it simple");
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (ind != 0) {
         debug_printf("%s %u  Error ind=%d  rc=%d \n",
                __FUNCTION__, __LINE__,  (int)ind, rc);
@@ -119,11 +90,7 @@ int main()
     strcpy (str2, "keep it simple");
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (ind != 1) {
         debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
@@ -135,11 +102,7 @@ int main()
     strcpy (str2, "keep it simple");
 
     rc = strfirstsame_s(str1, LEN, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (ind != 4) {
         debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
@@ -151,11 +114,7 @@ int main()
     strcpy (str2, "KEEP_IT_SIMPLe");
 
     rc = strfirstsame_s(str1, 13, str2, &ind);
-    if (rc != ESNOTFND) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNOTFND)
     if (ind != 0) {
         debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);
@@ -167,11 +126,7 @@ int main()
     strcpy (str2, "KEEP_IT_SIMPLe");
 
     rc = strfirstsame_s(str1, 14, str2, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     if (ind != 13) {
         debug_printf("%s %u  Error ind=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)ind, rc);

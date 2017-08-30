@@ -27,21 +27,13 @@ int main()
     value = 34;
 
     rc = memset16_s(NULL, MAX, value, LEN);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESNULLP)
 /*--------------------------------------------------*/
 
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, 0);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(ESZEROL)
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 99; }
@@ -50,11 +42,7 @@ int main()
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -70,11 +58,7 @@ int main()
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -90,11 +74,7 @@ int main()
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -110,11 +90,7 @@ int main()
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",
@@ -130,11 +106,7 @@ int main()
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, len);
-    if (rc != EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    ERR(EOK)
     for (i=0; i<len; i++) {
         if (mem1[i] != value) {
             debug_printf("%d - %d m1=%d \n",

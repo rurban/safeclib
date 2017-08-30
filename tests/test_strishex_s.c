@@ -10,7 +10,6 @@
 
 #define LEN   ( 128 )
 
-
 int main()
 {
     bool rc;
@@ -22,102 +21,62 @@ int main()
 
     len = 5;
     rc = strishex_s(NULL, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     str[0] = '\0';
     rc = strishex_s(str, 5);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 0;
     rc = strishex_s("1234", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 99999;
     rc = strishex_s("1234", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     len = 9;
     rc = strishex_s("", len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy (str, "123456789");
     len = 6;
 
     rc = strishex_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy (str, "1");
     len = strlen(str);
 
     rc = strishex_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy (str, "12");
     len = strlen(str);
 
     rc = strishex_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy (str, "1Af");
     len = strlen(str);
 
     rc = strishex_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy (str, "FF");
     len = strlen(str);
 
     rc = strishex_s(str, len);
-    if (rc != true) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(true)
 /*--------------------------------------------------*/
 
     strcpy (str, "1abzd");
@@ -125,11 +84,7 @@ int main()
 
     /* non hex char in string */
     rc = strishex_s(str, len);
-    if (rc != false) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(false)
 /*--------------------------------------------------*/
 
     return (errs);
