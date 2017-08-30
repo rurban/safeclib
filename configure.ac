@@ -44,7 +44,7 @@ AC_INIT([Safe C Library],
 # ===============================================
 
 # unique source file --- primitive safety check
-AC_CONFIG_SRCDIR([src/safeclib/memcmp_s.c])
+AC_CONFIG_SRCDIR([src/abort_handler_s.c])
 
 # extra autoconf macros are kept here
 AC_CONFIG_MACRO_DIR([m4])

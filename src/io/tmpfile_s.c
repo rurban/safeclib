@@ -37,8 +37,10 @@
  *         Returns the streamptr on success..
  */
 
+#if 0
 errno_t tmpfile_s(FILE * restrict * restrict streamptr)
 {
     return RCNEGATE(EOK);
 }
 EXPORT_SYMBOL(tmpfile_s)
+#endif

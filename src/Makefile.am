@@ -29,86 +29,146 @@
 #
 
 MEM_PRIM_FILES = \
-	safeclib/mem_primitives_lib.h  \
-	safeclib/mem_primitives_lib.c
+	mem/mem_primitives_lib.h  \
+	mem/mem_primitives_lib.c
 
 CORE_FILES = \
-	safeclib/safeclib_private.h    \
-	safeclib/abort_handler_s.c     \
-	safeclib/ignore_handler_s.c
+	safeclib_private.h    \
+	abort_handler_s.c     \
+	ignore_handler_s.c
 
 STD_MEM_FILES = \
-	safeclib/safe_mem_constraint.h \
-	safeclib/safe_mem_constraint.c \
-	safeclib/memset_s.c            \
-	safeclib/memcpy_s.c            \
-	safeclib/memmove_s.c
+	mem/safe_mem_constraint.h \
+	mem/safe_mem_constraint.c \
+	mem/memset_s.c            \
+	mem/memcpy_s.c            \
+	mem/memmove_s.c
 
 EXT_MEM_FILES = \
-	safeclib/memset16_s.c          \
-	safeclib/memset32_s.c          \
-	safeclib/memcpy16_s.c          \
-	safeclib/memcpy32_s.c          \
-	safeclib/memmove16_s.c         \
-	safeclib/memmove32_s.c         \
-	safeclib/memcmp_s.c            \
-	safeclib/memcmp16_s.c          \
-	safeclib/memcmp32_s.c          \
-	safeclib/memzero_s.c           \
-	safeclib/memzero16_s.c         \
-	safeclib/memzero32_s.c
+	extmem/memset16_s.c          \
+	extmem/memset32_s.c          \
+	extmem/memcpy16_s.c          \
+	extmem/memcpy32_s.c          \
+	extmem/memmove16_s.c         \
+	extmem/memmove32_s.c         \
+	extmem/memcmp_s.c            \
+	extmem/memcmp16_s.c          \
+	extmem/memcmp32_s.c          \
+	extmem/memzero_s.c           \
+	extmem/memzero16_s.c         \
+	extmem/memzero32_s.c
 
 STD_STR_FILES = \
-	safeclib/safe_str_constraint.h \
-	safeclib/safe_str_constraint.c \
-	safeclib/strnlen_s.c           \
-	safeclib/strcat_s.c            \
-	safeclib/strncat_s.c           \
-	safeclib/strcpy_s.c            \
-	safeclib/strncpy_s.c           \
-	safeclib/strtok_s.c            \
-	safeclib/sprintf_s.c 	       \
-	safeclib/snprintf_s.c 	       \
-	safeclib/vsprintf_s.c 	       \
-	safeclib/vsnprintf_s.c
+	str/safe_str_constraint.h \
+	str/safe_str_constraint.c \
+	str/snprintf_s.c 	       \
+	str/sprintf_s.c 	       \
+	str/strcat_s.c            \
+	str/strcpy_s.c            \
+	str/strncat_s.c           \
+	str/strncpy_s.c           \
+	str/strnlen_s.c           \
+	str/strtok_s.c            \
+	str/vsnprintf_s.c         \
+	str/vsprintf_s.c 	       
 
 EXT_STR_FILES = \
-	safeclib/strcmp_s.c            \
-	safeclib/strcmpfld_s.c         \
-	safeclib/strspn_s.c            \
-	safeclib/strcspn_s.c           \
-	safeclib/strstr_s.c            \
-	safeclib/strpbrk_s.c           \
-	safeclib/strnterminate_s.c     \
-	safeclib/strprefix_s.c         \
-	safeclib/strremovews_s.c       \
-	safeclib/strcasecmp_s.c        \
-	safeclib/strcasestr_s.c        \
-	safeclib/strzero_s.c           \
-	safeclib/strisalphanumeric_s.c \
-	safeclib/strisascii_s.c        \
-	safeclib/strisdigit_s.c        \
-	safeclib/strishex_s.c          \
-	safeclib/strislowercase_s.c    \
-	safeclib/strismixedcase_s.c    \
-	safeclib/strispassword_s.c     \
-	safeclib/strisuppercase_s.c    \
-	safeclib/strfirstchar_s.c      \
-	safeclib/strfirstdiff_s.c      \
-	safeclib/strfirstsame_s.c      \
-	safeclib/strcpyfld_s.c         \
-	safeclib/strcpyfldin_s.c       \
-	safeclib/strcpyfldout_s.c      \
-	safeclib/strtolowercase_s.c    \
-	safeclib/strtouppercase_s.c    \
-	safeclib/strlastchar_s.c       \
-	safeclib/strlastdiff_s.c       \
-	safeclib/strlastsame_s.c       \
-	safeclib/strljustify_s.c
+	extstr/strcasecmp_s.c        \
+	extstr/strcasestr_s.c        \
+	extstr/strcmp_s.c            \
+	extstr/strcmpfld_s.c         \
+	extstr/strcpyfld_s.c         \
+	extstr/strcpyfldin_s.c       \
+	extstr/strcpyfldout_s.c      \
+	extstr/strcspn_s.c           \
+	extstr/strfirstchar_s.c      \
+	extstr/strfirstdiff_s.c      \
+	extstr/strfirstsame_s.c      \
+	extstr/strisalphanumeric_s.c \
+	extstr/strisascii_s.c        \
+	extstr/strisdigit_s.c        \
+	extstr/strishex_s.c          \
+	extstr/strislowercase_s.c    \
+	extstr/strismixedcase_s.c    \
+	extstr/strispassword_s.c     \
+	extstr/strisuppercase_s.c    \
+	extstr/strlastchar_s.c       \
+	extstr/strlastdiff_s.c       \
+	extstr/strlastsame_s.c       \
+	extstr/strljustify_s.c       \
+	extstr/strnterminate_s.c     \
+	extstr/strpbrk_s.c           \
+	extstr/strprefix_s.c         \
+	extstr/strremovews_s.c       \
+	extstr/strspn_s.c            \
+	extstr/strstr_s.c            \
+	extstr/strtolowercase_s.c    \
+	extstr/strtouppercase_s.c    \
+	extstr/strzero_s.c           
+
+STD_WCHAR_FILES = \
+	wchar/mbsrtowcs_s.c  	\
+	wchar/mbstowcs_s.c  	\
+	wchar/snwprintf_s.c  	\
+	wchar/swprintf_s.c  	\
+	wchar/swscanf_s.c  	\
+	wchar/vfwprintf_s.c  	\
+	wchar/vfwscanf_s.c  	\
+	wchar/vsnwprintf_s.c  	\
+	wchar/vswprintf_s.c  	\
+	wchar/vswscanf_s.c  	\
+	wchar/vwprintf_s.c  	\
+	wchar/vwscanf_s.c  	\
+	wchar/wcrtomb_s.c  	\
+	wchar/wcscat_s.c  	\
+	wchar/wcscpy_s.c  	\
+	wchar/wcsncat_s.c  	\
+	wchar/wcsncpy_s.c  	\
+	wchar/wcsnlen_s.c  	\
+	wchar/wcsrtombs_s.c  	\
+	wchar/wcstok_s.c  	\
+	wchar/wcstombs_s.c  	\
+	wchar/wmemcpy_s.c  	\
+	wchar/wmemmove_s.c  	\
+	wchar/wscanf_s.c
+
+STD_IO_FILES = \
+	io/fgets_s.c	\
+	io/fopen_s.c	\
+	io/fprintf_s.c	\
+	io/freopen_s.c	\
+	io/fscanf_s.c	\
+	io/fwprintf_s.c	\
+	io/fwscanf_s.c	\
+	io/gets_s.c	\
+	io/printf_s.c	\
+	io/scanf_s.c	\
+	io/sscanf_s.c	\
+	io/tmpfile_s.c	\
+	io/tmpnam_s.c	\
+	io/vfprintf_s.c	\
+	io/vfscanf_s.c	\
+	io/vprintf_s.c	\
+	io/vsscanf_s.c	\
+	io/wprintf_s.c	
+
+STD_MISC_FILES = \
+	misc/bsearch_s.c \
+	misc/qsort_s.c	
+
+STD_OS_FILES = \
+	os/asctime_s.c	\
+	os/ctime_s.c	\
+	os/getenv_s.c	\
+	os/gmtime_s.c	\
+	os/localtime_s.c
+
+STD_STDLIB_FILES = \
+	stdlib/wctomb_s.c	
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
-AM_CFLAGS += -Werror
+AM_CFLAGS += -Werror -pedantic -Imem -Istr
 
 noinst_LTLIBRARIES = \
 	libmemprims.la   \
@@ -126,7 +186,8 @@ libsafeccore_la_SOURCES = $(CORE_FILES)
 
 lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
 libsafec_@SAFEC_API_VERSION@_la_SOURCES      = $(STD_MEM_FILES) $(EXT_MEM_FILES) \
-					       $(STD_STR_FILES) $(EXT_STR_FILES)
+					       $(STD_STR_FILES) $(EXT_STR_FILES) \
+					       $(STD_WCHAR_FILES) 
 libsafec_@SAFEC_API_VERSION@_la_LIBADD       = libmemprims.la libsafeccore.la
 libsafec_@SAFEC_API_VERSION@_la_LDFLAGS      = -version-info $(SAFEC_SO_VERSION) \
 	                                       -no-undefined

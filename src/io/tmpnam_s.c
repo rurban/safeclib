@@ -43,8 +43,10 @@
  *   to the optionally defined macro P_tmpdir).
  */
 
+#if 0
 errno_t tmpnam_s(char *s, rsize_t maxsize)
 {
     return RCNEGATE(EOK);
 }
 EXPORT_SYMBOL(tmpnam_s)
+#endif

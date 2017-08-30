@@ -51,30 +51,30 @@ ccflags-y := -I$(src)/include
 slkm-y     := src/slkm/slkm_init.o
 
 # Internal Routines
-slkm-y     += src/safeclib/mem_primitives_lib.o
-slkm-y     += src/safeclib/safe_mem_constraint.o
-slkm-y     += src/safeclib/safe_str_constraint.o
-slkm-y     += src/safeclib/ignore_handler_s.o
-slkm-y     += src/safeclib/abort_handler_s.o
+slkm-y     += src/mem/mem_primitives_lib.o
+slkm-y     += src/mem/safe_mem_constraint.o
+slkm-y     += src/str/safe_str_constraint.o
+slkm-y     += src/ignore_handler_s.o
+slkm-y     += src/abort_handler_s.o
 
 # Memory Routines
-slkm-y     += src/safeclib/memset_s.o
-slkm-y     += src/safeclib/memcpy_s.o
-slkm-y     += src/safeclib/memmove_s.o
-slkm-y     += src/safeclib/memcmp_s.o
+slkm-y     += src/mem/memset_s.o
+slkm-y     += src/mem/memcpy_s.o
+slkm-y     += src/mem/memmove_s.o
+slkm-y     += src/extmem/memcmp_s.o
 
 # String Routines
-slkm-y     += src/safeclib/strcpy_s.o
-slkm-y     += src/safeclib/strncpy_s.o
-slkm-y     += src/safeclib/strcat_s.o
-slkm-y     += src/safeclib/strncat_s.o
-slkm-y     += src/safeclib/strcmp_s.o
-slkm-y     += src/safeclib/strcasecmp_s.o
-slkm-y     += src/safeclib/strstr_s.o
-slkm-y     += src/safeclib/strnlen_s.o
-slkm-y     += src/safeclib/strpbrk_s.o
-slkm-y     += src/safeclib/strspn_s.o
-slkm-y     += src/safeclib/strcspn_s.o
+slkm-y     += src/str/strcpy_s.o
+slkm-y     += src/str/strncpy_s.o
+slkm-y     += src/str/strcat_s.o
+slkm-y     += src/str/strncat_s.o
+slkm-y     += src/str/strcmp_s.o
+slkm-y     += src/extstr/strcasecmp_s.o
+slkm-y     += src/extstr/strstr_s.o
+slkm-y     += src/str/strnlen_s.o
+slkm-y     += src/extstr/strpbrk_s.o
+slkm-y     += src/extstr/strspn_s.o
+slkm-y     += src/extstr/strcspn_s.o
 
 testslkm-y := tests/test_slkm.o
 testslkm-y += tests/test_memset_s.o
