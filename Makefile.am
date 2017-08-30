@@ -240,7 +240,7 @@ endif
 # Additional make rules
 # ===============================================
 
-.PHONY: docs man perf gh-pages
+.PHONY: docs man perf gh-pages release
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:
@@ -255,3 +255,20 @@ gh-pages: docs
 	mv doc/html/* ./
 	rm -rf doc
 	git add .
+release: docs dist
+	git checkout master
+	autoreconf
+	./configure
+	$(MAKE)
+	$(MAKE) check
+	$(MAKE) docs
+	$(MAKE) dist
+	build-tools/smoke.sh
+	git tag v`date +%d%m%Y`
+	git push
+	git push --tags
+	$(MAKE) gh-pages
+	git commit -m"Update to v`date +%d%m%Y`"
+	git push
+	git checkout master
+	build-tools/autogen.sh
