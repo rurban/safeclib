@@ -72,8 +72,8 @@ SAFEC_BUILT_TESTS += \
 endif
 
 if ENABLE_UNSAFE
-# SAFEC_BUILT_TESTS += \
-#	t_tmpnam_s
+SAFEC_BUILT_TESTS += \
+	t_tmpnam_s
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
 	t_snprintf_s	\
@@ -249,13 +249,13 @@ t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 endif
 
 if ENABLE_UNSAFE
+t_tmpnam_s_SOURCES            = test_tmpnam_s.c $(SAFEC_TEST_COMMON)
 if ENABLE_WCHAR
 t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
 #t_snwprintf_s_SOURCES        = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
 #t_vsnwprintf_s_SOURCES       = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
 endif
-#t_tmpnam_s_SOURCES           = test_tmpnam_s.c $(SAFEC_TEST_COMMON)
 endif
 
 CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs

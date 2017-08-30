@@ -73,10 +73,10 @@ STD_STR_FILES = \
 # but they are in the C11 standard
 STD_UNSAFE_FILES = \
 	str/snprintf_s.c	\
-	str/vsnprintf_s.c       
+	str/vsnprintf_s.c       \
+	io/tmpnam_s.c		
 #	wchar/snwprintf_s.c	\
-#	wchar/vsnwprintf_s.c	\
-#	io/tmpnam_s.c
+#	wchar/vsnwprintf_s.c
 
 EXT_STR_FILES = \
 	extstr/strcasecmp_s.c        \

@@ -64,6 +64,29 @@ extern void ignore_handler_s(const char *restrict msg, void *restrict ptr, errno
 #include "safe_str_lib.h"
 #endif
 
+/* This functions is defined in the C11 standard Annex K, but unsafe
+   and excluded by default. In most libc's it is deprecated. */
+#ifdef SAFECLIB_ENABLE_UNSAFE
+  
+#ifndef TMP_MAX_S
+# ifdef TMP_MAX
+#  define TMP_MAX_S TMP_MAX
+# else
+#  define TMP_MAX_S 308915776
+# endif
+#endif
+#ifndef L_tmpnam_s
+# ifdef L_tmpnam
+#  define L_tmpnam_s L_tmpnam
+# else
+#  define L_tmpnam_s 1024
+# endif
+#endif
+  
+extern errno_t tmpnam_s(char *filename_s, rsize_t maxsize);
+
+#endif
+
 #ifdef __cplusplus
 }
 #endif
