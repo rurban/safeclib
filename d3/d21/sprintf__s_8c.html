@@ -87,7 +87,8 @@ $(document).ready(function(){initNavTree('d3/d21/sprintf__s_8c.html','../../');}
 <div class="title">sprintf_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;safe_str_lib.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;config.h&quot;</code><br />
+<code>#include &quot;safe_str_lib.h&quot;</code><br />
 <code>#include &quot;safe_str_constraint.h&quot;</code><br />
 <code>#include &lt;stdarg.h&gt;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
@@ -96,6 +97,8 @@ $(document).ready(function(){initNavTree('d3/d21/sprintf__s_8c.html','../../');}
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../de/ddc/sprintf__s_8c__incl.png" border="0" usemap="#sprintf__s_8c" alt=""/></div>
+<map name="sprintf__s_8c" id="sprintf__s_8c">
+</map>
 </div>
 </div>
 <p><a href="../../d3/d21/sprintf__s_8c_source.html">Go to the source code of this file.</a></p>
@@ -153,13 +156,26 @@ Functions</h2></td></tr>
 </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dest</td><td>storage location for output buffer. </td></tr>
-    <tr><td class="paramname">dmax</td><td>maximum number of characters to store in buffer. </td></tr>
-    <tr><td class="paramname">fmt</td><td>format-control string. </td></tr>
-    <tr><td class="paramname">...</td><td>optional arguments</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dest</td><td>storage location for output buffer. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dmax</td><td>maximum number of characters to store in buffer. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fmt</td><td>format-control string. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">...</td><td>optional arguments</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section pre"><dt>Precondition</dt><dd>Neither dest nor fmt shall be a null pointer. </dd>
+<dd>
+dmax shall not be greater than RSIZE_MAX_STR. </dd>
+<dd>
+dmax shall not equal zero. </dd>
+<dd>
+dmax shall be greater than strnlen_s(dest, dmax). </dd>
+<dd>
+fmt shall not contain the conversion specifier n </dd>
+<dd>
+None of the arguments corresponding to s is a null pointer </dd>
+<dd>
+No encoding error shall occur.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>On success the total number of characters written is returned. </dd>
 <dd>
 On failure a negative number is returned. </dd>
@@ -175,13 +191,13 @@ If the buffer dest is too small for the formatted text, including the terminatin
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d21/sprintf__s_8c_source.html#l00039">39</a> of file <a class="el" href="../../d3/d21/sprintf__s_8c_source.html">sprintf_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d3/d21/sprintf__s_8c_source.html#l00049">49</a> of file <a class="el" href="../../d3/d21/sprintf__s_8c_source.html">sprintf_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 25082017.0-g82392e 2.1
+Generated for Safe C Library 30082017.0-g85d10b 2.1
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
