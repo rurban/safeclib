@@ -124,7 +124,7 @@ int test_strcspn_s (void)
         errs++;
     }
     std_count = strcspn(str1, str2);
-    if (count != std_count) {
+    if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
         errs++;
@@ -222,7 +222,7 @@ int test_strcspn_s (void)
         errs++;
     }
     std_count = strcspn(str1, str2);
-    if (count != std_count) {
+    if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
         errs++;
@@ -239,7 +239,7 @@ int test_strcspn_s (void)
         errs++;
     }
     std_count = strcspn(str1, str2);
-    if (count != std_count) {
+    if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
         errs++;
@@ -256,7 +256,7 @@ int test_strcspn_s (void)
         errs++;
     }
     std_count = strcspn(str1, str2);
-    if (count != std_count) {
+    if ((int)count != std_count) {
         debug_printf("%s %u  count=%d  std_count=%d  rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc);
         errs++;
