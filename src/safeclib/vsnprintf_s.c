@@ -41,6 +41,8 @@
  *    The vsnprintf_s function composes a string with same test that 
  *    would be printed if format was used on printf. Instead of being 
  *    printed, the content is stored in dest.
+ *    More than dmax - 1 characters might be written, so this variant is unsafe!
+ *    Always use vsprintf_s instead.
  *    Unlike the safe variant vsprintf_s, vsnprintf_s does not
  *    guarantees that the buffer will be null-terminated unless
  *    the buffer size is zero.
@@ -79,7 +81,7 @@
  * @retval  ESNOSPC when return value exceeds dmax
  *
  * @see
- *    sprintf_s(), vsnprintf_s()
+ *    sprintf_s(), vsprintf_s()
  *
  */
 

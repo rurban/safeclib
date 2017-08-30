@@ -47,6 +47,9 @@
  *    dest may be a null pointer, however the return value (number
  *    of bytes that would be written) is still calculated and
  *    returned.
+ *    Unlike the safe variant sprintf_s, snprintf_s does not
+ *    guarantees that the buffer will be null-terminated unless
+ *    the buffer size is zero.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -60,14 +63,17 @@
  *
  * @return Number of characters not including the terminating null
  *         character (which is always written as long as buffer is not
- *         a null pointer and bufsz is not zero and not greater than
- *         RSIZE_MAX_STR), which would have been written to buffer if
- *         bufsz was ignored, or a negative value if a runtime
+ *         a null pointer and dmax is not zero and not greater than
+ *         RSIZE_MAX_STR), which would have been written to dest if
+ *         dmax was ignored, or a negative value if a runtime
  *         constraints violation or an encoding error occurred.
  *
  * @retval  ESNULLP when dest/fmt is NULL pointer
  * @retval  ESZEROL when dmax = 0
  * @retval  ESLEMAX when dmax > RSIZE_MAX_STR
+ *
+ * @see
+ *    sprintf_s(), vsnprintf_s()
  *
  */
 
