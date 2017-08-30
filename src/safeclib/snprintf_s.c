@@ -56,10 +56,18 @@
  *    K.3.5.3.6 The snprintf_s function (p: 594-595)
  *    http://en.cppreference.com/w/c/string/byte/sprintf
  *
- * @param dest  storage location for output buffer.
- * @param dmax  maximum number of characters to store in buffer.
- * @param fmt   format-control string.
- * @param ...   optional arguments
+ * @param[out]  dest  pointer to string that will be written into.
+ * @param[in]   dmax  restricted maximum length of dest
+ * @param[in]   fmt   format-control string.
+ * @param[in]   ...   optional arguments
+ *
+ * @pre Neither dest nor fmt shall be a null pointer.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not equal zero.
+ * @pre dmax shall be greater than strnlen_s(dest, dmax).
+ * @pre fmt  shall not contain the conversion specifier %n.
+ * @pre None of the arguments corresponding to %s is a null pointer.
+ * @pre No encoding error shall occur.
  *
  * @return Number of characters not including the terminating null
  *         character (which is always written as long as buffer is not

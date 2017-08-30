@@ -27,8 +27,8 @@
  * @pre dmax shall not be greater than RSIZE_MAX_STR.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than strnlen_s(dest, dmax).
- * @pre fmt  shall not contain the conversion specifier %n
- * @pre None of the arguments corresponding to %s is a null pointer
+ * @pre fmt  shall not contain the conversion specifier %n.
+ * @pre None of the arguments corresponding to %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @return  On success the total number of characters written is returned. 
