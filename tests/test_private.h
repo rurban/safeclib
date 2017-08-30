@@ -94,7 +94,7 @@
                      __FUNCTION__, __LINE__,  str2, str1);  \
         errs++;                                    \
     }
-#define INDNULL()                                  \
+#define INDZERO()                                  \
     if (ind != 0) {                                \
         printf("%s %u  Error  ind=%d rc=%d \n",    \
                      __FUNCTION__, __LINE__, ind, rc); \

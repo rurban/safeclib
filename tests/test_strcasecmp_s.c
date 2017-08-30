@@ -26,13 +26,13 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(NULL, LEN, str2, &ind);
     ERR(ESNULLP)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
     rc = strcasecmp_s(str1, LEN, NULL, &ind);
     ERR(ESNULLP)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -43,13 +43,13 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, 0, str2, &ind);
     ERR(ESZEROL)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
     rc = strcasecmp_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -58,7 +58,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
     std_ind = strcasecmp(str1, str2);
     if (ind != std_ind) {
@@ -73,7 +73,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, 1, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -82,7 +82,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, 2, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -91,7 +91,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, 4, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -100,7 +100,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
     std_ind = strcasecmp(str1, str2);
     if (ind != std_ind) {
@@ -115,7 +115,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -123,7 +123,7 @@ int test_strcasecmp_s (void)
 
     rc = strcasecmp_s(str1, LEN, str1, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 

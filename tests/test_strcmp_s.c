@@ -60,13 +60,13 @@ int test_strcmp_s (void)
 
     rc = strcmp_s(NULL, LEN, str2, &ind);
     ERR(ESNULLP)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
     rc = strcmp_s(str1, LEN, NULL, &ind);
     ERR(ESNULLP)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -77,13 +77,13 @@ int test_strcmp_s (void)
 
     rc = strcmp_s(str1, 0, str2, &ind);
     ERR(ESZEROL)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
     rc = strcmp_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -92,7 +92,7 @@ int test_strcmp_s (void)
 
     rc = strcmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
     STDCMP()
 
@@ -103,7 +103,7 @@ int test_strcmp_s (void)
 
     rc = strcmp_s(str1, 5, str2, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
 
 /*--------------------------------------------------*/
 
@@ -133,7 +133,7 @@ int test_strcmp_s (void)
 
     rc = strcmp_s(str1, LEN, str1, &ind);
     ERR(EOK)
-    INDNULL()
+    INDZERO()
     /* be sure the results are the same as strcmp. */
     std_ind = strcmp(str1, str1);
     if (ind != std_ind) {
