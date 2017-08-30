@@ -46,6 +46,7 @@
 #else
 
 /* for glibc use the GNU extensions: strcasestr */
+#undef _GNU_SOURCE
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>

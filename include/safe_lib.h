@@ -48,12 +48,12 @@ typedef size_t  rsize_t;
 # define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
 #endif
   
-typedef void (*constraint_handler_t) (const char * restrict /* msg */,
-                                      void * restrict       /* ptr */,
+typedef void (*constraint_handler_t) (const char *restrict /* msg */,
+                                      void *restrict       /* ptr */,
                                       errno_t               /* error */);
 
-extern void abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error);
-extern void ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error);
+extern void abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
+extern void ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 
 #define sl_default_handler ignore_handler_s
 

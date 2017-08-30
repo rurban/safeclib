@@ -57,7 +57,9 @@ typedef int errno_t;
 
 @FALLBACK_ERRNO_T@
 
+#ifndef __cplusplus
 @INSERT_BOOL_SUPPORT@
+#endif
 
 #endif /* __KERNEL__ */
 
