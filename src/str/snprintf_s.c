@@ -58,6 +58,7 @@
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.5.3.6 The snprintf_s function (p: 594-595)
  *    http://en.cppreference.com/w/c/string/byte/sprintf
+ *    * only included in safeclib with \c --enable-unsafe
  *
  * @param[out]  dest  pointer to string that will be written into.
  * @param[in]   dmax  restricted maximum length of \c dest
