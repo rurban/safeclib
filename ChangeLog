@@ -1,6 +1,15 @@
 
                 ChangeLog file for safeclib
 
+Changes in vxx092017 2.1.1
+        - Install bin/check_for_unsafe_apis. Renamed and improved: 7x faster,
+          added missing conversion hints. also install its man1.
+        - Seperated internal libstdunsafe target, for std but unsafe C11
+          functions: snprintf_s, vsnprintf_s, tmpnam_s
+        - Rearranged src layout
+        - Macrofied many more tests
+        - Improved some tests for old gcc -ansi (c89) memcmp
+
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.
         - Fixed travis smoking with different compilers.

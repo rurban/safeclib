@@ -68,6 +68,8 @@ SAFEC_SLKM = \
 	$(top_srcdir)/Kbuild                       \
 	$(top_srcdir)/Makefile.kernel
 
+bin_SCRIPTS = \
+	$(top_srcdir)/scripts/check_for_unsafe_apis
 
 # Additional things to distribute
 EXTRA_DIST = $(SAFEC_INFRA) $(SAFEC_GENHEADERS) $(SAFEC_SLKM)
