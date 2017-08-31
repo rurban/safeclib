@@ -86,25 +86,25 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcpy_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcpy_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
@@ -116,7 +116,7 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
         return RCNEGATE(ESNULLP);
     }
 
-    if (dest == src) {
+    if (unlikely(dest == src)) {
         return RCNEGATE(EOK);
     }
 
@@ -128,7 +128,7 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
         overlap_bumper = src;
 
         while (dmax > 0) {
-            if (dest == overlap_bumper) {
+            if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strcpy_s: "
                              "overlapping objects",
                              ESOVRLP);
@@ -153,7 +153,7 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
         overlap_bumper = dest;
 
         while (dmax > 0) {
-            if (src == overlap_bumper) {
+            if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strcpy_s: "
                       "overlapping objects",
                       ESOVRLP);

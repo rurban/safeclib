@@ -79,25 +79,25 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcpyfld_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcpyfld_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcpyfld_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
@@ -106,7 +106,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         return (ESNULLP);
     }
 
-    if (slen == 0) {
+    if (unlikely(slen == 0)) {
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
@@ -115,7 +115,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         return (ESZEROL);
     }
 
-    if (slen > dmax) {
+    if (unlikely(slen > dmax)) {
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
@@ -134,7 +134,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
         while (slen > 0) {
 
-            if (dest == overlap_bumper) {
+            if (unlikely(dest == overlap_bumper)) {
                 dmax = orig_dmax;
                 dest = orig_dest;
 
@@ -157,7 +157,7 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
         while (slen > 0) {
 
-            if (src == overlap_bumper) {
+            if (unlikely(src == overlap_bumper)) {
                 dmax = orig_dmax;
                 dest = orig_dest;
 

@@ -73,44 +73,44 @@ strspn_s (const char *dest, rsize_t dmax,
     rsize_t smax;
     bool match_found;
 
-    if (count== NULL) {
+    if (unlikely(count == NULL)) {
         invoke_safe_str_constraint_handler("strspn_s: count is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
     *count = 0;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strspn_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strspn_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (dmax == 0 ) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strspn_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strspn_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    if (slen == 0 ) {
+    if (unlikely(slen == 0 )) {
         invoke_safe_str_constraint_handler("strspn_s: slen is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (slen > RSIZE_MAX_STR) {
+    if (unlikely(slen > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strspn_s: slen exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);

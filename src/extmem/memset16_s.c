@@ -75,32 +75,32 @@ memset16_s(uint16_t *dest, rsize_t smax, uint16_t value, rsize_t n)
 {
     errno_t err = EOK;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memset16_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (n == 0) {
+    if (unlikely(n == 0)) {
         invoke_safe_mem_constraint_handler("memset16_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (smax > RSIZE_MAX_MEM) {
+    if (unlikely(smax > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memset16_s: smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (n > RSIZE_MAX_MEM16) {
+    if (unlikely(n > RSIZE_MAX_MEM16)) {
         invoke_safe_mem_constraint_handler("memset16_s: n exceeds max",
                    NULL, ESLEMAX);
         err = ESLEMAX;
         n = smax/2;
     }
 
-    if (n > smax/2) {
+    if (unlikely(n > smax/2)) {
         invoke_safe_mem_constraint_handler("memset16_s: n exceeds smax/2",
                    NULL, ESNOSPC);
         err = ESNOSPC;

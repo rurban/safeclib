@@ -73,19 +73,19 @@ strremovews_s (char *dest, rsize_t dmax)
     char *orig_end;
     rsize_t orig_dmax;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strremovews_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0 ) {
+    if (unlikely(dmax == 0 )) {
         invoke_safe_str_constraint_handler("strremovews_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strremovews_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
@@ -106,7 +106,7 @@ strremovews_s (char *dest, rsize_t dmax)
       * scan the string to be sure it is properly terminated
       */
      while (*dest) {
-        if (dmax == 0) {
+        if (unlikely(dmax == 0)) {
             while (orig_dmax) { *orig_dest++ = '\0';  orig_dmax--; }
 
             invoke_safe_str_constraint_handler(

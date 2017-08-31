@@ -68,17 +68,17 @@ strnlen_s (const char *dest, rsize_t dmax)
 {
     rsize_t count;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         return RCNEGATE(0);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strnlen_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(0);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strnlen_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(0);

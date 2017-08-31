@@ -164,31 +164,31 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
     rsize_t dlen;
     rsize_t slen;
 
-    if (dmax == NULL) {
+    if (unlikely(dmax == NULL)) {
         invoke_safe_str_constraint_handler("strtok_s: dmax is NULL",
                    NULL, ESNULLP);
         return (NULL);
     }
 
-    if (*dmax == 0) {
+    if (unlikely(*dmax == 0)) {
         invoke_safe_str_constraint_handler("strtok_s: dmax is 0",
                    NULL, ESZEROL);
         return (NULL);
     }
 
-    if (*dmax > RSIZE_MAX_STR) {
+    if (unlikely(*dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strtok_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (NULL);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strtok_s: src is null",
                    NULL, ESNULLP);
         return (NULL);
     }
 
-    if (ptr == NULL) {
+    if (unlikely(ptr == NULL)) {
         invoke_safe_str_constraint_handler("strtok_s: ptr is null",
                    NULL, ESNULLP);
         return (NULL);
@@ -206,7 +206,7 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
     ptoken = NULL;
     while (*dest != '\0' && !ptoken) {
 
-        if (dlen == 0) {
+        if (unlikely(dlen == 0)) {
             *ptr = NULL;
             invoke_safe_str_constraint_handler(
                       "strtok_s: dest is unterminated",
@@ -222,7 +222,7 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
         pt = src;
         while (*pt != '\0') {
 
-            if (slen == 0) {
+            if (unlikely(slen == 0)) {
                 *ptr = NULL;
                 invoke_safe_str_constraint_handler(
                           "strtok_s: src is unterminated",
@@ -257,7 +257,7 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
      */
     while (*dest != '\0') {
 
-        if (dlen == 0) {
+        if (unlikely(dlen == 0)) {
             *ptr = NULL;
             invoke_safe_str_constraint_handler(
                       "strtok_s: dest is unterminated",
@@ -269,7 +269,7 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
         pt = src;
         while (*pt != '\0') {
 
-            if (slen == 0) {
+            if (unlikely(slen == 0)) {
                 *ptr = NULL;
                 invoke_safe_str_constraint_handler(
                           "strtok_s: src is unterminated",

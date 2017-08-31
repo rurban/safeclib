@@ -77,32 +77,32 @@ strcasecmp_s (const char *dest, rsize_t dmax,
     const unsigned char *udest = (const unsigned char *) dest;
     const unsigned char *usrc = (const unsigned char *) src;
 
-    if (indicator == NULL) {
+    if (unlikely(indicator == NULL)) {
         invoke_safe_str_constraint_handler("strcasecmp_s: indicator is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
     *indicator = 0;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcasecmp_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strcasecmp_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcasecmp_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcasecmp_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);

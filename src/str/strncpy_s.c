@@ -91,19 +91,19 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strncpy_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -113,21 +113,21 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     orig_dmax = dmax;
     orig_dest = dest;
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "src is null",
                      ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (slen == 0) {
+    if (unlikely(slen == 0)) {
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "slen is zero",
                      ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (slen > RSIZE_MAX_STR) {
+    if (unlikely(slen > RSIZE_MAX_STR)) {
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "slen exceeds max",
                      ESLEMAX);
@@ -135,18 +135,18 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     }
 
 
-   if (dest < src) {
+    if (dest < src) {
        overlap_bumper = src;
 
         while (dmax > 0) {
-            if (dest == overlap_bumper) {
+            if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strncpy_s: "
                         "overlapping objects",
                         ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
-	    if (slen == 0) {
+	    if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
@@ -178,14 +178,14 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         overlap_bumper = dest;
 
         while (dmax > 0) {
-            if (src == overlap_bumper) {
+            if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strncpy_s: "
                         "overlapping objects",
                         ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
-	    if (slen == 0) {
+	    if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.

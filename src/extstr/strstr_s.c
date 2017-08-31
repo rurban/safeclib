@@ -73,44 +73,44 @@ strstr_s (char *dest, rsize_t dmax,
     rsize_t dlen;
     int i;
 
-    if (substring == NULL) {
+    if (unlikely(substring == NULL)) {
         invoke_safe_str_constraint_handler("strstr_s: substring is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
     *substring = NULL;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strstr_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strstr_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strstr_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strstr_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (slen == 0) {
+    if (unlikely(slen == 0)) {
         invoke_safe_str_constraint_handler("strstr_s: slen is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (slen > RSIZE_MAX_STR) {
+    if (unlikely(slen > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strstr_s: slen exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -120,7 +120,7 @@ strstr_s (char *dest, rsize_t dmax,
      * src points to a string with zero length, or
      * src equals dest, return dest
      */
-    if (*src == '\0' || dest == src) {
+    if (unlikely(*src == '\0' || dest == src)) {
         *substring = dest;
         return RCNEGATE(EOK);
     }

@@ -82,25 +82,25 @@ strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcpyfldout_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcpyfldout_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcpyfldout_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
@@ -109,7 +109,7 @@ strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         return (ESNULLP);
     }
 
-    if (slen == 0) {
+    if (unlikely(slen == 0)) {
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
@@ -118,7 +118,7 @@ strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         return (ESZEROL);
     }
 
-    if (slen > dmax) {
+    if (unlikely(slen > dmax)) {
         /* null string to clear data */
         while (dmax) {  *dest = '\0'; dmax--; dest++; }
 
@@ -132,12 +132,12 @@ strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     orig_dmax = dmax;
     orig_dest = dest;
 
-    if (dest < src) {
+    if (unlikely(dest < src)) {
         overlap_bumper = src;
 
         while (dmax > 1 && slen) {
 
-            if (dest == overlap_bumper) {
+            if (unlikely(dest == overlap_bumper)) {
                 dmax = orig_dmax;
                 dest = orig_dest;
 
@@ -160,7 +160,7 @@ strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 
         while (dmax > 1 && slen) {
 
-            if (src == overlap_bumper) {
+            if (unlikely(src == overlap_bumper)) {
                 dmax = orig_dmax;
                 dest = orig_dest;
 

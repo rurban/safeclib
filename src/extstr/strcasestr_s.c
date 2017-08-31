@@ -74,44 +74,44 @@ strcasestr_s (char *dest, rsize_t dmax,
     rsize_t dlen;
     int i;
 
-    if (substring == NULL) {
+    if (unlikely(substring == NULL)) {
         invoke_safe_str_constraint_handler("strcasestr_s: substring is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *substring = NULL;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcasestr_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcasestr_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcasestr_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strcasestr_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (slen == 0) {
+    if (unlikely(slen == 0)) {
         invoke_safe_str_constraint_handler("strcasestr_s: slen is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (slen > RSIZE_MAX_STR) {
+    if (unlikely(slen > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcasestr_s: slen exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
@@ -121,7 +121,7 @@ strcasestr_s (char *dest, rsize_t dmax,
      * src points to a string with zero length, or
      * src equals dest, return dest
      */
-    if (*src == '\0' || dest == src) {
+    if (unlikely(*src == '\0' || dest == src)) {
         *substring = dest;
         return (EOK);
     }

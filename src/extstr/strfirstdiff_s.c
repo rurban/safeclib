@@ -74,32 +74,32 @@
 {
     const char *rp;
 
-    if (index == NULL) {
+    if (unlikely(index == NULL)) {
         invoke_safe_str_constraint_handler("strfirstdiff_s: index is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *index = 0;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strfirstdiff_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strfirstdiff_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0 ) {
+    if (unlikely(dmax == 0 )) {
         invoke_safe_str_constraint_handler("strfirstdiff_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strfirstdiff_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);

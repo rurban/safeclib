@@ -93,31 +93,31 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strncat_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strncat_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (slen > RSIZE_MAX_STR) {
+    if (unlikely(slen > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncat_s: slen exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -133,7 +133,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         /* Find the end of dest */
         while (*dest != '\0') {
 
-            if (dest == overlap_bumper) {
+            if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strncat_s: "
                         "overlapping objects",
                         ESOVRLP);
@@ -142,7 +142,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
 
             dest++;
             dmax--;
-            if (dmax == 0) {
+            if (unlikely(dmax == 0)) {
                 handle_error(orig_dest, orig_dmax, "strncat_s: "
                        "dest unterminated",
                        ESUNTERM);
@@ -151,7 +151,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         }
 
         while (dmax > 0) {
-            if (dest == overlap_bumper) {
+            if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strncat_s: "
                        "overlapping objects",
                        ESOVRLP);
@@ -161,7 +161,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             /*
              * Copying truncated before the source null is encountered
              */
-            if (slen == 0) {
+            if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
@@ -172,7 +172,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             }
 
             *dest = *src;
-            if (*dest == '\0') {
+            if (unlikely(*dest == '\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
@@ -198,7 +198,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
              */
             dest++;
             dmax--;
-            if (dmax == 0) {
+            if (unlikely(dmax == 0)) {
                 handle_error(orig_dest, orig_dmax, "strncat_s: "
                        "dest unterminated",
                        ESUNTERM);
@@ -207,7 +207,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         }
 
         while (dmax > 0) {
-            if (src == overlap_bumper) {
+            if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax, "strncat_s: "
                         "overlapping objects",
                         ESOVRLP);
@@ -217,7 +217,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             /*
              * Copying truncated
              */
-            if (slen == 0) {
+            if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }
@@ -228,7 +228,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             }
 
             *dest = *src;
-            if (*dest == '\0') {
+            if (unlikely(*dest == '\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 while (dmax) { *dest = '\0'; dmax--; dest++; }

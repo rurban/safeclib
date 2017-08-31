@@ -89,39 +89,39 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t smax)
     dp= (uint8_t*) dest;
     sp = (uint8_t*) src;
 
-    if (dp == NULL) {
+    if (unlikely(dp == NULL)) {
         invoke_safe_mem_constraint_handler("memmove_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_mem_constraint_handler("memmove_s: dmax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM) {
+    if (unlikely(dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memmove_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (smax == 0) {
+    if (unlikely(smax == 0)) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: smax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (smax > dmax) {
+    if (unlikely(smax > dmax)) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: smax exceeds max",
                    NULL, ESNOSPC);
         return (RCNEGATE(ESNOSPC));
     }
 
-    if (sp == NULL) {
+    if (unlikely(sp == NULL)) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove_s: src is null",
                    NULL, ESNULLP);

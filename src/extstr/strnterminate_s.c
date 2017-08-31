@@ -66,17 +66,17 @@ strnterminate_s (char *dest, rsize_t dmax)
 {
     rsize_t count;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         return (0);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strnterminate_s: dmax is 0",
                    NULL, ESZEROL);
         return (0);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (0);

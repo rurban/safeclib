@@ -75,28 +75,28 @@ strispassword_s (const char *dest, rsize_t dmax)
     uint32_t cnt_numbers;
     uint32_t cnt_specials;
 
-    if (!dest) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest is null",
                    NULL, ESNULLP);
         return (false);
     }
 
-    if (dmax < SAFE_STR_PASSWORD_MIN_LENGTH) {
+    if (unlikely(dmax < SAFE_STR_PASSWORD_MIN_LENGTH)) {
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest is too short",
                    NULL, ESLEMIN);
         return (false);
     }
 
-    if (dmax > SAFE_STR_PASSWORD_MAX_LENGTH) {
+    if (unlikely(dmax > SAFE_STR_PASSWORD_MAX_LENGTH)) {
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest exceeds max",
                    NULL, ESLEMAX);
         return (false);
     }
 
-    if (*dest == '\0') {
+    if (unlikely(*dest == '\0')) {
         return (false);
     }
 
@@ -105,7 +105,7 @@ strispassword_s (const char *dest, rsize_t dmax)
 
     while (*dest) {
 
-        if (dmax == 0) {
+        if (unlikely(dmax == 0)) {
             invoke_safe_str_constraint_handler(
                       "strispassword_s: dest is unterminated",
                        NULL, ESUNTERM);

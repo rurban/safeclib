@@ -73,39 +73,39 @@
 errno_t
 memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
 {
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memcpy32_s: dest is NULL",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_mem_constraint_handler("memcpy32_s: dmax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM32 || smax > RSIZE_MAX_MEM32) {
+    if (unlikely(dmax > RSIZE_MAX_MEM32 || smax > RSIZE_MAX_MEM32)) {
         invoke_safe_mem_constraint_handler("memcpy32_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (smax == 0) {
+    if (unlikely(smax == 0)) {
         mem_prim_set32(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: smax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (smax > dmax) {
+    if (unlikely(smax > dmax)) {
         mem_prim_set32(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: smax exceeds dmax",
                    NULL, ESNOSPC);
         return (RCNEGATE(ESNOSPC));
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         mem_prim_set32(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: src is NULL",
                    NULL, ESNULLP);
@@ -115,8 +115,8 @@ memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
     /*
      * overlap is undefined behavior, do not allow
      */
-    if( ((dest > src) && (dest < (src+smax))) ||
-        ((src > dest) && (src < (dest+dmax))) ) {
+    if (unlikely( ((dest > src) && (dest < (src+smax))) ||
+                  ((src > dest) && (src < (dest+dmax))) )) {
         mem_prim_set32(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: overlap undefined",
                    NULL, ESOVRLP);

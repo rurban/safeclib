@@ -86,33 +86,33 @@ memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
 {
     errno_t err = EOK;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memset_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
     /* different on C11! */
-    if (n == 0) {
+    if (unlikely(n == 0)) {
         invoke_safe_mem_constraint_handler("memset_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM) {
+    if (unlikely(dmax > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memset_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (n > RSIZE_MAX_MEM) {
+    if (unlikely(n > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memset_s: n exceeds max",
                    NULL, ESLEMAX);
         err = ESLEMAX;
         n = dmax;
     }
 
-    if (n > dmax) {
+    if (unlikely(n > dmax)) {
         invoke_safe_mem_constraint_handler("memset_s: n exceeds dmax",
                    NULL, ESNOSPC);
         err = ESNOSPC;

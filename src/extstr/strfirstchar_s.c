@@ -70,26 +70,26 @@ errno_t
 strfirstchar_s (char *dest, rsize_t dmax, char c, char **first)
 {
 
-    if (first == NULL) {
+    if (unlikely(first == NULL)) {
         invoke_safe_str_constraint_handler("strfirstchar_s: index is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *first = NULL;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strfirstchar_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0 ) {
+    if (unlikely(dmax == 0 )) {
         invoke_safe_str_constraint_handler("strfirstchar_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strfirstchar_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);

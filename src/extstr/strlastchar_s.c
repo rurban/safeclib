@@ -69,26 +69,26 @@
 errno_t
 strlastchar_s(char *dest, rsize_t dmax, char c, char **last)
 {
-    if (last == NULL) {
+    if (unlikely(last == NULL)) {
         invoke_safe_str_constraint_handler("strlastchar_s: last is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *last = NULL;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strlastchar_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0 ) {
+    if (unlikely(dmax == 0 )) {
         invoke_safe_str_constraint_handler("strlastchar_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strlastchar_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);

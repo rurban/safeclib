@@ -92,25 +92,26 @@ int snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ..
 {
     va_list ap;
     int ret = -1;
-    if (dmax > RSIZE_MAX_STR) {
+
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("snprintf_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (fmt == NULL) {
+    if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("snprintf_s: fmt is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("snprintf_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);

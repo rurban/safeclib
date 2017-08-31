@@ -63,19 +63,19 @@
 errno_t
 memzero16_s (uint16_t *dest, rsize_t len)
 {
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memzero16_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (len == 0) {
+    if (unlikely(len == 0)) {
         invoke_safe_mem_constraint_handler("memzero16_s: len is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (len > RSIZE_MAX_MEM16) {
+    if (unlikely(len > RSIZE_MAX_MEM16)) {
         invoke_safe_mem_constraint_handler("memzero16_s: len exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));

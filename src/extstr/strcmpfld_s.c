@@ -75,32 +75,32 @@ errno_t
 strcmpfld_s (const char *dest, rsize_t dmax,
              const char *src, int *indicator)
 {
-    if (indicator == NULL) {
+    if (unlikely(indicator == NULL)) {
         invoke_safe_str_constraint_handler("strcmpfld_s: indicator is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
     *indicator = 0;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcmpfld_s: dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (src == NULL) {
+    if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("strcmpfld_s: src is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcmpfld_s: dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcmpfld_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);

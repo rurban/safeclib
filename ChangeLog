@@ -14,6 +14,7 @@ Changes in vxx092017 2.1.1
         - Rearranged src layout
         - Macrofied many more tests
         - Improved some tests for old gcc -ansi (c89) memcmp
+        - Add unlikely() to improve branch prediction
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

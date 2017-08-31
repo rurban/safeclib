@@ -82,44 +82,44 @@ memcmp_s (const void *dest, rsize_t dmax,
     /*
      * must be able to return the diff
      */
-    if (diff == NULL) {
+    if (unlikely(diff == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp_s: diff is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
     *diff = -1;  /* default diff */
 
-    if (dp == NULL) {
+    if (unlikely(dp == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp_s: dest is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (sp == NULL) {
+    if (unlikely(sp == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp_s: src is null",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_mem_constraint_handler("memcmp_s: dmax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM) {
+    if (unlikely(dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memcmp_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (smax == 0) {
+    if (unlikely(smax == 0)) {
         invoke_safe_mem_constraint_handler("memcmp_s: smax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (smax > dmax) {
+    if (unlikely(smax > dmax)) {
         invoke_safe_mem_constraint_handler("memcmp_s: smax exceeds dmax",
                    NULL, ESNOSPC);
         return (RCNEGATE(ESNOSPC));
@@ -128,7 +128,7 @@ memcmp_s (const void *dest, rsize_t dmax,
     /*
      * no need to compare the same memory
      */
-    if (dp == sp) {
+    if (unlikely(dp == sp)) {
         *diff = 0;
         return (RCNEGATE(EOK));
     }

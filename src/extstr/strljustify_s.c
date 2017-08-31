@@ -73,21 +73,21 @@ strljustify_s (char *dest, rsize_t dmax)
     char *orig_dest;
     rsize_t orig_dmax;
 
-    if (dest == NULL) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strljustify_s_s: "
                    "dest is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
 
-    if (dmax == 0 ) {
+    if (unlikely(dmax == 0 )) {
         invoke_safe_str_constraint_handler("strljustify_s_s: "
                    "dmax is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strljustify_s_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
@@ -97,11 +97,11 @@ strljustify_s (char *dest, rsize_t dmax)
     /*
      * corner cases, a dmax of one allows only for a null
      */
-    if (dmax <= RSIZE_MIN_STR) {
+    if (unlikely(dmax <= RSIZE_MIN_STR)) {
         *dest = '\0';
         return (EOK);
     }
-    if (*dest == '\0') {
+    if (unlikely(*dest == '\0')) {
         return (EOK);
     }
 
@@ -112,7 +112,7 @@ strljustify_s (char *dest, rsize_t dmax)
      * scan the string to be sure it is properly terminated
      */
     while (*dest) {
-        if (dmax == 0) {
+        if (unlikely(dmax == 0)) {
             while (orig_dmax) { *orig_dest++ = '\0';  orig_dmax--; }
 
             invoke_safe_str_constraint_handler(

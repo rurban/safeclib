@@ -66,28 +66,28 @@
 bool
 strislowercase_s (const char *dest, rsize_t dmax)
 {
-    if (!dest) {
+    if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strislowercase_s: "
                    "dest is null",
                    NULL, ESNULLP);
         return (false);
     }
 
-    if (dmax == 0) {
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strislowercase_s: "
                    "dmax is 0",
                    NULL, ESZEROL);
         return (false);
     }
 
-    if (dmax > RSIZE_MAX_STR) {
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strislowercase_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
         return (false);
     }
 
-    if (*dest == '\0') {
+    if (unlikely(*dest == '\0')) {
         return (false);
     }
 
