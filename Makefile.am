@@ -234,12 +234,12 @@ dist_man_MANS += \
 	doc/man/man3/wsize.3
 CLEANFILES = Doxyfile doc/footer README.md
 
-doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile doc/footer include/safe_config.h.in
+doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile doc/footer include/safe_config.h
+	-rm $@
 	doxygen
 
 docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
-   doc/man/man1/check_for_unsafe_apis.1
-	doxygen
+   doc/man/man1/check_for_unsafe_apis.1 doc/man/man3/STRTOK_DELIM_MAX_LEN.3
 	-rm -rf doc/man/man3/d[0-9a-f]
 	-rm doc/man/man3/_*.3
 	-rm doc/man/man3/slk_*.3
