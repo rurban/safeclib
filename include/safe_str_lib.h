@@ -62,7 +62,7 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
 
 /* These functions are defined in the C11 standard Annex K, but are still unsafe.
    Rather use the 2 functions above. */
-#ifdef ENABLE_UNSAFE  
+#ifdef SAFECLIB_ENABLE_UNSAFE  
 extern int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 extern int

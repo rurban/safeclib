@@ -161,9 +161,9 @@ AC_ARG_ENABLE(extensions,
 	esac], [enable_extensions=true])
 
 if test "x$enable_extensions" = "xfalse" ; then
- 	INSERT_EXTS="#define DISABLE_EXTS 1"
+ 	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTS 1"
 else
- 	INSERT_EXTS="#undef DISABLE_EXTS"
+ 	INSERT_EXTS="#undef SAFECLIB_DISABLE_EXTS"
 fi
 #	AC_DEFINE([DISABLE_EXTS], [ 1 ],
 #		  [Define to 1 to disable additional functions not defined
@@ -228,9 +228,9 @@ AC_ARG_ENABLE(unsafe,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-unsafe]) ;;
 	esac], [enable_unsafe=no ])
 if test "x$enable_unsafe" = "xtrue" ; then
-	INSERT_UNSAFE="#define ENABLE_UNSAFE 1"
+	INSERT_UNSAFE="#define SAFECLIB_ENABLE_UNSAFE 1"
 else
-	INSERT_UNSAFE="#undef ENABLE_UNSAFE"
+	INSERT_UNSAFE="#undef SAFECLIB_ENABLE_UNSAFE"
 fi
 AC_SUBST(INSERT_UNSAFE)
 AM_CONDITIONAL([ENABLE_UNSAFE], test "x$enable_unsafe" = "xtrue")

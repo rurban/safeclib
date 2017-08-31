@@ -1,16 +1,18 @@
 
                 ChangeLog file for safeclib
 
-Changes in vxx092017 2.1.1
+Changes in vxx092017 3.0.0
         - Install bin/check_for_unsafe_apis. Renamed and improved: 7x faster,
           added missing conversion hints. also install its man1.
         - Seperated internal libstdunsafe target, for std but unsafe C11
           functions: snprintf_s, vsnprintf_s, tmpnam_s
-        - added --enable-unsafe (the 3 funcs above are not included by default)
+        - added --enable-unsafe (the 3 funcs above are not included by default).
+        defines SAFECLIB_ENABLE_UNSAFE
         - added --disable-extensions, skipping all non-C11 safe functions.
         This contains in summary only 11 functions for now:
         memcpy_s, memmove_s, memset_s, sprintf_s, strcat_s, strcpy_s, strncat_s,
-        strncpy_s, strnlen_s, strtok_s, vsprintf_s
+        strncpy_s, strnlen_s, strtok_s, vsprintf_s.
+        defines SAFECLIB_DISABLE_EXTS
         - Rearranged src layout
         - Macrofied many more tests
         - Improved some tests for old gcc -ansi (c89) memcmp
