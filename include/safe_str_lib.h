@@ -38,6 +38,9 @@ extern "C" {
 
 #include "safe_lib.h"
 #include <stdarg.h>
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 /*
  * The shortest string is a null string!!
@@ -53,28 +56,6 @@ extern "C" {
 #define SAFE_STR_PASSWORD_MIN_LENGTH   ( 6 )
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 
-/* safe sprintf_s */
-/* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-extern int
-sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
-extern int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
-
-/* These functions are defined in the C11 standard Annex K, but are still unsafe.
-   Rather use the 2 functions above. */
-#ifdef SAFECLIB_ENABLE_UNSAFE  
-extern int
-snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
-extern int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
-#endif
-
-#if 0
-swprintf_s
-snwprintf_s
-vswprintf_s
-vsnwprintf_s
-#endif
 
 /* set string constraint handler */
 extern constraint_handler_t
@@ -278,6 +259,100 @@ strtouppercase_s(char *str, rsize_t slen);
 /* zero an entire string with nulls */
 extern errno_t
 strzero_s(char *dest, rsize_t dmax);
+
+/* safe sprintf_s */
+/* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
+extern int
+sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+
+extern int
+vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+
+/* These functions are defined in the C11 standard Annex K, but are still unsafe.
+   Rather use the 2 functions above. */
+#ifdef SAFECLIB_ENABLE_UNSAFE
+
+/* unsafe! */
+extern int
+snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+extern int
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+
+#endif
+
+/* multibyte wchar (not yet, see git branch `wchar`) */
+#if 0
+
+extern errno_t
+mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest,
+            rsize_t dmax, const char **restrict src, rsize_t len,
+            mbstate_t *restrict ps);
+
+extern errno_t
+mbstowcs_s(size_t *restrict retval, wchar_t *restrict dest,
+           rsize_t dmax, const char *restrict src, rsize_t len);
+
+extern int
+fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
+
+/* unsafe! */
+extern int
+snwprintf_s(wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict fmt, ...);
+
+extern int
+swprintf_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t* restrict fmt, ...);
+
+extern int
+vwprintf_s(const wchar_t *restrict fmt, va_list ap);
+
+extern int
+vfwprintf_s(FILE * restrict stream,
+            const wchar_t *restrict fmt, va_list ap);
+
+extern int
+vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
+            const wchar_t * restrict fmt, va_list ap);
+
+extern int
+vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
+             const wchar_t *restrict fmt, va_list ap);
+
+swscanf_s
+
+vfwscanf_s
+
+vswscanf_s
+
+vwscanf_s
+
+wcrtomb_s
+
+wcscat_s
+
+wcscpy_s
+
+wcsncat_s
+
+wcsncpy_s
+
+wcsnlen_s
+
+wcsrtombs_s
+
+wcstok_s
+
+wcstombs_s
+
+wmemcpy_s
+
+wmemmove_s
+
+extern int
+wprintf_s( const wchar_t *restrict fmt, ...);
+
+wscanf_s
+
+#endif
 
 #ifdef __cplusplus
 }
