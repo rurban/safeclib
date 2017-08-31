@@ -7,7 +7,7 @@ os:
   - osx
 env:
   - XCC="gcc"
-  - XCC="c++" CONF="--disable-nullslack"
+  - XCC="c++ -std=c++98" CONF="--disable-nullslack"
   - XCC="clang"
   - XCC="clang -fsanitize=address" CONF="--enable-debug"
 
@@ -21,9 +21,9 @@ install:
   - build-tools/autogen.sh
 
 script:
-  # skip duplicate compilers and clang++
+  # skip duplicate compilers and overly strict clang++
   - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "c++" ]; then exit 0; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "c++ -std=c++98" ]; then exit 0; fi
   - CC="$XCC" ./configure $CONF
   - make -j4
   - make check
