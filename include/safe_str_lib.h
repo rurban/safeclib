@@ -49,6 +49,9 @@ extern "C" {
  */
 #define RSIZE_MIN_STR      ( 1 )
 
+/* wide chars */
+#define RSIZE_MAX_STR16    ( RSIZE_MAX_STR/2 )
+
 /* The makeup of a password */
 #define SAFE_STR_MIN_LOWERCASE     ( 2 )
 #define SAFE_STR_MIN_UPPERCASE     ( 2 )
@@ -286,12 +289,13 @@ strzero_s(char *dest, rsize_t dmax);
 
 
 /* multibyte wchar (not yet, see git branch `wchar`) */
-#if 0
 
 extern errno_t
 mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest,
             rsize_t dmax, const char **restrict src, rsize_t len,
             mbstate_t *restrict ps);
+
+#if 0
 
 extern errno_t
 mbstowcs_s(size_t *restrict retval, wchar_t *restrict dest,
@@ -325,6 +329,13 @@ wcstok_s
 
 wcrtomb_s
 
+wmemcpy_s
+
+wmemmove_s
+
+extern int
+wprintf_s( const wchar_t *restrict fmt, ...);
+
 extern int
 fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
 
@@ -350,6 +361,8 @@ extern int
 vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
              const wchar_t *restrict fmt, va_list ap);
 
+wscanf_s
+
 swscanf_s
 
 vfwscanf_s
@@ -357,11 +370,6 @@ vfwscanf_s
 vswscanf_s
 
 vwscanf_s
-
-extern int
-wprintf_s( const wchar_t *restrict fmt, ...);
-
-wscanf_s
 
 #endif
 

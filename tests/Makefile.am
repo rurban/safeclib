@@ -40,7 +40,8 @@ SAFEC_BUILT_TESTS = \
 	t_strncpy_s           \
 	t_strnlen_s           \
 	t_strtok_s            \
-	t_vsprintf_s          
+	t_vsprintf_s          \
+	t_mbsrtowcs_s         
 
 if ENABLE_UNSAFE
 SAFEC_BUILT_TESTS += \
@@ -138,6 +139,7 @@ t_strncpy_s_SOURCES           = test_strncpy_s.c $(SAFEC_TEST_COMMON)
 t_strnlen_s_SOURCES           = test_strnlen_s.c $(SAFEC_TEST_COMMON)
 t_strtok_s_SOURCES            = test_strtok_s.c $(SAFEC_TEST_COMMON)
 t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
+t_mbsrtowcs_s_SOURCES         = test_mbsrtowcs_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_EXTS
 p_memcpy32_s_SOURCES          = perf_memcpy32_s.c $(SAFEC_TEST_COMMON)

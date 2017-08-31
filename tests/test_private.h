@@ -53,6 +53,18 @@
 
 #endif
 
+/* ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+   rc = strtolowercase_s("test", len); */
+#ifdef __cplusplus
+# ifdef __clang
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wwrite-strings"
+# elif defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wwrite-strings"
+# endif
+#endif
+
 #ifdef DEBUG
 #  ifdef __KERNEL__
 #    define debug_printf(...)  printk(KERN_DEBUG __VA_ARGS__)
@@ -97,13 +109,13 @@
 #define INDZERO()                                  \
     if (ind != 0) {                                \
         printf("%s %u  Error  ind=%d rc=%d \n",    \
-                     __FUNCTION__, __LINE__, ind, rc); \
+               __FUNCTION__, __LINE__, (int)ind, rc);   \
         errs++;                                    \
     }
 #define INDCMP(cmp)                                \
-    if (ind cmp) {                                 \
+  if ((int)ind cmp) {                              \
         printf("%s %u  Error  ind=%d rc=%d \n",    \
-                     __FUNCTION__, __LINE__, ind, rc); \
+               __FUNCTION__, __LINE__, (int)ind, rc);   \
         errs++;                                    \
     }
 #define SUBNULL()                                  \

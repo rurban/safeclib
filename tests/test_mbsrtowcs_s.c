@@ -1,0 +1,253 @@
+/*------------------------------------------------------------------
+ * test_mbsrtowcs_s
+ * locale specific, sets it to C and UTF-8
+ *
+ *------------------------------------------------------------------
+ */
+
+#include "test_private.h"
+#include "safe_str_lib.h"
+
+#define MAX   ( 128 )
+#define LEN   ( 128 )
+
+static wchar_t   dest[LEN];
+static char      src[LEN];
+
+#ifdef HAVE_WCHAR_H
+#include <stdlib.h>
+#include <locale.h>
+#include <langinfo.h>
+
+#define CLRPS \
+  memset (&ps, '\0', sizeof (mbstate_t))
+
+int test_mbsrtowcs_s (void)
+{
+    errno_t rc;
+    size_t ind;
+    /*uint32_t i;*/
+    const char *cs;
+    mbstate_t ps;
+    const char *chs;
+    int errs = 0;
+
+/*--------------------------------------------------*/
+
+    cs = "a";
+    rc = mbsrtowcs_s(NULL, NULL, LEN, &cs, 0, &ps);
+    ERR(ESNULLP);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, NULL, LEN, &cs, 0, NULL);
+    ERR(ESNULLP);
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, NULL, 0, &ps);
+    ERR(ESNULLP);
+    CLRPS;
+
+    src[0] = '\0';
+    rc = mbsrtowcs_s(&ind, NULL, LEN, (const char**)&src, 0, &ps);
+    ERR(ESNULLP);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, 0, &cs, 0, &ps);
+    ERR(ESZEROL);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
+    ERR(ESLEMAX);
+    CLRPS;
+
+    cs = "abcdef";
+    rc = mbsrtowcs_s(&ind, (wchar_t*)&cs, LEN, &cs, 3, &ps);
+    ERR(ESOVRLP);
+    CLRPS;
+
+    dest[0] = L'a';
+    rc = mbsrtowcs_s(&ind, dest, LEN, (const char**)&dest[0], 1, &ps);
+    ERR(ESOVRLP);
+    CLRPS;
+
+/*--------------------------------------------------*/
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="abcdef",&cs), 3, &ps);
+    ERR(EOK);
+    INDCMP(!= 3);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="abcdef",&cs), 8, &ps);
+    ERR(EOK);
+    INDCMP(!= 6);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, NULL, LEN, (cs="abcdef",&cs), 2, &ps);
+    ERR(EOK);
+    INDCMP(!= 6);
+    CLRPS;
+
+    setlocale(LC_CTYPE, "C");
+    chs = nl_langinfo(CODESET);
+    /* not a big problem if this fails */
+    if ( !strcmp(chs, "C") ||
+         !strcmp(chs, "ASCII") ||
+         !strcmp(chs, "ANSI_X3.4-1968") ||
+         !strcmp(chs, "US-ASCII") )
+        ; /* all fine */
+    else /* dont inspect the values */
+        printf(__FILE__ ": cannot set C locale for test"
+                   " (codeset=%s)\n", chs);
+
+    /* no-breaking space illegal in ASCII, but legal in C */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xa0""abc",&cs), 32, &ps);
+    if (rc == 0) { /* legal */
+      ERR(EOK);
+      INDCMP(!= 4);
+      if (dest[0] != 0xa0) {
+        printf("%s %u  Error  ind=%d rc=%d %d\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
+        errs++;
+      }
+      if (dest[1] != L'a') {
+        printf("%s %u  Error  ind=%d rc=%d %d\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
+        errs++;
+      }
+      if (cs) { /* needs to be at the end */
+        printf("%s %u  Error  ind=%d rc=%d %s\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, cs);
+        errs++;
+      }
+    } else {
+      ERR(EILSEQ); /* or illegal */
+      INDCMP(!= -1);
+      if (dest[0] != L'\0') {
+        printf("%s %u  Error  ind=%d rc=%d %d\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
+        errs++;
+      }
+    }
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\x78",&cs), 1, &ps);
+    ERR(EOK);
+    INDCMP(!= 1);
+    CLRPS;
+
+    setlocale(LC_CTYPE, "en_US.UTF-8") ||
+	setlocale(LC_CTYPE, "en_GB.UTF-8") ||
+	setlocale(LC_CTYPE, "en.UTF-8") ||
+	setlocale(LC_CTYPE, "POSIX.UTF-8") ||
+	setlocale(LC_CTYPE, "C.UTF-8") ||
+	setlocale(LC_CTYPE, "UTF-8") ||
+	setlocale(LC_CTYPE, "");
+    if (strcmp(nl_langinfo(CODESET), "UTF-8")) {
+        printf(__FILE__ ": cannot set UTF-8 locale for test"
+               " (codeset=%s)\n", nl_langinfo(CODESET));
+        return 0;
+    }
+
+    /* illegal sequences (locale dependent) */
+    
+    /* illegal initial */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0",&cs), 1, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc2",&cs), 1, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    /* aliasing nul */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0\x80",&cs), 2, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    /* aliasing slashes */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0\xaf",&cs), 2, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xe0\x80\xaf",&cs), 3, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x80\x80\xaf",&cs), 4, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf8\x80\x80\x80\xaf",&cs), 5, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xfc\x80\x80\x80\x80\xaf",&cs), 6, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    /* aliasing U+0080 */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xe0\x82\x80",&cs), 3, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    /* aliasing U+07FF */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xe0\x9f\xbf",&cs), 3, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    /* aliasing U+0800 */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x80\xa0\x80",&cs), 4, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+      
+    /* aliasing U+FFFD */
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x8f\xbf\xbd",&cs), 4, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    /* check enough space for src and conversion errors */
+
+    rc = mbsrtowcs_s(&ind, dest, 3, (cs="\xf0\x8f\xbf\xbd",&cs), 4, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\x80\xbf\x80",&cs), 3, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+    CLRPS;
+
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xfc\x80\x80\x80\x80\x80",&cs), 6, &ps);
+    ERR(EILSEQ);
+    INDCMP(!= -1);
+
+/*--------------------------------------------------*/
+    
+    return (errs);
+}
+
+#endif
+
+#ifndef __KERNEL__
+/* simple hack to get this to work for both userspace and Linux kernel,
+   until a better solution can be created. */
+int main (void)
+{
+#ifdef HAVE_WCHAR_H
+    return (test_mbsrtowcs_s());
+#else
+    return 0;
+#endif    
+}
+#endif
