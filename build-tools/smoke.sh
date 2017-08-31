@@ -3,6 +3,7 @@ autoreconf
 case `uname` in
 Darwin)
 
+gmake -s clean
 CC="clang-mp-3.9 -fsanitize=address" ./configure --enable-debug --enable-unsafe && \
     gmake -s -j4 check || (cat tests/test-suite.log; exit)
 CC="clang-mp-4.0 -std=c99" ./configure && \
@@ -34,6 +35,7 @@ CC="cc" ./configure --enable-unsafe --enable-debug && \
 
 Linux)
 
+make -s clean
 CC="clang-3.9 -fsanitize=address" ./configure --enable-debug --enable-unsafe && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
 CC="clang-4.0 -std=c99" ./configure && \
