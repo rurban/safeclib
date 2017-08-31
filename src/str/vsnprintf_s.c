@@ -38,12 +38,12 @@
 
 /**
  * @brief 
- *    The vsnprintf_s function composes a string with same test that 
- *    would be printed if format was used on printf. Instead of being 
+ *    The \c vsnprintf_s function composes a string with same test that 
+ *    would be printed if format was used on \c printf. Instead of being 
  *    printed, the content is stored in dest.
- *    More than dmax - 1 characters might be written, so this variant is unsafe!
- *    Always use vsprintf_s instead.
- *    Unlike the safe variant vsprintf_s, vsnprintf_s does not
+ *    More than dmax - 1 characters might be written, so this variant is \b unsafe!
+ *    Always use \b vsprintf_s instead.
+ *    Unlike the safe variant \c vsprintf_s, \c vsnprintf_s does not
  *    guarantees that the buffer will be null-terminated unless
  *    the buffer size is zero.
  *
@@ -53,32 +53,32 @@
  *    http://en.cppreference.com/w/c/io/vfprintf
  *
  * @param[out]  dest  pointer to string that will be written into.
- * @param[in]   dmax  restricted maximum length of dest
+ * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   fmt   format-control string.
  * @param[in]   ap    optional arguments
  *
- * @pre Neither dest nor fmt shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
- * @pre dmax shall not equal zero.
- * @pre dmax shall be greater than strnlen_s(dest, dmax).
- * @pre fmt  shall not contain the conversion specifier %n.
- * @pre None of the arguments corresponding to %s is a null pointer.
+ * @pre Neither \c dest nor \c fmt shall be a null pointer.
+ * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR.
+ * @pre \c dmax shall not equal zero.
+ * @pre \c dmax shall be greater than <tt>strnlen_s(dest, dmax)</tt>.
+ * @pre \c fmt  shall not contain the conversion specifier \c %n.
+ * @pre None of the arguments corresponding to \c %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  On success the total number of characters written is returned.
  * @return  On failure a negative number is returned.
- * @return  If the buffer dest is too small for the formatted text,
+ * @return  If the buffer \c dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
- *          empty string by placing a null character at dest[0], and the
- *          invalid parameter handler is invoked. Unlike vsnprintf,
- *          vsprintf_s guarantees that the buffer will be null-terminated
+ *          empty string by placing a null character at \c dest[0], and the
+ *          invalid parameter handler is invoked. Unlike \c vsnprintf,
+ *          \c vsprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
- * @retval  ESNULLP when dest/fmt is NULL pointer
- * @retval  ESZEROL when dmax = 0
- * @retval  ESLEMAX when dmax > RSIZE_MAX_STR
- * @retval  ESNOSPC when return value exceeds dmax
+ * @retval  ESNULLP when \c dest/fmt is NULL pointer
+ * @retval  ESZEROL when \c dmax = 0
+ * @retval  ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ * @retval  ESNOSPC when return value exceeds \c dmax
  *
  * @see
  *    sprintf_s(), vsprintf_s()

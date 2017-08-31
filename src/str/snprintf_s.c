@@ -40,17 +40,17 @@
 
 /** 
  * @brief
- *    The snprintf_s function composes a string with same test that 
- *    would be printed if format was used on printf. Instead of being 
+ *    The \c snprintf_s function composes a string with same test that 
+ *    would be printed if format was used on \c printf. Instead of being 
  *    printed, the content is stored in dest.
- *    More than dmax - 1 characters might be written, so this variant is unsafe!
- *    Always use sprintf_s instead.
+ *    More than dmax - 1 characters might be written, so this variant is \b unsafe!
+ *    Always use \b sprintf_s instead.
  *    The resulting character string will be terminated with a null character,
- *    unless dmax is zero. If dmax is zero, nothing is written and
- *    dest may be a null pointer, however the return value (number
+ *    unless \c dmax is zero. If \c dmax is zero, nothing is written and
+ *    \c dest may be a null pointer, however the return value (number
  *    of bytes that would be written) is still calculated and
  *    returned.
- *    Unlike the safe variant sprintf_s, snprintf_s does not
+ *    Unlike the safe variant \c sprintf_s, \c snprintf_s does not
  *    guarantees that the buffer will be null-terminated unless
  *    the buffer size is zero.
  *
@@ -60,28 +60,28 @@
  *    http://en.cppreference.com/w/c/string/byte/sprintf
  *
  * @param[out]  dest  pointer to string that will be written into.
- * @param[in]   dmax  restricted maximum length of dest
+ * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   fmt   format-control string.
  * @param[in]   ...   optional arguments
  *
- * @pre Neither dest nor fmt shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
- * @pre dmax shall not equal zero.
- * @pre dmax shall be greater than strnlen_s(dest, dmax).
- * @pre fmt  shall not contain the conversion specifier %n.
- * @pre None of the arguments corresponding to %s is a null pointer.
+ * @pre Neither \c dest nor \c fmt shall be a null pointer.
+ * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR.
+ * @pre \c dmax shall not equal zero.
+ * @pre \c dmax shall be greater than <tt>strnlen_s(dest, dmax)</tt>.
+ * @pre \c fmt  shall not contain the conversion specifier \c %n.
+ * @pre None of the arguments corresponding to \c %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @return Number of characters not including the terminating null
  *         character (which is always written as long as buffer is not
- *         a null pointer and dmax is not zero and not greater than
- *         RSIZE_MAX_STR), which would have been written to dest if
- *         dmax was ignored, or a negative value if a runtime
+ *         a null pointer and \c dmax is not zero and not greater than
+ *         \c RSIZE_MAX_STR), which would have been written to \c dest if
+ *         \c dmax was ignored, or a negative value if a runtime
  *         constraints violation or an encoding error occurred.
  *
- * @retval  ESNULLP when dest/fmt is NULL pointer
- * @retval  ESZEROL when dmax = 0
- * @retval  ESLEMAX when dmax > RSIZE_MAX_STR
+ * @retval  ESNULLP when \c dest/fmt is NULL pointer
+ * @retval  ESZEROL when \c dmax = 0
+ * @retval  ESLEMAX when \c dmax > \c RSIZE_MAX_STR
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
