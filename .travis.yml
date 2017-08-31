@@ -7,12 +7,15 @@ os:
   - osx
 env:
   - XCC="gcc"
-  - XCC="c++ -std=c++98" CONF="--disable-nullslack"
   - XCC="cc" CONF="--enable-unsafe"
-  - XCC="clang"
+  - XCC="clang" CONF="--disable-nullslack"
   - XCC="clang -fsanitize=address" CONF="--enable-debug"
+# clang++ does not allow c anymore. gcc is duplicate to cc
+matrix:
+  exclude:
+  - env: XCC="gcc"
+    env: TRAVIS_OS_NAME=osx
 
-# clang++ does not allow c anymore
 
 branches:
   except:
@@ -24,7 +27,6 @@ install:
 script:
   # skip duplicate compilers and overly strict clang++
   - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "c++ -std=c++98" ]; then exit 0; fi
   - CC="$XCC" ./configure $CONF
   - make -j4
   - make check
