@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-  check_for_unsafe_apis - Finds those unsafe APIs.
+  check_for_unsafe_apis - Finds unsafe APIs
 
 =head1 SYNOPSIS
 
@@ -53,6 +53,8 @@ under I<srcdir> for unsafe API calls.
 This will find all unsafe API calls in I<file.c> and any *.c files found under the
 I<srcdir> directory tree.
 
+=back
+
 =head1 DESCRIPTION
 
   Traverses specified directory trees and/or files (cwd by default)
@@ -61,24 +63,23 @@ I<srcdir> directory tree.
 =head1 AUTHOR
 
   Created: October 2008, Bo Berry
-  Last Modified: April 2009, Jonathan Toppins
+  Last Modified: August 2017, Reini Urban
 
 =head1 COPYRIGHT
 
   Copyright (c) 2008, 2009 by Cisco Systems, Inc.
+  Copyright (c) 2017 Reini Urban
   All rights reserved.
 
 =cut
 
-
-no lib "/opt/perl/packages/5.004_04/lib/site_perl/";
+#no lib "/opt/perl/packages/5.004_04/lib/site_perl/";
 
 use strict;
 use FileHandle;
 use DirHandle;
 use Getopt::Long;
 use Pod::Usage;
-
 
 # Global Variables:
 my $gFileNamesToCheck = qr/\.((c)|(h))$/;
@@ -87,98 +88,102 @@ my $gVerbose         = 0;
 my $gRecursive       = 0;
 my $gOptPerFileStats = 0;
 my $gOptOutputFormat = "std";
-
 my $gNumFilesChecked = 0;
 
 my %gPerFileStats   = ();  # "func_name" => number_encountered
+my %gFuncNumMap;
 my %gFuncConvertMap = (
-    # C11 std APIs (Character Handeling)
+    # C11 std APIs (Character Handling)
     #    - Case Mapping
-    "tolower"  => {"convert" => "??",         "num_found" => 0},
-    "toupper"  => {"convert" => "??",         "num_found" => 0},
+    "tolower"  => "??",
+    "toupper"  => "??",
 
-    # C11 std APIs (String handeling)
+    # C11 std APIs (String handling)
     #    - Copying
-    "memcpy"   => {"convert" => "memcpy_s",   "num_found" => 0},
-    "memmove"  => {"convert" => "memmove_s",  "num_found" => 0},
-    "strcpy"   => {"convert" => "strcpy_s",   "num_found" => 0},
-    "strncpy"  => {"convert" => "strncpy_s",  "num_found" => 0},
+    "memcpy"   => "memcpy_s",
+    "memmove"  => "memmove_s",
+    "strcpy"   => "strcpy_s",
+    "strncpy"  => "strncpy_s",
 
     #    - Concatenation
-    "strcat"   => {"convert" => "strcat_s",   "num_found" => 0},
-    "strncat"  => {"convert" => "strncat_s",  "num_found" => 0},
+    "strcat"   => "strcat_s",
+    "strncat"  => "strncat_s",
 
     #    - Comparison
-    "memcmp"   => {"convert" => "memcmp_s",   "num_found" => 0},
-    "strcmp"    => {"convert" => "??", "num_found" => 0},
-    "strncmp"    => {"convert" => "??", "num_found" => 0},
-    "strcoll"    => {"convert" => "??", "num_found" => 0},
-    "strxfrm"    => {"convert" => "??", "num_found" => 0},
+    "memcmp"   => "memcmp_s",
+    "strcmp"   => "strcmp_s",
+    "strncmp"  => "strcmp_s",
+    "strcoll"  => "??",
+    "strxfrm"  => "??",
 
     #    - Search
-    "memchr"    => {"convert" => "??", "num_found" => 0},
-    "strchr"    => {"convert" => "??", "num_found" => 0},
-    "strcspn"    => {"convert" => "??", "num_found" => 0},
-    "strpbrk"    => {"convert" => "??", "num_found" => 0},
-    "strrchr"    => {"convert" => "??", "num_found" => 0},
-    "strspn"    => {"convert" => "??", "num_found" => 0},
-    "strstr"    => {"convert" => "??", "num_found" => 0},
-    "strtok"   => {"convert" => "strtok_s",   "num_found" => 0},
+    "memchr"    => "??",
+    "strchr"    => "??",
+    "strcspn"   => "strcspn_s",
+    "strpbrk"   => "strpbrk_s",
+    "strrchr"   => "??",
+    "strspn"    => "strspn_s",
+    "strstr"    => "strstr_s",
+    "strtok"    => "strtok_s",
 
     #    - Miscellaneous
-    "memset"   => {"convert" => "memset_s",   "num_found" => 0},
-    "strerror"    => {"convert" => "??", "num_found" => 0},
-    "strlen"   => {"convert" => "strnlen_s",  "num_found" => 0},
+    "memset"   => "memset_s",
+    "strerror" => "??", # TODO strerror_s
+    "strlen"   => "strnlen_s",
 
     # C11 std APIs (Input/Output)
-    "sprintf"  => {"convert" => "sprintf_s", "num_found" => 0},
-    "snprintf" => {"convert" => "NO REPLACEMENT", "num_found" => 0},
+    "sprintf"   => "sprintf_s",
+    "snprintf"  => "sprintf_s",
+    "vsprintf"  => "vsprintf_s",
+    "vsnprintf" => "vsprintf_s",
 
     # Extensions
     #    - Posix extensions
-    "strnlen"  => {"convert" => "??",         "num_found" => 0},
-    "strcasecmp"    => {"convert" => "??", "num_found" => 0},
-    "strncasecmp"    => {"convert" => "??", "num_found" => 0},
+    "strnlen"     => "strnlen_s",
+    "strcasecmp"  => "strcasecmp_s",
+    "strncasecmp" => "strcasecmp_s",
 
     #    - BSD extensions
-    "strnstr"    => {"convert" => "??", "num_found" => 0},
-    "strlcat"    => {"convert" => "??", "num_found" => 0},
-    "strlcpy"    => {"convert" => "??", "num_found" => 0},
-    "strsep"    => {"convert" => "??", "num_found" => 0},
-    "bcopy"    => {"convert" => "memcpy_s",   "num_found" => 0},
-    "bzero"    => {"convert" => "memset_s",   "num_found" => 0},
+    "strnstr"  => "strlen_s",
+    "strlcat"  => "strcat_s",
+    "strlcpy"  => "strcpy_s",
+    "strsep"   => "??",
+    "bcopy"    => "memcpy_s",
+    "bzero"    => "memset_s",
 
     # Kernel Specific APIs
     #    Linux specific APIs
-    "strnicmp"    => {"convert" => "??", "num_found" => 0},
-    "strnchr"    => {"convert" => "??", "num_found" => 0},
-    "memscan"    => {"convert" => "??", "num_found" => 0},
-    "skip_spaces"    => {"convert" => "??", "num_found" => 0},
-    "strim"    => {"convert" => "??", "num_found" => 0},
-    "memchr_inv"    => {"convert" => "??", "num_found" => 0},
-    "kstrdup"    => {"convert" => "??", "num_found" => 0},
-    "kstrndup"    => {"convert" => "??", "num_found" => 0},
-    "kmemdup"    => {"convert" => "??", "num_found" => 0},
-    "argv_split"    => {"convert" => "??", "num_found" => 0},
-    "argv_free"    => {"convert" => "??", "num_found" => 0},
-    "sysfs_streq"    => {"convert" => "??", "num_found" => 0},
-    "strtobool"    => {"convert" => "??", "num_found" => 0},
-    "vbin_printf"    => {"convert" => "??", "num_found" => 0},
-    "bstr_printf"    => {"convert" => "??", "num_found" => 0},
-    "bprintf"    => {"convert" => "??", "num_found" => 0},
-    "memory_read_from_buffer"    => {"convert" => "??", "num_found" => 0},
-    "strstarts"    => {"convert" => "??", "num_found" => 0},
+    "strnicmp"       => "??",
+    "strnchr"        => "??",
+    "memscan"        => "??",
+    "skip_spaces"    => "??",
+    "strim"          => "??",
+    "memchr_inv"     => "??",
+    "kstrdup"        => "??",
+    "kstrndup"       => "??",
+    "kmemdup"        => "??",
+    "argv_split"     => "??",
+    "argv_free"      => "??",
+    "sysfs_streq"    => "??",
+    "strtobool"      => "??",
+    "vbin_printf"    => "??",
+    "bstr_printf"    => "??",
+    "bprintf"        => "??",
+    "memory_read_from_buffer"    => "??",
+    "strstarts"      => "??",
 
     #    IOS specific APIs
-    "strdiff"  => {"convert" => "??",         "num_found" => 0},
-    "memsetl"  => {"convert" => "??",         "num_found" => 0},
-    "memchk"   => {"convert" => "??",         "num_found" => 0},
-    "memrchk"  => {"convert" => "??",         "num_found" => 0},
-    "memchkl"  => {"convert" => "??",         "num_found" => 0},
-    "memdiff"  => {"convert" => "??",         "num_found" => 0},
-    "sstrncat" => {"convert" => "??",         "num_found" => 0},
-    "sstrncpy" => {"convert" => "??",         "num_found" => 0}
+    "strdiff"  => "??",
+    "memsetl"  => "??",
+    "memchk"   => "??",
+    "memrchk"  => "??",
+    "memchkl"  => "??",
+    "memdiff"  => "??",
+    "sstrncat" => "strncat_s",
+    "sstrncpy" => "strncpy_s",
 );
+my $funcRegexpStr = join("|", sort keys %gFuncConvertMap);
+my $gFuncRegexp = qr/[^_]($funcRegexpStr)/;
 
 main();
 
@@ -364,17 +369,20 @@ sub CheckFile
         }
     }
 
+    # TODO: skip #if 0 and comments
     while ($line = <$fh>) {
         $lineNumber++;
-        foreach my $func (keys %gFuncConvertMap) {
-            my $matchline = "[^_]$func";
+        if ($line =~ $gFuncRegexp) { # 7x faster
+            foreach my $func (keys %gFuncConvertMap) {
+                my $matchline = "[^_]$func";
 
-            if ($line =~ m/$matchline/) {
-                $foundfunc = 1;
-                Log($gVerbose, " [$lineNumber] $line ");
-                $gFuncConvertMap{$func}{"num_found"}++;
-                if ($gOptPerFileStats) {
-                    $rec{$func}++;
+                if ($line =~ m/$matchline/) {
+                    $foundfunc = 1;
+                    Log($gVerbose, " [$lineNumber] $line ");
+                    $gFuncNumMap{$func}++;
+                    if ($gOptPerFileStats) {
+                        $rec{$func}++;
+                    }
                 }
             }
         }
@@ -405,7 +413,10 @@ sub PrintFileData
             print "------------------------------------------------ \n";
 
             foreach my $func (sort keys %{$gPerFileStats{$file}}) {
-                print "$func count = " . $gPerFileStats{$file}{$func} . "\n";
+                if ($gPerFileStats{$file}{$func}) {
+                    printf "%20s:\tcount = %2d\n",
+                      $func, $gPerFileStats{$file}{$func};
+                }
             }
         } elsif ($gOptOutputFormat =~ m/^csv$/) {
             Exit(1, "Problem!\n");
@@ -428,8 +439,11 @@ sub PrintSummary
         print "------------------------------------------------ \n";
 
         foreach my $func (sort keys %gFuncConvertMap) {
-            print "$func count = " . ${$gFuncConvertMap{$func}}{"num_found"} .
-                  "  Replace with " . ${$gFuncConvertMap{$func}}{"convert"} . "\n";
+            if ($gFuncNumMap{$func}) {
+                printf "%20s:\t count = %2d, Replace with %s\n",
+                  $func, $gFuncNumMap{$func},
+                  $gFuncConvertMap{$func};
+          }
         }
     } elsif ($gOptOutputFormat =~ m/^csv$/) {
         Exit(1, "Problem!\n");
