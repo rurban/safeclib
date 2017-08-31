@@ -1,4 +1,7 @@
-/* August 2017, Reini Urban
+/*------------------------------------------------------------------
+ * snprintf_s.c
+ *
+ * August 2017, Reini Urban
  *
  * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
