@@ -97,8 +97,8 @@ int main()
     }
     std_ind = memcmp(mem1, mem2, len*2);
     if (ind != std_ind) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
+        debug_printf("%s %u  Ind=%d  std_ind=%d rc=%u \n",
+                     __FUNCTION__, __LINE__,  ind, std_ind, rc );
         errs++;
     }
 /*--------------------------------------------------*/
@@ -120,8 +120,8 @@ int main()
     }
     std_ind = memcmp(mem1, mem2, len*2);
     if (ind != std_ind) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
+        debug_printf("%s %u  Ind=%d  std_ind=%d rc=%u \n",
+                     __FUNCTION__, __LINE__,  ind, std_ind, rc );
         errs++;
     }
 /*--------------------------------------------------*/
@@ -142,8 +142,8 @@ int main()
     }
     std_ind = memcmp(mem1, mem2, LEN*2);
     if (ind != std_ind) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
+        debug_printf("%s %u  Ind=%d  std_ind=%d rc=%u \n",
+                     __FUNCTION__, __LINE__,  ind, std_ind, rc );
         errs++;
     }
 /*--------------------------------------------------*/
@@ -164,10 +164,14 @@ int main()
                      __FUNCTION__, __LINE__,  ind, rc );
         errs++;
     }
+
+#define sgn(i) ((i)>0 ? 1 : ((i)<0 ? -1 : 0))
+
+    /* ANSI C may return just the signum here: 1 instead of 5 */
     std_ind = memcmp(mem1, mem2, LEN*2);
-    if (ind != std_ind) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
+    if (ind != std_ind && sgn(ind) != std_ind) {
+        debug_printf("%s %u  Ind=%d  std_ind=%d rc=%u \n",
+                     __FUNCTION__, __LINE__,  ind, std_ind, rc );
         errs++;
     }
 

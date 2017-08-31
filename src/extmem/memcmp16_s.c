@@ -139,7 +139,7 @@ memcmp16_s (const uint16_t *dest, rsize_t dmax,
     *diff = 0;
     while (dmax != 0 && smax != 0) {
         if (*dp != *sp) {
-            *diff = *dp - *sp;
+            *diff = *dp - *sp; /* in units of int16 */
             break;
         }
 
