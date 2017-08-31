@@ -84,8 +84,18 @@ BUILT_SOURCES = $(top_srcdir)/.version
 pcdatadir = $(libdir)/pkgconfig
 pcdata_DATA = safec-$(SAFEC_API_VERSION).pc
 
+MAN1_SOURCES = doc/man/man1/check_for_unsafe_apis.1
+dist_man_MANS =
+if HAVE_POD2MAN
+dist_man_MANS += $(MAN1_SOURCES)
+
+$(MAN1_SOURCES): $(top_srcdir)/scripts/check_for_unsafe_apis
+	-mkdir -p doc/man/man1
+	-$(POD2MAN) $(top_srcdir)/scripts/check_for_unsafe_apis >$@
+
+endif
 if HAVE_DOXYGEN
-dist_man_MANS = \
+dist_man_MANS += \
 	doc/man/man3/STRTOK_DELIM_MAX_LEN.3 \
 	doc/man/man3/abort_handler_s.3 \
 	doc/man/man3/abort_handler_s.c.3 \
@@ -222,7 +232,8 @@ dist_man_MANS = \
 	doc/man/man3/wsize.3
 CLEANFILES = Doxyfile doc/footer README.md
 
-docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md
+docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
+   doc/man/man1/check_for_unsafe_apis.1
 	doxygen
 	-rm -rf doc/man/man3/d[0-9a-f]
 	-rm doc/man/man3/_*.3

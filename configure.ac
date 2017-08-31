@@ -238,6 +238,10 @@ AC_CHECK_PROGS([DOXYGEN], [doxygen])
 if test -z "$DOXYGEN";
    then AC_MSG_WARN([doxygen not found - continuing without doxygen support])
 fi
+AC_CHECK_PROGS([POD2MAN], [pod2man])
+if test -z "POD2MAN";
+   then AC_MSG_WARN([pod2man not found - continuing without pod2man support])
+fi
 
 # Checks for libraries
 # ===============================================
@@ -249,14 +253,15 @@ AC_HEADER_STDC
 AC_HEADER_STDBOOL
 AC_HEADER_TIME
 AC_CHECK_HEADERS([sys/time.h])
-AC_CHECK_HEADERS([stdlib.h     \
-                  memory.h     \
-                  string.h     \
-                  limits.h     \
-                  sys/types.h  \
-                  inttypes.h   \
-                  stdint.h     \
-                  errno.h
+AC_CHECK_HEADERS([stdlib.h	\
+                  memory.h	\
+                  string.h	\
+                  limits.h	\
+                  sys/types.h	\
+                  inttypes.h	\
+                  stdint.h	\
+                  errno.h	\
+                  wchar.h
                  ])
 
 INSERT_SYS_TYPES_H=""
@@ -327,7 +332,8 @@ AC_SUBST(FALLBACK_ERRNO_T)
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
-AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn strstr])
+AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
+                strstr])
 
 # Checks for system services
 # ===============================================
@@ -390,6 +396,7 @@ AC_CONFIG_FILES([safec-${SAFEC_API_VERSION}.pc:safec.pc.in
                  tests/Makefile])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_CONDITIONAL([HAVE_POD2MAN], [test -n "POD2MAN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([Doxyfile])])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/footer])])
 

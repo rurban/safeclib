@@ -61,16 +61,20 @@ EXT_MEM_FILES = \
 STD_STR_FILES = \
 	str/safe_str_constraint.h \
 	str/safe_str_constraint.c \
-	str/snprintf_s.c 	       \
-	str/sprintf_s.c 	       \
+	str/sprintf_s.c 	  \
 	str/strcat_s.c            \
 	str/strcpy_s.c            \
 	str/strncat_s.c           \
 	str/strncpy_s.c           \
 	str/strnlen_s.c           \
 	str/strtok_s.c            \
-	str/vsnprintf_s.c         \
 	str/vsprintf_s.c 	       
+
+# but they are in the C11 standard
+STD_UNSAFE_FILES = \
+	str/snprintf_s.c	\
+	str/vsnprintf_s.c       
+#	io/tmpnam_s.c
 
 EXT_STR_FILES = \
 	extstr/strcasecmp_s.c        \
@@ -145,7 +149,6 @@ STD_IO_FILES = \
 	io/scanf_s.c	\
 	io/sscanf_s.c	\
 	io/tmpfile_s.c	\
-	io/tmpnam_s.c	\
 	io/vfprintf_s.c	\
 	io/vfscanf_s.c	\
 	io/vprintf_s.c	\
@@ -172,11 +175,13 @@ AM_CFLAGS += -Werror -pedantic -Imem -Istr
 
 noinst_LTLIBRARIES = \
 	libmemprims.la   \
-	libsafeccore.la
+	libsafeccore.la  \
+        libstdunsafe.la
 #	libsafecmem.la   \
 #	libsafecstr.la
 libmemprims_la_SOURCES  = $(MEM_PRIM_FILES)
 libsafeccore_la_SOURCES = $(CORE_FILES)
+libstdunsafe_la_SOURCES = $(STD_UNSAFE_FILES)
 #libsafecmem_la_SOURCES  = $(STD_MEM_FILES) $(EXT_MEM_FILES)
 #libsafecstr_la_SOURCES  = $(STD_STR_FILES) $(EXT_STR_FILES)
 
@@ -185,13 +190,23 @@ libsafeccore_la_SOURCES = $(CORE_FILES)
 #        sed -n -e 's/^..*SAFEC_EXPORT[[:space:]][[:space:]]*\([[:alnum:]_][[:alnum:]_]*\)..*$$/\1/p' @top_srcdir@/src/safec.h.in > $@
 
 lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
-libsafec_@SAFEC_API_VERSION@_la_SOURCES      = $(STD_MEM_FILES) $(EXT_MEM_FILES) \
-					       $(STD_STR_FILES) $(EXT_STR_FILES) \
-					       $(STD_WCHAR_FILES) 
-libsafec_@SAFEC_API_VERSION@_la_LIBADD       = libmemprims.la libsafeccore.la
-libsafec_@SAFEC_API_VERSION@_la_LDFLAGS      = -version-info $(SAFEC_SO_VERSION) \
-	                                       -no-undefined
-#	                                       -export-symbols $(EXPORT_SYM)
+libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
+	$(STD_MEM_FILES) $(EXT_MEM_FILES) \
+	$(STD_STR_FILES) $(EXT_STR_FILES)
+#	$(STD_WCHAR_FILES)  \
+#	$(STD_OS_FILES)     \
+#	$(STD_IO_FILES)     \
+#	$(STD_MISC_FILES)   \
+#	$(STD_STDLIB_FILES)
+
+libsafec_@SAFEC_API_VERSION@_la_LIBADD = \
+	libmemprims.la  \
+	libsafeccore.la \
+	libstdunsafe.la
+libsafec_@SAFEC_API_VERSION@_la_LDFLAGS = \
+	-version-info $(SAFEC_SO_VERSION) \
+	-no-undefined
+#	-export-symbols $(EXPORT_SYM)
 #libsafec_@SAFEC_API_VERSION@_la_DEPENDENCIES = $(EXPORT_SYM)
 
 
