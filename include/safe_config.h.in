@@ -59,6 +59,15 @@ extern "C" {
 /* null out the remaining part of a string buffer if it is not completely used */
 @INSERT_NULLSLACK@
 
+/* Define to 1 to include some additional unsafe C11 functions:
+   snprintf_s, vsnprintf_s, tmpnam_s */
+#undef ENABLE_UNSAFE
+
+/* Define to 1 to disable additional functions not defined
+   in the C11 appendix K specification */
+#undef DISABLE_EXTS
+
+
 /*
  * The spec does not call out a maximum len for the strtok src
  * string (the max delims size), so one is defined here.

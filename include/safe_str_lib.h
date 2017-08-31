@@ -58,12 +58,17 @@ extern "C" {
 extern int
 sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 extern int
+vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+
+/* These functions are defined in the C11 standard Annex K, but are still unsafe.
+   Rather use the 2 functions above. */
+#ifdef ENABLE_UNSAFE  
+extern int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 extern int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
-extern int
 vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
-  
+#endif
+
 #if 0
 swprintf_s
 snwprintf_s

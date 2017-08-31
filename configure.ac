@@ -214,6 +214,22 @@ else
 fi
 AC_SUBST(INSERT_NULLSLACK)
 
+AC_ARG_ENABLE(unsafe,
+	AS_HELP_STRING([--enable-unsafe],
+                [Include unsafe std C11 functions: snprintf_s, vsnprintf_s,
+                tmpnam_s @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_unsafe=true ;;
+	no)  enable_unsafe=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-unsafe]) ;;
+	esac], [enable_unsafe=no ])
+if test "x$enable_unsafe" = "xtrue" ; then
+	AC_DEFINE([ENABLE_UNSAFE], [ 1 ],
+		  [Define to 1 to include some additional unsafe C11 functions:
+                  snprintf_s, vsnprintf_s, tmpnam_s])
+fi
+AM_CONDITIONAL([ENABLE_UNSAFE], test "x$enable_unsafe" = "xtrue")
+
 # Maintainer switches
 AC_ARG_ENABLE(debug-build,
 	AS_HELP_STRING([--enable-debug-build],

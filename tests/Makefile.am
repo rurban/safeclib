@@ -46,7 +46,6 @@ SAFEC_BUILT_TESTS = \
 	t_memzero16_s         \
 	t_memzero_s           \
 	t_sprintf_s           \
-	t_snprintf_s          \
 	t_strcasecmp_s        \
 	t_strcasestr_s        \
 	t_strcat_s            \
@@ -85,9 +84,14 @@ SAFEC_BUILT_TESTS = \
 	t_strtolowercase_s    \
 	t_strtouppercase_s    \
 	t_strzero_s           \
-	t_vsprintf_s          \
-	t_vsnprintf_s          
+	t_vsprintf_s          
 
+if ENABLE_UNSAFE
+SAFEC_BUILT_TESTS += \
+	t_snprintf_s          \
+	t_vsnprintf_s         
+#	t_tmpnam_s
+endif
 SAFEC_BUILT_PERFS = p_memcpy32_s p_memcpy_s
 
 SAFEC_TEST_COMMON = \
@@ -123,7 +127,6 @@ t_memzero32_s_SOURCES         = test_memzero32_s.c $(SAFEC_TEST_COMMON)
 t_memzero16_s_SOURCES         = test_memzero16_s.c $(SAFEC_TEST_COMMON)
 t_memzero_s_SOURCES           = test_memzero_s.c $(SAFEC_TEST_COMMON)
 t_sprintf_s_SOURCES           = test_sprintf_s.c $(SAFEC_TEST_COMMON)
-t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_strcasecmp_s_SOURCES        = test_strcasecmp_s.c $(SAFEC_TEST_COMMON)
 t_strcasestr_s_SOURCES        = test_strcasestr_s.c $(SAFEC_TEST_COMMON)
 t_strcat_s_SOURCES            = test_strcat_s.c $(SAFEC_TEST_COMMON)
@@ -163,6 +166,9 @@ t_strtolowercase_s_SOURCES    = test_strtolowercase_s.c $(SAFEC_TEST_COMMON)
 t_strtouppercase_s_SOURCES    = test_strtouppercase_s.c $(SAFEC_TEST_COMMON)
 t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
+if ENABLE_UNSAFE
+t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
+endif
 
 CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs

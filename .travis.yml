@@ -8,6 +8,7 @@ os:
 env:
   - XCC="gcc"
   - XCC="c++ -std=c++98" CONF="--disable-nullslack"
+  - XCC="cc" CONF="--enable-unsafe"
   - XCC="clang"
   - XCC="clang -fsanitize=address" CONF="--enable-debug"
 

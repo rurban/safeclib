@@ -201,8 +201,11 @@ libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 
 libsafec_@SAFEC_API_VERSION@_la_LIBADD = \
 	libmemprims.la  \
-	libsafeccore.la \
+	libsafeccore.la
+if ENABLE_UNSAFE
+libsafec_@SAFEC_API_VERSION@_la_LIBADD += \
 	libstdunsafe.la
+endif
 libsafec_@SAFEC_API_VERSION@_la_LDFLAGS = \
 	-version-info $(SAFEC_SO_VERSION) \
 	-no-undefined
