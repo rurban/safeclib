@@ -144,15 +144,10 @@ dist_man_MANS += \
 	doc/man/man3/memzero32_s.c.3 \
 	doc/man/man3/memzero_s.3 \
 	doc/man/man3/memzero_s.c.3 \
-	doc/man/man3/module_exit.3 \
-	doc/man/man3/module_init.3 \
 	doc/man/man3/safe_mem_constraint.c.3 \
 	doc/man/man3/safe_str_constraint.c.3 \
 	doc/man/man3/set_mem_constraint_handler_s.3 \
 	doc/man/man3/set_str_constraint_handler_s.3 \
-	doc/man/man3/slk_exit.3 \
-	doc/man/man3/slk_init.3 \
-	doc/man/man3/slkm_init.c.3 \
 	doc/man/man3/sprintf_s.3 \
 	doc/man/man3/sprintf_s.c.3 \
 	doc/man/man3/str_handler.3 \
@@ -229,9 +224,7 @@ dist_man_MANS += \
 	doc/man/man3/strtouppercase_s.3 \
 	doc/man/man3/strtouppercase_s.c.3 \
 	doc/man/man3/strzero_s.3 \
-	doc/man/man3/strzero_s.c.3 \
-	doc/man/man3/wmask.3 \
-	doc/man/man3/wsize.3
+	doc/man/man3/strzero_s.c.3
 CLEANFILES = Doxyfile doc/footer README.md
 
 doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile doc/footer include/safe_config.h
