@@ -191,13 +191,18 @@ libstdunsafe_la_SOURCES = $(STD_UNSAFE_FILES)
 
 lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
 libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
-	$(STD_MEM_FILES) $(EXT_MEM_FILES) \
-	$(STD_STR_FILES) $(EXT_STR_FILES)
+	$(STD_MEM_FILES)    \
+	$(STD_STR_FILES)    
 #	$(STD_WCHAR_FILES)  \
 #	$(STD_OS_FILES)     \
 #	$(STD_IO_FILES)     \
 #	$(STD_MISC_FILES)   \
 #	$(STD_STDLIB_FILES)
+if ENABLE_EXTS
+libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
+	$(EXT_MEM_FILES) \
+	$(EXT_STR_FILES)
+endif
 
 libsafec_@SAFEC_API_VERSION@_la_LIBADD = \
 	libmemprims.la  \

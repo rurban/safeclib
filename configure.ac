@@ -151,25 +151,25 @@ AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
 
 AC_ARG_ENABLE(extensions,
 	AS_HELP_STRING([--disable-extensions],
-		       [This library contains additional functions not defined
-			in the C11 specification. Disable to omit these.
-			@<:@default=no@:>@]),
-	[case "${disableval}" in
-	yes) disable_extensions=true ;;
-	no)  disable_extensions=false ;;
-	*)   AC_MSG_ERROR([bad value ${disableval} for --disable-extensions]) ;;
-	esac], [disable_extensions=false ])
+          [This library contains additional functions not defined
+	   in the C11 specification. Disable to omit these.
+	   @<:@default=no@:>@]),
+       [case "${enableval}" in
+	yes) enable_extensions=true ;;
+	no)  enable_extensions=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-extensions]) ;;
+	esac], [enable_extensions=true])
 
-if test "x$disable_extensions" = "xtrue" ; then
-	INSERT_EXTS="#define DISABLE_EXTS 1"
+if test "x$enable_extensions" = "xfalse" ; then
+ 	INSERT_EXTS="#define DISABLE_EXTS 1"
 else
-	INSERT_EXTS="#undef DISABLE_EXTS"
+ 	INSERT_EXTS="#undef DISABLE_EXTS"
 fi
 #	AC_DEFINE([DISABLE_EXTS], [ 1 ],
 #		  [Define to 1 to disable additional functions not defined
 #		   in the C11 appendix K specification])
 AC_SUBST(INSERT_EXTS)
-AM_CONDITIONAL(DISABLE_EXTS, test "x$disable_extensions" = "xtrue")
+AM_CONDITIONAL(ENABLE_EXTS, test "x$enable_extensions" = "xtrue")
 
 AC_ARG_ENABLE(memmax,
 	AS_HELP_STRING([--enable-memmax],

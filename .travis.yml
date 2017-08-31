@@ -9,6 +9,7 @@ env:
   - XCC="gcc"
   - XCC="cc" CONF="--enable-unsafe"
   - XCC="clang" CONF="--disable-nullslack"
+  - XCC="cc" CONF="--disable-extensions"
   - XCC="clang -fsanitize=address" CONF="--enable-debug"
 # clang++ does not allow c anymore. gcc is duplicate to cc
 matrix:
