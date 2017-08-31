@@ -234,11 +234,17 @@ dist_man_MANS += \
 	doc/man/man3/wsize.3
 CLEANFILES = Doxyfile doc/footer README.md
 
+doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile doc/footer include/safe_config.h.in
+	doxygen
+
 docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
    doc/man/man1/check_for_unsafe_apis.1
 	doxygen
 	-rm -rf doc/man/man3/d[0-9a-f]
 	-rm doc/man/man3/_*.3
+	-rm doc/man/man3/slk_*.3
+	-rm doc/man/man3/module_*.3
+	-rm doc/man/man3/{wmask,wsize}.3
 	-rm doc/man/man3/DRV*.3
 	-rm doc/man/man3/MODULE*.3
 	-rm doc/man/man3/README*
@@ -262,6 +268,10 @@ perf:
 	tests/.libs/p_memcpy_s
 	tests/.libs/p_memcpy32_s
 gh-pages: docs
+	echo ensure ./configure --enable-unsafe
+	ls doc/man/man3/snprintf_s.3
+	echo ensure a clean git checkout, everything will be deleted
+	test -z "`git status --porcelain`"
 	git checkout gh-pages
 	rm -rf doc/man
 	rm -rf `ls | grep -v doc`
@@ -280,6 +290,9 @@ release: docs dist
 	git tag v`date +%d%m%Y`
 	git push
 	git push --tags
+	./configure --enable-unsafe
+	$(MAKE)
+	$(MAKE) docs
 	$(MAKE) gh-pages
 	git commit -m"Update to v`date +%d%m%Y`"
 	git push

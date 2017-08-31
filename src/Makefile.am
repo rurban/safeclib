@@ -169,6 +169,17 @@ STD_OS_FILES = \
 STD_STDLIB_FILES = \
 	stdlib/wctomb_s.c	
 
+ALL_SRC_FILES = 
+	$(STD_MEM_FILES)    \
+	$(STD_STR_FILES)    \
+	$(EXT_MEM_FILES)    \
+	$(EXT_STR_FILES)
+#	$(STD_WCHAR_FILES)  \
+#	$(STD_OS_FILES)     \
+#	$(STD_IO_FILES)     \
+#	$(STD_MISC_FILES)   \
+#	$(STD_STDLIB_FILES)
+
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
 AM_CFLAGS += -Werror -pedantic -Imem -Istr
