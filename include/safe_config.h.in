@@ -61,11 +61,11 @@ extern "C" {
 
 /* Define to 1 to include some additional unsafe C11 functions:
    snprintf_s, vsnprintf_s, tmpnam_s */
-#undef ENABLE_UNSAFE
+@INSERT_UNSAFE@
 
 /* Define to 1 to disable additional functions not defined
    in the C11 appendix K specification */
-#undef DISABLE_EXTS
+@INSERT_EXTS@
 
 
 /*
