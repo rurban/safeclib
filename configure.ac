@@ -155,7 +155,7 @@ else
         AC_MSG_RESULT([no CFLAGS=$DEBUG_CFLAGS])
 fi
 
-if test "$CFLAGS" == "-g -O2" -o "$CFLAGS" == "-g"; then
+if test "x$CFLAGS" == "x" -o "x$CFLAGS" == "x-g -O2" -o "x$CFLAGS" == "x-g"; then
 	# by doing it this way we suppress automake's assumption that if
 	# CFLAGS is empty lets compile the code with '-g -O2'.
 	CFLAGS="${DEBUG_CFLAGS}"
