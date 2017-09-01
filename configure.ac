@@ -99,6 +99,7 @@ AC_ARG_ENABLE(gcov,
 	*)   enable_gcov=true ; gcov="${enableval}" ;;
 	esac], [enable_gcov=false ])
 
+AC_MSG_CHECKING([enable-gcov])
 if test "x$enable_gcov" = "xtrue" ; then
 	dnl if test "$GCC" = yes; then
 	dnl 	AC_MSG_ERROR([gcov only works if gcc is used])
@@ -106,6 +107,7 @@ if test "x$enable_gcov" = "xtrue" ; then
 
         dnl You might need the compiler-specific gcov: e.g. gcov-mp-6
 	GCOV="$gcov"
+	AC_MSG_RESULT([gcov=$gcov])
 	AC_SUBST(GCOV)
 
 	GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
@@ -116,6 +118,8 @@ if test "x$enable_gcov" = "xtrue" ; then
 	dnl links in -lgcov, so we do it explicitly here for the same effect
 	GCOV_LIBS=-lgcov
 	AC_SUBST(GCOV_LIBS)
+else
+	AC_MSG_RESULT([no])
 fi
 AM_CONDITIONAL(ENABLE_GCOV, test "x$enable_gcov" = "xtrue")
 
@@ -128,6 +132,7 @@ AC_ARG_ENABLE(debug,
 	no)  enable_debug=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
 	esac], [enable_debug=false ])
+AC_MSG_CHECKING([enable-debug])
 if test "x$enable_debug" = "xtrue" ; then
         if test "x$enable_gcov" = "xtrue" ; then
 	   DEBUG_CFLAGS="-g"
@@ -138,6 +143,7 @@ if test "x$enable_debug" = "xtrue" ; then
             enable_shared=no
             enable_shared_with_static_runtimes=no
         fi
+        AC_MSG_RESULT([yes CFLAGS=$DEBUG_CFLAGS])
 	AM_CPPFLAGS="${AM_CPPFLAGS} -DDEBUG"
 else
         if test "x$enable_gcov" = "xtrue"; then
@@ -146,6 +152,7 @@ else
            # default release optimization
 	   DEBUG_CFLAGS="-O2"
         fi
+        AC_MSG_RESULT([no CFLAGS=$DEBUG_CFLAGS])
 fi
 
 if test "$CFLAGS" == "-g -O2" -o "$CFLAGS" == "-g"; then
@@ -171,10 +178,12 @@ AC_ARG_ENABLE(extensions,
 	no)  enable_extensions=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-extensions]) ;;
 	esac], [enable_extensions=true])
-
+AC_MSG_CHECKING([disable-extensions])
 if test "x$enable_extensions" = "xfalse" ; then
+	AC_MSG_RESULT([yes])
 	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTENSIONS 1"
 else
+	AC_MSG_RESULT([no])
 	INSERT_EXTS="#undef SAFECLIB_DISABLE_EXTENSIONS"
 fi
 #	AC_DEFINE([SAFECLIB_DISABLE_EXTENSIONS], [ 1 ],
@@ -191,7 +200,8 @@ AC_ARG_ENABLE(memmax,
 	@<:@0-9@:>@*) enable_memmax=${enableval} ;;
 	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-memmax]) ;;
 	esac], [enable_memmax="(256UL << 20)" ])
-
+AC_MSG_CHECKING([memmax])
+AC_MSG_RESULT([$enable_memmax])
 # AC_DEFINE([RSIZE_MAX_MEM], [ $enable_memmax ],
 #	  [Maximum object size the mem* functions will allow,
 #	   default is 256MB])
@@ -207,6 +217,8 @@ AC_ARG_ENABLE(strmax,
 	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-memstr]) ;;
 	esac], [enable_memstr="(4UL << 10)" ])
 
+AC_MSG_CHECKING([memstr])
+AC_MSG_RESULT([$enable_memstr])
 RSIZE_MAX_STR=$enable_memstr
 AC_SUBST(RSIZE_MAX_STR)
 
@@ -219,13 +231,15 @@ AC_ARG_ENABLE(nullslack,
 	no)  enable_nullslack=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-nullslack]) ;;
 	esac], [enable_nullslack=true ])
-
+AC_MSG_CHECKING([disable-nullslack])
 if test "x$enable_nullslack" = "xtrue" ; then
+	AC_MSG_RESULT([no (default)])
 	INSERT_NULLSLACK="#define SAFECLIB_STR_NULL_SLACK 1"
 	# AC_DEFINE([SAFECLIB_STR_NULL_SLACK], [ 1 ],
 	# 	  [Define to 1 to null out the remaining part of a string
 	# 	   buffer if it is not completely used])
 else
+	AC_MSG_RESULT([yes])
 	INSERT_NULLSLACK="#undef SAFECLIB_STR_NULL_SLACK"
 fi
 AC_SUBST(INSERT_NULLSLACK)
@@ -239,9 +253,12 @@ AC_ARG_ENABLE(unsafe,
 	no)  enable_unsafe=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-unsafe]) ;;
 	esac], [enable_unsafe=no ])
+AC_MSG_CHECKING([enable-unsafe])
 if test "x$enable_unsafe" = "xtrue" ; then
+	AC_MSG_RESULT([yes])
 	INSERT_UNSAFE="#define SAFECLIB_ENABLE_UNSAFE 1"
 else
+	AC_MSG_RESULT([no])
 	INSERT_UNSAFE="#undef SAFECLIB_ENABLE_UNSAFE"
 fi
 AC_SUBST(INSERT_UNSAFE)
