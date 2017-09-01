@@ -40,7 +40,10 @@ SAFEC_BUILT_TESTS = \
 	t_strncpy_s     \
 	t_strnlen_s     \
 	t_strtok_s      \
-	t_vsprintf_s    \
+	t_vsprintf_s
+
+if ENABLE_WCHAR
+SAFEC_BUILT_TESTS += \
 	t_mbstowcs_s    \
 	t_mbsrtowcs_s	\
 	t_wcsrtombs_s   \
@@ -65,14 +68,18 @@ SAFEC_BUILT_TESTS = \
 #	t_vfwscanf_s	\
 #	t_vswscanf_s	\
 #	t_vwscanf_s
+endif
 
 if ENABLE_UNSAFE
+# SAFEC_BUILT_TESTS += \
+#	t_tmpnam_s
+if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
 	t_snprintf_s	\
-	t_vsnprintf_s         
+	t_vsnprintf_s   
 #       t_snwprintf_s	\
-#	t_vsnwprintf_s	\
-#	t_tmpnam_s
+#	t_vsnwprintf_s
+endif
 endif
 
 if ENABLE_EXTS
@@ -165,6 +172,8 @@ t_strncpy_s_SOURCES           = test_strncpy_s.c $(SAFEC_TEST_COMMON)
 t_strnlen_s_SOURCES           = test_strnlen_s.c $(SAFEC_TEST_COMMON)
 t_strtok_s_SOURCES            = test_strtok_s.c $(SAFEC_TEST_COMMON)
 t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
+
+if ENABLE_WCHAR
 t_mbstowcs_s_SOURCES          = test_mbstowcs_s.c $(SAFEC_TEST_COMMON)
 t_mbsrtowcs_s_SOURCES         = test_mbsrtowcs_s.c $(SAFEC_TEST_COMMON)
 t_wcsrtombs_s_SOURCES         = test_wcsrtombs_s.c $(SAFEC_TEST_COMMON)
@@ -175,7 +184,7 @@ t_wcsncpy_s_SOURCES           = test_wcsncpy_s.c $(SAFEC_TEST_COMMON)
 t_wcscat_s_SOURCES            = test_wcscat_s.c $(SAFEC_TEST_COMMON)
 t_wcsncat_s_SOURCES           = test_wcsncat_s.c $(SAFEC_TEST_COMMON)
 t_wmemcpy_s_SOURCES           = test_wmemcpy_s.c $(SAFEC_TEST_COMMON)
-t_wmemmove_s_SOURCES         = test_wmemmove_s.c $(SAFEC_TEST_COMMON)
+t_wmemmove_s_SOURCES          = test_wmemmove_s.c $(SAFEC_TEST_COMMON)
 #t_wcstok_s_SOURCES           = test_wcstok_s.c $(SAFEC_TEST_COMMON)
 #t_wcrtomb_s_SOURCES          = test_wcrtomb_s.c $(SAFEC_TEST_COMMON)
 #t_wprintf_s_SOURCES          = test_wprintf_s.c $(SAFEC_TEST_COMMON)
@@ -188,6 +197,7 @@ t_wmemmove_s_SOURCES         = test_wmemmove_s.c $(SAFEC_TEST_COMMON)
 #t_vfwscanf_s_SOURCES         = test_vfwscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vswscanf_s_SOURCES         = test_vswscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vwscanf_s_SOURCES          = test_vwscanf_s.c $(SAFEC_TEST_COMMON)
+endif
 
 if ENABLE_EXTS
 p_memcpy32_s_SOURCES          = perf_memcpy32_s.c $(SAFEC_TEST_COMMON)
@@ -237,10 +247,12 @@ t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 endif
 
 if ENABLE_UNSAFE
+if ENABLE_WCHAR
 t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
 #t_snwprintf_s_SOURCES        = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
 #t_vsnwprintf_s_SOURCES       = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
+endif
 #t_tmpnam_s_SOURCES           = test_tmpnam_s.c $(SAFEC_TEST_COMMON)
 endif
 

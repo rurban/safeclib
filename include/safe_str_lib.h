@@ -288,7 +288,8 @@ strzero_s(char *dest, rsize_t dmax);
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 
-/* multibyte wchar (not yet, see git branch `wchar`) */
+#ifndef SAFECLIB_DISABLE_WCHAR
+/* multibyte wchar */
 
 extern errno_t
 mbstowcs_s(size_t *restrict retval,
@@ -397,6 +398,8 @@ vswscanf_s(const wchar_t *restrict buffer,
 
 #endif
 
+#endif /* SAFECLIB_DISABLE_WCHAR */
+  
 #ifdef __cplusplus
 }
 #endif

@@ -12,7 +12,7 @@ Changes in vxx092017 3.0.0
         This contains in summary only 11 functions for now:
         memcpy_s, memmove_s, memset_s, sprintf_s, strcat_s, strcpy_s, strncat_s,
         strncpy_s, strnlen_s, strtok_s, vsprintf_s.
-        defines SAFECLIB_DISABLE_EXTS
+        defines SAFECLIB_DISABLE_EXTENSIONS
         - Rearranged src layout
         - Macrofied many more tests
         - Improved some tests for old gcc -ansi (c89) memcmp
@@ -21,6 +21,9 @@ Changes in vxx092017 3.0.0
         - added most safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcsnlen_s,
         wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s, wmemcpy_s, wmemmove_s
+        - added --disable-wchar to disable the new multibyte and wchar functions,
+        but not the old 16/32 memory functions.
+        defines SAFECLIB_DISABLE_WCHAR
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

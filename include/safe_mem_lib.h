@@ -113,7 +113,10 @@ extern errno_t memzero32_s(uint32_t *dest, rsize_t dmax);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
-/* multibyte wchar (not yet, see git branch `wchar`) */
+#ifndef SAFECLIB_DISABLE_WCHAR
+/* wchar (of wchar_t size 2 or 4)
+   disabled if your system has no wchar support.
+ */
 
 extern errno_t
 wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
@@ -123,6 +126,7 @@ extern errno_t
 wmemmove_s(wchar_t *dest, rsize_t dmax,
            const wchar_t *src, rsize_t smax);
 
+#endif /* SAFECLIB_DISABLE_WCHAR */
 
 #ifdef __cplusplus
 }

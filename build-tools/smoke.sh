@@ -29,6 +29,8 @@ CC="cc" ./configure --disable-extensions && \
     gmake -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure --enable-unsafe --disable-extensions && \
     gmake -s -j4 check || (cat tests/test-suite.log; exit)
+CC="cc" ./configure --disable-wchar && \
+    gmake -s -j4 check || (cat tests/test-suite.log; exit)
 #CC="clang-mp-3.9 -fsanitize=memory" ./configure --enable-debug && \
 #    gmake -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure --enable-unsafe --enable-debug && \
@@ -64,7 +66,7 @@ CC="cc" ./configure --disable-nullslack && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure --disable-extensions && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
-CC="cc" ./configure --enable-unsafe --disable-extensions && \
+CC="cc" ./configure --disable-wchar && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure --enable-unsafe --enable-debug && \
     make -s -j4 check || (cat tests/test-suite.log; exit)

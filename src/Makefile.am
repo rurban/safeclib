@@ -205,12 +205,15 @@ endif
 lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
 libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 	$(STD_MEM_FILES)    \
-	$(STD_STR_FILES)    \
-	$(STD_WCHAR_FILES)  
+	$(STD_STR_FILES)    
 #	$(STD_OS_FILES)     \
 #	$(STD_IO_FILES)     \
-#	$(STD_MISC_FILES)   \
+#	$(STD_MISC_FILES)
+if ENABLE_WCHAR
+libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
+	$(STD_WCHAR_FILES)
 #	$(STD_STDLIB_FILES)
+endif
 if ENABLE_EXTS
 libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
 	$(EXT_MEM_FILES) \

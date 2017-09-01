@@ -67,6 +67,9 @@ extern "C" {
    in the C11 appendix K specification */
 @INSERT_EXTS@
 
+/* Define to 1 to disable new multibyte and wchar support */
+@INSERT_DISABLE_WCHAR@
+
 
 /*
  * The spec does not call out a maximum len for the strtok src

@@ -99,7 +99,7 @@ AC_ARG_ENABLE(gcov,
 	*)   enable_gcov=true ; gcov="${enableval}" ;;
 	esac], [enable_gcov=false ])
 
-AC_MSG_CHECKING([enable-gcov])
+AC_MSG_CHECKING([for --enable-gcov])
 if test "x$enable_gcov" = "xtrue" ; then
 	dnl if test "$GCC" = yes; then
 	dnl 	AC_MSG_ERROR([gcov only works if gcc is used])
@@ -132,7 +132,7 @@ AC_ARG_ENABLE(debug,
 	no)  enable_debug=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
 	esac], [enable_debug=false ])
-AC_MSG_CHECKING([enable-debug])
+AC_MSG_CHECKING([for --enable-debug])
 if test "x$enable_debug" = "xtrue" ; then
         if test "x$enable_gcov" = "xtrue" ; then
 	   DEBUG_CFLAGS="-g"
@@ -178,7 +178,7 @@ AC_ARG_ENABLE(extensions,
 	no)  enable_extensions=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-extensions]) ;;
 	esac], [enable_extensions=true])
-AC_MSG_CHECKING([disable-extensions])
+AC_MSG_CHECKING([for --disable-extensions])
 if test "x$enable_extensions" = "xfalse" ; then
 	AC_MSG_RESULT([yes])
 	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTENSIONS 1"
@@ -199,8 +199,8 @@ AC_ARG_ENABLE(memmax,
 	[case "${enableval}" in
 	@<:@0-9@:>@*) enable_memmax=${enableval} ;;
 	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-memmax]) ;;
-	esac], [enable_memmax="(256UL << 20)" ])
-AC_MSG_CHECKING([memmax])
+	esac], [enable_memmax="(256UL << 20)  /* 256MB */" ])
+AC_MSG_CHECKING([for --enable-memmax])
 AC_MSG_RESULT([$enable_memmax])
 # AC_DEFINE([RSIZE_MAX_MEM], [ $enable_memmax ],
 #	  [Maximum object size the mem* functions will allow,
@@ -213,13 +213,13 @@ AC_ARG_ENABLE(strmax,
 		       [specify the largest object size allowed for the
 			str* functions @<:@default=4KB@:>@]),
 	[case "${enableval}" in
-	@<:@0-9@:>@*) enable_memstr=${enableval} ;;
-	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-memstr]) ;;
-	esac], [enable_memstr="(4UL << 10)" ])
+	@<:@0-9@:>@*) enable_strmax=${enableval} ;;
+	*)      AC_MSG_ERROR([bad value ${enableval} for --enable-strmax]) ;;
+	esac], [enable_strmax="(4UL << 10) /* 4KB */" ])
 
-AC_MSG_CHECKING([memstr])
-AC_MSG_RESULT([$enable_memstr])
-RSIZE_MAX_STR=$enable_memstr
+AC_MSG_CHECKING([for --enable-strmax])
+AC_MSG_RESULT([$enable_strmax])
+RSIZE_MAX_STR=$enable_strmax
 AC_SUBST(RSIZE_MAX_STR)
 
 AC_ARG_ENABLE(nullslack,
@@ -231,7 +231,7 @@ AC_ARG_ENABLE(nullslack,
 	no)  enable_nullslack=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-nullslack]) ;;
 	esac], [enable_nullslack=true ])
-AC_MSG_CHECKING([disable-nullslack])
+AC_MSG_CHECKING([for --disable-nullslack])
 if test "x$enable_nullslack" = "xtrue" ; then
 	AC_MSG_RESULT([no (default)])
 	INSERT_NULLSLACK="#define SAFECLIB_STR_NULL_SLACK 1"
@@ -253,7 +253,7 @@ AC_ARG_ENABLE(unsafe,
 	no)  enable_unsafe=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-unsafe]) ;;
 	esac], [enable_unsafe=no ])
-AC_MSG_CHECKING([enable-unsafe])
+AC_MSG_CHECKING([for --enable-unsafe])
 if test "x$enable_unsafe" = "xtrue" ; then
 	AC_MSG_RESULT([yes])
 	INSERT_UNSAFE="#define SAFECLIB_ENABLE_UNSAFE 1"
@@ -377,8 +377,32 @@ AC_CHECK_TYPE([errno_t],
         [[#include <errno.h>]])
 AC_SUBST(FALLBACK_ERRNO_T)
 AC_TYPE_MBSTATE_T
-AC_CHECK_TYPE([wchar_t], [], [], [[#include <wchar.h>]])
-AX_COMPILE_CHECK_SIZEOF(wchar_t)
+AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
+dnl this user choice needs to probe first for the default
+AC_ARG_ENABLE(wchar,
+	AS_HELP_STRING([--disable-wchar],
+		       [Disable multibyte and wchar support. @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_wchar=true ;;
+	no)  enable_wchar=false ;;
+	*)   if test "x$ac_cv_type_wchar_t" = xyes; then
+               enable_wchar=true
+             else
+               enable_wchar=false
+             fi ;;
+	esac], [enable_wchar=true ])
+AC_MSG_CHECKING([for --disable-wchar])
+if test "x$enable_wchar" = "xtrue" ; then
+	AC_MSG_RESULT([no (default)])
+        INSERT_DISABLE_WCHAR="#undef SAFECLIB_DISABLE_WCHAR"
+        AX_COMPILE_CHECK_SIZEOF(wchar_t, [#include <wchar.h>])
+else
+	AC_MSG_RESULT([yes])
+        INSERT_DISABLE_WCHAR="#define SAFECLIB_DISABLE_WCHAR 1"
+        ac_cv_header_wchar_h=no
+fi
+AM_CONDITIONAL([ENABLE_WCHAR], [test "x$enable_wchar" == "xtrue"])
+AC_SUBST(INSERT_DISABLE_WCHAR)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
