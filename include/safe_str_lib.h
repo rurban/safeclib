@@ -2,8 +2,10 @@
  * safe_str_lib.h -- Safe C Library String APIs
  *
  * October 2008, Bo Berry
+ * September 2017, Reini Urban
  *
  * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc.
+ * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -40,9 +42,7 @@ extern "C" {
 #include "safe_lib.h"
 #endif
 #include <stdarg.h>
-#ifdef HAVE_WCHAR_H
 #include <wchar.h>
-#endif
 
 /*
  * The shortest string is a null string!!
@@ -334,13 +334,13 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
 /* TODO */
 #if 0
 
-wcstok_s
+extern wchar_t *
+wcstok_s(wchar_t *restrict str, rsize_t *restrict strmax,
+         const wchar_t *restrict delim, wchar_t **restrict ptr);
 
-wcrtomb_s
-
-wmemcpy_s
-
-wmemmove_s
+extern errno_t
+wcrtomb_s(size_t *restrict retval, char *restrict s, rsize_t ssz,
+          wchar_t wc, mbstate_t *restrict ps);
 
 extern int
 wprintf_s( const wchar_t *restrict fmt, ...);
@@ -350,10 +350,12 @@ fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
 
 /* unsafe! */
 extern int
-snwprintf_s(wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict fmt, ...);
+snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
+            const wchar_t * restrict fmt, ...);
 
 extern int
-swprintf_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t* restrict fmt, ...);
+swprintf_s(wchar_t *restrict dest, rsize_t dmax,
+           const wchar_t* restrict fmt, ...);
 
 extern int
 vwprintf_s(const wchar_t *restrict fmt, va_list ap);
@@ -366,19 +368,32 @@ extern int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t * restrict fmt, va_list ap);
 
+/* unsafe! */
 extern int
 vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
              const wchar_t *restrict fmt, va_list ap);
 
-wscanf_s
+extern int
+wscanf_s( const wchar_t *restrict fmt, ...);  
 
-swscanf_s
+extern int
+fwscanf_s(FILE *restrict stream,
+          const wchar_t *restrict fmt, ...);  
 
-vfwscanf_s
+extern int
+swscanf_s(const wchar_t *restrict s,
+          const wchar_t *restrict fmt, ...);
 
-vswscanf_s
+extern int
+vwscanf_s(const wchar_t *restrict fmt, va_list ap);
 
-vwscanf_s
+extern int
+vfwscanf_s(FILE *restrict stream,
+           const wchar_t *restrict fmt, va_list ap);
+
+extern int
+vswscanf_s(const wchar_t *restrict buffer,
+           const wchar_t *restrict fmt, va_list ap);  
 
 #endif
 

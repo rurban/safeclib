@@ -52,7 +52,7 @@
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   Neither dmax nor smax shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM16.
  * @pre   smax shall not be greater than dmax.
  * @pre   Copying shall not take place between regions that overlap.
  *    
@@ -62,12 +62,12 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM16
  * @retval  ESNOSPC     when dmax < smax
  * @retval  ESOVRLP     when src memory overlaps dst
  *
  * @see 
- *    memcpy_s(), memcpy32_s(), memmove_s(), memmove16_s(), memmove32_s()
+ *    wmemcpy_s(), memcpy_s(), memcpy32_s(), wmemmove_s(), memmove16_s()
  *
  */
 errno_t

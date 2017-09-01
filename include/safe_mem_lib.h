@@ -3,8 +3,10 @@
  *
  * October 2008, Bo Berry
  * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * Modified September 2017, Reini Urban
  *
  * Copyright (c) 2008-2012 by Cisco Systems, Inc.
+ * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -40,6 +42,7 @@ extern "C" {
 #ifndef __SAFE_LIB_H__
 #include "safe_lib.h"
 #endif
+#include <wchar.h>
 
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )
 #define RSIZE_MAX_MEM32    ( RSIZE_MAX_MEM/4 )
@@ -112,15 +115,15 @@ extern errno_t memzero32_s(uint32_t *dest, rsize_t dmax);
 
 /* multibyte wchar (not yet, see git branch `wchar`) */
 
+extern errno_t
+wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t smax);
+
 #if 0
 
 extern errno_t
-wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t count );
-
-extern errno_t
 wmemmove_s(wchar_t *dest, rsize_t dmax,
-           const wchar_t *src, rsize_t count);
+           const wchar_t *src, rsize_t smax);
 
 #endif
 

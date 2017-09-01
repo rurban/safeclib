@@ -371,13 +371,14 @@ AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINTPTR_T
-AC_CHECK_TYPE([errno_t], [], [], [[#include <errno.h>]])
-
-FALLBACK_ERRNO_T=""
-if test "x$ac_cv_type_errno_t" = "xno"; then
-	FALLBACK_ERRNO_T="typedef int errno_t;"
-fi
+AC_CHECK_TYPE([errno_t],
+        [FALLBACK_ERRNO_T=""],
+        [FALLBACK_ERRNO_T="typedef int errno_t;"],
+        [[#include <errno.h>]])
 AC_SUBST(FALLBACK_ERRNO_T)
+AC_TYPE_MBSTATE_T
+AC_CHECK_TYPE([wchar_t], [], [], [[#include <wchar.h>]])
+AX_COMPILE_CHECK_SIZEOF(wchar_t)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================

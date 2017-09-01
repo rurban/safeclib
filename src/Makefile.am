@@ -74,6 +74,8 @@ STD_STR_FILES = \
 STD_UNSAFE_FILES = \
 	str/snprintf_s.c	\
 	str/vsnprintf_s.c       
+#	wchar/snwprintf_s.c	\
+#	wchar/vsnwprintf_s.c	\
 #	io/tmpnam_s.c
 
 EXT_STR_FILES = \
@@ -119,22 +121,20 @@ STD_WCHAR_FILES = \
 	wchar/wcscpy_s.c  	\
 	wchar/wcsncpy_s.c  	\
 	wchar/wcscat_s.c  	\
-	wchar/wcsncat_s.c  	
-#	wchar/wcstok_s.c  	\
-#	wchar/wmemcpy_s.c  	\
+	wchar/wcsncat_s.c  	\
+	wchar/wmemcpy_s.c  	
 #	wchar/wmemmove_s.c  	\
+#	wchar/wcstok_s.c  	\
 #	wchar/wcrtomb_s.c  	\
-#	wchar/snwprintf_s.c  	\
 #	wchar/swprintf_s.c  	\
 #	wchar/swscanf_s.c  	\
+#	wchar/wscanf_s.c	\
 #	wchar/vfwprintf_s.c  	\
 #	wchar/vfwscanf_s.c  	\
-#	wchar/vsnwprintf_s.c  	\
 #	wchar/vswprintf_s.c  	\
 #	wchar/vswscanf_s.c  	\
 #	wchar/vwprintf_s.c  	\
-#	wchar/vwscanf_s.c  	\
-#	wchar/wscanf_s.c
+#	wchar/vwscanf_s.c
 
 STD_IO_FILES = \
 	io/fgets_s.c	\

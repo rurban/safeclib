@@ -1,7 +1,7 @@
 # Makefile.am - Process with automake to produce Makefile.in
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
-# 2017, Reini Urban
+# September 2017, Reini Urban
 #
 # Copyright (c) 2012 Cisco Systems
 # Copyright (c) 2017 Reini Urban
@@ -49,14 +49,32 @@ SAFEC_BUILT_TESTS = \
 	t_wcscpy_s	\
 	t_wcsncpy_s	\
 	t_wcscat_s	\
-	t_wcsncat_s
+	t_wcsncat_s	\
+	t_wmemcpy_s	
+#	t_wmemmove_s	\
+#	t_wcstok_s	\
+#	t_wcrtomb_s	\
+#	t_wprintf_s	\
+#	t_fwprintf_s	\
+#	t_swprintf_s	\
+#	t_vwprintf_s	\
+#	t_vfwprintf_s	\
+#	t_vswprintf_s	\
+#	t_wscanf_s	\
+#	t_swscanf_s	\
+#	t_vfwscanf_s	\
+#	t_vswscanf_s	\
+#	t_vwscanf_s
 
 if ENABLE_UNSAFE
 SAFEC_BUILT_TESTS += \
 	t_snprintf_s	\
 	t_vsnprintf_s         
+#       t_snwprintf_s	\
+#	t_vsnwprintf_s	\
 #	t_tmpnam_s
 endif
+
 if ENABLE_EXTS
 SAFEC_BUILT_TESTS += \
 	t_memcpy32_s          \
@@ -156,6 +174,20 @@ t_wcscpy_s_SOURCES            = test_wcscpy_s.c $(SAFEC_TEST_COMMON)
 t_wcsncpy_s_SOURCES           = test_wcsncpy_s.c $(SAFEC_TEST_COMMON)
 t_wcscat_s_SOURCES            = test_wcscat_s.c $(SAFEC_TEST_COMMON)
 t_wcsncat_s_SOURCES           = test_wcsncat_s.c $(SAFEC_TEST_COMMON)
+t_wmemcpy_s_SOURCES           = test_wmemcpy_s.c $(SAFEC_TEST_COMMON)
+#t_wmemmove_s_SOURCES         = test_wmemmove_s.c $(SAFEC_TEST_COMMON)
+#t_wcstok_s_SOURCES           = test_wcstok_s.c $(SAFEC_TEST_COMMON)
+#t_wcrtomb_s_SOURCES          = test_wcrtomb_s.c $(SAFEC_TEST_COMMON)
+#t_wprintf_s_SOURCES          = test_wprintf_s.c $(SAFEC_TEST_COMMON)
+#t_fwprintf_s_SOURCES         = test_fwprintf_s.c $(SAFEC_TEST_COMMON)
+#t_vwprintf_s_SOURCES         = test_vwprintf_s.c $(SAFEC_TEST_COMMON)
+#t_vfwprintf_s_SOURCES        = test_vfwprintf_s.c $(SAFEC_TEST_COMMON)
+#t_vswprintf_s_SOURCES        = test_vswprintf_s.c $(SAFEC_TEST_COMMON)
+#t_wscanf_s_SOURCES           = test_wscanf_s.c $(SAFEC_TEST_COMMON)
+#t_swscanf_s_SOURCES          = test_swscanf_s.c $(SAFEC_TEST_COMMON)
+#t_vfwscanf_s_SOURCES         = test_vfwscanf_s.c $(SAFEC_TEST_COMMON)
+#t_vswscanf_s_SOURCES         = test_vswscanf_s.c $(SAFEC_TEST_COMMON)
+#t_vwscanf_s_SOURCES          = test_vwscanf_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_EXTS
 p_memcpy32_s_SOURCES          = perf_memcpy32_s.c $(SAFEC_TEST_COMMON)
@@ -207,6 +239,9 @@ endif
 if ENABLE_UNSAFE
 t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
+#t_snwprintf_s_SOURCES        = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
+#t_vsnwprintf_s_SOURCES       = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
+#t_tmpnam_s_SOURCES           = test_tmpnam_s.c $(SAFEC_TEST_COMMON)
 endif
 
 CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs
