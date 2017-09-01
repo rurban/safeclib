@@ -11,22 +11,25 @@
 
 #define sgn(i) ((i)>0 ? 1 : ((i)<0 ? -1 : 0))
 
-#if defined(__has_feature)
-# if __has_feature(address_sanitizer)
-/* asan wrongly intercepts those, and flats them to signum */
-#define STDCMP()                                                 \
+/* asan or some cross-compilers flat them to signum -1,0,1 only */
+#define RELAXEDCMP()                                             \
     std_ind = strcmp(str1, str2);                                \
     if (ind != std_ind) {                                        \
-        printf("%s %u  ind=%d  asan strcmp()=%d  rc=%d \n",      \
+        printf("%s %u  ind=%d  relaxed strcmp()=%d  rc=%d \n",   \
                __FUNCTION__, __LINE__,  ind, std_ind, rc);       \
-    }                                                            \
-    if (sgn(ind) != std_ind) {                                   \
+      if (sgn(ind) != std_ind) {                                 \
         printf("%s %u  sgn(ind)=%d  std_ind=%d  rc=%d \n",       \
                __FUNCTION__, __LINE__,  sgn(ind), std_ind, rc);  \
         errs++;                                                  \
+      }                                                          \
     }
+
+#if defined(__has_feature)
+# if __has_feature(address_sanitizer)
+#   define STDCMP() RELAXEDCMP()
 # endif
 #endif
+
 #if !defined(STDCMP)
 #if defined(HAVE_STRCMP)
 #define STDCMP()                                                 \
@@ -113,7 +116,8 @@ int test_strcmp_s (void)
     rc = strcmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
     INDCMP(!= (-32))
-    STDCMP()
+    /* sgn with -m32 on linux */
+    RELAXEDCMP()
 
 /*--------------------------------------------------*/
 
@@ -124,7 +128,8 @@ int test_strcmp_s (void)
     rc = strcmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
     INDCMP(!= 32)
-    STDCMP()
+    /* sgn with -m32 on linux */
+    RELAXEDCMP()
 
 /*--------------------------------------------------*/
 
@@ -148,8 +153,8 @@ int test_strcmp_s (void)
     rc = strcmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
     INDCMP(<= 0)
-    /* be sure the results are the same as strcmp */
-    STDCMP()
+    /* sgn with -m32 on linux */
+    RELAXEDCMP()
 
 /*--------------------------------------------------*/
 
@@ -159,8 +164,8 @@ int test_strcmp_s (void)
     rc = strcmp_s(str1, LEN, str2, &ind);
     ERR(EOK)
     INDCMP(>= 0)
-    /* be sure the results are the same as strcmp */
-    STDCMP()
+    /* sgn with -m32 on linux */
+    RELAXEDCMP()
 
 /*--------------------------------------------------*/
 
