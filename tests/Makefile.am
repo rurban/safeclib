@@ -104,16 +104,25 @@ endif
 SAFEC_TEST_COMMON = \
 	test_private.h
 
-#AM_LIBADD = @GCOV_LIBS@
 # WARNING: tests won't build with -Werror right now because of some
 # type-casting issues
 #AM_CFLAGS   += -Werror
 
-LDADD = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
+LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
 TESTS = $(SAFEC_BUILT_TESTS)
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
 noinst_PROGRAMS = $(SAFEC_BUILT_PERFS)
+
+if ENABLE_GCOV
+AM_CFLAGS += @GCOV_CFLAGS@
+LIBS      += @GCOV_LIBS@
+#  -e's,$(EXEEXT),,'
+gcov: $(TESTS)
+	for f in $(TESTS); do \
+	  c="`echo $$f|sed -e's,t_,test_,'`.c"; \
+	  echo $(GCOV) $$c; test -e $$c && $(GCOV) $$c; done
+endif
 
 p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON)
 
@@ -183,3 +192,6 @@ t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
 endif
 
 CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs
+if ENABLE_GCOV
+CLEANFILES  += t_*.gcov t_*.gcno t_*.gcda
+endif

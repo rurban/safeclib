@@ -228,8 +228,24 @@ libsafec_@SAFEC_API_VERSION@_la_LDFLAGS = \
 #	-export-symbols $(EXPORT_SYM)
 #libsafec_@SAFEC_API_VERSION@_la_DEPENDENCIES = $(EXPORT_SYM)
 
+if ENABLE_GCOV
+AM_CFLAGS += @GCOV_CFLAGS@
+LIBS      += @GCOV_LIBS@
+gcov:
+	for c in $(libsafec_@SAFEC_API_VERSION@_la_SOURCES); do \
+	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
+	  if test -e "$$dir/$$base.gcno"; then \
+	    echo $(GCOV) $$c; \
+	    test -e $$c && cd $$dir && $(GCOV) $$base.c && cd $(abs_srcdir); \
+	  fi; \
+	done
+endif
 
-CLEANFILES      = *~ *.gcno $(EXPORT_SYM)
+CLEANFILES   = *~ $(EXPORT_SYM) .deps/*.Plo */.deps/*.Plo
+if ENABLE_GCOV
+CLEANFILES  += */*.gcov */*.gcno */*.gcda ignore_handler_s.gcno
+endif
+
 
 ## LCOV_INPUT      = $(CFILES:%.c=.libs/%.gcda)
 ## LCOV_OUTPUT     = lcov.info

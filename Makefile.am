@@ -249,10 +249,16 @@ clean-local:
 	rm -rf $(top_srcdir)/docs/man
 endif
 
+if ENABLE_GCOV
+gcov: check
+	$(MAKE) -C tests gcov
+	$(MAKE) -C src gcov
+endif
+
 # Additional make rules
 # ===============================================
 
-.PHONY: docs man perf gh-pages release
+.PHONY: gcov docs man perf gh-pages release
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:

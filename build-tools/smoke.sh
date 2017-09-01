@@ -19,6 +19,8 @@ CC="g++-mp-6 -std=c++11" ./configure && \
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check || (cat tests/test-suite.log; exit)
+CC="cc -m32" ./configure && \
+    gmake -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure && \
     gmake -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure --disable-nullslack && \
@@ -53,6 +55,8 @@ CC="gcc-7" ./configure && \
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check || (cat tests/test-suite.log; exit)
 CC="c++ -std=c++11" ./configure && \
+    make -s -j4 check || (cat tests/test-suite.log; exit)
+CC="cc -m32" ./configure && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
 CC="cc" ./configure && \
     make -s -j4 check || (cat tests/test-suite.log; exit)

@@ -94,15 +94,19 @@ AC_ARG_ENABLE(gcov,
 	AS_HELP_STRING([--enable-gcov],
 		       [turn on test coverage @<:@default=no@:>@]),
 	[case "${enableval}" in
-	yes) enable_gcov=true ;;
+	yes) enable_gcov=true ; gcov=gcov ;;
 	no)  enable_gcov=false ;;
-	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-gcov]) ;;
+	*)   enable_gcov=true ; gcov="${enableval}" ;;
 	esac], [enable_gcov=false ])
 
 if test "x$enable_gcov" = "xtrue" ; then
-	if test -n "$GCC"; then
-		AC_MSG_ERROR([gcov only works if gcc is used])
-	fi
+	dnl if test "$GCC" = yes; then
+	dnl 	AC_MSG_ERROR([gcov only works if gcc is used])
+	dnl fi
+
+        dnl You might need the compiler-specific gcov: e.g. gcov-mp-6
+	GCOV="$gcov"
+	AC_SUBST(GCOV)
 
 	GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
 	AC_SUBST(GCOV_CFLAGS)
@@ -125,18 +129,26 @@ AC_ARG_ENABLE(debug,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
 	esac], [enable_debug=false ])
 if test "x$enable_debug" = "xtrue" ; then
-	DEBUG_CFLAGS="-g -O2"
+        if test "x$enable_gcov" = "xtrue" ; then
+	   DEBUG_CFLAGS="-g"
+        else
+	   DEBUG_CFLAGS="-g -O2"
+        fi
         if test "x`uname -o`" = "xDarwin" ; then
             enable_shared=no
             enable_shared_with_static_runtimes=no
         fi
 	AM_CPPFLAGS="${AM_CPPFLAGS} -DDEBUG"
 else
-	# default release optimization
-	DEBUG_CFLAGS="-O2"
+        if test "x$enable_gcov" = "xtrue"; then
+	   DEBUG_CFLAGS="-g"
+        else
+           # default release optimization
+	   DEBUG_CFLAGS="-O2"
+        fi
 fi
 
-if test "-g -O2" == "$CFLAGS"; then
+if test "$CFLAGS" == "-g -O2" -o "$CFLAGS" == "-g"; then
 	# by doing it this way we suppress automake's assumption that if
 	# CFLAGS is empty lets compile the code with '-g -O2'.
 	CFLAGS="${DEBUG_CFLAGS}"

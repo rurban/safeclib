@@ -17,6 +17,7 @@ Changes in vxx092017 3.0.0
         - Macrofied many more tests
         - Improved some tests for old gcc -ansi (c89) memcmp
         - Add unlikely() to improve branch prediction
+        - added --enable-gcov and a gcov target (lcov support not yet)
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

@@ -37,6 +37,8 @@ Makefile.in
 *.lzo
 *.patch
 *.gcno
+*.gcda
+*.gcov
 
 #
 # Top-level generic files
