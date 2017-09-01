@@ -47,11 +47,12 @@ SAFEC_BUILT_TESTS = \
 	t_wcstombs_s	\
 	t_wcsnlen_s	\
 	t_wcscpy_s	\
-	t_wcsncpy_s
+	t_wcsncpy_s	\
+	t_wcscat_s
 
 if ENABLE_UNSAFE
 SAFEC_BUILT_TESTS += \
-	t_snprintf_s          \
+	t_snprintf_s	\
 	t_vsnprintf_s         
 #	t_tmpnam_s
 endif
@@ -152,6 +153,7 @@ t_wcstombs_s_SOURCES          = test_wcstombs_s.c $(SAFEC_TEST_COMMON)
 t_wcsnlen_s_SOURCES           = test_wcsnlen_s.c $(SAFEC_TEST_COMMON)
 t_wcscpy_s_SOURCES            = test_wcscpy_s.c $(SAFEC_TEST_COMMON)
 t_wcsncpy_s_SOURCES           = test_wcsncpy_s.c $(SAFEC_TEST_COMMON)
+t_wcscat_s_SOURCES            = test_wcscat_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_EXTS
 p_memcpy32_s_SOURCES          = perf_memcpy32_s.c $(SAFEC_TEST_COMMON)

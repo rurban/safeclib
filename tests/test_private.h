@@ -96,13 +96,26 @@
 #define EXPNULL(str1)                              \
     if ((str1)[0] != '\0') {                       \
         debug_printf("%s %u   Expected null, got \%s\" \n", \
-                     __FUNCTION__, __LINE__, str1);  \
+                     __FUNCTION__, __LINE__, str1); \
         errs++;                                    \
     }
 #define EXPSTR(str1, str2)                         \
     ind = strcmp(str1, str2);                      \
     if (ind != 0) {                                \
         debug_printf("%s %u   Expected \%s\", got \%s\" \n", \
+                     __FUNCTION__, __LINE__,  str2, str1);  \
+        errs++;                                    \
+    }
+#define WEXPNULL(str1)                             \
+    if ((str1)[0] != L'\0') {                      \
+        debug_printf("%s %u   Expected null, got \%ls\" \n", \
+                     __FUNCTION__, __LINE__, str1); \
+        errs++;                                    \
+    }
+#define WEXPSTR(str1, str2)                        \
+    ind = wcscmp(str1, str2);                      \
+    if (ind != 0) {                                \
+        debug_printf("%s %u   Expected \%ls\", got \%ls\" \n", \
                      __FUNCTION__, __LINE__,  str2, str1);  \
         errs++;                                    \
     }
