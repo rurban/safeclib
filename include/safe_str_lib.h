@@ -62,6 +62,62 @@ extern constraint_handler_t
 set_str_constraint_handler_s(constraint_handler_t handler);
 
 
+/* string concatenate */
+extern errno_t
+strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+
+
+/* string copy */
+extern errno_t
+strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+
+/* fitted string concatenate */
+extern errno_t
+strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
+
+
+/* fitted string copy */
+extern errno_t
+strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
+
+
+/* string length */
+extern rsize_t
+strnlen_s (const char *s, rsize_t smax);
+
+/* string tokenizer */
+extern char *
+strtok_s(char * restrict s1, rsize_t *restrict s1max, const char * restrict src, char ** restrict ptr);
+
+
+/* safe sprintf_s */
+/* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
+extern int
+sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+
+extern int
+vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+
+/* These functions are defined in the C11 standard Annex K, but are still unsafe.
+   Rather use the 2 functions above. */
+#ifdef SAFECLIB_ENABLE_UNSAFE
+
+/* unsafe! */
+extern int
+snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+extern int
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+
+#endif /* SAFECLIB_ENABLE_UNSAFE */
+
+
+#ifndef SAFECLIB_DISABLE_EXTENSIONS
+
+/* string compare */
+extern errno_t
+strcmp_s(const char *dest, rsize_t dmax,
+         const char *src, int *indicator);
+
 /* string compare */
 extern errno_t
 strcasecmp_s(const char *dest, rsize_t dmax,
@@ -74,27 +130,10 @@ strcasestr_s(char *dest, rsize_t dmax,
              const char *src, rsize_t slen, char **substring);
 
 
-/* string concatenate */
-extern errno_t
-strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
-
-
-/* string compare */
-extern errno_t
-strcmp_s(const char *dest, rsize_t dmax,
-         const char *src, int *indicator);
-
-
 /* fixed field string compare */
 extern errno_t
 strcmpfld_s(const char *dest, rsize_t dmax,
             const char *src, int *indicator);
-
-
-/* string copy */
-extern errno_t
-strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src);
-
 
 /* fixed char array copy */
 extern errno_t
@@ -184,20 +223,6 @@ extern errno_t
 strljustify_s(char *dest, rsize_t dmax);
 
 
-/* fitted string concatenate */
-extern errno_t
-strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
-
-
-/* fitted string copy */
-extern errno_t
-strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
-
-
-/* string length */
-extern rsize_t
-strnlen_s (const char *s, rsize_t smax);
-
 
 /* string terminate */
 extern rsize_t
@@ -241,11 +266,6 @@ strstr_s(char *dest, rsize_t dmax,
          const char *src, rsize_t slen, char **substring);
 
 
-/* string tokenizer */
-extern char *
-strtok_s(char * restrict s1, rsize_t *restrict s1max, const char * restrict src, char ** restrict ptr);
-
-
 /* convert string to lowercase */
 extern errno_t
 strtolowercase_s(char * restrict str, rsize_t slen);
@@ -260,25 +280,8 @@ strtouppercase_s(char *str, rsize_t slen);
 extern errno_t
 strzero_s(char *dest, rsize_t dmax);
 
-/* safe sprintf_s */
-/* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-extern int
-sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+#endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
-extern int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
-
-/* These functions are defined in the C11 standard Annex K, but are still unsafe.
-   Rather use the 2 functions above. */
-#ifdef SAFECLIB_ENABLE_UNSAFE
-
-/* unsafe! */
-extern int
-snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
-extern int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
-
-#endif
 
 /* multibyte wchar (not yet, see git branch `wchar`) */
 #if 0
@@ -291,6 +294,34 @@ mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest,
 extern errno_t
 mbstowcs_s(size_t *restrict retval, wchar_t *restrict dest,
            rsize_t dmax, const char *restrict src, rsize_t len);
+
+extern errno_t
+wcstombs_s(size_t *restrict retval,
+           char *restrict dest, rsize_t dmax,
+           const wchar_t *restrict src, rsize_t len);
+
+extern size_t
+wcsnlen_s(const wchar_t *dest, size_t dmax);
+
+extern errno_t
+wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
+         const wchar_t *restrict src);
+
+extern errno_t
+wcsncpy_s(wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t slen);
+
+/* TODO */
+
+wcscat_s
+
+wcsncat_s
+
+wcsncpy_s
+
+wcstok_s
+
+wcrtomb_s
 
 extern int
 fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
@@ -324,28 +355,6 @@ vfwscanf_s
 vswscanf_s
 
 vwscanf_s
-
-wcrtomb_s
-
-wcscat_s
-
-wcscpy_s
-
-wcsncat_s
-
-wcsncpy_s
-
-wcsnlen_s
-
-wcsrtombs_s
-
-wcstok_s
-
-wcstombs_s
-
-wmemcpy_s
-
-wmemmove_s
 
 extern int
 wprintf_s( const wchar_t *restrict fmt, ...);

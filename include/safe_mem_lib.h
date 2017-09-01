@@ -47,6 +47,22 @@ extern constraint_handler_t
 set_mem_constraint_handler_s(constraint_handler_t handler);
 
 
+/* copy memory */
+extern errno_t memcpy_s(void * restrict dest, rsize_t dmax,
+                        const void * restrict src, rsize_t slen);
+
+/* move memory, including overlapping memory */
+extern errno_t memmove_s(void *dest, rsize_t  dmax,
+                          const void *src, rsize_t slen);
+
+
+/* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+extern errno_t memset_s(void *dest, rsize_t dmax, uint8_t value, rsize_t n);
+#endif
+
+#ifndef SAFECLIB_DISABLE_EXTENSIONS
+
 /* compare memory */
 extern errno_t memcmp_s(const void *dest, rsize_t dmax,
                         const void *src, rsize_t slen, int *diff);
@@ -59,11 +75,6 @@ extern errno_t memcmp16_s(const uint16_t *dest, rsize_t dmax,
 extern errno_t memcmp32_s(const uint32_t *dest, rsize_t dmax,
                           const uint32_t *src, rsize_t slen, int *diff);
 
-
-/* copy memory */
-extern errno_t memcpy_s(void * restrict dest, rsize_t dmax,
-                        const void * restrict src, rsize_t slen);
-
 /* copy uint16_t memory */
 extern errno_t memcpy16_s(uint16_t *dest, rsize_t dmax,
                           const uint16_t *src, rsize_t slen);
@@ -71,11 +82,6 @@ extern errno_t memcpy16_s(uint16_t *dest, rsize_t dmax,
 /* copy uint32_t memory */
 extern errno_t memcpy32_s(uint32_t *dest, rsize_t dmax,
                           const uint32_t *src, rsize_t slen);
-
-
-/* move memory, including overlapping memory */
-extern errno_t memmove_s(void *dest, rsize_t  dmax,
-                          const void *src, rsize_t slen);
 
 /* uint16_t move memory, including overlapping memory */
 extern errno_t memmove16_s(uint16_t *dest, rsize_t dmax,
@@ -85,18 +91,11 @@ extern errno_t memmove16_s(uint16_t *dest, rsize_t dmax,
 extern errno_t memmove32_s(uint32_t *dest, rsize_t dmax,
                             const uint32_t *src, rsize_t slen);
 
-
-/* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
-extern errno_t memset_s(void *dest, rsize_t dmax, uint8_t value, rsize_t n);
-#endif
-
 /* set uint16_t */
 extern errno_t memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n);
 
 /* set uint32_t */
 extern errno_t memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n);
-
 
 /* byte zero */
 extern errno_t memzero_s(void *dest, rsize_t dmax);
@@ -106,6 +105,22 @@ extern errno_t memzero16_s(uint16_t *dest, rsize_t dmax);
 
 /* uint32_t zero */
 extern errno_t memzero32_s(uint32_t *dest, rsize_t dmax);
+
+#endif /* SAFECLIB_DISABLE_EXTENSIONS */
+
+/* multibyte wchar (not yet, see git branch `wchar`) */
+
+#if 0
+
+extern errno_t
+wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t count );
+
+extern errno_t
+wmemmove_s(wchar_t *dest, rsize_t dmax,
+           const wchar_t *src, rsize_t count);
+
+#endif
 
 #ifdef __cplusplus
 }
