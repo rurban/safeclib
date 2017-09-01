@@ -173,11 +173,11 @@ AC_ARG_ENABLE(extensions,
 	esac], [enable_extensions=true])
 
 if test "x$enable_extensions" = "xfalse" ; then
- 	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTS 1"
+	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTENSIONS 1"
 else
- 	INSERT_EXTS="#undef SAFECLIB_DISABLE_EXTS"
+	INSERT_EXTS="#undef SAFECLIB_DISABLE_EXTENSIONS"
 fi
-#	AC_DEFINE([DISABLE_EXTS], [ 1 ],
+#	AC_DEFINE([SAFECLIB_DISABLE_EXTENSIONS], [ 1 ],
 #		  [Define to 1 to disable additional functions not defined
 #		   in the C11 appendix K specification])
 AC_SUBST(INSERT_EXTS)
