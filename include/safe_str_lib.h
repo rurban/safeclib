@@ -327,12 +327,12 @@ extern errno_t
 wcscat_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src);
 
+extern errno_t
+wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t slen);
+
 /* TODO */
 #if 0
-
-wcsncat_s
-
-wcsncpy_s
 
 wcstok_s
 

@@ -118,8 +118,8 @@ STD_WCHAR_FILES = \
 	wchar/wcsnlen_s.c  	\
 	wchar/wcscpy_s.c  	\
 	wchar/wcsncpy_s.c  	\
-	wchar/wcscat_s.c  	
-#	wchar/wcsncat_s.c  	\
+	wchar/wcscat_s.c  	\
+	wchar/wcsncat_s.c  	
 #	wchar/wcstok_s.c  	\
 #	wchar/wmemcpy_s.c  	\
 #	wchar/wmemmove_s.c  	\
