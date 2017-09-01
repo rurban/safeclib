@@ -241,7 +241,7 @@ gcov:
 	done
 endif
 
-CLEANFILES   = *~ $(EXPORT_SYM) .deps/*.Plo */.deps/*.Plo
+CLEANFILES   = *~ $(EXPORT_SYM)
 if ENABLE_GCOV
 CLEANFILES  += */*.gcov */*.gcno */*.gcda ignore_handler_s.gcno
 endif
