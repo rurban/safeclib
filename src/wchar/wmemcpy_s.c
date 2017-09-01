@@ -5,6 +5,7 @@
  * September 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -39,13 +40,13 @@
 #include "safe_mem_lib.h"
 
 #if SIZEOF_WCHAR_T == 2
-#define mem_type uint16_t
-#define mem_set  mem_prim_set16
-#define mem_move mem_prim_move16
+#define wmem_type uint16_t
+#define wmem_set  mem_prim_set16
+#define wmem_move mem_prim_move16
 #elif SIZEOF_WCHAR_T == 4
-#define mem_type uint32_t
-#define mem_set  mem_prim_set32
-#define mem_move mem_prim_move32
+#define wmem_type uint32_t
+#define wmem_set  mem_prim_set32
+#define wmem_move mem_prim_move32
 #else
 #error sizeof(wchar_t)?
 #endif
@@ -110,21 +111,21 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
     }
 
     if (unlikely(smax == 0)) {
-        mem_set((mem_type*)dest, (uint32_t)dmax, 0);
+        wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: smax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
     if (unlikely(smax > dmax)) {
-        mem_set((mem_type*)dest, (uint32_t)dmax, 0);
+        wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: smax exceeds dmax",
                    NULL, ESNOSPC);
         return (RCNEGATE(ESNOSPC));
     }
 
     if (unlikely(src == NULL)) {
-        mem_set((mem_type*)dest, (uint32_t)dmax, 0);
+        wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: src is NULL",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
@@ -135,7 +136,7 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
      */
     if (unlikely( ((dest > src) && (dest < (src+smax))) ||
                   ((src > dest) && (src < (dest+dmax))) )) {
-        mem_set((mem_type*)dest, (uint32_t)dmax, 0);
+        wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: overlap undefined",
                    NULL, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
@@ -144,7 +145,7 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
     /*
      * now perform the copy
      */
-    mem_move((mem_type*)dest, (mem_type*)src, (uint32_t)smax);
+    wmem_move((wmem_type*)dest, (wmem_type*)src, (uint32_t)smax);
 
     return (RCNEGATE(EOK));
 }

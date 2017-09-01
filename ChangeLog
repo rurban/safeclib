@@ -20,7 +20,7 @@ Changes in vxx092017 3.0.0
         - added --enable-gcov and a gcov target (lcov support not yet)
         - added most safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcsnlen_s,
-        wcscpy_s
+        wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s, wmemcpy_s, wmemmove_s
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

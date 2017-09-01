@@ -119,13 +119,10 @@ extern errno_t
 wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax);
 
-#if 0
-
 extern errno_t
 wmemmove_s(wchar_t *dest, rsize_t dmax,
            const wchar_t *src, rsize_t smax);
 
-#endif
 
 #ifdef __cplusplus
 }
