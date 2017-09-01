@@ -383,7 +383,7 @@ AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strstr])
+                strstr wmemchr])
 
 # Checks for system services
 # ===============================================

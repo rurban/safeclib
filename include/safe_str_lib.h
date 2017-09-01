@@ -310,11 +310,11 @@ wcstombs_s(size_t *restrict retval,
            char *restrict dest, rsize_t dmax,
            const wchar_t *restrict src, rsize_t len);
 
+extern size_t
+wcsnlen_s (const wchar_t *dest, size_t dmax);
+
 /* TODO */
 #if 0
-
-extern size_t
-wcsnlen_s(const wchar_t *dest, size_t dmax);
 
 extern errno_t
 wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
