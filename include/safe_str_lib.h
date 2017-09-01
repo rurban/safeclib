@@ -305,12 +305,13 @@ wcsrtombs_s(size_t *restrict retval,
             const wchar_t **restrict src, rsize_t len,
             mbstate_t *restrict ps);
 
-#if 0
-
 extern errno_t
 wcstombs_s(size_t *restrict retval,
            char *restrict dest, rsize_t dmax,
            const wchar_t *restrict src, rsize_t len);
+
+/* TODO */
+#if 0
 
 extern size_t
 wcsnlen_s(const wchar_t *dest, size_t dmax);
@@ -322,8 +323,6 @@ wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
 extern errno_t
 wcsncpy_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen);
-
-/* TODO */
 
 wcscat_s
 

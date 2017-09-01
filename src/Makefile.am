@@ -113,8 +113,8 @@ EXT_STR_FILES = \
 STD_WCHAR_FILES = \
 	wchar/mbsrtowcs_s.c  	\
 	wchar/mbstowcs_s.c  	\
-	wchar/wcsrtombs_s.c  	
-#	wchar/wcstombs_s.c  	
+	wchar/wcsrtombs_s.c  	\
+	wchar/wcstombs_s.c  	
 #	wchar/wcrtomb_s.c  	\
 #	wchar/snwprintf_s.c  	\
 #	wchar/swprintf_s.c  	\
