@@ -227,7 +227,8 @@ dist_man_MANS += \
 	doc/man/man3/strzero_s.c.3
 CLEANFILES = Doxyfile doc/footer README.md
 
-doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile doc/footer include/safe_config.h
+doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile README.md doc/footer \
+  include/safe_config.h
 	-rm $@
 	doxygen
 
