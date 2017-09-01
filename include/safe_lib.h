@@ -57,8 +57,12 @@ extern void ignore_handler_s(const char *restrict msg, void *restrict ptr, errno
 
 #define sl_default_handler ignore_handler_s
 
+#ifndef __SAFE_MEM_LIB_H__
 #include "safe_mem_lib.h"
+#endif
+#ifndef __SAFE_STR_LIB_H__
 #include "safe_str_lib.h"
+#endif
 
 #ifdef __cplusplus
 }

@@ -36,7 +36,9 @@
 extern "C" {
 #endif
 
+#ifndef __SAFE_LIB_H__
 #include "safe_lib.h"
+#endif
 #include <stdarg.h>
 #ifdef HAVE_WCHAR_H
 #include <wchar.h>

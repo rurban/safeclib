@@ -186,15 +186,17 @@ AM_CFLAGS += -Werror -pedantic -Imem -Istr
 
 noinst_LTLIBRARIES = \
 	libmemprims.la   \
-	libsafeccore.la  \
-        libstdunsafe.la
+	libsafeccore.la
 #	libsafecmem.la   \
 #	libsafecstr.la
 libmemprims_la_SOURCES  = $(MEM_PRIM_FILES)
 libsafeccore_la_SOURCES = $(CORE_FILES)
-libstdunsafe_la_SOURCES = $(STD_UNSAFE_FILES)
 #libsafecmem_la_SOURCES  = $(STD_MEM_FILES) $(EXT_MEM_FILES)
 #libsafecstr_la_SOURCES  = $(STD_STR_FILES) $(EXT_STR_FILES)
+if ENABLE_UNSAFE
+noinst_LTLIBRARIES += libstdunsafe.la
+libstdunsafe_la_SOURCES = $(STD_UNSAFE_FILES)
+endif
 
 #EXPORT_SYM      = exported.sym
 #$(EXPORT_SYM): safec.h.in

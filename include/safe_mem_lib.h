@@ -37,7 +37,9 @@
 extern "C" {
 #endif
 
+#ifndef __SAFE_LIB_H__
 #include "safe_lib.h"
+#endif
 
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )
 #define RSIZE_MAX_MEM32    ( RSIZE_MAX_MEM/4 )

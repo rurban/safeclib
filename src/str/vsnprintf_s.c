@@ -33,8 +33,11 @@
 #include "config.h"
 #include "safe_str_lib.h"
 #include "safe_str_constraint.h"
-#include <stdarg.h>
 
+#ifdef SAFECLIB_ENABLE_UNSAFE
+
+/* TODO: error when fmt contains %n, or encoding errors occur.
+ */
 
 /**
  * @brief 
@@ -87,8 +90,6 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
 
 int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
 {
@@ -129,3 +130,5 @@ int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_
 
     return ret;
 }
+
+#endif /* SAFECLIB_ENABLE_UNSAFE */
