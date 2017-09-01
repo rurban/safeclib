@@ -113,28 +113,28 @@ EXT_STR_FILES = \
 STD_WCHAR_FILES = \
 	wchar/mbsrtowcs_s.c  	\
 	wchar/mbstowcs_s.c  	\
-	wchar/snwprintf_s.c  	\
-	wchar/swprintf_s.c  	\
-	wchar/swscanf_s.c  	\
-	wchar/vfwprintf_s.c  	\
-	wchar/vfwscanf_s.c  	\
-	wchar/vsnwprintf_s.c  	\
-	wchar/vswprintf_s.c  	\
-	wchar/vswscanf_s.c  	\
-	wchar/vwprintf_s.c  	\
-	wchar/vwscanf_s.c  	\
-	wchar/wcrtomb_s.c  	\
-	wchar/wcscat_s.c  	\
-	wchar/wcscpy_s.c  	\
-	wchar/wcsncat_s.c  	\
-	wchar/wcsncpy_s.c  	\
-	wchar/wcsnlen_s.c  	\
-	wchar/wcsrtombs_s.c  	\
-	wchar/wcstok_s.c  	\
-	wchar/wcstombs_s.c  	\
-	wchar/wmemcpy_s.c  	\
-	wchar/wmemmove_s.c  	\
-	wchar/wscanf_s.c
+	wchar/wcsrtombs_s.c  	
+#	wchar/wcstombs_s.c  	
+#	wchar/wcrtomb_s.c  	\
+#	wchar/snwprintf_s.c  	\
+#	wchar/swprintf_s.c  	\
+#	wchar/swscanf_s.c  	\
+#	wchar/vfwprintf_s.c  	\
+#	wchar/vfwscanf_s.c  	\
+#	wchar/vsnwprintf_s.c  	\
+#	wchar/vswprintf_s.c  	\
+#	wchar/vswscanf_s.c  	\
+#	wchar/vwprintf_s.c  	\
+#	wchar/vwscanf_s.c  	\
+#	wchar/wcscat_s.c  	\
+#	wchar/wcscpy_s.c  	\
+#	wchar/wcsncat_s.c  	\
+#	wchar/wcsncpy_s.c  	\
+#	wchar/wcsnlen_s.c  	\
+#	wchar/wcstok_s.c  	\
+#	wchar/wmemcpy_s.c  	\
+#	wchar/wmemmove_s.c  	\
+#	wchar/wscanf_s.c
 
 STD_IO_FILES = \
 	io/fgets_s.c	\
@@ -173,8 +173,8 @@ ALL_SRC_FILES =
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
 	$(EXT_MEM_FILES)    \
-	$(EXT_STR_FILES)
-#	$(STD_WCHAR_FILES)  \
+	$(EXT_STR_FILES)    \
+	$(STD_WCHAR_FILES)  
 #	$(STD_OS_FILES)     \
 #	$(STD_IO_FILES)     \
 #	$(STD_MISC_FILES)   \
@@ -206,9 +206,7 @@ lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
 libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
-	wchar/mbstowcs_s.c  \
-	wchar/mbsrtowcs_s.c 
-#	$(STD_WCHAR_FILES)  \
+	$(STD_WCHAR_FILES)  
 #	$(STD_OS_FILES)     \
 #	$(STD_IO_FILES)     \
 #	$(STD_MISC_FILES)   \

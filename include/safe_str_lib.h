@@ -299,13 +299,13 @@ mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest,
             rsize_t dmax, const char **restrict src, rsize_t len,
             mbstate_t *restrict ps);
 
-#if 0
-
 extern errno_t
 wcsrtombs_s(size_t *restrict retval,
             char *restrict dest, rsize_t dmax,
             const wchar_t **restrict src, rsize_t len,
             mbstate_t *restrict ps);
+
+#if 0
 
 extern errno_t
 wcstombs_s(size_t *restrict retval,
