@@ -155,7 +155,7 @@ else
         AC_MSG_RESULT([no CFLAGS=$DEBUG_CFLAGS])
 fi
 
-if test "x$CFLAGS" == "x" -o "x$CFLAGS" == "x-g -O2" -o "x$CFLAGS" == "x-g"; then
+if test "x$CFLAGS" = "x" -o "x$CFLAGS" = "x-g -O2" -o "x$CFLAGS" = "x-g"; then
 	# by doing it this way we suppress automake's assumption that if
 	# CFLAGS is empty lets compile the code with '-g -O2'.
 	CFLAGS="${DEBUG_CFLAGS}"
@@ -401,7 +401,7 @@ else
         INSERT_DISABLE_WCHAR="#define SAFECLIB_DISABLE_WCHAR 1"
         ac_cv_header_wchar_h=no
 fi
-AM_CONDITIONAL([ENABLE_WCHAR], [test "x$enable_wchar" == "xtrue"])
+AM_CONDITIONAL([ENABLE_WCHAR], [test "x$enable_wchar" = "xtrue"])
 AC_SUBST(INSERT_DISABLE_WCHAR)
 
 AC_MSG_NOTICE([Check library functions])
