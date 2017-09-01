@@ -193,7 +193,8 @@ Tested Platforms
 ----------------
 .The library has been tested on the following systems
 - Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc+clang)
-- Linux Ubuntu 10.04 kernel version v2.6.32-42-generic
+- Linux Debian 10 amd64 glibc 2.24
+- Linux Void amd64 musl-1.1.16
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
 
