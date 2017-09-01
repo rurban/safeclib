@@ -81,7 +81,7 @@
  * @retval  ESNOSPC    when dest < src
  *
  * @see
- *    strcat_s(), strncat_s(), strcpy_s()
+ *    strcat_s(), strncat_s(), strcpy_s(), wcsncpy_s()
  *
  */
 errno_t

@@ -291,12 +291,14 @@ strzero_s(char *dest, rsize_t dmax);
 /* multibyte wchar (not yet, see git branch `wchar`) */
 
 extern errno_t
-mbstowcs_s(size_t *restrict retval, wchar_t *restrict dest,
-           rsize_t dmax, const char *restrict src, rsize_t len);
+mbstowcs_s(size_t *restrict retval,
+           wchar_t *restrict dest, rsize_t dmax,
+           const char *restrict src, rsize_t len);
 
 extern errno_t
-mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest,
-            rsize_t dmax, const char **restrict src, rsize_t len,
+mbsrtowcs_s(size_t *restrict retval,
+            wchar_t *restrict dest, rsize_t dmax,
+            const char **restrict src, rsize_t len,
             mbstate_t *restrict ps);
 
 extern errno_t
@@ -317,12 +319,12 @@ extern errno_t
 wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src);
 
-/* TODO */
-#if 0
-
 extern errno_t
 wcsncpy_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen);
+
+/* TODO */
+#if 0
 
 wcscat_s
 
