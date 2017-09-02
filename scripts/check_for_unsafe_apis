@@ -185,6 +185,9 @@ my %gFuncConvertMap = (
     "gmtime"  => "gmtime_s",
     "localtime" => "localtime_s",
     "getenv"  => "getenv_s",
+    "tmpnam"  => "mkstemp", #"tmpnam_s",
+    "tempnam" => "mkstemp", #"tmpnam_s",
+    "tmpfile" => "tmpfile_s",
     
     # C11 std APIs (Misc)
     "bsearch" => "bsearch_s",
