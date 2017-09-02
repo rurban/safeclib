@@ -202,10 +202,12 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
      */
     dlen = *dmax;
     ptoken = NULL;
-    while (*dest != '\0' && !ptoken) {
+    while (*dest != L'\0' && !ptoken) {
 
         if (unlikely(dlen == 0)) {
             *ptr = NULL;
+            *dmax = 0;
+            *dest = L'\0';
             invoke_safe_str_constraint_handler(
                       "wcstok_s: dest is unterminated",
                        NULL, ESUNTERM);
@@ -222,6 +224,8 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
 
             if (unlikely(slen == 0)) {
                 *ptr = NULL;
+                *dmax = 0;
+                *dest = L'\0';
                 invoke_safe_str_constraint_handler(
                           "wcstok_s: delim is unterminated",
                            NULL, ESUNTERM);
@@ -257,6 +261,8 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
 
         if (unlikely(dlen == 0)) {
             *ptr = NULL;
+            *dmax = 0;
+            *dest = L'\0';
             invoke_safe_str_constraint_handler(
                       "wcstok_s: dest is unterminated",
                        NULL, ESUNTERM);
@@ -269,6 +275,8 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
 
             if (unlikely(slen == 0)) {
                 *ptr = NULL;
+                *dmax = 0;
+                *dest = L'\0';
                 invoke_safe_str_constraint_handler(
                           "wcstok_s: delim is unterminated",
                            NULL, ESUNTERM);
