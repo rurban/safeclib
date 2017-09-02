@@ -117,6 +117,7 @@ STD_WCHAR_FILES = \
 	wchar/mbstowcs_s.c  	\
 	wchar/wcsrtombs_s.c  	\
 	wchar/wcstombs_s.c  	\
+	wchar/wcrtomb_s.c  	\
 	wchar/wcsnlen_s.c  	\
 	wchar/wcscpy_s.c  	\
 	wchar/wcsncpy_s.c  	\
@@ -125,7 +126,6 @@ STD_WCHAR_FILES = \
 	wchar/wmemcpy_s.c  	\
 	wchar/wmemmove_s.c  	
 #	wchar/wcstok_s.c  	\
-#	wchar/wcrtomb_s.c  	\
 #	wchar/swprintf_s.c  	\
 #	wchar/swscanf_s.c  	\
 #	wchar/wscanf_s.c	\

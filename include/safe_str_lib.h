@@ -313,6 +313,10 @@ wcstombs_s(size_t *restrict retval,
            char *restrict dest, rsize_t dmax,
            const wchar_t *restrict src, rsize_t len);
 
+extern errno_t
+wcrtomb_s(size_t *restrict retval, char *restrict s, rsize_t ssz,
+          wchar_t wc, mbstate_t *restrict ps);
+
 extern size_t
 wcsnlen_s(const wchar_t *dest, size_t dmax);
 
@@ -338,10 +342,6 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
 extern wchar_t *
 wcstok_s(wchar_t *restrict str, rsize_t *restrict strmax,
          const wchar_t *restrict delim, wchar_t **restrict ptr);
-
-extern errno_t
-wcrtomb_s(size_t *restrict retval, char *restrict s, rsize_t ssz,
-          wchar_t wc, mbstate_t *restrict ps);
 
 extern int
 wprintf_s( const wchar_t *restrict fmt, ...);
