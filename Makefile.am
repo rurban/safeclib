@@ -259,14 +259,16 @@ endif
 # Additional make rules
 # ===============================================
 
-.PHONY: gcov docs man perf gh-pages release
+.PHONY: gcov docs man perf gh-pages release checklog
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:
 	echo $(PACKAGE_VERSION) > $(distdir)/$(TARBALL_VERSION_FILE)
+checklog:
+	$(MAKE) check || cat tests/test-suite.log
 perf:
-	tests/.libs/p_memcpy_s
-	tests/.libs/p_memcpy32_s
+	tests/p_memcpy_s
+	tests/p_memcpy32_s
 gh-pages: docs
 	echo ensure ./configure --enable-unsafe
 	ls doc/man/man3/snprintf_s.3
