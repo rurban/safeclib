@@ -49,6 +49,7 @@ SAFEC_BUILT_TESTS += \
 	t_wcsrtombs_s   \
 	t_wcstombs_s	\
 	t_wcrtomb_s	\
+	t_wctomb_s	\
 	t_wcsnlen_s	\
 	t_wcscpy_s	\
 	t_wcsncpy_s	\
@@ -186,6 +187,7 @@ t_wcsncat_s_SOURCES           = test_wcsncat_s.c $(SAFEC_TEST_COMMON)
 t_wmemcpy_s_SOURCES           = test_wmemcpy_s.c $(SAFEC_TEST_COMMON)
 t_wmemmove_s_SOURCES          = test_wmemmove_s.c $(SAFEC_TEST_COMMON)
 t_wcrtomb_s_SOURCES           = test_wcrtomb_s.c $(SAFEC_TEST_COMMON)
+t_wctomb_s_SOURCES            = test_wctomb_s.c $(SAFEC_TEST_COMMON)
 t_wcstok_s_SOURCES            = test_wcstok_s.c $(SAFEC_TEST_COMMON)
 #t_wprintf_s_SOURCES          = test_wprintf_s.c $(SAFEC_TEST_COMMON)
 #t_fwprintf_s_SOURCES         = test_fwprintf_s.c $(SAFEC_TEST_COMMON)

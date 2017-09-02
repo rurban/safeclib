@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * wcrtomb_s.c
+ * wctomb_s.c
  *
  * September 2017, Reini Urban
  *
@@ -39,11 +39,9 @@
 
 /**
  * @brief
- *    Does not permit the \c ps parameter (the pointer to the conversion state)
- *    to be a null pointer.
- *    The restartable \c wcrtomb_s function converts a single
+ *    The \c wctomb_s function converts a single
  *    wide character to its narrow multibyte representation from the current
- *    LC_CTYPE locale that begins in the conversion state described by \c *ps.
+ *    LC_CTYPE locale.
  *    If \c dest is not null, the converted multibyte characters are
  *    stored in \c dest. Max. \c MB_CUR_MAX will be written to \c dest.
  *
@@ -51,11 +49,6 @@
  *    <tt>wcrtomb_s(&retval, buf, sizeof buf, L'\0', ps)</tt> with
  *    internal variables \c retval and \c buf (whose size is greater than
  *    \c MB_CUR_MAX).
- *
- *    If wc is the null wide character L'\0', a null byte is stored,
- *    preceded by any shift sequence necessary to restore the initial
- *    shift state and the conversion state parameter *ps is updated to
- *    represent the initial shift state.
  *
  *    If the environment macro __STDC_ISO_10646__ is defined, the
  *    values of type wchar_t are the same as the short identifiers of
@@ -75,8 +68,8 @@
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
- *    K.3.9.3.1.1 The wcrtomb_s function (p: 647-648)
- *    http://en.cppreference.com/w/c/string/wide/wcrtomb
+ *    K.3.6.4.1 The wctomb_s function (p: 610-611)
+ *    http://en.cppreference.com/w/c/string/multibyte/wctomb
  *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
@@ -85,9 +78,8 @@
  * @param[out]  dest  pointer to bytes where the result will be stored
  * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   wc    the wide character to convert
- * @param[in]   ps    pointer to the conversion state object
  *
- * @pre retval and ps shall not be a null pointer.
+ * @pre retval shall not be a null pointer.
  * @pre dmax shall not be greater than \c RSIZE_MAX_STR
  *      (unless dest is null).
  * @pre dmax shall not equal zero (unless dest is null).
@@ -101,42 +93,36 @@
  *         retval is null).
  *
  * @retval  EOK        on successful conversion.
- * @retval  ESNULLP    when retval or ps are a NULL pointer
+ * @retval  ESNULLP    when retval is a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
  *
  * @see
- *    wctomb_s()
+ *    wcrtomb_s()
  */
 errno_t
-wcrtomb_s(size_t *restrict retval,
-          char *restrict dest, rsize_t dmax,
-          wchar_t wc, mbstate_t *restrict ps)
+wctomb_s(int *restrict retval,
+         char *restrict dest, rsize_t dmax,
+         wchar_t wc)
 {
     char *orig_dest;
 
     if (unlikely(retval == NULL)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: retval is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(ps == NULL)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: ps is null",
+        invoke_safe_str_constraint_handler("wctomb_s: retval is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
     /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine. */
     if (unlikely((dmax == 0) && dest)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: dmax is 0",
+        invoke_safe_str_constraint_handler("wctomb_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
     if (unlikely((dmax > RSIZE_MAX_STR) && dest)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: dmax exceeds max",
+        invoke_safe_str_constraint_handler("wctomb_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
@@ -144,20 +130,20 @@ wcrtomb_s(size_t *restrict retval,
     /* hold base of dest in case src was not copied */
     orig_dest = dest;
 
-    *retval = wcrtomb(dest, wc, ps);
+    *retval = wctomb(dest, wc);
 
-    if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+    if (likely(*retval > 0 && *retval < (int)dmax)) {
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)*retval > 0) ? ESNOSPC : errno;
+        errno_t rc = (*retval > 0) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
              */
             handle_error(orig_dest, dmax,
-                         rc == ESNOSPC ? "wcrtomb_s: not enough space for src"
-                                       : "wcrtomb_s: illegal sequence",
+                         rc == ESNOSPC ? "wctomb_s: not enough space for src"
+                                       : "wctomb_s: illegal sequence",
                          rc);
         }
         return RCNEGATE(rc);
@@ -165,6 +151,6 @@ wcrtomb_s(size_t *restrict retval,
 
     return EOK;
 }
-EXPORT_SYMBOL(wcrtomb_s)
+EXPORT_SYMBOL(wctomb_s)
 
 #endif /* HAVE_WCHAR_H */

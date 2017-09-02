@@ -314,8 +314,12 @@ wcstombs_s(size_t *restrict retval,
            const wchar_t *restrict src, rsize_t len);
 
 extern errno_t
-wcrtomb_s(size_t *restrict retval, char *restrict s, rsize_t ssz,
+wcrtomb_s(size_t *restrict retval, char *restrict dest, rsize_t dmax,
           wchar_t wc, mbstate_t *restrict ps);
+
+extern errno_t
+wctomb_s(int *restrict retval, char *restrict dest, rsize_t dmax,
+         wchar_t wc);
 
 extern size_t
 wcsnlen_s(const wchar_t *dest, size_t dmax);

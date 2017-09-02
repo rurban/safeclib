@@ -118,6 +118,7 @@ STD_WCHAR_FILES = \
 	wchar/wcsrtombs_s.c  	\
 	wchar/wcstombs_s.c  	\
 	wchar/wcrtomb_s.c  	\
+	wchar/wctomb_s.c  	\
 	wchar/wcsnlen_s.c  	\
 	wchar/wcscpy_s.c  	\
 	wchar/wcsncpy_s.c  	\
@@ -166,9 +167,6 @@ STD_OS_FILES = \
 	os/gmtime_s.c	\
 	os/localtime_s.c
 
-STD_STDLIB_FILES = \
-	stdlib/wctomb_s.c	
-
 ALL_SRC_FILES = 
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
@@ -177,8 +175,7 @@ ALL_SRC_FILES =
 	$(STD_WCHAR_FILES)  
 #	$(STD_OS_FILES)     \
 #	$(STD_IO_FILES)     \
-#	$(STD_MISC_FILES)   \
-#	$(STD_STDLIB_FILES)
+#	$(STD_MISC_FILES)
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
@@ -212,7 +209,6 @@ libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 if ENABLE_WCHAR
 libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
 	$(STD_WCHAR_FILES)
-#	$(STD_STDLIB_FILES)
 endif
 if ENABLE_EXTS
 libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
