@@ -95,8 +95,8 @@ my %gFuncNumMap;
 my %gFuncConvertMap = (
     # C11 std APIs (Character Handling)
     #    - Case Mapping
-    "tolower"  => "??",
-    "toupper"  => "??",
+    #"tolower"  => "??",
+    #"toupper"  => "??",
 
     # C11 std APIs (String handling)
     #    - Copying
@@ -104,10 +104,16 @@ my %gFuncConvertMap = (
     "memmove"  => "memmove_s",
     "strcpy"   => "strcpy_s",
     "strncpy"  => "strncpy_s",
+    "wcscpy"   => "wcscpy_s",
+    "wcsncpy"  => "wcsncpy_s",
+    "wmemcpy"  => "wmemcpy_s",
+    "wmemmove" => "wmemmove_s",
 
     #    - Concatenation
     "strcat"   => "strcat_s",
     "strncat"  => "strncat_s",
+    "wcscat"   => "wcscat_s",
+    "wcsncat"  => "wcsncat_s",
 
     #    - Comparison
     "memcmp"   => "memcmp_s",
@@ -124,25 +130,105 @@ my %gFuncConvertMap = (
     "strrchr"   => "??",
     "strspn"    => "strspn_s",
     "strstr"    => "strstr_s",
+    "wcsstr"    => "wcsstr_s",
     "strtok"    => "strtok_s",
+    "wstrtok"   => "wstrtok_s",
 
     #    - Miscellaneous
     "memset"   => "memset_s",
-    "strerror" => "??", # TODO strerror_s
+    "strerror" => "strerror_s",
     "strlen"   => "strnlen_s",
+
+    #    - Conversion
+    "mbstowcs"   => "mbstowcs_s",
+    "mbsrtowcs"  => "mbsrtowcs_s",
+    "wcrtomb"    => "wcrtomb_s",
+    "wcsrtombs"  => "wcsrtombs_s",
+    "wcstombs"   => "wcstombs_s",
+    "wctomb"     => "wctomb_s",
 
     # C11 std APIs (Input/Output)
     "sprintf"   => "sprintf_s",
     "snprintf"  => "sprintf_s",
     "vsprintf"  => "vsprintf_s",
     "vsnprintf" => "vsprintf_s",
+    "fprintf"   => "fprintf_s",
+    "fwprintf"  => "fwprintf_s",
+    "printf"    => "printf_s",
+    "vfprintf"  => "vfprintf_s",
+    "vprintf"   => "vprintf_s",
+    "wprintf"   => "wprintf_s",
+    "snwprintf" => "snwprintf_s",
+    "swprintf"  => "swprintf_s",
+    "vfwprintf" => "vfwprintf_s",
+    "vsnwprintf"=> "vsnwprintf_s",
+    "vswprintf" => "vswprintf_s",
+    "vwprintf"  => "vwprintf_s",
+    "fscanf"    => "fscanf_s",
+    "fwscanf"   => "fwscanf_s",
+    "scanf"     => "scanf_s",
+    "sscanf"    => "sscanf_s",
+    "vfscanf"   => "vfscanf_s",
+    "vsscanf"   => "vsscanf_s",
+    "swscanf"   => "swscanf_s",
+    "vfwscanf"  => "vfwscanf_s",
+    "vswscanf"  => "vswscanf_s",
+    "vwscanf"   => "vwscanf_s",
+    "wscanf"    => "wscanf_s",
+    
+    # C11 std APIs (OS)
+    "asctime" => "asctime_s",
+    "ctime" => "ctime_s",
+    "getenv" => "getenv_s",
+    "gmtime" => "gmtime_s",
+    "localtime" => "localtime_s",
+    
+    # C11 std APIs (Misc)
+    "bsearch" => "bsearch_s",
+    "qsort" => "qsort_s",
 
     # Extensions
+    #    - GNU extensions
+    "memcmp"      => "memcmp_s",
+    "wmemcmp"     => "wmemcmp_s",
+    
     #    - Posix extensions
     "strnlen"     => "strnlen_s",
     "strcasecmp"  => "strcasecmp_s",
     "strncasecmp" => "strcasecmp_s",
 
+    #    - Other (Our) extensions
+    "memzero"     => "memzero_s",
+    "strcmpfld"   => "strcmpfld_s",
+    "strcasecmp"  => "strcasecmp_s",
+    "strcasestr"  => "strcasestr_s",
+    "strcmpfld"   => "strcmpfld_s",
+    "strcpyfld"   => "strcpyfld_s",
+    "strcpyfldin" => "strcpyfldin_s",
+    "strcpyfldout"=> "strcpyfldout_s",
+    "strerrorlen" => "strerrorlen_s",
+    "strfirstchar" => "strfirstchar_s",
+    "strfirstdiff" => "strfirstdiff_s",
+    "strfirstsame" => "strfirstsame_s",
+    "strisalphanumeric" => "strisalphanumeric_s",
+    "strisascii"   => "strisascii_s",
+    "strisdigit"   => "strisdigit_s",
+    "strishex"     => "strishex_s",
+    "strislowercase" => "strislowercase_s",
+    "strismixedcase" => "strismixedcase_s",
+    "strispassword" => "strispassword_s",
+    "strisuppercase" => "strisuppercase_s",
+    "strlastchar" => "strlastchar_s",
+    "strlastdiff" => "strlastdiff_s",
+    "strlastsame" => "strlastsame_s",
+    "strljustify" => "strljustify_s",
+    "strnterminate" => "strnterminate_s",
+    "strprefix" => "strprefix_s",
+    "strremovews" => "strremovews_s",
+    "strtolowercase" => "strtolowercase_s",
+    "strtouppercase" => "strtouppercase_s",
+    "strzero"   => "strzero_s",
+    
     #    - BSD extensions
     "strnstr"  => "strlen_s",
     "strlcat"  => "strcat_s",
@@ -150,6 +236,7 @@ my %gFuncConvertMap = (
     "strsep"   => "??",
     "bcopy"    => "memcpy_s",
     "bzero"    => "memset_s",
+    # TODO More OpenBSD
 
     # Kernel Specific APIs
     #    Linux specific APIs
@@ -183,7 +270,7 @@ my %gFuncConvertMap = (
     "sstrncpy" => "strncpy_s",
 );
 my $funcRegexpStr = join("|", sort keys %gFuncConvertMap);
-my $gFuncRegexp = qr/[^_]($funcRegexpStr)/;
+my $gFuncRegexp = qr/[^_]($funcRegexpStr)[^_a-z]/;
 
 main();
 
