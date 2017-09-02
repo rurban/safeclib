@@ -126,9 +126,9 @@ STD_WCHAR_FILES = \
 	wchar/wcsncat_s.c  	\
 	wchar/wmemcpy_s.c  	\
 	wchar/wmemmove_s.c  	\
-	wchar/wcstok_s.c  	
+	wchar/wcstok_s.c  	\
+	wchar/vswprintf_s.c  	
 #	wchar/swprintf_s.c  	\
-#	wchar/vswprintf_s.c  	\
 #	wchar/vfwprintf_s.c  	\
 #	wchar/vwprintf_s.c  	\
 #	wchar/swscanf_s.c  	\

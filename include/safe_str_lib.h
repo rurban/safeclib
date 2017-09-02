@@ -344,6 +344,10 @@ extern wchar_t *
 wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
          const wchar_t *restrict delim, wchar_t **restrict ptr);
 
+extern int
+vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
+            const wchar_t *restrict fmt, va_list ap);
+
 /* TODO */
 #if 0
 
@@ -368,10 +372,6 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap);
 extern int
 vfwprintf_s(FILE * restrict stream,
             const wchar_t *restrict fmt, va_list ap);
-
-extern int
-vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
-            const wchar_t * restrict fmt, va_list ap);
 
 /* unsafe! */
 extern int
