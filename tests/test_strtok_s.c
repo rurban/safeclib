@@ -12,7 +12,9 @@
 
 int main()
 {
+#ifdef DEBUG
     errno_t rc = 0;
+#endif
     char *p2str;
     char *p2tok;
 
@@ -136,7 +138,7 @@ int main()
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
-    //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    /* printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len ); */
 
 /*--------------------------------------------------*/
 /** [2] **/
@@ -147,7 +149,7 @@ int main()
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
-    //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    /* printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len ); */
 
 /*--------------------------------------------------*/
 /*--------------------------------------------------*/
@@ -166,7 +168,7 @@ int main()
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
-    //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    /* printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len ); */
 
 /*--------------------------------------------------*/
 /** [2] **/
@@ -183,7 +185,7 @@ int main()
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
-    //printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    /* printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len ); */
 
 /*--------------------------------------------------*/
 
@@ -312,7 +314,7 @@ int main()
     while (p2tok && len) {
         debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
-//        p2tok = strtok_s(p2str, &len, str2, &p2str);
+        /* p2tok = strtok_s(p2str, &len, str2, &p2str); */
         p2tok = strtok_s(NULL, &len, str2, &p2str);
 
         debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );

@@ -30,7 +30,7 @@ script:
   - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
   - CC="$XCC" ./configure $CONF
   - make -j4
-  - make check
+  - make check || (cat tests/test-suite.log; false)
 
 matrix:
   fast_finish: true
