@@ -116,7 +116,9 @@ INPUT                  = @top_srcdir@/README.md @top_srcdir@/src @top_srcdir@/in
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c *.h
 RECURSIVE              = YES
-EXCLUDE                = tests
+EXCLUDE                = @top_srcdir@/include/safe_str_constraint.h \
+                         @top_srcdir@/include/safe_str_lib.h \
+                         @top_srcdir@/include/safeclib_private.h
 EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        =

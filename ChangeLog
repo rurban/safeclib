@@ -21,7 +21,7 @@ Changes in vxx092017 3.0.0
         - added most safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcrtomb_s,
         wctomb_s, wcsnlen_s, wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s,
-        wcstok_s, wmemcpy_s, wmemmove_s
+        wcstok_s, wmemcpy_s, wmemmove_s. Also tmpnam_s.
         - added --disable-wchar to disable the new multibyte and wchar functions,
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR
