@@ -151,21 +151,27 @@ else
         else
            # default release optimization
 	   DEBUG_CFLAGS="-O2"
+           if test x$GCC = xyes; then
+	      DEBUG_CFLAGS="-O2 -D_FORTIFY_SOURCE=2"
+              if test x$host_os != xcygwin; then
+                  AM_LDFLAGS="-Wl,--as-needed -Wl,-z,relro -Wl,-z,now"
+              fi
+           fi
         fi
         AC_MSG_RESULT([no CFLAGS=$DEBUG_CFLAGS])
 fi
 
-if test "x$CFLAGS" = "x" -o "x$CFLAGS" = "x-g -O2" -o "x$CFLAGS" = "x-g"; then
-	# by doing it this way we suppress automake's assumption that if
-	# CFLAGS is empty lets compile the code with '-g -O2'.
-	CFLAGS="${DEBUG_CFLAGS}"
-else
-	AC_MSG_WARN([CFLAGS is not empty, will attempt to apply optimization
-	             flags to 'AM_CFLAGS' but depending on the contents of
-	             CFLAGS these may be overridden.
-	             CFLAGS = '$CFLAGS'])
-	AM_CFLAGS="${AM_CFLAGS} ${DEBUG_CFLAGS}"
-fi
+dnl if test "x$CFLAGS" = "x" -o "x$CFLAGS" = "x-g -O2" -o "x$CFLAGS" = "x-g"; then
+dnl 	# by doing it this way we suppress automake's assumption that if
+dnl 	# CFLAGS is empty lets compile the code with '-g -O2'.
+dnl 	CFLAGS="${DEBUG_CFLAGS}"
+dnl else
+dnl 	AC_MSG_WARN([CFLAGS is not empty, will attempt to apply optimization
+dnl 	             flags to 'AM_CFLAGS' but depending on the contents of
+dnl 	             CFLAGS these may be overridden.
+dnl 	             CFLAGS = '$CFLAGS'])
+AM_CFLAGS="${AM_CFLAGS} ${DEBUG_CFLAGS}"
+dnl fi
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
 
 AC_ARG_ENABLE(extensions,
@@ -408,7 +414,8 @@ AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strstr wmemchr wcscmp])
+                strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf_s])
+AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 
 # Checks for system services
 # ===============================================

@@ -51,7 +51,7 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR16.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
  *
  * @return   The function returns the wide string length, excluding  the terminating
  *           null character.  If \c dest is NULL, then \c wcsnlen_s returns 0.
@@ -81,7 +81,7 @@ wcsnlen_s (const wchar_t *dest, rsize_t dmax)
         return RCNEGATE(0);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR16)) {
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(0);

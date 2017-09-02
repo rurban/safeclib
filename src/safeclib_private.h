@@ -73,6 +73,10 @@
 # include <limits.h>
 #endif
 
+#ifndef HAVE_STRNSTR
+#define strnstr(a,b,c) strstr(a,b)
+#endif
+
 #define EXPORT_SYMBOL(sym)
 #define RCNEGATE(x)  (x)
 

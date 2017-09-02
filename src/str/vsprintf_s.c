@@ -35,7 +35,6 @@
 #include "safe_str_constraint.h"
 #include <stdarg.h>
 
-
 /**
  * @brief 
  *    The vsprintf_s function composes a string with same test that 
@@ -85,8 +84,6 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
 
 int vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
 {

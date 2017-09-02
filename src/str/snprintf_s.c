@@ -36,9 +36,6 @@
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
-/* TODO: error when fmt contains %n, or encoding errors occur.
- */
-
 /** 
  * @brief
  *    The \c snprintf_s function composes a string with same test that 
@@ -71,7 +68,7 @@
  * @pre \c dmax shall not equal zero.
  * @pre \c dmax shall be greater than <tt>strnlen_s(dest, dmax)</tt>.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
- * @pre None of the arguments corresponding to \c %s is a null pointer.
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
  *
  * @return Number of characters not including the terminating null
@@ -81,9 +78,10 @@
  *         \c dmax was ignored, or a negative value if a runtime
  *         constraints violation or an encoding error occurred.
  *
- * @retval  ESNULLP when \c dest/fmt is NULL pointer
- * @retval  ESZEROL when \c dmax = 0
- * @retval  ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ * @retval  -ESNULLP when \c dest/fmt is NULL pointer
+ * @retval  -ESZEROL when \c dmax = 0
+ * @retval  -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ * @retval  -EINVAL  when fmt contains %n
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
@@ -96,6 +94,7 @@ int snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ..
 {
     va_list ap;
     int ret = -1;
+    const char *p;
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
@@ -121,17 +120,17 @@ int snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ..
         return RCNEGATE(ESZEROL);
     }
 
+    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
+        /* at the beginning or if inside, not %%n */
+        if ((p-fmt == 0) || *(p-1) != '%') {
+            invoke_safe_str_constraint_handler("snprintf_s: illegal %n",
+                                               NULL, EINVAL);
+            return RCNEGATE(EINVAL);
+        }
+    }
+
     va_start(ap, fmt);
-
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
-
-    /*if (ret >= (int)dmax) {
-        invoke_safe_str_constraint_handler("snprintf_s: len exceeds dmax",
-                   NULL, ESNOSPC);
-        *dest = 0;
-        ret = RCNEGATE(ESNOSPC);
-    }*/
-
     va_end(ap);
 
     return ret;

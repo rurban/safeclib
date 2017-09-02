@@ -36,9 +36,6 @@
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
-/* TODO: error when fmt contains %n, or encoding errors occur.
- */
-
 /**
  * @brief 
  *    The \c vsnprintf_s function composes a string with same test that 
@@ -66,7 +63,7 @@
  * @pre \c dmax shall not equal zero.
  * @pre \c dmax shall be greater than <tt>strnlen_s(dest, dmax)</tt>.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
- * @pre None of the arguments corresponding to \c %s is a null pointer.
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
@@ -79,10 +76,11 @@
  *          invalid parameter handler is invoked. Unlike \c vsnprintf,
  *          \c vsprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
- * @retval  ESNULLP when \c dest/fmt is NULL pointer
- * @retval  ESZEROL when \c dmax = 0
- * @retval  ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- * @retval  ESNOSPC when return value exceeds \c dmax
+ *
+ * @retval  -ESNULLP when \c dest/fmt is NULL pointer
+ * @retval  -ESZEROL when \c dmax = 0
+ * @retval  -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ * @retval  -EINVAL  when fmt contains %n
  *
  * @see
  *    sprintf_s(), vsprintf_s()
@@ -95,6 +93,8 @@ int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_
 {
 
     int ret = -1;
+    const char *p;
+
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
@@ -119,14 +119,16 @@ int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_
         return RCNEGATE(ESZEROL);
     }
 
+    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
+        /* at the beginning or if inside, not %%n */
+        if ((p-fmt == 0) || *(p-1) != '%') {
+            invoke_safe_str_constraint_handler("vsnprintf_s: illegal %n",
+                                               NULL, EINVAL);
+            return RCNEGATE(EINVAL);
+        }
+    }
+    
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
-
-    /*if (ret >= (int)dmax) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: len exceeds dmax",
-                   NULL, ESNOSPC);
-        *dest = 0;
-        ret = RCNEGATE(ESNOSPC);
-    }*/
 
     return ret;
 }

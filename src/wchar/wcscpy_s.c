@@ -60,21 +60,21 @@
  * @param[in]   src   pointer to the wide string that will be copied to dest
  *
  * @pre Neither dest nor src shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR16.
+ * @pre dmax shall not be greater than RSIZE_MAX_WSTR.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than wcsnlen_s(src, dmax).
  * @pre Copying shall not take place between objects that overlap.
  *
- * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR16.
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
- *          not greater than RSIZE_MAX_STR16, then wcscpy_s nulls dest.
+ *          not greater than RSIZE_MAX_WSTR, then wcscpy_s nulls dest.
  * @retval  EOK        when successful operation, the wide characters in src were
  *                     copied into dest and the result is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR16
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
  * @retval  ESOVRLP    when buffers overlap
  * @retval  ESNOSPC    when dest < src
  *
@@ -101,7 +101,7 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
         return RCNEGATE(ESZEROL);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR16)) {
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcscpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);

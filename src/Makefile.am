@@ -110,7 +110,8 @@ EXT_STR_FILES = \
 	extstr/strstr_s.c            \
 	extstr/strtolowercase_s.c    \
 	extstr/strtouppercase_s.c    \
-	extstr/strzero_s.c           
+	extstr/strzero_s.c           \
+	extwchar/wcsstr_s.c          
 
 STD_WCHAR_FILES = \
 	wchar/mbsrtowcs_s.c  	\
@@ -136,6 +137,11 @@ STD_WCHAR_FILES = \
 #	wchar/vfwscanf_s.c  	\
 #	wchar/vswscanf_s.c  	\
 #	wchar/vwscanf_s.c
+
+if !HAVE_WCSSTR
+STD_WCHAR_FILES += \
+	extwchar/wcsstr.c
+endif
 
 STD_IO_FILES = \
 	io/fgets_s.c	\

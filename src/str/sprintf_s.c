@@ -37,9 +37,6 @@
 #include "safe_str_constraint.h"
 #include <stdarg.h>
 
-/* TODO: error when fmt contains %n, or encoding errors occur.
- */
-
 /** 
  * @brief
  *    The sprintf_s function composes a string with same test that 
@@ -61,7 +58,7 @@
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than strnlen_s(dest, dmax).
  * @pre fmt  shall not contain the conversion specifier %n.
- * @pre None of the arguments corresponding to %s is a null pointer.
+ * @pre None of the arguments corresponding to %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
  *
  * @return  On success the total number of characters written is returned. 
@@ -72,17 +69,21 @@
  *          invalid parameter handler is invoked. Unlike _snprintf,
  *          sprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
- * @retval  ESNULLP when dest/fmt is NULL pointer
- * @retval  ESZEROL when dmax = 0
- * @retval  ESLEMAX when dmax > RSIZE_MAX_STR
- * @retval  ESNOSPC when return value exceeds dmax
+ * @retval  -ESNULLP when dest/fmt is NULL pointer
+ * @retval  -ESZEROL when dmax = 0
+ * @retval  -ESLEMAX when dmax > RSIZE_MAX_STR
+ * @retval  -ESNOSPC when return value exceeds dmax
+ * @retval  -EINVAL  when fmt contains %n
  *
  */
+
+#include "safeclib_private.h"
 
 int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 {
     va_list ap;
     int ret = -1;
+    const char *p;
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
@@ -108,8 +109,24 @@ int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...
         return RCNEGATE(ESZEROL);
     }
 
-    va_start(ap, fmt);
+    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
+        /* at the beginning or if inside, not %%n */
+        if ((p-fmt == 0) || *(p-1) != '%') {
+            invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
+                                               NULL, EINVAL);
+            return RCNEGATE(EINVAL);
+        }
+    }
 
+    /* TODO: in order to check for NULL fmt args, need va_copy.
+    va_copy(ap2, ap);
+    void *ptr = va_arg(*ap2, void*);
+    if (ptr == NULL)
+        return RCNEGATE(ESNULLP);
+    va_end(ap2);
+    */
+
+    va_start(ap, fmt);
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
     if (unlikely(ret >= (int)dmax)) {

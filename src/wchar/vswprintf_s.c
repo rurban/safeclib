@@ -36,6 +36,10 @@
 #include "safe_str_constraint.h"
 #include <stdarg.h>
 
+/* TODO:
+the conversion specifier %n is present in fmt
+any of the arguments corresponding to %s is a null pointer
+*/
 
 /**
  * @brief 
@@ -58,14 +62,14 @@
  * @param[in]   ap    optional arguments
  *
  * @pre Neither dest nor fmt shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR16.
+ * @pre dmax shall not be greater than RSIZE_MAX_WSTR.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than wcsnlen_s(dest, dmax).
  * @pre fmt  shall not contain the conversion specifier %n
  * @pre None of the arguments corresponding to %s is a null pointer
  * @pre No encoding error shall occur.
  *
- * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR16.
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @return  On success the total number of wide characters written is returned.
  * @return  On failure a negative number is returned.
@@ -75,10 +79,13 @@
  *          invalid parameter handler is invoked. Unlike vsnprintf,
  *          vswprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
+ *
+ * @retval  -1      when return value exceeds dmax or some other error.
+ * @retval  ESNOSPC with C11 when return value exceeds dmax
  * @retval  ESNULLP when dest/fmt is NULL pointer
  * @retval  ESZEROL when dmax = 0
- * @retval  ESLEMAX when dmax > RSIZE_MAX_STR
- * @retval  ESNOSPC when return value exceeds dmax
+ * @retval  ESLEMAX when dmax > RSIZE_MAX_WSTR
+ * @retval  EINVAL  when fmt contains %n
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
@@ -93,9 +100,10 @@ int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, va_list ap)
 {
-
+    wchar_t *p;
     int ret = -1;
-    if (unlikely(dmax > RSIZE_MAX_STR16)) {
+
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("vswprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -119,13 +127,46 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
         return RCNEGATE(ESZEROL);
     }
 
-    ret = vswprintf(dest, (size_t)dmax, fmt, ap);
+#if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
+    if (unlikely((p = wcsstr(fmt, L"%n")))) {
+        if ((p-fmt == 0) || *(p-1) != L'%') {
+            invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
+                   NULL, ESNULLP);
+            return RCNEGATE(ESNULLP);
+        }
+    }
+#elif defined(HAVE_WCSCHR)
+    if (unlikely((p = wcschr(fmt, flen, L'n')))) {
+        /* at the beginning or if inside, not %%n */
+        if (((p-fmt >= 1) && *(p-1) == L'%') &&
+            ((p-fmt == 1) || *(p-2) != L'%')) {
+            invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
+                                               NULL, EINVAL);
+            return RCNEGATE(EINVAL);
+        }
+    }
+#else
+    #error need wcsstr or wcschr
+#endif
+
+    /* C11 solves the ESNOSPC problem */
+#if defined(HAVE_VSNWPRINTF_S)
+    ret = vsnwprintf_s(dest, dmax, fmt, ap);
+#else
+    ret = vswprintf(dest, dmax, fmt, ap);
+#endif
 
     if (unlikely(ret >= (int)dmax)) {
         invoke_safe_str_constraint_handler("vswprintf_s: len exceeds dmax",
                    NULL, ESNOSPC);
         *dest = 0;
         ret = RCNEGATE(ESNOSPC);
+    } else {
+        if (ret < 0) {
+            invoke_safe_str_constraint_handler("vswprintf_s: probably no space",
+                                               NULL, ESNOSPC);
+            *dest = 0;
+        }
     }
 
     return ret;

@@ -16,7 +16,6 @@ int test_sprintf_s (void)
 {
     errno_t rc;
     int32_t  ind;
-    int32_t  len1;
     int32_t  len2;
     int32_t  len3;
     int errs = 0;
@@ -64,14 +63,16 @@ int test_sprintf_s (void)
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
-    len1 = strlen(str1);
     len2 = strlen(str2);
 
     rc = sprintf_s(str1, 50, "%s", str2);
     ERR(len2)
     len3 = strlen(str1);
     if (len3 != len2) {
-        debug_printf("%s %u lengths wrong: %u  %u  %u \n",
+#ifdef DEBUG
+        int len1 = strlen(str1);
+#endif
+        debug_printf("%s %u lengths wrong: %d  %u  %u \n",
                      __FUNCTION__, __LINE__, len1, len2, len3);
         errs++;
     }

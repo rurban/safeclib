@@ -84,21 +84,21 @@
  * @param[in]   ps    pointer to the conversion state object
  *
  * @pre retval, ps, src, or *src shall not be a null pointer.
- * @pre dmax and len shall not be greater than \c RSIZE_MAX_STR16
+ * @pre dmax and len shall not be greater than \c RSIZE_MAX_WSTR
  *      (unless dest is null).
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than <tt>wcsnlen_s(src, dmax)</tt>.
  * @pre Copying shall not take place between objects that overlap.
  *
- * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR16.
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
- *          not greater than RSIZE_MAX_STR16, then \c mbsrtowcs_s nulls dest.
+ *          not greater than RSIZE_MAX_WSTR, then \c mbsrtowcs_s nulls dest.
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retval, ps, src or *src are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR16, unless dest is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR, unless dest is NULL
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the *src array and len is
@@ -153,7 +153,7 @@ mbsrtowcs_s (size_t *restrict retval,
         return RCNEGATE(ESZEROL);
     }
 
-    if (unlikely((dmax > RSIZE_MAX_STR16) && dest)) {
+    if (unlikely((dmax > RSIZE_MAX_WSTR) && dest)) {
         invoke_safe_str_constraint_handler("mbsrtowcs_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);

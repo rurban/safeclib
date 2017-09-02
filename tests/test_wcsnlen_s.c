@@ -37,7 +37,7 @@ int test_wcsnlen_s (void)
     }
 /*--------------------------------------------------*/
 
-    max_len = RSIZE_MAX_STR16+1;
+    max_len = RSIZE_MAX_WSTR+1;
     len = wcsnlen_s(L"test", max_len);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
@@ -47,7 +47,7 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     std_len = strlen("");
-    max_len = RSIZE_MAX_STR16;
+    max_len = RSIZE_MAX_WSTR;
 
     len = wcsnlen_s (L"", max_len);
 
@@ -59,7 +59,7 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     std_len = strlen("t");
-    max_len = RSIZE_MAX_STR16;
+    max_len = RSIZE_MAX_WSTR;
 
     len = wcsnlen_s (L"t", max_len);
 
@@ -71,7 +71,7 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     std_len = strlen("to");
-    max_len = RSIZE_MAX_STR16;
+    max_len = RSIZE_MAX_WSTR;
 
     len = wcsnlen_s (L"to", max_len);
 
@@ -83,7 +83,7 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     std_len = strlen("testing");
-    max_len = RSIZE_MAX_STR16;
+    max_len = RSIZE_MAX_WSTR;
 
     len = wcsnlen_s (L"testing", max_len);
 

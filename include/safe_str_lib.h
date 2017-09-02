@@ -50,7 +50,7 @@ extern "C" {
 #define RSIZE_MIN_STR      ( 1 )
 
 /* wide chars */
-#define RSIZE_MAX_STR16    ( RSIZE_MAX_STR/2 )
+#define RSIZE_MAX_WSTR    ( RSIZE_MAX_STR/sizeof(wchar_t) )
 
 /* The makeup of a password */
 #define SAFE_STR_MIN_LOWERCASE     ( 2 )
@@ -285,10 +285,22 @@ strtouppercase_s(char *str, rsize_t slen);
 extern errno_t
 strzero_s(char *dest, rsize_t dmax);
 
+/* search wide substring */
+extern errno_t
+wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
+         const wchar_t *restrict src, rsize_t slen,
+         wchar_t **restrict substring);
+
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 
 #ifndef SAFECLIB_DISABLE_WCHAR
+
+/* is c99
+extern wchar_t*
+wcsstr(wchar_t *restrict dest, const wchar_t *restrict src);
+*/
+
 /* multibyte wchar */
 
 extern errno_t

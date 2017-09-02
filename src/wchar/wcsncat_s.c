@@ -70,21 +70,21 @@
  *
  * @pre  Neither dest nor src shall be a null pointer
  * @pre  dmax shall not equal zero
- * @pre  dmax shall not be greater than RSIZE_MAX_STR16
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR
  * @pre  dmax shall be greater than wcsnlen_s(src,m).
  * @pre  Copying shall not takeplace between objects that overlap
  *  
- * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR16.
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
- *           greater than RSIZE_MAX_STR16, then wcsncat_s sets dest[0] to the
+ *           greater than RSIZE_MAX_WSTR, then wcsncat_s sets dest[0] to the
  *           0 wide character.
  * @retval  EOK        successful operation, all the wide characters from src
  *                     null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR16
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR
  * @retval  ESUNTERM   when dest not terminated
  * @retval  ESOVRLP    when src overlaps with dest
  *

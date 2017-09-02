@@ -100,7 +100,7 @@
  * @pre  *dmax shall not be 0.
  * @pre  If dest is a null pointer, then *ptr shall not be a null pointer.
  * @pre  dest must not be unterminated.
- * @pre  The value of *dmax shall not be greater than RSIZE_MAX_STR16. The
+ * @pre  The value of *dmax shall not be greater than RSIZE_MAX_WSTR. The
  *       end of the token found shall occur within the first *dmax
  *       characters of dest for the first call, and shall occur within
  *       the first *dmax characters of where searching resumes on
@@ -108,14 +108,14 @@
  * @pre  delim must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
  *
  *
- * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR16.
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @return  The wcstok_s function returns a pointer to the first character
  *          of a token; or a null pointer if there is no token or there
  *          is a runtime-constraint violation.
  * @retval  ESNULLP     when dest/delim/ptr is NULL pointer
  * @retval  ESZEROL     when *dmax = 0
- * @retval  ESLEMAX     when *dmax > RSIZE_MAX_STR16
+ * @retval  ESLEMAX     when *dmax > RSIZE_MAX_WSTR
  * @retval  ESUNTERM    when unterminated string
  *
  * @remarks 
@@ -174,7 +174,7 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
         return (NULL);
     }
 
-    if (unlikely(*dmax > RSIZE_MAX_STR16)) {
+    if (unlikely(*dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcstok_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (NULL);
