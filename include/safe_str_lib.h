@@ -336,12 +336,12 @@ extern errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen);
 
+extern wchar_t *
+wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
+         const wchar_t *restrict delim, wchar_t **restrict ptr);
+
 /* TODO */
 #if 0
-
-extern wchar_t *
-wcstok_s(wchar_t *restrict str, rsize_t *restrict strmax,
-         const wchar_t *restrict delim, wchar_t **restrict ptr);
 
 extern int
 wprintf_s( const wchar_t *restrict fmt, ...);

@@ -38,7 +38,7 @@
  * @brief
  *    A sequence of calls to the strtok_s function breaks the string
  *    pointed to by dest into a sequence of tokens, each of which is
- *    delimited by a character from the string pointed to by src. The
+ *    delimited by a character from the string pointed to by delim. The
  *    fourth argument points to a caller-provided char pointer into
  *    which the strtok_s function stores information necessary for
  *    it to continue scanning the same string.
@@ -52,12 +52,12 @@
  *    calls in the sequence have a null first argument and the objects
  *    pointed to by dmax and ptr are required to have the values
  *    stored by the previous call in the sequence, which are then
- *    updated. The separator string pointed to by src may be different
+ *    updated. The separator string pointed to by delim may be different
  *    from call to call.
  *
  *    The first call in the sequence searches the string pointed to
  *    by dest for the first character that is not contained in the
- *    current separator string pointed to by src. If no such character
+ *    current separator string pointed to by delim. If no such character
  *    is found, then there are no tokens in the string pointed to
  *    by dest and the strtok_s function returns a null pointer. If
  *    such a character is found, it is the start of the first token.
@@ -77,7 +77,7 @@
  *    for ptr, shall start searching just past the element overwritten
  *    by a null character (if any).
  *
- *    src uses a STRTOK_DELIM_MAX_LEN of 16.
+ *    delim uses a STRTOK_DELIM_MAX_LEN of 16.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -87,12 +87,12 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[in]   dest  pointer to string to tokenize
- * @param[in]   src   pointer to delimiter string (len < 255)
- * @param[out]  dmax  restricted maximum length of dest string
- * @param[out]  ptr   returned pointer to token
+ * @param[in]   dest    pointer to string to tokenize
+ * @param[out]  dmax    restricted maximum length of dest string
+ * @param[in]   delim   pointer to delimiter string (len < 255)
+ * @param[out]  ptr     returned pointer to token
  *
- * @pre  src shall not be a null pointer.
+ * @pre  delim shall not be a null pointer.
  * @pre  ptr shall not be a null pointer.
  * @pre  dmax shall not be a null pointer.
  * @pre  *dmax shall not be 0.
@@ -103,7 +103,7 @@
  *       characters of dest for the first call, and shall occur within
  *       the first *dmax characters of where searching resumes on
  *       subsequent calls.
- * @pre  src must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
+ * @pre  delim must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
  *
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
@@ -111,7 +111,7 @@
  * @return  The strtok_s function returns a pointer to the first character
  *          of a token; or a null pointer if there is no token or there
  *          is a runtime-constraint violation.
- * @retval  ESNULLP     when dest/src/ptr is NULL pointer
+ * @retval  ESNULLP     when dest/delim/ptr is NULL pointer
  * @retval  ESZEROL     when *dmax = 0
  * @retval  ESLEMAX     when *dmax > RSIZE_MAX_STR
  * @retval  ESUNTERM    when unterminated string
@@ -152,13 +152,9 @@
  * @endcode
  */
 char *
-strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict src, char ** restrict ptr)
+strtok_s(char *restrict dest, rsize_t *restrict dmax,
+         const char *restrict delim, char **restrict ptr)
 {
-
-#ifndef STRTOK_DELIM_MAX_LEN
-#define  STRTOK_DELIM_MAX_LEN  16
-#endif
-
     const char *pt;
     char *ptoken;
     rsize_t dlen;
@@ -182,8 +178,8 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
         return (NULL);
     }
 
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strtok_s: src is null",
+    if (unlikely(delim == NULL)) {
+        invoke_safe_str_constraint_handler("strtok_s: delim is null",
                    NULL, ESNULLP);
         return (NULL);
     }
@@ -219,13 +215,13 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
          * ISO should have included a delimiter string limit!!
          */
         slen = STRTOK_DELIM_MAX_LEN;
-        pt = src;
+        pt = delim;
         while (*pt != '\0') {
 
             if (unlikely(slen == 0)) {
                 *ptr = NULL;
                 invoke_safe_str_constraint_handler(
-                          "strtok_s: src is unterminated",
+                          "strtok_s: delim is unterminated",
                            NULL, ESUNTERM);
                 return (NULL);
             }
@@ -266,13 +262,13 @@ strtok_s(char * restrict dest, rsize_t * restrict dmax, const char * restrict sr
         }
 
         slen = STRTOK_DELIM_MAX_LEN;
-        pt = src;
+        pt = delim;
         while (*pt != '\0') {
 
             if (unlikely(slen == 0)) {
                 *ptr = NULL;
                 invoke_safe_str_constraint_handler(
-                          "strtok_s: src is unterminated",
+                          "strtok_s: delim is unterminated",
                            NULL, ESUNTERM);
                 return (NULL);
             }

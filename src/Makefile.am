@@ -124,16 +124,16 @@ STD_WCHAR_FILES = \
 	wchar/wcscat_s.c  	\
 	wchar/wcsncat_s.c  	\
 	wchar/wmemcpy_s.c  	\
-	wchar/wmemmove_s.c  	
-#	wchar/wcstok_s.c  	\
+	wchar/wmemmove_s.c  	\
+	wchar/wcstok_s.c  	
 #	wchar/swprintf_s.c  	\
+#	wchar/vswprintf_s.c  	\
+#	wchar/vfwprintf_s.c  	\
+#	wchar/vwprintf_s.c  	\
 #	wchar/swscanf_s.c  	\
 #	wchar/wscanf_s.c	\
-#	wchar/vfwprintf_s.c  	\
 #	wchar/vfwscanf_s.c  	\
-#	wchar/vswprintf_s.c  	\
 #	wchar/vswscanf_s.c  	\
-#	wchar/vwprintf_s.c  	\
 #	wchar/vwscanf_s.c
 
 STD_IO_FILES = \
