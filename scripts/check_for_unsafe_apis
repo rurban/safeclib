@@ -121,6 +121,7 @@ my %gFuncConvertMap = (
     "strncmp"  => "strcmp_s",
     "strcoll"  => "??",
     "strxfrm"  => "??",
+    "wcsncmp"  => "wcsncmp_s",
 
     #    - Search
     "memchr"    => "??",
@@ -137,7 +138,9 @@ my %gFuncConvertMap = (
     #    - Miscellaneous
     "memset"   => "memset_s",
     "strerror" => "strerror_s",
+    "strerrorlen" => "strerrorlen_s",
     "strlen"   => "strnlen_s",
+    "wcsnlen"  => "wcsnlen_s",
 
     #    - Conversion
     "mbstowcs"   => "mbstowcs_s",
@@ -178,14 +181,14 @@ my %gFuncConvertMap = (
     
     # C11 std APIs (OS)
     "asctime" => "asctime_s",
-    "ctime" => "ctime_s",
-    "getenv" => "getenv_s",
-    "gmtime" => "gmtime_s",
+    "ctime"   => "ctime_s",
+    "gmtime"  => "gmtime_s",
     "localtime" => "localtime_s",
+    "getenv"  => "getenv_s",
     
     # C11 std APIs (Misc)
     "bsearch" => "bsearch_s",
-    "qsort" => "qsort_s",
+    "qsort"   => "qsort_s",
 
     # Extensions
     #    - GNU extensions
@@ -206,7 +209,6 @@ my %gFuncConvertMap = (
     "strcpyfld"   => "strcpyfld_s",
     "strcpyfldin" => "strcpyfldin_s",
     "strcpyfldout"=> "strcpyfldout_s",
-    "strerrorlen" => "strerrorlen_s",
     "strfirstchar" => "strfirstchar_s",
     "strfirstdiff" => "strfirstdiff_s",
     "strfirstsame" => "strfirstsame_s",
