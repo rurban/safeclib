@@ -112,9 +112,9 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @top_srcdir@/README.md @top_srcdir@/src
+INPUT                  = @top_srcdir@/README.md @top_srcdir@/src @top_srcdir@/include
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = *.c
+FILE_PATTERNS          = *.c *.h
 RECURSIVE              = YES
 EXCLUDE                = tests
 EXCLUDE_SYMLINKS       = YES

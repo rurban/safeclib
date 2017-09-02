@@ -238,8 +238,9 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/_*.3
 	-rm doc/man/man3/slk_*.3
 	-rm doc/man/man3/module_*.3
-	-rm doc/man/man3/{wmask,wsize}.3
+	-rm doc/man/man3/{wmask,wsize,likely,unlikely}.3
 	-rm doc/man/man3/DRV*.3
+	-rm doc/man/man3/{INLINE,EXPORT_SYMBOL}.3
 	-rm doc/man/man3/MODULE*.3
 	-rm doc/man/man3/README*
 README.md: README
