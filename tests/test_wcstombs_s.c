@@ -72,7 +72,7 @@ int test_wcstombs_s (void)
     if ( !strcmp(chs, "C") ||
          !strcmp(chs, "ASCII") ||
          !strcmp(chs, "ANSI_X3.4-1968") ||
-         !strcmp(chs, "US_ASCII") )
+         !strcmp(chs, "US-ASCII") )
         ; /* all fine */
     else /* dont inspect the values */
         printf(__FILE__ ": cannot set C locale for test"
@@ -86,8 +86,12 @@ int test_wcstombs_s (void)
     src[1] = 0;
     cs = src;
     rc = wcstombs_s(&ind, dest, LEN, cs, LEN);
-    ERR(EILSEQ);
-    INDCMP(!= -1);
+    if (rc == 0) { /* well, musl on ASCII allows this */
+      INDCMP(!= 1);
+    } else {
+      ERR(EILSEQ);
+      INDCMP(!= -1);
+    }
 
     setlocale(LC_CTYPE, "en_US.UTF-8") ||
 	setlocale(LC_CTYPE, "en_GB.UTF-8") ||

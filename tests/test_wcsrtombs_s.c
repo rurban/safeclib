@@ -146,8 +146,12 @@ int test_wcsrtombs_s (void)
     src[1] = 0;
     cs = src;
     rc = wcsrtombs_s(&ind, dest, LEN, &cs, LEN, &ps);
-    ERR(EILSEQ);
-    INDCMP(!= -1);
+    if (rc == 0) { /* well, musl on ASCII allows this */
+      INDCMP(!= 1);
+    } else {
+      ERR(EILSEQ);
+      INDCMP(!= -1);
+    }
     CLRPS;
 
     setlocale(LC_CTYPE, "en_US.UTF-8") ||

@@ -102,6 +102,7 @@ int test_wcrtomb_s (void)
     INDCMP(!= 1);
     CLRPS;
 
+    /* surrogates */
     rc = wcrtomb_s(&ind, dest, LEN, L'\xdf81', &ps);
     if (rc == 0) { /* well, musl on ASCII allows this */
       INDCMP(!= 1);
@@ -158,8 +159,8 @@ int test_wcrtomb_s (void)
     }
     CLRPS;
 
-    /* illegal utf-8 sequence */
-    rc = wcrtomb_s(&ind, dest, LEN, L'\xdf79', &ps);
+    /* illegal unicode. but some may allow it: 0xf0 0x9d 0x8c 0x81 */
+    rc = wcrtomb_s(&ind, dest, LEN, L'\xd834df01', &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
 

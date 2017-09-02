@@ -103,8 +103,9 @@ int test_mbsrtowcs_s (void)
     if (rc == 0) { /* legal */
       ERR(EOK);
       INDCMP(!= 4);
-      if (dest[0] != 0xa0) {
-        printf("%s %u  Error  ind=%d rc=%d %d\n",
+      /* musl on ASCII converts \xa0 to \xdfa0 */
+      if ((int)dest[0] != 0xa0 && (int)dest[0] != 0xdfa0) {
+        printf("%s %u  Error  ind=%d rc=%d 0x%x\n",
                __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
         errs++;
       }
