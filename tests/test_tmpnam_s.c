@@ -43,7 +43,7 @@ int test_tmpnam_s (void)
 /*--------------------------------------------------*/
 
     rc = tmpnam_s(str1, L_tmpnam_s+1);
-    if (!(rc == 0 || rc == -ESLEMAX)) {
+    if (!(rc == 0 || rc == ESLEMAX)) {
         debug_printf("%s %u \"%s\"  Error rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, rc );
         errs++;
@@ -66,7 +66,11 @@ int test_tmpnam_s (void)
     strcpy(str1, "aaaaaaaaaaaaaaaaa");
 
     rc = tmpnam_s(str1, LEN/2);
-    ERR(EOK)
+    if (!(rc == 0 || rc == ESLEMAX)) {
+        debug_printf("%s %u   Error rc=%d \n",
+                     __FUNCTION__, __LINE__,  rc );
+        errs++;
+    }
     len = strlen(str1);
 #ifdef SAFECLIB_STR_NULL_SLACK
     for (i=len; i<LEN/2; i++) {
@@ -90,7 +94,11 @@ int test_tmpnam_s (void)
     strcpy(str1, "aaaaaaaaaaaaaaaaaaa");
 
     rc = tmpnam_s(str1, LEN);
-    ERR(EOK)
+    if (!(rc == 0 || rc == ESLEMAX)) {
+        debug_printf("%s %u   Error rc=%d \n",
+                     __FUNCTION__, __LINE__,  rc );
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
