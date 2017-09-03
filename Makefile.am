@@ -260,12 +260,12 @@ endif
 # Additional make rules
 # ===============================================
 
-.PHONY: gcov docs man perf gh-pages release checklog
+.PHONY: gcov docs man perf gh-pages release check-log
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:
 	echo $(PACKAGE_VERSION) > $(distdir)/$(TARBALL_VERSION_FILE)
-checklog:
+check-log:
 	$(MAKE) check || cat tests/test-suite.log
 perf:
 	tests/p_memcpy_s
