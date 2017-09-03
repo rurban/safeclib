@@ -104,6 +104,7 @@
 #define sldebug_printf(...)
 #endif
 
+/* TODO: get rid of that */
 #include "safe_lib.h"
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

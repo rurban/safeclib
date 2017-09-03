@@ -15,10 +15,15 @@ static char   str2[LEN];
 int test_snprintf_s (void)
 {
     errno_t rc;
-    int32_t  ind;
-    int32_t  len2;
-    int32_t  len3;
-    int errs = 0;
+    int  ind;
+    int  len2;
+    int  len3;
+    int  errs = 0;
+
+/*--------------------------------------------------*/
+
+    rc = snprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
+    ERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
@@ -37,26 +42,77 @@ int test_snprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = snprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    ERR(ESLEMAX)
+    str2[0] = '\0';
+    rc = snprintf_s(str1, LEN, "%s %n", str2, &ind);
+    ERR(EINVAL)
+
+    rc = snprintf_s(str1, LEN, "%s %%n", str2);
+    ERR(3)
+
+    rc = snprintf_s(str1, LEN, "%%n");
+    ERR(2);
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "aaaaaaaaaa");
+    /* TODO
+    rc = snprintf_s(str1, LEN, "%p", NULL);
+    ERR(ESNULLP)
+    */
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "123456");
     strcpy(str2, "keep it simple");
 
+    rc = snprintf(str1, 1, "%s", str2);
+    /* number of characters (not including the terminating null character)
+       which would have been written to buffer if dmax was ignored */
+    ERR(14); /* but truncated, written only 1 */
+    EXPSTR(str1, "");
+    if ((ind = memcmp(str1, "\00023456\000", 7))) {
+        debug_printf("%s %u snprintf truncation: %d \"\\x%x%s\"\n",
+                     __FUNCTION__, __LINE__, ind, str1[0], &str1[1]);
+        errs++;
+    }
+
+    strcpy(str1, "123456");
     rc = snprintf_s(str1, 1, "%s", str2);
-    ERR(14)
-    EXPNULL(str1)
+    /* number of characters not including the terminating null
+     * character (which is always written as long as buffer is not a
+     * null pointer and bufsz is not zero and not greater than
+     * RSIZE_MAX), which would have been written to buffer if bufsz
+     * was ignored. */
+    ERR(14); /* but truncated, written only 1, the \0 */
+    EXPSTR(str1, "");
+    if ((ind = memcmp(str1, "\00023456\000", 7))) {
+        debug_printf("%s %u snprintf_s truncation: %d \"\\x%x%s\"\n",
+                     __FUNCTION__, __LINE__, ind, str1[0], &str1[1]);
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "aaaaaaaaaa");
+    strcpy(str1, "123456");
     strcpy(str2, "keep it simple");
 
-    rc = snprintf_s(str1, 2, "%s", str2);
-    ERR(14)
+    rc = snprintf(str1, 2, "%s", str2);
+    ERR(14); /* but truncated, written only 2: k\0 */
     EXPSTR(str1, "k")
+    if ((ind = memcmp(str1, "k\0003456\000", 7))) {
+        debug_printf("%s %u snprintf truncation: %d \"%s\"\n",
+                     __FUNCTION__, __LINE__, ind, str1);
+        errs++;
+    }
+
+    strcpy(str1, "123456");
+    rc = snprintf_s(str1, 2, "%s", str2);
+    ERR(14); /* but truncated, written only 2: k\0 */
+    EXPSTR(str1, "k")
+    if ((ind = memcmp(str1, "k\0003456\000", 7))) {
+        debug_printf("%s %u snprintf truncation: %d \"%s\"\n",
+                     __FUNCTION__, __LINE__, ind, str1);
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 

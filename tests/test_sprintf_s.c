@@ -15,10 +15,15 @@ static char   str2[LEN];
 int test_sprintf_s (void)
 {
     errno_t rc;
-    int32_t  ind;
-    int32_t  len2;
-    int32_t  len3;
-    int errs = 0;
+    int  ind;
+    int  len2;
+    int  len3;
+    int  errs = 0;
+
+/*--------------------------------------------------*/
+
+    rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
+    ERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
@@ -37,8 +42,22 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = sprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    ERR(ESLEMAX)
+    str2[0] = '\0';
+    rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
+    ERR(EINVAL)
+
+    rc = sprintf_s(str1, LEN, "%s %%n", str2);
+    ERR(3)
+
+    rc = sprintf_s(str1, LEN, "%%n");
+    ERR(2);
+
+/*--------------------------------------------------*/
+
+    /* TODO
+    rc = sprintf_s(str1, LEN, "%p", NULL);
+    ERR(ESNULLP)
+    */
 
 /*--------------------------------------------------*/
 

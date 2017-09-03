@@ -36,11 +36,15 @@
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
+/* TODO:
+any of the arguments corresponding to %s is a null pointer
+*/
+
 /** 
  * @brief
- *    The \c snprintf_s function composes a string with same test that 
- *    would be printed if format was used on \c printf. Instead of being 
- *    printed, the content is stored in dest.
+ *    The truncating \c snprintf_s function composes a string with
+ *    same test that would be printed if format was used on \c
+ *    printf. Instead of being printed, the content is stored in dest.
  *    More than dmax - 1 characters might be written, so this variant is \b unsafe!
  *    Always use \b sprintf_s instead.
  *    The resulting character string will be terminated with a null character,
@@ -48,8 +52,8 @@
  *    \c dest may be a null pointer, however the return value (number
  *    of bytes that would be written) is still calculated and
  *    returned.
- *    Unlike the safe variant \c sprintf_s, \c snprintf_s does not
- *    guarantees that the buffer will be null-terminated unless
+ *    Warning: Unlike the safe variant \c sprintf_s, \c snprintf_s does not
+ *    guarantee that the buffer will be null-terminated unless
  *    the buffer size is zero.
  *
  * @remark SPECIFIED IN
@@ -81,7 +85,7 @@
  * @retval  -ESNULLP when \c dest/fmt is NULL pointer
  * @retval  -ESZEROL when \c dmax = 0
  * @retval  -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- * @retval  -EINVAL  when fmt contains %n
+ * @retval  -EINVAL  when \c fmt contains %n
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
@@ -93,8 +97,8 @@
 int snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 {
     va_list ap;
-    int ret = -1;
     const char *p;
+    int ret = -1;
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
@@ -135,5 +139,6 @@ int snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ..
 
     return ret;
 }
+EXPORT_SYMBOL(snprintf_s)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */

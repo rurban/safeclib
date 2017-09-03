@@ -58,10 +58,10 @@ SAFEC_BUILT_TESTS += \
 	t_wmemcpy_s	\
 	t_wmemmove_s	\
 	t_wcstok_s	\
-	t_vswprintf_s	
+	t_vswprintf_s	\
+	t_swprintf_s	
 #	t_wprintf_s	\
 #	t_fwprintf_s	\
-#	t_swprintf_s	\
 #	t_vwprintf_s	\
 #	t_vfwprintf_s	\
 #	t_wscanf_s	\
@@ -77,9 +77,9 @@ SAFEC_BUILT_TESTS += \
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
 	t_snprintf_s	\
-	t_vsnprintf_s   
-#       t_snwprintf_s	\
-#	t_vsnwprintf_s
+	t_vsnprintf_s   \
+	t_snwprintf_s	\
+	t_vsnwprintf_s
 endif
 endif
 
@@ -149,6 +149,10 @@ TESTS = $(SAFEC_BUILT_TESTS)
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
 noinst_PROGRAMS = $(SAFEC_BUILT_PERFS)
 
+.c.i:
+	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -E -o $@ $<
+
 if ENABLE_GCOV
 AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
@@ -158,6 +162,13 @@ gcov: $(TESTS)
 	  c="`echo $$f|sed -e's,t_,test_,'`.c"; \
 	  echo $(GCOV) $$c; test -e $$c && $(GCOV) $$c; done
 endif
+
+# problematic with asan
+# if ENABLE_DEBUG
+# if HAVE_DSYMUTIL
+# LIBS += && $(DSYMUTIL) $@
+# endif
+# endif
 
 p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON)
 
@@ -190,6 +201,7 @@ t_wcrtomb_s_SOURCES           = test_wcrtomb_s.c $(SAFEC_TEST_COMMON)
 t_wctomb_s_SOURCES            = test_wctomb_s.c $(SAFEC_TEST_COMMON)
 t_wcstok_s_SOURCES            = test_wcstok_s.c $(SAFEC_TEST_COMMON)
 t_vswprintf_s_SOURCES         = test_vswprintf_s.c $(SAFEC_TEST_COMMON)
+t_swprintf_s_SOURCES          = test_swprintf_s.c $(SAFEC_TEST_COMMON)
 #t_wprintf_s_SOURCES          = test_wprintf_s.c $(SAFEC_TEST_COMMON)
 #t_fwprintf_s_SOURCES         = test_fwprintf_s.c $(SAFEC_TEST_COMMON)
 #t_vwprintf_s_SOURCES         = test_vwprintf_s.c $(SAFEC_TEST_COMMON)
@@ -253,8 +265,8 @@ t_tmpnam_s_SOURCES            = test_tmpnam_s.c $(SAFEC_TEST_COMMON)
 if ENABLE_WCHAR
 t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
-#t_snwprintf_s_SOURCES        = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
-#t_vsnwprintf_s_SOURCES       = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
+t_snwprintf_s_SOURCES         = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
+t_vsnwprintf_s_SOURCES        = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 

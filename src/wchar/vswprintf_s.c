@@ -32,12 +32,12 @@
 /* Need restrict */
 #include "config.h"
 
+#define __STDC_WANT_LIB_EXT1__ 1
 #include "safe_str_lib.h"
 #include "safe_str_constraint.h"
 #include <stdarg.h>
 
 /* TODO:
-the conversion specifier %n is present in fmt
 any of the arguments corresponding to %s is a null pointer
 */
 
@@ -65,14 +65,15 @@ any of the arguments corresponding to %s is a null pointer
  * @pre dmax shall not be greater than RSIZE_MAX_WSTR.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than wcsnlen_s(dest, dmax).
- * @pre fmt  shall not contain the conversion specifier %n
- * @pre None of the arguments corresponding to %s is a null pointer
+ * @pre fmt  shall not contain the conversion specifier \c %n
+ * @pre None of the arguments corresponding to \c %s is a null pointer (not yet)
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @return  On success the total number of wide characters written is returned.
- * @return  On failure a negative number is returned.
+ * @return  On failure a negative number is returned, and possibly errno set to
+ *          EINVAL or EOVERFLOW.
  * @return  If the buffer dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
  *          empty string by placing a null wide character at dest[0], and the
@@ -80,12 +81,12 @@ any of the arguments corresponding to %s is a null pointer
  *          vswprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
- * @retval  -1      when return value exceeds dmax or some other error.
- * @retval  ESNOSPC with C11 when return value exceeds dmax
- * @retval  ESNULLP when dest/fmt is NULL pointer
- * @retval  ESZEROL when dmax = 0
- * @retval  ESLEMAX when dmax > RSIZE_MAX_WSTR
- * @retval  EINVAL  when fmt contains %n
+ * @retval  -ESLEMAX when dmax > RSIZE_MAX_WSTR
+ * @retval  -ESNULLP when dest/fmt is NULL pointer
+ * @retval  -ESZEROL when dmax = 0
+ * @retval  -EINVAL  when fmt contains %n
+ * @retval  -ESNOSPC with C11 when return value exceeds dmax
+ * @retval  -1       when return value exceeds dmax or some other error.
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
@@ -93,8 +94,6 @@ any of the arguments corresponding to %s is a null pointer
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
 
 int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
@@ -102,6 +101,9 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 {
     wchar_t *p;
     int ret = -1;
+#ifndef HAVE_VSNWPRINTF_S
+    va_list ap2;
+#endif
 
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("vswprintf_s: dmax exceeds max",
@@ -128,11 +130,11 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
-    if (unlikely((p = wcsstr(fmt, L"%n")))) {
+    if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
-                   NULL, ESNULLP);
-            return RCNEGATE(ESNULLP);
+                   NULL, EINVAL);
+            return RCNEGATE(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
@@ -150,24 +152,44 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #endif
 
     /* C11 solves the ESNOSPC problem */
-#if defined(HAVE_VSNWPRINTF_S)
+#ifdef HAVE_VSNWPRINTF_S
     ret = vsnwprintf_s(dest, dmax, fmt, ap);
 #else
+    va_copy(ap2, ap);
     ret = vswprintf(dest, dmax, fmt, ap);
+
+    /* check for ESNOSPC or some other error */
+    if (unlikely(ret ==  -1)) {
+        if (likely(dmax < 512)) { /* stacksize 2k */
+            static wchar_t tmp[512];
+            if (dmax == 1) goto nospc;
+            ret = vswprintf(tmp, 512, fmt, ap2);
+        } else {
+            wchar_t *tmp = (wchar_t *)malloc(RSIZE_MAX_WSTR * sizeof(wchar_t));
+            ret = vswprintf(tmp, RSIZE_MAX_WSTR, fmt, ap2);
+            free(tmp);
+        }
+        if (ret > 0) {
+          nospc:
+            invoke_safe_str_constraint_handler("vswprintf_s: len exceeds dmax",
+                                               NULL, ESNOSPC);
+            *dest = 0;
+            return RCNEGATE(ESNOSPC);
+        }
+    }
 #endif
 
     if (unlikely(ret >= (int)dmax)) {
-        invoke_safe_str_constraint_handler("vswprintf_s: len exceeds dmax",
-                   NULL, ESNOSPC);
+        goto nospc;
+    } else if (unlikely(ret < 0)) {
+#ifndef HAVE_VSNWPRINTF_S
+        char errstr[128] = "vswprintf_s: ";
+        strcat(errstr, strerror(errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+#endif
         *dest = 0;
-        ret = RCNEGATE(ESNOSPC);
-    } else {
-        if (ret < 0) {
-            invoke_safe_str_constraint_handler("vswprintf_s: probably no space",
-                                               NULL, ESNOSPC);
-            *dest = 0;
-        }
     }
 
     return ret;
 }
+EXPORT_SYMBOL(vswprintf_s)

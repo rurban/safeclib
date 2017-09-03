@@ -5,8 +5,8 @@ Changes in vxx092017 3.0.0
         - Install bin/check_for_unsafe_apis. Renamed and improved: 7x faster,
           added missing conversion hints. also install its man1.
         - Seperated internal libstdunsafe target, for std but unsafe C11
-          functions: snprintf_s, vsnprintf_s, tmpnam_s
-        - added --enable-unsafe (the 3 funcs above are not included by default).
+          functions: snprintf_s, vsnprintf_s, snwprintf_s, vsnwprintf_s, tmpnam_s
+        - added --enable-unsafe (the 5 funcs above are not included by default).
         defines SAFECLIB_ENABLE_UNSAFE
         - added --disable-extensions, skipping all non-C11 safe functions.
         This contains in summary only 11 functions for now:
@@ -21,10 +21,11 @@ Changes in vxx092017 3.0.0
         - added most safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcrtomb_s,
         wctomb_s, wcsnlen_s, wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s,
-        wcstok_s, wmemcpy_s, wmemmove_s. Also tmpnam_s.
+        wcstok_s, swprintf_s, vswprintf_s, wmemcpy_s, wmemmove_s.
         - added --disable-wchar to disable the new multibyte and wchar functions,
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR
+        - better debugging support: add .i target
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

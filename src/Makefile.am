@@ -61,22 +61,21 @@ EXT_MEM_FILES = \
 STD_STR_FILES = \
 	str/safe_str_constraint.h \
 	str/safe_str_constraint.c \
-	str/sprintf_s.c 	  \
-	str/strcat_s.c            \
-	str/strcpy_s.c            \
-	str/strncat_s.c           \
-	str/strncpy_s.c           \
-	str/strnlen_s.c           \
-	str/strtok_s.c            \
+	str/sprintf_s.c 	\
+	str/strcat_s.c          \
+	str/strcpy_s.c          \
+	str/strncat_s.c         \
+	str/strncpy_s.c         \
+	str/strnlen_s.c         \
+	str/strtok_s.c          \
 	str/vsprintf_s.c 	       
 
 # but they are in the C11 standard
 STD_UNSAFE_FILES = \
+	io/tmpnam_s.c		\
 	str/snprintf_s.c	\
 	str/vsnprintf_s.c       \
-	io/tmpnam_s.c		
-#	wchar/snwprintf_s.c	\
-#	wchar/vsnwprintf_s.c
+	wchar/snwprintf_s.c
 
 EXT_STR_FILES = \
 	extstr/strcasecmp_s.c        \
@@ -128,8 +127,8 @@ STD_WCHAR_FILES = \
 	wchar/wmemcpy_s.c  	\
 	wchar/wmemmove_s.c  	\
 	wchar/wcstok_s.c  	\
-	wchar/vswprintf_s.c  	
-#	wchar/swprintf_s.c  	\
+	wchar/vswprintf_s.c  	\
+	wchar/swprintf_s.c  	
 #	wchar/vfwprintf_s.c  	\
 #	wchar/vwprintf_s.c  	\
 #	wchar/swscanf_s.c  	\
@@ -141,6 +140,10 @@ STD_WCHAR_FILES = \
 if !HAVE_WCSSTR
 STD_WCHAR_FILES += \
 	extwchar/wcsstr.c
+endif
+if !HAVE_VSNWPRINTF_S
+STD_WCHAR_FILES += \
+	wchar/vsnwprintf_s.c
 endif
 
 STD_IO_FILES = \
@@ -186,6 +189,10 @@ ALL_SRC_FILES =
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
 AM_CFLAGS += -Werror -pedantic -Imem -Istr
+
+.c.i:
+	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -E -o $@ $<
 
 noinst_LTLIBRARIES = \
 	libmemprims.la   \

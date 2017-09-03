@@ -143,7 +143,7 @@ if test "x$enable_debug" = "xtrue" ; then
             enable_shared=no
             enable_shared_with_static_runtimes=no
         fi
-        AC_MSG_RESULT([yes CFLAGS=$DEBUG_CFLAGS])
+        AC_MSG_RESULT([yes CFLAGS = $DEBUG_CFLAGS])
 	AM_CPPFLAGS="${AM_CPPFLAGS} -DDEBUG"
 else
         if test "x$enable_gcov" = "xtrue"; then
@@ -158,20 +158,19 @@ else
               fi
            fi
         fi
-        AC_MSG_RESULT([no CFLAGS=$DEBUG_CFLAGS])
+        AC_MSG_RESULT([no CFLAGS = $DEBUG_CFLAGS])
 fi
 
-dnl if test "x$CFLAGS" = "x" -o "x$CFLAGS" = "x-g -O2" -o "x$CFLAGS" = "x-g"; then
-dnl 	# by doing it this way we suppress automake's assumption that if
-dnl 	# CFLAGS is empty lets compile the code with '-g -O2'.
-dnl 	CFLAGS="${DEBUG_CFLAGS}"
-dnl else
-dnl 	AC_MSG_WARN([CFLAGS is not empty, will attempt to apply optimization
-dnl 	             flags to 'AM_CFLAGS' but depending on the contents of
-dnl 	             CFLAGS these may be overridden.
-dnl 	             CFLAGS = '$CFLAGS'])
-AM_CFLAGS="${AM_CFLAGS} ${DEBUG_CFLAGS}"
-dnl fi
+if test "x$CFLAGS" = "x-g -O2" -o "x$CFLAGS" = "x-g"; then
+	# by doing it this way we suppress automake's assumption that if
+	# CFLAGS is empty lets compile the code with '-g -O2'.
+	CFLAGS="${DEBUG_CFLAGS}"
+else
+	AC_MSG_WARN([CFLAGS is not empty, will attempt to apply optimization
+	             flags to 'AM_CFLAGS' but depending on the contents of
+	             CFLAGS these may be overridden.
+	             CFLAGS = '$CFLAGS'])
+fi
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
 
 AC_ARG_ENABLE(extensions,
@@ -298,6 +297,7 @@ AC_CHECK_PROGS([POD2MAN], [pod2man])
 if test -z "POD2MAN";
    then AC_MSG_WARN([pod2man not found - continuing without pod2man support])
 fi
+AM_CONDITIONAL([HAVE_DSYMUTIL], [test -n "$ac_ct_DSYMUTIL"])
 
 # Checks for libraries
 # ===============================================
@@ -414,8 +414,10 @@ AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf_s])
+                strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
+                vsnwprintf_s])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
+AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
 
 # Checks for system services
 # ===============================================

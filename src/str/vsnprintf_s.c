@@ -38,14 +38,13 @@
 
 /**
  * @brief 
- *    The \c vsnprintf_s function composes a string with same test that 
- *    would be printed if format was used on \c printf. Instead of being 
- *    printed, the content is stored in dest.
- *    More than dmax - 1 characters might be written, so this variant is \b unsafe!
- *    Always use \b vsprintf_s instead.
- *    Unlike the safe variant \c vsprintf_s, \c vsnprintf_s does not
- *    guarantees that the buffer will be null-terminated unless
+ *    The truncating \c vsnprintf_s function composes a string with
+ *    same test that would be printed if format was used on \c
+ *    printf. Instead of being printed, the content is stored in dest.
+ *    Warning: Unlike the safe variant \c vsprintf_s, \c vsnprintf_s does not
+ *    guarantee that the buffer will be null-terminated unless
  *    the buffer size is zero.
+ *    More than dmax - 1 characters might be written!
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -127,10 +126,11 @@ int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_
             return RCNEGATE(EINVAL);
         }
     }
-    
+
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
     return ret;
 }
+EXPORT_SYMBOL(vsnprintf_s)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */

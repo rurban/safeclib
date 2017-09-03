@@ -74,6 +74,7 @@
  * @retval  -ESLEMAX when dmax > RSIZE_MAX_STR
  * @retval  -ESNOSPC when return value exceeds dmax
  * @retval  -EINVAL  when fmt contains %n
+ * @retval  -1       on some other error.
  *
  */
 
@@ -128,6 +129,7 @@ int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...
 
     va_start(ap, fmt);
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
+    va_end(ap);
 
     if (unlikely(ret >= (int)dmax)) {
         invoke_safe_str_constraint_handler("sprintf_s: len exceeds dmax",
@@ -136,7 +138,6 @@ int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...
         ret = RCNEGATE(ESNOSPC);
     }
 
-    va_end(ap);
-
     return ret;
 }
+EXPORT_SYMBOL(sprintf_s)

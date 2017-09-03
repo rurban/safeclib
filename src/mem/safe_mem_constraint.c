@@ -45,7 +45,7 @@ static constraint_handler_t mem_handler = NULL;
  * @details
  *    The runtime-constraint handler is the function to
  *    be called when a library function detects a runtime-constraint
- *   order:
+ *    order:
  *        1.    A pointer to a character string describing the
  *              runtime-constraint violation.
  *        2.    A null pointer or a pointer to an implementation defined
@@ -102,3 +102,4 @@ invoke_safe_mem_constraint_handler (const char *msg,
         sl_default_handler(msg, ptr, error);
     }
 }
+EXPORT_SYMBOL(invoke_safe_mem_constraint_handler)

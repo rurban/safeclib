@@ -107,9 +107,11 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
    Rather use the 2 functions above. */
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
-/* unsafe! */
+/* unsafe! use sprintf_s instead */
 extern int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+
+/* unsafe! use vsprintf_s instead */
 extern int
 vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
 
@@ -357,8 +359,26 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
          const wchar_t *restrict delim, wchar_t **restrict ptr);
 
 extern int
+swprintf_s(wchar_t *restrict dest, rsize_t dmax,
+           const wchar_t* restrict fmt, ...);
+
+extern int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, va_list ap);
+
+#ifdef SAFECLIB_ENABLE_UNSAFE
+
+/* unsafe! use vswprintf_s instead */
+extern int
+snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
+            const wchar_t * restrict fmt, ...);
+
+/* unsafe! use vswprintf_s instead */
+extern int
+vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
+             const wchar_t *restrict fmt, va_list ap);
+
+#endif /* SAFECLIB_ENABLE_UNSAFE */
 
 /* TODO */
 #if 0
@@ -367,46 +387,32 @@ extern int
 wprintf_s( const wchar_t *restrict fmt, ...);
 
 extern int
-fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
-
-/* unsafe! */
-extern int
-snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
-            const wchar_t * restrict fmt, ...);
-
-extern int
-swprintf_s(wchar_t *restrict dest, rsize_t dmax,
-           const wchar_t* restrict fmt, ...);
-
-extern int
 vwprintf_s(const wchar_t *restrict fmt, va_list ap);
+
+extern int
+fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
 
 extern int
 vfwprintf_s(FILE * restrict stream,
             const wchar_t *restrict fmt, va_list ap);
 
-/* unsafe! */
-extern int
-vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
-             const wchar_t *restrict fmt, va_list ap);
-
 extern int
 wscanf_s( const wchar_t *restrict fmt, ...);  
+
+extern int
+vwscanf_s(const wchar_t *restrict fmt, va_list ap);
 
 extern int
 fwscanf_s(FILE *restrict stream,
           const wchar_t *restrict fmt, ...);  
 
 extern int
-swscanf_s(const wchar_t *restrict s,
-          const wchar_t *restrict fmt, ...);
-
-extern int
-vwscanf_s(const wchar_t *restrict fmt, va_list ap);
-
-extern int
 vfwscanf_s(FILE *restrict stream,
            const wchar_t *restrict fmt, va_list ap);
+
+extern int
+swscanf_s(const wchar_t *restrict s,
+          const wchar_t *restrict fmt, ...);
 
 extern int
 vswscanf_s(const wchar_t *restrict buffer,

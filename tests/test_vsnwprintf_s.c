@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_vswprintf_s
+ * test_vsnwprintf_s
  *
  *------------------------------------------------------------------
  */
@@ -18,12 +18,12 @@ int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
     int rc;
     va_list ap;
     va_start(ap, fmt);
-    rc = vswprintf_s(dest, dmax, fmt, ap);
+    rc = vsnwprintf_s(dest, dmax, fmt, ap);
     va_end(ap);
     return rc;
 }
  
-int test_vswprintf_s (void)
+int test_vsnwprintf_s (void)
 {
     errno_t rc;
     int32_t  ind;
@@ -78,7 +78,7 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = vtwprintf_s(str1, 1, L"%ls", str2);
-    ERR(ESNOSPC)
+    NOERR() /* truncation */
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -87,8 +87,8 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = vtwprintf_s(str1, 2, L"%ls", str2);
-    ERR(ESNOSPC)
-    WEXPNULL(str1)
+    NOERR() /* truncation */
+    WEXPSTR(str1, L"k");
 
 /*--------------------------------------------------*/
 
@@ -132,8 +132,8 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = vtwprintf_s(str1, 12, L"%ls", str2);
-    ERR(ESNOSPC)
-    WEXPNULL(str1)
+    NOERR() /* truncation */
+    WEXPSTR(str1, L"keep it sim")
 
 /*--------------------------------------------------*/
 
@@ -149,8 +149,8 @@ int test_vswprintf_s (void)
     wcscpy(str1, L"12345678901234567890");
 
     rc = vtwprintf_s(str1, 8, L"%ls", &str1[7]);
-    NOERR(); /* overlapping implementation defined */
-    /* WEXPSTR(str1, L"8901234"); or WEXPNULL() */
+    NOERR() /* truncation, overlapping allowed */
+    WEXPSTR(str1, L"8901234")
 
 /*--------------------------------------------------*/
 
@@ -188,6 +188,6 @@ int test_vswprintf_s (void)
    until a better solution can be created. */
 int main (void)
 {
-    return (test_vswprintf_s());
+    return (test_vsnwprintf_s());
 }
 #endif
