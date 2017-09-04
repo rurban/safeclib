@@ -151,6 +151,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
     #error need wcsstr or wcschr
 #endif
 
+    errno = 0;
     /* C11 solves the ESNOSPC problem */
 #ifdef HAVE_VSNWPRINTF_S
     ret = vsnwprintf_s(dest, dmax, fmt, ap);

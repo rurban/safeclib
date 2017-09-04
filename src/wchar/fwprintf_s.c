@@ -108,6 +108,7 @@ fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
     #error need wcsstr or wcschr
 #endif
 
+    errno = 0;
     va_start(ap, fmt);
     ret = vfwprintf(stream, fmt, ap);
     va_end(ap);

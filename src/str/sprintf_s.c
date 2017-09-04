@@ -127,6 +127,7 @@ int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...
     va_end(ap2);
     */
 
+    errno = 0;
     va_start(ap, fmt);
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
     va_end(ap);
@@ -136,6 +137,12 @@ int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...
                    NULL, ESNOSPC);
         *dest = 0;
         ret = RCNEGATE(ESNOSPC);
+    }
+
+    if (unlikely(ret < 0)) {
+        char errstr[128] = "sprintf_s: ";
+        strcat(errstr, strerror(errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
 
     return ret;

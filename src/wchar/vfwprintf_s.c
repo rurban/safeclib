@@ -107,6 +107,7 @@ vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
     #error need wcsstr or wcschr
 #endif
 
+    errno = 0;
     ret = vfwprintf(stream, fmt, ap);
 
     if (unlikely(ret < 0)) {

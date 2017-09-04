@@ -106,6 +106,7 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
     #error need wcsstr or wcschr
 #endif
 
+    errno = 0;
     ret = vwprintf(fmt, ap);
 
     if (unlikely(ret < 0)) {

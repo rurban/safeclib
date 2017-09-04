@@ -126,12 +126,13 @@ vswscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt,
     #error need wcsstr or wcschr
 #endif
 
+    errno = 0;
     ret = vswscanf(buffer, fmt, ap);
 
-    if (unlikely(ret < 0)) {
+    if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vswscanf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+        invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
 
     return ret;

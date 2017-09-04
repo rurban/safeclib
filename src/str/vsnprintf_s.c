@@ -127,7 +127,14 @@ int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_
         }
     }
 
+    errno = 0;
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
+
+    if (unlikely(ret < 0)) {
+        char errstr[128] = "vsnprintf_s: ";
+        strcat(errstr, strerror(errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+    }
 
     return ret;
 }

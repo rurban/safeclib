@@ -113,6 +113,7 @@ int vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_l
         return RCNEGATE(ESZEROL);
     }
 
+    errno = 0;
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
     if (unlikely(ret >= (int)dmax)) {
@@ -120,6 +121,12 @@ int vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_l
                    NULL, ESNOSPC);
         *dest = 0;
         ret = RCNEGATE(ESNOSPC);
+    }
+
+    if (unlikely(ret < 0)) {
+        char errstr[128] = "vsprintf_s: ";
+        strcat(errstr, strerror(errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
 
     return ret;
