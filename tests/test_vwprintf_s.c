@@ -39,7 +39,14 @@ int test_vwprintf_s (void)
     rc = vtwprintf_s(L"%s%n\n", wstr, &ind);
     ERR(EINVAL)
 
+/*--------------------------------------------------*/
+
     rc = vtwprintf_s(L"%s%%n\n", wstr);
+    if (rc < 0) {
+        printf("Failed to open stdout for write: %s\n",
+               strerror(errno));
+        return errs;
+    }
     ERR(3)
 
     rc = vtwprintf_s(L"%%n\n");

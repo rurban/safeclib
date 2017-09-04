@@ -8,6 +8,7 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
+#define TMP   "tmpfwp"
 #define LEN   ( 128 )
 
 static FILE* out;
@@ -20,7 +21,7 @@ int test_fwprintf_s (void)
     int32_t ind;
     int errs = 0;
 
-    out = fopen("tmp", "w");
+    out = fopen(TMP, "w");
 
 /*--------------------------------------------------*/
 
@@ -32,6 +33,14 @@ int test_fwprintf_s (void)
     wstr[0] = L'\0'; 
     rc = fwprintf_s(out, L"%s%n\n", wstr, &ind);
     ERR(EINVAL)
+
+    if (!out) {
+        printf("Failed to open file %s for write: %s\n",
+               TMP, strerror(errno));
+        return errs;
+    }
+
+/*--------------------------------------------------*/
 
     rc = fwprintf_s(out, L"%s%%n\n", wstr);
     ERR(3)
@@ -56,7 +65,7 @@ int test_fwprintf_s (void)
 
 /*--------------------------------------------------*/
     fclose(out);
-    unlink("tmp");
+    unlink(TMP);
 
     return (errs);
 }

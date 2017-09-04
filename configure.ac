@@ -413,6 +413,7 @@ AC_SUBST(INSERT_DISABLE_WCHAR)
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
+dnl no header needed as is checks if the linker can find it
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
                 vsnwprintf_s])

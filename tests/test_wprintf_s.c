@@ -30,7 +30,14 @@ int test_wprintf_s (void)
     rc = wprintf_s(L"%s%n\n", wstr, &ind);
     ERR(EINVAL)
 
+/*--------------------------------------------------*/
+
     rc = wprintf_s(L"%s%%n\n", wstr);
+    if (rc < 0) {
+        printf("Failed to open stdout for write: %s\n",
+               strerror(errno));
+        return errs;
+    }
     ERR(3)
 
     rc = wprintf_s(L"%%n\n");

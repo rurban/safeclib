@@ -60,14 +60,18 @@ SAFEC_BUILT_TESTS += \
 	t_wcstok_s	\
 	t_vswprintf_s	\
 	t_swprintf_s	\
-	t_wprintf_s	\
 	t_fwprintf_s	\
-	t_vwprintf_s	\
 	t_vfwprintf_s	
-#	t_wscanf_s	\
 #	t_swscanf_s	\
-#	t_vfwscanf_s	\
 #	t_vswscanf_s	\
+#	t_vfwscanf_s	
+endif
+
+if ENABLE_DEBUG
+SAFEC_BUILT_TESTS += \
+	t_wprintf_s	\
+	t_vwprintf_s
+#	t_wscanf_s	\
 #	t_vwscanf_s
 endif
 
