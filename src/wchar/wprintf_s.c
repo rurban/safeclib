@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * vwprintf_s.c
+ * wprintf_s.c
  *
  * September 2017, Reini Urban
  *
@@ -37,23 +37,23 @@
 #include <stdarg.h>
 
 /* TODO:
-any of the arguments corresponding to %s is a null pointer
+Any of the arguments corresponding to %s is a null pointer
 */
 
 /**
  * @brief 
- *    The vwprintf_s function prints formatted output to stdout as wide string.
+ *    The wprintf_s function prints formatted output to stdout as wide string.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
- *    K.3.9.1.11 The vwprintf_s function (p: 636)
- *    http://en.cppreference.com/w/c/io/vfwprintf
+ *    K.3.9.1.13 The wprintf_s function (p: 637-638)
+ *    http://en.cppreference.com/w/c/io/fwprintf
  *
  * @param[in]   fmt   format-control wide string.
- * @param[in]   ap    optional arguments
+ * @param[in]   ...   optional arguments
  *
- * @pre \c fmt shall not be a null pointer.
- * @pre \c fmt shall not contain the conversion specifier \c %n
+ * @pre fmt shall not be a null pointer.
+ * @pre fmt shall not contain the conversion specifier \c %n
  * @pre None of the arguments corresponding to \c %s is a null pointer (not yet)
  * @pre No encoding error shall occur.
  *
@@ -66,20 +66,21 @@ any of the arguments corresponding to %s is a null pointer
  * @retval  -1       some other error. errno: EINVAL or EOVERFLOW
  *
  * @see
- *    vwfprintf_s(), wprintf_s()
+ *    vwfprintf_s(), fwprintf_s()
  *
  */
 
 #include "safeclib_private.h"
 
 int
-vwprintf_s(const wchar_t *restrict fmt, va_list ap)
+wprintf_s(const wchar_t *restrict fmt, ...)
 {
     wchar_t *p;
+    va_list ap;
     int ret;
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vwprintf_s: fmt is null",
+        invoke_safe_str_constraint_handler("wprintf_s: fmt is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
@@ -87,7 +88,7 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
     if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
         if ((p-fmt == 0) || *(p-1) != L'%') {
-            invoke_safe_str_constraint_handler("vwprintf_s: illegal %n",
+            invoke_safe_str_constraint_handler("wprintf_s: illegal %n",
                    NULL, EINVAL);
             return RCNEGATE(EINVAL);
         }
@@ -97,7 +98,7 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
         /* at the beginning or if inside, not %%n */
         if (((p-fmt >= 1) && *(p-1) == L'%') &&
             ((p-fmt == 1) || *(p-2) != L'%')) {
-            invoke_safe_str_constraint_handler("vwprintf_s: illegal %n",
+            invoke_safe_str_constraint_handler("wprintf_s: illegal %n",
                                                NULL, EINVAL);
             return RCNEGATE(EINVAL);
         }
@@ -106,15 +107,16 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
     #error need wcsstr or wcschr
 #endif
 
+    va_start(ap, fmt);
     ret = vwprintf(fmt, ap);
+    va_end(ap);
 
     if (unlikely(ret < 0)) {
-        char errstr[128] = "vwprintf_s: ";
+        char errstr[128] = "wprintf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
 
     return ret;
-    
 }
-EXPORT_SYMBOL(vwprintf_s)
+EXPORT_SYMBOL(wprintf_s)

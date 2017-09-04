@@ -128,9 +128,11 @@ STD_WCHAR_FILES = \
 	wchar/wmemmove_s.c  	\
 	wchar/wcstok_s.c  	\
 	wchar/vswprintf_s.c  	\
-	wchar/swprintf_s.c  	
-#	wchar/vfwprintf_s.c  	\
-#	wchar/vwprintf_s.c  	\
+	wchar/swprintf_s.c  	\
+	wchar/vfwprintf_s.c  	\
+	wchar/vwprintf_s.c  	\
+	wchar/wprintf_s.c	\
+	wchar/fwprintf_s.c	
 #	wchar/swscanf_s.c  	\
 #	wchar/wscanf_s.c	\
 #	wchar/vfwscanf_s.c  	\
@@ -152,7 +154,6 @@ STD_IO_FILES = \
 	io/fprintf_s.c	\
 	io/freopen_s.c	\
 	io/fscanf_s.c	\
-	io/fwprintf_s.c	\
 	io/fwscanf_s.c	\
 	io/gets_s.c	\
 	io/printf_s.c	\
@@ -162,8 +163,7 @@ STD_IO_FILES = \
 	io/vfprintf_s.c	\
 	io/vfscanf_s.c	\
 	io/vprintf_s.c	\
-	io/vsscanf_s.c	\
-	io/wprintf_s.c	
+	io/vsscanf_s.c
 
 STD_MISC_FILES = \
 	misc/bsearch_s.c \

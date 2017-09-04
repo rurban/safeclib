@@ -380,9 +380,6 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
-/* TODO */
-#if 0
-
 extern int
 wprintf_s( const wchar_t *restrict fmt, ...);
 
@@ -395,6 +392,9 @@ fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
 extern int
 vfwprintf_s(FILE * restrict stream,
             const wchar_t *restrict fmt, va_list ap);
+
+/* TODO */
+#if 0
 
 extern int
 wscanf_s( const wchar_t *restrict fmt, ...);  
