@@ -422,9 +422,6 @@ EXTERN int
 vswscanf_s(const wchar_t *restrict buffer,
            const wchar_t *restrict fmt, va_list ap);
 
-/* TODO */
-#if 0
-
 EXTERN int
 wscanf_s( const wchar_t *restrict fmt, ...);  
 
@@ -438,8 +435,6 @@ fwscanf_s(FILE *restrict stream,
 EXTERN int
 vfwscanf_s(FILE *restrict stream,
            const wchar_t *restrict fmt, va_list ap);
-
-#endif
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

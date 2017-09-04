@@ -134,10 +134,11 @@ STD_WCHAR_FILES = \
 	wchar/wprintf_s.c	\
 	wchar/fwprintf_s.c	\
 	wchar/swscanf_s.c  	\
-	wchar/vswscanf_s.c  	
-#	wchar/wscanf_s.c	\
-#	wchar/vfwscanf_s.c  	\
-#	wchar/vwscanf_s.c
+	wchar/vswscanf_s.c  	\
+	wchar/wscanf_s.c	\
+	wchar/vfwscanf_s.c  	\
+	wchar/fwscanf_s.c  	\
+	wchar/vwscanf_s.c
 
 if !HAVE_WCSSTR
 STD_WCHAR_FILES += \
@@ -154,7 +155,6 @@ STD_IO_FILES = \
 	io/fprintf_s.c	\
 	io/freopen_s.c	\
 	io/fscanf_s.c	\
-	io/fwscanf_s.c	\
 	io/gets_s.c	\
 	io/printf_s.c	\
 	io/scanf_s.c	\

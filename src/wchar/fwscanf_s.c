@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * vwscanf_s.c
+ * fwscanf_s.c
  *
  * September 2017, Reini Urban
  *
@@ -37,17 +37,18 @@ any of the arguments corresponding to %s is a null pointer.
 
 /**
  * @brief
- *    The \c vwscanf_s function reads a formatted wide string from stdin.
- *    Reaching the end of the stdin buffer is equivalent to reaching the
- *    end-of-file condition for \c vwscanf.
+ *    The \c fwscanf_s function reads a formatted wide string.
+ *    Reaching the end of the string is equivalent to reaching the
+ *    end-of-file condition for \c fwscanf.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
- *    K.3.9.1.12 The vwscanf_s function (p: 637)
- *    http://en.cppreference.com/w/c/io/vwscanf
+ *    K.3.9.1.7 The fwscanf_s function (p: 632-633)
+ *    http://en.cppreference.com/w/c/io/fwscanf
  *
+ * @param[in]   stream pointer to a FILE stream to read from
  * @param[in]   fmt    format-control wide string.
- * @param[out]  ap     arguments to write to
+ * @param[out]  ...    arguments to write to
  *
  * @pre Neither \c stream nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
@@ -69,18 +70,26 @@ any of the arguments corresponding to %s is a null pointer.
  * @retval  EOF  on error
  *
  * @see
- *    vswscanf_s(), wscanf_s(), vvwscanf_s(), vfwprintf_s()
+ *    vswscanf_s(), wscanf_s(), vfwscanf_s(), vfwprintf_s()
  *
  */
 
 EXPORT int
-vwscanf_s(const wchar_t *restrict fmt, va_list ap)
+fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
 {
+    va_list ap;
     wchar_t *p;
     int ret;
 
+    if (unlikely(stream == NULL)) {
+        invoke_safe_str_constraint_handler("fwscanf_s: stream is null",
+                   NULL, ESNULLP);
+        errno = ESNULLP;
+        return EOF;
+    }
+
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vwscanf_s: fmt is null",
+        invoke_safe_str_constraint_handler("fwscanf_s: fmt is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
         return EOF;
@@ -89,7 +98,7 @@ vwscanf_s(const wchar_t *restrict fmt, va_list ap)
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
     if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
         if ((p-fmt == 0) || *(p-1) != L'%') {
-            invoke_safe_str_constraint_handler("vwscanf_s: illegal %n",
+            invoke_safe_str_constraint_handler("fwscanf_s: illegal %n",
                    NULL, EINVAL);
             errno = EINVAL;
             return EOF;
@@ -100,7 +109,7 @@ vwscanf_s(const wchar_t *restrict fmt, va_list ap)
         /* at the beginning or if inside, not %%n */
         if (((p-fmt >= 1) && *(p-1) == L'%') &&
             ((p-fmt == 1) || *(p-2) != L'%')) {
-            invoke_safe_str_constraint_handler("vwscanf_s: illegal %n",
+            invoke_safe_str_constraint_handler("fwscanf_s: illegal %n",
                                                NULL, EINVAL);
             errno = EINVAL;
             return EOF;
@@ -111,14 +120,16 @@ vwscanf_s(const wchar_t *restrict fmt, va_list ap)
 #endif
 
     errno = 0;
-    ret = vwscanf(fmt, ap);
+    va_start(ap, fmt);
+    ret = vfwscanf(stream, fmt, ap);
+    va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
-        char errstr[128] = "vwscanf_s: ";
+        char errstr[128] = "fwscanf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
 
     return ret;
 }
-EXPORT_SYMBOL(vwscanf_s)
+EXPORT_SYMBOL(fwscanf_s)

@@ -48,7 +48,7 @@ any of the arguments corresponding to %s is a null pointer.
  *
  * @param[in]   buffer pointer to a null-terminated wide string to read from
  * @param[in]   fmt    format-control wide string.
- * @param[in]   ap     optional arguments
+ * @param[in]   ap     arguments to write to
  *
  * @pre Neither \c buffer nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
