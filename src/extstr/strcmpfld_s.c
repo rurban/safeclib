@@ -71,7 +71,7 @@
  *    strcpyfld_s(), strcpyfldin_s(), strcpyfldout_s()
  *
  */
-errno_t
+EXPORT errno_t
 strcmpfld_s (const char *dest, rsize_t dmax,
              const char *src, int *indicator)
 {

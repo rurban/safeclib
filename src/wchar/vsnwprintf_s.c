@@ -29,19 +29,13 @@
  *------------------------------------------------------------------
  */
 
-/* Need restrict */
-#include "config.h"
 #define __STDC_WANT_LIB_EXT1__ 1
-#include "safe_str_lib.h"
+#include "safeclib_private.h"
 
 #if !defined(HAVE_VSNWPRINTF_S) && defined(SAFECLIB_ENABLE_UNSAFE)
 
-#include "safe_str_constraint.h"
-#include <stdarg.h>
-
 /* TODO:
 any of the arguments corresponding to %s is a null pointer.
-truncate, no dest overflow.
 */
 
 /**
@@ -110,9 +104,7 @@ truncate, no dest overflow.
  *
  */
 
-#include "safeclib_private.h"
-
-int
+EXPORT int
 vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, va_list ap)
 {

@@ -16,7 +16,9 @@ static wchar_t   src[LEN];
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
 #include <locale.h>
+#ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
+#endif
 
 #define CLRPS \
   memset (&ps, '\0', sizeof (mbstate_t))
@@ -27,7 +29,7 @@ int test_wcsrtombs_s (void)
     size_t ind;
     /*uint32_t i;*/
     const wchar_t *cs;
-    const char* chs;
+    const char* lang;
     mbstate_t ps;
     int errs = 0;
 
@@ -94,16 +96,20 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     setlocale(LC_CTYPE, "C");
-    chs = nl_langinfo(CODESET);
+#ifdef HAVE_LANGINFO_H
+    lang = nl_langinfo(CODESET);
+#else
+    lang = "C";
+#endif
     /* not a big problem if this fails */
-    if ( !strcmp(chs, "C") ||
-         !strcmp(chs, "ASCII") ||
-         !strcmp(chs, "ANSI_X3.4-1968") ||
-         !strcmp(chs, "US-ASCII") )
+    if ( !strcmp(lang, "C") ||
+         !strcmp(lang, "ASCII") ||
+         !strcmp(lang, "ANSI_X3.4-1968") ||
+         !strcmp(lang, "US-ASCII") )
         ; /* all fine */
     else /* dont inspect the values */
         printf(__FILE__ ": cannot set C locale for test"
-                   " (codeset=%s)\n", chs);
+                   " (codeset=%s)\n", lang);
 
     /* no-breaking space illegal in ASCII, but legal in C */
     rc = wcsrtombs_s(&ind, dest, LEN, (cs=L"\x00a0""abc",&cs), 32, &ps);
@@ -161,10 +167,14 @@ int test_wcsrtombs_s (void)
 	setlocale(LC_CTYPE, "C.UTF-8") ||
 	setlocale(LC_CTYPE, "UTF-8") ||
 	setlocale(LC_CTYPE, "");
-    chs = nl_langinfo(CODESET);
-    if (!strstr(chs, "UTF-8")) {
+#ifdef HAVE_LANGINFO_H
+    lang = nl_langinfo(CODESET);
+#else
+    lang = "UTF-8";
+#endif
+    if (!strstr(lang, "UTF-8")) {
         printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (codeset=%s)\n", chs);
+               " (codeset=%s)\n", lang);
         return 0;
     }
 

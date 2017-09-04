@@ -63,44 +63,47 @@ extern "C" {
 
 
 /* set string constraint handler */
-extern constraint_handler_t
+EXTERN constraint_handler_t
 set_str_constraint_handler_s(constraint_handler_t handler);
 
 
 /* string concatenate */
-extern errno_t
+EXTERN errno_t
 strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
 
 
 /* string copy */
-extern errno_t
+EXTERN errno_t
 strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src);
 
 /* fitted string concatenate */
-extern errno_t
+EXTERN errno_t
 strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
 
 
 /* fitted string copy */
-extern errno_t
+EXTERN errno_t
 strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
 
 
 /* string length */
-extern rsize_t
+EXTERN rsize_t
 strnlen_s (const char *s, rsize_t smax);
 
 /* string tokenizer */
-extern char *
-strtok_s(char * restrict s1, rsize_t *restrict s1max, const char * restrict src, char ** restrict ptr);
-
+#ifndef MINGW_HAS_SECURE_API
+/* they use:
+char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
+EXTERN char *
+strtok_s(char *restrict s1, rsize_t *restrict s1max, const char *restrict src, char **restrict ptr);
+#endif
 
 /* safe sprintf_s */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-extern int
-sprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+EXTERN int
+sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...);
 
-extern int
+EXTERN int
 vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
 
 /* These functions are defined in the C11 standard Annex K, but are still unsafe.
@@ -108,12 +111,17 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use sprintf_s instead */
-extern int
+EXTERN int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 
 /* unsafe! use vsprintf_s instead */
-extern int
+#ifndef MINGW_HAS_SECURE_API
+/* they use:
+int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
+                const char *_Format, va_list _ArgList); */
+EXTERN int
 vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+#endif
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
@@ -121,304 +129,348 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
 /* string compare */
-extern errno_t
+EXTERN errno_t
 strcmp_s(const char *dest, rsize_t dmax,
          const char *src, int *indicator);
 
 /* string compare */
-extern errno_t
+EXTERN errno_t
 strcasecmp_s(const char *dest, rsize_t dmax,
              const char *src, int *indicator);
 
 
 /* find a substring _ case insensitive */
-extern errno_t
+EXTERN errno_t
 strcasestr_s(char *dest, rsize_t dmax,
              const char *src, rsize_t slen, char **substring);
 
 
 /* fixed field string compare */
-extern errno_t
+EXTERN errno_t
 strcmpfld_s(const char *dest, rsize_t dmax,
             const char *src, int *indicator);
 
 /* fixed char array copy */
-extern errno_t
+EXTERN errno_t
 strcpyfld_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
 
 
 /* copy from a null terminated string to fixed char array */
-extern errno_t
+EXTERN errno_t
 strcpyfldin_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
 
 
 /* copy from a char array to null terminated string */
-extern errno_t
+EXTERN errno_t
 strcpyfldout_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
 
 
 /* computes excluded prefix length */
-extern errno_t
+EXTERN errno_t
 strcspn_s(const char *dest, rsize_t dmax,
           const char *src,  rsize_t slen, rsize_t *count);
 
 
 /* returns a pointer to the first occurrence of c in dest */
-extern errno_t
+EXTERN errno_t
 strfirstchar_s(char *dest, rsize_t dmax, char c, char **first);
 
 
 /* returns index of first difference */
-extern  errno_t
+EXTERN  errno_t
 strfirstdiff_s(const char *dest, rsize_t dmax,
                const char *src, rsize_t *index);
 
 
 /* validate alphanumeric string */
-extern bool
+EXTERN bool
 strisalphanumeric_s(const char *str, rsize_t slen);
 
 
 /* validate ascii string */
-extern bool
+EXTERN bool
 strisascii_s(const char *str, rsize_t slen);
 
 
 /* validate string of digits */
-extern bool
+EXTERN bool
 strisdigit_s(const char *str, rsize_t slen);
 
 
 /* validate hex string */
-extern bool
+EXTERN bool
 strishex_s(const char *str, rsize_t slen);
 
 
 /* validate lower case */
-extern bool
+EXTERN bool
 strislowercase_s(const char *str, rsize_t slen);
 
 
 /* validate mixed case */
-extern bool
+EXTERN bool
 strismixedcase_s(const char *str, rsize_t slen);
 
 
 /* validate password */
-extern bool
+EXTERN bool
 strispassword_s(const char *str, rsize_t slen);
 
 
 /* validate upper case */
-extern bool
+EXTERN bool
 strisuppercase_s(const char *str, rsize_t slen);
 
 
 /* returns  a pointer to the last occurrence of c in s1 */
-extern errno_t
+EXTERN errno_t
 strlastchar_s(char *str, rsize_t smax, char c, char **first);
 
 
 /* returns index of last difference */
-extern  errno_t
+EXTERN  errno_t
 strlastdiff_s(const char *dest, rsize_t dmax,
               const char *src, rsize_t *index);
 
 
 /* left justify */
-extern errno_t
+EXTERN errno_t
 strljustify_s(char *dest, rsize_t dmax);
 
 
 
 /* string terminate */
-extern rsize_t
+EXTERN rsize_t
 strnterminate_s (char *s, rsize_t smax);
 
 
 /* get pointer to first occurrence from set of char */
-extern errno_t
+EXTERN errno_t
 strpbrk_s(char *dest, rsize_t dmax,
           char *src,  rsize_t slen, char **first);
 
 
-extern errno_t
+EXTERN errno_t
 strfirstsame_s(const char *dest, rsize_t dmax,
                const char *src,  rsize_t *index);
 
-extern errno_t
+EXTERN errno_t
 strlastsame_s(const char *dest, rsize_t dmax,
               const char *src, rsize_t *index);
 
 
 /* searches for a prefix */
-extern errno_t
+EXTERN errno_t
 strprefix_s(const char *dest, rsize_t dmax, const char *src);
 
 
 /* removes leading and trailing white space */
-extern errno_t
+EXTERN errno_t
 strremovews_s(char *dest, rsize_t dmax);
 
 
 /* computes inclusive prefix length */
-extern errno_t
+EXTERN errno_t
 strspn_s(const char *dest, rsize_t dmax,
          const char *src,  rsize_t slen, rsize_t *count);
 
 
 /* find a substring */
-extern errno_t
+EXTERN errno_t
 strstr_s(char *dest, rsize_t dmax,
          const char *src, rsize_t slen, char **substring);
 
 
-/* convert string to lowercase */
-extern errno_t
+/* convert string to lowercase.
+   mingw string_s.h: _strlwr_s */
+EXTERN errno_t
 strtolowercase_s(char * restrict str, rsize_t slen);
 
 
-/* convert string to uppercase */
-extern errno_t
+/* convert string to uppercase
+   mingw string_s.h: _strupr_s */
+EXTERN errno_t
 strtouppercase_s(char *str, rsize_t slen);
 
 
-/* zero an entire string with nulls */
-extern errno_t
+/* zero an entire string with nulls.
+   mingw string_s.h has: _strset_s */
+EXTERN errno_t
 strzero_s(char *dest, rsize_t dmax);
 
-/* search wide substring */
-extern errno_t
-wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src, rsize_t slen,
-         wchar_t **restrict substring);
+/* TODO: Windows extensions from sec_api/string_s.h
+   defined(MINGW_HAS_SECURE_API)
 
+EXTERN errno_t _strset_s(char *_Dst,  size_t _DstSize,  int _Value);
+EXTERN errno_t _strlwr_s(char *_Str, size_t _Size);
+EXTERN errno_t _strlwr_s_l(char *_Str, size_t _Size, _locale_t _Locale);
+EXTERN errno_t _strnset_s(char *_Str, size_t _Size, int _Val, size_t _MaxCount);
+EXTERN errno_t _strupr_s(char *_Str, size_t _Size);
+EXTERN errno_t _strupr_s_l(char *_Str, size_t _Size, _locale_t _Locale);
+
+*/
+  
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 
 #ifndef SAFECLIB_DISABLE_WCHAR
 
 /* is c99
-extern wchar_t*
+EXTERN wchar_t*
 wcsstr(wchar_t *restrict dest, const wchar_t *restrict src);
 */
 
 /* multibyte wchar */
 
-extern errno_t
+EXTERN errno_t
 mbstowcs_s(size_t *restrict retval,
            wchar_t *restrict dest, rsize_t dmax,
            const char *restrict src, rsize_t len);
 
-extern errno_t
+EXTERN errno_t
 mbsrtowcs_s(size_t *restrict retval,
             wchar_t *restrict dest, rsize_t dmax,
             const char **restrict src, rsize_t len,
             mbstate_t *restrict ps);
 
-extern errno_t
+EXTERN errno_t
 wcsrtombs_s(size_t *restrict retval,
             char *restrict dest, rsize_t dmax,
             const wchar_t **restrict src, rsize_t len,
             mbstate_t *restrict ps);
 
-extern errno_t
+EXTERN errno_t
 wcstombs_s(size_t *restrict retval,
            char *restrict dest, rsize_t dmax,
            const wchar_t *restrict src, rsize_t len);
 
-extern errno_t
+EXTERN errno_t
 wcrtomb_s(size_t *restrict retval, char *restrict dest, rsize_t dmax,
           wchar_t wc, mbstate_t *restrict ps);
 
-extern errno_t
+EXTERN errno_t
 wctomb_s(int *restrict retval, char *restrict dest, rsize_t dmax,
          wchar_t wc);
 
-extern size_t
+EXTERN size_t
 wcsnlen_s(const wchar_t *dest, size_t dmax);
 
-extern errno_t
+EXTERN errno_t
 wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src);
 
-extern errno_t
+EXTERN errno_t
 wcsncpy_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen);
 
-extern errno_t
+EXTERN errno_t
 wcscat_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src);
 
-extern errno_t
+EXTERN errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen);
 
-extern wchar_t *
+#ifndef MINGW_HAS_SECURE_API
+/* they use a buggy:
+wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
+EXTERN wchar_t *
 wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
          const wchar_t *restrict delim, wchar_t **restrict ptr);
+#endif
 
-extern int
+EXTERN int
 swprintf_s(wchar_t *restrict dest, rsize_t dmax,
            const wchar_t* restrict fmt, ...);
 
-extern int
+EXTERN int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, va_list ap);
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use vswprintf_s instead */
-extern int
+EXTERN int
 snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
             const wchar_t * restrict fmt, ...);
 
 /* unsafe! use vswprintf_s instead */
-extern int
+EXTERN int
 vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
              const wchar_t *restrict fmt, va_list ap);
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
-extern int
+EXTERN int
 wprintf_s( const wchar_t *restrict fmt, ...);
 
-extern int
+EXTERN int
 vwprintf_s(const wchar_t *restrict fmt, va_list ap);
 
-extern int
+EXTERN int
 fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
 
-extern int
+EXTERN int
 vfwprintf_s(FILE * restrict stream,
             const wchar_t *restrict fmt, va_list ap);
 
-extern int
+EXTERN int
 swscanf_s(const wchar_t *restrict buffer,
           const wchar_t *restrict fmt, ...);
 
-extern int
+EXTERN int
 vswscanf_s(const wchar_t *restrict buffer,
            const wchar_t *restrict fmt, va_list ap);
 
 /* TODO */
 #if 0
 
-extern int
+EXTERN int
 wscanf_s( const wchar_t *restrict fmt, ...);  
 
-extern int
+EXTERN int
 vwscanf_s(const wchar_t *restrict fmt, va_list ap);
 
-extern int
+EXTERN int
 fwscanf_s(FILE *restrict stream,
           const wchar_t *restrict fmt, ...);  
 
-extern int
+EXTERN int
 vfwscanf_s(FILE *restrict stream,
            const wchar_t *restrict fmt, va_list ap);
 
 #endif
+
+#ifndef SAFECLIB_DISABLE_EXTENSIONS
+
+/* search wide substring */
+EXTERN errno_t
+wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
+         const wchar_t *restrict src, rsize_t slen,
+         wchar_t **restrict substring);
+
+/* TODO: Windows extensions from sec_api/string_s.h
+
+EXTERN errno_t _wcserror_s(wchar_t *_Buf, size_t _SizeInWords, int _ErrNum);
+EXTERN errno_t _wcsnset_s(wchar_t *_Dst, size_t _DstSizeInWords, wchar_t _Val, size_t _MaxCount);
+EXTERN errno_t _wcsset_s(wchar_t *_Str, size_t _SizeInWords, wchar_t _Val);
+EXTERN errno_t _wcslwr_s(wchar_t *_Str, size_t _SizeInWords);
+EXTERN errno_t _wcslwr_s_l(wchar_t *_Str, size_t _SizeInWords, _locale_t _Locale);
+EXTERN errno_t _wcsupr_s(wchar_t *_Str, size_t _Size);
+EXTERN errno_t _wcsupr_s_l(wchar_t *_Str, size_t _Size, _locale_t _Locale);
+EXTERN errno_t _wcsncat_s_l(wchar_t *_Dst, size_t _DstSizeInChars,
+                           const wchar_t *_Src, size_t _MaxCount, _locale_t _Locale);
+EXTERN errno_t _wcsncpy_s_l(wchar_t *_Dst, size_t _DstSizeInChars,
+                            const wchar_t *_Src, size_t _MaxCount, _locale_t _Locale);
+EXTERN errno_t _wcsset_s_l(wchar_t *_Str, size_t _SizeInChars, unsigned int _Val,
+                          _locale_t _Locale);
+EXTERN errno_t _wcsnset_s_l(wchar_t *_Str, size_t _SizeInChars, unsigned int _Val,
+                     size_t _Count, _locale_t _Locale);
+
+*/
+
+#endif /* SAFECLIB_DISABLE_EXTENSIONS */
+
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
   

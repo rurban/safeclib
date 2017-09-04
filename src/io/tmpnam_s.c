@@ -29,15 +29,7 @@
  *------------------------------------------------------------------
  */
 
-/* Need restrict */
-#include "config.h"
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
-#include <stdio.h>
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#endif
-
+#include "safeclib_private.h"
 
 /** 
  * @brief 
@@ -89,7 +81,8 @@
  *   to the optionally defined macro P_tmpdir).
  */
 
-errno_t tmpnam_s(char *filename_s, rsize_t maxsize)
+EXPORT errno_t
+tmpnam_s(char *filename_s, rsize_t maxsize)
 {
     static int count = 0;
     char* result = NULL;

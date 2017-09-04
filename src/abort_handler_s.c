@@ -52,7 +52,8 @@
  *
  */
 
-void abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
+EXPORT void
+abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
 {
 	(void)ptr;
 	slprintf("ABORT CONSTRAINT HANDLER: (%u) %s\n", error,

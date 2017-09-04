@@ -60,7 +60,7 @@
  *    memzero_s(), memzero16_s()
  *
  */
-errno_t
+EXPORT errno_t
 memzero32_s (uint32_t *dest, rsize_t len)
 {
 

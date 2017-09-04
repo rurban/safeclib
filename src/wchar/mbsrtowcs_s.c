@@ -107,7 +107,7 @@
  * @see
  *    mbstowc_s()
  */
-errno_t
+EXPORT errno_t
 mbsrtowcs_s (size_t *restrict retval,
              wchar_t *restrict dest, rsize_t dmax,
              const char **restrict src, rsize_t len,

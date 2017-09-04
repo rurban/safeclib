@@ -31,11 +31,7 @@
  *------------------------------------------------------------------
  */
 
-/* Need restrict */
-#include "config.h"
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
-#include <stdarg.h>
+#include "safeclib_private.h"
 
 /** 
  * @brief
@@ -78,9 +74,8 @@
  *
  */
 
-#include "safeclib_private.h"
-
-int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
+EXPORT int
+sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 {
     va_list ap;
     int ret = -1;

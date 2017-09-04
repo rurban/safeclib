@@ -41,19 +41,32 @@ extern "C" {
 #include "safe_types.h"
 #include "safe_lib_errno.h"
 
+#ifdef _WIN32
+# if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
+#  define EXTERN extern __declspec(dllexport)
+# else
+#  define EXTERN extern __declspec(dllimport)
+# endif
+#else
+# define EXTERN extern
+#endif
+
 /* C11 appendix K types - specific for bounds checking */
 typedef size_t  rsize_t;
 
 #ifndef RSIZE_MAX
 # define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
 #endif
-  
+
 typedef void (*constraint_handler_t) (const char *restrict /* msg */,
                                       void *restrict       /* ptr */,
-                                      errno_t               /* error */);
+                                      errno_t              /* error */);
 
-extern void abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
-extern void ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
+EXTERN void
+abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
+
+EXTERN void
+ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 
 #define sl_default_handler ignore_handler_s
 
@@ -82,8 +95,11 @@ extern void ignore_handler_s(const char *restrict msg, void *restrict ptr, errno
 #  define L_tmpnam_s 1024
 # endif
 #endif
-  
-extern errno_t tmpnam_s(char *filename_s, rsize_t maxsize);
+
+/* not str nor mem */
+
+EXTERN errno_t
+tmpnam_s(char *filename_s, rsize_t maxsize);
 
 #endif
 

@@ -127,8 +127,8 @@ STD_WCHAR_FILES = \
 	wchar/wmemcpy_s.c  	\
 	wchar/wmemmove_s.c  	\
 	wchar/wcstok_s.c  	\
-	wchar/vswprintf_s.c  	\
-	wchar/swprintf_s.c  	\
+	wchar/vswprintf_s.c	\
+	wchar/swprintf_s.c	\
 	wchar/vfwprintf_s.c  	\
 	wchar/vwprintf_s.c  	\
 	wchar/wprintf_s.c	\
@@ -188,7 +188,10 @@ ALL_SRC_FILES =
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
-AM_CFLAGS += -Werror -pedantic -Imem -Istr
+AM_CFLAGS += -Imem -Istr
+#if !HAVE_MINGW
+AM_CFLAGS += -Werror -pedantic
+#endif
 
 .c.i:
 	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

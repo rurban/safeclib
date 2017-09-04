@@ -91,7 +91,7 @@
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
-errno_t
+EXPORT errno_t
 wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
 {
     if (unlikely(dest == NULL)) {

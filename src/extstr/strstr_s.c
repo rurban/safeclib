@@ -65,7 +65,7 @@
  *     strprefix_s(), strspn_s(), strcspn_s(), strpbrk_s()
  *
  */
-errno_t
+EXPORT errno_t
 strstr_s (char *dest, rsize_t dmax,
           const char *src, rsize_t slen, char **substring)
 {

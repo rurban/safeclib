@@ -86,7 +86,7 @@
  * @retval  ESOVRLP    when src overlaps with dest
  *
  */
-errno_t
+EXPORT errno_t
 strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
 {
     rsize_t orig_dmax;

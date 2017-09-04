@@ -81,7 +81,7 @@
  *
  */
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
-errno_t
+EXPORT errno_t
 memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
 {
     errno_t err = EOK;

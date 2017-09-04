@@ -16,14 +16,16 @@ static wchar_t   src[LEN];
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
 #include <locale.h>
+#ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
+#endif
 
 int test_wcstombs_s (void)
 {
     errno_t rc;
     size_t ind;
     const wchar_t *cs;
-    const char* chs;
+    const char* lang;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -67,16 +69,20 @@ int test_wcstombs_s (void)
     INDCMP(!= 6);
 
     setlocale(LC_CTYPE, "C");
-    chs = nl_langinfo(CODESET);
+#ifdef HAVE_LANGINFO_H
+    lang = nl_langinfo(CODESET);
+#else
+    lang = "C";
+#endif
     /* not a big problem if this fails */
-    if ( !strcmp(chs, "C") ||
-         !strcmp(chs, "ASCII") ||
-         !strcmp(chs, "ANSI_X3.4-1968") ||
-         !strcmp(chs, "US-ASCII") )
+    if ( !strcmp(lang, "C") ||
+         !strcmp(lang, "ASCII") ||
+         !strcmp(lang, "ANSI_X3.4-1968") ||
+         !strcmp(lang, "US-ASCII") )
         ; /* all fine */
     else /* dont inspect the values */
         printf(__FILE__ ": cannot set C locale for test"
-                   " (codeset=%s)\n", chs);
+                   " (codeset=%s)\n", lang);
 
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"\x78",cs), 1);
     ERR(EOK);
@@ -100,10 +106,14 @@ int test_wcstombs_s (void)
 	setlocale(LC_CTYPE, "C.UTF-8") ||
 	setlocale(LC_CTYPE, "UTF-8") ||
 	setlocale(LC_CTYPE, "");
-    chs = nl_langinfo(CODESET);
-    if (!strstr(chs, "UTF-8")) {
+#ifdef HAVE_LANGINFO_H
+    lang = nl_langinfo(CODESET);
+#else
+    lang = "UTF-8";
+#endif
+    if (!strstr(lang, "UTF-8")) {
         printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (codeset=%s)\n", chs);
+               " (codeset=%s)\n", lang);
         return 0;
     }
 

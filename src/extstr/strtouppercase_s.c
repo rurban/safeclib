@@ -62,7 +62,7 @@
  *    strtolowercase_s()
  *
  */
-errno_t
+EXPORT errno_t
 strtouppercase_s (char *dest, rsize_t dmax)
 {
     if (unlikely(dest == NULL)) {

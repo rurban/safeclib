@@ -60,7 +60,7 @@
  *    memzero16_s(), memzero32_s()
  *
  */
-errno_t
+EXPORT errno_t
 memzero_s (void *dest, rsize_t len)
 {
     if (unlikely(dest == NULL)) {

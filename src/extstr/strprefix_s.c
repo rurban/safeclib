@@ -66,7 +66,7 @@
  *    strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
  *
  */
-errno_t
+EXPORT errno_t
 strprefix_s (const char *dest, rsize_t dmax, const char *src)
 {
     if (unlikely(dest == NULL)) {

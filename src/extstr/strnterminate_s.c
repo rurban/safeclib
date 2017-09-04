@@ -61,7 +61,7 @@
  *    strnlen_s()
  *
  */
-rsize_t
+EXPORT rsize_t
 strnterminate_s (char *dest, rsize_t dmax)
 {
     rsize_t count;

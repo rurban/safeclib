@@ -30,15 +30,8 @@
  */
 
 /* Need restrict */
-#include "config.h"
-
 #define __STDC_WANT_LIB_EXT1__ 1
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
-#ifndef HAVE_VSNWPRINTF_S
-#include "safe_mem_lib.h"
-#endif
-#include <stdarg.h>
+#include "safeclib_private.h"
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
@@ -113,9 +106,8 @@ truncate, no dest overflow.
  *
  */
 
-#include "safeclib_private.h"
 
-int
+EXPORT int
 snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, ...)
 {

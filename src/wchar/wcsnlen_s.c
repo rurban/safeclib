@@ -65,7 +65,7 @@
  *    strnterminate_s()
  *
  */
-rsize_t
+EXPORT rsize_t
 wcsnlen_s (const wchar_t *dest, rsize_t dmax)
 {
     const wchar_t *z;

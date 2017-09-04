@@ -150,8 +150,17 @@ SAFEC_TEST_COMMON = \
 LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
 TESTS = $(SAFEC_BUILT_TESTS)
+#if HAVE_MINGW_CROSS
+#if WINE
+#check_PROGRAMS = $(SAFEC_BUILT_TESTS:t_=wine t_)
+#else
+#check_PROGRAMS = echo no wine
+#endif
+#else
+#endif
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
 noinst_PROGRAMS = $(SAFEC_BUILT_PERFS)
+
 
 .c.i:
 	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

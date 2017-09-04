@@ -49,15 +49,14 @@
 
 #else  /* !__KERNEL__ */
 
-#if HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #ifdef STDC_HEADERS
 # include <ctype.h>
 # include <stdlib.h>
 # include <stddef.h>
+# include <stdarg.h>
 #else
 # ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
@@ -71,6 +70,9 @@
 #endif
 #ifdef HAVE_LIMITS_H
 # include <limits.h>
+#endif
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
 #endif
 
 #ifndef HAVE_STRNSTR
@@ -87,15 +89,15 @@
 #endif
 
 #if __GNUC__ >= 3
-# define _expect(expr,value)        __builtin_expect ((expr), (value))
+# define _expect(expr,value)        __builtin_expect((expr), (value))
 # define INLINE                     static inline
 #else
 # define _expect(expr,value)        (expr)
 # define INLINE                     static
 #endif
 #ifndef likely
-#define likely(expr)   _expect ((long)(expr) != 0, 1)
-#define unlikely(expr) _expect ((long)(expr) != 0, 0)
+#define likely(expr)   _expect ((long)((expr) != 0), 1)
+#define unlikely(expr) _expect ((long)((expr) != 0), 0)
 #endif
 
 #endif /* __KERNEL__ */
@@ -104,7 +106,15 @@
 #define sldebug_printf(...)
 #endif
 
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
+
 /* TODO: get rid of that */
 #include "safe_lib.h"
+
+#include "safe_str_constraint.h"
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

@@ -68,7 +68,7 @@
  *    strlastchar_s(), strlastsame_s()
  *
  */
-errno_t
+EXPORT errno_t
 strlastdiff_s(const char *dest, rsize_t dmax,
               const char *src, rsize_t *index)
 {

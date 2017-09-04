@@ -89,7 +89,7 @@
  * @retval  ESOVRLP    when src overlaps with dest
  *
  */
-errno_t
+EXPORT errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen)
 {

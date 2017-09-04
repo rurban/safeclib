@@ -31,9 +31,6 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
-
 
 static constraint_handler_t str_handler = NULL;
 
@@ -72,7 +69,7 @@ static constraint_handler_t str_handler = NULL;
  * @see
  *    set_str_constraint_handler_s()
  */
-constraint_handler_t
+EXPORT constraint_handler_t
 set_str_constraint_handler_s (constraint_handler_t handler)
 {
     constraint_handler_t prev_handler = str_handler;
@@ -95,7 +92,7 @@ EXPORT_SYMBOL(set_str_constraint_handler_s)
  * @param error  The error code encountered.
  *
  */
-void
+EXPORT void
 invoke_safe_str_constraint_handler (const char *msg,
                                     void *ptr,
                                     errno_t error)

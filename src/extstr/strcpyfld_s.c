@@ -72,7 +72,7 @@
  *    strcpyfldin_s(), strcpyfldout_s()
  *
  */
-errno_t
+EXPORT errno_t
 strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
 {
     rsize_t orig_dmax;

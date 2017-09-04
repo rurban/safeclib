@@ -49,7 +49,8 @@
  *
  */
 
-void ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
+EXPORT void
+ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
 {
 	(void)ptr;
 #ifndef DEBUG

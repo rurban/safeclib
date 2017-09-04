@@ -75,7 +75,7 @@
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
-errno_t
+EXPORT errno_t
 memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
 {
     uint32_t *dp;

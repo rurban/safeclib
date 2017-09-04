@@ -56,7 +56,7 @@
  *    strispassword_s()
  *
  */
-errno_t
+EXPORT errno_t
 strzero_s (char *dest, rsize_t dmax)
 {
     if (unlikely(dest == NULL)) {

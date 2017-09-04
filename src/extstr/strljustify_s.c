@@ -67,7 +67,7 @@
  *    strremovews_s(),
  *
  */
-errno_t
+EXPORT errno_t
 strljustify_s (char *dest, rsize_t dmax)
 {
     char *orig_dest;

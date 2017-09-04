@@ -29,13 +29,8 @@
  *------------------------------------------------------------------
  */
 
-/* Need restrict */
-#include "config.h"
-
 #define __STDC_WANT_LIB_EXT1__ 1
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
-#include <stdarg.h>
+#include "safeclib_private.h"
 
 /* TODO:
 any of the arguments corresponding to %s is a null pointer
@@ -93,9 +88,7 @@ any of the arguments corresponding to %s is a null pointer
  *
  */
 
-#include "safeclib_private.h"
-
-int
+EXPORT int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, va_list ap)
 {

@@ -289,6 +289,17 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_CC_C_O
 AC_PROG_CC_C99
+
+AM_CONDITIONAL([HAVE_MINGW], [test "x$host_os" = "xmingw32"])
+AM_CONDITIONAL([HAVE_MINGW_CROSS],
+        [test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"])
+if test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"; then
+   AC_CHECK_PROGS([WINE], [wine])
+   if test -z "$wine";
+      then AC_MSG_WARN([wine not found - cannot check cross-compiled executables])
+   fi
+fi
+
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 if test -z "$DOXYGEN";
    then AC_MSG_WARN([doxygen not found - continuing without doxygen support])
@@ -317,8 +328,8 @@ AC_CHECK_HEADERS([stdlib.h	\
                   inttypes.h	\
                   stdint.h	\
                   errno.h	\
-                  wchar.h
-                 ])
+                  wchar.h	\
+                  langinfo.h])
 
 INSERT_SYS_TYPES_H=""
 if test "x$ac_cv_header_sys_types_h" = "xyes"; then
@@ -416,8 +427,9 @@ AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
-                vsnwprintf_s])
+                memcpy_s vsnwprintf_s])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
+AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
 
 # Checks for system services
@@ -437,7 +449,6 @@ AH_TOP([
 AH_BOTTOM([
 #endif /* __SAFECLIB_CONF_H__ */
 ])
-
 
 AC_SUBST([TARBALL_VERSION_FILE])
 

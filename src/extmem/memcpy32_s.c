@@ -70,7 +70,7 @@
  *    memcpy_s(), memcpy16_s(), memmove_s(), memmove16_s(), memmove32_s()
  *
  */
-errno_t
+EXPORT errno_t
 memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
 {
     if (unlikely(dest == NULL)) {

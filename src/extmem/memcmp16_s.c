@@ -31,7 +31,6 @@
 
 #include "safeclib_private.h"
 #include "safe_mem_constraint.h"
-#include "safe_mem_lib.h"
 
 /**
  * @brief
@@ -68,7 +67,8 @@
  *    memcmp_s(), memcmp32_s()
  *
  */
-errno_t
+
+EXPORT errno_t
 memcmp16_s (const uint16_t *dest, rsize_t dmax,
             const uint16_t *src,  rsize_t smax, int *diff)
 {

@@ -65,7 +65,7 @@
  *    strfirstsame_s(), strlastdiff_s(), strlastsame_s()
  *
  */
-errno_t
+EXPORT errno_t
 strpbrk_s (char *dest, rsize_t dmax,
            char *src,  rsize_t slen, char **first)
 {

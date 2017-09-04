@@ -69,7 +69,7 @@
  *    memset_s(), memset16_s()
  *
  */
-errno_t
+EXPORT errno_t
 memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
 {
     errno_t err = EOK;

@@ -65,7 +65,7 @@
  *    strcspn_s(), strpbrk_s(), strstr_s(), strprefix_s()
  *
  */
-errno_t
+EXPORT errno_t
 strspn_s (const char *dest, rsize_t dmax,
           const char *src,  rsize_t slen, rsize_t *count)
 {

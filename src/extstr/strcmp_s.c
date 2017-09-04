@@ -69,7 +69,7 @@
  *    strcasecmp_s()
  *
  */
-errno_t
+EXPORT errno_t
 strcmp_s (const char *dest, rsize_t dmax,
           const char *src, int *indicator)
 {

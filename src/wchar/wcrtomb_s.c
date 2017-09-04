@@ -109,7 +109,7 @@
  * @see
  *    wctomb_s()
  */
-errno_t
+EXPORT errno_t
 wcrtomb_s(size_t *restrict retval,
           char *restrict dest, rsize_t dmax,
           wchar_t wc, mbstate_t *restrict ps)

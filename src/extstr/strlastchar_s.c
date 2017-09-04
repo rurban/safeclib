@@ -66,7 +66,7 @@
  *    strlastdiff_s(), strlastsame_s()
  *
  */
-errno_t
+EXPORT errno_t
 strlastchar_s(char *dest, rsize_t dmax, char c, char **last)
 {
     if (unlikely(last == NULL)) {

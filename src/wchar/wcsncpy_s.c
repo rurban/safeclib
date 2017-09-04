@@ -84,7 +84,7 @@
  *    wcscpy_s(), strncpy_s()
  *
  */
-errno_t
+EXPORT errno_t
 wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, rsize_t slen)
 {
     rsize_t orig_dmax;

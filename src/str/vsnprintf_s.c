@@ -29,10 +29,7 @@
  *------------------------------------------------------------------
  */
 
-/* Need restrict */
-#include "config.h"
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
+#include "safeclib_private.h"
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
@@ -86,9 +83,8 @@
  *
  */
 
-#include "safeclib_private.h"
-
-int vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
+EXPORT int
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
 {
 
     int ret = -1;

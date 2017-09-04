@@ -65,7 +65,7 @@
  *     wcsstr(), strstr_s(), memcmp32_s()
  *
  */
-errno_t
+EXPORT errno_t
 wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen,
           wchar_t **restrict substring)

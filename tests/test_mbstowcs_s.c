@@ -17,7 +17,9 @@ static char      src[LEN];
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
 #include <locale.h>
+#ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
+#endif
 
 int test_mbstowcs_s (void)
 {
@@ -25,6 +27,7 @@ int test_mbstowcs_s (void)
     size_t ind;
     /*uint32_t i;*/
     const char *cs;
+    const char *lang;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -69,9 +72,14 @@ int test_mbstowcs_s (void)
     INDCMP(!= 6);
 
     setlocale(LC_CTYPE, "C");
-    if (strcmp(nl_langinfo(CODESET), "C")) {
+#ifdef HAVE_LANGINFO_H
+    lang = nl_langinfo(CODESET);
+#else
+    lang = "C";
+#endif
+    if (strcmp(lang, "C")) {
         printf(__FILE__ ": cannot set C locale for test"
-               " (codeset=%s)\n", nl_langinfo(CODESET));
+               " (codeset=%s)\n", lang);
         return 0;
     }
 
@@ -105,9 +113,14 @@ int test_mbstowcs_s (void)
 	setlocale(LC_CTYPE, "C.UTF-8") ||
 	setlocale(LC_CTYPE, "UTF-8") ||
 	setlocale(LC_CTYPE, "");
-    if (strcmp(nl_langinfo(CODESET), "UTF-8")) {
+#ifdef HAVE_LANGINFO_H
+    lang = nl_langinfo(CODESET);
+#else
+    lang = "UTF-8";
+#endif
+    if (strcmp(lang, "UTF-8")) {
         printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (codeset=%s)\n", nl_langinfo(CODESET));
+               " (codeset=%s)\n", lang);
         return 0;
     }
 

@@ -68,7 +68,7 @@
  *    memcmp_s(), memcmp16_s()
  *
  */
-errno_t
+EXPORT errno_t
 memcmp32_s (const uint32_t *dest, rsize_t dmax,
             const uint32_t *src,  rsize_t smax, int *diff)
 {

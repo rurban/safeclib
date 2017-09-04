@@ -88,7 +88,7 @@
  *    strncat_s(), strcpy_s(), strncpy_s()
  *
  */
-errno_t
+EXPORT errno_t
 strcat_s (char * restrict dest, rsize_t dmax, const char * restrict src)
 {
     rsize_t orig_dmax;

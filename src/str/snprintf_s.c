@@ -29,10 +29,7 @@
  *------------------------------------------------------------------
  */
 
-/* Need restrict */
-#include "config.h"
-#include "safe_str_lib.h"
-#include "safe_str_constraint.h"
+#include "safeclib_private.h"
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
@@ -92,9 +89,8 @@ any of the arguments corresponding to %s is a null pointer
  *
  */
 
-#include "safeclib_private.h"
-
-int snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
+EXPORT int
+snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 {
     va_list ap;
     const char *p;
