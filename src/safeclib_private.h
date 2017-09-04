@@ -117,4 +117,14 @@
 
 #include "safe_str_constraint.h"
 
+/* platform quirks */
+
+/* mingw32 3.15.2 */
+#if defined(_WIN32) && defined(__MINGW32_MAJOR_VERSION) && !defined(__STRICT_ANSI__)
+#define vswprintf(dest, dmax, fmt, ap) vswprintf(dest, fmt, ap)
+#endif
+
+/* mingw64 3.0.1
+   has strtok_s, wcstok_s, and vsnprintf_s, which we patch in the tests. */
+
 #endif /* __SAFECLIB_PRIVATE_H__ */

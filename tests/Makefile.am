@@ -143,21 +143,12 @@ endif
 SAFEC_TEST_COMMON = \
 	test_private.h
 
-# WARNING: tests won't build with -Werror right now because of some
-# type-casting issues
+# WARNING: tests won't build with -Werror right now. A few minor warnings
 #AM_CFLAGS   += -Werror
 
 LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
 TESTS = $(SAFEC_BUILT_TESTS)
-#if HAVE_MINGW_CROSS
-#if WINE
-#check_PROGRAMS = $(SAFEC_BUILT_TESTS:t_=wine t_)
-#else
-#check_PROGRAMS = echo no wine
-#endif
-#else
-#endif
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
 noinst_PROGRAMS = $(SAFEC_BUILT_PERFS)
 

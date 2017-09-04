@@ -30,9 +30,6 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
-
 
 /**
  * @brief
@@ -88,8 +85,9 @@
  *    strncat_s(), strcpy_s(), strncpy_s()
  *
  */
+
 EXPORT errno_t
-strcat_s (char * restrict dest, rsize_t dmax, const char * restrict src)
+strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
 {
     rsize_t orig_dmax;
     char *orig_dest;

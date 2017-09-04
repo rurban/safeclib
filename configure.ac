@@ -425,9 +425,10 @@ AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
+dnl the last 3 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
-                memcpy_s vsnwprintf_s])
+                memcpy_s vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])

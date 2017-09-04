@@ -196,6 +196,8 @@ Tested Platforms
 - Linux Debian 10 amd64 glibc 2.24
 - Linux Void amd64 musl-1.1.16
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
+- x86_64-w64-mingw32 cross-compiled and tested under wine
+- i386-mingw32 cross-compiled and tested under wine
 
 
 Known Issues

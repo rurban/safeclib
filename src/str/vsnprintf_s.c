@@ -31,6 +31,8 @@
 
 #include "safeclib_private.h"
 
+#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
+#else
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /**
@@ -137,3 +139,4 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
 EXPORT_SYMBOL(vsnprintf_s)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
+#endif /* MINGW64 */

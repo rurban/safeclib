@@ -17,7 +17,11 @@ int vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...
     int rc;
     va_list ap;
     va_start(ap, fmt);
+#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
+    rc = vsnprintf_s(dest, dmax, 20, fmt, ap);
+#else
     rc = vsnprintf_s(dest, dmax, fmt, ap);
+#endif
     va_end(ap);
     return rc;
 }

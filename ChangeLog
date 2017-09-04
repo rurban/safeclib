@@ -2,13 +2,17 @@
                 ChangeLog file for safeclib
 
 Changes in vxx092017 3.0.0
+        - Added mingw cross-compilation support and changes.
+        The MINGW_HAS_SECURE_API deviates in strtok_s, vsnprintf_s, wcstok_s
+        from C11. Add EXPORT and EXTERN decls for dllexport/dllimport.
+        Cleanup the src headers.
         - Install bin/check_for_unsafe_apis. Renamed and improved: 7x faster,
           added missing conversion hints. also install its man1.
         - Seperated internal libstdunsafe target, for std but unsafe C11
           functions: snprintf_s, vsnprintf_s, snwprintf_s, vsnwprintf_s, tmpnam_s
-        - added --enable-unsafe (the 5 funcs above are not included by default).
+        - Added --enable-unsafe (the 5 funcs above are not included by default).
         defines SAFECLIB_ENABLE_UNSAFE
-        - added --disable-extensions, skipping all non-C11 safe functions.
+        - Added --disable-extensions, skipping all non-C11 safe functions.
         This contains in summary only 11 functions for now:
         memcpy_s, memmove_s, memset_s, sprintf_s, strcat_s, strcpy_s, strncat_s,
         strncpy_s, strnlen_s, strtok_s, vsprintf_s.
@@ -17,15 +21,16 @@ Changes in vxx092017 3.0.0
         - Macrofied many more tests
         - Improved some tests for old gcc -ansi (c89) memcmp
         - Add unlikely() to improve branch prediction
-        - added --enable-gcov and a gcov target (lcov support not yet)
-        - added most safe wchar and multibyte string C11 functions:
+        - Added --enable-gcov and a gcov target (lcov support not yet)
+        - Added most safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcrtomb_s,
         wctomb_s, wcsnlen_s, wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s,
-        wcstok_s, swprintf_s, vswprintf_s, wmemcpy_s, wmemmove_s.
-        - added --disable-wchar to disable the new multibyte and wchar functions,
+        wcstok_s, swprintf_s, vswprintf_s, wmemcpy_s, wmemmove_s,
+        wprintf_s, fwprintf_s, vfwprintf_s, vwprintf_s, vswscanf_s, swscanf_s
+        - Added --disable-wchar to disable the new multibyte and wchar functions,
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR
-        - better debugging support: add .i target
+        - Better debugging support: add .i target
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

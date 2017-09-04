@@ -30,9 +30,9 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
 
+#if defined(_WIN32) && defined(HAVE_STRTOK_S)
+#else
 
 /**
  * @brief
@@ -105,6 +105,8 @@
  *       subsequent calls.
  * @pre  delim must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
  *
+ * @note The mingw MINGW_HAS_SECURE_API declares it without the dmax
+ *       argument. Skip it there.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
@@ -151,7 +153,8 @@
  *    }
  * @endcode
  */
-char *
+
+EXPORT char *
 strtok_s(char *restrict dest, rsize_t *restrict dmax,
          const char *restrict delim, char **restrict ptr)
 {
@@ -297,3 +300,6 @@ strtok_s(char *restrict dest, rsize_t *restrict dmax,
     *dmax = dlen;
     return (ptoken);
 }
+EXPORT_SYMBOL(strtok_s)
+
+#endif

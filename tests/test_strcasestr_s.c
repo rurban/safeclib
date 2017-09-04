@@ -15,7 +15,9 @@ int main()
 {
     errno_t rc;
     char *sub;
+#ifdef HAVE_STRCASESTR
     char *std_sub;
+#endif
 
     rsize_t len1;
     rsize_t len2;

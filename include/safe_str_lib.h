@@ -91,7 +91,7 @@ EXTERN rsize_t
 strnlen_s (const char *s, rsize_t smax);
 
 /* string tokenizer */
-#ifndef MINGW_HAS_SECURE_API
+#if !(defined(_WIN32) && defined(HAVE_STRTOK_S))
 /* they use:
 char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 EXTERN char *
@@ -115,7 +115,7 @@ EXTERN int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 
 /* unsafe! use vsprintf_s instead */
-#ifndef MINGW_HAS_SECURE_API
+#if !(defined(_WIN32) && defined(HAVE_VSNPRINTF_S))
 /* they use:
 int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
                 const char *_Format, va_list _ArgList); */
@@ -371,7 +371,7 @@ EXTERN errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen);
 
-#ifndef MINGW_HAS_SECURE_API
+#if !(defined(_WIN32) && defined(HAVE_WCSTOK_S))
 /* they use a buggy:
 wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
 EXTERN wchar_t *

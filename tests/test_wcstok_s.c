@@ -10,6 +10,10 @@
 
 #define LEN   ( 128 )
 
+#if defined(_WIN32) && defined(HAVE_WCSTOK_S)
+#define wcstok_s(dest, dmax, delim, ptr) wcstok_s(dest, delim, ptr)
+#endif
+
 int main()
 {
 #ifdef DEBUG

@@ -32,9 +32,9 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_str_constraint.h"
-#include "safe_str_lib.h"
 
+#if defined(_WIN32) && defined(HAVE_WCSTOK_S)
+#else
 
 /**
  * @brief
@@ -107,6 +107,8 @@
  *       subsequent calls.
  * @pre  delim must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
  *
+ * @note The mingw MINGW_HAS_SECURE_API declares it without the dmax
+ *       argument. Skip it there.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
@@ -153,7 +155,8 @@
  *    }
  * @endcode
  */
-extern wchar_t *
+
+EXPORT wchar_t *
 wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
          const wchar_t *restrict delim, wchar_t **restrict ptr)
 {
@@ -307,3 +310,6 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
     *dmax = dlen;
     return (ptoken);
 }
+EXPORT_SYMBOL(wcstok_s)
+
+#endif

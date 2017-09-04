@@ -189,9 +189,9 @@ ALL_SRC_FILES =
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
 AM_CFLAGS += -Imem -Istr
-#if !HAVE_MINGW
+if !HAVE_MINGW
 AM_CFLAGS += -Werror -pedantic
-#endif
+endif
 
 .c.i:
 	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
