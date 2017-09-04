@@ -120,7 +120,8 @@
 /* platform quirks */
 
 /* mingw32 3.15.2 */
-#if defined(_WIN32) && defined(__MINGW32_MAJOR_VERSION) && !defined(__STRICT_ANSI__)
+#if defined(_WIN32) && defined(__MINGW32_MAJOR_VERSION) && \
+    !defined(__STRICT_ANSI__) && !defined(__MINGW64_VERSION_MAJOR)
 #define vswprintf(dest, dmax, fmt, ap) vswprintf(dest, fmt, ap)
 #endif
 
