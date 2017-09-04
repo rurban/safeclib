@@ -393,6 +393,14 @@ extern int
 vfwprintf_s(FILE * restrict stream,
             const wchar_t *restrict fmt, va_list ap);
 
+extern int
+swscanf_s(const wchar_t *restrict buffer,
+          const wchar_t *restrict fmt, ...);
+
+extern int
+vswscanf_s(const wchar_t *restrict buffer,
+           const wchar_t *restrict fmt, va_list ap);
+
 /* TODO */
 #if 0
 
@@ -409,14 +417,6 @@ fwscanf_s(FILE *restrict stream,
 extern int
 vfwscanf_s(FILE *restrict stream,
            const wchar_t *restrict fmt, va_list ap);
-
-extern int
-swscanf_s(const wchar_t *restrict s,
-          const wchar_t *restrict fmt, ...);
-
-extern int
-vswscanf_s(const wchar_t *restrict buffer,
-           const wchar_t *restrict fmt, va_list ap);  
 
 #endif
 

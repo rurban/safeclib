@@ -132,11 +132,11 @@ STD_WCHAR_FILES = \
 	wchar/vfwprintf_s.c  	\
 	wchar/vwprintf_s.c  	\
 	wchar/wprintf_s.c	\
-	wchar/fwprintf_s.c	
-#	wchar/swscanf_s.c  	\
+	wchar/fwprintf_s.c	\
+	wchar/swscanf_s.c  	\
+	wchar/vswscanf_s.c  	
 #	wchar/wscanf_s.c	\
 #	wchar/vfwscanf_s.c  	\
-#	wchar/vswscanf_s.c  	\
 #	wchar/vwscanf_s.c
 
 if !HAVE_WCSSTR

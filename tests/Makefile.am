@@ -61,8 +61,8 @@ SAFEC_BUILT_TESTS += \
 	t_vswprintf_s	\
 	t_swprintf_s	\
 	t_fwprintf_s	\
-	t_vfwprintf_s	
-#	t_swscanf_s	\
+	t_vfwprintf_s	\
+	t_swscanf_s	
 #	t_vswscanf_s	\
 #	t_vfwscanf_s	
 endif
@@ -210,8 +210,8 @@ t_wprintf_s_SOURCES           = test_wprintf_s.c $(SAFEC_TEST_COMMON)
 t_fwprintf_s_SOURCES          = test_fwprintf_s.c $(SAFEC_TEST_COMMON)
 t_vfwprintf_s_SOURCES         = test_vfwprintf_s.c $(SAFEC_TEST_COMMON)
 t_vwprintf_s_SOURCES          = test_vwprintf_s.c $(SAFEC_TEST_COMMON)
+t_swscanf_s_SOURCES           = test_swscanf_s.c $(SAFEC_TEST_COMMON)
 #t_wscanf_s_SOURCES            = test_wscanf_s.c $(SAFEC_TEST_COMMON)
-#t_swscanf_s_SOURCES           = test_swscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vfwscanf_s_SOURCES          = test_vfwscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vswscanf_s_SOURCES          = test_vswscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vwscanf_s_SOURCES           = test_vwscanf_s.c $(SAFEC_TEST_COMMON)
