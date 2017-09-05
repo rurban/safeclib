@@ -132,9 +132,14 @@ int test_wctomb_s (void)
     }
 
     /* illegal unicode. but some may allow it: 0xf0 0x9d 0x8c 0x81 */
+    /* 32bit: hex escape sequence out of range */
     rc = wctomb_s(&ind, dest, LEN, L'\xd834df01');
+#if SIZEOF_WCHAR_T == 2
+    ERR(0);
+#else
     ERR(EILSEQ);
     INDCMP(!= -1);
+#endif
 
 /*--------------------------------------------------*/
 

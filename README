@@ -51,6 +51,8 @@ and the following can be added...
 
 The C11 Standard adopted many of these points, and added some secure
 _s variants in the Annex K.
+The Microsoft/MINGW secure API did the same, but deviated in some functions
+from the standard.
 
 
 Design Considerations
@@ -110,11 +112,15 @@ RSIZE_MAX::
 The specification states the various functions would be added to existing
 Standard C header files: stdio.h, string.h, etc.  This implementation
 separates the memory related functions into the safe_mem_lib.h header and the
-string related functions into the safe_str_lib.h header.  The make file builds
-a single library safe_lib.a in the ../lib directory.
+string related functions into the safe_str_lib.h header.
+You can optionally use the safe_lib.h header to include also non str/mem functions.
 
-It is possible to split the make such that a separate safe_mem_lib.a and
-safe_str_lib.a are built.  It is also possible to integrate the prototypes
+The make file builds a single library libsafec-VERSION.a and .so in the
+src/.libs directory.
+Built but not installed are also libmemprims, libsafeccore and libstdunsafe.
+
+It is possible to split the make such that a separate safe_mem_lib.so and
+safe_str_lib.so are built.  It is also possible to integrate the prototypes
 into the Standard C header files, but that may require changes to your
 development tool chain.
 
@@ -148,8 +154,8 @@ tests.
 
 === Installing
 
-Installation must be preformed by an `Adminstrator' on most systems. The
-following is used to install the library.
+Installation must be preformed by `root`, an `Administrator' on most
+systems. The following is used to install the library.
 
 ----
 prompt$ sudo make install
@@ -195,9 +201,10 @@ Tested Platforms
 - Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc+clang)
 - Linux Debian 10 amd64 glibc 2.24
 - Linux Void amd64 musl-1.1.16
-- User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 - x86_64-w64-mingw32 cross-compiled and tested under wine
 - i386-mingw32 cross-compiled and tested under wine
+- cygwin32 and cygwin64 with gcc
+- User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
 
 Known Issues

@@ -149,9 +149,15 @@ int test_wcrtomb_s (void)
     CLRPS;
 
     /* illegal unicode. but some may allow it: 0xf0 0x9d 0x8c 0x81 */
+    /* 32bit: hex escape sequence out of range */
     rc = wcrtomb_s(&ind, dest, LEN, L'\xd834df01', &ps);
+    /* 32bit compilers reject the illegal wchar_t */
+#if SIZEOF_WCHAR_T == 2
+    ERR(0);
+#else
     ERR(EILSEQ);
     INDCMP(!= -1);
+#endif
 
 /*--------------------------------------------------*/
     

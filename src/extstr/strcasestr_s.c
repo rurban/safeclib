@@ -131,7 +131,7 @@ strcasestr_s (char *dest, rsize_t dmax,
         while (dest[i] && dlen) {
 
             /* not a match, not a substring */
-            if (toupper(dest[i]) != toupper(src[i])) {
+            if (toupper((unsigned char)dest[i]) != toupper((unsigned char)src[i])) {
                 break;
             }
 
