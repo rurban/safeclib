@@ -289,6 +289,19 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_CC_C_O
 AC_PROG_CC_C99
+if test "x$ac_cv_prog_cc_c99" = "xno"; then
+   dnl we really should ERROR, lets see how far can come without
+   AC_MSG_WARN([This compiler ${CC} has no c99 support])
+else
+   AC_DEFINE([HAVE_C99], [1],
+        [Defined to 1 when the compiler supports c99, mostly (...) macros])
+   if test "x$ac_cv_prog_cc_c99" != "x"; then
+      AC_MSG_RESULT([added $ac_cv_prog_cc_c99 to CFLAGS])
+      AM_CFLAGS="$AM_CFLAGS $ac_cv_prog_cc_c99"
+   fi
+fi
+dnl AM_CONDITIONAL([HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
+AC_SUBST(HAVE_C99)
 
 AM_CONDITIONAL([HAVE_MINGW], [test "x$host_os" = "xmingw32"])
 AM_CONDITIONAL([HAVE_MINGW_CROSS],
@@ -425,11 +438,13 @@ AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
-dnl the last 3 deviate in mingw from c11
+dnl mbstowcs missing on cygwin64
+dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
-                memcpy_s vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
+                mbstowcs memcpy_s vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
+AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
 

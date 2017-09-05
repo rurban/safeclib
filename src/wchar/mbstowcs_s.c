@@ -32,6 +32,7 @@
 #include "safeclib_private.h"
 
 #if defined(HAVE_WCHAR_H) && defined(HAVE_MBSTOWCS)
+/* newlib, cygwin64 has no STDC_HEADERS! */
 
 /**
  * @brief

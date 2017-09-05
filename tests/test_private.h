@@ -42,7 +42,9 @@
 #include <linux/ctype.h>
 
 #include <linux/string.h>
+#ifdef HAVE_C99
 #define printf(...) printk(KERN_INFO __VA_ARGS__)
+#endif
 
 #else
 
@@ -67,13 +69,17 @@
 #endif
 
 #ifdef DEBUG
-#  ifdef __KERNEL__
+#  if defined(HAVE_C99) && defined(__KERNEL__)
 #    define debug_printf(...)  printk(KERN_DEBUG __VA_ARGS__)
 #  else
 #    define debug_printf printf
 #  endif
 #else
-#define debug_printf(...)
+# ifdef HAVE_C99
+#   define debug_printf(...)
+# else
+#   define debug_printf printf
+# endif
 #endif
 
 #define ERR(n)                                     \

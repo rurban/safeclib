@@ -203,7 +203,8 @@ Tested Platforms
 - Linux Void amd64 musl-1.1.16
 - x86_64-w64-mingw32 cross-compiled and tested under wine
 - i386-mingw32 cross-compiled and tested under wine
-- cygwin32 and cygwin64 with gcc
+- cygwin32 gcc
+- cygwin64 gcc -std=c99
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
 

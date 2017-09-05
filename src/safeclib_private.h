@@ -41,10 +41,15 @@
 
 #define RCNEGATE(x)  ( -(x) )
 
-#define slprintf(...) printk(KERN_EMERG __VA_ARGS__)
-#define slabort()
-#ifdef DEBUG
-#define sldebug_printf(...) printk(KERN_DEBUG __VA_ARGS__)
+#ifndef HAVE_C99
+# define slprintf
+# define sldebug_printf
+#else
+# define slprintf(...) printk(KERN_EMERG __VA_ARGS__)
+# define slabort()
+# ifdef DEBUG
+#  define sldebug_printf(...) printk(KERN_DEBUG __VA_ARGS__)
+# endif
 #endif
 
 #else  /* !__KERNEL__ */
@@ -58,6 +63,7 @@
 # include <stddef.h>
 # include <stdarg.h>
 #else
+/* newlib, cygwin64 has no STDC_HEADERS */
 # ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
 # endif
@@ -82,10 +88,15 @@
 #define EXPORT_SYMBOL(sym)
 #define RCNEGATE(x)  (x)
 
-#define slprintf(...) fprintf(stderr, __VA_ARGS__)
-#define slabort()     abort()
-#ifdef DEBUG
-#define sldebug_printf(...) printf(__VA_ARGS__)
+#define slabort()       abort()
+#ifndef HAVE_C99
+# define slprintf	printf
+# define sldebug_printf printf
+#else
+# define slprintf(...)  fprintf(stderr, __VA_ARGS__)
+# ifdef DEBUG
+#  define sldebug_printf(...) printf(__VA_ARGS__)
+# endif
 #endif
 
 #if __GNUC__ >= 3
@@ -103,7 +114,11 @@
 #endif /* __KERNEL__ */
 
 #ifndef sldebug_printf
-#define sldebug_printf(...)
+# ifdef HAVE_C99
+#  define sldebug_printf(...)
+# else
+#  define sldebug_printf printf
+# endif
 #endif
 
 #ifdef _WIN32
