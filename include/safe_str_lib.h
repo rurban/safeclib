@@ -106,8 +106,17 @@ sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...);
 EXTERN int
 vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
 
-/* These functions are defined in the C11 standard Annex K, but are still unsafe.
-   Rather use the 2 functions above. */
+EXTERN int
+sscanf_s(const char *restrict buffer, const char *restrict fmt, ...);
+
+EXTERN int
+fscanf_s(FILE *restrict stream, const char *restrict format, ...);
+
+EXTERN int
+scanf_s(const char *restrict format, ...);
+
+/* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
+   Rather use the 2 non-truncating (without 'n') functions above. */
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use sprintf_s instead */

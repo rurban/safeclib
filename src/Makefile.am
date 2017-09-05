@@ -150,20 +150,20 @@ STD_WCHAR_FILES += \
 endif
 
 STD_IO_FILES = \
-	io/fgets_s.c	\
-	io/fopen_s.c	\
-	io/fprintf_s.c	\
-	io/freopen_s.c	\
-	io/fscanf_s.c	\
-	io/gets_s.c	\
-	io/printf_s.c	\
-	io/scanf_s.c	\
 	io/sscanf_s.c	\
-	io/tmpfile_s.c	\
-	io/vfprintf_s.c	\
-	io/vfscanf_s.c	\
-	io/vprintf_s.c	\
-	io/vsscanf_s.c
+	io/fscanf_s.c	\
+	io/scanf_s.c	
+#	io/vfscanf_s.c	\
+#	io/vsscanf_s.c	\
+#	io/printf_s.c	\
+#	io/fprintf_s.c	\
+#	io/vfprintf_s.c	\
+#	io/vprintf_s.c	\
+#	io/tmpfile_s.c	\
+#	io/fgets_s.c	\
+#	io/fopen_s.c	\
+#	io/freopen_s.c	\
+#	io/gets_s.c	
 
 STD_MISC_FILES = \
 	misc/bsearch_s.c \
@@ -181,9 +181,9 @@ ALL_SRC_FILES =
 	$(STD_STR_FILES)    \
 	$(EXT_MEM_FILES)    \
 	$(EXT_STR_FILES)    \
-	$(STD_WCHAR_FILES)  
+	$(STD_WCHAR_FILES)  \
+	$(STD_IO_FILES)     
 #	$(STD_OS_FILES)     \
-#	$(STD_IO_FILES)     \
 #	$(STD_MISC_FILES)
 
 # Not all the code can support -Werror yet so we specifically enable it
@@ -218,9 +218,9 @@ endif
 lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
 libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 	$(STD_MEM_FILES)    \
-	$(STD_STR_FILES)    
+	$(STD_STR_FILES)    \
+	$(STD_IO_FILES)     
 #	$(STD_OS_FILES)     \
-#	$(STD_IO_FILES)     \
 #	$(STD_MISC_FILES)
 if ENABLE_WCHAR
 libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
