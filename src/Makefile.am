@@ -159,9 +159,9 @@ STD_IO_FILES = \
 	io/vscanf_s.c	\
 	io/printf_s.c	\
 	io/fprintf_s.c	\
-	io/tmpfile_s.c
-#	io/vfprintf_s.c	\
-#	io/vprintf_s.c	\
+	io/tmpfile_s.c	\
+	io/vfprintf_s.c	\
+	io/vprintf_s.c	
 #	io/gets_s.c	\
 #	io/fgets_s.c	\
 #	io/fopen_s.c	\
