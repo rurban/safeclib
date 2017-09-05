@@ -115,6 +115,17 @@ fscanf_s(FILE *restrict stream, const char *restrict format, ...);
 EXTERN int
 scanf_s(const char *restrict format, ...);
 
+EXTERN int
+vscanf_s(const char *restrict format, va_list vlist);
+
+EXTERN int
+vfscanf_s(FILE *restrict stream, const char *restrict format,
+          va_list vlist);
+
+EXTERN int
+vsscanf_s(const char *restrict buffer, const char *restrict format,
+          va_list vlist);
+    
 /* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
    Rather use the 2 non-truncating (without 'n') functions above. */
 #ifdef SAFECLIB_ENABLE_UNSAFE

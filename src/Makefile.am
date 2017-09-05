@@ -152,9 +152,10 @@ endif
 STD_IO_FILES = \
 	io/sscanf_s.c	\
 	io/fscanf_s.c	\
-	io/scanf_s.c	
-#	io/vfscanf_s.c	\
-#	io/vsscanf_s.c	\
+	io/scanf_s.c	\
+	io/vfscanf_s.c	\
+	io/vsscanf_s.c	\
+	io/vscanf_s.c	
 #	io/printf_s.c	\
 #	io/fprintf_s.c	\
 #	io/vfprintf_s.c	\
