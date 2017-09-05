@@ -1,6 +1,7 @@
 # Makefile.am - Process with automake to produce Makefile.in
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+# 2017, Reini Urban
 #
 # Copyright (c) 2012, 2013 Cisco Systems
 # Copyright (c) 2017 Reini Urban
@@ -157,14 +158,14 @@ STD_IO_FILES = \
 	io/vsscanf_s.c	\
 	io/vscanf_s.c	\
 	io/printf_s.c	\
-	io/fprintf_s.c	
+	io/fprintf_s.c	\
+	io/tmpfile_s.c
 #	io/vfprintf_s.c	\
 #	io/vprintf_s.c	\
 #	io/gets_s.c	\
 #	io/fgets_s.c	\
 #	io/fopen_s.c	\
-#	io/freopen_s.c	\
-#	io/tmpfile_s.c
+#	io/freopen_s.c
 
 STD_MISC_FILES = \
 	misc/bsearch_s.c \

@@ -29,9 +29,9 @@ Changes in vxx092017 3.0.0
         wcstok_s, swprintf_s, vswprintf_s, wmemcpy_s, wmemmove_s,
         wprintf_s, fwprintf_s, vfwprintf_s, vwprintf_s, vswscanf_s, swscanf_s,
         wscanf_s, vwscanf_s, vfwscanf_s, fwscanf_s
-        - Added most missing io C11 functions:
+        - Added most missing safe io C11 functions:
         sscanf_s, scanf_s, fscanf_s, vsscanf_s, vscanf_s, vfscanf_s,
-        fprintf_s, printf_s, tmpnam_s. (more TODO)
+        fprintf_s, printf_s, tmpnam_s, tmpfile_s. (more TODO)
         - Added --disable-wchar to disable the new multibyte and wchar functions,
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR

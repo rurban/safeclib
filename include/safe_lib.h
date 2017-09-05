@@ -77,10 +77,6 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 #include "safe_str_lib.h"
 #endif
 
-/* This functions is defined in the C11 standard Annex K, but unsafe
-   and excluded by default. In most libc's it is deprecated. */
-#ifdef SAFECLIB_ENABLE_UNSAFE
-  
 #ifndef TMP_MAX_S
 # ifdef TMP_MAX
 #  define TMP_MAX_S TMP_MAX
@@ -96,12 +92,35 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 # endif
 #endif
 
-/* not str nor mem */
+/* not str/mem/wchar: io, os, misc */
 
+/* This functions is defined in the C11 standard Annex K, but unsafe
+   and excluded by default. In most libc's it is deprecated. */
+#ifdef SAFECLIB_ENABLE_UNSAFE
 EXTERN errno_t
 tmpnam_s(char *filename_s, rsize_t maxsize);
-
 #endif
+
+EXTERN errno_t
+tmpfile_s(FILE * restrict * restrict streamptr);
+
+/* TODO io */
+#if 0
+
+EXTERN char *
+gets_s(char *str, rsize_t n);
+
+EXTERN errno_t
+fopen_s(FILE *restrict *restrict streamptr,
+        const char *restrict filename,
+        const char *restrict mode);
+
+EXTERN errno_t
+freopen_s(FILE *restrict *restrict newstreamptr,
+          const char *restrict filename, const char *restrict mode,
+          FILE *restrict stream);
+
+#endif /* TODO io */
 
 #ifdef __cplusplus
 }

@@ -165,26 +165,7 @@ EXTERN int
 vfprintf_s(FILE *restrict stream, const char *restrict format,
            va_list arg);
 
-/* TODO */
-#if 0
-
-EXTERN char *
-gets_s(char *str, rsize_t n);
-
-EXTERN errno_t
-fopen_s(FILE *restrict *restrict streamptr,
-        const char *restrict filename,
-        const char *restrict mode);
-
-EXTERN errno_t
-freopen_s(FILE *restrict *restrict newstreamptr,
-          const char *restrict filename, const char *restrict mode,
-          FILE *restrict stream);
-
-EXTERN errno_t
-tmpfile_s(FILE * restrict * restrict streamptr);
-
-#endif
+/* for the other safe IO funcs see safe_lib.h */
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

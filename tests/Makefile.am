@@ -42,7 +42,8 @@ SAFEC_BUILT_TESTS = \
 	t_strtok_s      \
 	t_vsprintf_s	\
 	t_sscanf_s	\
-	t_fprintf_s	
+	t_fprintf_s	\
+	t_tmpfile_s
 
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
@@ -192,6 +193,7 @@ t_strtok_s_SOURCES            = test_strtok_s.c $(SAFEC_TEST_COMMON)
 t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
 t_sscanf_s_SOURCES            = test_sscanf_s.c $(SAFEC_TEST_COMMON)
 t_fprintf_s_SOURCES           = test_fprintf_s.c $(SAFEC_TEST_COMMON)
+t_tmpfile_s_SOURCES           = test_tmpfile_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_WCHAR
 t_mbstowcs_s_SOURCES          = test_mbstowcs_s.c $(SAFEC_TEST_COMMON)
