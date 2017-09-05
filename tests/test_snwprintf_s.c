@@ -75,8 +75,8 @@ int test_snwprintf_s (void)
 #ifdef DEBUG
         size_t len1 = wcslen(str1);
 #endif
-        debug_printf("%s %u lengths wrong: %lu  %lu  %lu \n",
-                     __FUNCTION__, __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %d  %d\n",
+                     __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;
     }
 

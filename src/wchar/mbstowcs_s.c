@@ -29,13 +29,9 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
 
-
-#include <wchar.h>
+#if defined(HAVE_WCHAR_H) && defined(HAVE_MBSTOWCS)
 
 /**
  * @brief

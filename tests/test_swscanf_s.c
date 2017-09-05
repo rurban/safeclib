@@ -41,7 +41,13 @@ int test_swscanf_s (void)
     ERREOF(EINVAL);
 
     rc = swscanf_s(wstr1, L"%%n");
-    ERR(0);
+#if defined(__NEWLIB__)
+    if (rc != 0) {
+        printf("%s %u wrong newlib vswscanf(\"\",L\"%%n\"): %d\n",
+                     __FUNCTION__, __LINE__, (int)rc);
+    } else
+#endif
+    ERR(0); /* cygwin32 vswscanf() returns -1 */
     ERRNO(0);
 
     rc = swscanf_s(wstr1, L"%ls %%n", wstr2);
@@ -56,10 +62,6 @@ int test_swscanf_s (void)
     ERR(1);
     ERRNO(0);
     EXPSTR(str3, "24");
-
-    rc = swscanf_s(wstr1, L"%%n");
-    ERR(0);
-    ERRNO(0);
 
     rc = swscanf_s(wstr1, L" %d", &len1);
     ERR(1);
@@ -90,8 +92,8 @@ int test_swscanf_s (void)
 #ifdef DEBUG
         size_t len1 = wcslen(wstr1);
 #endif
-        debug_printf("%s %u lengths wrong: %lu  %lu  %lu \n",
-                     __FUNCTION__, __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %d  %d \n",
+                     __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;
     }
 
