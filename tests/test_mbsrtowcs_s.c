@@ -32,6 +32,7 @@ int test_mbsrtowcs_s (void)
     const char *cs;
     mbstate_t ps;
     const char *lang;
+    const char *lc_cat;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -88,21 +89,9 @@ int test_mbsrtowcs_s (void)
     INDCMP(!= 6);
     CLRPS;
 
-    setlocale(LC_CTYPE, "C");
-#ifdef HAVE_LANGINFO_H
-    lang = nl_langinfo(CODESET);
-#else
-    lang = "C";
-#endif
-    /* not a big problem if this fails */
-    if ( !strcmp(lang, "C") ||
-         !strcmp(lang, "ASCII") ||
-         !strcmp(lang, "ANSI_X3.4-1968") ||
-         !strcmp(lang, "US-ASCII") )
-        ; /* all fine */
-    else /* dont inspect the values */
-        printf(__FILE__ ": cannot set C locale for test"
-                   " (codeset=%s)\n", lang);
+    SETLOCALE_C;
+    SETLANG("C");
+    CHKLOCALE_C;
 
     /* no-breaking space illegal in ASCII, but legal in C */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xa0""abc",&cs), 32, &ps);
@@ -141,18 +130,8 @@ int test_mbsrtowcs_s (void)
     INDCMP(!= 1);
     CLRPS;
 
-    setlocale(LC_CTYPE, "en_US.UTF-8") ||
-	setlocale(LC_CTYPE, "en_GB.UTF-8") ||
-	setlocale(LC_CTYPE, "en.UTF-8") ||
-	setlocale(LC_CTYPE, "POSIX.UTF-8") ||
-	setlocale(LC_CTYPE, "C.UTF-8") ||
-	setlocale(LC_CTYPE, "UTF-8") ||
-	setlocale(LC_CTYPE, "");
-#ifdef HAVE_LANGINFO_H
-    lang = nl_langinfo(CODESET);
-#else
-    lang = "UTF-8";
-#endif
+    SETLOCALE_UTF8;
+    SETLANG("UTF-8");
     if (strcmp(lang, "UTF-8")) {
         printf(__FILE__ ": cannot set UTF-8 locale for test"
                " (codeset=%s)\n", lang);

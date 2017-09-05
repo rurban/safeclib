@@ -2,6 +2,7 @@
  * test_private.h - Internal test routines & library references
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * 2017  Reini Urban
  *
  * Copyright (c) 2012, 2013 by Cisco Systems, Inc
  * All rights reserved.
@@ -156,6 +157,43 @@
                      __FUNCTION__, __LINE__,  str2, str1);  \
         errs++;                                    \
     }
+
+#define SETLOCALE_C \
+    lc_cat = setlocale(LC_CTYPE, "C")
+
+#define SETLOCALE_UTF8                                  \
+    lc_cat = setlocale(LC_CTYPE, "en_US.UTF-8");        \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "en_GB.UTF-8");    \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "en.UTF-8");       \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "POSIX.UTF-8");    \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "C.UTF-8");        \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "UTF-8");          \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "")
+
+#ifdef HAVE_LANGINFO_H
+#define SETLANG(l) lang = nl_langinfo(CODESET)
+#else
+#define SETLANG(l) lang = (l)
+#endif
+
+/* not fatal */
+#define CHKLOCALE_C \
+    debug_printf(__FILE__ ": set C locale "     \
+                 "lc_cat=%s, codeset=%s\n", lc_cat, lang); \
+    if ( !strcmp(lang, "C") ||                  \
+         !strcmp(lang, "ASCII") ||              \
+         !strcmp(lang, "ANSI_X3.4-1968") ||     \
+         !strcmp(lang, "US-ASCII") )            \
+        ; /* all fine */                        \
+    else /* dont inspect the values */          \
+        printf(__FILE__ ": cannot set C locale for test" \
+               " (lc_cat=%s, codeset=%s)\n", lc_cat, lang)
 
 
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))

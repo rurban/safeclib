@@ -69,16 +69,16 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval	pointer to a \c size_t object where the result will be stored
- * @param[out]  dest  pointer to wide character array where the results will be stored
- * @param[in]   dmax  restricted maximum length of \c dest
- * @param[in]   src   pointer to the string that will be copied to \c dest
- * @param[in]   len   number of wide characters available in \c dest
+ * @param[out]  retval pointer to a \c size_t object where the result will be stored
+ * @param[out]  dest   NULL or pointer to wide character array for the result
+ * @param[in]   dmax   restricted maximum length of \c dest
+ * @param[in]   src    pointer to the string that will be copied to \c dest
+ * @param[in]   len    number of wide characters available in \c dest
  *
  * @pre retval and src shall not be a null pointer.
- * @pre dmax and len shall not be greater than \c RSIZE_MAX_WSTR
- *      (unless dest is null).
- * @pre dmax shall not equal zero.
+ * @pre dmax and len shall not be greater than \c RSIZE_MAX_WSTR,
+ *      unless dest is null.
+ * @pre dmax shall not equal zero, unless dest is null.
  * @pre dmax shall be greater than <tt>wcsnlen_s(src, dmax)</tt>.
  * @pre Copying shall not take place between objects that overlap.
  *
@@ -89,7 +89,7 @@
  *          not greater than RSIZE_MAX_WSTR, then \c mbstowcs_s nulls dest.
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retval or src are a NULL pointer
- * @retval  ESZEROL    when dmax = 0, unless dst is NULL
+ * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR, unless dst is NULL
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
@@ -100,9 +100,9 @@
  *
  */
 EXPORT errno_t
-mbstowcs_s (size_t *restrict retval,
-             wchar_t *restrict dest, rsize_t dmax,
-             const char *restrict src, rsize_t len)
+mbstowcs_s(size_t *restrict retval,
+           wchar_t *restrict dest, rsize_t dmax,
+           const char *restrict src, rsize_t len)
 {
     wchar_t *orig_dest;
 

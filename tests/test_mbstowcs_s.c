@@ -8,7 +8,6 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define MAX   ( 128 )
 #define LEN   ( 128 )
 
 static wchar_t   dest[LEN];
@@ -25,9 +24,9 @@ int test_mbstowcs_s (void)
 {
     errno_t rc;
     size_t ind;
-    /*uint32_t i;*/
     const char *cs;
     const char *lang;
+    const char *lc_cat;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -40,13 +39,13 @@ int test_mbstowcs_s (void)
     ERR(ESNULLP);
 
     src[0] = '\0';
-    rc = mbstowcs_s(&ind, NULL, LEN, (const char*)src, 0);
-    ERR(ESNULLP);
+    rc = mbstowcs_s(&ind, NULL, 0, (const char*)src, 0);
+    ERR(0);
 
-    rc = mbstowcs_s(&ind, NULL, 0, cs, 0);
+    rc = mbstowcs_s(&ind, dest, 0, cs, 0);
     ERR(ESZEROL);
 
-    rc = mbstowcs_s(&ind, NULL, RSIZE_MAX_STR+1, cs, 0);
+    rc = mbstowcs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
     ERR(ESLEMAX);
 
     cs = "abcdef";
@@ -71,57 +70,34 @@ int test_mbstowcs_s (void)
     ERR(EOK);
     INDCMP(!= 6);
 
-    setlocale(LC_CTYPE, "C");
-#ifdef HAVE_LANGINFO_H
-    lang = nl_langinfo(CODESET);
-#else
-    lang = "C";
-#endif
-    if (strcmp(lang, "C")) {
-        printf(__FILE__ ": cannot set C locale for test"
-               " (codeset=%s)\n", lang);
+    SETLOCALE_C;
+    SETLANG("C");
+    CHKLOCALE_C;
+
+    rc = mbstowcs_s(&ind, dest, LEN, (cs="\x7f",cs), 1);
+    ERR(EOK);
+    INDCMP(!= 1);
+
+    SETLOCALE_UTF8;
+    SETLANG("UTF-8");
+    if (strcmp(lang, "UTF-8")) {
+        printf(__FILE__ ": cannot set UTF-8 locale for test"
+               " (category=%s, codeset=%s)\n", lc_cat, lang);
         return 0;
     }
 
-    rc = mbstowcs_s(&ind, dest, LEN, (cs="\xa0""abc",cs), 32);
+    rc = mbstowcs_s(&ind, dest, LEN, "\xE2\x86\x92""abc", 32);
     ERR(EOK);
     INDCMP(!= 4);
-    if (dest[0] != 0xa0) {
-        printf("%s %u  Error  ind=%d rc=%d %d\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
+    if (dest[0] != 0x2192) {
+        printf("%s %u  Error  ind=%d rc=%d %d 0x%x\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, dest[0], dest[0]);
         errs++;
     }
     if (dest[1] != 'a') {
         printf("%s %u  Error  ind=%d rc=%d %d\n",
                __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
         errs++;
-    }
-    if (cs) { /* needs to be at the end */
-        printf("%s %u  Error  ind=%d rc=%d %s\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, cs);
-        errs++;
-    }
-
-    rc = mbstowcs_s(&ind, dest, LEN, (cs="\x80",cs), 1);
-    ERR(EOK);
-    INDCMP(!= 1);
-
-    setlocale(LC_CTYPE, "en_US.UTF-8") ||
-	setlocale(LC_CTYPE, "en_GB.UTF-8") ||
-	setlocale(LC_CTYPE, "en.UTF-8") ||
-	setlocale(LC_CTYPE, "POSIX.UTF-8") ||
-	setlocale(LC_CTYPE, "C.UTF-8") ||
-	setlocale(LC_CTYPE, "UTF-8") ||
-	setlocale(LC_CTYPE, "");
-#ifdef HAVE_LANGINFO_H
-    lang = nl_langinfo(CODESET);
-#else
-    lang = "UTF-8";
-#endif
-    if (strcmp(lang, "UTF-8")) {
-        printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (codeset=%s)\n", lang);
-        return 0;
     }
 
     /* illegal sequences (locale dependent) */
