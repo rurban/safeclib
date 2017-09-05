@@ -104,11 +104,11 @@ tmpnam_s(char *filename_s, rsize_t maxsize);
 EXTERN errno_t
 tmpfile_s(FILE * restrict * restrict streamptr);
 
+EXTERN char *
+gets_s(char *dest, rsize_t dmax);
+
 /* TODO io */
 #if 0
-
-EXTERN char *
-gets_s(char *str, rsize_t n);
 
 EXTERN errno_t
 fopen_s(FILE *restrict *restrict streamptr,
