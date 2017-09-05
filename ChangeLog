@@ -23,15 +23,15 @@ Changes in vxx092017 3.0.0
         - Improved some tests for old gcc -ansi (c89) memcmp
         - Add unlikely() to improve branch prediction
         - Added --enable-gcov and a gcov target (lcov support not yet)
-        - Added most safe wchar and multibyte string C11 functions:
+        - Added all safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcrtomb_s,
         wctomb_s, wcsnlen_s, wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s,
         wcstok_s, swprintf_s, vswprintf_s, wmemcpy_s, wmemmove_s,
         wprintf_s, fwprintf_s, vfwprintf_s, vwprintf_s, vswscanf_s, swscanf_s,
         wscanf_s, vwscanf_s, vfwscanf_s, fwscanf_s
-        - Added some missing io C11 functions:
+        - Added most missing io C11 functions:
         sscanf_s, scanf_s, fscanf_s, vsscanf_s, vscanf_s, vfscanf_s,
-        tmpnam_s. (more TODO)
+        fprintf_s, printf_s, tmpnam_s. (more TODO)
         - Added --disable-wchar to disable the new multibyte and wchar functions,
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR

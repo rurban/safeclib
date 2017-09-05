@@ -41,8 +41,11 @@ extern "C" {
 #ifndef __SAFE_LIB_H__
 #include "safe_lib.h"
 #endif
+
 #include <stdarg.h>
+#ifndef SAFECLIB_DISABLE_WCHAR
 #include <wchar.h>
+#endif
 
 /*
  * The shortest string is a null string!!
@@ -83,7 +86,8 @@ strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t
 
 /* fitted string copy */
 EXTERN errno_t
-strncpy_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
+strncpy_s(char * restrict dest, rsize_t dmax,
+          const char * restrict src, rsize_t slen);
 
 
 /* string length */
@@ -95,8 +99,11 @@ strnlen_s (const char *s, rsize_t smax);
 /* they use:
 char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 EXTERN char *
-strtok_s(char *restrict s1, rsize_t *restrict s1max, const char *restrict src, char **restrict ptr);
+strtok_s(char *restrict s1, rsize_t *restrict s1max,
+         const char *restrict src, char **restrict ptr);
 #endif
+
+/* secure stdio */
 
 /* safe sprintf_s */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
@@ -105,6 +112,25 @@ sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...);
 
 EXTERN int
 vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+
+/* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
+   Rather use the 2 non-truncating (without 'n') functions above. */
+#ifdef SAFECLIB_ENABLE_UNSAFE
+
+/* unsafe! use sprintf_s instead */
+EXTERN int
+snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+
+/* unsafe! use vsprintf_s instead */
+#if !(defined(_WIN32) && defined(HAVE_VSNPRINTF_S))
+/* they use:
+int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
+                const char *_Format, va_list _ArgList); */
+EXTERN int
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+#endif
+
+#endif /* SAFECLIB_ENABLE_UNSAFE */
 
 EXTERN int
 sscanf_s(const char *restrict buffer, const char *restrict fmt, ...);
@@ -125,26 +151,40 @@ vfscanf_s(FILE *restrict stream, const char *restrict format,
 EXTERN int
 vsscanf_s(const char *restrict buffer, const char *restrict format,
           va_list vlist);
-    
-/* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
-   Rather use the 2 non-truncating (without 'n') functions above. */
-#ifdef SAFECLIB_ENABLE_UNSAFE
 
-/* unsafe! use sprintf_s instead */
 EXTERN int
-snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+printf_s(const char *restrict format, ...);
 
-/* unsafe! use vsprintf_s instead */
-#if !(defined(_WIN32) && defined(HAVE_VSNPRINTF_S))
-/* they use:
-int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
-                const char *_Format, va_list _ArgList); */
 EXTERN int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+fprintf_s(FILE *restrict stream, const char *restrict format, ...); 
+
+EXTERN int
+vprintf_s(const char *restrict format, va_list arg);
+
+EXTERN int
+vfprintf_s(FILE *restrict stream, const char *restrict format,
+           va_list arg);
+
+/* TODO */
+#if 0
+
+EXTERN char *
+gets_s(char *str, rsize_t n);
+
+EXTERN errno_t
+fopen_s(FILE *restrict *restrict streamptr,
+        const char *restrict filename,
+        const char *restrict mode);
+
+EXTERN errno_t
+freopen_s(FILE *restrict *restrict newstreamptr,
+          const char *restrict filename, const char *restrict mode,
+          FILE *restrict stream);
+
+EXTERN errno_t
+tmpfile_s(FILE * restrict * restrict streamptr);
+
 #endif
-
-#endif /* SAFECLIB_ENABLE_UNSAFE */
-
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
@@ -467,7 +507,8 @@ wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
 /* TODO: Windows extensions from sec_api/string_s.h
 
 EXTERN errno_t _wcserror_s(wchar_t *_Buf, size_t _SizeInWords, int _ErrNum);
-EXTERN errno_t _wcsnset_s(wchar_t *_Dst, size_t _DstSizeInWords, wchar_t _Val, size_t _MaxCount);
+EXTERN errno_t _wcsnset_s(wchar_t *_Dst, size_t _DstSizeInWords, wchar_t _Val,
+                          size_t _MaxCount);
 EXTERN errno_t _wcsset_s(wchar_t *_Str, size_t _SizeInWords, wchar_t _Val);
 EXTERN errno_t _wcslwr_s(wchar_t *_Str, size_t _SizeInWords);
 EXTERN errno_t _wcslwr_s_l(wchar_t *_Str, size_t _SizeInWords, _locale_t _Locale);
@@ -480,12 +521,11 @@ EXTERN errno_t _wcsncpy_s_l(wchar_t *_Dst, size_t _DstSizeInChars,
 EXTERN errno_t _wcsset_s_l(wchar_t *_Str, size_t _SizeInChars, unsigned int _Val,
                           _locale_t _Locale);
 EXTERN errno_t _wcsnset_s_l(wchar_t *_Str, size_t _SizeInChars, unsigned int _Val,
-                     size_t _Count, _locale_t _Locale);
+                            size_t _Count, _locale_t _Locale);
 
 */
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
-
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
   

@@ -2,13 +2,13 @@
 
 /** 
  * @brief
- *    The tmpfile_s function creates a temporary binary file that is
+ *    The \c tmpfile_s function creates a temporary binary file that is
  *    different from any other existing file and that will
  *    automatically be removed when it is closed or at program
  *    termination. If the program terminates abnormally, whether an
  *    open temporary file is removed is implementation-defined. The
  *    file is opened for update with "wb+" mode with the meaning that
- *    mode has in the fopen_s function (including the mode’s effect on
+ *    mode has in the \c fopen_s function (including the mode’s effect on
  *    exclusive access and file permissions).
  *
  * @remark SPECIFIED IN
