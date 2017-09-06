@@ -22,7 +22,8 @@ Changes in vxx092017 3.0.0
         - Macrofied many more tests
         - Improved some tests for old gcc -ansi (c89) memcmp
         - Add unlikely() to improve branch prediction
-        - Added --enable-gcov and a gcov target (lcov support not yet)
+        - Added --enable-gcov and a gcov target. lcov support not yet,
+        but via gcov2perl and some fixups essentially the same. see build-tools/smoke.sh
         - Added all safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcrtomb_s,
         wctomb_s, wcsnlen_s, wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s,

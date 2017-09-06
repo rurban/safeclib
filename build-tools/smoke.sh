@@ -18,6 +18,11 @@ CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check || (cat tests/test-suite.log; exit)
 CC="g++-mp-6 -std=c++11" ./configure && \
     $make -s -j4 check || (cat tests/test-suite.log; exit)
+CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe && \
+    $make -s -j4 gcov && \
+    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
+    gcov2perl src/*/*.gcov src/*.gcov && \
+    cover -no-gcov
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check || (cat tests/test-suite.log; exit)
@@ -41,6 +46,11 @@ CC="gcc-6" ./configure && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
 CC="gcc-7" ./configure && \
     make -s -j4 check || (cat tests/test-suite.log; exit)
+./configure --enable-gcov --disable-shared --enable-unsafe && \
+    $make -s -j4 gcov && \
+    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
+    gcov2perl src/*/*.gcov src/*.gcov && \
+    cover -no-gcov
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check || (cat tests/test-suite.log; exit)
     ;;

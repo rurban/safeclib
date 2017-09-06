@@ -39,6 +39,7 @@ Makefile.in
 *.gcno
 *.gcda
 *.gcov
+cover_db
 
 #
 # Top-level generic files
