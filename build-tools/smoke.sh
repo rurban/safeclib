@@ -23,6 +23,7 @@ CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe
     perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
     gcov2perl src/*/*.gcov src/*.gcov && \
     cover -no-gcov
+$make clean
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check || (cat tests/test-suite.log; exit)
@@ -51,6 +52,7 @@ CC="gcc-7" ./configure && \
     perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
     gcov2perl src/*/*.gcov src/*.gcov && \
     cover -no-gcov
+$make clean
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check || (cat tests/test-suite.log; exit)
     ;;

@@ -85,6 +85,15 @@ AM_CPPFLAGS="-I\$(top_srcdir)/include"
 # For debugging add -Werror to this and then go fix those errors :)
 AM_CFLAGS="-Wall"
 
+dnl we manually export the symbols via dllexport, we only use shared
+dnl no libtool -DDLL_EXPORT support yet
+case $host_os in
+mingw*)
+        AC_MSG_NOTICE([--disable-static on mingw])
+        lt_prog_compiler_static=
+        enable_static=no
+        ;;
+esac
 
 # Configure options
 # ===============================================

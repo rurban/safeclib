@@ -43,7 +43,7 @@ static void timing_loop (uint32_t len, uint32_t loops)
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-//    printf("\n Timing %d byte copy, %u loops \n", len, loops);
+    /*printf("\n Timing %d byte copy, %u loops \n", len, loops); */
 
     /*
      * Safe C Lib Routine
@@ -99,7 +99,6 @@ int main()
     uint32_t loops;
     rsize_t len;
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     printf("\n\n");
@@ -190,7 +189,6 @@ int main()
     len = 1024 * 8;
     timing_loop(len, loops);
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     return (0);

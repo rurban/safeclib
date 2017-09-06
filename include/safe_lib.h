@@ -41,7 +41,8 @@ extern "C" {
 #include "safe_types.h"
 #include "safe_lib_errno.h"
 
-#ifdef _WIN32
+/* we disable static builds on mingw for now */
+#if defined _WIN32 /* && defined DLL_EXPORT */
 # if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
 #  define EXTERN extern __declspec(dllexport)
 # else
