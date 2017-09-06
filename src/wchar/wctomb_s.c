@@ -29,13 +29,14 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
 
+#ifdef HAVE_WCHAR_H
 
-#include <wchar.h>
+#if defined(__CYGWIN__) && defined(__x86_64)
+#define wctomb(dest, wc) wcrtomb((dest), (wc), &st)
+#endif
+
 
 /**
  * @brief
@@ -107,6 +108,9 @@ wctomb_s(int *restrict retval,
          wchar_t wc)
 {
     char *orig_dest;
+#if defined(__CYGWIN__) && defined(__x86_64)
+    mbstate_t st;
+#endif
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wctomb_s: retval is null",

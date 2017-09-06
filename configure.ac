@@ -335,6 +335,8 @@ AC_HEADER_TIME
 AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_HEADERS([stdlib.h	\
                   memory.h	\
+                  ctype.h	\
+                  malloc.h	\
                   string.h	\
                   limits.h	\
                   sys/types.h	\

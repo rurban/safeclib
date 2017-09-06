@@ -32,7 +32,13 @@
 #include "safeclib_private.h"
 
 #if defined(HAVE_WCHAR_H) && defined(HAVE_MBSTOWCS)
-/* newlib, cygwin64 has no STDC_HEADERS! */
+/* newlib, cygwin64 has no STDC_HEADERS!
+   more importantly it has but does not declare mbstowcs.
+ */
+
+#if defined(__CYGWIN__) && defined(__x86_64)
+#define mbstowcs(dest, src, len) mbsrtowcs((dest), &(src), (len), &st)
+#endif
 
 /**
  * @brief
@@ -102,6 +108,9 @@ mbstowcs_s(size_t *restrict retval,
            const char *restrict src, rsize_t len)
 {
     wchar_t *orig_dest;
+#if defined(__CYGWIN__) && defined(__x86_64)
+    mbstate_t st;
+#endif
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("mbstowcs_s: retval is null",

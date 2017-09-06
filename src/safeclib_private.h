@@ -67,6 +67,13 @@
 # ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
 # endif
+/* cygwin64 */
+# ifdef HAVE_CTYPE_H
+#  include <ctype.h>
+# endif
+# ifdef HAVE_MALLOC_H
+#  include <malloc.h>
+# endif
 #endif
 #ifdef HAVE_STRING_H
 # if !defined STDC_HEADERS && defined HAVE_MEMORY_H

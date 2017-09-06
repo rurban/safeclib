@@ -29,11 +29,12 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
+#include "safeclib_private.h"
 #ifdef HAVE_WCHAR_H
 
-#include "safeclib_private.h"
-
+#if defined(__CYGWIN__) && defined(__x86_64)
+#define wcstombs(dest, src, len) wcsrtombs((dest), &(src), (len), &st)
+#endif
 
 
 /**
@@ -107,6 +108,9 @@ wcstombs_s (size_t *restrict retval,
              const wchar_t *restrict src, rsize_t len)
 {
     char *orig_dest;
+#if defined(__CYGWIN__) && defined(__x86_64)
+    mbstate_t st;
+#endif
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wcstombs_s: retval is null",
