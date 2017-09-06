@@ -9,7 +9,8 @@
 #include "test_private.h"
 #include "safe_mem_lib.h"
 
-#define LEN   ( 256 )
+#define LEN      ( 256 )
+#define MAXMEM   RSIZE_MAX_MEM16
 
 int main()
 {
@@ -28,12 +29,29 @@ int main()
 
     rc = memset16_s(NULL, MAX, value, LEN);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     value = 34;
 
     rc = memset16_s(mem1, MAX, value, 0);
     ERR(ESZEROL)
+
+/*--------------------------------------------------*/
+
+    rc = memset16_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
+    ERR(ESLEMAX)
+
+/*--------------------------------------------------*/
+
+    rc = memset16_s(mem1, LEN, value, RSIZE_MAX_MEM16+1);
+    ERR(ESLEMAX)
+
+/*--------------------------------------------------*/
+
+    rc = memset16_s(mem1, LEN, value, LEN+1);
+    ERR(ESNOSPC)
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 99; }
@@ -114,7 +132,6 @@ int main()
         }
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     return (errs);

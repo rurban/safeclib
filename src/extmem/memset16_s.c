@@ -63,7 +63,8 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when n = ZERO
- * @retval  ESLEMAX     when smax or n > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when smax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when n > RSIZE_MAX_MEM16
  * @retval  ESNOSPC     when smax/2 < n
  *
  * @see 

@@ -9,6 +9,7 @@
 #include "safe_mem_lib.h"
 
 #define LEN   ( 256 )
+#define MAX   RSIZE_MAX_MEM
 
 static uint8_t mem1[LEN];
 
@@ -35,6 +36,7 @@ int test_memset_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     value = 34;
@@ -51,6 +53,49 @@ int test_memset_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
+
+/*--------------------------------------------------*/
+
+    rc = memset_s(mem1, MAX+1, value, LEN);
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+    if (rc != ESLEMAX)
+#else
+    if (rc != 0)
+#endif
+    {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__, rc);
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    rc = memset_s(mem1, LEN, value, MAX+1);
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+    if (rc != ESLEMAX)
+#else
+    if (rc != EOVERFLOW)
+#endif
+    {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__, rc);
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    rc = memset_s(mem1, LEN, value, LEN+1);
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+    if (rc != ESNOSPC)
+#else
+    if (rc != EOVERFLOW)
+#endif
+    {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__, rc);
+        errs++;
+    }
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 99; }

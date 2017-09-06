@@ -38,6 +38,7 @@ Changes in vxx092017 3.0.0
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR
         - Better debugging support: add .i target
+        - Fixed memset32_s for n > RSIZE_MAX_MEM32 ESLEMAX (was only RSIZE_MAX_MEM16)
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

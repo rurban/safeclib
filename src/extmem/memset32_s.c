@@ -62,7 +62,8 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when n = ZERO
- * @retval  ESLEMAX     when smax/n > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when smax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when n > RSIZE_MAX_MEM32
  * @retval  ESNOSPC     when smax/4 < n
  *
  * @see 
@@ -92,7 +93,7 @@ memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (unlikely(n > RSIZE_MAX_MEM16)) {
+    if (unlikely(n > RSIZE_MAX_MEM32)) {
         invoke_safe_mem_constraint_handler("memset32_s: n exceeds max",
                    NULL, ESLEMAX);
         err = ESLEMAX;
