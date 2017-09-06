@@ -212,4 +212,10 @@
 #  define NO_C11
 #endif
 
+#if defined(__has_feature)
+# if __has_feature(address_sanitizer)
+#  define HAVE_ASAN 1
+# endif
+#endif
+
 #endif /* __TEST_PRIVATE_H__ */
