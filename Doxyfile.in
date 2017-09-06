@@ -278,7 +278,7 @@ EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = src
 INCLUDE_FILE_PATTERNS  =
-PREDEFINED             = HAVE_WCHAR_H SAFECLIB_ENABLE_UNSAFE
+PREDEFINED             = HAVE_WCHAR_H SAFECLIB_ENABLE_UNSAFE HAVE_STRNLEN
 EXPAND_AS_DEFINED      =
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
