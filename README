@@ -205,6 +205,7 @@ Tested Platforms
 - i386-mingw32 cross-compiled and tested under wine
 - cygwin32 gcc
 - cygwin64 gcc -std=c99
+- freebsd 10.3 amd64
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
 

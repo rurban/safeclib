@@ -7,6 +7,7 @@ Changes in vxx092017 3.0.0
         from C11 in w64, and in vswprintf for w32. (!__STRICT_ANSI__).
         Add EXPORT and EXTERN decls for dllexport/dllimport.
         Cleanup the src headers.
+        - Added cygwin and freebsd support
         - Install bin/check_for_unsafe_apis. Renamed and improved: 7x faster,
           added missing conversion hints. also install its man1.
         - Seperated internal libstdunsafe target, for std but unsafe C11
