@@ -30,7 +30,6 @@
  */
 
 #include "safeclib_private.h"
-#include "safe_mem_lib.h"
 
 /**
  * @brief
@@ -85,6 +84,11 @@
  * @see
  *    scanf_s()
  */
+
+/* i386-mingw32-gcc */
+#ifndef HAVE_STRNLEN
+#define strnlen(s,smax) strlen(s)
+#endif
 
 EXPORT char *
 gets_s (char *restrict dest, rsize_t dmax)

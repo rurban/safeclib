@@ -27,7 +27,10 @@ int test_gets_s (void)
     fprintf(out, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
     fprintf(out, "1234\n");
     fclose(out);
-    freopen(TMP, "r", stdin);
+    if (!freopen(TMP, "r", stdin)) {
+        printf("freopen failed: %s\n", strerror(errno));
+        return 0;
+    }
 
 /*--------------------------------------------------*/
 

@@ -441,7 +441,7 @@ dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
 dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strnstr strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
+                strnstr strnlen strstr wmemchr wcscmp wcsstr vswprintf vsnwprintf \
                 mbstowcs memcpy_s vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
