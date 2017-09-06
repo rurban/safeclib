@@ -139,8 +139,16 @@ endif
 SAFEC_BUILT_TESTS += 	\
 	t_fprintf_s	\
 	t_tmpfile_s	\
-	t_gets_s	
-
+	t_gets_s	\
+	t_fopen_s	\
+	t_freopen_s	
+#	t_asctime_s	\
+#	t_ctime_s	\
+#	t_gmtime_s	\
+#	t_localtime_s	\
+#	t_getenv_s	\
+#	t_bsearch_s	\
+#	t_qsort_s
 
 SAFEC_BUILT_PERFS =  p_memcpy_s
 if ENABLE_EXTS
@@ -199,6 +207,15 @@ t_sscanf_s_SOURCES            = test_sscanf_s.c $(SAFEC_TEST_COMMON)
 t_fprintf_s_SOURCES           = test_fprintf_s.c $(SAFEC_TEST_COMMON)
 t_tmpfile_s_SOURCES           = test_tmpfile_s.c $(SAFEC_TEST_COMMON)
 t_gets_s_SOURCES              = test_gets_s.c $(SAFEC_TEST_COMMON)
+t_fopen_s_SOURCES             = test_fopen_s.c $(SAFEC_TEST_COMMON)
+t_freopen_s_SOURCES           = test_freopen_s.c $(SAFEC_TEST_COMMON)
+#t_asctime_s_SOURCES           = test_asctime_s.c $(SAFEC_TEST_COMMON)
+#t_ctime_s_SOURCES             = test_ctime_s.c $(SAFEC_TEST_COMMON)
+#t_gmtime_s_SOURCES            = test_gmtime_s.c $(SAFEC_TEST_COMMON)
+#t_localtime_s_SOURCES         = test_localtime_s.c $(SAFEC_TEST_COMMON)
+#t_getenv_s_SOURCES            = test_getenv_s.c $(SAFEC_TEST_COMMON)
+#t_bsearch_s_SOURCES           = test_bsearch_s.c $(SAFEC_TEST_COMMON)
+#t_qsort_s_SOURCES             = test_qsort_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_WCHAR
 t_mbstowcs_s_SOURCES          = test_mbstowcs_s.c $(SAFEC_TEST_COMMON)

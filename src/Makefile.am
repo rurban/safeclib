@@ -162,10 +162,9 @@ STD_IO_FILES = \
 	io/tmpfile_s.c	\
 	io/vfprintf_s.c	\
 	io/vprintf_s.c	\
-	io/gets_s.c	
-#	io/fgets_s.c	\
-#	io/fopen_s.c	\
-#	io/freopen_s.c
+	io/gets_s.c	\
+	io/fopen_s.c	\
+	io/freopen_s.c
 
 STD_MISC_FILES = \
 	misc/bsearch_s.c \
@@ -174,9 +173,9 @@ STD_MISC_FILES = \
 STD_OS_FILES = \
 	os/asctime_s.c	\
 	os/ctime_s.c	\
-	os/getenv_s.c	\
 	os/gmtime_s.c	\
-	os/localtime_s.c
+	os/localtime_s.c \
+	os/getenv_s.c
 
 ALL_SRC_FILES = 
 	$(STD_MEM_FILES)    \

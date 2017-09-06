@@ -165,6 +165,16 @@ EXTERN int
 vfprintf_s(FILE *restrict stream, const char *restrict format,
            va_list arg);
 
+#if 0
+EXTERN errno_t
+strerror_s(char *dest, rsize_t dmax,
+           errno_t errnum);
+
+EXTERN size_t
+strerrorlen_s(errno_t errnum);
+
+#endif /* not yet */
+
 /* for the other safe IO funcs see safe_lib.h */
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
@@ -476,6 +486,7 @@ fwscanf_s(FILE *restrict stream,
 EXTERN int
 vfwscanf_s(FILE *restrict stream,
            const wchar_t *restrict fmt, va_list ap);
+
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

@@ -107,9 +107,8 @@ tmpfile_s(FILE * restrict * restrict streamptr);
 EXTERN char *
 gets_s(char *dest, rsize_t dmax);
 
-/* TODO io */
-#if 0
-
+/* Windows sec_api does without restrict */
+#ifndef MINGW_HAS_SECURE_API
 EXTERN errno_t
 fopen_s(FILE *restrict *restrict streamptr,
         const char *restrict filename,
@@ -119,8 +118,44 @@ EXTERN errno_t
 freopen_s(FILE *restrict *restrict newstreamptr,
           const char *restrict filename, const char *restrict mode,
           FILE *restrict stream);
+#endif
 
-#endif /* TODO io */
+/* TODO os, misc */
+#if 0
+
+EXTERN errno_t
+asctime_s(char *dest, rsize_t dmax, const struct tm *tm);
+
+EXTERN errno_t
+ctime_s(char *dest, rsize_t dmax, const time_t *timer);
+
+EXTERN struct tm *
+gmtime_s(const time_t *restrict timer, struct tm *restrict result);
+
+EXTERN struct tm *
+localtime_s(const time_t *restrict timer, struct tm *restrict result);
+
+/* windows has also the wide and 64 variants, and _strtime_s */
+
+EXTERN errno_t
+getenv_s(size_t *restrict len,
+         char *restrict value, rsize_t maxsize,
+         const char *restrict name);
+
+EXTERN void *
+bsearch_s(const void *key, const void *base,
+          rsize_t nmemb, rsize_t size,
+          int (*compar)(const void *k, const void *y,
+                        void *context),
+          void *context);
+
+EXTERN errno_t
+qsort_s(void *base, rsize_t nmemb, rsize_t size,
+        int (*compar)(const void *x, const void *y,
+                      void *context),
+        void *context);
+
+#endif /* not yet */
 
 #ifdef __cplusplus
 }
