@@ -6,7 +6,7 @@ Safe C Library - README
 Copying
 -------
 This project's licensing restrictions are documented in the file 'COPYING'
-under the root directory of this release.
+under the root directory of this release. Basically it's MIT licensed.
 
 Overview
 --------
@@ -50,9 +50,10 @@ and the following can be added...
 - provide a library of functions that are efficient
 
 The C11 Standard adopted many of these points, and added some secure
-_s variants in the Annex K.
-The Microsoft/MINGW secure API did the same, but deviated in some functions
-from the standard.
+_s variants in the Annex K.  The Microsoft Windows/MINGW secure API did the
+same, but deviated in some functions from the standard. Besides
+Windows only Android's Bionic and Embarcadero implemented this C11
+secure Annex K API so far.
 
 
 Design Considerations
