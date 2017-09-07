@@ -129,11 +129,11 @@ freopen_s(FILE *restrict *restrict newstreamptr,
 EXTERN errno_t
 asctime_s(char *dest, rsize_t dmax, const struct tm *tm);
 
-/* TODO os, misc */
-#if 0
-
 EXTERN errno_t
 ctime_s(char *dest, rsize_t dmax, const time_t *timer);
+
+/* TODO os, misc */
+#if 0
 
 EXTERN struct tm *
 gmtime_s(const time_t *restrict timer, struct tm *restrict dest);

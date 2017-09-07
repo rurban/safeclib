@@ -181,8 +181,8 @@ STD_MISC_FILES = \
 	misc/qsort_s.c	
 
 STD_OS_FILES = \
-	os/asctime_s.c	
-#	os/ctime_s.c	\
+	os/asctime_s.c	\
+	os/ctime_s.c	
 #	os/gmtime_s.c	\
 #	os/localtime_s.c \
 #	os/getenv_s.c
