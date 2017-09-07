@@ -255,6 +255,7 @@ if ENABLE_GCOV
 gcov: check
 	$(MAKE) -C tests gcov
 	$(MAKE) -C src gcov
+	build-tools/gcov.sh
 endif
 
 # Additional make rules
