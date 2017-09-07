@@ -136,7 +136,7 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict result);
 EXTERN struct tm *
 localtime_s(const time_t *restrict timer, struct tm *restrict result);
 
-/* windows has also the wide and 64 variants, and _strtime_s */
+/* windows has also the wide and time64 variants, and _strtime_s */
 
 EXTERN errno_t
 getenv_s(size_t *restrict len,

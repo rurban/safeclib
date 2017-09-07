@@ -120,16 +120,16 @@ gets_s (char *restrict dest, rsize_t dmax)
     ret = fgets(dest, dmax+1, stdin);
 
     if (likely(ret)) {
-        int len = strnlen(dest, dmax);
+        rsize_t len = (rsize_t)strnlen(dest, dmax);
         if (len > 0 && dest[len-1] == '\n') {
             dest[len-1] = 0;
-        } else if (len > dmax-1) {
+        } else if (len > (rsize_t)(dmax-1)) {
             ret = NULL;
             goto nospc;
         }
         else if (feof(stdin))
             ;
-        else if (len == dmax-1 && dest[len] == '\0') {
+        else if (len == (rsize_t)(dmax-1) && dest[len] == '\0') {
             ret = NULL;
             goto nospc;
         }
