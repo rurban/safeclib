@@ -272,15 +272,13 @@ perf:
 	tests/p_memcpy32_s
 gh-pages: docs
 	echo ensure ./configure --enable-unsafe
-	ls doc/man/man3/snprintf_s.3
-	echo ensure a clean git checkout, everything will be deleted
-	test -z "`git status --porcelain`"
+	ls doc/man/man3/tmpnam_s.3
 	git checkout gh-pages
 	rm -rf doc/man
-	rm -rf `ls | grep -v doc`
-	mv doc/html/* ./
-	rm -rf doc
-	git add .
+	mkdir doc/safec-$(SAFEC_API_VERSION)
+	mv doc/html/* doc/safec-$(SAFEC_API_VERSION)/
+	rm -rf doc/html
+	git add doc/safec-$(SAFEC_API_VERSION)
 release: docs dist
 	git checkout master
 	autoreconf
