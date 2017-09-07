@@ -71,11 +71,11 @@ CC="cc -m32" ./configure && \
     $make -s -j4 check || (cat tests/test-suite.log; exit)
 ./configure --disable-wchar && \
     $make -s -j4 check || (cat tests/test-suite.log; exit)
-./configure --enable-unsafe --enable-debug && \
-    $make -s -j4 check || (cat tests/test-suite.log; exit)
 #CC="x86_64-w64-mingw32-gcc"
 ./configure --enable-unsafe --host=x86_64-w64-mingw32 && \
     $make -s -j4
 #CC="i386-mingw32-gcc"
 ./configure --enable-unsafe --host=i386-mingw32 && \
     $make -s -j4
+./configure --enable-unsafe --enable-debug && \
+    $make -s -j4 check || (cat tests/test-suite.log; exit)

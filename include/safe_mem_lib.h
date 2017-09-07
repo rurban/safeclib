@@ -46,6 +46,7 @@ extern "C" {
 
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )
 #define RSIZE_MAX_MEM32    ( RSIZE_MAX_MEM/4 )
+#define RSIZE_MAX_WMEM     ( RSIZE_MAX_MEM/sizeof(wchar_t) )
 
 /* set memory constraint handler */
 EXTERN constraint_handler_t
@@ -126,6 +127,23 @@ memzero16_s(uint16_t *dest, rsize_t dmax);
 EXTERN errno_t
 memzero32_s(uint32_t *dest, rsize_t dmax);
 
+/* possible extensions: */
+#if 0
+
+/* freebsd:
+   copy string until character found */
+EXTERN errno_t
+memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n);
+
+/* timing-safe byte sequence comparisons */
+EXTERN int
+timingsafe_bcmp(const void *b1, const void *b2, size_t len);
+
+EXTERN int
+timingsafe_memcmp(const void *b1, const void *b2, size_t len);
+
+#endif
+
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 #ifndef SAFECLIB_DISABLE_WCHAR
@@ -140,6 +158,14 @@ wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
 EXTERN errno_t
 wmemmove_s(wchar_t *dest, rsize_t dmax,
            const wchar_t *src, rsize_t smax);
+
+#ifndef SAFECLIB_DISABLE_EXTENSIONS
+
+EXTERN errno_t
+wmemcmp_s(const wchar_t *dest, rsize_t dmax,
+          const wchar_t *src, rsize_t slen, int *diff);
+
+#endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
 

@@ -333,7 +333,7 @@ strstr_s(char *dest, rsize_t dmax,
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */
 EXTERN errno_t
-strtolowercase_s(char * restrict str, rsize_t slen);
+strtolowercase_s(char *restrict str, rsize_t slen);
 
 
 /* convert string to uppercase
@@ -347,15 +347,21 @@ strtouppercase_s(char *str, rsize_t slen);
 EXTERN errno_t
 strzero_s(char *dest, rsize_t dmax);
 
-/* TODO: Windows extensions from sec_api/string_s.h
+
+/* TODO: Derived from windows extensions sec_api/string_s.h
    defined(MINGW_HAS_SECURE_API)
 
-EXTERN errno_t _strset_s(char *_Dst,  size_t _DstSize,  int _Value);
-EXTERN errno_t _strlwr_s(char *_Str, size_t _Size);
-EXTERN errno_t _strlwr_s_l(char *_Str, size_t _Size, _locale_t _Locale);
-EXTERN errno_t _strnset_s(char *_Str, size_t _Size, int _Val, size_t _MaxCount);
-EXTERN errno_t _strupr_s(char *_Str, size_t _Size);
-EXTERN errno_t _strupr_s_l(char *_Str, size_t _Size, _locale_t _Locale);
+EXTERN errno_t
+strset_s(char *restrict dest, rsize_t dmax,  int value);
+
+EXTERN errno_t
+strnset_s(char *restrict str, rsize_t slen, int value, size_t n);
+
+EXTERN errno_t
+strlwr_s(char *restrict str, rsize_t slen);
+
+EXTERN errno_t
+strupr_s(char *restrict str, rsize_t slen);
 
 */
   
@@ -494,24 +500,30 @@ wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t slen,
          wchar_t **restrict substring);
 
-/* TODO: Windows extensions from sec_api/string_s.h
+/* TODO:
+EXTERN errno_t
+wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
+         const wchar_t *restrict src, rsize_t smax,
+         int *diff);
+EXTERN errno_t
+wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t smax,
+          rsize_t num, int *diff);
+*/
 
-EXTERN errno_t _wcserror_s(wchar_t *_Buf, size_t _SizeInWords, int _ErrNum);
-EXTERN errno_t _wcsnset_s(wchar_t *_Dst, size_t _DstSizeInWords, wchar_t _Val,
-                          size_t _MaxCount);
-EXTERN errno_t _wcsset_s(wchar_t *_Str, size_t _SizeInWords, wchar_t _Val);
-EXTERN errno_t _wcslwr_s(wchar_t *_Str, size_t _SizeInWords);
-EXTERN errno_t _wcslwr_s_l(wchar_t *_Str, size_t _SizeInWords, _locale_t _Locale);
-EXTERN errno_t _wcsupr_s(wchar_t *_Str, size_t _Size);
-EXTERN errno_t _wcsupr_s_l(wchar_t *_Str, size_t _Size, _locale_t _Locale);
-EXTERN errno_t _wcsncat_s_l(wchar_t *_Dst, size_t _DstSizeInChars,
-                           const wchar_t *_Src, size_t _MaxCount, _locale_t _Locale);
-EXTERN errno_t _wcsncpy_s_l(wchar_t *_Dst, size_t _DstSizeInChars,
-                            const wchar_t *_Src, size_t _MaxCount, _locale_t _Locale);
-EXTERN errno_t _wcsset_s_l(wchar_t *_Str, size_t _SizeInChars, unsigned int _Val,
-                          _locale_t _Locale);
-EXTERN errno_t _wcsnset_s_l(wchar_t *_Str, size_t _SizeInChars, unsigned int _Val,
-                            size_t _Count, _locale_t _Locale);
+/* TODO: Windows extensions, derived from sec_api/string_s.h
+
+EXTERN errno_t
+wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value);
+
+EXTERN errno_t
+wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, size_t n);
+
+EXTERN errno_t
+wcslwr_s(wchar_t *restrict src, rsize_t slen);
+
+EXTERN errno_t
+wcsupr_s(wchar_t *restrict src, rsize_t slen);
 
 */
 

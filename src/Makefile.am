@@ -143,13 +143,21 @@ STD_WCHAR_FILES = \
 	wchar/fwscanf_s.c  	\
 	wchar/vwscanf_s.c
 
+if !HAVE_VSNWPRINTF_S
+STD_WCHAR_FILES += \
+	wchar/vsnwprintf_s.c
+endif
+
 if !HAVE_WCSSTR
 STD_WCHAR_FILES += \
 	extwchar/wcsstr.c
 endif
-if !HAVE_VSNWPRINTF_S
+
+if ENABLE_EXTS
 STD_WCHAR_FILES += \
-	wchar/vsnwprintf_s.c
+	extwchar/wmemcmp_s.c
+#	extwchar/wcscmp_s.c	\
+#	extwchar/wcsncmp_s.c
 endif
 
 STD_IO_FILES = \

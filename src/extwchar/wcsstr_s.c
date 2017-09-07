@@ -31,9 +31,6 @@
 
 #include "safeclib_private.h"
 
-
-
-
 /**
  * @brief
  *    The wcsstr_s() function locates the first occurrence of the
