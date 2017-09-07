@@ -84,19 +84,19 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
     size_t len;
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dest is null",
+        invoke_safe_str_constraint_handler("strerror_s: dest is null",
                    NULL, ESNULLP);
         return ESNULLP;
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax is 0",
+        invoke_safe_str_constraint_handler("strerror_s: dmax is 0",
                    NULL, ESZEROL);
         return ESZEROL;
     }
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax exceeds max",
+        invoke_safe_str_constraint_handler("strerror_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return ESLEMAX;
     }
@@ -110,7 +110,7 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
         strncpy_s(dest, dmax, tmpbuf, dmax-4);
         strcat_s(dest, dmax, "...");
     } else {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax is too small",
+        invoke_safe_str_constraint_handler("strerror_s: dmax is too small",
                    NULL, ESLEMIN);
         return ESLEMIN;
     }

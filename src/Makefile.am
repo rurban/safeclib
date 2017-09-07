@@ -181,11 +181,11 @@ STD_MISC_FILES = \
 	misc/qsort_s.c	
 
 STD_OS_FILES = \
-	os/asctime_s.c	\
-	os/ctime_s.c	\
-	os/gmtime_s.c	\
-	os/localtime_s.c \
-	os/getenv_s.c
+	os/asctime_s.c	
+#	os/ctime_s.c	\
+#	os/gmtime_s.c	\
+#	os/localtime_s.c \
+#	os/getenv_s.c
 
 ALL_SRC_FILES = 
 	$(STD_MEM_FILES)    \
@@ -193,8 +193,8 @@ ALL_SRC_FILES =
 	$(EXT_MEM_FILES)    \
 	$(EXT_STR_FILES)    \
 	$(STD_WCHAR_FILES)  \
-	$(STD_IO_FILES)     
-#	$(STD_OS_FILES)     \
+	$(STD_IO_FILES)     \
+	$(STD_OS_FILES)     
 #	$(STD_MISC_FILES)
 
 # Not all the code can support -Werror yet so we specifically enable it
@@ -230,8 +230,8 @@ lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
 libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
-	$(STD_IO_FILES)     
-#	$(STD_OS_FILES)     \
+	$(STD_IO_FILES)     \
+	$(STD_OS_FILES)     
 #	$(STD_MISC_FILES)
 if ENABLE_WCHAR
 libsafec_@SAFEC_API_VERSION@_la_SOURCES += \

@@ -41,6 +41,11 @@ extern "C" {
 #include "safe_types.h"
 #include "safe_lib_errno.h"
 
+#include <time.h>
+#if defined HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+
 /* we disable static builds on mingw for now */
 #if defined _WIN32 /* && defined DLL_EXPORT */
 # if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
@@ -121,20 +126,20 @@ freopen_s(FILE *restrict *restrict newstreamptr,
           FILE *restrict stream);
 #endif
 
-/* TODO os, misc */
-#if 0
-
 EXTERN errno_t
 asctime_s(char *dest, rsize_t dmax, const struct tm *tm);
+
+/* TODO os, misc */
+#if 0
 
 EXTERN errno_t
 ctime_s(char *dest, rsize_t dmax, const time_t *timer);
 
 EXTERN struct tm *
-gmtime_s(const time_t *restrict timer, struct tm *restrict result);
+gmtime_s(const time_t *restrict timer, struct tm *restrict dest);
 
 EXTERN struct tm *
-localtime_s(const time_t *restrict timer, struct tm *restrict result);
+localtime_s(const time_t *restrict timer, struct tm *restrict dest);
 
 /* windows has also the wide and time64 variants, and _strtime_s */
 
