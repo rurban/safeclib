@@ -10,7 +10,6 @@
 #include "safe_mem_lib.h"
 
 #define LEN      ( 256 )
-#define MAXMEM   RSIZE_MAX_MEM32
 
 int main()
 {

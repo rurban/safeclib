@@ -48,7 +48,7 @@
  * @param[out]  dest   pointer to memory that will be set to the value
  * @param[in]   smax   maximum number of bytes to be written
  * @param[in]   value  byte value to be written
- * @param[in]   n      number of bytes to be set
+ * @param[in]   n      number of 4-byte words to be set
  *
  * @pre  dest shall not be a null pointer.
  * @pre  smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
