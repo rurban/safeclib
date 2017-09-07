@@ -144,9 +144,9 @@ need additional information see the 'INSTALL' file in the same directory.
 
 .To build you do the following:
 ----
-prompt$ ./build-tools/autogen.sh
-prompt$ ./configure
-prompt$ make
+    prompt$ ./build-tools/autogen.sh
+    prompt$ ./configure
+    prompt$ make
 ----
 'autogen.sh' only needs to be run if you are building from the git
 repository. Optionally, you can do ``make check'' if you want to run the unit
@@ -159,7 +159,7 @@ Installation must be preformed by `root`, an `Administrator' on most
 systems. The following is used to install the library.
 
 ----
-prompt$ sudo make install
+    prompt$ sudo make install
 ----
 
 
@@ -174,8 +174,8 @@ build the kernel module.
 
 .To build do the following:
 ----
-prompt$ ./configure
-prompt$ make -f Makefile.kernel
+    prompt$ ./configure
+    prompt$ make -f Makefile.kernel
 ----
 
 This assumes you are compiling on a Linux box and this makefile supports the
