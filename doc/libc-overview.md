@@ -29,16 +29,16 @@ The wide sprintf variants do not allow a NULL buffer argument to
 return the size of the resulting buffer. If the initial buffer is too
 small, you need to realloc and redo.
 
-## Caveat's for the various implementations regarding C11 Annex K/safec
+# C11 Annex K/safec caveats
 
-# snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s
+* snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s
 
-They are all considered unsafe. The 4 'n' truncating printf versions
-don't guarantee null-delimited destination buffers.
+  They are all considered unsafe. The 4 'n' truncating printf versions
+  don't guarantee null-delimited destination buffers.
 
-`tmpnam_s` and `tmpnam` are racy.
+* `tmpnam_s` and `tmpnam` are racy.
 
-# Microsoft Windows/MINGW_HAS_SECURE_API
+## Microsoft Windows/MINGW_HAS_SECURE_API
 
 * `fopen_s`, `freopen_s` deviate in the API: restrict is missing.
 
@@ -51,7 +51,7 @@ don't guarantee null-delimited destination buffers.
 
 * no `strnlen` on mingw32
 
-# safeclib
+## safeclib
 
 * safeclib does not check optional NULL parameters to the `scanf_s`,
   `printf_s` functions. This would need tighter integration into the
@@ -60,14 +60,14 @@ don't guarantee null-delimited destination buffers.
 * safeclib `fgets_s` permits temporary writes of dmax+1 characters
   into dest.
 
-## Other caveat's for the various implementations
+# Other caveats
 
-# glibc
+## glibc
 
 * SEGV with `freopen(NULL, "rb", stdin)` with asan on some systems,
   calling an invalid strlen() on NULL.
 
-# newlib
+## newlib
 
 * `vswscanf` is broken with a format string containing L"%%n"
 
@@ -81,19 +81,19 @@ don't guarantee null-delimited destination buffers.
     #define mbstowcs(dest, src, len) mbsrtowcs((dest), &(src), (len), &st)
 ```
 
-# FreeBSD libc
+## FreeBSD libc
 
 * `vswscanf` is broken with a format string containing L"%%n"
 
 * `mbstowcs` is broken with (NULL, '\0')
 
-# musl
+## musl
 
 * `wmemcmp` returns not -1,0,1 but the full ptr diff.
 
 * `mbtowc` and `wctomb` accept and convert illegal 4 byte characters
   in the ASCII locale to surrogate pairs, as it would be unicode.
-  e.g. it converts \xa0 to \xdfa0.
+  e.g. it converts `\xa0` to `\xdfa0`.
 
 ----
 
