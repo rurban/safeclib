@@ -23,82 +23,58 @@ int main()
 /*--------------------------------------------------*/
 
     rc = memcmp32_s(NULL, LEN, mem2, LEN, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESNULLP);
 
     rc = memcmp32_s(mem1, LEN, NULL, LEN, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESNULLP);
 
     rc = memcmp32_s(mem1, LEN, mem2, LEN, NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
+    ERR(ESNULLP);
+
 /*--------------------------------------------------*/
 
     rc = memcmp32_s(mem1, 0, mem2, LEN, &ind);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESZEROL);
 
     rc = memcmp32_s(mem1, LEN, mem2, 0, &ind);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
+    ERR(ESZEROL);
+
 /*--------------------------------------------------*/
 
     rc = memcmp32_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN, &ind);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESLEMAX);
 
     rc = memcmp32_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
+    ERR(ESLEMAX);
+
 /*--------------------------------------------------*/
 
+    rc = memcmp32_s(mem1, LEN-1, mem2, LEN, &ind);
+    ERR(ESNOSPC);
+
+/*--------------------------------------------------*/
+
+    /* short cut */
+    rc = memcmp32_s(mem1, LEN, mem1, LEN, &ind);
+    ERR(EOK);
+    INDZERO();
+
+/*--------------------------------------------------*/
+    
     for (i=0; i<LEN; i++) { mem1[i] = i; }
     for (i=0; i<LEN; i++) { mem2[i] = i; }
 
     len = 1;
     rc = memcmp32_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-    if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
-        errs++;
-    }
+    ERR(EOK);
+    INDZERO();
     ind = memcmp(mem1, mem2, len*4);
     if (ind != 0) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
                      __FUNCTION__, __LINE__,  ind, rc );
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = i; }
@@ -106,16 +82,8 @@ int main()
 
     len = 2;
     rc = memcmp32_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-    if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
-        errs++;
-    }
+    ERR(EOK);
+    INDZERO();
     ind = memcmp(mem1, mem2, len*4);
     if (ind != 0) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
@@ -128,16 +96,8 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = i; }
 
     rc = memcmp32_s(mem1, LEN, mem2, LEN, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-    if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
-        errs++;
-    }
+    ERR(EOK);
+    INDZERO();
     ind = memcmp(mem1, mem2, LEN*4);
     if (ind != 0) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
@@ -152,16 +112,8 @@ int main()
     for (i=10; i<LEN-10; i++) { mem2[i] = 5; }
 
     rc = memcmp32_s(mem1, LEN, mem2, LEN, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc );
-        errs++;
-    }
-    if (ind == 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc );
-        errs++;
-    }
+    ERR(EOK);
+    INDCMP(<= 0);
 
 /*--------------------------------------------------*/
 

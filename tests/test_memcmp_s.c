@@ -24,59 +24,42 @@ int test_memcmp_s (void)
 /*--------------------------------------------------*/
 
     rc = memcmp_s(NULL, LEN, mem2, LEN, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESNULLP);
 
     rc = memcmp_s(mem1, LEN, NULL, LEN, &ind);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESNULLP);
 
     rc = memcmp_s(mem1, LEN, mem2, LEN, NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESNULLP);
+
 /*--------------------------------------------------*/
 
     rc = memcmp_s(mem1, 0, mem2, LEN, &ind);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESZEROL);
 
     rc = memcmp_s(mem1, LEN, mem2, 0, &ind);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESZEROL);
+
 /*--------------------------------------------------*/
 
     rc = memcmp_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-/*--------------------------------------------------*/
+    ERR(ESLEMAX);
 
     rc = memcmp_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN, &ind);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(ESLEMAX);
+
+/*--------------------------------------------------*/
+
+    rc = memcmp_s(mem1, LEN-1, mem2, LEN, &ind);
+    ERR(ESNOSPC);
+
+/*--------------------------------------------------*/
+
+    /* short cut */
+    rc = memcmp_s(mem1, LEN, mem1, LEN, &ind);
+    ERR(EOK);
+    INDZERO();
+
 /*--------------------------------------------------*/
 
     len = 1;
@@ -85,16 +68,8 @@ int test_memcmp_s (void)
     memset(mem2, 55, len);
 
     rc = memcmp_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
+    ERR(EOK);
+    INDZERO();
     std_ind = memcmp(mem1, mem2, len);
     if (ind != std_ind) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
@@ -109,16 +84,8 @@ int test_memcmp_s (void)
     memset(mem2, 55, LEN);
 
     rc = memcmp_s(&mem1[1], len, &mem2[1], len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
+    ERR(EOK);
+    INDZERO();
     std_ind = memcmp(mem1, mem2, len);
     if (ind != std_ind) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
@@ -133,16 +100,8 @@ int test_memcmp_s (void)
     memset(mem2, 55, len);
 
     rc = memcmp_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
-    if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__,  ind, rc);
-        errs++;
-    }
+    ERR(EOK);
+    INDZERO();
     std_ind = memcmp(mem1, mem2, len);
     if (ind != std_ind) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
@@ -158,11 +117,7 @@ int test_memcmp_s (void)
     memset( &mem2[(len/2)], 35, len);
 
     rc = memcmp_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(EOK);
     if (ind < 1) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
                      __FUNCTION__, __LINE__,  ind, rc);
@@ -177,11 +132,7 @@ int test_memcmp_s (void)
     memset( &mem2[(len/2)], 65, len);
 
     rc = memcmp_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(EOK);
     if (ind > -1) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
                      __FUNCTION__, __LINE__,  ind, rc);
@@ -195,11 +146,7 @@ int test_memcmp_s (void)
     memset(mem2, 55, len);
 
     rc = memcmp_s(mem1, len, mem2, len, &ind);
-    if (rc != EOK) {
-        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, ind, rc);
-        errs++;
-    }
+    ERR(EOK);
     if (ind != 0) {
         debug_printf("%s %u  Ind=%d  rc=%u \n",
                      __FUNCTION__, __LINE__,  ind, rc);
