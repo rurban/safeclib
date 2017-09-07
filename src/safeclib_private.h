@@ -66,8 +66,12 @@
 /* newlib, cygwin64 has no STDC_HEADERS */
 # ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
-# endif
+# else
 /* cygwin64 */
+#  ifdef __GNUC__
+void abort(void) __attribute__((noreturn));
+#  endif
+# endif
 # ifdef HAVE_CTYPE_H
 #  include <ctype.h>
 # endif
