@@ -7,6 +7,15 @@
 # command after changing this file, to see if there are
 # any tracked files which get ignored after the change.
 #
+# gh-pages
+/build-tools
+/src
+/tests
+/script
+/cover_db
+/include
+/m4
+
 # Normal rules
 #
 .*
