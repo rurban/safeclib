@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['printf_5fs',['printf_s',['../d4/d68/printf__s_8c.html#acb53e5b3cc02e83fcd6496b082020499',1,'printf_s.c']]],
-  ['printf_5fs_2ec',['printf_s.c',['../d4/d68/printf__s_8c.html',1,'']]]
+  ['overview_20of_20various_20libc_27s_20regarding_20the_20secure_20c11_20extensions',['Overview of various libc&apos;s regarding the secure C11 extensions',['../d1/dae/md_doc_libc-overview.html',1,'']]]
 ];

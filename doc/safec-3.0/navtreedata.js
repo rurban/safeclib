@@ -2,6 +2,7 @@ var NAVTREE =
 [
   [ "safec", "index.html", [
     [ "Safe C Library - README", "index.html", null ],
+    [ "Overview of various libc's regarding the secure C11 extensions", "d1/dae/md_doc_libc-overview.html", null ],
     [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "Globals", "globals.html", [
@@ -18,7 +19,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "d0/d4b/memzero__s_8c.html",
-"d8/daf/memmove16__s_8c.html#ac062caf14052a7866006f63e36f040bd"
+"d8/daf/memmove16__s_8c.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
