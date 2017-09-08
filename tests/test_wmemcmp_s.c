@@ -80,6 +80,25 @@ int main()
                      __FUNCTION__, __LINE__, ind, rc );
         errs++;
     }
+
+/*--------------------------------------------------*/
+
+    rc = wmemcmp_s(mem1, LEN-2, mem2, LEN, &ind);
+    if (rc != ESNOSPC) {
+        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
+                     __FUNCTION__, __LINE__, ind, rc );
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    rc = wmemcmp_s(mem1, LEN, mem1, LEN, &ind);
+    if (rc != 0 || ind) {
+        debug_printf("%s %u  Ind=%d  Error rc=%u \n",
+                     __FUNCTION__, __LINE__, ind, rc );
+        errs++;
+    }
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = i; }

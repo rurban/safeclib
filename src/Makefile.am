@@ -112,8 +112,7 @@ EXT_STR_FILES = \
 	extstr/strstr_s.c            \
 	extstr/strtolowercase_s.c    \
 	extstr/strtouppercase_s.c    \
-	extstr/strzero_s.c           \
-	extwchar/wcsstr_s.c          
+	extstr/strzero_s.c
 
 STD_WCHAR_FILES = \
 	wchar/mbsrtowcs_s.c  	\
@@ -155,6 +154,7 @@ endif
 
 if ENABLE_EXTS
 STD_WCHAR_FILES += \
+	extwchar/wcsstr_s.c     \
 	extwchar/wmemcmp_s.c
 #	extwchar/wcscmp_s.c	\
 #	extwchar/wcsncmp_s.c

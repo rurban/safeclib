@@ -157,6 +157,12 @@
                      __FUNCTION__, __LINE__, sub, rc); \
         errs++;                                    \
     }
+#define WSUBNULL()                                 \
+    if (sub) {                                     \
+        printf("%s %u  Error  sub=\"%ls\" rc=%d \n",   \
+                     __FUNCTION__, __LINE__, sub, rc); \
+        errs++;                                    \
+    }
 #define SUBNN()                                     \
     if (!sub) {                                     \
         printf("%s %u  Error  sub=null errno=%d \n",\
