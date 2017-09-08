@@ -201,7 +201,7 @@ ALL_SRC_FILES =
 # for where it works
 AM_CFLAGS += -Imem -Istr
 if !HAVE_MINGW
-AM_CFLAGS += -Werror -pedantic
+AM_CFLAGS += -Wextra -Werror -pedantic
 endif
 
 .c.i:
