@@ -32,9 +32,6 @@
 #include "safeclib_private.h"
 #include <stdlib.h>
 
-/* conflicting API */
-/*#ifndef MINGW_HAS_SECURE_API*/
-
 /** 
  * @brief
  *    The \c getenv_s function searches for an environmental variable with
@@ -93,13 +90,13 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax is 0",
+        invoke_safe_str_constraint_handler("getenv_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax exceeds max",
+        invoke_safe_str_constraint_handler("getenv_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
@@ -153,5 +150,3 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
     return EOK;
 }
 EXPORT_SYMBOL(getenv_s)
-
-/*#endif *//* MINGW_HAS_SECURE_API */

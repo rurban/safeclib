@@ -177,8 +177,8 @@ STD_IO_FILES = \
 	io/freopen_s.c
 
 STD_MISC_FILES = \
-	misc/bsearch_s.c \
-	misc/qsort_s.c	
+	misc/bsearch_s.c 
+#	misc/qsort_s.c	
 
 STD_OS_FILES = \
 	os/asctime_s.c	\
@@ -194,8 +194,8 @@ ALL_SRC_FILES =
 	$(EXT_STR_FILES)    \
 	$(STD_WCHAR_FILES)  \
 	$(STD_IO_FILES)     \
-	$(STD_OS_FILES)     
-#	$(STD_MISC_FILES)
+	$(STD_OS_FILES)     \
+	$(STD_MISC_FILES)
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
@@ -231,8 +231,8 @@ libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
 	$(STD_IO_FILES)     \
-	$(STD_OS_FILES)     
-#	$(STD_MISC_FILES)
+	$(STD_OS_FILES)     \
+	$(STD_MISC_FILES)
 if ENABLE_WCHAR
 libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
 	$(STD_WCHAR_FILES)

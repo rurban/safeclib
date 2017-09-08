@@ -145,9 +145,6 @@ getenv_s(size_t *restrict len,
          char *restrict dest, rsize_t dmax,
          const char *restrict name);
 
-/* TODO misc */
-#if 0
-
 EXTERN void *
 bsearch_s(const void *key, const void *base,
           rsize_t nmemb, rsize_t size,
@@ -160,8 +157,6 @@ qsort_s(void *base, rsize_t nmemb, rsize_t size,
         int (*compar)(const void *x, const void *y,
                       void *context),
         void *context);
-
-#endif /* not yet */
 
 #ifdef __cplusplus
 }

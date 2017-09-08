@@ -40,8 +40,9 @@ Changes in vxx092017 3.0.0
         sscanf_s, scanf_s, fscanf_s, vsscanf_s, vscanf_s, vfscanf_s,
         fprintf_s, printf_s, vfprintf_s, vprintf_s, tmpnam_s (unsafe),
         tmpfile_s, gets_s.
-        - Added some missing safe C11 os functions:
-        asctime_s, ctime_s, gmtime_s, loaltime_s, getenv_s.
+        - Added all missing safe C11 time and stdlib functions:
+        asctime_s, ctime_s, gmtime_s, localtime_s, getenv_s,
+        bsearch_s, qsort_s.
         - Added --disable-wchar to disable the new multibyte and wchar functions,
         but not the old 16/32 memory functions.
         defines SAFECLIB_DISABLE_WCHAR
