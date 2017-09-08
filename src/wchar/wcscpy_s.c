@@ -29,13 +29,8 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
-
-
-
+#ifdef HAVE_WCHAR_H
 
 /**
  * @brief
@@ -79,9 +74,9 @@
  * @retval  ESNOSPC    when dest < src
  *
  * @see
- *    strcat_s(), strncat_s(), strncpy_s()
- *
+ *    wcsncpy(), wmemcpy(), wmemmove(), strncpy_s()
  */
+
 EXPORT errno_t
 wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
 {

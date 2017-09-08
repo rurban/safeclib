@@ -29,13 +29,8 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
-
-
-
+#ifdef HAVE_WCHAR_H
 
 /**
  * @brief
@@ -88,7 +83,10 @@
  * @retval  ESUNTERM   when dest not terminated
  * @retval  ESOVRLP    when src overlaps with dest
  *
+ * @see
+ *    wcscat_s(), strncat_s()
  */
+
 EXPORT errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen)

@@ -29,13 +29,8 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
-
-
-#include <wchar.h>
+#ifdef HAVE_WCHAR_H
 
 /**
  * @brief

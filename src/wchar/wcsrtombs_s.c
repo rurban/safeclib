@@ -29,13 +29,8 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
-
-
-#include <wchar.h>
+#ifdef HAVE_WCHAR_H
 
 /**
  * @brief
@@ -107,8 +102,9 @@
  *                     greater than dmax (unless dest is null)
  *
  * @see
- *    mbstowc_s()
+ *    wcrtomb_s(), wcstombs_s()
  */
+
 EXPORT errno_t
 wcsrtombs_s (size_t *restrict retval,
              char *restrict dest, rsize_t dmax,

@@ -31,13 +31,11 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
+#include "safeclib_private.h"
 #ifdef HAVE_WCHAR_H
 
-#include "safeclib_private.h"
 #include "safe_mem_constraint.h"
 #include "mem_primitives_lib.h"
-#include "safe_mem_lib.h"
 
 #if SIZEOF_WCHAR_T == 2
 #define wmem_type uint16_t
@@ -89,6 +87,7 @@
  *    memcpy_s(), memcpy16_s(), wmemmove_s(), memmove16_s()
  *
  */
+
 EXPORT errno_t
 wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
 {

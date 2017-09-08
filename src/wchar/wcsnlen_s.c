@@ -29,12 +29,8 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
 #include "safeclib_private.h"
-
-
+#ifdef HAVE_WCHAR_H
 
 /**
  * @brief
@@ -62,9 +58,9 @@
  *           by \c wcsnlen_s.
  *
  * @see
- *    strnterminate_s()
- *
+ *    strnlen_s(), strnterminate_s()
  */
+
 EXPORT rsize_t
 wcsnlen_s (const wchar_t *dest, rsize_t dmax)
 {

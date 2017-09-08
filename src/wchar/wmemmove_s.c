@@ -31,13 +31,11 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifndef SAFECLIB_DISABLE_WCHAR
-
 #include "safeclib_private.h"
+#ifdef HAVE_WCHAR_H
+
 #include "safe_mem_constraint.h"
 #include "mem_primitives_lib.h"
-#include "safe_mem_lib.h"
 
 #if SIZEOF_WCHAR_T == 2
 #define wmem_type uint16_t
@@ -142,4 +140,4 @@ wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
 }
 EXPORT_SYMBOL(wmemmove_s)
 
-#endif /* SAFECLIB_DISABLE_WCHAR */
+#endif /* HAVE_WCHAR_H */
