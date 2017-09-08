@@ -8,6 +8,7 @@ Changes in vxx092017 3.0.0
         Add EXPORT and EXTERN decls for dllexport/dllimport.
         Cleanup the src headers.
         - Added -D_FORTIFY_SOURCE=2
+        - Made it -Wall -Wextra -Werror -pedantic safe
         - Added cygwin and freebsd support
         - Install bin/check_for_unsafe_apis. Renamed and improved: 7x faster,
           added missing conversion hints. also install its man1.

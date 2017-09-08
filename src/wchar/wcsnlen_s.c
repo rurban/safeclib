@@ -93,7 +93,7 @@ wcsnlen_s (const wchar_t *dest, rsize_t dmax)
     return dmax;
 #else
     for (z = dest; dmax && *dest != 0; dmax--, dest++);
-    return dmax ? dest - z : orig_dmax;
+    return dmax ? (rsize_t)(dest - z) : orig_dmax;
 #endif
 }
 EXPORT_SYMBOL(wcsnlen_s)
