@@ -124,7 +124,6 @@ EXTERN errno_t
 freopen_s(FILE *restrict *restrict newstreamptr,
           const char *restrict filename, const char *restrict mode,
           FILE *restrict stream);
-#endif
 
 EXTERN errno_t
 asctime_s(char *dest, rsize_t dmax, const struct tm *tm);
@@ -137,6 +136,7 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict dest);
 
 EXTERN struct tm *
 localtime_s(const time_t *restrict timer, struct tm *restrict dest);
+#endif
 
 /* windows has also the wide and time64 variants, and _strtime_s */
 
@@ -151,10 +151,12 @@ bsearch_s(const void *key, const void *base,
           int (*compar)(const void *k, const void *y, void *context),
           void *context);
 
+#ifndef MINGW_HAS_SECURE_API
 EXTERN errno_t
 qsort_s(void *base, rsize_t nmemb, rsize_t size,
         int (*compar)(const void *x, const void *y, void *context),
         void *context);
+#endif
 
 #ifdef __cplusplus
 }

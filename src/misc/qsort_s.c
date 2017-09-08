@@ -36,6 +36,9 @@
    Run time: Worst case O(n log n), close to O(n) in the mostly-sorted case. */
 
 #include "safeclib_private.h"
+/* conflicting API */
+#ifndef MINGW_HAS_SECURE_API
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -355,3 +358,5 @@ qsort_s(void *base,
     return EOK;
 }
 EXPORT_SYMBOL(qsort_s)
+
+#endif /* MINGW_HAS_SECURE_API */

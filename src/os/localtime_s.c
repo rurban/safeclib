@@ -30,6 +30,8 @@
  */
 
 #include "safeclib_private.h"
+/* conflicting API */
+#ifndef MINGW_HAS_SECURE_API
 
 /** 
  * @brief
@@ -111,3 +113,5 @@ localtime_s(const time_t *restrict timer, struct tm *restrict dest)
     return dest;
 }
 EXPORT_SYMBOL(localtime_s)
+
+#endif /* MINGW_HAS_SECURE_API */
