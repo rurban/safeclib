@@ -138,15 +138,15 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict dest);
 EXTERN struct tm *
 localtime_s(const time_t *restrict timer, struct tm *restrict dest);
 
-/* TODO os, misc */
-#if 0
-
 /* windows has also the wide and time64 variants, and _strtime_s */
 
 EXTERN errno_t
 getenv_s(size_t *restrict len,
-         char *restrict value, rsize_t maxsize,
+         char *restrict dest, rsize_t dmax,
          const char *restrict name);
+
+/* TODO misc */
+#if 0
 
 EXTERN void *
 bsearch_s(const void *key, const void *base,

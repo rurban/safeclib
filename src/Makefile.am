@@ -184,8 +184,8 @@ STD_OS_FILES = \
 	os/asctime_s.c	\
 	os/ctime_s.c	\
 	os/gmtime_s.c	\
-	os/localtime_s.c
-#	os/getenv_s.c
+	os/localtime_s.c \
+	os/getenv_s.c
 
 ALL_SRC_FILES = 
 	$(STD_MEM_FILES)    \
