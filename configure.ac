@@ -418,6 +418,12 @@ AC_CHECK_TYPE([errno_t],
         [[#include <errno.h>]])
 AC_SUBST(FALLBACK_ERRNO_T)
 AC_TYPE_MBSTATE_T
+AC_CHECK_MEMBER(struct tm.tm_gmtoff, 
+  [AC_DEFINE(HAVE_TM_GMTOFF, 1, 
+     [Define if struct tm has the tm_gmtoff member.])], 
+     , 
+     [#include <time.h>])
+
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
 dnl this user choice needs to probe first for the default
 AC_ARG_ENABLE(wchar,

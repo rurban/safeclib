@@ -116,32 +116,38 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
         return ESLEMAX;
     }
 
-    if (unlikely(tm->tm_year < 0 ||
-                 tm->tm_mon  < 0 ||
-                 tm->tm_yday < 0 ||
-                 tm->tm_mday < 1 ||
-                 tm->tm_wday < 0 ||
-                 tm->tm_hour < 0 ||
-                 tm->tm_min  < 0 ||
-                 tm->tm_sec  < 0 ||
-                 tm->tm_isdst < 0 ||
-                 tm->tm_gmtoff < -1036800)) /* 12*86400 */
+    if (tm->tm_year < 0 ||
+        tm->tm_mon  < 0 ||
+        tm->tm_yday < 0 ||
+        tm->tm_mday < 1 ||
+        tm->tm_wday < 0 ||
+        tm->tm_hour < 0 ||
+        tm->tm_min  < 0 ||
+        tm->tm_sec  < 0 ||
+        tm->tm_isdst < 0
+#ifdef HAVE_TM_GMTOFF
+        || tm->tm_gmtoff < -1036800 /* 12*86400 */
+#endif
+        ) 
     {
         invoke_safe_str_constraint_handler("asctime_s: a tm member is too small",
                    NULL, ESLEMIN);
         return ESLEMIN;
     }
 
-    if (unlikely(tm->tm_year > 8099 ||
-                 tm->tm_mon  > 11   ||
-                 tm->tm_yday > 365  ||
-                 tm->tm_mday > 31   ||
-                 tm->tm_wday > 6    ||
-                 tm->tm_hour > 23   ||
-                 tm->tm_min  > 59   ||
-                 tm->tm_sec  > 60   ||
-                 tm->tm_isdst > 1   ||
-                 tm->tm_gmtoff > 1036800)) /* 12*86400 */
+    if (tm->tm_year > 8099 ||
+        tm->tm_mon  > 11   ||
+        tm->tm_yday > 365  ||
+        tm->tm_mday > 31   ||
+        tm->tm_wday > 6    ||
+        tm->tm_hour > 23   ||
+        tm->tm_min  > 59   ||
+        tm->tm_sec  > 60   ||
+        tm->tm_isdst > 1
+#ifdef HAVE_TM_GMTOFF
+        || tm->tm_gmtoff > 1036800 /* 12*86400 */
+#endif
+        )
     {
         /* does EOVERFLOW in asctime() */
         invoke_safe_str_constraint_handler("asctime_s: a tm member is too large",
