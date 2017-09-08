@@ -454,6 +454,7 @@ dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strstr wmemchr wmemcmp wcscmp wcsstr vswprintf \
                 vsnwprintf mbstowcs asctime_r ctime_r gmtime_r localtime_r memcpy_s \
+                __builtin_ctz \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
