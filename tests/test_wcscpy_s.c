@@ -56,7 +56,7 @@ int test_wcscpy_s (void)
 
     rc = wcscpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR(ESLEMAX)
-/*--------------------------------------------------*/
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -86,9 +86,10 @@ int test_wcscpy_s (void)
 
     rc = wcscpy_s(str1, LEN, str1);
     ERR(EOK)
+
 /*--------------------------------------------------*/
 
-    wcscpy(&str1[0], L"keep it simple");
+    wcscpy(str1, L"keep it simple");
 
     rc = wcscpy_s(&str1[0], LEN, &str1[5]);
     ERR(ESOVRLP)
@@ -108,9 +109,13 @@ int test_wcscpy_s (void)
     }
 #endif
 
+    wcscpy(str1, L"keep it simple");
+    rc = wcscpy_s(&str1[5], LEN, &str1[0]);
+    ERR(ESOVRLP)
+
 /*--------------------------------------------------*/
 
-    wcscpy(&str1[0], L"keep it simple");
+    wcscpy(str1, L"keep it simple");
     str2[0] = L'\0';
 
     rc = wcscpy_s(str1, LEN, str2);
@@ -123,7 +128,7 @@ int test_wcscpy_s (void)
 /*--------------------------------------------------*/
 
     str1[0] = L'\0';
-    wcscpy(&str2[0], L"keep it simple");
+    wcscpy(str2, L"keep it simple");
 
     rc = wcscpy_s(str1, LEN, str2);
     ERR(EOK)
@@ -186,6 +191,22 @@ int test_wcscpy_s (void)
                      __FUNCTION__, __LINE__,  str1, rc );
         errs++;
     }
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"it");
+    wcscpy(str2, L"qqweqeqeqeq");
+
+    rc = wcscpy_s(str2, 3, str1);
+    ERR(EOK)
+    /* be sure the results are the same as wcscmp */
+    ind = wcscmp(str1, str2);
+    if (ind != 0) {
+        debug_printf("%s %u -%ls-  Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
+    }
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"qq12345weqeqeqeq");
@@ -204,6 +225,7 @@ int test_wcscpy_s (void)
         debug_printf("str1[%i] = %d \n", i, str1[i]);
         /*errs++;*/
     }
+
 /*--------------------------------------------------*/
 
     return (errs);
