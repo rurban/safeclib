@@ -177,8 +177,8 @@ STD_IO_FILES = \
 	io/freopen_s.c
 
 STD_MISC_FILES = \
-	misc/bsearch_s.c 
-#	misc/qsort_s.c	
+	misc/bsearch_s.c \
+	misc/qsort_s.c
 
 STD_OS_FILES = \
 	os/asctime_s.c	\
