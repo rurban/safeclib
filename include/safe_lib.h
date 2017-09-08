@@ -132,14 +132,14 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm);
 EXTERN errno_t
 ctime_s(char *dest, rsize_t dmax, const time_t *timer);
 
-/* TODO os, misc */
-#if 0
-
 EXTERN struct tm *
 gmtime_s(const time_t *restrict timer, struct tm *restrict dest);
 
 EXTERN struct tm *
 localtime_s(const time_t *restrict timer, struct tm *restrict dest);
+
+/* TODO os, misc */
+#if 0
 
 /* windows has also the wide and time64 variants, and _strtime_s */
 

@@ -169,6 +169,18 @@
                      __FUNCTION__, __LINE__,  str2, str1);  \
         errs++;                                    \
     }
+#define PTRNN(ptr)                                          \
+    if (!ptr) {                                             \
+        debug_printf("%s %u  Error  ptr=null errno=%d \n",  \
+                     __FUNCTION__, __LINE__, errno);        \
+        errs++;                                             \
+    }
+#define PTRNULL(ptr)                                        \
+    if (ptr) {                                              \
+        debug_printf("%s %u  Error  ptr=!null errno=%d \n", \
+                     __FUNCTION__, __LINE__, errno);        \
+        errs++;                                             \
+    }
 
 #define SETLOCALE_C \
     lc_cat = setlocale(LC_CTYPE, "C")
