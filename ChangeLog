@@ -20,7 +20,7 @@ Changes in vxx092017 3.0.0
         This contains in summary only 13 functions for now:
         memcpy_s, memmove_s, memset_s, sprintf_s, strcat_s, strcpy_s, strncat_s,
         strncpy_s, strnlen_s, strtok_s, vsprintf_s, strerror_s, strerrorlen_s
-        plus all the new wchar and io functions.
+        plus all the new C11 functions.
         defines SAFECLIB_DISABLE_EXTENSIONS
         - Rearranged src layout
         - Macrofied many more tests
