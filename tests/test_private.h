@@ -225,6 +225,24 @@
         printf(__FILE__ ": cannot set C locale for test" \
                " (lc_cat=%s, codeset=%s)\n", lc_cat, lang)
 
+/* libc variant: musl not detectable. and there's __GLIBC__ and _WIN32.
+   uClibc? dietlibc? minilibc? exots? */
+#if defined(__FreeBSD__) || \
+    defined(__NetBSD__)  || \
+    defined(__OpenBSD__) || \
+    defined(__bsdi__)    || \
+    defined(__DragonFly__)
+# define BSD_LIKE
+#endif
+#if defined(__APPLE__) || defined(BSD_LIKE)
+# define BSD_OR_DARWIN_LIKE
+#endif
+#if defined(__NEWLIB__) || defined(BSD_LIKE)
+# define BSD_OR_NEWLIB_LIKE
+#endif
+#if defined(__APPLE__) || defined(__NEWLIB__) || defined(BSD_LIKE)
+# define BSD_ALL_LIKE
+#endif
 
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
 #  define NO_C11

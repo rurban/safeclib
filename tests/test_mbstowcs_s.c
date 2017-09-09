@@ -42,12 +42,7 @@ int test_mbstowcs_s (void)
 
     src[0] = '\0';
     rc = mbstowcs_s(&ind, NULL, 0, (const char*)src, 0);
-#if defined(__FreeBSD__) || \
-    defined(__NetBSD__)  || \
-    defined(__OpenBSD__) || \
-    defined(__bsdi__)    || \
-    defined(__DragonFly__)
-
+#ifdef BSD_LIKE
     if (rc != 2) { /* BSD's return 2 */
         printf("%s %u wrong mbstowcs(NULL,\"\\0\"): %d\n",
                      __FUNCTION__, __LINE__, (int)rc);

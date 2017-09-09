@@ -43,13 +43,7 @@ int test_swscanf_s (void)
     ERREOF(EINVAL);
 
     rc = swscanf_s(wstr1, L"%%n");
-#if defined(__NEWLIB__)  || /* i.e. cygwin */ \
-    defined(__FreeBSD__) || \
-    defined(__NetBSD__)  || \
-    defined(__OpenBSD__) || \
-    defined(__bsdi__)    || \
-    defined(__DragonFly__)
-
+#ifdef BSD_OR_NEWLIB_LIKE
     if (rc != 0) { /* BSD + cygwin they all return -1 on %%n */
         printf("%s %u wrong vswscanf(\"\",L\"%%n\"): %d\n",
                      __FUNCTION__, __LINE__, (int)rc);
@@ -59,12 +53,7 @@ int test_swscanf_s (void)
     ERRNO(0);
 
     rc = swscanf_s(wstr1, L"%ls %%n", wstr2);
-#if defined(__FreeBSD__) || \
-    defined(__NetBSD__)  || \
-    defined(__OpenBSD__) || \
-    defined(__bsdi__)    || \
-    defined(__DragonFly__)
-
+#ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
         printf("%s %u wrong vswscanf(\"\",L\"%%n\"): %d\n",
                      __FUNCTION__, __LINE__, (int)rc);

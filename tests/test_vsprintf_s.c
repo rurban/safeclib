@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_vsprintf_s
  * File 'str/vsprintf_s.c'
- * Lines executed:80.00% of 25
+ * Lines executed:89.66% of 29
  *
  *------------------------------------------------------------------
  */
@@ -44,6 +44,9 @@ int test_vsprintf_s (void)
     rc = vtprintf_s(str1, LEN, NULL, NULL);
     ERR(ESNULLP)
 
+    rc = vtprintf_s(NULL, LEN, "%s", str2);
+    ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
@@ -53,6 +56,18 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
     ERR(ESLEMAX)
+
+/*--------------------------------------------------*/
+
+    str2[0] = '\0';
+    rc = vtprintf_s(str1, LEN, "%s %n", str2);
+    ERR(EINVAL)
+
+    rc = vtprintf_s(str1, LEN, "%s %%n", str2);
+    ERR(3)
+
+    rc = vtprintf_s(str1, LEN, "%%n");
+    ERR(2);
 
 /*--------------------------------------------------*/
 
@@ -192,9 +207,23 @@ int test_vsprintf_s (void)
     strcpy(str2, "1234");
     strcpy(str1, "56789");
 
-    rc = vtprintf_s(str2, 10, "%s", str1);
-    NOERR()
-    EXPSTR(str2, "56789")
+    rc = vtprintf_s(str2, LEN, "%s", str1);
+    NOERR();
+    EXPSTR(str2, "56789");
+
+/*--------------------------------------------------*/
+
+    /* glibc allows illegal % specifiers, musl not. */
+    rc = vtprintf_s(str1, LEN, "%y");
+    /* TODO: win32, dietlibc, uClibc, minilibc */
+#if defined(__GLIBC__) || defined(BSD_ALL_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else
+    /* only musl correctly rejects illegal format specifiers */
+    ERR(-1);
+    EXPNULL(str1)
+#endif
 
 /*--------------------------------------------------*/
 

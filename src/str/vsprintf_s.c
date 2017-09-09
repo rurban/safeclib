@@ -84,6 +84,8 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
 {
 
     int ret = -1;
+    const char *p;
+
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
@@ -106,6 +108,15 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
         invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
+    }
+
+    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
+        /* at the beginning or if inside, not %%n */
+        if ((p-fmt == 0) || *(p-1) != '%') {
+            invoke_safe_str_constraint_handler("vsprintf_s: illegal %n",
+                                               NULL, EINVAL);
+            return RCNEGATE(EINVAL);
+        }
     }
 
     errno = 0;
