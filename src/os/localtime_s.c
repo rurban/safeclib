@@ -56,7 +56,8 @@
  *          (which may be a runtime constraint violation or a failure
  *          to convert the specified time to the current timezone).
  *          May set errno to EOVERFLOW when *timer > 313360441200L, the year
- *          10000 or < 0, or to ESNULLP when dest or timer is a NULL pointer.
+ *          10000, resp. LONG_MAX on 32bit systems or < 0, or to ESNULLP
+ *          when dest or timer is a NULL pointer.
  *
  * @note
  *    localtime returns a pointer to static data and is not thread-safe. When
@@ -96,7 +97,7 @@ localtime_s(const time_t *restrict timer, struct tm *restrict dest)
         return NULL;
     }
 
-    if (unlikely(*timer > 313360441200L)) { /* year 10000 */
+    if (unlikely(*timer > MAX_TIME_T_STR)) { /* year 10000 */
         invoke_safe_str_constraint_handler("localtime_s: timer is too large",
                    NULL, ESLEMAX);
         errno = EOVERFLOW;

@@ -65,7 +65,8 @@
  * @retval  ESNULLP    when dest or tm is a NULL pointer
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  ESLEMIN    when dmax < 26 or *timer < 0
- * @retval  ESLEMAX    when *timer > 313360441200L, the year 10000
+ * @retval  ESLEMAX    when *timer > 313360441200L, the year 10000,
+ *                     resp. LONG_MAX on 32bit systems
  * @retval  ESNOSPC    when dmax is too small for the result buffer
  * @retval  -1         when ctime_r or ctime returned NULL
  *
@@ -118,7 +119,8 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
         return ESLEMIN;
     }
 
-    if (unlikely(*timer > 313360441200L)) { /* year 10000 */
+    /* 32bit have a lower limit: -Werror=type-limits (long) */
+    if (unlikely(*timer > MAX_TIME_T_STR)) { /* year 10000 */
         invoke_safe_str_constraint_handler("ctime_s: timer is too large",
                    NULL, ESLEMAX);
         return ESLEMAX;

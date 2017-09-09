@@ -56,7 +56,7 @@ int test_ctime_s (void)
         timer++;
     }
 
-    /* eg. 313392063599L */
+    /* eg. 313360441200L */
     rc = ctime_s(str1, LEN, &timer);
     ERR(ESLEMAX);
 

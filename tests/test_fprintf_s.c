@@ -88,7 +88,10 @@ int test_fprintf_s (void)
 
     rc = fprintf_s(out, "%s", str);
     ERR(-1);
+#ifdef __GLIBC__
     ERRNO(EBADF);
+#endif
+    /* musl throws no error */
 
     unlink(TMP);
         

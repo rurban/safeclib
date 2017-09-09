@@ -96,6 +96,16 @@ void abort(void) __attribute__((noreturn));
 #define strnstr(a,b,c) strstr(a,b)
 #endif
 
+/* for a proper asctime string with 26 digits, i.e. max 4 digit year.
+   01.01.10000 00:00 */
+#ifndef MAX_TIME_T_STR
+# if LONG_MAX <= 2147483647L
+#  define MAX_TIME_T_STR LONG_MAX
+# else
+#  define MAX_TIME_T_STR 313360441200L
+# endif
+#endif
+
 #define EXPORT_SYMBOL(sym)
 #define RCNEGATE(x)  (x)
 
