@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------
  * test_memzero_s
+ * File 'extmem/memzero_s.c'
+ * Lines executed:100.00% of 12
  *
  *
  *=

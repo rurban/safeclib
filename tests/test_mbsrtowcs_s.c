@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------
  * test_mbsrtowcs_s
+ * File 'wchar/mbsrtowcs_s.c'
+ * Lines executed:100.00% of 31
  * locale specific, sets it to C and UTF-8
  *
  *------------------------------------------------------------------

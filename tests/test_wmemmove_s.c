@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------
  * test_wmemmove_s
+ * File 'wchar/wmemmove_s.c'
+ * Lines executed:100.00% of 24
  *
  *
  *=
