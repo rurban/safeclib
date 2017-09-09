@@ -1,13 +1,14 @@
 /*------------------------------------------------------------------
  * test_vswprintf_s
  * File 'wchar/vswprintf_s.c'
- * Lines executed:67.50% of 40
+ * Lines executed:97.50% of 40
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include <stdlib.h>
 #include <stdarg.h>
 
 #define LEN   ( 128 )
@@ -31,16 +32,18 @@ int test_vswprintf_s (void)
     int32_t  ind;
     size_t  len2;
     size_t  len3;
+    wchar_t *wstr3;
     int errs = 0;
 
 /*--------------------------------------------------*/
 
     /* not testable
-      rc = vtwprintf_s(str1, LEN, "%s", NULL);
+      rc = vtwprintf_s(str1, LEN, L"%ls", NULL);
       ERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    rc = vtwprintf_s(NULL, LEN, L"%ls", str2);
+    ERR(ESNULLP);
 
     rc = vtwprintf_s(str1, LEN, NULL, NULL);
     ERR(ESNULLP);
@@ -53,7 +56,19 @@ int test_vswprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
+
+/*--------------------------------------------------*/
+
+    str2[0] = '\0';
+    rc = vtwprintf_s(str1, LEN, L"%s %n", str2);
+    ERR(EINVAL)
+
+    rc = vtwprintf_s(str1, LEN, L"%s %%n", str2);
+    ERR(3)
+
+    rc = vtwprintf_s(str1, LEN, L"%%n");
+    ERR(2);
 
 /*--------------------------------------------------*/
 
@@ -137,6 +152,12 @@ int test_vswprintf_s (void)
     ERR(ESNOSPC)
     WEXPNULL(str1)
 
+    wcscpy(str1, L"1234");
+
+    rc = vtwprintf_s(str1, 5, L"%ls", str2);
+    ERR(ESNOSPC)
+    WEXPNULL(str1)
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"1234");
@@ -177,8 +198,32 @@ int test_vswprintf_s (void)
     wcscpy(str1, L"56789");
 
     rc = vtwprintf_s(str2, 10, L"%ls", str1);
-    NOERR()
-    WEXPSTR(str2, L"56789")
+    NOERR();
+    WEXPSTR(str2, L"56789");
+
+/*--------------------------------------------------*/
+
+    rc = vtwprintf_s(str1, 10, L"%vls", str2);
+#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else /* musl and darwin disallow this */
+    ERR(-1);
+    /* darwin throws Illegal byte sequence */
+    WEXPNULL(str1);
+#endif
+
+    /* not the fast stack-branch */
+    wstr3 = (wchar_t*)malloc(513);
+    rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
+#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else /* musl and darwin disallow this */
+    ERR(-1);
+    WEXPNULL(str1)
+#endif
+    free(wstr3);
 
 /*--------------------------------------------------*/
 

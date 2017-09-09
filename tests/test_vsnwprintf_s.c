@@ -56,7 +56,7 @@ int test_vsnwprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
 
 /*--------------------------------------------------*/
 

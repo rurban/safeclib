@@ -174,7 +174,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #endif
 
     if (unlikely(ret >= (int)dmax)) {
-        goto nospc;
+        goto nospc; /* probably dead code. vswprintf will cut this already */
     } else if (unlikely(ret < 0)) {
 #ifndef HAVE_VSNWPRINTF_S
         char errstr[128] = "vswprintf_s: ";
