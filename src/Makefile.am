@@ -260,11 +260,15 @@ if ENABLE_GCOV
 AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
 gcov:
+	-test -f $(top_builddir)/gcov.log && rm $(top_builddir)/gcov.log
 	for c in $(libsafec_@SAFEC_API_VERSION@_la_SOURCES); do \
 	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
 	  if test -e "$$dir/$$base.gcno"; then \
 	    echo $(GCOV) $$c; \
-	    test -e $$c && cd $$dir && $(GCOV) $$base.c && cd $(abs_srcdir); \
+	    test -e $$c && \
+		cd $$dir && \
+		$(GCOV) $$base.c >>$(top_builddir)/gcov.log && \
+		cd $(abs_srcdir); \
 	  fi; \
 	done
 endif
@@ -273,7 +277,7 @@ endif
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
 if ENABLE_GCOV
-CLEANFILES  += */*.gcov
+CLEANFILES  += */*.gcov gcov.log
 endif
 
 ## LCOV_INPUT      = $(CFILES:%.c=.libs/%.gcda)

@@ -69,6 +69,8 @@ README.md
 doc/footer
 doc/html
 doc/man
+src/gcov.log
+tests/gcov.log
 
 #
 # Debian directory (make deb-pkg)

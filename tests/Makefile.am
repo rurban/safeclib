@@ -190,9 +190,10 @@ AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
 #  -e's,$(EXEEXT),,'
 gcov: $(TESTS)
+	-test -f gcov.log && rm gcov.log
 	for f in $(TESTS); do \
 	  c="`echo $$f|sed -e's,t_,test_,'`.c"; \
-	  echo $(GCOV) $$c; test -e $$c && $(GCOV) $$c; done
+	  echo $(GCOV) $$c; test -e $$c && $(GCOV) $$c >>gcov.log; done
 endif
 
 # problematic with asan
@@ -334,5 +335,5 @@ endif
 CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe
 CLEANFILES  += *.gcno *.gcda
 if ENABLE_GCOV
-CLEANFILES  += *.gcov
+CLEANFILES  += *.gcov gcov.log
 endif
