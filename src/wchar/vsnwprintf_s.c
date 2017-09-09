@@ -129,12 +129,14 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: fmt is null",
                    NULL, ESNULLP);
+        *dest = L'\0';
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dmax is 0",
                    NULL, ESZEROL);
+        *dest = L'\0';
         return RCNEGATE(ESZEROL);
     }
 
@@ -143,6 +145,7 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n",
                    NULL, EINVAL);
+            *dest = L'\0';
             return RCNEGATE(EINVAL);
         }
     }
@@ -153,6 +156,7 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n",
                                                NULL, EINVAL);
+            *dest = L'\0';
             return RCNEGATE(EINVAL);
         }
     }
@@ -193,7 +197,8 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         char errstr[128] = "vsnwprintf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
-        dest[dmax-1] = L'\0';
+        *dest = L'\0';
+        /* dest[dmax-1] = L'\0'; */
     }
 #endif
 

@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_vsnwprintf_s
  * File 'wchar/vsnwprintf_s.c'
- * Lines executed:100.00% of 39
+ * Lines executed:100.00% of 42
  *
  *------------------------------------------------------------------
  */
@@ -192,17 +192,31 @@ int test_vsnwprintf_s (void)
     wcscpy(str1, L"56789");
 
     rc = vtwprintf_s(str2, 10, L"%ls", str1);
-    NOERR()
-    WEXPSTR(str2, L"56789")
+    NOERR();
+    WEXPSTR(str2, L"56789");
 
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, 10, L"%vls", str2);
+#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else /* musl and darwin disallow this */
     ERR(-1);
+    /* darwin throws Illegal byte sequence */
+    WEXPNULL(str1);
+#endif
 
+    /* not the fast stack-branch */
     wstr3 = (wchar_t*)malloc(513);
     rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
+#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else /* musl and darwin disallow this */
     ERR(-1);
+    WEXPNULL(str1)
+#endif
     free(wstr3);
 
 /*--------------------------------------------------*/
