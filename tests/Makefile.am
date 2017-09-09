@@ -328,6 +328,7 @@ endif
 endif
 
 CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs
+CLEANFILES  += *.gcno *.gcda
 if ENABLE_GCOV
-CLEANFILES  += t_*.gcov t_*.gcno t_*.gcda
+CLEANFILES  += *.gcov
 endif

@@ -270,10 +270,10 @@ gcov:
 endif
 
 CLEANFILES   = *~ $(EXPORT_SYM)
+CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
 if ENABLE_GCOV
-CLEANFILES  += */*.gcov */*.gcno */*.gcda ignore_handler_s.gcno
+CLEANFILES  += */*.gcov
 endif
-
 
 ## LCOV_INPUT      = $(CFILES:%.c=.libs/%.gcda)
 ## LCOV_OUTPUT     = lcov.info
