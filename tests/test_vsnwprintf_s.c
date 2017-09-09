@@ -1,13 +1,14 @@
 /*------------------------------------------------------------------
  * test_vsnwprintf_s
  * File 'wchar/vsnwprintf_s.c'
- * Lines executed:69.23% of 39
+ * Lines executed:100.00% of 39
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include <stdlib.h>
 #include <stdarg.h>
 
 #define LEN   ( 128 )
@@ -31,16 +32,18 @@ int test_vsnwprintf_s (void)
     int32_t  ind;
     size_t  len2;
     size_t  len3;
+    wchar_t *wstr3;
     int errs = 0;
 
 /*--------------------------------------------------*/
 
     /* not testable
-      rc = vtwprintf_s(str1, LEN, "%s", NULL);
+      rc = vtwprintf_s(str1, LEN, L"%ls", NULL);
       ERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    rc = vtwprintf_s(NULL, LEN, L"%ls", str2);
+    ERR(ESNULLP);
 
     rc = vtwprintf_s(str1, LEN, NULL, NULL);
     ERR(ESNULLP);
@@ -54,6 +57,18 @@ int test_vsnwprintf_s (void)
 
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
     ERR(ESLEMAX)
+
+/*--------------------------------------------------*/
+
+    str2[0] = '\0';
+    rc = vtwprintf_s(str1, LEN, L"%s %n", str2);
+    ERR(EINVAL)
+
+    rc = vtwprintf_s(str1, LEN, L"%s %%n", str2);
+    ERR(3)
+
+    rc = vtwprintf_s(str1, LEN, L"%%n");
+    ERR(2);
 
 /*--------------------------------------------------*/
 
@@ -179,6 +194,16 @@ int test_vsnwprintf_s (void)
     rc = vtwprintf_s(str2, 10, L"%ls", str1);
     NOERR()
     WEXPSTR(str2, L"56789")
+
+/*--------------------------------------------------*/
+
+    rc = vtwprintf_s(str1, 10, L"%vls", str2);
+    ERR(-1);
+
+    wstr3 = (wchar_t*)malloc(513);
+    rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
+    ERR(-1);
+    free(wstr3);
 
 /*--------------------------------------------------*/
 

@@ -47,7 +47,7 @@ int test_swprintf_s (void)
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
-    rc = swprintf_s(str1, LEN, L"%s %n", str2, &ind);
+    rc = swprintf_s(str1, LEN, L"%s %n", str2);
     ERR(EINVAL)
 
     rc = swprintf_s(str1, LEN, L"%s %%n", str2);
