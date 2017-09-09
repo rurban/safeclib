@@ -28,6 +28,7 @@ int test_gets_s (void)
     fprintf(out, "1\n2\n");
     fprintf(out, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
     fprintf(out, "1234\n");
+    fprintf(out, "1234\004");  /* ^D  EOT */
     fclose(out);
     if (!freopen(TMP, "r", stdin)) {
         printf("freopen failed: %s\n", strerror(errno));
@@ -89,6 +90,10 @@ int test_gets_s (void)
     EXPSTR(sub, "1234");
     ERRNO(0);
     
+    sub = gets_s(dest, 5); /* edge-case len==dmax-1 */
+    SUBNULL();
+    ERRNO(ESNOSPC);
+
     sub = gets_s(dest, LEN); /* EOF */
     SUBNULL();
     ERRNO(0);

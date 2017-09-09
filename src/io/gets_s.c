@@ -127,7 +127,7 @@ gets_s (char *restrict dest, rsize_t dmax)
             ret = NULL;
             goto nospc;
         }
-        else if (feof(stdin))
+        else if (feof(stdin)) /* dead code: feof returns NULL */
             ;
         else if (len == (rsize_t)(dmax-1) && dest[len] == '\0') {
             ret = NULL;
