@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_fprintf_s
  * File 'io/fprintf_s.c'
- * Lines executed:85.00% of 20
+ * Lines executed:100.00% of 20
  *
  *------------------------------------------------------------------
  */
@@ -85,6 +85,11 @@ int test_fprintf_s (void)
 /*--------------------------------------------------*/
 
     fclose(out);
+
+    rc = fprintf_s(out, "%s", str);
+    ERR(-1);
+    ERRNO(EBADF);
+
     unlink(TMP);
         
     return (errs);
