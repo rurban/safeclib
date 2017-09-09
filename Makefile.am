@@ -59,8 +59,8 @@ SAFEC_INFRA = \
 
 SAFEC_GENHEADERS = \
 	$(top_srcdir)/include/safe_config.h.in     \
-	$(top_srcdir)/include/safe_types.h.in      \
-	$(top_srcdir)/include/safe_lib_errno.h.in
+	$(top_srcdir)/include/safe_lib_errno.h.in  \
+	$(top_srcdir)/include/safe_types.h.in
 
 SAFEC_SLKM = \
 	$(top_srcdir)/tests/test_slkm.c            \
@@ -85,6 +85,20 @@ BUILT_SOURCES = $(top_srcdir)/.version
 # We need to be architecture-dependent:
 pcdatadir = $(libdir)/pkgconfig
 pcdata_DATA = safec-$(SAFEC_API_VERSION).pc
+
+CLEANFILES = *~
+LIBTOOL_DISTCLEAN_FILES = \
+	m4/libtool.m4 m4/ltoptions.m4 m4/ltsugar.m4 m4/ltversion.m4 m4/lt~obsolete.m4 \
+	build-tools/ar-lib \
+	build-tools/compile \
+	build-tools/config.guess \
+	build-tools/config.sub \
+	build-tools/depcomp \
+	build-tools/install-sh \
+	build-tools/ltmain.sh \
+	build-tools/missing \
+	build-tools/test-driver
+DISTCLEANFILES = .version
 
 MAN1_SOURCES = doc/man/man1/check_for_unsafe_apis.1
 dist_man_MANS =
@@ -225,7 +239,7 @@ dist_man_MANS += \
 	doc/man/man3/strtouppercase_s.c.3 \
 	doc/man/man3/strzero_s.3 \
 	doc/man/man3/strzero_s.c.3
-CLEANFILES = Doxyfile doc/footer README.md
+CLEANFILES += Doxyfile doc/footer README.md
 
 doc/man/man3/STRTOK_DELIM_MAX_LEN.3: Doxyfile README.md doc/footer \
   include/safe_config.h

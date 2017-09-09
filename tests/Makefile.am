@@ -327,7 +327,11 @@ t_vsnwprintf_s_SOURCES        = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
-CLEANFILES  = *~ *.lo *.o t_*.log t_*.trs
+if HAVE_DSYMUTIL
+clean-local:
+	rm -rf *.dSYM
+endif
+CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe
 CLEANFILES  += *.gcno *.gcda
 if ENABLE_GCOV
 CLEANFILES  += *.gcov

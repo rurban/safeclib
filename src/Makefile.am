@@ -269,7 +269,8 @@ gcov:
 	done
 endif
 
-CLEANFILES   = *~ $(EXPORT_SYM)
+
+CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
 if ENABLE_GCOV
 CLEANFILES  += */*.gcov
