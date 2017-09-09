@@ -37,7 +37,6 @@
 
 /* TODO:
 any of the arguments corresponding to %s is a null pointer.
-truncate, no dest overflow.
 */
 
 /**
@@ -130,12 +129,14 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("snwprintf_s: fmt is null",
                    NULL, ESNULLP);
+        *dest = L'\0';
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("snwprintf_s: dmax is 0",
                    NULL, ESZEROL);
+        *dest = L'\0';
         return RCNEGATE(ESZEROL);
     }
 
@@ -144,6 +145,7 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("snwprintf_s: illegal %n",
                    NULL, EINVAL);
+            *dest = L'\0';
             return RCNEGATE(EINVAL);
         }
     }
@@ -154,6 +156,7 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("snwprintf_s: illegal %n",
                                                NULL, EINVAL);
+            *dest = L'\0';
             return RCNEGATE(EINVAL);
         }
     }
@@ -167,8 +170,8 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     va_start(ap, fmt);
     ret = vsnwprintf_s(dest, dmax, fmt, ap);
 #else
-    va_copy(ap2, ap);
     va_start(ap, fmt);
+    va_copy(ap2, ap);
     ret = vswprintf(dest, dmax, fmt, ap);
 #endif
     va_end(ap);
@@ -202,7 +205,8 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         char errstr[128] = "snwprintf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
-        dest[dmax-1] = L'\0';
+        *dest = L'\0'; /* no truncation. a real error */
+        /* dest[dmax-1] = L'\0'; */
     }
 #endif
 

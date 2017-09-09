@@ -6,6 +6,7 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include <stdlib.h>
 #include <stdarg.h>
 
 #define LEN   ( 128 )
@@ -20,6 +21,7 @@ int test_snwprintf_s (void)
     int32_t  ind;
     size_t  len2;
     size_t  len3;
+    wchar_t *wstr3;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -213,6 +215,31 @@ int test_snwprintf_s (void)
     rc = snwprintf_s(str2, 10, L"%ls", str1);
     NOERR()
     WEXPSTR(str2, L"56789")
+
+/*--------------------------------------------------*/
+
+    /* This crashes on darwin in vswprintf_l() */
+    rc = snwprintf_s(str1, 10, L"%vls", str2);
+#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else /* musl and darwin disallow this */
+    ERR(-1);
+    /* darwin throws Illegal byte sequence */
+    WEXPNULL(str1);
+#endif
+
+    /* not the fast stack-branch */
+    wstr3 = (wchar_t*)malloc(513);
+    rc = snwprintf_s(wstr3, 513, L"%vls", str1);
+#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+    /* they print unknown formats verbatim */
+    NOERR();
+#else /* musl and darwin disallow this */
+    ERR(-1);
+    WEXPNULL(str1)
+#endif
+    free(wstr3);
 
 /*--------------------------------------------------*/
 
