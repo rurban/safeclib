@@ -167,6 +167,23 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "12345678901234567890");
+
+    rc = strcat_s(str1, LEN, &str1[4]);
+    ERR(ESOVRLP)
+    EXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "12345678901234567890");
+    len1 = strlen(str1);
+
+    rc = strcat_s(&str1[5], LEN-5, &str1[4]);
+    ERR(ESOVRLP)
+    EXPNULL(&str1[5])
+
+/*--------------------------------------------------*/
+
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
 

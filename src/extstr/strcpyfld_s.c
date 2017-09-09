@@ -31,15 +31,12 @@
 
 #include "safeclib_private.h"
 
-
-
-
 /**
  * @brief
- *    The strcpyfld_s function copies slen characters from the character
- *    array pointed to by src into the character array pointed to by dest.
+ *    The \c strcpyfld_s function copies \c slen characters from the character
+ *    array pointed to by \c src into the character array pointed to by \c dest.
  *    The copy operation does not stop on the null character as the
- *    function copies slen characters.
+ *    function copies \c slen characters.
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments

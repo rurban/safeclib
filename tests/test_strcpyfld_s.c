@@ -26,6 +26,7 @@ int main()
 
     rc = strcpyfld_s(NULL, LEN, str2, LEN);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -54,19 +55,26 @@ int main()
     slen = 5;
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
     ERR(ESLEMAX)
+
 /*--------------------------------------------------*/
 
     len = 5;
-    slen = 0;
-    rc = strcpyfld_s(str1, len, str2, slen);
-    ERR(ESZEROL)
+    rc = strcpyfld_s(str1, len, str2, 0);
+    ERR(ESZEROL);
+
+/*--------------------------------------------------*/
+
+    len = 5;
+    rc = strcpyfld_s(str1, len-1, str2, len);
+    ERR(ESNOSPC);
+
 /*--------------------------------------------------*/
 
     len = 5;
     slen = len+1;
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
     ERR(ESLEMAX)
-/*--------------------------------------------------*/
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -104,6 +112,33 @@ int main()
             errs++;
         }
     }
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    len = 2;
+
+    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+    slen = 2;
+
+    rc = strcpyfld_s(str2, len, str1, slen);
+    ERR(EOK)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    len = 10;
+
+    rc = strcpyfld_s(str1, len, &str1[5], 10);
+    ERR(ESOVRLP)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    len = 10;
+
+    rc = strcpyfld_s(&str1[5], len, &str1[0], 10);
+    ERR(ESOVRLP)
 
 /*--------------------------------------------------*/
 
@@ -164,7 +199,6 @@ int main()
         }
     }
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     return (errs);

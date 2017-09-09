@@ -34,8 +34,9 @@
 
 /**
  * @brief
- *    Compares memory until they differ, and their difference is
- *    returned in diff.  If the block of memory is the same, diff=0.
+ *    Compares memory until they differ, and their difference sign
+ *    \c (-1,0,1) is returned in \c diff.  If the block of memory is the same,
+ *    \c *diff=0.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -44,7 +45,7 @@
  *
  * @param  dest   pointer to memory to compare against
  * @param  src    pointer to the source memory to compare with dest 
- * @param  dmax   maximum length of dest, in bytess
+ * @param  dmax   maximum length of dest, in bytes
  * @param  smax   length of the source memory block
  * @param  *diff  pointer to the diff which is an integer greater
  *                than, equal to or less than zero according to
