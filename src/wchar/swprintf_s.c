@@ -154,8 +154,8 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     #error need wcsstr or wcschr
 #endif
 
-    va_copy(ap2, ap);
     va_start(ap, fmt);
+    va_copy(ap2, ap);
     ret = vswprintf(dest, dmax, fmt, ap);
     va_end(ap);
 
