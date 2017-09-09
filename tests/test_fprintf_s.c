@@ -86,10 +86,18 @@ int test_fprintf_s (void)
 
     fclose(out);
 
+    /* print to closed stream */
     rc = fprintf_s(out, "%s", str);
+#if defined(__GLIBC__)
+    if (rc < 0) {
+        ERR(-1);
+        ERRNO(EBADF);
+    } else {
+        ERR(14); /* older glibc upstream bug */
+        ERRNO(0);
+    }
+#else
     ERR(-1);
-#ifdef __GLIBC__
-    ERRNO(EBADF);
 #endif
     /* musl throws no error */
 
