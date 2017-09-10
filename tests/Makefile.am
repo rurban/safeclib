@@ -70,9 +70,7 @@ SAFEC_BUILT_TESTS += \
 	t_vwscanf_s	\
 	t_fwscanf_s	\
 	t_vfwscanf_s	\
-	t_wscanf_s	\
-	t_wprintf_s	\
-	t_vwprintf_s
+	t_wscanf_s	
 if ENABLE_EXTS
 SAFEC_BUILT_TESTS += \
 	t_wcsstr_s
@@ -145,15 +143,11 @@ SAFEC_BUILT_TESTS += \
 endif
 endif
 
-# 	t_vfscanf_s	\
-# 	t_vscanf_s	\
 # 	t_vsscanf_s	\
 # 	t_printf_s	\
 # 	t_vfprintf_s	\
 # 	t_vprintf_s	
 SAFEC_BUILT_TESTS += 	\
-	t_scanf_s	\
-	t_fscanf_s	\
 	t_fprintf_s	\
 	t_tmpfile_s	\
 	t_gets_s	\
@@ -166,6 +160,20 @@ SAFEC_BUILT_TESTS += 	\
 	t_getenv_s	\
 	t_bsearch_s	\
 	t_qsort_s
+
+# unstable tests
+if ENABLE_DEBUG
+SAFEC_BUILT_TESTS += 	\
+	t_scanf_s	\
+	t_fscanf_s	
+# 	t_vfscanf_s	\
+# 	t_vscanf_s
+if ENABLE_WCHAR
+SAFEC_BUILT_TESTS += 	\
+	t_wprintf_s	\
+	t_vwprintf_s
+endif
+endif
 
 SAFEC_BUILT_PERFS =  p_memcpy_s
 if ENABLE_EXTS
