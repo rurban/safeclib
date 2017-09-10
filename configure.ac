@@ -423,6 +423,7 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      [Define if struct tm has the tm_gmtoff member.])], 
      , 
      [#include <time.h>])
+AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
 dnl this user choice needs to probe first for the default

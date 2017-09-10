@@ -97,7 +97,7 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
         return NULL;
     }
 
-    if (unlikely(*timer > MAX_TIME_T_STR)) { /* year 10000 */
+    if (unlikely(*timer >= MAX_TIME_T_STR)) { /* year 10000 */
         invoke_safe_str_constraint_handler("gmtime_s: timer is too large",
                    NULL, ESLEMAX);
         errno = EOVERFLOW;

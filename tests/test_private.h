@@ -34,6 +34,9 @@
 #define __TEST_PRIVATE_H__
 
 #include "config.h"
+#ifdef HAVE_LIMITS_H
+# include <limits.h>
+#endif
 
 #ifdef __KERNEL__
 
@@ -251,6 +254,16 @@
 #if defined(__has_feature)
 # if __has_feature(address_sanitizer)
 #  define HAVE_ASAN 1
+# endif
+#endif
+
+/* for a proper asctime string with 26 digits, i.e. max 4 digit year.
+   01.01.10000 00:00 */
+#ifndef MAX_TIME_T_STR
+# if SIZEOF_TIME_T == 4
+#  define MAX_TIME_T_STR (0x7fffffff)
+# else
+#  define MAX_TIME_T_STR (313360441200L)
 # endif
 #endif
 

@@ -120,7 +120,7 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
     }
 
     /* 32bit have a lower limit: -Werror=type-limits (long) */
-    if (unlikely(*timer > MAX_TIME_T_STR)) { /* year 10000 */
+    if (unlikely(*timer >= MAX_TIME_T_STR)) { /* year 10000 */
         invoke_safe_str_constraint_handler("ctime_s: timer is too large",
                    NULL, ESLEMAX);
         return ESLEMAX;

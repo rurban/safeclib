@@ -50,10 +50,15 @@ int test_ctime_s (void)
     {
         struct tm *tm = gmtime(&timer);
         memset(tm, 0, sizeof(struct tm));
+#if __POINTER_WIDTH__ == 32
+        /* year 10000, ie 313392063599L would overflow on 32bit */
+        timer = MAX_TIME_T_STR;
+#else
         tm->tm_year = 10000;
         timer = mktime(tm);
         debug_printf("year 10000 = %ld\n", timer);
         timer++;
+#endif
     }
 
     /* eg. 313360441200L */
