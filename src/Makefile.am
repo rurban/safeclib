@@ -260,15 +260,11 @@ if ENABLE_GCOV
 AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
 gcov:
-	-test -f $(top_builddir)/gcov.log && rm $(top_builddir)/gcov.log
+	-test -f $(top_builddir)/gcov.log && rm $(top_builddir)/src/gcov.log
 	for c in $(libsafec_@SAFEC_API_VERSION@_la_SOURCES); do \
 	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
-	  if test -e "$$dir/$$base.gcno"; then \
-	    echo $(GCOV) $$c; \
-	    test -e $$c && \
-		cd $$dir && \
-		$(GCOV) $$base.c >>$(top_builddir)/gcov.log && \
-		cd $(abs_srcdir); \
+	  if test -e "$$dir/$$base.gcno" -a -e $$c; then \
+	    $(GCOV) -s $$dir $$c | tee -a $(top_builddir)/src/gcov.log; \
 	  fi; \
 	done
 endif
