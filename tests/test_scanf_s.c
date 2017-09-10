@@ -16,7 +16,6 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
-static char   str3[LEN];
 #define TMP   "tmpscanf"
 static FILE*  stream = NULL;
 
@@ -51,10 +50,6 @@ int test_scanf_s (void)
 /*--------------------------------------------------*/
 
     stuff_stdin("      24");
-    rc = scanf_s("%s %n", str2, LEN, &ind);
-    ERREOF(EINVAL);
-
-    stuff_stdin("      24");
     rc = scanf_s("%s %%n", str2, LEN);
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
@@ -69,12 +64,13 @@ int test_scanf_s (void)
     rc = scanf_s("%s %%n", str2, 6);
     ERR(1);
     ERRNO(0);
+    EXPSTR(str2, "24");
 
-    stuff_stdin("      24");
+    /*stuff_stdin("      24");
     rc = scanf_s("%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
-    EXPSTR(str3, "24");
+    EXPSTR(str3, "24");*/
 
     stuff_stdin("      24");
     rc = scanf_s(" %d", &len1);
@@ -159,6 +155,12 @@ int test_scanf_s (void)
     ERR(1);
     EXPSTR(str1, "12345678123456789");
     */
+
+/*--------------------------------------------------*/
+
+    stuff_stdin("      24");
+    rc = scanf_s("%s %n", str2, LEN, &ind);
+    ERREOF(EINVAL);
 
 /*--------------------------------------------------*/
 

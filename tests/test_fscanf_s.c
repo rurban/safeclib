@@ -57,10 +57,6 @@ int test_fscanf_s (void)
 /*--------------------------------------------------*/
 
     stuff_stream("      24");
-    rc = fscanf_s(stream, "%s %n", str2, LEN, &ind);
-    ERREOF(EINVAL);
-
-    stuff_stream("      24");
     rc = fscanf_s(stream, "%s %%n", str2, LEN);
 #ifdef BSD_OR_DARWIN_LIKE
     if (rc != -1) { /* BSD's return -1 on %%n */
@@ -142,6 +138,12 @@ int test_fscanf_s (void)
     ERR(1);
     EXPSTR(str1, "12345678123456789");
     */
+
+/*--------------------------------------------------*/
+
+    stuff_stream("      24");
+    rc = fscanf_s(stream, "%s %n", str2, LEN, &ind);
+    ERREOF(EINVAL);
 
 /*--------------------------------------------------*/
 
