@@ -7,6 +7,7 @@
  *------------------------------------------------------------------
  */
 
+#define _GNU_SOURCE
 #include "test_private.h"
 #include "safe_str_lib.h"
 
@@ -111,8 +112,9 @@ int main()
     rc = strcasestr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
     PTREQ(sub, str1)
+
     /* compare to legacy */
-#ifdef HAVE_STRCASESTR
+#if defined(HAVE_STRCASESTR)
     std_sub = strcasestr(str1, str2);
     PTREQ(sub, std_sub)
 #endif
