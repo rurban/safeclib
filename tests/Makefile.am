@@ -70,17 +70,12 @@ SAFEC_BUILT_TESTS += \
 	t_vwscanf_s	\
 	t_fwscanf_s	\
 	t_vfwscanf_s	\
-	t_wscanf_s
-
+	t_wscanf_s	\
+	t_wprintf_s	\
+	t_vwprintf_s
 if ENABLE_EXTS
 SAFEC_BUILT_TESTS += \
 	t_wcsstr_s
-endif
-
-if ENABLE_DEBUG
-SAFEC_BUILT_TESTS += \
-	t_wprintf_s	\
-	t_vwprintf_s
 endif
 endif
 
@@ -150,7 +145,15 @@ SAFEC_BUILT_TESTS += \
 endif
 endif
 
+# 	t_fscanf_s	\
+# 	t_vfscanf_s	\
+# 	t_vscanf_s	\
+# 	t_vsscanf_s	\
+# 	t_printf_s	\
+# 	t_vfprintf_s	\
+# 	t_vprintf_s	
 SAFEC_BUILT_TESTS += 	\
+	t_scanf_s	\
 	t_fprintf_s	\
 	t_tmpfile_s	\
 	t_gets_s	\
@@ -219,6 +222,14 @@ t_strnlen_s_SOURCES           = test_strnlen_s.c $(SAFEC_TEST_COMMON)
 t_strtok_s_SOURCES            = test_strtok_s.c $(SAFEC_TEST_COMMON)
 t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
 t_sscanf_s_SOURCES            = test_sscanf_s.c $(SAFEC_TEST_COMMON)
+t_scanf_s_SOURCES             = test_scanf_s.c $(SAFEC_TEST_COMMON)
+#t_fscanf_s_SOURCES            = test_fscanf_s.c $(SAFEC_TEST_COMMON)
+#t_vfscanf_s_SOURCES           = test_vfscanf_s.c $(SAFEC_TEST_COMMON)
+#t_vscanf_s_SOURCES            = test_vscanf_s.c $(SAFEC_TEST_COMMON)
+#t_vsscanf_s_SOURCES           = test_vsscanf_s.c $(SAFEC_TEST_COMMON)
+#t_printf_s_SOURCES            = test_printf_s.c $(SAFEC_TEST_COMMON)
+#t_vfprintf_s_SOURCES          = test_vfprintf_s.c $(SAFEC_TEST_COMMON)
+#t_vprintf_s_SOURCES           = test_vprintf_s.c $(SAFEC_TEST_COMMON)
 t_fprintf_s_SOURCES           = test_fprintf_s.c $(SAFEC_TEST_COMMON)
 t_strerror_s_SOURCES          = test_strerror_s.c $(SAFEC_TEST_COMMON)
 t_strerrorlen_s_SOURCES       = test_strerrorlen_s.c $(SAFEC_TEST_COMMON)
