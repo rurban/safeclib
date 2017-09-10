@@ -162,7 +162,10 @@ int test_scanf_s (void)
 
 /*--------------------------------------------------*/
 
-    fclose(stream);
+#ifndef __GLIBC__
+    fclose(stream); /* crashes with linux glibc: double free */
+#endif
+
 #if 0
     strcpy(str1, "qqweqq");
     stuff_stdin(str1);

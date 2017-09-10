@@ -162,7 +162,10 @@ int test_wscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    fclose(stream);
+#ifndef __GLIBC__
+    fclose(stream); /* crashes with linux glibc: double free */
+#endif
+
 #if 0
     wcscpy(wstr1, L"qqweqq");
     stuff_stdin(wstr1);
