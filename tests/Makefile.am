@@ -69,8 +69,8 @@ SAFEC_BUILT_TESTS += \
 	t_vswscanf_s	\
 	t_vwscanf_s	\
 	t_fwscanf_s	\
-	t_vfwscanf_s	
-#	t_wscanf_s
+	t_vfwscanf_s	\
+	t_wscanf_s
 
 if ENABLE_EXTS
 SAFEC_BUILT_TESTS += \
@@ -260,7 +260,7 @@ t_vswscanf_s_SOURCES          = test_vswscanf_s.c $(SAFEC_TEST_COMMON)
 t_vwscanf_s_SOURCES           = test_vwscanf_s.c $(SAFEC_TEST_COMMON)
 t_fwscanf_s_SOURCES           = test_fwscanf_s.c $(SAFEC_TEST_COMMON)
 t_vfwscanf_s_SOURCES          = test_vfwscanf_s.c $(SAFEC_TEST_COMMON)
-#t_wscanf_s_SOURCES            = test_wscanf_s.c $(SAFEC_TEST_COMMON)
+t_wscanf_s_SOURCES            = test_wscanf_s.c $(SAFEC_TEST_COMMON)
 if ENABLE_EXTS
 t_wcsstr_s_SOURCES            = test_wcsstr_s.c $(SAFEC_TEST_COMMON)
 endif
