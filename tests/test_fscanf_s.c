@@ -58,7 +58,7 @@ int test_fscanf_s (void)
 
     stuff_stream("      24");
     rc = fscanf_s(stream, "%s %%n", str2, LEN);
-#ifdef BSD_OR_DARWIN_LIKE
+#ifdef BSD_LIKE
     if (rc != -1) { /* BSD's return -1 on %%n */
         printf("%s %u wrong fscanf(\"\",L\"%%n\"): %d\n",
                      __FUNCTION__, __LINE__, (int)rc);

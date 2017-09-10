@@ -126,7 +126,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
     /* hold base of dest in case src was not copied */
-    orig_dmax = dmax;
+    orig_dmax = dmax * sizeof(wchar_t);
     orig_dest = dest;
 
     if (dest < src) {

@@ -34,7 +34,7 @@ int test_wcscpy_s (void)
 
     rc = wcscpy_s(str1, 5, NULL);
     ERR(ESNULLP)
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     for (i=0; i<5; i++) {
         if (str1[i] != L'\0') {
             debug_printf("%s %u   Error rc=%u \n",
@@ -66,7 +66,7 @@ int test_wcscpy_s (void)
 
     rc = wcscpy_s(str1, LEN/2, str2);
     ERR(EOK)
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     for (i=0; i<LEN/2; i++) {
         if (str1[i] != L'\0') {
             debug_printf("%s %u   Error rc=%u \n",
@@ -95,11 +95,11 @@ int test_wcscpy_s (void)
 
     rc = wcscpy_s(&str1[0], LEN, &str1[5]);
     ERR(ESOVRLP)
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     for (i=0; i<LEN; i++) {
         if (str1[i] != L'\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
+            debug_printf("%s %u   Error rc=%u str[%d]=%lc\n",
+                         __FUNCTION__, __LINE__,  rc, i, str1[i]);
             errs++;
         }
     }
@@ -112,8 +112,24 @@ int test_wcscpy_s (void)
 #endif
 
     wcscpy(str1, L"keep it simple");
-    rc = wcscpy_s(&str1[5], LEN, &str1[0]);
+    rc = wcscpy_s(&str1[5], LEN-5, &str1[0]);
     ERR(ESOVRLP)
+
+#ifdef SAFECLIB_STR_NULL_SLACK
+    for (i=5; i<LEN; i++) {
+        if (str1[i] != L'\0') {
+            debug_printf("%s %u   Error rc=%u str[%d]=%lc\n",
+                         __FUNCTION__, __LINE__,  rc, i, str1[i]);
+            errs++;
+        }
+    }
+#else
+    if (str1[5] != L'\0') {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+        errs++;
+    }
+#endif
 
 /*--------------------------------------------------*/
 

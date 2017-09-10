@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_strcpy_s
  * File 'str/strcpy_s.c'
- * Lines executed:73.33% of 45
+ * Lines executed:100.00% of 45
  *
  *
  *------------------------------------------------------------------
@@ -27,13 +27,14 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(NULL, LEN, str2);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     rc = strcpy_s(str1, 5, NULL);
     ERR(ESNULLP)
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     for (i=0; i<5; i++) {
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
@@ -53,11 +54,12 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, 0, str2);
     ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = strcpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR(ESLEMAX)
-/*--------------------------------------------------*/
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -65,7 +67,7 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, LEN/2, str2);
     ERR(EOK)
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     for (i=0; i<LEN/2; i++) {
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
@@ -87,13 +89,14 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, LEN, str1);
     ERR(EOK)
+
 /*--------------------------------------------------*/
 
     strcpy(&str1[0], "keep it simple");
 
     rc = strcpy_s(&str1[0], LEN, &str1[5]);
     ERR(ESOVRLP)
-#ifdef SAFE_LIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     for (i=0; i<LEN; i++) {
         if (str1[i] != '\0') {
             debug_printf("%s %u   Error rc=%u \n",
@@ -112,6 +115,43 @@ int test_strcpy_s (void)
 /*--------------------------------------------------*/
 
     strcpy(&str1[0], "keep it simple");
+
+    rc = strcpy_s(&str1[5], LEN-5, &str1[0]);
+    ERR(ESOVRLP);
+#ifdef SAFECLIB_STR_NULL_SLACK
+    for (i=5; i<LEN; i++) {
+        if (str1[i] != '\0') {
+            debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+            errs++;
+        }
+    }
+#else
+    if (str1[5] != '\0') {
+        debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+        errs++;
+    }
+#endif
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "qqweqeqeqeq");
+    strcpy(str2, "keep it simple");
+
+    rc = strcpy_s(str2, LEN, str1);
+    ERR(EOK)
+    /* be sure the results are the same as strcmp */
+    ind = strcmp(str1, str2);
+    if (ind != 0) {
+        debug_printf("%s %u \"%s\"  Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  str1, rc );
+        errs++;
+    }
+
+/*--------------------------------------------------*/
+
+    strcpy(&str1[0], "keep it simple");
     str2[0] = '\0';
 
     rc = strcpy_s(str1, LEN, str2);
@@ -121,6 +161,7 @@ int test_strcpy_s (void)
                      __FUNCTION__, __LINE__,  str1, rc );
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
@@ -135,6 +176,7 @@ int test_strcpy_s (void)
                      __FUNCTION__, __LINE__,  str1, rc );
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
@@ -149,6 +191,7 @@ int test_strcpy_s (void)
                      __FUNCTION__, __LINE__,  str1, rc );
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
@@ -173,6 +216,7 @@ int test_strcpy_s (void)
                      __FUNCTION__, __LINE__,  str1, rc );
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
