@@ -31,8 +31,8 @@
 
 #include "safeclib_private.h"
 
-/* TODO:
-any of the arguments corresponding to %s is a null pointer.
+/* TODO SEGV
+Any of the arguments corresponding to %s is a null pointer.
 */
 
 /**
@@ -53,6 +53,7 @@ any of the arguments corresponding to %s is a null pointer.
  * @pre Neither \c stream nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
  * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
+ *      Note it currently even crashes with a NULL pointer.
  * @pre No encoding error shall occur.
  * @pre \c %c, \c %s, and \c %[ conversion specifiers each expect two
  *      arguments (the usual pointer and a value of type \c rsize_t
