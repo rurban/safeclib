@@ -124,14 +124,14 @@ bsearch_s(const void *key, const void *base,
     errno = 0;
 
     while (nmemb > 0) {
-        void *try = (char *)base + size*(nmemb/2);
-        int sign = compar(key, try, context);
-        if (!sign) return try;
+        void *ptry = (char *)base + size*(nmemb/2);
+        int sign = compar(key, ptry, context);
+        if (!sign) return ptry;
         else if (nmemb == 1) break;
         else if (sign < 0) {
             nmemb /= 2;
         } else {
-            base = try;
+            base = ptry;
             nmemb -= nmemb/2;
         }
     }
