@@ -268,7 +268,6 @@ gcov:
 	    mv $$base.c.gcov $$dir/ ; \
 	  fi; \
 	done
-	gcov2perl *.gcov */*.gcov
 endif
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)

@@ -269,6 +269,7 @@ if ENABLE_GCOV
 gcov: check
 	$(MAKE) -C tests gcov
 	$(MAKE) -C src gcov
+	gcov2perl src/*.gcov src/*/*.gcov
 	cover -no-gcov
 	build-tools/gcov-upd.pl src/gcov.log
 endif

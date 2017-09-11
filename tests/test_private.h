@@ -141,6 +141,12 @@
                      __FUNCTION__, __LINE__,  (int)rc); \
         errs++;                                    \
     }
+#define ANYERR()                                    \
+    if (rc >= 0) {                                  \
+        debug_printf("%s %u  Error rc=%d \n",       \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
 #define ERRNO(n)                                   \
     if (errno != (n)) {                            \
         debug_printf("%s %u  Error errno=%d \n",  \
