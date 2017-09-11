@@ -93,11 +93,14 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <li>FreeBSD and DragonFly libc</li>
 <li>OpenBSD libc</li>
 <li>newlib</li>
+<li>dietlibc</li>
+<li>uClibc</li>
+<li>minilibc</li>
 <li>Microsoft Windows/MINGW_HAS_SECURE_API</li>
 <li>Android Bionic</li>
 <li>Embarcadero C++ libc</li>
 </ul>
-<p>only the following implement the secure C11 extensions:</p>
+<p>only the last 3 implement the secure C11 extensions:</p>
 <ul>
 <li>Microsoft Windows</li>
 <li>Android Bionic</li>
@@ -108,7 +111,7 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <p>The wide sprintf variants do not allow a NULL buffer argument to return the size of the resulting buffer. If the initial buffer is too small, you need to realloc and redo.</p>
 <h1>C11 Annex K/safec caveats</h1>
 <ul>
-<li><p class="startli">snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s</p>
+<li><p class="startli">snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s:</p>
 <p class="startli">They are all considered unsafe. The 4 'n' truncating printf versions don't guarantee null-delimited destination buffers.</p>
 </li>
 <li><code>tmpnam_s</code> and <code>tmpnam</code> are racy.</li>
@@ -119,19 +122,23 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <li><code>strtok_s</code>, <code>wcstok_s</code>,<code>vsnprintf_s</code> miss the dmax argument.</li>
 <li><code>vsnprintf_s</code> adds a maxarg argument.</li>
 <li><code>vswprintf</code> adds a maxarg argument on w32. (with <code>__STRICT_ANSI__</code> undefined)</li>
-<li>no <code>strnlen</code> on mingw32</li>
+<li>no <code>strnlen</code> on mingw32.</li>
 <li>no <code>errno_t</code> return type for <code>qsort_s</code>, only <code>void</code>.</li>
-<li>reversed argument order for <code>localtime_s</code> and <code>gmtime_s</code></li>
+<li>reversed argument order for <code>localtime_s</code> and <code>gmtime_s</code>.</li>
+<li>older mingw versions have <code>wchar.h</code> with only 2 functions: <code>wcscmp</code>, <code>wcslen</code></li>
 </ul>
 <h2>safeclib</h2>
 <ul>
 <li>safeclib does not check optional NULL parameters to the <code>scanf_s</code>, <code>printf_s</code> functions. This would need tighter integration into the upstream libc.</li>
-<li>safeclib <code>fgets_s</code> permits temporary writes of dmax+1 characters into dest.</li>
+<li>safeclib <code>fgets_s</code> permits temporary writes of <code>dmax+1</code> characters into dest.</li>
 </ul>
 <h1>Other caveats</h1>
 <h2>glibc</h2>
 <ul>
-<li>SEGV with <code>freopen(NULL, "rb", stdin)</code> with asan on some systems, calling an invalid strlen() on NULL.</li>
+<li>SEGV with <code>freopen(NULL, "rb", stdin)</code> with asan on some systems, calling an invalid <code>strlen()</code> on NULL.</li>
+<li><p class="startli">quirky declaration of various standards, which conflict with each other.</p>
+<p class="startli">glibc needs the correct standard to include some extensions when we declare the standard by ourselves. e.g. clang-4.0 -std=c99 misses several reentrant versions. when defining <code>_XOPEN_SOURCE 700</code> to define <code>strnlen</code> and the reentrant time versions, we need also <code>__STDC_WANT_LIB_EXT1__ 1</code> for <code>errno_t</code>, and this would break several other older struct members, such as <code>tm_gmtoff</code></p>
+</li>
 </ul>
 <h2>newlib</h2>
 <ul>
@@ -154,6 +161,6 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.168-g44f46f-dirty 3.0
+Generated for Safe C Library 30082017.169-g906966-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

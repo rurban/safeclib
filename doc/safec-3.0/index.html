@@ -89,6 +89,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <h2>Copying </h2>
 <p>This project's licensing restrictions are documented in the file 'COPYING' under the root directory of this release. Basically it's MIT licensed.</p>
 <h2>Overview </h2>
+<p>This library implements the secure C11 Annex K functions on top of most libc implementations, which are missing from them.</p>
 <p>The ISO TR24731 Bounds Checking Interface documents indicate that the key motivation for the new specification is to help mitigate the ever increasing security attacks, specifically the buffer overrun.</p>
 <p>The rationale document says ``Buffer overrun attacks continue to be a security problem. Roughly 10% of vulnerability reports cataloged by CERT from 01/01/2005 to 07/01/2005 involved buffer overflows. Preventing buffer overruns is the primary, but not the only, motivation for this technical report.''</p>
 <p>The rationale document continues ``that these only mitigate, that is lessen, security problems. When used properly, these functions decrease the danger buffer overrun attacks. Source code may remain vulnerable due to other bugs and security issues. The highest level of security is achieved by building in layers of security utilizing multiple strategies.''</p>
@@ -115,12 +116,13 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li>provide a library of functions that promote and increase code safety and security</li>
 <li>provide a library of functions that are efficient</li>
 </ul>
-<p>The C11 Standard adopted many of these points, and added some secure _s variants in the Annex K. The Microsoft Windows/MINGW secure API did the same, but deviated in some functions from the standard. Besides Windows only Android's Bionic and Embarcadero implemented this C11 secure Annex K API so far.</p>
+<p>The C11 Standard adopted many of these points, and added some secure _s variants in the Annex K. The Microsoft Windows/MINGW secure API did the same, but deviated in some functions from the standard. Besides Windows only Android's Bionic and Embarcadero implemented this C11 secure Annex K API so far. They are still missing from glibc, musl, FreeBSD and DragonFly libc, OpenBSD libc, newlib, dietlibc, uClibc, minilibc.</p>
 <h2>Design Considerations </h2>
-<p>This library only implements a subset of the functions defined in the specification. Included in the library are extensions to the specification to provide a complementary set of functions with like behavior.</p>
+<p>This library implements since 3.0 all functions defined in the specifications. Included in the library are extensions to the specification to provide a complementary set of functions with like behavior.</p>
+<p>This library is meant to be used on top of all the existing libc's which miss the secure C11 functions. Of course tighter integration into the system libc would be better, esp. with the printf, scanf and IO functions. See the seperate <a class="el" href="d7/d17/libc-overview_8md.html">libc-overview.md</a> document.</p>
 <p>Austin Group Review of ISO/IEC WDTR 24731 <a href="http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt">http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt</a></p>
-<p>Stackoverflow discussion: <a href="https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions">https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions</a></p>
 <p>C11 standard (ISO/IEC 9899:2011) <a href="http://en.cppreference.com/w/c">http://en.cppreference.com/w/c</a></p>
+<p>Stackoverflow discussion: <a href="https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions">https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions</a></p>
 <p>=== Use of errno</p>
 <p>The TR24731 specification says an implementation may set errno for the functions deﬁned in the technical report, but is not required to. This library does not set errno. The library does use errno return codes as required by functional APIs. Specific Safe C String and Safe C Memory errno codes are defined in the safe_errno.h file.</p>
 <p>=== Runtime-constraints</p>
@@ -157,10 +159,10 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li>Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc+clang)</li>
 <li>Linux Debian 10 amd64 glibc 2.24</li>
 <li>Linux Void amd64 musl-1.1.16</li>
-<li>x86_64-w64-mingw32 cross-compiled and tested under wine</li>
+<li>x86_64-w64-mingw32, i686-w64-mingw32 cross-compiled and tested under wine</li>
 <li>i386-mingw32 cross-compiled and tested under wine</li>
-<li>cygwin32 gcc</li>
-<li>cygwin64 gcc -std=c99</li>
+<li>cygwin32 gcc (newlib)</li>
+<li>cygwin64 gcc -std=c99 (newlib)</li>
 <li>freebsd 10.3 amd64</li>
 <li>User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs</li>
 </ul>
@@ -178,6 +180,6 @@ $(document).ready(function(){initNavTree('index.html','');});
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.168-g44f46f-dirty 3.0
+Generated for Safe C Library 30082017.169-g906966-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
