@@ -119,8 +119,12 @@ int test_scanf_s (void)
     stuff_stdin(str1);
 
     rc = scanf_s("%s", str2, LEN);
-    ERR(-1);
-    EXPNULL(str2);
+    if (rc == -1) { /* flapping test */
+        ERR(-1);
+        EXPNULL(str2);
+    } else {
+        ERR(1);
+    }
 
 /*--------------------------------------------------*/
 
@@ -129,7 +133,6 @@ int test_scanf_s (void)
 
     rc = scanf_s("%s", str2, LEN);
     ERR(-1)
-    EXPNULL(str2);
 
 /*--------------------------------------------------*/
 
