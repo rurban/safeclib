@@ -31,7 +31,7 @@
 
 #include "safeclib_private.h"
 /* conflicting API */
-#ifndef MINGW_HAS_SECURE_API
+#ifndef HAVE_MINGW64
 
 #if defined(HAVE_GMTIME_R)
 struct tm *gmtime_r(const time_t * __restrict, struct tm * __restrict);

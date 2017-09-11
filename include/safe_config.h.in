@@ -36,6 +36,14 @@
 extern "C" {
 #endif
 
+#ifdef __MINGW32__
+# if defined __MINGW64_VERSION_MAJOR && defined __MINGW64_VERSION_MINOR
+#   define HAVE_MINGW64  /* mingw-w64 (either 32 or 64bit) */
+# else
+#   define HAVE_MINGW32  /* old mingw */
+# endif
+#endif
+
 /*
  * Safe Lib specific configuration values.
  */

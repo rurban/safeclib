@@ -282,7 +282,7 @@ $(top_srcdir)/.version:
 dist-hook:
 	echo $(PACKAGE_VERSION) > $(distdir)/$(TARBALL_VERSION_FILE)
 check-log:
-	$(MAKE) check || cat tests/test-suite.log
+	$(MAKE) check || (cat tests/test-suite.log && false)
 perf:
 	tests/p_memcpy_s
 	tests/p_memcpy32_s

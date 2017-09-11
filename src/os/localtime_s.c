@@ -30,8 +30,8 @@
  */
 
 #include "safeclib_private.h"
-/* conflicting API */
-#ifndef MINGW_HAS_SECURE_API
+/* conflicting w64-mingw32 API */
+#ifndef HAVE_MINGW64
 
 #if defined(HAVE_LOCALTIME_R)
 struct tm *localtime_r(const time_t * __restrict, struct tm * __restrict);
