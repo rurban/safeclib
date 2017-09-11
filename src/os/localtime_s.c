@@ -33,6 +33,10 @@
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 
+#if defined(HAVE_LOCALTIME_R)
+struct tm *localtime_r(const time_t * __restrict, struct tm * __restrict);
+#endif
+
 /** 
  * @brief
  *    The \c localtime_s function converts the given time since epoch to a

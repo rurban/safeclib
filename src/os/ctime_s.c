@@ -31,6 +31,10 @@
 
 #include "safeclib_private.h"
 
+#if defined(HAVE_CTIME_R)
+char *ctime_r(const time_t *, char *);
+#endif
+
 /** 
  * @brief
  *    The \c ctime_s function converts the given time since epoch to a

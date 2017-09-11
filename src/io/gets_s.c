@@ -31,6 +31,14 @@
 
 #include "safeclib_private.h"
 
+/* i386-mingw32-gcc */
+#ifndef HAVE_STRNLEN
+#define strnlen(s,smax) strlen(s)
+#else
+size_t strnlen(const char *, size_t);
+#endif
+
+
 /**
  * @brief
  *    The \c gets_s function reads characters from stdin until a newline is
@@ -84,11 +92,6 @@
  * @see
  *    scanf_s()
  */
-
-/* i386-mingw32-gcc */
-#ifndef HAVE_STRNLEN
-#define strnlen(s,smax) strlen(s)
-#endif
 
 EXPORT char *
 gets_s (char *restrict dest, rsize_t dmax)

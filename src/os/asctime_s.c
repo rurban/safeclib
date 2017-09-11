@@ -33,6 +33,10 @@
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 
+#if defined(HAVE_ASCTIME_R)
+char *asctime_r(const struct tm * __restrict, char * __restrict);
+#endif
+
 /** 
  * @brief
  *    The \c asctime_s function converts the given calendar time \c tm to a
