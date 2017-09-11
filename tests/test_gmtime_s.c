@@ -46,7 +46,7 @@ int test_gmtime_s (void)
     {
         struct tm *tm = gmtime(&timer);
         memset(tm, 0, sizeof(struct tm));
-#if __POINTER_WIDTH__ == 32
+#if SIZEOF_TIME_T < 8
         /* year 10000, ie 313392063599L would overflow on 32bit */
         timer = MAX_TIME_T_STR;
 #else
