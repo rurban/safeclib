@@ -53,7 +53,7 @@ int test_getenv_s (void)
     str2 = getenv(name);
     EXPSTR(dest, str2);
     ind = strlen(str2);
-    INDCMP(!= len);
+    INDCMP(!= (int)len);
 
     rc = getenv_s(NULL, dest, LEN, name);
     ERR(EOK);

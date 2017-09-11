@@ -85,9 +85,9 @@ int test_vswprintf_s (void)
     if (len3 != len2) {
 #ifdef DEBUG
         size_t len1 = wcslen(str1);
-#endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
+#endif
         errs++;
     }
 

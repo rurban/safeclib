@@ -18,7 +18,7 @@
 
 int main()
 {
-#ifdef DEBUG
+#if defined(DEBUG) || defined(__cplusplus)
     errno_t rc = 0;
 #endif
     char *p2str;

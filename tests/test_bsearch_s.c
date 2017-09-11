@@ -50,25 +50,25 @@ int test_bsearch_s (void)
 
 /*--------------------------------------------------*/
 
-    item = bsearch_s(NULL, array, LEN, sizeof(array[0]), comp, NULL);
+    item = (struct items*)bsearch_s(NULL, array, LEN, sizeof(array[0]), comp, NULL);
     ERRNO(ESNULLP);
     PTRNULL(item);
 
-    item = bsearch_s(&key, NULL, LEN, sizeof(array[0]), comp, NULL);
+    item = (struct items*)bsearch_s(&key, NULL, LEN, sizeof(array[0]), comp, NULL);
     ERRNO(ESNULLP);
     PTRNULL(item);
 
-    item = bsearch_s(&key, array, LEN, sizeof(array[0]), NULL, NULL);
+    item = (struct items*)bsearch_s(&key, (const void *)array, LEN, sizeof(array[0]), NULL, NULL);
     ERRNO(ESNULLP);
     PTRNULL(item);
 
 /*--------------------------------------------------*/
 
-    item = bsearch_s(&key, array, RSIZE_MAX_MEM+1, sizeof(array[0]), comp, NULL);
+    item = (struct items*)bsearch_s(&key, array, RSIZE_MAX_MEM+1, sizeof(array[0]), comp, NULL);
     ERRNO(ESLEMAX);
     PTRNULL(item);
 
-    item = bsearch_s(&key, array, LEN, RSIZE_MAX_MEM+1, comp, NULL);
+    item = (struct items*)bsearch_s(&key, array, LEN, RSIZE_MAX_MEM+1, comp, NULL);
     ERRNO(ESLEMAX);
     PTRNULL(item);
 

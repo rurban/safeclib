@@ -289,7 +289,7 @@ qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp, void *ctx)
 
     if (!size) return;
 
-    head = base;
+    head = (unsigned char *)base;
     high = head + size - width;
 
     /* Precompute Leonardo numbers, scaled by element width */

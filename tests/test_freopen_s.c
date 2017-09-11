@@ -16,7 +16,7 @@ int test_freopen_s (void)
 {
     errno_t rc;
     int errs = 0;
-    FILE *tmp, *new;
+    FILE *tmp, *newf;
     FILE *file = stdin;
 
 /*--------------------------------------------------*/
@@ -60,10 +60,10 @@ int test_freopen_s (void)
     }
 
     fputs("Hello 1\n", tmp);
-    rc = freopen_s(&new, TMP, "a+", tmp);
+    rc = freopen_s(&newf, TMP, "a+", tmp);
     ERR(0);
-    fputs("Hello 2\n", new);
-    fclose(new);
+    fputs("Hello 2\n", newf);
+    fclose(newf);
 
 /*--------------------------------------------------*/
     
