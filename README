@@ -10,6 +10,9 @@ under the root directory of this release. Basically it's MIT licensed.
 
 Overview
 --------
+This library implements the secure C11 Annex K functions on top of most libc
+implementations, which are missing from them.
+
 The ISO TR24731 Bounds Checking Interface documents indicate that the key
 motivation for the new specification is to help mitigate the ever increasing
 security attacks, specifically the buffer overrun.
@@ -54,22 +57,29 @@ _s variants in the Annex K.  The Microsoft Windows/MINGW secure API did the
 same, but deviated in some functions from the standard. Besides
 Windows only Android's Bionic and Embarcadero implemented this C11
 secure Annex K API so far.
+They are still missing from glibc, musl, FreeBSD and DragonFly libc,
+OpenBSD libc, newlib, dietlibc, uClibc, minilibc.
 
 
 Design Considerations
 ---------------------
-This library only implements a subset of the functions defined in the
-specification.  Included in the library are extensions to the specification to
-provide a complementary set of functions with like behavior.
+This library implements since 3.0 all functions defined in the
+specifications.  Included in the library are extensions to the specification
+to provide a complementary set of functions with like behavior.
+
+This library is meant to be used on top of all the existing libc's
+which miss the secure C11 functions. Of course tighter integration
+into the system libc would be better, esp. with the printf, scanf and
+IO functions. See the seperate libc-overview.md document.
 
 Austin Group Review of ISO/IEC WDTR 24731
 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt
 
-Stackoverflow discussion:
-https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions
-
 C11 standard (ISO/IEC 9899:2011)
 http://en.cppreference.com/w/c
+
+Stackoverflow discussion:
+https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions
 
 === Use of errno
 
@@ -78,7 +88,6 @@ functions deﬁned in the technical report, but is not required to.  This
 library does not set errno.  The library does use errno return codes as
 required by functional APIs.  Specific Safe C String and Safe C Memory errno
 codes are defined in the safe_errno.h file.
-
 
 === Runtime-constraints
 
@@ -114,7 +123,8 @@ The specification states the various functions would be added to existing
 Standard C header files: stdio.h, string.h, etc.  This implementation
 separates the memory related functions into the safe_mem_lib.h header and the
 string related functions into the safe_str_lib.h header.
-You can optionally use the safe_lib.h header to include also non str/mem functions.
+You can optionally use the safe_lib.h header to include also non str/mem
+functions.
 
 The make file builds a single library libsafec-VERSION.a and .so in the
 src/.libs directory.
@@ -202,10 +212,10 @@ Tested Platforms
 - Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc+clang)
 - Linux Debian 10 amd64 glibc 2.24
 - Linux Void amd64 musl-1.1.16
-- x86_64-w64-mingw32 cross-compiled and tested under wine
+- x86_64-w64-mingw32, i686-w64-mingw32 cross-compiled and tested under wine
 - i386-mingw32 cross-compiled and tested under wine
-- cygwin32 gcc
-- cygwin64 gcc -std=c99
+- cygwin32 gcc (newlib)
+- cygwin64 gcc -std=c99 (newlib)
 - freebsd 10.3 amd64
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 

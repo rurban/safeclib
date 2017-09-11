@@ -10,11 +10,14 @@ From the following tested libc implementations:
 * FreeBSD and DragonFly libc
 * OpenBSD libc
 * newlib
+* dietlibc
+* uClibc
+* minilibc
 * Microsoft Windows/MINGW\_HAS\_SECURE_API
 * Android Bionic
 * Embarcadero C++ libc
 
-only the following implement the secure C11 extensions:
+only the last 3 implement the secure C11 extensions:
 
 * Microsoft Windows
 * Android Bionic
@@ -31,7 +34,7 @@ small, you need to realloc and redo.
 
 # C11 Annex K/safec caveats
 
-* snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s
+* snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s:
 
   They are all considered unsafe. The 4 'n' truncating printf versions
   don't guarantee null-delimited destination buffers.
@@ -49,11 +52,14 @@ small, you need to realloc and redo.
 * `vswprintf` adds a maxarg argument on w32. (with `__STRICT_ANSI__`
   undefined)
 
-* no `strnlen` on mingw32
+* no `strnlen` on mingw32.
 
 * no `errno_t` return type for `qsort_s`, only `void`.
 
-* reversed argument order for `localtime_s` and `gmtime_s`
+* reversed argument order for `localtime_s` and `gmtime_s`.
+
+* older mingw versions have `wchar.h` with only 2 functions:
+  `wcscmp`, `wcslen`
 
 ## safeclib
 
@@ -61,7 +67,7 @@ small, you need to realloc and redo.
   `printf_s` functions. This would need tighter integration into the
   upstream libc.
 
-* safeclib `fgets_s` permits temporary writes of dmax+1 characters
+* safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
 
 # Other caveats
@@ -69,7 +75,16 @@ small, you need to realloc and redo.
 ## glibc
 
 * SEGV with `freopen(NULL, "rb", stdin)` with asan on some systems,
-  calling an invalid strlen() on NULL.
+  calling an invalid `strlen()` on NULL.
+  
+* quirky declaration of various standards, which conflict with each other.
+  
+  glibc needs the correct standard to include some extensions
+  when we declare the standard by ourselves.
+  e.g. clang-4.0 -std=c99 misses several reentrant versions.
+  when defining `_XOPEN_SOURCE 700` to define `strnlen` and the reentrant
+  time versions, we need also `__STDC_WANT_LIB_EXT1__ 1` for `errno_t`,
+  and this would break several other older struct members, such as `tm_gmtoff`
 
 ## newlib
 
