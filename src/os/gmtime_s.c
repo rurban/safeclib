@@ -68,6 +68,9 @@
  *    alternative gmtime_r, which is similar to the C11 function gmtime_s,
  *    except that it does not check the validity of its input parameters.
  *
+ *    This function is available under windows with a different API, reversed
+ *    argument order, and is not available with safeclib.
+ *
  * @see
  *    localtime_s(), ctime_s()
  */

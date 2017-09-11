@@ -10,6 +10,9 @@
 #include "safe_lib.h"
 #include <stdlib.h>
 
+/* conflicting API */
+#ifndef MINGW_HAS_SECURE_API
+
 #define LEN   10
 /* needs to be sorted! */
 struct items {
@@ -89,5 +92,13 @@ int test_qsort_s (void)
 int main (void)
 {
     return (test_qsort_s());
+}
+#endif
+
+#else
+int main (void)
+{
+    printf("skipped under windows sec_api: conflicting API\n");
+    return 0;
 }
 #endif

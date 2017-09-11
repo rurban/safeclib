@@ -59,6 +59,51 @@
 
 #endif
 
+#ifdef _WIN32
+#define __STRICT_ANSI__
+#include <io.h>
+#define pipe(p) _pipe(p,2,0)
+#endif
+
+/* libc variant: musl not detectable. and there's __GLIBC__ and _WIN32.
+   uClibc? dietlibc? minilibc? exots? */
+#if defined(__FreeBSD__) || \
+    defined(__NetBSD__)  || \
+    defined(__OpenBSD__) || \
+    defined(__bsdi__)    || \
+    defined(__DragonFly__)
+# define BSD_LIKE
+#endif
+#if defined(__APPLE__) || defined(BSD_LIKE)
+# define BSD_OR_DARWIN_LIKE
+#endif
+#if defined(__NEWLIB__) || defined(BSD_LIKE)
+# define BSD_OR_NEWLIB_LIKE
+#endif
+#if defined(__APPLE__) || defined(__NEWLIB__) || defined(BSD_LIKE)
+# define BSD_ALL_LIKE
+#endif
+
+#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#  define NO_C11
+#endif
+
+#if defined(__has_feature)
+# if __has_feature(address_sanitizer)
+#  define HAVE_ASAN 1
+# endif
+#endif
+
+/* for a proper asctime string with 26 digits, i.e. max 4 digit year.
+   01.01.10000 00:00 */
+#ifndef MAX_TIME_T_STR
+# if SIZEOF_TIME_T == 4
+#  define MAX_TIME_T_STR (0x7fffffff)
+# else
+#  define MAX_TIME_T_STR (313360441200L)
+# endif
+#endif
+
 /* ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
    rc = strtolowercase_s("test", len); */
 #ifdef __cplusplus
@@ -227,44 +272,5 @@
     else /* dont inspect the values */          \
         printf(__FILE__ ": cannot set C locale for test" \
                " (lc_cat=%s, codeset=%s)\n", lc_cat, lang)
-
-/* libc variant: musl not detectable. and there's __GLIBC__ and _WIN32.
-   uClibc? dietlibc? minilibc? exots? */
-#if defined(__FreeBSD__) || \
-    defined(__NetBSD__)  || \
-    defined(__OpenBSD__) || \
-    defined(__bsdi__)    || \
-    defined(__DragonFly__)
-# define BSD_LIKE
-#endif
-#if defined(__APPLE__) || defined(BSD_LIKE)
-# define BSD_OR_DARWIN_LIKE
-#endif
-#if defined(__NEWLIB__) || defined(BSD_LIKE)
-# define BSD_OR_NEWLIB_LIKE
-#endif
-#if defined(__APPLE__) || defined(__NEWLIB__) || defined(BSD_LIKE)
-# define BSD_ALL_LIKE
-#endif
-
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
-#  define NO_C11
-#endif
-
-#if defined(__has_feature)
-# if __has_feature(address_sanitizer)
-#  define HAVE_ASAN 1
-# endif
-#endif
-
-/* for a proper asctime string with 26 digits, i.e. max 4 digit year.
-   01.01.10000 00:00 */
-#ifndef MAX_TIME_T_STR
-# if SIZEOF_TIME_T == 4
-#  define MAX_TIME_T_STR (0x7fffffff)
-# else
-#  define MAX_TIME_T_STR (313360441200L)
-# endif
-#endif
 
 #endif /* __TEST_PRIVATE_H__ */

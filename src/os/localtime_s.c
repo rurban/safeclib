@@ -68,6 +68,9 @@
  *    alternative localtime_r, which is similar to the C11 function localtime_s,
  *    except that it does not check the validity of its input parameters.
  *
+ *    This function is available under windows with a different API, reversed
+ *    argument order, and is not available with safeclib.
+ *
  * @see
  *    gmtime_s(), ctime_s()
  */

@@ -51,6 +51,10 @@ small, you need to realloc and redo.
 
 * no `strnlen` on mingw32
 
+* no `errno_t` return type for `qsort_s`, only `void`.
+
+* reversed argument order for `localtime_s` and `gmtime_s`
+
 ## safeclib
 
 * safeclib does not check optional NULL parameters to the `scanf_s`,

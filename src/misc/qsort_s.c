@@ -43,7 +43,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* not in mingw sec_api */
+/* in mingw sec_api returning void */
 
 /** 
  * @brief
@@ -98,6 +98,9 @@
  *    accepts arrays of zero size is \c bsearch_s).  Until \c qsort_s, users of
  *    \c qsort often used global variables to pass additional context to the
  *    comparison function.
+ *
+ *    This function is available under windows with a different API, no return
+ *    type, and is not available with safeclib.
  *
  * @return  Zero on success, an errno_t on errors.
  * @retval  EOK         when operation is successful

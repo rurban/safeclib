@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
+/* conflicting API */
+#ifndef MINGW_HAS_SECURE_API
+
 int test_localtime_s (void)
 {
     int errs = 0;
@@ -70,5 +73,12 @@ int test_localtime_s (void)
 int main (void)
 {
     return (test_localtime_s());
+}
+#endif
+#else
+int main (void)
+{
+    printf("skipped under windows sec_api: reversed arguments\n");
+    return 0;
 }
 #endif
