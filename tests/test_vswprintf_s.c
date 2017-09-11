@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_vswprintf_s
  * File 'wchar/vswprintf_s.c'
- * Lines executed:97.50% of 40
+ * Lines executed:80.00% of 40
  *
  *------------------------------------------------------------------
  */
@@ -205,7 +205,7 @@ int test_vswprintf_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef __APPLE__    
+#ifndef __APPLE__
     rc = vtwprintf_s(str1, 10, L"%vls", str2);
 # if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
     /* they print unknown formats verbatim */

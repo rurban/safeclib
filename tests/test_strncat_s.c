@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strncat_s
  * File 'str/strncat_s.c'
- * Lines executed:88.24% of 68
- *
+ * Lines executed:97.06% of 68
  *
  *------------------------------------------------------------------
  */
@@ -77,6 +76,44 @@ int test_strncat_s (void)
                      __FUNCTION__, __LINE__);
         errs++;
     }
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcd");
+
+    rc = strncat_s(&str1[0], 8, &str1[3], 4);
+    ERR(ESOVRLP);
+    EXPNULL(str1)
+
+    strcpy(str1, "abcd");
+
+    rc = strncat_s(&str1[0], 4, &str1[3], 4);
+    ERR(ESOVRLP);
+    EXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcd");
+
+    rc = strncat_s(&str1[0], 3, &str1[3], 4);
+    ERR(ESUNTERM);
+    EXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcdefgh");
+
+    rc = strncat_s(&str1[3], 5, &str1[0], 4);
+    ERR(ESUNTERM);
+    EXPNULL(&str1[3])
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcdefgh");
+
+    rc = strncat_s(&str1[3], 12, &str1[0], 4);
+    ERR(ESOVRLP);
+    EXPNULL(&str1[3])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");

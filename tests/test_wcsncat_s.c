@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsncat_s
  * File 'wchar/wcsncat_s.c'
- * Lines executed:88.24% of 68
+ * Lines executed:97.06% of 68
  *
  *
  *------------------------------------------------------------------
@@ -67,6 +67,44 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(str1, 2, str2, 1);
     ERR(ESNOSPC)
     WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcd");
+
+    rc = wcsncat_s(&str1[0], 8, &str1[3], 4);
+    ERR(ESOVRLP);
+    WEXPNULL(str1)
+
+    wcscpy(str1, L"abcd");
+
+    rc = wcsncat_s(&str1[0], 4, &str1[3], 4);
+    ERR(ESOVRLP);
+    WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcd");
+
+    rc = wcsncat_s(&str1[0], 3, &str1[3], 4);
+    ERR(ESUNTERM);
+    WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcdefgh");
+
+    rc = wcsncat_s(&str1[3], 5, &str1[0], 4);
+    ERR(ESUNTERM);
+    WEXPNULL(&str1[3])
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcdefgh");
+
+    rc = wcsncat_s(&str1[3], 12, &str1[0], 4);
+    ERR(ESOVRLP);
+    WEXPNULL(&str1[3])
 
 /*--------------------------------------------------*/
 

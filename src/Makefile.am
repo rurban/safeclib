@@ -265,15 +265,16 @@ gcov:
 	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
 	  if test -e "$$dir/$$base.gcno" -a -e $$c; then \
 	    $(GCOV) -s $$dir $$c | tee -a $(top_builddir)/src/gcov.log; \
+	    mv $$base.c.gcov $$dir/ ; \
 	  fi; \
 	done
+	gcov2perl *.gcov */*.gcov
 endif
-
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
 if ENABLE_GCOV
-CLEANFILES  += */*.gcov gcov.log
+CLEANFILES  += */*.gcov *.gcov gcov.log
 endif
 
 ## LCOV_INPUT      = $(CFILES:%.c=.libs/%.gcda)
