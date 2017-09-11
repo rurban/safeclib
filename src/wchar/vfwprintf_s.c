@@ -48,8 +48,8 @@ any of the arguments corresponding to %s is a null pointer
  * @param[in]   fmt     format-control wide string.
  * @param[in]   ap      optional arguments
  *
- * @pre fmt shall not be a null pointer.
- * @pre fmt  shall not contain the conversion specifier \c %n
+ * @pre Neither stream nor fmt shall be a null pointer.
+ * @pre fmt shall not contain the conversion specifier \c %n
  * @pre None of the arguments corresponding to \c %s is a null pointer (not yet)
  * @pre No encoding error shall occur.
  *
@@ -57,7 +57,7 @@ any of the arguments corresponding to %s is a null pointer
  * @return  On failure a negative number is returned, and possibly errno set to
  *          EINVAL or EOVERFLOW.
  *
- * @retval  -ESNULLP when fmt is NULL pointer
+ * @retval  -ESNULLP when stream or fmt is a NULL pointer
  * @retval  -EINVAL  when fmt contains %n
  * @retval  -1       some other error. errno: EINVAL or EOVERFLOW
  *
@@ -71,6 +71,12 @@ vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
 {
     wchar_t *p;
     int ret;
+
+    if (unlikely(stream == NULL)) {
+        invoke_safe_str_constraint_handler("vfprintf_s: stream is null",
+                   NULL, ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vfwprintf_s: fmt is null",

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------
- * test_vfwprintf_s
- * File 'wchar/vfwprintf_s.c'
+ * test_vfprintf_s
+ * File 'vfprintf_s.c'
  * Lines executed:83.33% of 18
  *
  *------------------------------------------------------------------
@@ -10,24 +10,23 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
-#define TMP   "tmpvfwp"
+#define TMP   "tmpvfp"
 #define LEN   ( 128 )
 
 static FILE* out;
-static wchar_t   wstr[LEN];
-static char      str[LEN];
+static char   str1[LEN];
+static char   str2[LEN];
 
-int vtwprintf_s (FILE *restrict stream,
-                const wchar_t *restrict fmt, ...) {
+int vtfprintf_s (FILE *restrict stream, const char *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
-    rc = vfwprintf_s(stream, fmt, ap);
+    rc = vfprintf_s(stream, fmt, ap);
     va_end(ap);
     return rc;
 }
 
-int test_vfwprintf_s (void)
+int test_vfprintf_s (void)
 {
     errno_t rc;
     int32_t ind;
@@ -37,49 +36,56 @@ int test_vfwprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = vtwprintf_s(out, NULL);
+    rc = vtfprintf_s(out, NULL);
     ERR(ESNULLP)
 
-    rc = vtwprintf_s(NULL, L"");
+    rc = vtfprintf_s(NULL, "");
     ERR(ESNULLP)
 
-    rc = vtwprintf_s(out, L"");
+    rc = vtfprintf_s(out, "", NULL);
     ERR(EOK)
 
     /* TODO
-    rc = vtwprintf_s(out, L"%s", NULL);
+    rc = vtfprintf_s(NULL, "%s", NULL);
+    ERR(ESNULLP);
+    */
+
+/*--------------------------------------------------*/
+
+    str1[0] = '\0'; 
+    rc = vtfprintf_s(out, "%s%n\n", str1, &ind);
+    ERR(EINVAL)
+
+/*--------------------------------------------------*/
+
+    rc = vtfprintf_s(out, "%s%%n\n", str1);
+    if (rc < 0) {
+        printf("Failed to open stdout for write: %s\n",
+               strerror(errno));
+        return errs;
+    }
+    ERR(3)
+
+    rc = vtfprintf_s(out, "%%n\n");
+    ERR(3);
+
+/*--------------------------------------------------*/
+
+    /* TODO
+    rc = vtfprintf_s(out, "%s", NULL);
     ERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
 
-    wstr[0] = L'\0'; 
-    rc = vtwprintf_s(out, L"%s%n\n", wstr, &ind);
-    ERR(EINVAL)
+    strcpy(str1, "12");
+    strcpy(str2, "34");
 
-    if (!out) {
-        printf("Failed to open file %s for write: %s\n",
-               TMP, strerror(errno));
-        return errs;
-    }
-
-/*--------------------------------------------------*/
-
-    rc = vtwprintf_s(out, L"%s%%n\n", wstr);
-    ERR(3)
-
-    rc = vtwprintf_s(out, L"%%n\n");
-    ERR(3);
-
-/*--------------------------------------------------*/
-
-    wcscpy(wstr, L"12");
-    strcpy(str, "34");
-
-    rc = vtwprintf_s(out, L"%ls%s", wstr, str);
+    rc = vtfprintf_s(out, "%s%s", str1, str2);
     ERR(4)
 
 /*--------------------------------------------------*/
+
     fclose(out);
     unlink(TMP);
 
@@ -91,6 +97,6 @@ int test_vfwprintf_s (void)
    until a better solution can be created. */
 int main (void)
 {
-    return (test_vfwprintf_s());
+    return (test_vfprintf_s());
 }
 #endif

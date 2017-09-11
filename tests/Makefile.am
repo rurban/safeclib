@@ -144,11 +144,11 @@ endif
 endif
 
 # 	t_vsscanf_s	\
-# 	t_printf_s	\
-# 	t_vfprintf_s	\
-# 	t_vprintf_s	
+# 	t_printf_s	
 SAFEC_BUILT_TESTS += 	\
 	t_fprintf_s	\
+	t_vprintf_s	\
+	t_vfprintf_s	\
 	t_tmpfile_s	\
 	t_gets_s	\
 	t_fopen_s	\
@@ -237,8 +237,8 @@ t_fscanf_s_SOURCES            = test_fscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vscanf_s_SOURCES            = test_vscanf_s.c $(SAFEC_TEST_COMMON)
 #t_vsscanf_s_SOURCES           = test_vsscanf_s.c $(SAFEC_TEST_COMMON)
 #t_printf_s_SOURCES            = test_printf_s.c $(SAFEC_TEST_COMMON)
-#t_vfprintf_s_SOURCES          = test_vfprintf_s.c $(SAFEC_TEST_COMMON)
-#t_vprintf_s_SOURCES           = test_vprintf_s.c $(SAFEC_TEST_COMMON)
+t_vfprintf_s_SOURCES          = test_vfprintf_s.c $(SAFEC_TEST_COMMON)
+t_vprintf_s_SOURCES           = test_vprintf_s.c $(SAFEC_TEST_COMMON)
 t_fprintf_s_SOURCES           = test_fprintf_s.c $(SAFEC_TEST_COMMON)
 t_strerror_s_SOURCES          = test_strerror_s.c $(SAFEC_TEST_COMMON)
 t_strerrorlen_s_SOURCES       = test_strerrorlen_s.c $(SAFEC_TEST_COMMON)
