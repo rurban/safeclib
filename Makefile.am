@@ -291,7 +291,8 @@ gh-pages: docs
 	ls doc/man/man3/tmpnam_s.3
 	git checkout gh-pages
 	rm -rf doc/man
-	-mkdir doc/safec-$(SAFEC_API_VERSION)
+	rm -rf doc/safec-$(SAFEC_API_VERSION)
+	mkdir doc/safec-$(SAFEC_API_VERSION)
 	mv doc/html/* doc/safec-$(SAFEC_API_VERSION)/
 	rm -rf doc/html
 	git add doc/safec-$(SAFEC_API_VERSION)
