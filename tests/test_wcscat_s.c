@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcscat_s
  * File 'wchar/wcscat_s.c'
- * Lines executed:89.47% of 57
+ * Lines executed:96.49% of 57
  *
  *
  *------------------------------------------------------------------
@@ -96,6 +96,54 @@ int test_wcscat_s (void)
     rc = wcscat_s(str1, 2, str2);
     ERR(ESNOSPC)
     WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"aaaaaaaaaa");
+    wcscpy(str2, L"keep it simple");
+
+    rc = wcscat_s(str1, 1, str2);
+    ERR(ESUNTERM)
+    WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"aaaaaaaaaa");
+    wcscpy(str2, L"keep it simple");
+
+    rc = wcscat_s(str1, 2, str2);
+    ERR(ESUNTERM)
+    WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcd");
+
+    rc = wcscat_s(&str1[0], 8, &str1[3]);
+    ERR(ESOVRLP);
+    WEXPNULL(str1)
+
+    wcscpy(str1, L"abcd");
+
+    rc = wcscat_s(&str1[0], 4, &str1[3]);
+    ERR(ESOVRLP);
+    WEXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcdefgh");
+
+    rc = wcscat_s(&str1[3], 5, &str1[0]);
+    ERR(ESUNTERM);
+    WEXPNULL(&str1[3])
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abcdefgh");
+
+    rc = wcscat_s(&str1[3], 12, &str1[0]);
+    ERR(ESOVRLP);
+    WEXPNULL(&str1[3])
 
 /*--------------------------------------------------*/
 

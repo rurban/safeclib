@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_strcat_s
  * File 'str/strcat_s.c'
- * Lines executed:92.98% of 57
+ * Lines executed:96.49% of 57
  *
  *
  *------------------------------------------------------------------
@@ -61,6 +61,36 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 2, str2);
     ERR(ESUNTERM)
     EXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcd");
+
+    rc = strcat_s(&str1[0], 8, &str1[3]);
+    ERR(ESOVRLP);
+    EXPNULL(str1)
+
+    strcpy(str1, "abcd");
+
+    rc = strcat_s(&str1[0], 4, &str1[3]);
+    ERR(ESOVRLP);
+    EXPNULL(str1)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcdefgh");
+
+    rc = strcat_s(&str1[3], 5, &str1[0]);
+    ERR(ESUNTERM);
+    EXPNULL(&str1[3])
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abcdefgh");
+
+    rc = strcat_s(&str1[3], 12, &str1[0]);
+    ERR(ESOVRLP);
+    EXPNULL(&str1[3])
 
 /*--------------------------------------------------*/
 
