@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_vfprintf_s
  * File 'vfprintf_s.c'
- * Lines executed:83.33% of 18
+ * Lines executed:100.00% of 18
  *
  *------------------------------------------------------------------
  */
@@ -102,6 +102,22 @@ int test_vfprintf_s (void)
 /*--------------------------------------------------*/
 
     fclose(out);
+
+    /* print to closed stream */
+    rc = vtfprintf_s(out, "%s", str1);
+#if defined(__GLIBC__)
+    if (rc < 0) {
+        ERR(-1);
+        ERRNO(EBADF);
+    } else {
+        ERR(14); /* older glibc upstream bug */
+        ERRNO(0);
+    }
+#else
+    ERR(-1);
+#endif
+    /* musl throws no error */
+    
     unlink(TMP);
 
     return (errs);
