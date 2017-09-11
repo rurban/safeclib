@@ -114,28 +114,6 @@ int test_scanf_s (void)
 
 /*--------------------------------------------------*/
 
-    str1[0] = '\0';
-    str2[0] = '\0';
-    stuff_stdin(str1);
-
-    rc = scanf_s("%s", str2, LEN);
-    if (rc == -1) { /* flapping test */
-        ERR(-1);
-        EXPNULL(str2);
-    } else {
-        ERR(1);
-    }
-
-/*--------------------------------------------------*/
-
-    str1[0] = '\0';
-    stuff_stdin(str1);
-
-    rc = scanf_s("%s", str2, LEN);
-    ERR(-1)
-
-/*--------------------------------------------------*/
-
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
     stuff_stdin(str1);
@@ -166,6 +144,28 @@ int test_scanf_s (void)
     stuff_stdin("      24");
     rc = scanf_s("%s %n", str2, LEN, &ind);
     ERREOF(EINVAL);
+
+/*--------------------------------------------------*/
+
+    str1[0] = '\0';
+    str2[0] = '\0';
+    stuff_stdin(str1);
+
+    rc = scanf_s("%s", str2, LEN);
+    if (rc == -1) { /* flapping test */
+        ERR(-1);
+        EXPNULL(str2);
+    } else {
+        ERR(1);
+    }
+
+/*--------------------------------------------------*/
+
+    str1[0] = '\0';
+    stuff_stdin(str1);
+
+    rc = scanf_s("%s", str2, LEN);
+    ERR(-1)
 
 /*--------------------------------------------------*/
 

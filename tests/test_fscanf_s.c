@@ -106,20 +106,11 @@ int test_fscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    str1[0] = '\0';
-    stuff_stream(str1);
-
-    rc = fscanf_s(stream, "%s", str2, LEN);
-    ERR(1);
-    /*EXPNULL(str2) TODO. Got "eep" */
-
-/*--------------------------------------------------*/
-
     strcpy(str1, "qqweqq");
     stuff_stream(str1);
 
     rc = fscanf_s(stream, "%s", str2);
-    NOERR()
+    NOERR();
     EXPSTR(str2, str1);
 
 /*--------------------------------------------------*/
@@ -144,6 +135,15 @@ int test_fscanf_s (void)
     stuff_stream("      24");
     rc = fscanf_s(stream, "%s %n", str2, LEN, &ind);
     ERREOF(EINVAL);
+
+/*--------------------------------------------------*/
+
+    str1[0] = '\0';
+    stuff_stream(str1);
+
+    rc = fscanf_s(stream, "%s", str2, LEN);
+    ERR(1); /* unspecified behaviour */
+    /*EXPNULL(str2) TODO. Got "eep" */
 
 /*--------------------------------------------------*/
 
