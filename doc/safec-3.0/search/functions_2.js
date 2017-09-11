@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['gets_5fs',['gets_s',['../d2/d59/gets__s_8c.html#aa9405e11a29cdd19284902393fd90cd9',1,'gets_s(char *restrict dest, rsize_t dmax):&#160;gets_s.c'],['../db/d69/safe__lib_8h.html#a7230527f9f21bafbb601b0c33fc1a96d',1,'gets_s(char *dest, rsize_t dmax):&#160;safe_lib.h']]]
+  ['ctime_5fs',['ctime_s',['../d1/d76/ctime__s_8c.html#a624765ef715a9b24f389af6b9b65a1b2',1,'ctime_s(char *dest, rsize_t dmax, const time_t *timer):&#160;ctime_s.c'],['../db/d69/safe__lib_8h.html#ac707f03fd25d53ecff493bfb3234134b',1,'ctime_s(char *dest, rsize_t dmax, const time_t *timer):&#160;ctime_s.c']]],
+  ['cycle',['cycle',['../d2/d94/qsort__s_8c.html#af69357134fe6cab29253a2919efd8122',1,'qsort_s.c']]]
 ];

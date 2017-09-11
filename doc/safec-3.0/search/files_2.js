@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gets_5fs_2ec',['gets_s.c',['../d2/d59/gets__s_8c.html',1,'']]]
+  ['ctime_5fs_2ec',['ctime_s.c',['../d1/d76/ctime__s_8c.html',1,'']]]
 ];

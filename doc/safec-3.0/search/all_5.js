@@ -1,15 +1,18 @@
 var searchData=
 [
-  ['fopen_5fs',['fopen_s',['../dc/d7e/fopen__s_8c.html#a7c89473fdee05d892955476b3c5f2beb',1,'fopen_s(FILE *restrict *restrict streamptr, const char *restrict filename, const char *restrict mode):&#160;fopen_s.c'],['../db/d69/safe__lib_8h.html#ab41eff44f4b8bc42540b3862fe7261cb',1,'fopen_s(FILE *restrict *restrict streamptr, const char *restrict filename, const char *restrict mode):&#160;fopen_s.c']]],
-  ['fopen_5fs_2ec',['fopen_s.c',['../dc/d7e/fopen__s_8c.html',1,'']]],
-  ['fprintf_5fs',['fprintf_s',['../df/d73/fprintf__s_8c.html#a185ff0f2bfb74b061a74b94480dc6357',1,'fprintf_s.c']]],
-  ['fprintf_5fs_2ec',['fprintf_s.c',['../df/d73/fprintf__s_8c.html',1,'']]],
-  ['freopen_5fs',['freopen_s',['../d6/dfe/freopen__s_8c.html#adb180d10772079d6b0dbf1df3f9a6ef3',1,'freopen_s(FILE *restrict *restrict newstreamptr, const char *restrict filename, const char *restrict mode, FILE *restrict stream):&#160;freopen_s.c'],['../db/d69/safe__lib_8h.html#a42c64da7e7ccfacc85b702629f1a296d',1,'freopen_s(FILE *restrict *restrict newstreamptr, const char *restrict filename, const char *restrict mode, FILE *restrict stream):&#160;freopen_s.c']]],
-  ['freopen_5fs_2ec',['freopen_s.c',['../d6/dfe/freopen__s_8c.html',1,'']]],
-  ['fscanf_5fs',['fscanf_s',['../df/d1c/fscanf__s_8c.html#aa42ba46b7e2410f7f0f86b1b7b7071a8',1,'fscanf_s.c']]],
-  ['fscanf_5fs_2ec',['fscanf_s.c',['../df/d1c/fscanf__s_8c.html',1,'']]],
-  ['fwprintf_5fs',['fwprintf_s',['../de/d97/fwprintf__s_8c.html#a8fdc38563b8b8a375ab10cee2d99af11',1,'fwprintf_s.c']]],
-  ['fwprintf_5fs_2ec',['fwprintf_s.c',['../de/d97/fwprintf__s_8c.html',1,'']]],
-  ['fwscanf_5fs',['fwscanf_s',['../d3/d42/fwscanf__s_8c.html#a980109ae08a082f7658918f49bb9be16',1,'fwscanf_s.c']]],
-  ['fwscanf_5fs_2ec',['fwscanf_s.c',['../d3/d42/fwscanf__s_8c.html',1,'']]]
+  ['eok',['EOK',['../d0/dc2/safe__lib__errno_8h.html#acf2e4414e0bf0d331a111e70f9317434',1,'safe_lib_errno.h']]],
+  ['eoverflow',['EOVERFLOW',['../d9/d63/safeclib__private_8h.html#a888552a5e3c78b5883904cf5d55244ab',1,'safeclib_private.h']]],
+  ['esempty',['ESEMPTY',['../d0/dc2/safe__lib__errno_8h.html#a972680d6fbeed945532d00242f0fa9e1',1,'safe_lib_errno.h']]],
+  ['eslemax',['ESLEMAX',['../d0/dc2/safe__lib__errno_8h.html#a37338d1cd52473db60939dc2b3617aa9',1,'safe_lib_errno.h']]],
+  ['eslemin',['ESLEMIN',['../d0/dc2/safe__lib__errno_8h.html#a1cba577826f9ef8686676eb69a18ce46',1,'safe_lib_errno.h']]],
+  ['esnodiff',['ESNODIFF',['../d0/dc2/safe__lib__errno_8h.html#a9a34ee6f3a60d9e349f49414f0c49505',1,'safe_lib_errno.h']]],
+  ['esnospc',['ESNOSPC',['../d0/dc2/safe__lib__errno_8h.html#a7fc41eb1a1967b519fdde86b7deb9092',1,'safe_lib_errno.h']]],
+  ['esnotfnd',['ESNOTFND',['../d0/dc2/safe__lib__errno_8h.html#a530ade2683f55ba71db096c4ca72d8d2',1,'safe_lib_errno.h']]],
+  ['esnullp',['ESNULLP',['../d0/dc2/safe__lib__errno_8h.html#a6b244ee60d3c08bc5c4a266c7f513895',1,'safe_lib_errno.h']]],
+  ['esovrlp',['ESOVRLP',['../d0/dc2/safe__lib__errno_8h.html#a676f867855bb06eeda6b9d220f173730',1,'safe_lib_errno.h']]],
+  ['esunterm',['ESUNTERM',['../d0/dc2/safe__lib__errno_8h.html#a5a23b3bf978250a97a9498051a2da2ff',1,'safe_lib_errno.h']]],
+  ['eszerol',['ESZEROL',['../d0/dc2/safe__lib__errno_8h.html#a9ff9a755b9b61037a02d1220ec8a7808',1,'safe_lib_errno.h']]],
+  ['export',['EXPORT',['../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49',1,'safeclib_private.h']]],
+  ['export_5fsymbol',['EXPORT_SYMBOL',['../d9/d63/safeclib__private_8h.html#af783dacce2382842e3e8e0af1b423013',1,'safeclib_private.h']]],
+  ['extern',['EXTERN',['../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'safe_lib.h']]]
 ];

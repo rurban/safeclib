@@ -1,6 +1,8 @@
 var safeclib__private_8h =
 [
+    [ "EOVERFLOW", "d9/d63/safeclib__private_8h.html#a888552a5e3c78b5883904cf5d55244ab", null ],
     [ "strnstr", "d9/d63/safeclib__private_8h.html#ae55cc81b86cbf5663d337cada226ddef", null ],
+    [ "MAX_TIME_T_STR", "d9/d63/safeclib__private_8h.html#afdb45ff071ad6b9b7a75e134a670c75d", null ],
     [ "EXPORT_SYMBOL", "d9/d63/safeclib__private_8h.html#af783dacce2382842e3e8e0af1b423013", null ],
     [ "RCNEGATE", "d9/d63/safeclib__private_8h.html#aaa94382803d908c8ae62b0a605909680", null ],
     [ "slabort", "d9/d63/safeclib__private_8h.html#a1cd014dcfb28e641d4dd22a2f5c86931", null ],

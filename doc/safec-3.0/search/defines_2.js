@@ -1,6 +1,7 @@
 var searchData=
 [
   ['eok',['EOK',['../d0/dc2/safe__lib__errno_8h.html#acf2e4414e0bf0d331a111e70f9317434',1,'safe_lib_errno.h']]],
+  ['eoverflow',['EOVERFLOW',['../d9/d63/safeclib__private_8h.html#a888552a5e3c78b5883904cf5d55244ab',1,'safeclib_private.h']]],
   ['esempty',['ESEMPTY',['../d0/dc2/safe__lib__errno_8h.html#a972680d6fbeed945532d00242f0fa9e1',1,'safe_lib_errno.h']]],
   ['eslemax',['ESLEMAX',['../d0/dc2/safe__lib__errno_8h.html#a37338d1cd52473db60939dc2b3617aa9',1,'safe_lib_errno.h']]],
   ['eslemin',['ESLEMIN',['../d0/dc2/safe__lib__errno_8h.html#a1cba577826f9ef8686676eb69a18ce46',1,'safe_lib_errno.h']]],

@@ -120,6 +120,8 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <li><code>vsnprintf_s</code> adds a maxarg argument.</li>
 <li><code>vswprintf</code> adds a maxarg argument on w32. (with <code>__STRICT_ANSI__</code> undefined)</li>
 <li>no <code>strnlen</code> on mingw32</li>
+<li>no <code>errno_t</code> return type for <code>qsort_s</code>, only <code>void</code>.</li>
+<li>reversed argument order for <code>localtime_s</code> and <code>gmtime_s</code></li>
 </ul>
 <h2>safeclib</h2>
 <ul>
@@ -134,11 +136,9 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <h2>newlib</h2>
 <ul>
 <li><code>vswscanf</code> is broken with a format string containing L"%%n"</li>
-<li><p class="startli">The following multibyte API's are missing, and can be defined like this:</p>
-<p class="startli">``` mbstate_t st; #define wctomb(dest, wc) wcrtomb((dest), (wc), &amp;st) #define wcstombs(dest, src, len) wcsrtombs((dest), &amp;(src), (len), &amp;st) #define mbstowcs(dest, src, len) mbsrtowcs((dest), &amp;(src), (len), &amp;st) ```</p>
-</li>
+<li>The following multibyte API's are missing, and can be defined like this:</li>
 </ul>
-<h2>FreeBSD libc</h2>
+<div class="fragment"><div class="line">mbstate_t st;</div><div class="line">#define wctomb(dest, wc) wcrtomb((dest), (wc), &amp;st)</div><div class="line">#define wcstombs(dest, src, len) wcsrtombs((dest), &amp;(src), (len), &amp;st)</div><div class="line">#define mbstowcs(dest, src, len) mbsrtowcs((dest), &amp;(src), (len), &amp;st)</div></div><!-- fragment --><h2>FreeBSD libc</h2>
 <ul>
 <li><code>vswscanf</code> is broken with a format string containing L"%%n"</li>
 <li><code>mbstowcs</code> is broken with (NULL, '\0')</li>
@@ -154,6 +154,6 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.109-ge03195-dirty 3.0
+Generated for Safe C Library 30082017.168-g44f46f-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

@@ -13,5 +13,12 @@ var safe__lib_8h =
     [ "tmpfile_s", "db/d69/safe__lib_8h.html#a3fddd2f0108b1c172c87c4f9767575b0", null ],
     [ "gets_s", "db/d69/safe__lib_8h.html#a7230527f9f21bafbb601b0c33fc1a96d", null ],
     [ "fopen_s", "db/d69/safe__lib_8h.html#ab41eff44f4b8bc42540b3862fe7261cb", null ],
-    [ "freopen_s", "db/d69/safe__lib_8h.html#a42c64da7e7ccfacc85b702629f1a296d", null ]
+    [ "freopen_s", "db/d69/safe__lib_8h.html#a42c64da7e7ccfacc85b702629f1a296d", null ],
+    [ "asctime_s", "db/d69/safe__lib_8h.html#a8d15b695fe8eeec3c8271ab828ec2275", null ],
+    [ "ctime_s", "db/d69/safe__lib_8h.html#ac707f03fd25d53ecff493bfb3234134b", null ],
+    [ "gmtime_s", "db/d69/safe__lib_8h.html#a3fcccffeb3d7f6745a6081e643d2a537", null ],
+    [ "localtime_s", "db/d69/safe__lib_8h.html#aa551803180fa7df9ff5ab8d15d5fec80", null ],
+    [ "getenv_s", "db/d69/safe__lib_8h.html#ad77020bffa0961d294c95e594867ef4a", null ],
+    [ "bsearch_s", "db/d69/safe__lib_8h.html#a68a9b943a87c27391ebfaf5055d51f0c", null ],
+    [ "qsort_s", "db/d69/safe__lib_8h.html#a34276646826a508c60ccdb381045a621", null ]
 ];
