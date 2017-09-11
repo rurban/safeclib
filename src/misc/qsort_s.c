@@ -39,7 +39,12 @@
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#else
+/* ignored on 32bit, thus safe */
+typedef unsigned long	uint64_t;
+#endif
 #include <stdlib.h>
 #include <string.h>
 

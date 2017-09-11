@@ -94,6 +94,11 @@
 # endif
 #endif
 
+/* mingw 3.4 */
+#ifndef EOVERFLOW
+#define EOVERFLOW 139
+#endif
+
 /* for a proper asctime string with 26 digits, i.e. max 4 digit year.
    01.01.10000 00:00 */
 #ifndef MAX_TIME_T_STR

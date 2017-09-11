@@ -92,6 +92,11 @@ void abort(void) __attribute__((noreturn));
 #include <errno.h>
 #endif
 
+/* mingw 3.4 */
+#ifndef EOVERFLOW
+#define EOVERFLOW 139
+#endif
+
 #ifndef HAVE_STRNSTR
 #define strnstr(a,b,c) strstr(a,b)
 #endif

@@ -64,6 +64,7 @@ AM_INIT_AUTOMAKE([1.10 no-define foreign subdir-objects dist-bzip2 -Wall
 # Check if automake supports 'pretty' builds, if so enable them by default
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+# this is missing with mingw 1.0
 m4_pattern_allow([AM_PROG_AR])
 AM_PROG_AR
 
@@ -424,8 +425,25 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      , 
      [#include <time.h>])
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
-
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
+
+AC_MSG_NOTICE([Check library functions])
+# ===============================================
+AC_FUNC_MEMCMP
+dnl no header needed as is checks if the linker can find it
+dnl mbstowcs missing on cygwin64
+dnl the last 4 deviate in mingw from c11
+AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
+                strnstr strnlen strstr wmemchr wmemcmp wcscmp wcsstr \
+                vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs \
+                asctime_r ctime_r gmtime_r localtime_r \
+                memcpy_s __builtin_ctz \
+                vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
+AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
+AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
+AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
+AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
+
 dnl this user choice needs to probe first for the default
 AC_ARG_ENABLE(wchar,
 	AS_HELP_STRING([--disable-wchar],
@@ -433,13 +451,24 @@ AC_ARG_ENABLE(wchar,
 	[case "${enableval}" in
 	yes) enable_wchar=true ;;
 	no)  enable_wchar=false ;;
-	*)   if test "x$ac_cv_type_wchar_t" = xyes; then
+        dnl early mingw32 have only crippled wchar support: only wcscmp, wcslen
+	*)   if test x$ac_cv_type_wchar_t = xyes -a x$ac_cv_func_vswprintf = xyes
+             then
                enable_wchar=true
              else
+               AC_MSG_WARN([no proper wchar support])
                enable_wchar=false
              fi ;;
-	esac], [enable_wchar=true ])
-AC_MSG_CHECKING([for --disable-wchar])
+	esac], [enable_wchar=true])
+AC_MSG_CHECKING([for --disable-wchar or broken wchar usability])
+dnl catch mingw32 1.0 with crippled wchar
+if test x$enable_wchar = xtrue -a x$ac_cv_func_vswprintf = xyes \
+   -a x$ac_cv_func_mbsrtowcs = xyes -a x$ac_cv_func_vswscanf = xyes
+then
+  enable_wchar=true
+else
+  enable_wchar=false
+fi
 if test "x$enable_wchar" = "xtrue" ; then
 	AC_MSG_RESULT([no (default)])
         INSERT_DISABLE_WCHAR="#undef SAFECLIB_DISABLE_WCHAR"
@@ -452,21 +481,6 @@ fi
 AM_CONDITIONAL([ENABLE_WCHAR], [test "x$enable_wchar" = "xtrue"])
 AC_SUBST(INSERT_DISABLE_WCHAR)
 
-AC_MSG_NOTICE([Check library functions])
-# ===============================================
-AC_FUNC_MEMCMP
-dnl no header needed as is checks if the linker can find it
-dnl mbstowcs missing on cygwin64
-dnl the last 4 deviate in mingw from c11
-AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strnstr strnlen strstr wmemchr wmemcmp wcscmp wcsstr vswprintf \
-                vsnwprintf mbstowcs asctime_r ctime_r gmtime_r localtime_r memcpy_s \
-                __builtin_ctz \
-                vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
-AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
-AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
-AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
-AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
 
 # Checks for system services
 # ===============================================

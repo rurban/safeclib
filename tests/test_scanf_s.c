@@ -93,6 +93,7 @@ int test_scanf_s (void)
     len2 = strlen(str2);
     len3 = strlen(str1);
     if (len3 != len2) {
+        /* flapping test! */
 #ifdef DEBUG
         size_t len1 = strlen(str1);
 #endif
@@ -108,6 +109,7 @@ int test_scanf_s (void)
 
     rc = scanf_s("%s", str2, LEN);
     ERR(1);
+    /* flapping test! */
     EXPSTR(str2, "keep");
 
 /*--------------------------------------------------*/
