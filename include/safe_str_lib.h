@@ -505,16 +505,15 @@ wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t slen,
          wchar_t **restrict substring);
 
-/* TODO:
 EXTERN errno_t
 wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t smax,
          int *diff);
+
 EXTERN errno_t
 wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax,
-          rsize_t num, int *diff);
-*/
+          rsize_t count, int *diff);
 
 /* TODO: Windows extensions, derived from sec_api/string_s.h
 

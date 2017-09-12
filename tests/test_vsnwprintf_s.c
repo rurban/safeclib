@@ -32,7 +32,6 @@ int test_vsnwprintf_s (void)
     int32_t  ind;
     size_t  len2;
     size_t  len3;
-    wchar_t *wstr3;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -197,6 +196,9 @@ int test_vsnwprintf_s (void)
 
 /*--------------------------------------------------*/
 
+    /* crashes with g++ -std=c11 */
+#ifndef __cplusplus
+
     rc = vtwprintf_s(str1, 10, L"%vls", str2);
 #if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
     /* they print unknown formats verbatim */
@@ -207,17 +209,22 @@ int test_vsnwprintf_s (void)
     WEXPNULL(str1);
 #endif
 
-    /* not the fast stack-branch */
-    wstr3 = (wchar_t*)malloc(513);
-    rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
+    {
+        wchar_t *wstr3;
+        /* not the fast stack-branch */
+        wstr3 = (wchar_t*)malloc(513);
+        rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
 #if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
-    /* they print unknown formats verbatim */
-    NOERR();
+        /* they print unknown formats verbatim */
+        NOERR();
 #else /* musl and darwin disallow this */
-    ERR(-1);
-    WEXPNULL(str1)
+        ERR(-1);
+        WEXPNULL(str1);
 #endif
-    free(wstr3);
+        free(wstr3);
+    }
+
+#endif
 
 /*--------------------------------------------------*/
 

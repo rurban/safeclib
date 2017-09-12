@@ -139,9 +139,9 @@ SAFEC_BUILT_TESTS += \
 	t_strzero_s
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
-	t_wmemcmp_s	
-#	t_wcscmp_s	\
-#	t_wcsncmp_s
+	t_wmemcmp_s	\
+	t_wcscmp_s	\
+	t_wcsncmp_s
 endif
 endif
 
@@ -338,8 +338,8 @@ t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_WCHAR
 t_wmemcmp_s_SOURCES           = test_wmemcmp_s.c $(SAFEC_TEST_COMMON)
-#t_wcscmp_s_SOURCES           = test_wcscmp_s.c $(SAFEC_TEST_COMMON)
-#t_wcsncmp_s_SOURCES          = test_wcsncmp_s.c $(SAFEC_TEST_COMMON)
+t_wcscmp_s_SOURCES            = test_wcscmp_s.c $(SAFEC_TEST_COMMON)
+t_wcsncmp_s_SOURCES           = test_wcsncmp_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
