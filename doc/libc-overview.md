@@ -8,12 +8,13 @@ From the following tested libc implementations:
 * glibc
 * musl
 * FreeBSD and DragonFly libc
+* FreeBSD-derived darwin libc
 * OpenBSD libc
 * newlib
 * dietlibc
 * uClibc
 * minilibc
-* Microsoft Windows/MINGW\_HAS\_SECURE_API
+* Microsoft Windows w/ secure API
 * Android Bionic
 * Embarcadero C++ libc
 
