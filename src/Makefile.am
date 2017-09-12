@@ -58,7 +58,8 @@ EXT_MEM_FILES = \
 	extmem/memzero_s.c      \
 	extmem/memzero16_s.c    \
 	extmem/memzero32_s.c	\
-	extmem/memchr_s.c
+	extmem/memchr_s.c	\
+	extmem/memrchr_s.c
 
 STD_STR_FILES = \
 	str/safe_str_constraint.h \
@@ -111,6 +112,7 @@ EXT_STR_FILES = \
 	extstr/strremovews_s.c       \
 	extstr/strspn_s.c            \
 	extstr/strchr_s.c            \
+	extstr/strrchr_s.c           \
 	extstr/strstr_s.c            \
 	extstr/strtolowercase_s.c    \
 	extstr/strtouppercase_s.c    \

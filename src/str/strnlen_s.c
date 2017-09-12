@@ -31,9 +31,6 @@
 
 #include "safeclib_private.h"
 
-
-
-
 /**
  * @brief
  *    The strnlen_s function computes the length of the string pointed
@@ -53,7 +50,7 @@
  *
  * @return   The function returns the string length, excluding  the terminating
  *           null character.  If dest is NULL, then strnlen_s returns 0.
- *           \n Otherwise, the strnlen_s function returns the number of characters
+ *           Otherwise, the strnlen_s function returns the number of characters
  *           that precede the terminating null character. If there is no null
  *           character in the first dmax characters of dest then strnlen_s returns
  *           dmax. At most the first dmax characters of dest are accessed
@@ -69,19 +66,19 @@ strnlen_s (const char *dest, rsize_t dmax)
     rsize_t count;
 
     if (unlikely(dest == NULL)) {
-        return RCNEGATE(0);
+        return 0;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strnlen_s: dmax is 0",
                    NULL, ESZEROL);
-        return RCNEGATE(0);
+        return 0;
     }
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strnlen_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return RCNEGATE(0);
+        return 0;
     }
 
     count = 0;
@@ -91,6 +88,6 @@ strnlen_s (const char *dest, rsize_t dmax)
         dest++;
     }
 
-    return RCNEGATE(count);
+    return count;
 }
 EXPORT_SYMBOL(strnlen_s)

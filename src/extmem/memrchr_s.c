@@ -31,6 +31,12 @@
 
 #include "safeclib_private.h"
 
+#ifdef HAVE_MEMRCHR
+#ifndef _ISOC11_SOURCE
+extern void* memrchr(const void *, int, size_t);
+#endif
+#endif
+
 /**
  * @brief
  *    Finds the last occurrence of ch (after conversion to char as if by
@@ -99,14 +105,14 @@ memrchr_s (const void *restrict dest, rsize_t dlen,
 
 #ifdef HAVE_MEMRCHR
     /* compares wordwise */
-    *result = memrchr((const char *)dest, ch, dlen);
+    *result = (void*)memrchr((const void *)dest, ch, (size_t)dlen);
 
     if (!*result)
         return (ESNOTFND);
     return (EOK);
 #else
     {
-    	const uint8_t *s = dest;
+    	const uint8_t *s = (uint8_t *)dest;
         uint8_t u8 = (uint8_t)ch;
         while (dlen--) {
             if (s[dlen] == u8) {

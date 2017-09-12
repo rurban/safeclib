@@ -133,6 +133,8 @@ SAFEC_BUILT_TESTS += \
 	t_strspn_s            \
 	t_strchr_s            \
 	t_memchr_s            \
+	t_strrchr_s           \
+	t_memrchr_s           \
 	t_strstr_s            \
 	t_strtolowercase_s    \
 	t_strtouppercase_s    \
@@ -331,6 +333,8 @@ t_strremovews_s_SOURCES       = test_strremovews_s.c $(SAFEC_TEST_COMMON)
 t_strspn_s_SOURCES            = test_strspn_s.c $(SAFEC_TEST_COMMON)
 t_strchr_s_SOURCES            = test_strchr_s.c $(SAFEC_TEST_COMMON)
 t_memchr_s_SOURCES            = test_memchr_s.c $(SAFEC_TEST_COMMON)
+t_strrchr_s_SOURCES           = test_strrchr_s.c $(SAFEC_TEST_COMMON)
+t_memrchr_s_SOURCES           = test_memrchr_s.c $(SAFEC_TEST_COMMON)
 t_strstr_s_SOURCES            = test_strstr_s.c $(SAFEC_TEST_COMMON)
 t_strtolowercase_s_SOURCES    = test_strtolowercase_s.c $(SAFEC_TEST_COMMON)
 t_strtouppercase_s_SOURCES    = test_strtouppercase_s.c $(SAFEC_TEST_COMMON)

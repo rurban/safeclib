@@ -334,6 +334,9 @@ EXTERN errno_t
 strchr_s(const char *restrict dest, rsize_t dmax,
          const int ch, char **result);
 
+EXTERN errno_t
+strrchr_s(const char *restrict dest, rsize_t dmax,
+         const int ch, char **result);
 
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */

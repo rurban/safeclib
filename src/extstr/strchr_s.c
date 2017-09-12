@@ -101,7 +101,7 @@ strchr_s (const char *restrict dest, rsize_t dmax,
     }
 
     /* compares wordwise */
-    *result = strchr((char *)dest, ch);
+    *result = (char*)strchr((const char *)dest, ch);
 
     if (!*result)
         return (ESNOTFND);

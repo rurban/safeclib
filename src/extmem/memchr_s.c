@@ -42,19 +42,19 @@
  * @remark IMPLEMENTED IN
  *
  * @param[in]  dest    pointer to buffer to compare against
- * @param[in]  dmax    length of dest to search in
+ * @param[in]  dlen    length of dest to search in
  * @param[in]  ch      character to search for
  * @param[out] result  pointer to result in dest
  *
  * @pre  Neither dest nor result shall be a null pointer.
- * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre  dlen shall not be 0.
+ * @pre  dlen shall not be greater than RSIZE_MAX_MEM.
  * @pre  ch shall not be greater than 255
  *
  * @retval  EOK        when successfully character found.
  * @retval  ESNULLP    when dest/result is a NULL pointer
- * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESZEROL    when dlen = 0
+ * @retval  ESLEMAX    when dlen > RSIZE_MAX_STR
  * @retval  ESLEMAX    when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *
@@ -63,7 +63,7 @@
  *
  */
 EXPORT errno_t
-memchr_s (const void *restrict dest, rsize_t dmax,
+memchr_s (const void *restrict dest, rsize_t dlen,
           const int ch, void **result)
 {
     if (unlikely(result == NULL)) {
@@ -79,15 +79,15 @@ memchr_s (const void *restrict dest, rsize_t dmax,
         return (ESNULLP);
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("memchr_s: dmax is 0",
+    if (unlikely(dlen == 0)) {
+        invoke_safe_str_constraint_handler("memchr_s: dlen is 0",
                    NULL, ESZEROL);
         *result = NULL;
         return (ESZEROL);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("memchr_s: dmax exceeds max",
+    if (unlikely(dlen > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("memchr_s: dlen exceeds max",
                    NULL, ESLEMAX);
         *result = NULL;
         return (ESLEMAX);
@@ -101,7 +101,7 @@ memchr_s (const void *restrict dest, rsize_t dmax,
     }
 
     /* compares wordwise */
-    *result = memchr((void*)dest, ch, (size_t)dmax);
+    *result = memchr((void*)dest, ch, (size_t)dlen);
 
     if (!*result)
         return (ESNOTFND);

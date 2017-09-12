@@ -131,8 +131,12 @@ memzero32_s(uint32_t *dest, rsize_t dmax);
 
 /* find a byte */
 EXTERN errno_t
-memchr_s(const void *restrict dest, rsize_t dmax,
+memchr_s(const void *restrict dest, rsize_t dlen,
          const int ch, void **result);
+
+EXTERN errno_t
+memrchr_s(const void *restrict dest, rsize_t dlen,
+          const int ch, void **result);
 
 /* possible extensions: */
 #if 0

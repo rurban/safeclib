@@ -434,7 +434,7 @@ dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
 dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strnstr strnlen strstr wmemchr wmemcmp wcscmp wcsstr \
+                strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs \
                 asctime_r ctime_r gmtime_r localtime_r memcpy_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
