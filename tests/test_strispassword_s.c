@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strispassword_s
  * File 'extstr/strispassword_s.c'
- * Lines executed:79.55% of 44
- *
+ * Lines executed:100.00% of 44
  *
  *------------------------------------------------------------------
  */
@@ -74,7 +73,20 @@ int main()
 
     rc = strispassword_s(str, len);
     ERR(true)
+
+    strcpy (str, "<a]$b}0X_D");
+    len = strlen(str);
+
+    rc = strispassword_s(str, len);
+    ERR(true)
+
 /*--------------------------------------------------*/
+
+    strcpy (str, "pa$$W0rD f");
+    len = strlen(str);
+
+    rc = strispassword_s(str, len);
+    ERR(false)
 
     strcpy (str, "Test");
     len = strlen(str);
