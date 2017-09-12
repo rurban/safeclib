@@ -57,6 +57,10 @@ int test_scanf_s (void)
                      __FUNCTION__, __LINE__, (int)rc);
     } else
 #endif
+    if (rc != 1) {
+        printf("flapping tests - abort\n");
+        return errs;
+    }
     ERR(1);
     ERRNO(0);
 
@@ -74,6 +78,10 @@ int test_scanf_s (void)
 
     stuff_stdin("      24");
     rc = scanf_s(" %d", &len1);
+    if (rc != 1) {
+        printf("flapping tests - abort\n");
+        return errs;
+    }
     ERR(1);
     ERRNO(0);
     if ((int)len1 != 24) {

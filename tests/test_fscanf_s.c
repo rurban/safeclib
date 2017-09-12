@@ -84,6 +84,10 @@ int test_fscanf_s (void)
     stuff_stream(str1);
 
     rc = fscanf_s(stream, "%s", str2, LEN);
+    if (rc != 1) {
+        printf("flapping tests - abort\n");
+        return errs;
+    }
     ERR(1)
     len2 = strlen(str2);
     len3 = strlen(str1);
