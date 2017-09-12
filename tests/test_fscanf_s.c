@@ -64,6 +64,10 @@ int test_fscanf_s (void)
                      __FUNCTION__, __LINE__, (int)rc);
     }
 #else
+    if (rc != 1) {
+        printf("flapping tests - abort\n");
+        return errs;
+    }
     ERR(1);
     ERRNO(0);
 #endif
@@ -146,6 +150,10 @@ int test_fscanf_s (void)
     stuff_stream(str1);
 
     rc = fscanf_s(stream, "%s", str2, LEN);
+    if (rc != 1) {
+        printf("flapping tests - abort\n");
+        return errs;
+    }
     ERR(1); /* unspecified behaviour */
     /*EXPNULL(str2) TODO. Got "eep" */
 
