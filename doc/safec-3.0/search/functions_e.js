@@ -5,6 +5,7 @@ var searchData=
   ['wcscmp_5fs',['wcscmp_s',['../d1/dbf/wcscmp__s_8c.html#a828628cf15c596c2ff5165cd7d2a2cab',1,'wcscmp_s.c']]],
   ['wcscpy_5fs',['wcscpy_s',['../de/d33/wcscpy__s_8c.html#aaa7f86195bbc6387118d2d78f9813ed2',1,'wcscpy_s.c']]],
   ['wcsncat_5fs',['wcsncat_s',['../d0/df6/wcsncat__s_8c.html#ac3eab59b6151768858c8091b76bb6b01',1,'wcsncat_s.c']]],
+  ['wcsncmp_5fs',['wcsncmp_s',['../de/d15/wcsncmp__s_8c.html#a09ffbcf6eb202b718ac7af4e2a6a01b6',1,'wcsncmp_s.c']]],
   ['wcsncpy_5fs',['wcsncpy_s',['../dc/d4e/wcsncpy__s_8c.html#adaca642ca4a52f4e4b973489212fe2f0',1,'wcsncpy_s.c']]],
   ['wcsnlen_5fs',['wcsnlen_s',['../db/d53/wcsnlen__s_8c.html#ac0f4ca6b5b4c267b700c00a0e6c666c6',1,'wcsnlen_s.c']]],
   ['wcsrtombs_5fs',['wcsrtombs_s',['../d2/dc5/wcsrtombs__s_8c.html#a1dc6721560624595a088270178ffe9d3',1,'wcsrtombs_s.c']]],

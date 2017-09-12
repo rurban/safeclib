@@ -117,6 +117,7 @@ var files =
     [ "wcscmp_s.c", "d1/dbf/wcscmp__s_8c.html", "d1/dbf/wcscmp__s_8c" ],
     [ "wcscpy_s.c", "de/d33/wcscpy__s_8c.html", "de/d33/wcscpy__s_8c" ],
     [ "wcsncat_s.c", "d0/df6/wcsncat__s_8c.html", "d0/df6/wcsncat__s_8c" ],
+    [ "wcsncmp_s.c", "de/d15/wcsncmp__s_8c.html", "de/d15/wcsncmp__s_8c" ],
     [ "wcsncpy_s.c", "dc/d4e/wcsncpy__s_8c.html", "dc/d4e/wcsncpy__s_8c" ],
     [ "wcsnlen_s.c", "db/d53/wcsnlen__s_8c.html", "db/d53/wcsnlen__s_8c" ],
     [ "wcsrtombs_s.c", "d2/dc5/wcsrtombs__s_8c.html", "d2/dc5/wcsrtombs__s_8c" ],
