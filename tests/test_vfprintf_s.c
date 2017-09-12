@@ -110,7 +110,8 @@ int test_vfprintf_s (void)
         ERR(-1);
         ERRNO(EBADF);
     } else {
-        ERR(14); /* older glibc upstream bug */
+        /* older glibc upstream bug */
+        NOERR();
         ERRNO(0);
     }
 #else
