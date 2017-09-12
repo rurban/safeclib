@@ -165,6 +165,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a713f1dc1760a1ae9092fce15745acd00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a713f1dc1760a1ae9092fce15745acd00">memzero32_s</a> (uint32_t *dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax)</td></tr>
 <tr class="memdesc:a713f1dc1760a1ae9092fce15745acd00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zeros len uint32_ts starting at dest.  <a href="#a713f1dc1760a1ae9092fce15745acd00">More...</a><br /></td></tr>
 <tr class="separator:a713f1dc1760a1ae9092fce15745acd00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adda678a995384c6929be6df48d64a69f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#adda678a995384c6929be6df48d64a69f">memchr_s</a> (const void *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const int ch, void **result)</td></tr>
+<tr class="memdesc:adda678a995384c6929be6df48d64a69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the first occurrence of <code>ch</code> (after conversion to unsigned char as if by <code>(unsigned char)ch</code>) in the null-terminated buffer pointed to by <code>dest</code> (each character interpreted as <code>unsigned char</code>).  <a href="#adda678a995384c6929be6df48d64a69f">More...</a><br /></td></tr>
+<tr class="separator:adda678a995384c6929be6df48d64a69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43b33f733765f4630ec44f719eacfe41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a43b33f733765f4630ec44f719eacfe41">wmemcpy_s</a> (wchar_t *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *restrict src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax)</td></tr>
 <tr class="separator:a43b33f733765f4630ec44f719eacfe41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d48b67a8c6609359fd01fd1517c1d8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a5d48b67a8c6609359fd01fd1517c1d8a">wmemmove_s</a> (wchar_t *dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax)</td></tr>
@@ -1345,6 +1348,79 @@ len shall not be 0 nor greater than RSIZE_MAX_MEM32.</dd></dl>
 
 </div>
 </div>
+<a id="adda678a995384c6929be6df48d64a69f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adda678a995384c6929be6df48d64a69f">&#9670;&nbsp;</a></span>memchr_s()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t memchr_s </td>
+          <td>(</td>
+          <td class="paramtype">const void *restrict&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramname"><em>dmax</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>ch</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>result</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Finds the first occurrence of <code>ch</code> (after conversion to unsigned char as if by <code>(unsigned char)ch</code>) in the null-terminated buffer pointed to by <code>dest</code> (each character interpreted as <code>unsigned char</code>). </p>
+<dl class="section remark"><dt>Remarks</dt><dd>IMPLEMENTED IN</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">dest</td><td>pointer to buffer to compare against </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dmax</td><td>length of dest to search in </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ch</td><td>character to search for </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">result</td><td>pointer to result in dest</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>Neither dest nor result shall be a null pointer. </dd>
+<dd>
+dmax shall not be 0. </dd>
+<dd>
+dmax shall not be greater than RSIZE_MAX_MEM. </dd>
+<dd>
+ch shall not be greater than 255</dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">EOK</td><td>when successfully character found. </td></tr>
+    <tr><td class="paramname">ESNULLP</td><td>when dest/result is a NULL pointer </td></tr>
+    <tr><td class="paramname">ESZEROL</td><td>when dmax = 0 </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_STR </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when ch &gt; 255 </td></tr>
+    <tr><td class="paramname">ESNOTFND</td><td>when ch not found in dest</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d3/dfa/strchr__s_8c.html#a95f8084c2c56e2046db592e3c87d15a1" title="Finds the first occurrence of ch (after conversion to char as if by (char)ch) in the null-terminated ...">strchr_s()</a>, <a class="el" href="../../d9/df1/strspn__s_8c.html#a88170b384d5975577bb20c898bdc6c5d" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strspn_s()</a>, <a class="el" href="../../dd/d73/strcspn__s_8c.html#ac8ef1278758db78e33f613b09ac63299" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strcspn_s()</a>, <a class="el" href="../../de/dd3/strpbrk__s_8c.html#ab7cdbee62fb36f9883dbc4eb7a9629a0" title="Returns a pointer, first, to the first ocurrence of any character in src which is contained in dest...">strpbrk_s()</a>, <a class="el" href="../../db/dc3/strstr__s_8c.html#afe35931c44fd83a3ff820e2570005beb" title="The strstr_s() function locates the first occurrence of the substring pointed to by src which would b...">strstr_s()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="../../d7/d0e/memchr__s_8c_source.html#l00066">66</a> of file <a class="el" href="../../d7/d0e/memchr__s_8c_source.html">memchr_s.c</a>.</p>
+
+</div>
+</div>
 <a id="a43b33f733765f4630ec44f719eacfe41"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a43b33f733765f4630ec44f719eacfe41">&#9670;&nbsp;</a></span>wmemcpy_s()</h2>
 
@@ -1541,6 +1617,6 @@ smax shall not be greater than dmax.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.169-g906966-dirty 3.0
+Generated for Safe C Library 30082017.170-g40473b 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

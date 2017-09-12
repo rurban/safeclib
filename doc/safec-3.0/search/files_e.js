@@ -2,6 +2,7 @@ var searchData=
 [
   ['wcrtomb_5fs_2ec',['wcrtomb_s.c',['../db/d37/wcrtomb__s_8c.html',1,'']]],
   ['wcscat_5fs_2ec',['wcscat_s.c',['../de/d45/wcscat__s_8c.html',1,'']]],
+  ['wcscmp_5fs_2ec',['wcscmp_s.c',['../d1/dbf/wcscmp__s_8c.html',1,'']]],
   ['wcscpy_5fs_2ec',['wcscpy_s.c',['../de/d33/wcscpy__s_8c.html',1,'']]],
   ['wcsncat_5fs_2ec',['wcsncat_s.c',['../d0/df6/wcsncat__s_8c.html',1,'']]],
   ['wcsncpy_5fs_2ec',['wcsncpy_s.c',['../dc/d4e/wcsncpy__s_8c.html',1,'']]],

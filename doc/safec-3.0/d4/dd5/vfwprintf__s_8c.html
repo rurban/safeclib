@@ -153,7 +153,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section pre"><dt>Precondition</dt><dd>fmt shall not be a null pointer. </dd>
+<dl class="section pre"><dt>Precondition</dt><dd>Neither stream nor fmt shall be a null pointer. </dd>
 <dd>
 fmt shall not contain the conversion specifier <code>n</code> </dd>
 <dd>
@@ -165,7 +165,7 @@ No encoding error shall occur.</dd></dl>
 On failure a negative number is returned, and possibly errno set to EINVAL or EOVERFLOW.</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">-ESNULLP</td><td>when fmt is NULL pointer </td></tr>
+    <tr><td class="paramname">-ESNULLP</td><td>when stream or fmt is a NULL pointer </td></tr>
     <tr><td class="paramname">-EINVAL</td><td>when fmt contains n </td></tr>
     <tr><td class="paramname">-1</td><td>some other error. errno: EINVAL or EOVERFLOW</td></tr>
   </table>
@@ -180,6 +180,6 @@ On failure a negative number is returned, and possibly errno set to EINVAL or EO
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.169-g906966-dirty 3.0
+Generated for Safe C Library 30082017.170-g40473b 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
