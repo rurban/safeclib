@@ -356,14 +356,16 @@ EXTERN errno_t
 strzero_s(char *dest, rsize_t dmax);
 
 
-/* TODO: Derived from windows extensions sec_api/string_s.h
-   defined(MINGW_HAS_SECURE_API)
+/* Derived from windows extensions sec_api/string_s.h
+   defined(MINGW_HAS_SECURE_API) */
 
 EXTERN errno_t
-strset_s(char *restrict dest, rsize_t dmax,  int value);
+strset_s(char *restrict dest, rsize_t dmax, int value);
 
 EXTERN errno_t
-strnset_s(char *restrict str, rsize_t slen, int value, size_t n);
+strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n);
+
+/* TODO:
 
 EXTERN errno_t
 strlwr_s(char *restrict str, rsize_t slen);

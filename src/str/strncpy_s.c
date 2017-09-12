@@ -31,9 +31,6 @@
 
 #include "safeclib_private.h"
 
-
-
-
 /**
  * @brief
  *    The strncpy_s function copies not more than slen successive characters

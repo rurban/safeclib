@@ -116,7 +116,9 @@ EXT_STR_FILES = \
 	extstr/strstr_s.c            \
 	extstr/strtolowercase_s.c    \
 	extstr/strtouppercase_s.c    \
-	extstr/strzero_s.c
+	extstr/strzero_s.c	     \
+	extstr/strset_s.c            \
+	extstr/strnset_s.c
 
 STD_WCHAR_FILES = \
 	wchar/mbsrtowcs_s.c  	\

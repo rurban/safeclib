@@ -138,6 +138,8 @@ SAFEC_BUILT_TESTS += \
 	t_strstr_s            \
 	t_strtolowercase_s    \
 	t_strtouppercase_s    \
+	t_strset_s            \
+	t_strnset_s            \
 	t_strzero_s
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
@@ -339,6 +341,8 @@ t_strstr_s_SOURCES            = test_strstr_s.c $(SAFEC_TEST_COMMON)
 t_strtolowercase_s_SOURCES    = test_strtolowercase_s.c $(SAFEC_TEST_COMMON)
 t_strtouppercase_s_SOURCES    = test_strtouppercase_s.c $(SAFEC_TEST_COMMON)
 t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
+t_strset_s_SOURCES            = test_strset_s.c $(SAFEC_TEST_COMMON)
+t_strnset_s_SOURCES           = test_strnset_s.c $(SAFEC_TEST_COMMON)
 
 if ENABLE_WCHAR
 t_wmemcmp_s_SOURCES           = test_wmemcmp_s.c $(SAFEC_TEST_COMMON)
