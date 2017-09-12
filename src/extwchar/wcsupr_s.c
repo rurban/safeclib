@@ -34,6 +34,12 @@
 #include <wctype.h>
 #endif
 
+#ifndef HAVE_TOWUPPER
+EXTERN wint_t towupper(wint_t wc);
+#else
+#include <wctype.h>
+#endif
+
 /**
  * @brief
  *    Scans the string converting lowercase characters to uppercase, leaving
@@ -43,7 +49,6 @@
  *    returns a pointer to the altered string. Because the modification is
  *    done in place, the pointer returned is the same as the pointer passed as
  *    the input argument.
- *    If \c towupper() is not available, only the ASCII range a-z is translated.
  *
  * @remark IMPLEMENTED IN
  *    * Microsoft Windows Secure API
@@ -91,14 +96,7 @@ wcsupr_s(wchar_t *restrict src, rsize_t slen)
     }
 
     while (*src && slen) {
-#ifdef HAVE_TOWUPPER
         *src = towupper(*src);
-#else
-        if ((*src >= L'A') && (*src <= L'Z')) {
-             *src += (wchar_t)(*src - 32);
-        }
-        /* TODO other locales */
-#endif
         src++;
         slen--;
     }

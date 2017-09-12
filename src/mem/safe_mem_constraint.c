@@ -32,9 +32,7 @@
 
 #include "safe_mem_constraint.h"
 
-
 static constraint_handler_t mem_handler = NULL;
-
 
 /**
  * @brief

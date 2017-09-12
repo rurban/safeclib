@@ -153,9 +153,7 @@ void abort(void) __attribute__((noreturn));
 #define EXPORT
 #endif
 
-/* TODO: get rid of that */
 #include "safe_lib.h"
-
 #include "safe_str_constraint.h"
 
 /* platform quirks */

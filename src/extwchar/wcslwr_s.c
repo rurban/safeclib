@@ -34,6 +34,12 @@
 #include <wctype.h>
 #endif
 
+#ifndef HAVE_TOWLOWER
+EXTERN wint_t towlower(wint_t wc);
+#else
+#include <wctype.h>
+#endif
+
 /**
  * @brief
  *    Scans the string converting uppercase characters to
@@ -44,7 +50,6 @@
  *    locale. Other characters are not affected. It returns a pointer to the
  *    altered string. Because the modification is done in place, the pointer
  *    returned is the same as the pointer passed as the input argument.
- *    If \c towlower() is not available, only the ASCII range A-Z is translated.
  *
  * @remark IMPLEMENTED IN
  *    * Microsoft Windows Secure API
@@ -92,14 +97,7 @@ wcslwr_s(wchar_t *restrict src, rsize_t slen)
     }
 
     while (*src && slen) {
-#ifdef HAVE_TOWLOWER
         *src = towlower(*src);
-#else
-        if ((*src >= L'A') && (*src <= L'Z')) {
-             *src += (wchar_t)(*src + 32);
-        }
-        /* TODO other locales */
-#endif
         src++;
         slen--;
     }

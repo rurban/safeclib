@@ -78,7 +78,6 @@ extern "C" {
 /* Define to 1 to disable new multibyte and wchar support */
 @INSERT_DISABLE_WCHAR@
 
-
 /*
  * The spec does not call out a maximum len for the strtok src
  * string (the max delims size), so one is defined here.

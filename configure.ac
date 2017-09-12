@@ -443,6 +443,7 @@ AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
+AM_CONDITIONAL([HAVE_TOWUPPER], [test "x$ac_cv_func_towupper" = "xyes"])
 
 dnl this user choice needs to probe first for the default
 AC_ARG_ENABLE(wchar,
