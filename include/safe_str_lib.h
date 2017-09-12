@@ -520,13 +520,13 @@ wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax,
           rsize_t count, int *diff);
 
-/* TODO: Windows extensions, derived from sec_api/string_s.h
-
 EXTERN errno_t
 wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value);
 
 EXTERN errno_t
 wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, size_t n);
+
+/* TODO: More Windows extensions, derived from sec_api/string_s.h
 
 EXTERN errno_t
 wcslwr_s(wchar_t *restrict src, rsize_t slen);

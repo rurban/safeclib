@@ -73,7 +73,12 @@ SAFEC_BUILT_TESTS += \
 	t_wscanf_s	
 if ENABLE_EXTS
 SAFEC_BUILT_TESTS += \
-	t_wcsstr_s
+	t_wmemcmp_s	\
+	t_wcscmp_s	\
+	t_wcsncmp_s	\
+	t_wcsstr_s	\
+	t_wcsset_s	\
+	t_wcsnset_s	
 endif
 endif
 
@@ -139,14 +144,8 @@ SAFEC_BUILT_TESTS += \
 	t_strtolowercase_s    \
 	t_strtouppercase_s    \
 	t_strset_s            \
-	t_strnset_s            \
+	t_strnset_s           \
 	t_strzero_s
-if ENABLE_WCHAR
-SAFEC_BUILT_TESTS += \
-	t_wmemcmp_s	\
-	t_wcscmp_s	\
-	t_wcsncmp_s
-endif
 endif
 
 # 	t_vsscanf_s
@@ -288,7 +287,12 @@ t_fwscanf_s_SOURCES           = test_fwscanf_s.c $(SAFEC_TEST_COMMON)
 t_vfwscanf_s_SOURCES          = test_vfwscanf_s.c $(SAFEC_TEST_COMMON)
 t_wscanf_s_SOURCES            = test_wscanf_s.c $(SAFEC_TEST_COMMON)
 if ENABLE_EXTS
+t_wmemcmp_s_SOURCES           = test_wmemcmp_s.c $(SAFEC_TEST_COMMON)
+t_wcscmp_s_SOURCES            = test_wcscmp_s.c $(SAFEC_TEST_COMMON)
+t_wcsncmp_s_SOURCES           = test_wcsncmp_s.c $(SAFEC_TEST_COMMON)
 t_wcsstr_s_SOURCES            = test_wcsstr_s.c $(SAFEC_TEST_COMMON)
+t_wcsset_s_SOURCES            = test_wcsset_s.c $(SAFEC_TEST_COMMON)
+t_wcsnset_s_SOURCES           = test_wcsnset_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
@@ -343,14 +347,7 @@ t_strtouppercase_s_SOURCES    = test_strtouppercase_s.c $(SAFEC_TEST_COMMON)
 t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 t_strset_s_SOURCES            = test_strset_s.c $(SAFEC_TEST_COMMON)
 t_strnset_s_SOURCES           = test_strnset_s.c $(SAFEC_TEST_COMMON)
-
-if ENABLE_WCHAR
-t_wmemcmp_s_SOURCES           = test_wmemcmp_s.c $(SAFEC_TEST_COMMON)
-t_wcscmp_s_SOURCES            = test_wcscmp_s.c $(SAFEC_TEST_COMMON)
-t_wcsncmp_s_SOURCES           = test_wcsncmp_s.c $(SAFEC_TEST_COMMON)
 endif
-endif
-
 
 if ENABLE_UNSAFE
 t_tmpnam_s_SOURCES            = test_tmpnam_s.c $(SAFEC_TEST_COMMON)

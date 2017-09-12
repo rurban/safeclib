@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsnset_s
+ * File 'wcsnset_s.c'
+ * Lines executed:100.00% of 18
  *
  *------------------------------------------------------------------
  */
@@ -22,18 +24,23 @@ int main()
 
     rc = wcsnset_s(NULL, 5, value, 5);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = wcsnset_s(str1, 0, 0, 5);
     ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = wcsnset_s(str1, RSIZE_MAX_WSTR+1, 0, 5);
     ERR(ESLEMAX);
 
+    rc = wcsnset_s(str1, LEN-1, L' ', LEN);
+    ERR(ESNOSPC);
+
 /*--------------------------------------------------*/
 
-    value = 20;
+    value = L' ';
     max_len = 1;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)

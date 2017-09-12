@@ -163,7 +163,9 @@ STD_WCHAR_FILES += \
 	extwchar/wcsstr_s.c     \
 	extwchar/wmemcmp_s.c	\
 	extwchar/wcscmp_s.c	\
-	extwchar/wcsncmp_s.c
+	extwchar/wcsncmp_s.c	\
+	extwchar/wcsset_s.c	\
+	extwchar/wcsnset_s.c
 endif
 
 STD_IO_FILES = \
