@@ -14,6 +14,7 @@ var searchData=
   ['memmove16_5fs_2ec',['memmove16_s.c',['../d8/daf/memmove16__s_8c.html',1,'']]],
   ['memmove32_5fs_2ec',['memmove32_s.c',['../d0/d50/memmove32__s_8c.html',1,'']]],
   ['memmove_5fs_2ec',['memmove_s.c',['../d8/d56/memmove__s_8c.html',1,'']]],
+  ['memrchr_5fs_2ec',['memrchr_s.c',['../dd/def/memrchr__s_8c.html',1,'']]],
   ['memset16_5fs_2ec',['memset16_s.c',['../da/d22/memset16__s_8c.html',1,'']]],
   ['memset32_5fs_2ec',['memset32_s.c',['../d1/d57/memset32__s_8c.html',1,'']]],
   ['memset_5fs_2ec',['memset_s.c',['../de/d25/memset__s_8c.html',1,'']]],

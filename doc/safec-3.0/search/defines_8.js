@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['safeclib_5fenable_5funsafe',['SAFECLIB_ENABLE_UNSAFE',['../d3/ddb/safe__config_8h.html#ab9de5d04540cbd6782af6736556dce51',1,'safe_config.h']]],
   ['safeclib_5fstr_5fnull_5fslack',['SAFECLIB_STR_NULL_SLACK',['../d3/ddb/safe__config_8h.html#a78f0402a42149c6c7e080e409287ff87',1,'safe_config.h']]],
   ['sl_5fdefault_5fhandler',['sl_default_handler',['../db/d69/safe__lib_8h.html#a3838c5a9d1c42f1794cc142eaaceab1c',1,'safe_lib.h']]],
   ['slabort',['slabort',['../d9/d63/safeclib__private_8h.html#a1cd014dcfb28e641d4dd22a2f5c86931',1,'safeclib_private.h']]],
