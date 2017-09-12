@@ -18,6 +18,7 @@ var searchData=
   ['strchr_5fs',['strchr_s',['../d3/dfa/strchr__s_8c.html#a95f8084c2c56e2046db592e3c87d15a1',1,'strchr_s.c']]],
   ['strcmp_5fs',['strcmp_s',['../d1/d7b/strcmp__s_8c.html#a1af73c8a0a8e2f7abc5a1a78f154fa8e',1,'strcmp_s.c']]],
   ['strcmpfld_5fs',['strcmpfld_s',['../d5/df1/strcmpfld__s_8c.html#ac8eb3078be053d77b64b44cab2a8a9fc',1,'strcmpfld_s.c']]],
+  ['strcoll_5fs',['strcoll_s',['../d4/d50/strcoll__s_8c.html#a1bff30eadaeb278d7556c3e2c06b06e0',1,'strcoll_s.c']]],
   ['strcpy_5fs',['strcpy_s',['../df/d8e/strcpy__s_8c.html#aa5d4bb11f2e2390d7d8bc0593f8c0b12',1,'strcpy_s.c']]],
   ['strcpyfld_5fs',['strcpyfld_s',['../dd/d38/strcpyfld__s_8c.html#ab1ef30c509655a53db8b4ba86dde59da',1,'strcpyfld_s.c']]],
   ['strcpyfldin_5fs',['strcpyfldin_s',['../db/def/strcpyfldin__s_8c.html#aa400259d7a9ef29bdcc0c7410cfdb255',1,'strcpyfldin_s.c']]],

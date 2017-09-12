@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('da/d45/strnset__s_8c.html','../../');}
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac8ee0f7bddb6dd004118488a4fef6b85"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d45/strnset__s_8c.html#ac8ee0f7bddb6dd004118488a4fef6b85">strnset_s</a> (char *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, int value, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> n)</td></tr>
-<tr class="memdesc:ac8ee0f7bddb6dd004118488a4fef6b85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets dmax characters of dest to a character value.  <a href="#ac8ee0f7bddb6dd004118488a4fef6b85">More...</a><br /></td></tr>
+<tr class="memdesc:ac8ee0f7bddb6dd004118488a4fef6b85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets n characters of dest to a character value.  <a href="#ac8ee0f7bddb6dd004118488a4fef6b85">More...</a><br /></td></tr>
 <tr class="separator:ac8ee0f7bddb6dd004118488a4fef6b85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -146,7 +146,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets dmax characters of dest to a character value. </p>
+<p>Sets n characters of dest to a character value. </p>
 <dl class="section remark"><dt>Remarks</dt><dd>EXTENSION TO<ul>
 <li>ISO/IEC TR 24731, Programming languages, environments and system software interfaces, Extensions to the C Library, Part I: Bounds-checking interfaces</li>
 <li>Implemented in the Windows secure API as _strnset_s()</li>
@@ -156,7 +156,8 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">dest</td><td>string that will be set. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">dmax</td><td>restricted maximum length of dest </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>character value to write</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>character value to write </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">n</td><td>number of characters to be written</td></tr>
   </table>
   </dd>
 </dl>
@@ -172,13 +173,13 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d88/strzero__s_8c.html#a8f450ba4c1ab7a4a7471b9be7007ae03" title="Nulls dmax characters of dest. ">strzero_s()</a>, <a class="el" href="../../d3/d98/strset__s_8c.html#a697c3cdacea11c16986a91cec67b52b5" title="Sets dmax characters of dest to a character value. ">strset_s()</a>, <a class="el" href="../../d2/d08/strispassword__s_8c.html#acf0187b8c0aeb42c265ea1a79e5ccab9" title="This function validates the make-up of a password string. ">strispassword_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../da/d45/strnset__s_8c_source.html#l00059">59</a> of file <a class="el" href="../../da/d45/strnset__s_8c_source.html">strnset_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../da/d45/strnset__s_8c_source.html#l00060">60</a> of file <a class="el" href="../../da/d45/strnset__s_8c_source.html">strnset_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.180-g3d26ed-dirty 3.0
+Generated for Safe C Library 30082017.183-ge14621-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

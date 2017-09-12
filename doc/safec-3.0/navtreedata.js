@@ -18,9 +18,9 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"d0/d4b/memzero__s_8c.html",
-"d7/df5/wcsstr_8c_source.html",
-"de/de6/wmemmove__s_8c.html#aa6e5e33869fa209e8e349b05fdc509ae"
+"d0/d36/wcsset__s_8c.html",
+"d7/d57/gmtime__s_8c.html#af6fe85a68903d45aee557060358b47d0",
+"de/d70/memcpy__s_8c.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
