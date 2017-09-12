@@ -213,7 +213,7 @@
 #define SUBNULL()                                  \
     if (sub) {                                     \
         printf("%s %u  Error  sub=\"%s\" rc=%d \n",    \
-                     __FUNCTION__, __LINE__, sub, rc); \
+               __FUNCTION__, __LINE__, (char*)sub, rc); \
         errs++;                                    \
     }
 #define WSUBNULL()                                 \
@@ -231,7 +231,7 @@
 #define PTREQ(str1, str2)                          \
     if (str1 != str2) {                            \
         debug_printf("%s %u  Expected \"%s\", got \"%s\" \n", \
-                     __FUNCTION__, __LINE__,  str2, str1);  \
+                     __FUNCTION__, __LINE__,  (char*)str2, (char*)str1); \
         errs++;                                    \
     }
 #define PTRNN(ptr)                                          \

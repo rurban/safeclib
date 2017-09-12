@@ -46,18 +46,19 @@ STD_MEM_FILES = \
 	mem/memmove_s.c
 
 EXT_MEM_FILES = \
-	extmem/memset16_s.c          \
-	extmem/memset32_s.c          \
-	extmem/memcpy16_s.c          \
-	extmem/memcpy32_s.c          \
-	extmem/memmove16_s.c         \
-	extmem/memmove32_s.c         \
-	extmem/memcmp_s.c            \
-	extmem/memcmp16_s.c          \
-	extmem/memcmp32_s.c          \
-	extmem/memzero_s.c           \
-	extmem/memzero16_s.c         \
-	extmem/memzero32_s.c
+	extmem/memset16_s.c     \
+	extmem/memset32_s.c     \
+	extmem/memcpy16_s.c     \
+	extmem/memcpy32_s.c     \
+	extmem/memmove16_s.c    \
+	extmem/memmove32_s.c    \
+	extmem/memcmp_s.c       \
+	extmem/memcmp16_s.c     \
+	extmem/memcmp32_s.c     \
+	extmem/memzero_s.c      \
+	extmem/memzero16_s.c    \
+	extmem/memzero32_s.c	\
+	extmem/memchr_s.c
 
 STD_STR_FILES = \
 	str/safe_str_constraint.h \
@@ -109,6 +110,7 @@ EXT_STR_FILES = \
 	extstr/strprefix_s.c         \
 	extstr/strremovews_s.c       \
 	extstr/strspn_s.c            \
+	extstr/strchr_s.c            \
 	extstr/strstr_s.c            \
 	extstr/strtolowercase_s.c    \
 	extstr/strtouppercase_s.c    \

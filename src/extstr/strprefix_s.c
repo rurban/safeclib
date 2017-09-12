@@ -94,6 +94,7 @@ strprefix_s (const char *dest, rsize_t dmax, const char *src)
         return (ESNOTFND);
     }
 
+    /* TODO: if src and dmax are at least a word long, compare wordwise */
     while (*src && dmax) {
 
         if (*dest != *src) {

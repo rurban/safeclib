@@ -31,8 +31,9 @@
 
 #include "safeclib_private.h"
 
-
-
+/* not via the naive byte copy, but aligned long word copy
+   via the (((X) - 0x0101010101010101) & ~(X) & 0x8080808080808080)
+   check */
 
 /**
  * @brief

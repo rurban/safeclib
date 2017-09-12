@@ -57,8 +57,8 @@ set_mem_constraint_handler_s(constraint_handler_t handler);
 
 /* copy memory */
 EXTERN errno_t
-memcpy_s(void * restrict dest, rsize_t dmax,
-         const void * restrict src, rsize_t slen);
+memcpy_s(void *restrict dest, rsize_t dmax,
+         const void *restrict src, rsize_t slen);
 
 /* move memory, including overlapping memory */
 EXTERN errno_t
@@ -128,6 +128,11 @@ memzero16_s(uint16_t *dest, rsize_t dmax);
 /* uint32_t zero */
 EXTERN errno_t
 memzero32_s(uint32_t *dest, rsize_t dmax);
+
+/* find a byte */
+EXTERN errno_t
+memchr_s(const void *restrict dest, rsize_t dmax,
+         const int ch, void **result);
 
 /* possible extensions: */
 #if 0
