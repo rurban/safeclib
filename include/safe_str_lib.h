@@ -355,6 +355,9 @@ strtouppercase_s(char *str, rsize_t slen);
 EXTERN errno_t
 strzero_s(char *dest, rsize_t dmax);
 
+EXTERN errno_t
+strcoll_s(const char *restrict dest, rsize_t dmax,
+          const char *restrict src, int *indicator);
 
 /* Derived from windows extensions sec_api/string_s.h
    defined(MINGW_HAS_SECURE_API) */
@@ -525,6 +528,10 @@ wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value);
 
 EXTERN errno_t
 wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, size_t n);
+
+EXTERN errno_t
+wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src,  rsize_t smax, int *indicator);
 
 /* TODO: More Windows extensions, derived from sec_api/string_s.h
 

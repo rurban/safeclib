@@ -118,7 +118,9 @@ EXT_STR_FILES = \
 	extstr/strtouppercase_s.c    \
 	extstr/strzero_s.c	     \
 	extstr/strset_s.c            \
-	extstr/strnset_s.c
+	extstr/strnset_s.c	     \
+	extstr/strcoll_s.c
+#	extstr/strxfrm_s.c
 
 STD_WCHAR_FILES = \
 	wchar/mbsrtowcs_s.c  	\
@@ -165,7 +167,9 @@ STD_WCHAR_FILES += \
 	extwchar/wcscmp_s.c	\
 	extwchar/wcsncmp_s.c	\
 	extwchar/wcsset_s.c	\
-	extwchar/wcsnset_s.c
+	extwchar/wcsnset_s.c	\
+	extwchar/wcscoll_s.c	
+#	extwchar/wcsxfrm_s.c	
 endif
 
 STD_IO_FILES = \

@@ -78,7 +78,8 @@ SAFEC_BUILT_TESTS += \
 	t_wcsncmp_s	\
 	t_wcsstr_s	\
 	t_wcsset_s	\
-	t_wcsnset_s	
+	t_wcsnset_s	\
+	t_wcscoll_s	
 endif
 endif
 
@@ -145,7 +146,8 @@ SAFEC_BUILT_TESTS += \
 	t_strtouppercase_s    \
 	t_strset_s            \
 	t_strnset_s           \
-	t_strzero_s
+	t_strzero_s	      \
+	t_strcoll_s
 endif
 
 # 	t_vsscanf_s
@@ -293,6 +295,7 @@ t_wcsncmp_s_SOURCES           = test_wcsncmp_s.c $(SAFEC_TEST_COMMON)
 t_wcsstr_s_SOURCES            = test_wcsstr_s.c $(SAFEC_TEST_COMMON)
 t_wcsset_s_SOURCES            = test_wcsset_s.c $(SAFEC_TEST_COMMON)
 t_wcsnset_s_SOURCES           = test_wcsnset_s.c $(SAFEC_TEST_COMMON)
+t_wcscoll_s_SOURCES           = test_wcscoll_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
@@ -347,6 +350,7 @@ t_strtouppercase_s_SOURCES    = test_strtouppercase_s.c $(SAFEC_TEST_COMMON)
 t_strzero_s_SOURCES           = test_strzero_s.c $(SAFEC_TEST_COMMON)
 t_strset_s_SOURCES            = test_strset_s.c $(SAFEC_TEST_COMMON)
 t_strnset_s_SOURCES           = test_strnset_s.c $(SAFEC_TEST_COMMON)
+t_strcoll_s_SOURCES           = test_strcoll_s.c $(SAFEC_TEST_COMMON)
 endif
 
 if ENABLE_UNSAFE

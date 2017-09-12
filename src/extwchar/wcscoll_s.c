@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * strcoll_s.c -- string locale-aware compare
+ * wcscoll_s.c -- string locale-aware compare
  *
  * September 2017, Reini Urban
  *
@@ -33,7 +33,7 @@
 
 /**
  * @brief
- *    Compares two null-terminated byte strings according to the
+ *    Compares two null-terminated wide strings according to the
  *    current locale as defined by the \c LC_COLLATE category.
  *
  * @details
@@ -51,9 +51,10 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[in]   dest       pointer to string to compare against
- * @param[in]   dmax       restricted maximum length of string dest
- * @param[in]   src        pointer to the string to be compared to dest
+ * @param[in]   dest       wide string to compare against
+ * @param[in]   dmax       restricted maximum length of dest
+ * @param[in]   src        wide string to be compared to dest
+ * @param[in]   smax       restricted maximum length of src
  * @param[out]  indicator  pointer to result indicator, greater than 0,
  *                         equal to 0 or less than 0, if the string pointed
  *                         to by dest is greater than, equal to or less
@@ -61,8 +62,8 @@
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   indicator shall not be a null pointer.
- * @pre   dmax shall not be 0
- * @pre   dmax shall not be greater than RSIZE_MAX_STR
+ * @pre   dmax/smax shall not be 0
+ * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR
  *
  * @return  indicator (when the return code is OK)
  * @retval  >0 when dest greater than src
@@ -70,50 +71,51 @@
  * @retval  <0 when dest less than src
  * @retval  EOK          when comparison is complete
  * @retval  ESNULLP      when dest/src/indicator is NULL pointer
- * @retval  ESZEROL      when dmax = 0
- * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
+ * @retval  ESZEROL      when dmax/smax = 0
+ * @retval  ESLEMAX      when dmax/smax > RSIZE_MAX_WSTR
  *
  * @see
- *    wcscoll_s(), strcmp_s(), strcasecmp_s()
+ *    wcscmp_s(), strcoll_s(), strcasecmp_s()
  *
  */
 EXPORT errno_t
-strcoll_s (const char *restrict dest, rsize_t dmax,
-           const char *restrict src, int *indicator)
+wcscoll_s (const wchar_t *restrict dest, rsize_t dmax,
+           const wchar_t *restrict src, rsize_t smax,
+           int *indicator)
 {
     if (unlikely(indicator == NULL)) {
-        invoke_safe_str_constraint_handler("strcoll_s: indicator is null",
+        invoke_safe_str_constraint_handler("wcscoll_s: indicator is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
     *indicator = 0;
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcoll_s: dest is null",
+        invoke_safe_str_constraint_handler("wcscoll_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strcoll_s: src is null",
+        invoke_safe_str_constraint_handler("wcscoll_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcoll_s: dmax is 0",
+    if (unlikely(dmax == 0 || smax == 0)) {
+        invoke_safe_str_constraint_handler("wcscoll_s: dmax/smax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcoll_s: dmax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_WSTR || smax > RSIZE_MAX_WSTR)) {
+        invoke_safe_str_constraint_handler("wcscoll_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    *indicator = strcoll(dest, src);
+    *indicator = wcscoll(dest, src);
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strcoll_s)
+EXPORT_SYMBOL(wcscoll_s)
