@@ -73,7 +73,7 @@ STD_STR_FILES = \
 	str/strtok_s.c          \
 	str/strerror_s.c        \
 	str/strerrorlen_s.c     \
-	str/vsprintf_s.c 	       
+	str/vsprintf_s.c
 
 # but they are in the C11 standard
 STD_UNSAFE_FILES = \
@@ -120,34 +120,33 @@ EXT_STR_FILES = \
 	extstr/strset_s.c            \
 	extstr/strnset_s.c	     \
 	extstr/strcoll_s.c
-#	extstr/strxfrm_s.c
 
 STD_WCHAR_FILES = \
-	wchar/mbsrtowcs_s.c  	\
-	wchar/mbstowcs_s.c  	\
-	wchar/wcsrtombs_s.c  	\
-	wchar/wcstombs_s.c  	\
-	wchar/wcrtomb_s.c  	\
-	wchar/wctomb_s.c  	\
-	wchar/wcsnlen_s.c  	\
-	wchar/wcscpy_s.c  	\
-	wchar/wcsncpy_s.c  	\
-	wchar/wcscat_s.c  	\
-	wchar/wcsncat_s.c  	\
-	wchar/wmemcpy_s.c  	\
-	wchar/wmemmove_s.c  	\
-	wchar/wcstok_s.c  	\
+	wchar/mbsrtowcs_s.c	\
+	wchar/mbstowcs_s.c	\
+	wchar/wcsrtombs_s.c	\
+	wchar/wcstombs_s.c	\
+	wchar/wcrtomb_s.c	\
+	wchar/wctomb_s.c	\
+	wchar/wcsnlen_s.c	\
+	wchar/wcscpy_s.c	\
+	wchar/wcsncpy_s.c	\
+	wchar/wcscat_s.c	\
+	wchar/wcsncat_s.c	\
+	wchar/wmemcpy_s.c	\
+	wchar/wmemmove_s.c	\
+	wchar/wcstok_s.c	\
 	wchar/vswprintf_s.c	\
 	wchar/swprintf_s.c	\
-	wchar/vfwprintf_s.c  	\
-	wchar/vwprintf_s.c  	\
+	wchar/vfwprintf_s.c	\
+	wchar/vwprintf_s.c	\
 	wchar/wprintf_s.c	\
 	wchar/fwprintf_s.c	\
-	wchar/swscanf_s.c  	\
-	wchar/vswscanf_s.c  	\
+	wchar/swscanf_s.c	\
+	wchar/vswscanf_s.c	\
 	wchar/wscanf_s.c	\
-	wchar/vfwscanf_s.c  	\
-	wchar/fwscanf_s.c  	\
+	wchar/vfwscanf_s.c	\
+	wchar/fwscanf_s.c	\
 	wchar/vwscanf_s.c
 
 if !HAVE_VSNWPRINTF_S
@@ -168,8 +167,9 @@ STD_WCHAR_FILES += \
 	extwchar/wcsncmp_s.c	\
 	extwchar/wcsset_s.c	\
 	extwchar/wcsnset_s.c	\
-	extwchar/wcscoll_s.c	
-#	extwchar/wcsxfrm_s.c	
+	extwchar/wcscoll_s.c	\
+	extwchar/wcslwr_s.c	\
+	extwchar/wcsupr_s.c
 endif
 
 STD_IO_FILES = \
@@ -199,7 +199,7 @@ STD_OS_FILES = \
 	os/localtime_s.c \
 	os/getenv_s.c
 
-ALL_SRC_FILES = 
+ALL_SRC_FILES =
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
 	$(EXT_MEM_FILES)    \

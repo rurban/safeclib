@@ -435,8 +435,8 @@ dnl mbstowcs missing on cygwin64
 dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
-                vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs \
-                asctime_r ctime_r gmtime_r localtime_r memcpy_s \
+                vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towupper towlower \
+                asctime_r ctime_r gmtime_r localtime_r  memcpy_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])

@@ -70,7 +70,7 @@ SAFEC_BUILT_TESTS += \
 	t_vwscanf_s	\
 	t_fwscanf_s	\
 	t_vfwscanf_s	\
-	t_wscanf_s	
+	t_wscanf_s
 if ENABLE_EXTS
 SAFEC_BUILT_TESTS += \
 	t_wmemcmp_s	\
@@ -79,7 +79,9 @@ SAFEC_BUILT_TESTS += \
 	t_wcsstr_s	\
 	t_wcsset_s	\
 	t_wcsnset_s	\
-	t_wcscoll_s	
+	t_wcscoll_s	\
+	t_wcslwr_s	\
+	t_wcsupr_s
 endif
 endif
 
@@ -296,6 +298,8 @@ t_wcsstr_s_SOURCES            = test_wcsstr_s.c $(SAFEC_TEST_COMMON)
 t_wcsset_s_SOURCES            = test_wcsset_s.c $(SAFEC_TEST_COMMON)
 t_wcsnset_s_SOURCES           = test_wcsnset_s.c $(SAFEC_TEST_COMMON)
 t_wcscoll_s_SOURCES           = test_wcscoll_s.c $(SAFEC_TEST_COMMON)
+t_wcslwr_s_SOURCES            = test_wcslwr_s.c $(SAFEC_TEST_COMMON)
+t_wcsupr_s_SOURCES            = test_wcsupr_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 

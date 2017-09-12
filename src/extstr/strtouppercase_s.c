@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * safe_str_touppercase.c
+ * strtouppercase.c
  *
  * November 2008, Bo Berry
  *

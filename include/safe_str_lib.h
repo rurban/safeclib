@@ -343,12 +343,13 @@ strrchr_s(const char *restrict dest, rsize_t dmax,
 EXTERN errno_t
 strtolowercase_s(char *restrict str, rsize_t slen);
 
-
 /* convert string to uppercase
    mingw string_s.h: _strupr_s */
 EXTERN errno_t
 strtouppercase_s(char *str, rsize_t slen);
 
+#define strlwr_s(str, slen) strtolowercase_s((str), (slen))
+#define strupr_s(str, slen) strtouppercase_s((str), (slen))
 
 /* zero an entire string with nulls.
    mingw string_s.h has: _strset_s */
@@ -367,16 +368,6 @@ strset_s(char *restrict dest, rsize_t dmax, int value);
 
 EXTERN errno_t
 strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n);
-
-/* TODO:
-
-EXTERN errno_t
-strlwr_s(char *restrict str, rsize_t slen);
-
-EXTERN errno_t
-strupr_s(char *restrict str, rsize_t slen);
-
-*/
   
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
@@ -533,15 +524,13 @@ EXTERN errno_t
 wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src,  rsize_t smax, int *indicator);
 
-/* TODO: More Windows extensions, derived from sec_api/string_s.h
+/* More Windows extensions, derived from sec_api/string_s.h */
 
 EXTERN errno_t
 wcslwr_s(wchar_t *restrict src, rsize_t slen);
 
 EXTERN errno_t
 wcsupr_s(wchar_t *restrict src, rsize_t slen);
-
-*/
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
