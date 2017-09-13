@@ -170,11 +170,9 @@ STD_WCHAR_FILES += \
 	extwchar/wcscoll_s.c	\
 	extwchar/wcslwr_s.c	\
 	extwchar/wcsupr_s.c	\
-	extwchar/towfc_s.c
-if !HAVE_TOWUPPER
-STD_WCHAR_FILES += \
-	extwchar/towctrans_s.c
-endif
+	extwchar/towfc_s.c	\
+	extwchar/towctrans.c	\
+	extwchar/wcsfc_s.c
 endif
 
 STD_IO_FILES = \

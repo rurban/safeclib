@@ -33,11 +33,8 @@
 #ifdef HAVE_TOWUPPER
 #include <wctype.h>
 #endif
-
-#ifndef HAVE_TOWUPPER
-EXTERN wint_t towupper(wint_t wc);
-#else
-#include <wctype.h>
+#ifndef HAVE_TOWUPPER_OK
+EXTERN wint_t _towupper(wint_t wc);
 #endif
 
 /**
@@ -97,7 +94,11 @@ wcsupr_s(wchar_t *restrict src, rsize_t slen)
     }
 
     while (*src && slen) {
+#ifdef HAVE_TOWUPPER_OK
         *src = towupper(*src);
+#else
+        *src = _towupper(*src);
+#endif
         src++;
         slen--;
     }

@@ -24,8 +24,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ----------------------------------------------------------------------
 */
+
+#include "safeclib_private.h"
+
 #include <ctype.h>
 #include <wctype.h>
+#include <assert.h>
 
 #define CASEMAP(u1,u2,l) { (u1), (l)-(u1), (u2)-(u1)+1 }
 #define CASELACE(u1,u2) CASEMAP((u1),(u2),(u1)+1)
@@ -38,7 +42,8 @@ static const struct {
     signed char lower;
     unsigned char len;
 } casemaps[] = {
-    CASEMAP (0x00c0,0xde,0xe0),
+    CASEMAP (0x00c0,0xd6,0xe0),
+    CASEMAP (0x00d8,0xde,0xf8),
 
     CASELACE(0x0100,0x12e),
     CASELACE(0x0132,0x136),
@@ -56,8 +61,8 @@ static const struct {
 
     CASELACE(0x0370,0x372),
     CASEMAP (0x0388,0x38a,0x3ad),
-    CASEMAP (0x0391,0x3a1,0x3b1),
-    CASEMAP (0x03a3,0x3ab,0x3c3),
+    CASEMAP (0x0393,0x39f,0x3b3),
+    CASEMAP (0x03a7,0x3ab,0x3c7),
     CASELACE(0x03d8,0x3ee),
     /*CASEMAP (0x03da,0x3ee,0x3db),*/
     /*CASEMAP (0x03f4,0x3fa,0x3b8),*/
@@ -72,7 +77,9 @@ static const struct {
     CASELACE(0x0510,0x512),
     CASELACE(0x0514,0x526),
     CASEMAP (0x0531,0x556,0x561),
-    CASEMAP (0x13f8,0x13fd,0x13f0),
+    /*CASEMAP (0x13a0,0x13ef,0xab70),*/ /* CHEROKEE reverse overflow */
+    CASEMAP (0x13f0,0x13f5,0x13f8), /* CHEROKEE reverse */
+    CASEMAP (0x13f8,0x13fd,0x13f0), /* CHEROKEE */
 
     CASELACE(0x1e00,0x1e94),
     CASELACE(0x1ea0,0x1efe),
@@ -129,7 +136,8 @@ static const struct {
     int lower;
     unsigned short len;
 } casemapsl[] = {
-    CASEMAP(0xab70,0xabbf,0x13a0),
+    CASEMAP(0x13a0,0x13ef,0xab70),    /* CHEROKEE reverse */
+    CASEMAP(0xab70,0xabbf,0x13a0),    /* CHEROKEE */
     CASEMAP(0x10400,0x10427,0x10428),
     CASEMAP(0x104b0,0x104d3,0x104d8), /* Unicode 9 */
     CASEMAP(0x10c80,0x10cb2,0x10cc0), /* Unicode 8 */
@@ -140,6 +148,7 @@ static const struct {
 
 /* must now be sorted */
 static const unsigned short pairs[][2] = {
+    /* upper - lower */
     { 'I',    0x0131 },
     { 'S',    0x017f },
     { 0x00b5, 0x03bc },
@@ -216,6 +225,24 @@ static const unsigned short pairs[][2] = {
     { 0x038c, 0x03cc },
     { 0x038e, 0x03cd },
     { 0x038f, 0x03ce },
+    { 0x0391, 0x3b1 },
+    { 0x0392, 0x3b2 },
+    { 0x0392, 0x3d0 }, /* reverse */
+    /*CASEMAP (0x0393,0x39f,0x3b3),*/
+    { 0x0395, 0x3f5 }, /* reverse */
+    { 0x0398, 0x3d1 },
+    { 0x0399, 0x1fbe },/* reverse */
+    { 0x039a, 0x3f0 }, /* reverse */
+    { 0x03a0, 0x3c0 },
+    { 0x03a0, 0x3d6 }, /* reverse */
+    { 0x03a1, 0x3c1 },
+    { 0x03a1, 0x3f1 }, /* reverse */
+    { 0x03a3, 0x3c3 },
+    { 0x03a3, 0x3c2 }, /* reverse */
+    { 0x03a4, 0x3c4 },
+    { 0x03a5, 0x3c5 },
+    { 0x03a6, 0x3c6 },
+    { 0x03a6, 0x3d5 }, /* reverse */
     /*CASEMAP(0x0391,0x3a1,0x3b1),*/
     { 0x03c2, 0x3c3 },
     { 0x03cf, 0x3d7 },
@@ -237,6 +264,16 @@ static const unsigned short pairs[][2] = {
     { 0x03ff, 0x037d },
     /*CASEMAP(0x0400,0x40f,0x450),
       CASEMAP(0x0410,0x42f,0x430),*/
+    { 0x412, 0x1c80 }, /* reverse */
+    { 0x414, 0x1c81 }, /* reverse */
+    { 0x41e, 0x1c82 }, /* reverse */
+    { 0x421, 0x1c83 }, /* reverse */
+    { 0x422, 0x1c84 }, /* reverse */
+    { 0x422, 0x1c85 }, /* reverse */
+    { 0x42a, 0x1c86 }, /* reverse */
+    { 0x462, 0x463 },
+    { 0x462, 0x1c87 }, /* reverse */
+
     { 0x04c0, 0x04cf},
     /*CASELACE(0x04c1,0x4cd),*/
     { 0x0528, 0x0529},
@@ -246,16 +283,6 @@ static const unsigned short pairs[][2] = {
     
     { 0x10c7, 0x2d27 },
     { 0x10cd, 0x2d2d },
-
-    { 0x1c80, 0x432 },
-    { 0x1c81, 0x434 },
-    { 0x1c82, 0x43e },
-    { 0x1c83, 0x441 },
-    { 0x1c84, 0x442 },
-    { 0x1c85, 0x442 },
-    { 0x1c86, 0x44a },
-    { 0x1c87, 0x463 },
-    { 0x1c88, 0xa64b },
 
     { 0x1e60, 0x1e9b },
     { 0x1e9b, 0x1e61 },
@@ -267,11 +294,6 @@ static const unsigned short pairs[][2] = {
     { 0x1f5f, 0x1f57 },
     { 0x1fbc, 0x1fb3 },
     { 0x1fbe, 0x3b9 },
-    { 0x1f59, 0x1f51 },
-    { 0x1f5b, 0x1f53 },
-    { 0x1f5d, 0x1f55 },
-    { 0x1f5f, 0x1f57 },
-    { 0x1fbc, 0x1fb3 },
     { 0x1fcc, 0x1fc3 },
     { 0x1fec, 0x1fe5 },
     { 0x1ffc, 0x1ff3 },
@@ -295,6 +317,9 @@ static const unsigned short pairs[][2] = {
     { 0x2c7f, 0x240 },
     { 0x2cf2, 0x2cf3 },
 
+    { 0xa64a, 0xa64b },
+    { 0xa64a, 0x1c88 }, /* reverse */
+
     { 0xa77d, 0x1d79 },
     { 0xa78b, 0xa78c },
     { 0xa78d, 0x265 },
@@ -314,14 +339,14 @@ static const unsigned short pairs[][2] = {
     { 0,0 }
 };
 
-
-static wchar_t __towcase(wchar_t wc, int lower)
+EXPORT wchar_t
+_towcase(wchar_t wc, int lower)
 {
     int i;
     int lmul = 2*lower-1;
     int lmask = lower-1;
     /* no letters with case in these large ranges */
-    if (/*(!iswalpha(wc) is broken) */
+    if (/*(!iswalpha(wc) is broken on some platforms) */
         wc < 0x41
         || (unsigned)wc - 0x0600 <= 0x0fff-0x0600
         || (unsigned)wc - 0x2e00 <= 0xa63f-0x2e00
@@ -334,11 +359,13 @@ static wchar_t __towcase(wchar_t wc, int lower)
         if (wc>0x10c5 && wc != 0x10c7 && wc != 0x10cd) { return wc; }
         else { return wc + 0x2d00 - 0x10a0; }
     }
-    if (!lower && (unsigned)wc - 0x2d00 < 0x26)
+    else if (!lower && (unsigned)wc - 0x2d00 < 0x26) {
         if (wc>0x2d25 && wc != 0x2d27 && wc != 0x2d2d) return wc;
         else return wc + 0x10a0 - 0x2d00;
+    }
     for (i=0; casemaps[i].len; i++) {
         int base = casemaps[i].upper + (lmask & casemaps[i].lower);
+        assert(i>0 ? casemaps[i].upper >= casemaps[i-1].upper : 1);
         if ((unsigned)wc-base < casemaps[i].len) {
             if (casemaps[i].lower == 1)
                 return wc + lower - ((wc-casemaps[i].upper)&1);
@@ -348,13 +375,15 @@ static wchar_t __towcase(wchar_t wc, int lower)
             break;
     }
     for (i=0; pairs[i][1-lower]; i++) {
+        assert(i>0 ? pairs[i][0] >= pairs[i-1][0] : 1);
         if (pairs[i][1-lower] == wc)
             return pairs[i][lower];
-        if (pairs[i][1-lower] > wc)
+        if (lower && pairs[i][0] > wc)
             break;
     }
     for (i=0; casemapsl[i].len; i++) {
         unsigned long base = casemapsl[i].upper + (lmask & casemapsl[i].lower);
+        assert(i>0 ? casemapsl[i].upper >= casemapsl[i-1].upper : 1);
         if ((unsigned)wc-base < casemapsl[i].len) {
             if (casemapsl[i].lower == 1)
                 return wc + lower - ((wc-casemapsl[i].upper)&1);
@@ -366,12 +395,23 @@ static wchar_t __towcase(wchar_t wc, int lower)
     return wc;
 }
 
-wint_t towupper(wint_t wc)
+EXPORT wint_t
+_towupper(wint_t wc)
 {
-    return (unsigned)wc < 128 ? toupper(wc) : __towcase(wc, 0);
+    return (unsigned)wc < 128 ? toupper(wc) : _towcase(wc, 0);
 }
+#ifndef HAVE_TOWUPPER
+EXPORT wint_t
+towupper(wint_t wc)
+{
+    return (unsigned)wc < 128 ? toupper(wc) : _towcase(wc, 0);
+}
+#endif
 
-wint_t towlower(wint_t wc)
+#ifndef HAVE_TOWLOWER
+EXPORT wint_t
+towlower(wint_t wc)
 {
-    return (unsigned)wc < 128 ? tolower(wc) : __towcase(wc, 1);
+    return (unsigned)wc < 128 ? tolower(wc) : _towcase(wc, 1);
 }
+#endif

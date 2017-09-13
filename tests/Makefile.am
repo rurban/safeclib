@@ -81,7 +81,11 @@ SAFEC_BUILT_TESTS += \
 	t_wcsnset_s	\
 	t_wcscoll_s	\
 	t_wcslwr_s	\
-	t_wcsupr_s
+	t_wcsupr_s	\
+	t_towfc_s	\
+	t_wcsfc_s	\
+	t_towlower
+#	t_towupper
 endif
 endif
 
@@ -300,6 +304,10 @@ t_wcsnset_s_SOURCES           = test_wcsnset_s.c $(SAFEC_TEST_COMMON)
 t_wcscoll_s_SOURCES           = test_wcscoll_s.c $(SAFEC_TEST_COMMON)
 t_wcslwr_s_SOURCES            = test_wcslwr_s.c $(SAFEC_TEST_COMMON)
 t_wcsupr_s_SOURCES            = test_wcsupr_s.c $(SAFEC_TEST_COMMON)
+t_towfc_s_SOURCES             = test_towfc_s.c $(SAFEC_TEST_COMMON)
+t_towlower_SOURCES            = test_towlower.c $(SAFEC_TEST_COMMON)
+#t_towupper_SOURCES            = test_towupper.c $(SAFEC_TEST_COMMON)
+t_wcsfc_s_SOURCES             = test_wcsfc_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
@@ -371,7 +379,7 @@ if HAVE_DSYMUTIL
 clean-local:
 	rm -rf *.dSYM
 endif
-CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe
+CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe test-fc.pl
 CLEANFILES  += *.gcno *.gcda
 if ENABLE_GCOV
 CLEANFILES  += *.gcov gcov.log

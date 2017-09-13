@@ -71,6 +71,8 @@ doc/html
 doc/man
 src/gcov.log
 tests/gcov.log
+CaseFolding.txt
+test/test-fc.pl
 
 #
 # Debian directory (make deb-pkg)

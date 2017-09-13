@@ -1,27 +1,19 @@
 /*------------------------------------------------------------------
- * test_towlower
- * Test the musl-inherited towupper/towlower regarding Unicode 9.0
- * CaseFolding.txt
- * Some F characters fold to multiples, which cannot be handled here.
+ * test_towlower.c
  *
+ * Test our musl-inherited towupper/towlower regarding Unicode 10.0
+ * CaseFolding.txt
+ * Some F characters fold to multiples, which cannot be handled here,
+ * see test_towcf_s.c instead.
  *------------------------------------------------------------------
  */
 
-/*#include "test_private.h"
-  #include "safe_lib.h"*/
-#include "../config.h"
+#include "test_private.h"
+#include "safe_lib.h"
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
 #include <ctype.h>
-#ifndef HAVE_TOWLOWER
-#define EXTERN
-EXTERN wint_t towlower(wint_t wc);
-#else
-#include "../src/extwchar/towctrans.c"
-#endif
+
+EXTERN wchar_t _towcase(wchar_t wc, int lower);
 
 #define CFOLD "CaseFolding.txt"
 
@@ -29,7 +21,6 @@ int ignore_f = 1;
 
 int test_towlower (void)
 {
-    errno_t rc;
     int errs = 0;
     int c;
     char s[128];
@@ -39,7 +30,7 @@ int test_towlower (void)
     char name[80];
     FILE *f;
 
-    wint_t wc, m;
+    wint_t wc, lwr;
 
 /*--------------------------------------------------*/
 
@@ -71,26 +62,26 @@ int test_towlower (void)
 
             c = sscanf(code, "%X", &wc);
             if (c) {
-                wint_t m1;
-                m = (unsigned)wc < 128 ? tolower(wc) : __towcase(wc, 1);
-                c = sscanf(mapping, "%X", &m1);
+                wint_t mp;
+                lwr = (unsigned)wc < 128 ? tolower(wc) : _towcase(wc, 1);
+                c = sscanf(mapping, "%X", &mp);
                 if (*status == 'T')
-                    m1 = m;
+                    mp = lwr;
                 /* we have 104 unhandled F multi-char mappings */
                 else if (*status == 'F') { /* lower is bigger than upper, ignored */
                     if (!ignore_f) {
-                        if (m != wc)
+                        if (lwr != wc)
                             printf("U+%04X => U+%04X lower=(%s) F %s\n",
-                                   wc, m, mapping, name);
+                                   wc, lwr, mapping, name);
                         else
                             printf("U+%04X lower=(%s) F %s\n", wc, mapping, name);
                     }
                 }
-                else if (m1 != m) {
-                    m = __towcase(wc, 1);
-                    if (wc != m)
+                else if (mp != lwr) {
+                    lwr = _towcase(wc, 1);
+                    if (wc != lwr)
                         printf("Error U+%04X => U+%04X lower=%s status=%s name=%s\n",
-                               wc, m, mapping, status, name);
+                               wc, lwr, mapping, status, name);
                     else
                         printf("Error U+%04X lower=%s status=%s name=%s\n",
                                wc, mapping, status, name);

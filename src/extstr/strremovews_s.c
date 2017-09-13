@@ -31,13 +31,12 @@
 
 #include "safeclib_private.h"
 
-
-
-
 /**
  * @brief 
  *    Removes beginning and trailing whitespace from the string pointed to by
- *    dest by shifting the text left over writting the beginning whitespace.
+ *    dest by shifting the text left over writting the beginning whitespace
+ *    (space or tab).
+ *
  * @details
  *    The shifted-trimmed text is null terminated.
  *    The text is shifted so the original pointer can continue to be used. This

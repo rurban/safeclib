@@ -524,10 +524,10 @@ EXTERN errno_t
 wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src,  rsize_t smax, int *indicator);
 
-/* More Windows extensions, derived from sec_api/string_s.h */
-
+/* simple char-wise folding */
 EXTERN errno_t
 wcslwr_s(wchar_t *restrict src, rsize_t slen);
+
 
 EXTERN errno_t
 wcsupr_s(wchar_t *restrict src, rsize_t slen);
@@ -539,6 +539,10 @@ iswfc(wint_t wc);
 /* full foldcase a single upper char to mult. lower chars */
 EXTERN errno_t
 towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src);
+
+/* full foldcase */
+EXTERN errno_t
+wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

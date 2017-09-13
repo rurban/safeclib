@@ -39,6 +39,10 @@
 #ifdef HAVE_LIMITS_H
 # include <limits.h>
 #endif
+#include <locale.h>
+#ifdef HAVE_LANGINFO_H
+#include <langinfo.h>
+#endif
 
 #ifdef __KERNEL__
 
@@ -189,15 +193,22 @@
     }
 #define WEXPNULL(str1)                             \
     if ((str1)[0] != L'\0') {                      \
-        debug_printf("%s %u  Expected null, got L\"%ls\" \n", \
+        debug_printf("%s %u  Expected null, got L\"%ls\"\n", \
                      __FUNCTION__, __LINE__, str1); \
         errs++;                                    \
     }
 #define WEXPSTR(str1, str2)                        \
-    ind = wcscmp(str1, str2);                      \
-    if (ind != 0) {                                \
-        debug_printf("%s %u  Expected L\"%ls\", got L\"%ls\" \n", \
-                     __FUNCTION__, __LINE__,  str2, str1);  \
+    if (wcscmp(str1, str2)) {                      \
+        debug_printf("%s %u  Expected L\"%ls\", got L\"%ls\"  \"", \
+            __FUNCTION__, __LINE__, str2, str1);   \
+        for (ind=0; (size_t)ind<wcslen(str2); ind++) { \
+            debug_printf("\\x%x", str2[ind]);      \
+        }                                          \
+        debug_printf("\" <=> \"");                 \
+        for (ind=0; (size_t)ind<wcslen(str1); ind++) { \
+            debug_printf("\\x%x", str1[ind]);      \
+        }                                          \
+        debug_printf("\"\n");                      \
         errs++;                                    \
     }
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -239,20 +250,20 @@
         errs++;                                    \
     }
 #define INDCMP(cmp)                                \
-  if ((int)ind cmp) {                              \
+    if ((int)ind cmp) {                            \
         printf("%s %u  Error  ind=%d rc=%d \n",    \
-               __FUNCTION__, __LINE__, (int)ind, rc);   \
+               __FUNCTION__, __LINE__, (int)ind, rc); \
         errs++;                                    \
     }
 #define SUBNULL()                                  \
     if (sub) {                                     \
-        printf("%s %u  Error  sub=\"%s\" rc=%d \n",    \
+        printf("%s %u  Error  sub=\"%s\" rc=%d \n",\
                __FUNCTION__, __LINE__, (char*)sub, rc); \
         errs++;                                    \
     }
 #define WSUBNULL()                                 \
     if (sub) {                                     \
-        printf("%s %u  Error  sub=\"%ls\" rc=%d \n",   \
+        printf("%s %u  Error  sub=\"%ls\" rc=%d \n",\
                      __FUNCTION__, __LINE__, sub, rc); \
         errs++;                                    \
     }
@@ -299,6 +310,18 @@
     if (!lc_cat)                                        \
         lc_cat = setlocale(LC_CTYPE, "")
 
+#define SETLOCALE(lc)                                   \
+    lc_cat = setlocale(LC_CTYPE, lc);                   \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, lc ".UTF-8");      \
+    debug_printf(__FILE__ ": set locale %s "            \
+        "lc_cat=%s, codeset=%s\n", lc, lc_cat, lang)
+
+#define SETLOCALE_LT \
+    lc_cat = setlocale(LC_CTYPE, "lt_LT");              \
+    if (!lc_cat)                                        \
+        lc_cat = setlocale(LC_CTYPE, "lt_LT.UTF-8")
+
 #ifdef HAVE_LANGINFO_H
 #define SETLANG(l) lang = nl_langinfo(CODESET)
 #else
@@ -307,7 +330,7 @@
 
 /* not fatal */
 #define CHKLOCALE_C \
-    debug_printf(__FILE__ ": set C locale "     \
+    debug_printf(__FILE__ ": set locale C "     \
                  "lc_cat=%s, codeset=%s\n", lc_cat, lang); \
     if ( !strcmp(lang, "C") ||                  \
          !strcmp(lang, "ASCII") ||              \
@@ -315,7 +338,13 @@
          !strcmp(lang, "US-ASCII") )            \
         ; /* all fine */                        \
     else /* dont inspect the values */          \
-        printf(__FILE__ ": cannot set C locale for test" \
+        printf(__FILE__ ": cannot test locale C" \
                " (lc_cat=%s, codeset=%s)\n", lc_cat, lang)
+
+#define CHKLOCALE(l)                             \
+    if (!lc_cat || strncmp(lc_cat, l, 2)) {                 \
+        printf(__FILE__ ": cannot test locale %s" \
+               " (lc_cat=%s, codeset=%s)\n", l, lc_cat, lang); \
+    } else
 
 #endif /* __TEST_PRIVATE_H__ */

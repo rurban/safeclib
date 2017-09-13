@@ -435,15 +435,30 @@ dnl mbstowcs missing on cygwin64
 dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
-                vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towupper towlower \
-                asctime_r ctime_r gmtime_r localtime_r  memcpy_s \
+                vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
+                asctime_r ctime_r gmtime_r localtime_r memcpy_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
-AM_CONDITIONAL([HAVE_TOWUPPER], [test "x$ac_cv_func_towupper" = "xyes"])
+
+if test "x$ac_cv_func_towupper" = "xyes"; then
+  AC_MSG_CHECKING([for towupper usability])
+  AC_RUN_IFELSE( [AC_LANG_PROGRAM([[
+#include <wctype.h>
+]],
+dnl musl fails on this CYRILLIC SMALL LETTER ROUNDED VE, need at least Unicode 9
+		[[
+return (towupper(0x1C80) == 0x412) ? 0 : 1;
+]])],
+        [ AC_MSG_RESULT([yes])
+          ac_cv_towupper_ok=yes
+          AC_DEFINE_UNQUOTED([HAVE_TOWUPPER_OK], 1, [Define to 1 if 'towupper' is usable.])
+	],
+	[ AC_MSG_RESULT([no]) ])
+fi
 
 dnl this user choice needs to probe first for the default
 AC_ARG_ENABLE(wchar,
