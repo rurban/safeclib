@@ -532,6 +532,14 @@ wcslwr_s(wchar_t *restrict src, rsize_t slen);
 EXTERN errno_t
 wcsupr_s(wchar_t *restrict src, rsize_t slen);
 
+/* is a wide upper character which folds to multiple lowercase chars? how many */
+EXTERN int
+iswfc(wint_t wc);
+
+/* full foldcase a single upper char to mult. lower chars */
+EXTERN errno_t
+towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src);
+
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
