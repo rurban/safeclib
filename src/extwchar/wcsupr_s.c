@@ -45,10 +45,11 @@ EXTERN wint_t towupper(wint_t wc);
  *    Scans the string converting lowercase characters to uppercase, leaving
  *    all other characters unchanged.  The scanning stops at the first null or
  *    after slen characters.  The conversion is determined by the LC_CTYPE
- *    category setting of the locale. Other characters are not affected. It
- *    returns a pointer to the altered string. Because the modification is
- *    done in place, the pointer returned is the same as the pointer passed as
- *    the input argument.
+ *    category setting of the locale. Other characters are not affected.  It
+ *    converts only single chars via \c towupper().  It returns a pointer to
+ *    the altered string. Because the modification is done in place, the
+ *    pointer returned is the same as the pointer passed as the input
+ *    argument.
  *
  * @remark IMPLEMENTED IN
  *    * Microsoft Windows Secure API

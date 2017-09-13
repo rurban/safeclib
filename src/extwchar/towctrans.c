@@ -321,7 +321,8 @@ static wchar_t __towcase(wchar_t wc, int lower)
     int lmul = 2*lower-1;
     int lmask = lower-1;
     /* no letters with case in these large ranges */
-    if (0 /*(!iswalpha(wc) is broken) */
+    if (/*(!iswalpha(wc) is broken) */
+        wc < 0x41
         || (unsigned)wc - 0x0600 <= 0x0fff-0x0600
         || (unsigned)wc - 0x2e00 <= 0xa63f-0x2e00
         || (unsigned)wc - 0xa800 <= 0xab69-0xa800

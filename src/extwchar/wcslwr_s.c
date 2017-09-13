@@ -42,14 +42,16 @@ EXTERN wint_t towlower(wint_t wc);
 
 /**
  * @brief
- *    Scans the string converting uppercase characters to
- *    lowercase, leaving all other characters unchanged.
- *    The scanning stops at the first null or after slen
- *    characters.
- *    The conversion is determined by the LC_CTYPE category setting of the
- *    locale. Other characters are not affected. It returns a pointer to the
- *    altered string. Because the modification is done in place, the pointer
- *    returned is the same as the pointer passed as the input argument.
+ *    Scans the string converting uppercase characters to lowercase, leaving
+ *    all other characters unchanged.  The scanning stops at the first null or
+ *    after slen characters.  The conversion is determined by the LC_CTYPE
+ *    category setting of the locale. Other characters are not affected. It
+ *    only performs simple case folding via \c towlower(), it does not do full
+ *    multi-char folding and does not obey the special casing rules for
+ *    context. Thus the length of buffer stays the same. It returns a pointer
+ *    to the altered string. Because the modification is done in place, the
+ *    pointer returned is the same as the pointer passed as the input
+ *    argument.
  *
  * @remark IMPLEMENTED IN
  *    * Microsoft Windows Secure API
@@ -69,7 +71,7 @@ EXTERN wint_t towlower(wint_t wc);
  * @retval  ESLEMAX     when slen > RSIZE_MAX_WSTR
  *
  * @see
- *    strtolowercase_s(), strlwr_s(), wcsupr_s()
+ *    wcsfc_s(), strtolowercase_s(), strlwr_s(), wcsupr_s()
  *
  */
 EXPORT errno_t
