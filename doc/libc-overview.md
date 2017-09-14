@@ -45,6 +45,8 @@ normalization API. ICU or libunistring are way too heavy for this
 simple problem. There's only utf8proc for utf8 encoded strings (now
 with julia).
 
+See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
+
 # C11 Annex K/safec caveats
 
 * snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s:

@@ -37,6 +37,8 @@ errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
 #ifndef HAVE_TOWLOWER
 EXTERN wint_t towlower(wint_t wc);
 #endif
+EXTERN int iswdecomposed(const wchar_t *src, rsize_t smax);
+EXTERN int wcdecomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
 
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
@@ -256,11 +258,25 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
                     goto is_single;
                 }
             } else {
-              is_single:
-                (void)_towfc_single(tmp, (wint_t)*src++);
-                /* even if not found tmp[0] still contains towlower */
-                *dest++ = tmp[0];
-                dmax--;
+                if (iswdecomposed(src, dmax)) {
+                    int c;
+                    if (dmax <= 3) {
+                        invoke_safe_str_constraint_handler("wcsfc_s: "
+                                                           "dmax too small",
+                                                           NULL, ESNOSPC);
+                        memzero_s(orig_dest, orig_dmax*sizeof(wchar_t));
+                        return (ESNOSPC);
+                    }
+                    c = wcdecomp_s(dest, dmax, src);
+                    src += c;
+                    dmax -=  c;
+                } else {
+                  is_single:
+                    (void)_towfc_single(tmp, (wint_t)*src++);
+                    /* even if not found tmp[0] still contains towlower */
+                    *dest++ = tmp[0];
+                    dmax--;
+                }
             }
         }
     }

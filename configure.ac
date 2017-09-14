@@ -182,6 +182,9 @@ else
 	             CFLAGS = '$CFLAGS'])
 fi
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
+dnl if test x$GCC = xyes; then
+dnl    CFLAGS="$CFLAGS -fbracket-depth=512"
+dnl fi
 
 AC_ARG_ENABLE(extensions,
 	AS_HELP_STRING([--disable-extensions],

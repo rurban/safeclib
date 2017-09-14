@@ -172,7 +172,8 @@ STD_WCHAR_FILES += \
 	extwchar/wcsupr_s.c	\
 	extwchar/towfc_s.c	\
 	extwchar/towctrans.c	\
-	extwchar/wcsfc_s.c
+	extwchar/wcsfc_s.c	\
+	extwchar/wcsnorm_s.c
 endif
 
 STD_IO_FILES = \
@@ -214,6 +215,7 @@ ALL_SRC_FILES =
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
+# wcsnorm_CFLAGS = -fbracket-depth=512
 AM_CFLAGS += -Imem -Istr
 if !HAVE_MINGW
 AM_CFLAGS += -Wextra -Werror -pedantic
