@@ -26,12 +26,24 @@ only the last 3 implement the secure C11 extensions:
 
 # General quirks
 
-Generally most 64-bit versions use a 4 byte wchar_t, but windows/cygwin
-uses 2-byte.
+Generally most libc's use a 4 byte wchar_t (which resembles UTF-32),
+but windows/cygwin/solaris/aix use 2-byte (UTF-16), therefore they need
+to support surrogate pairs.
 
 The wide sprintf variants do not allow a NULL buffer argument to
 return the size of the resulting buffer. If the initial buffer is too
 small, you need to realloc and redo.
+
+There's still no locale-independent utf8 support, not even in C11 with
+its new `u8""` type.
+
+Many wchar and mb conversions and searches are locale-dependent, hence
+unusable for utf8.
+
+Nobody implements a proper wchar case-conversion, foldcase and
+normalization API. ICU or libunistring are way too heavy for this
+simple problem. There's only utf8proc for utf8 encoded strings (now
+with julia).
 
 # C11 Annex K/safec caveats
 
@@ -70,6 +82,10 @@ small, you need to realloc and redo.
 
 * safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
+
+* does not work fine with 2-byte wchar_t
+  (i.e. cygwin/windows/solaris/aix), esp. the new case converters and
+  `wcsnorm_s`. surrogate pairs are not yet supported everywhere.
 
 # Other caveats
 
@@ -119,6 +135,6 @@ small, you need to realloc and redo.
 
 It's now 10 years after the secure libc extensions were designed, C11
 adopted them, and still almost nobody implements them.  This library
-was written 2008 as MIT.
+was written 2008 under the MIT license, thanks Cisco.
 
 Reini Urban 2017
