@@ -35,32 +35,31 @@
 
 /* generated via cperl Unicode-Normalize/mkheader -uni */
 #include "unifcan.h"
-/*
+#include "unifexc.h"
+#ifdef HAVE_NFC
 #include "unifcmb.h"
 #include "unifcmp.h"
-*/
-#include "unifexc.h"
+#endif
 
 /* generated via cperl regen/regcharclass-safec.pl (via CharClass::Matcher) */
-/* 1963 mark characters (Combining, Overlay, ...) */
+/* 1963 single mark characters (Combining, Overlay, ...) */
 #include "mark.h"
-/* The remaining 869 non-mark and non-hangul normalizables; 
-   all NFD's of valid identifiers IDStart/IDContinue, which have a different NFC.
+/* Korean/Hangul has special (easy) normalization rules */
+#include "hangul.h"
+/* The remaining 869 non-mark and non-hangul normalizables, multiple chars!
+   All NFD's of valid identifiers IDStart/IDContinue, which do have a different NFC.
    diacrits, dialytika, tonos... */
 #include "dec_rest.h"
-/* need special normalization rules */
-#include "hangul.h"
 
 #define _UNICODE_MAX 0x10ffff
 
 /**
  * @brief
- *
  *    Converts the wide string to the canonical NFD normalization (later NFC),
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
  *    stops at the first null or after dmax characters.
- *    Currently only works with 4-byte wchar's, so not on cygwin, windows,
- *    solaris, aix.
+ *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
+ *    and not on solaris, aix with 32bit.
  * 
  * @details
  *    Decomposed characters are checked for the right-hand-side of the
@@ -88,9 +87,9 @@
  */
 
 /* Check for the right-hand-side of the Decomposition_Mapping property,
-   which means the codepoint can be normalized, if the sequence is
-   decomposed (NFD or NFKD).
-   Assumes 4-byte wchar.
+ * which means the codepoint can be normalized, if the sequence is
+ * decomposed (NFD or NFKD).
+ * Assumes 4-byte wchar.
  */
 EXPORT int
 iswdecomposed(const wchar_t *src, rsize_t smax) {
@@ -102,17 +101,21 @@ iswdecomposed(const wchar_t *src, rsize_t smax) {
     return 0;
 }
 
+/* Note that we can generate two versions of the tables.  The old format as
+ * used in Unicode::Normalize, and the new smaller NORMALIZE_IND_TBL cperl
+ * variant, as used here and in cperl core since 5.27.2 (planned).
+ */
 static int
 _decomp_canonical(wchar_t *dest, wint_t cp)
 {
+#ifndef NORMALIZE_IND_TBL
     wchar_t ***plane, **row;
-    if (_UNICODE_MAX < cp) {
+    if (unlikely(_UNICODE_MAX < cp)) {
         *dest = 0;
 	return 0;
     }
     plane = UNIF_canon[cp >> 16];
     if (! plane) {
-        *dest = 0;
 	return 0;
     }
     row = plane[(cp >> 8) & 0xff];
@@ -125,6 +128,38 @@ _decomp_canonical(wchar_t *dest, wint_t cp)
         *dest = 0;
         return 0;
     }
+#else
+    /* the new format generated with Unicode-Normalize/mkheader -uni -ind */
+    const UNIF_canon_PLANE_T **plane, *row;
+    if (unlikely(_UNICODE_MAX < cp)) {
+        *dest = 0;
+	return 0;
+    }
+    plane = UNIF_canon[cp >> 16];
+    if (!plane) { /* Only the first 3 of 16 are filled */
+	return 0;
+    }
+    row = plane[(cp >> 8) & 0xff];
+    if (row) { /* the first row is pretty filled, the rest very sparse */
+        const UNIF_canon_PLANE_T vi = row[cp & 0xff]; /* 3|TBL(2) == 3 | 0x8000>>1 */
+        if (!vi)
+            return 0;
+        else {
+            const int l = TBL(vi); /* length of the value */
+            const int i = vi & UNIF_canon_MASK;
+            /*
+            const wchar_t* w = (const wchar_t*)UNIF_canon_tbl[l-1][i];
+            printf("index 0x%x => l=0x%x i=0x%x\n", vi, l, i);
+            memmove(dest, w, sizeof(wchar_t)*l);
+            dest[l] = 0;
+            return l;
+            */
+        }
+    }
+    else {
+        return 0;
+    }
+#endif
 }
 
 static int
@@ -149,15 +184,15 @@ _decomp_hangul(wchar_t *dest, wint_t cp)
 
 
 /* codepoint decomposition of one NFD sequence,
-   with possible mult. src chars (if decomposed) */
+   with possible mult. src chars, if decomposed. */
 
 EXPORT int
 wcdecomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
 {
     wint_t cp = *src;
     assert(dmax > 3);
-    /* is_HANGUL_cp_high(cp) checks also all composing chars.
-       Hangul_IsS only the valid start points. */
+    /* The costly is_HANGUL_cp_high(cp) checks also all composing chars.
+       Hangul_IsS only for the valid start points. Which we can do here. */
     if (Hangul_IsS(cp)) {
         return _decomp_hangul(dest, cp);
     }
@@ -166,7 +201,7 @@ wcdecomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
     }
 }
 
-#if 0
+#ifdef HAVE_NFC
 
 /* canonical ordering of combining characters (c.c.). */
 typedef struct {
@@ -204,13 +239,13 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
 	return(cp + tindex);
     }
     plane = UNIF_compos[cp >> 16];
-    if (! plane)
+    if (!plane) { /* only 3 of 16 are defined */
 	return 0;
     row = plane[(cp >> 8) & 0xff];
-    if (! row)
+    if (!row) { /* the zero plane is pretty filled, the others sparse */
 	return 0;
     cell = row[cp & 0xff];
-    if (! cell)
+    if (!cell) {
 	return 0;
     for (i = cell; i->nextchar; i++) {
 	if (cp2 == i->nextchar)
@@ -346,7 +381,8 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
         return (ESNOSPC);
     }
 
-#if 0
+#ifdef HAVE_NFC
+    /* TODO: need temp. scratch space here */
     rc = wcsnorm_reorder_s(dest, dmax, src);
     if (unlikely(!rc)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
@@ -355,6 +391,7 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
         return (EOF);
     }
     
+    /* TODO: need temp. scratch space again */
     wcsnorm_compose_s(dest, dmax, src);
     if (unlikely(!rc)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "

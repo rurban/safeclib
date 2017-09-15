@@ -268,8 +268,10 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
                         return (ESNOSPC);
                     }
                     c = wcdecomp_s(dest, dmax, src);
+                    if (!c)
+                        goto is_single;
                     src += c;
-                    dmax -=  c;
+                    dmax -= c;
                 } else {
                   is_single:
                     (void)_towfc_single(tmp, (wint_t)*src++);
