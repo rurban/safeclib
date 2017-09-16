@@ -37,8 +37,9 @@ errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
 #ifndef HAVE_TOWLOWER
 EXTERN wint_t towlower(wint_t wc);
 #endif
-EXTERN int iswdecomposed(const wchar_t *src, rsize_t smax);
-EXTERN int wcdecomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
+/* from wcsnorm_s.c */
+EXPORT int isw_maybe_composed(const wint_t cp);
+EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
 
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
@@ -60,10 +61,10 @@ _is_lt_accented(wint_t wc) {
  *    folding, i.e. if iswfc() of a character > 1, the length of dest might be
  *    greater than the length of src (max 4 per char), the conversion is done
  *    via \c towfc_s() and Unicode 10.0, the Unicode special-casing rules are
- *    obeyed, and composed characters will be normalized to NFD (not yet).  If
- *    not, the conversion is per character done via normal \c towlower().
- *    Note that decomposition creates larger strings, typically 2-3 chars
- *    more.
+ *    obeyed, and composed characters are normalized to NFD via \c
+ *    wcsnorm_decompose_s().  If not, the conversion is per character done via
+ *    normal \c towlower().  Note that decomposition creates larger strings,
+ *    typically 2-3 chars more.
  *
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written in the
@@ -75,8 +76,8 @@ _is_lt_accented(wint_t wc) {
  *   for the Lithuanian and the Turkish/Azeri I-dot.
  *
  *   Composed characters are checked for the left-hand-side of the
- *   Decomposition_Mapping Unicode property, and the codepoint will be
- *   normalized to NFD. (not yet)
+ *   Decomposition_Mapping Unicode property, which means the codepoint will be
+ *   normalized to NFD if any codepoint is composed.
  *
  * @param[out]  dest  wide string to hold the result (~130% larger than src)
  * @param[in]   dmax  maximum result buffer size
@@ -166,6 +167,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             errno_t rc = towfc_s(tmp, 4, (wint_t)*src);
             if (rc)
                 return rc;
+            /* I-Dot for Turkish and Azeri */
             if (unlikely(is_tr_az && *src == 0x130)) {
                 *dest++ = 0x69; dmax--; /* skip the \x307 dot */
             } else {
@@ -258,16 +260,16 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
                     goto is_single;
                 }
             } else {
-                if (iswdecomposed(src, dmax)) {
+                if (isw_maybe_composed(*src)) {
                     int c;
-                    if (dmax <= 3) {
+                    if (unlikely(dmax <= 5)) {
                         invoke_safe_str_constraint_handler("wcsfc_s: "
                                                            "dmax too small",
                                                            NULL, ESNOSPC);
                         memzero_s(orig_dest, orig_dmax*sizeof(wchar_t));
                         return (ESNOSPC);
                     }
-                    c = wcdecomp_s(dest, dmax, src);
+                    c = _decomp_s(dest, dmax, src);
                     if (!c)
                         goto is_single;
                     src += c;
