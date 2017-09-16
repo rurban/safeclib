@@ -64,6 +64,8 @@ TAGS
 build-tools/ar-lib
 build-tools/test-driver
 tests/test-suite.log
+tests/test-fc.pl
+tests/test-upr.pl
 Doxyfile
 README.md
 doc/footer
@@ -72,7 +74,7 @@ doc/man
 src/gcov.log
 tests/gcov.log
 CaseFolding.txt
-test/test-fc.pl
+DerivedGeneralCategory.txt
 
 #
 # Debian directory (make deb-pkg)

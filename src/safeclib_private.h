@@ -32,6 +32,10 @@
 #ifndef __SAFECLIB_PRIVATE_H__
 #define __SAFECLIB_PRIVATE_H__
 
+#ifndef DEBUG
+#define NDEBUG
+#endif
+
 #ifdef __KERNEL__
 /* linux kernel environment */
 

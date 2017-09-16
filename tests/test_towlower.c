@@ -55,7 +55,7 @@ int test_towlower (void)
             status[1] = 0;
             p1 = strstr(&p[5], "; ");
             l = p1-p-5;
-            memcpy(mapping, &p[5], l);
+            memcpy(mapping, &p[5], l); /* the other cases */
             mapping[l] = 0;
             strcpy(name, &p1[4]);
             name[strlen(name)-1] = 0;
