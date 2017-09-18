@@ -82,7 +82,7 @@
  * @param[out]  dest  pointer to wide character array where the results will be stored
  * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   src   pointer to the string that will be copied to \c dest
- * @param[in]   len   number of wide characters available in \c dest
+ * @param[in]   len   maximal number of wide characters to be copied to \c dest
  * @param[in]   ps    pointer to the conversion state object
  *
  * @pre retval, ps, src, or *src shall not be a null pointer.
@@ -134,7 +134,7 @@ mbsrtowcs_s (size_t *restrict retval,
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
             /* null string to clear data */
-            memset_s((void*)dest,dmax,0,len);
+            memset_s((void*)dest, dmax, 0, len * sizeof(wchar_t));
 #else
             *dest = '\0';
 #endif
@@ -173,9 +173,13 @@ mbsrtowcs_s (size_t *restrict retval,
     *retval = mbsrtowcs(dest, src, len, ps);
 
     if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+        if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-        memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
+            memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
+#else
+            dest[*retval] = L'\0';
 #endif
+        }
         return EOK;
     } else {
         errno_t rc; /* either EILSEQ or ESNOSPC */
@@ -189,12 +193,12 @@ mbsrtowcs_s (size_t *restrict retval,
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK) */
             handle_werror(orig_dest, dmax,
-                         rc == ESNOSPC ? "mbsrtowcs_s: not enough space for src"
-                                       : "mbsrtowcs_s: illegal sequence",
+                         !tmp ? "mbsrtowcs_s: not enough space for src"
+                              : "mbsrtowcs_s: illegal sequence",
                          rc);
         }
         else
-            rc = ((ssize_t)*retval == 0) ? EOK : errno;
+            rc = ((size_t)*retval == 0) ? EOK : errno;
         return RCNEGATE(rc);
     }
 

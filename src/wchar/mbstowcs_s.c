@@ -156,9 +156,13 @@ mbstowcs_s(size_t *restrict retval,
     *retval = mbstowcs(dest, src, len);
 
     if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+        if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-        memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
+            memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
+#else
+            dest[*retval] = L'\0';
 #endif
+        }
         return EOK;
     } else {
         errno_t rc; /* either EILSEQ or ESNOSPC */
@@ -172,12 +176,12 @@ mbstowcs_s(size_t *restrict retval,
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK) */
             handle_werror(orig_dest, dmax,
-                         rc == ESNOSPC ? "mbstowcs_s: not enough space for src"
-                                       : "mbstowcs_s: illegal sequence",
+                         !tmp ? "mbstowcs_s: not enough space for src"
+                              : "mbstowcs_s: illegal sequence",
                          rc);
         }
         else
-            rc = ((ssize_t)*retval == 0) ? EOK : errno;
+            rc = ((size_t)*retval == 0) ? EOK : errno;
         return RCNEGATE(rc);
     }
 
