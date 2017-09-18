@@ -99,13 +99,13 @@ int test_mbstowcs_s (void)
     ERR(EOK);
     INDCMP(!= 4);
     if (dest[0] != 0x2192) {
-        printf("%s %u  Error  ind=%d rc=%d %d 0x%x\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[0], dest[0]);
+        printf("%s %u  Error  ind=%d rc=%d %ld 0x%lx\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[0], (long)dest[0]);
         errs++;
     }
     if (dest[1] != 'a') {
-        printf("%s %u  Error  ind=%d rc=%d %d\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
+        printf("%s %u  Error  ind=%d rc=%d 0x%lx\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[1]);
         errs++;
     }
 

@@ -102,13 +102,13 @@ int test_mbsrtowcs_s (void)
       INDCMP(!= 4);
       /* musl on ASCII converts \xa0 to \xdfa0 */
       if ((int)dest[0] != 0xa0 && (int)dest[0] != 0xdfa0) {
-        printf("%s %u  Error  ind=%d rc=%d 0x%x\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
+        printf("%s %u  Error  ind=%d rc=%d 0x%lx\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[0]);
         errs++;
       }
       if (dest[1] != L'a') {
-        printf("%s %u  Error  ind=%d rc=%d %d\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
+        printf("%s %u  Error  ind=%d rc=%d 0x%lx\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[1]);
         errs++;
       }
       if (cs) { /* needs to be at the end */
@@ -120,8 +120,8 @@ int test_mbsrtowcs_s (void)
       ERR(EILSEQ); /* or illegal */
       INDCMP(!= -1);
       if (dest[0] != L'\0') {
-        printf("%s %u  Error  ind=%d rc=%d %d\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
+        printf("%s %u  Error  ind=%d rc=%d 0x%lx\n",
+               __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[0]);
         errs++;
       }
     }
