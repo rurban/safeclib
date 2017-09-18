@@ -18,6 +18,7 @@ int test_strncat_s (void)
 {
     errno_t rc;
     int32_t ind;
+    int len;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -47,11 +48,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 1, str2, LEN);
     ERR(ESUNTERM)
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
+    CHECK_SLACK(str1, 1);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
@@ -59,11 +57,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 2, str2, LEN);
     ERR(ESUNTERM)
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
+    CHECK_SLACK(str1, 2);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
@@ -71,11 +66,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 2, str2, 1);
     ERR(ESNOSPC)
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
+    CHECK_SLACK(str1, 2);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "abcd");
@@ -83,12 +75,14 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[0], 8, &str1[3], 4);
     ERR(ESOVRLP);
     EXPNULL(str1)
+    CHECK_SLACK(str1, 8);
 
     strcpy(str1, "abcd");
 
     rc = strncat_s(&str1[0], 4, &str1[3], 4);
     ERR(ESOVRLP);
     EXPNULL(str1)
+    CHECK_SLACK(str1, 4);
 
 /*--------------------------------------------------*/
 
@@ -97,6 +91,7 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[0], 3, &str1[3], 4);
     ERR(ESUNTERM);
     EXPNULL(str1)
+    CHECK_SLACK(str1, 3);
 
 /*--------------------------------------------------*/
 
@@ -105,6 +100,7 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[3], 5, &str1[0], 4);
     ERR(ESUNTERM);
     EXPNULL(&str1[3])
+    CHECK_SLACK(&str1[3], 5);
 
 /*--------------------------------------------------*/
 
@@ -113,6 +109,7 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[3], 12, &str1[0], 4);
     ERR(ESOVRLP);
     EXPNULL(&str1[3])
+    CHECK_SLACK(&str1[3], 12);
 
 /*--------------------------------------------------*/
 
@@ -121,12 +118,9 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 3, str2, 1);
     ERR(EOK)
-    ind = strcmp(str1, "ab");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, "ab");
+    CHECK_SLACK(&str1[2], 3-2);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
@@ -134,12 +128,9 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 50, str2, LEN);
     ERR(EOK)
-    ind = strcmp(str1, "aaaaaaaaaakeep it simple");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, "aaaaaaaaaakeep it simple");
+    len = strlen(str1);
+    CHECK_SLACK(&str1[len], 50-len);
 
 /*--------------------------------------------------*/
 /* TR example */
@@ -149,12 +140,10 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 100, str2, 100);
     ERR(EOK)
-    ind = strcmp(str1, "goodbye");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, "goodbye");
+    len = strlen(str1);
+    CHECK_SLACK(&str1[len], 100-len);
+
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -162,12 +151,10 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 6, "", 1);
     ERR(EOK)
-    ind = strcmp(str1, "hello");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, "hello");
+    len = strlen(str1);
+    CHECK_SLACK(&str1[len], 6-len);
+
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -175,11 +162,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 6, "X", 2);
     ERR(ESNOSPC)
-    if (str1[0] != '\0') {
-        debug_printf("%s %u  Expected null  \n",
-                     __FUNCTION__, __LINE__);
-        errs++;
-    }
+    CHECK_SLACK(str1, 6);
+
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -187,12 +171,10 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 7, "defghijklmn", 3);
     ERR(EOK)
-    ind = strcmp(str1, "abcdef");
-    if (ind != 0) {
-        debug_printf("%s %u   Error -%s- \n",
-                     __FUNCTION__, __LINE__,  str1);
-        errs++;
-    }
+    EXPSTR(str1, "abcdef");
+    len = strlen(str1);
+    CHECK_SLACK(&str1[len], 6-len);
+
 /*--------------------------------------------------*/
 
     return (errs);

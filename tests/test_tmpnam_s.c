@@ -16,7 +16,6 @@ static char   str1[LEN];
 int test_tmpnam_s (void)
 {
     errno_t rc;
-    uint32_t i;
     int len;
     int errs = 0;
 
@@ -72,22 +71,7 @@ int test_tmpnam_s (void)
         errs++;
     }
     len = strlen(str1);
-#ifdef SAFECLIB_STR_NULL_SLACK
-    for (i=len; i<LEN/2; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%d \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-            break;
-        }
-    }
-#else
-    if (str1[len] != '\0') {
-        debug_printf("%s %u   Error rc=%d \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
-#endif
+    CHECK_SLACK(&str1[len], LEN/2-len);
 
 /*--------------------------------------------------*/
 

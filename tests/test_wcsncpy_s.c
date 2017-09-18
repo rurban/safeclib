@@ -3,7 +3,6 @@
  * File 'wchar/wcsncpy_s.c'
  * Lines executed:96.49% of 57
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -36,35 +35,25 @@ int test_wcsncpy_s (void)
 
     nlen = 5;
     rc = wcsncpy_s(str1, 5, NULL, nlen);
-    ERR(ESNULLP)
-    if (str1[0] != L'\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    ERR(ESNULLP);
+    WCHECK_SLACK(str1, 5);
+
+    str2[0] = L'\0';
+
+    rc = wcsncpy_s(str1, 5, str2, 0);
+    ERR(ESZEROL)
+    WCHECK_SLACK(str1, 5);
 
 /*--------------------------------------------------*/
 
     nlen = 5;
     rc = wcsncpy_s(str1, 0, str2, nlen);
     ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = wcsncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
     ERR(ESLEMAX)
-
-/*--------------------------------------------------*/
-
-    wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    str2[0] = L'\0';
-
-    rc = wcsncpy_s(str1, 5, str2, 0);
-    ERR(ESZEROL)
-    if (str1[0] != L'\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
 
 /*--------------------------------------------------*/
 
@@ -84,11 +73,7 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(&str1[0], LEN/2, &str2[0], nlen);
     ERR(EOK)
-    if (str1[0] != L'\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    WCHECK_SLACK(str1, LEN/2);
 
 /*--------------------------------------------------*/
 
@@ -98,11 +83,7 @@ int test_wcsncpy_s (void)
     /* test overlap */
     rc = wcsncpy_s(str1, LEN, str1, nlen);
     ERR(ESOVRLP)
-    if (str1[0] != L'\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    WCHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -111,11 +92,7 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(&str1[0], LEN, &str1[5], nlen);
     ERR(ESOVRLP)
-    if (str1[0] != L'\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    WCHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -125,11 +102,7 @@ int test_wcsncpy_s (void)
     nlen = 10;
     rc = wcsncpy_s(str1, LEN, str2, nlen);
     ERR(EOK)
-    if (str1[0] != L'\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    WCHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -139,13 +112,8 @@ int test_wcsncpy_s (void)
     nlen = 20;
     rc = wcsncpy_s(str1, LEN, str2, nlen);
     ERR(EOK)
-    /* be sure the results are the same as wcscmp */
-    ind = wcscmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WEXPSTR(str1, str2);
+    WCHECK_SLACK(&str1[14], LEN-14);
 
 /*--------------------------------------------------*/
 
@@ -155,14 +123,9 @@ int test_wcsncpy_s (void)
     nlen = 32;
     rc = wcsncpy_s(str1, LEN, str2, nlen);
     ERR(EOK)
-    /* be sure the results are the same as wcscmp */
-    ind = wcscmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
-/*--------------------------------------------------*/
+    WEXPSTR(str1, str2);
+    WCHECK_SLACK(&str1[14], LEN-14);
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"qqweqeqeqeq");
@@ -170,11 +133,8 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(str1, 1, str2, nlen);
     ERR(ESNOSPC)
-    if (*str1 != L'\0') {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WCHECK_SLACK(str1, 1);
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"qqweqeqeqeq");
@@ -182,11 +142,8 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(str1, 2, str2, nlen);
     ERR(ESNOSPC)
-    if (*str1 != L'\0') {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WCHECK_SLACK(str1, 2);
+
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -195,13 +152,9 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(dest, 6, str1, 100);
     ERR(EOK)
-    /* be sure the results are the same as wcscmp */
-    ind = wcscmp(dest, str1);
-    if (ind != 0) {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WEXPSTR(dest, str1);
+    WCHECK_SLACK(&dest[5], 6-5);
+
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -210,6 +163,8 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(dest, 5, str2, 7);
     ERR(ESNOSPC)
+    WCHECK_SLACK(dest, 5);
+
 /*--------------------------------------------------*/
 /* TR example */
 
@@ -218,13 +173,9 @@ int test_wcsncpy_s (void)
 
     rc = wcsncpy_s(dest, 5, str2, 4);
     ERR(EOK)
-    /* be sure the results are the same as wcscmp */
-    ind = wcscmp(dest, L"good");
-    if (ind != 0) {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WEXPSTR(dest, L"good")
+    WCHECK_SLACK(&dest[4], 5-4);
+
 /*--------------------------------------------------*/
 
     wcscpy(dest, L"                            ");
@@ -233,13 +184,9 @@ int test_wcsncpy_s (void)
     /*   strnlen("good") < 5   */
     rc = wcsncpy_s(dest, 5, str2, 8);
     ERR(EOK)
-    /* be sure the results are the same as wcscmp */
-    ind = wcscmp(dest, L"good");
-    if (ind != 0) {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WEXPSTR(dest, L"good")
+    WCHECK_SLACK(&dest[4], 5-4);
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"qq12345weqeqeqeq");
@@ -248,13 +195,9 @@ int test_wcsncpy_s (void)
     nlen = 10;
     rc = wcsncpy_s(str1, 10, str2, nlen);
     ERR(EOK)
-    /* be sure the results are the same as wcscmp */
-    ind = wcscmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%ls-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    WEXPSTR(str1, str2)
+    WCHECK_SLACK(&str1[2], 10-2);
+
 /*--------------------------------------------------*/
 
     return (errs);

@@ -19,8 +19,8 @@ static char   str2[LEN];
 int test_strcpy_s (void)
 {
     errno_t rc;
-    uint32_t i;
     int32_t  ind;
+    int len;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -30,25 +30,11 @@ int test_strcpy_s (void)
 
 /*--------------------------------------------------*/
 
-   strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     rc = strcpy_s(str1, 5, NULL);
-    ERR(ESNULLP)
-#ifdef SAFECLIB_STR_NULL_SLACK
-    for (i=0; i<5; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-        }
-    }
-#else
-    if (str1[0] != '\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
-#endif
+    ERR(ESNULLP);
+    CHECK_SLACK(str1, 5);
 
 /*--------------------------------------------------*/
 
@@ -67,28 +53,16 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, LEN/2, str2);
     ERR(EOK)
-#ifdef SAFECLIB_STR_NULL_SLACK
-    for (i=0; i<LEN/2; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-        }
-    }
-#else
-    if (str1[0] != '\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
-#endif
+    CHECK_SLACK(str1, LEN/2);
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    len = strlen(str1);
 
     rc = strcpy_s(str1, LEN, str1);
-    ERR(EOK)
+    ERR(EOK);
+    /*CHECK_SLACK(&str1[len], LEN-len);*/
 
 /*--------------------------------------------------*/
 
@@ -96,21 +70,7 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(&str1[0], LEN, &str1[5]);
     ERR(ESOVRLP)
-#ifdef SAFECLIB_STR_NULL_SLACK
-    for (i=0; i<LEN; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-        }
-    }
-#else
-    if (str1[0] != '\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
-#endif
+    CHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -118,36 +78,18 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(&str1[5], LEN-5, &str1[0]);
     ERR(ESOVRLP);
-#ifdef SAFECLIB_STR_NULL_SLACK
-    for (i=5; i<LEN; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-        }
-    }
-#else
-    if (str1[5] != '\0') {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
-#endif
+    CHECK_SLACK(&str1[5], LEN-5);
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
     strcpy(str2, "keep it simple");
+    len = strlen(str1);
 
     rc = strcpy_s(str2, LEN, str1);
     ERR(EOK)
-    /* be sure the results are the same as strcmp */
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u \"%s\"  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    EXPSTR(str1, str2);
+    CHECK_SLACK(&str2[len], LEN-len);
 
 /*--------------------------------------------------*/
 
@@ -156,41 +98,30 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, LEN, str2);
     ERR(EOK)
-    if (*str1 != '\0') {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    EXPSTR(str1, str2);
+    CHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(&str2[0], "keep it simple");
+    len = strlen(str2);
 
     rc = strcpy_s(str1, LEN, str2);
     ERR(EOK)
-    /* be sure the results are the same as strcmp */
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    EXPSTR(str1, str2);
+    CHECK_SLACK(&str1[len], LEN-len);
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
     strcpy(str2, "keep it simple");
+    len = strlen(str2);
 
     rc = strcpy_s(str1, LEN, str2);
     ERR(EOK)
-    /* be sure the results are the same as strcmp */
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    EXPSTR(str1, str2);
+    CHECK_SLACK(&str1[len], LEN-len);
 
 /*--------------------------------------------------*/
 
@@ -199,11 +130,8 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, 1, str2);
     ERR(ESNOSPC)
-    if (*str1 != '\0') {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    CHECK_SLACK(str1, 1);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqeqeqeq");
@@ -211,11 +139,7 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, 2, str2);
     ERR(ESNOSPC)
-    if (*str1 != '\0') {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -224,31 +148,21 @@ int test_strcpy_s (void)
 
     rc = strcpy_s(str1, 3, str2);
     ERR(EOK)
-    /* be sure the results are the same as strcmp */
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
+    EXPSTR(str1, str2);
+    CHECK_SLACK(&str1[2], 1);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "qq12345weqeqeqeq");
     strcpy(str2, "it");
 
     rc = strcpy_s(str1, 10, str2);
-    ERR(EOK)
-    /* be sure the results are the same as strcpy */
-    ind = strcmp(str1, str2);
-    if (ind != 0) {
-        debug_printf("%s %u -%s-  Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  str1, rc );
-        errs++;
-    }
-    for (i=0; i<10; i++) {
+    ERR(EOK);
+    EXPSTR(str1, str2);
+    CHECK_SLACK(&str1[2], 8);
+    /*for (i=0; i<10; i++) {
         debug_printf("str1[%i] = %d \n", i, str1[i]);
-        /*errs++;*/
-    }
+    }*/
 /*--------------------------------------------------*/
 
     return (errs);

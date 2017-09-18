@@ -52,6 +52,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 1, str2);
     ERR(ESUNTERM)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
 
@@ -61,6 +62,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 2, str2);
     ERR(ESUNTERM)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -69,12 +71,14 @@ int test_strcat_s (void)
     rc = strcat_s(&str1[0], 8, &str1[3]);
     ERR(ESOVRLP);
     EXPNULL(str1)
+    CHECK_SLACK(str1, 8);
 
     strcpy(str1, "abcd");
 
     rc = strcat_s(&str1[0], 4, &str1[3]);
     ERR(ESOVRLP);
     EXPNULL(str1)
+    CHECK_SLACK(str1, 4);
 
 /*--------------------------------------------------*/
 
@@ -83,6 +87,7 @@ int test_strcat_s (void)
     rc = strcat_s(&str1[3], 5, &str1[0]);
     ERR(ESUNTERM);
     EXPNULL(&str1[3])
+    CHECK_SLACK(&str1[3], 5);
 
 /*--------------------------------------------------*/
 
@@ -91,6 +96,7 @@ int test_strcat_s (void)
     rc = strcat_s(&str1[3], 12, &str1[0]);
     ERR(ESOVRLP);
     EXPNULL(&str1[3])
+    CHECK_SLACK(&str1[3], 12);
 
 /*--------------------------------------------------*/
 
@@ -108,6 +114,7 @@ int test_strcat_s (void)
                      __FUNCTION__, __LINE__, len1, len2, len3);
         errs++;
     }
+    CHECK_SLACK(&str1[len3], 50-len3);
 
 /*--------------------------------------------------*/
 
@@ -117,6 +124,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 1, str2);
     ERR(ESNOSPC)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
 
@@ -126,6 +134,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 2, str2);
     ERR(ESNOSPC)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -135,6 +144,8 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 20, str2);
     ERR(EOK)
     EXPSTR(str1, str2)
+    len1 = strlen(str1);
+    CHECK_SLACK(&str1[len1], 20-len1);
 
 /*--------------------------------------------------*/
 
@@ -144,6 +155,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     EXPNULL(str1)
+    CHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -153,6 +165,8 @@ int test_strcat_s (void)
     rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     EXPSTR(str1, str2)
+    len1 = strlen(str1);
+    CHECK_SLACK(&str1[len1], LEN-len1);
 
 /*--------------------------------------------------*/
 
@@ -162,6 +176,8 @@ int test_strcat_s (void)
     rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     EXPSTR(str1, "qqweqqkeep it simple")
+    len1 = strlen(str1);
+    CHECK_SLACK(&str1[len1], LEN-len1);
 
 /*--------------------------------------------------*/
 
@@ -171,6 +187,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 12, str2);
     ERR(ESNOSPC)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 12);
 
 /*--------------------------------------------------*/
 
@@ -180,6 +197,8 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 52, str2);
     ERR(EOK)
     EXPSTR(str1, "1234keep it simple")
+    len1 = strlen(str1);
+    CHECK_SLACK(&str1[len1], LEN-len1);
 
 /*--------------------------------------------------*/
 
@@ -188,6 +207,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 8, &str1[7]);
     ERR(ESOVRLP)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 8);
 
 /*--------------------------------------------------*/
 
@@ -196,6 +216,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, 9, &str1[8]);
     ERR(ESOVRLP)
     EXPNULL(str1)
+    CHECK_SLACK(str1, 9);
 
 /*--------------------------------------------------*/
 
@@ -204,6 +225,7 @@ int test_strcat_s (void)
     rc = strcat_s(str1, LEN, &str1[4]);
     ERR(ESOVRLP)
     EXPNULL(str1)
+    CHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -213,6 +235,7 @@ int test_strcat_s (void)
     rc = strcat_s(&str1[5], LEN-5, &str1[4]);
     ERR(ESOVRLP)
     EXPNULL(&str1[5])
+    CHECK_SLACK(&str1[5], LEN-5);
 
 /*--------------------------------------------------*/
 
@@ -222,6 +245,8 @@ int test_strcat_s (void)
     rc = strcat_s(str2, 31, &str1[0]);
     ERR(EOK)
     EXPSTR(str2, "123keep it simple")
+    len2 = strlen(str2);
+    CHECK_SLACK(&str2[len2], 31-len2);
 
 /*--------------------------------------------------*/
 
@@ -231,6 +256,8 @@ int test_strcat_s (void)
     rc = strcat_s(str2, 10, str1);
     ERR(EOK)
     EXPSTR(str2, "123456789")
+    len2 = strlen(str2);
+    CHECK_SLACK(&str2[len2], 10-len2);
 
 /*--------------------------------------------------*/
 

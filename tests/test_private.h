@@ -34,6 +34,8 @@
 #define __TEST_PRIVATE_H__
 
 #include "config.h"
+#include "safe_config.h"
+
 #ifdef HAVE_LIMITS_H
 # include <limits.h>
 #endif
@@ -198,10 +200,42 @@
                      __FUNCTION__, __LINE__,  str2, str1);  \
         errs++;                                    \
     }
+#ifdef SAFECLIB_STR_NULL_SLACK
+#define CHECK_SLACK(dest,dmax)                  \
+    {   int i;                                  \
+        for (i=0; i<(int)(dmax); i++) {         \
+        int e = 0;                              \
+        if ((dest)[i] != '\0') {                \
+            debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %c of %d\n", \
+                __FUNCTION__, __LINE__,  rc, i, (dest)[i], (int)(dmax)); \
+            if (!e) { errs++; e++; }            \
+        } \
+    }}
+#else
+#define CHECK_SLACK(dest,dmax) \
+    EXPNULL(dest)
+#endif
+
+#ifdef SAFECLIB_STR_NULL_SLACK
+#define WCHECK_SLACK(dest,dmax)                 \
+    {   int i;                                  \
+        for (i=0; i<(int)(dmax); i++) {         \
+        int e = 0;                              \
+        if ((dest)[i] != L'\0') {               \
+            debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %lc \n", \
+                         __FUNCTION__, __LINE__,  rc, i, (dest)[i]); \
+            if (!e) { errs++; e++; }            \
+        } \
+    }}
+#else
+#define WCHECK_SLACK(dest,dmax) \
+    WEXPNULL(dest)
+#endif
+
 #define INDZERO()                                  \
     if (ind != 0) {                                \
         printf("%s %u  Error  ind=%d rc=%d \n",    \
-               __FUNCTION__, __LINE__, (int)ind, rc);   \
+               __FUNCTION__, __LINE__, (int)ind, rc); \
         errs++;                                    \
     }
 #define INDCMP(cmp)                                \

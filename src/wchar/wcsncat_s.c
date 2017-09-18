@@ -166,7 +166,8 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                memset(dest, 0, dmax*sizeof(wchar_t));
+                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
 #else
                 *dest = L'\0';
 #endif
@@ -177,7 +178,8 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear data */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                memset(dest, 0, dmax*sizeof(wchar_t));
+                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }
@@ -222,7 +224,8 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                memset(dest, 0, dmax*sizeof(wchar_t));
+                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
 #else
                 *dest = L'\0';
 #endif
@@ -233,7 +236,8 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                memset(dest, 0, dmax*sizeof(wchar_t));
+                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }

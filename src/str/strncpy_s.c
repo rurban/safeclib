@@ -149,7 +149,8 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #else
                 *dest = '\0';
 #endif
@@ -159,8 +160,8 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             *dest = *src;
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
-                /* null slack */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }
@@ -188,7 +189,8 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #else
                 *dest = '\0';
 #endif
@@ -198,8 +200,8 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             *dest = *src;
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
-                /* null slack */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }
