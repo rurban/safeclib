@@ -182,9 +182,6 @@ else
 	             CFLAGS = '$CFLAGS'])
 fi
 AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
-dnl if test x$GCC = xyes; then
-dnl    CFLAGS="$CFLAGS -fbracket-depth=512"
-dnl fi
 
 AC_ARG_ENABLE(extensions,
 	AS_HELP_STRING([--disable-extensions],
@@ -315,6 +312,10 @@ else
 fi
 dnl AM_CONDITIONAL([HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
 AC_SUBST(HAVE_C99)
+
+dnl For wcsnorm_s / mark.h
+AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
+    [AM_CFLAGS="$AM_CFLAGS -fbracket-depth=512"], [], [], [])
 
 AM_CONDITIONAL([HAVE_MINGW], [test "x$host_os" = "xmingw32"])
 AM_CONDITIONAL([HAVE_MINGW_CROSS],
