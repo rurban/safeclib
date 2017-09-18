@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_mbsrtowcs_s
  * File 'wchar/mbsrtowcs_s.c'
- * Lines executed:100.00% of 31
+ * Lines executed:97.44% of 39
  * locale specific, sets it to C and UTF-8
  *
  *------------------------------------------------------------------
@@ -79,11 +79,13 @@ int test_mbsrtowcs_s (void)
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="abcdef",&cs), 3, &ps);
     ERR(EOK);
     INDCMP(!= 3);
+    WCHECK_SLACK(&dest[3], LEN-3);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="abcdef",&cs), 8, &ps);
     ERR(EOK);
     INDCMP(!= 6);
+    WCHECK_SLACK(&dest[6], LEN-6);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, NULL, LEN, (cs="abcdef",&cs), 2, &ps);
@@ -100,6 +102,7 @@ int test_mbsrtowcs_s (void)
     if (rc == 0) { /* legal */
       ERR(EOK);
       INDCMP(!= 4);
+      WCHECK_SLACK(&dest[4], LEN-4);
       /* musl on ASCII converts \xa0 to \xdfa0 */
       if ((int)dest[0] != 0xa0 && (int)dest[0] != 0xdfa0) {
         printf("%s %u  Error  ind=%d rc=%d 0x%lx\n",
@@ -119,6 +122,7 @@ int test_mbsrtowcs_s (void)
     } else {
       ERR(EILSEQ); /* or illegal */
       INDCMP(!= -1);
+      WCHECK_SLACK(dest, LEN);
       if (dest[0] != L'\0') {
         printf("%s %u  Error  ind=%d rc=%d 0x%lx\n",
                __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[0]);
@@ -130,6 +134,7 @@ int test_mbsrtowcs_s (void)
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\x78",&cs), 1, &ps);
     ERR(EOK);
     INDCMP(!= 1);
+    WCHECK_SLACK(&dest[1], LEN-1);
     CLRPS;
 
     SETLOCALE_UTF8;
@@ -146,84 +151,104 @@ int test_mbsrtowcs_s (void)
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0",&cs), 1, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc2",&cs), 1, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     /* aliasing nul */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0\x80",&cs), 2, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     /* aliasing slashes */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0\xaf",&cs), 2, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xe0\x80\xaf",&cs), 3, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x80\x80\xaf",&cs), 4, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf8\x80\x80\x80\xaf",&cs), 5, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xfc\x80\x80\x80\x80\xaf",&cs), 6, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     /* aliasing U+0080 */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xe0\x82\x80",&cs), 3, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     /* aliasing U+07FF */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xe0\x9f\xbf",&cs), 3, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     /* aliasing U+0800 */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x80\xa0\x80",&cs), 4, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
       
     /* aliasing U+FFFD */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x8f\xbf\xbd",&cs), 4, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     /* check enough space for src and conversion errors */
 
+    rc = mbsrtowcs_s(&ind, dest, 6, (cs="abcdef",&cs), 6, &ps);
+    ERR(ESNOSPC);
+    WCHECK_SLACK(dest, 6);
+    CLRPS;
+
     rc = mbsrtowcs_s(&ind, dest, 3, (cs="\xf0\x8f\xbf\xbd",&cs), 4, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\x80\xbf\x80",&cs), 3, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xfc\x80\x80\x80\x80\x80",&cs), 6, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
 /*--------------------------------------------------*/
     

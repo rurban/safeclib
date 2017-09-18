@@ -53,6 +53,8 @@
  *    \c mbsrtowcs_s clobbers the destination array from the terminating
  *    null and until \c dmax. In extension to \c mbstowc_s you can re-use the
  *    state via \c ps.
+ *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
+ *    0.
  *
  *    The conversion stops if: 
  *
@@ -114,6 +116,7 @@ mbsrtowcs_s (size_t *restrict retval,
              mbstate_t *restrict ps)
 {
     wchar_t *orig_dest;
+    mbstate_t orig_ps;
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("mbsrtowcs_s: retval is null",
@@ -165,23 +168,33 @@ mbsrtowcs_s (size_t *restrict retval,
 
     /* hold base of dest in case src was not copied */
     orig_dest = dest;
+    memcpy(&orig_ps, ps, sizeof(orig_ps));
 
     *retval = mbsrtowcs(dest, src, len, ps);
 
     if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+        memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
+#endif
         return EOK;
     } else {
-        /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)*retval > 0) ? ESNOSPC : errno;
+        errno_t rc; /* either EILSEQ or ESNOSPC */
         if (dest) {
+            size_t tmp = 0;
+            errno = 0;
+            /* with NULL either 0 or -1 is returned */
+            if ((ssize_t)*retval < 0) /* else ESNOSPC */
+                tmp = mbsrtowcs(NULL, src, len-1, &orig_ps);
+            rc = (tmp == 0) ? ESNOSPC : errno;
             /* the entire src must have been copied, if not reset dest
-             * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
-             */
+             * to null the string. (only with SAFECLIB_STR_NULL_SLACK) */
             handle_werror(orig_dest, dmax,
                          rc == ESNOSPC ? "mbsrtowcs_s: not enough space for src"
                                        : "mbsrtowcs_s: illegal sequence",
                          rc);
         }
+        else
+            rc = ((ssize_t)*retval == 0) ? EOK : errno;
         return RCNEGATE(rc);
     }
 

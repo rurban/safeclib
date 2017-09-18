@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_mbstowcs_s
  * File 'wchar/mbstowcs_s.c'
- * Lines executed:100.00% of 25
+ * Lines executed:100.00% of 32
  * locale specific, sets it to C and UTF-8
  *
  *------------------------------------------------------------------
@@ -70,10 +70,12 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, (cs="abcdef",cs), 3);
     ERR(EOK);
     INDCMP(!= 3);
+    WCHECK_SLACK(&dest[3], LEN-3);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="abcdef",cs), 8);
     ERR(EOK);
     INDCMP(!= 6);
+    WCHECK_SLACK(&dest[6], LEN-6);
 
     rc = mbstowcs_s(&ind, NULL, LEN, (cs="abcdef",cs), 2);
     ERR(EOK);
@@ -98,6 +100,7 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, "\xE2\x86\x92""abc", 32);
     ERR(EOK);
     INDCMP(!= 4);
+    WCHECK_SLACK(&dest[4], LEN-4);
     if (dest[0] != 0x2192) {
         printf("%s %u  Error  ind=%d rc=%d %ld 0x%lx\n",
                __FUNCTION__, __LINE__, (int)ind, rc, (long)dest[0], (long)dest[0]);
@@ -115,6 +118,7 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0",cs), 1);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc2",cs), 1);
     ERR(EILSEQ);
@@ -129,56 +133,72 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0\xaf",cs), 2);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xe0\x80\xaf",cs), 3);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xf0\x80\x80\xaf",cs), 4);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xf8\x80\x80\x80\xaf",cs), 5);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xfc\x80\x80\x80\x80\xaf",cs), 6);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     /* aliasing U+0080 */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xe0\x82\x80",cs), 3);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     /* aliasing U+07FF */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xe0\x9f\xbf",cs), 3);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     /* aliasing U+0800 */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xf0\x80\xa0\x80",cs), 4);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
       
     /* aliasing U+FFFD */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xf0\x8f\xbf\xbd",cs), 4);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     /* check enough space for src and conversion errors */
 
+    rc = mbstowcs_s(&ind, dest, 6, (cs="abcdef",cs), 6);
+    ERR(ESNOSPC);
+    WCHECK_SLACK(dest, 6);
+    
     rc = mbstowcs_s(&ind, dest, 3, (cs="\xf0\x8f\xbf\xbd",cs), 4);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\x80\xbf\x80",cs), 3);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xfc\x80\x80\x80\x80\x80",cs), 6);
     ERR(EILSEQ);
     INDCMP(!= -1);
+    WCHECK_SLACK(dest, LEN);
 
 /*--------------------------------------------------*/
     
