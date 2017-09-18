@@ -177,7 +177,7 @@ mbsrtowcs_s (size_t *restrict retval,
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
              */
-            handle_error((char*)orig_dest, dmax,
+            handle_werror(orig_dest, dmax,
                          rc == ESNOSPC ? "mbsrtowcs_s: not enough space for src"
                                        : "mbsrtowcs_s: illegal sequence",
                          rc);

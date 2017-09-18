@@ -119,7 +119,7 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
     }
 
     /* hold base of dest in case src was not copied */
-    orig_dmax = dmax * sizeof(wchar_t);
+    orig_dmax = dmax;
     orig_dest = dest;
 
     if (dest < src) {
@@ -127,7 +127,7 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscpy_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscpy_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -152,7 +152,7 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscpy_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscpy_s: "
                       "overlapping objects",
                       ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -177,7 +177,7 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
      * the entire src must have been copied, if not reset dest
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
-    handle_error((char*)orig_dest, orig_dmax, "wcscpy_s: not "
+    handle_werror(orig_dest, orig_dmax, "wcscpy_s: not "
                  "enough space for src",
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);

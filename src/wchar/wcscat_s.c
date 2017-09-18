@@ -34,9 +34,6 @@
 
 #include "safeclib_private.h"
 
-
-
-
 /**
  * @brief
  *    The wcscat_s function appends a copy of the wide string pointed
@@ -123,7 +120,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
     }
 
     /* hold base of dest in case src was not copied */
-    orig_dmax = dmax * sizeof(wchar_t);
+    orig_dmax = dmax;
     orig_dest = dest;
 
     if (dest < src) {
@@ -133,7 +130,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
         while (*dest != L'\0') {
 
             if (unlikely(dest == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscat_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -142,7 +139,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscat_s: "
                              "dest unterminated",
                              ESUNTERM);
                 return RCNEGATE(ESUNTERM);
@@ -151,7 +148,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscat_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -161,7 +158,8 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                memset(dest, 0, dmax*sizeof(wchar_t));
+                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }
@@ -184,7 +182,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscat_s: "
                              "dest unterminated",
                              ESUNTERM);
                 return RCNEGATE(ESUNTERM);
@@ -193,7 +191,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcscat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcscat_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -203,7 +201,8 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                memset(dest, 0, dmax*sizeof(wchar_t));
+                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }
@@ -217,7 +216,7 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
     /*
      * the entire src was not copied, so null the string
      */
-    handle_error((char*)orig_dest, orig_dmax, "wcscat_s: not enough "
+    handle_werror(orig_dest, orig_dmax, "wcscat_s: not enough "
                       "space for src",
                       ESNOSPC);
 

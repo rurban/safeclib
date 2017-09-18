@@ -126,7 +126,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
     /* hold base of dest in case src was not copied */
-    orig_dmax = dmax * sizeof(wchar_t);
+    orig_dmax = dmax;
     orig_dest = dest;
 
     if (dest < src) {
@@ -136,7 +136,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
         while (*dest != L'\0') {
 
             if (unlikely(dest == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcsncat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
                         "overlapping objects",
                         ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -145,7 +145,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcsncat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
                        "dest unterminated",
                        ESUNTERM);
                 return RCNEGATE(ESUNTERM);
@@ -154,7 +154,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcsncat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
                        "overlapping objects",
                        ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -201,7 +201,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcsncat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
                        "dest unterminated",
                        ESUNTERM);
                 return RCNEGATE(ESUNTERM);
@@ -210,7 +210,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax, "wcsncat_s: "
+                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
                         "overlapping objects",
                         ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -248,7 +248,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     /*
      * the entire src was not copied, so the string will be nulled.
      */
-    handle_error((char*)orig_dest, orig_dmax, "wcsncat_s: not enough "
+    handle_werror(orig_dest, orig_dmax, "wcsncat_s: not enough "
                  "space for src",
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
