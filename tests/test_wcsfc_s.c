@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsfc_s
  * File 'wcsfc_s.c'
- * Lines executed:93.14% of 102
+ * Lines executed:93.20% of 103
  *
  *------------------------------------------------------------------
  */
@@ -33,6 +33,7 @@ int main()
     int ind;
     wchar_t str[LEN];
     wchar_t str1[LEN];
+    size_t len;
     int errs = 0;
     char *lc_cat, *lang;
 #ifdef PERL_TEST
@@ -65,18 +66,22 @@ int main()
     rc = wcsfc_s(str, LEN, L"Name");
     ERR(EOK);
     WEXPSTR(str, L"name");
+    WCHECK_SLACK(&str[4], LEN-4);
 
 /*--------------------------------------------------*/
 
     rc = wcsfc_s(str, LEN, L"name");
     ERR(EOK)
     WEXPSTR(str, L"name");
+    WCHECK_SLACK(&str[4], LEN-4);
 
 /*--------------------------------------------------*/
 
     rc = wcsfc_s(str, LEN, L"NOWISTHETIM3");
     ERR(EOK)
     WEXPSTR(str, L"nowisthetim3");
+    len = wcslen(L"nowisthetim3");
+    WCHECK_SLACK(&str[len], LEN-len);
 
 /*--------------------------------------------------*/
 
@@ -85,11 +90,13 @@ int main()
     ERR(EOK);
     wcscpy(str1, L"a" L"\x3b1" L"\x3b9");
     WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[3], LEN-3);
 
     rc = wcsfc_s(str, LEN, L"A" L"\x1fb7"); /* casefold ᾷ => 3 */
     ERR(EOK);
     wcscpy(str1, L"a" L"\x3b1" L"\x342" L"\x3b9");
     WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[4], LEN-4);
 
 /*--------------------------------------------------*/
 
@@ -98,11 +105,13 @@ int main()
     ERR(EOK);
     wcscpy(str1, L"\x3c2" L" ");
     WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[2], LEN-2);
 
     rc = wcsfc_s(str, LEN, L"\x3a3" L"s"); /* non-final sigma */
     ERR(EOK);
     wcscpy(str1, L"\x3c3" L"s");
     WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[2], LEN-2);
 
 /*--------------------------------------------------*/
 
@@ -114,12 +123,17 @@ int main()
     rc = wcsfc_s(str, LEN, L"\x130"); /* I-dot İ */
     ERR(EOK);
     WEXPSTR(str, L"i\x307"); /* COMBINING DOT ABOVE */
+    WCHECK_SLACK(&str[2], LEN-2);
+
     rc = wcsfc_s(str, LEN, L"I\x307");
     ERR(EOK);
     WEXPSTR(str, L"i\x307");
+    WCHECK_SLACK(&str[2], LEN-2);
+
     rc = wcsfc_s(str, LEN, L"I");
     ERR(EOK);
     WEXPSTR(str, L"i");
+    WCHECK_SLACK(&str[1], LEN-1);
 
     rc = wcsfc_s(str, LEN, L"\xcc"); /* accented I/J */
     ERR(EOK);
@@ -134,24 +148,33 @@ int main()
         rc = wcsfc_s(str, LEN, L"\x130"); /* I-dot İ */
         ERR(EOK);
         WEXPSTR(str, L"i"); /* i alone */
+        WCHECK_SLACK(&str[1], LEN-1);
+
         /* Remove dot_above in the sequence
            I + dot_above, which will turn into i */
         rc = wcsfc_s(str, LEN, L"I\x307"); /* skip the I-dot */
         ERR(EOK);
         WEXPSTR(str, L"i"); /* ditto */
+        WCHECK_SLACK(&str[1], LEN-1);
+
         rc = wcsfc_s(str, LEN, L"A\x307"); /* Not with A */
         ERR(EOK);
         wcscpy(str1, L"a" L"\x307");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
+
         /* Unless an I is before a dot_above, it turns
            into a dotless i. */
         rc = wcsfc_s(str, LEN, L"I");
         ERR(EOK);
         WEXPSTR(str, L"\x131"); /* dotless ı */
+        WCHECK_SLACK(&str[1], LEN-1);
+
         rc = wcsfc_s(str, LEN, L"I\x307" L"I");
         ERR(EOK);
         wcscpy(str1, L"i" L"\x131");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
     }
 
     SETLOCALE("lt_LT");
@@ -162,35 +185,49 @@ int main()
         ERR(EOK);
         wcscpy(str1, L"\x69" L"\x307" L"\x300");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[3], LEN-3);
+
         rc = wcsfc_s(str, LEN, L"\xcd"); /* accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x69" L"\x307" L"\x301");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[3], LEN-3);
+
         rc = wcsfc_s(str, LEN, L"\x128"); /* accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x69" L"\x307" L"\x303");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[3], LEN-3);
 
         rc = wcsfc_s(str, LEN, L"\x49" L"\x300"); /* accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x69" L"\x307");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
+
         rc = wcsfc_s(str, LEN, L"\x4A" L"\x300"); /* accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x6a" L"\x307");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
+
         rc = wcsfc_s(str, LEN, L"\x49" L"\x302"); /* not accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x69" L"\x302");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
+
         rc = wcsfc_s(str, LEN, L"\x12e" L"\x301"); /* accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x12f" L"\x307");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
+
         rc = wcsfc_s(str, LEN, L"\x12e" L"\x302"); /* not accented I/J */
         ERR(EOK);
         wcscpy(str1, L"\x12f" L"\x302");
         WEXPSTR(str, str1);
+        WCHECK_SLACK(&str[2], LEN-2);
     }
 
     SETLOCALE_C;

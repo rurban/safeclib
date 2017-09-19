@@ -51,7 +51,6 @@ _is_lt_accented(wint_t wc) {
 
 /**
  * @brief
- *
  *    Converts the wide string via full case-folding normalized to lowercase.
  *    The conversion stops at the first null or after dmax characters.  The
  *    conversion is determined by the LC_CTYPE category setting of the
@@ -63,6 +62,10 @@ _is_lt_accented(wint_t wc) {
  *    not, the conversion is per character done via normal \c towlower().
  *    Note that decomposition creates larger strings, typically 2-3 chars
  *    more.
+ *
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax characters pointed to by dest are nulled.
  * 
  * @details
  *   SpecialCasing checks for conditional boundary context at the begin or end
@@ -263,7 +266,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
     }
 
     if (unlikely(dmax <= 0)) {
-        handle_error((char*)orig_dest, orig_dmax*sizeof(wchar_t),
+        handle_werror(orig_dest, orig_dmax,
                      "wcsfc_s: " "dmax too small",
                      ESNOSPC);
         return (ESNOSPC);
