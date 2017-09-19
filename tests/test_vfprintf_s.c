@@ -114,10 +114,11 @@ int test_vfprintf_s (void)
         NOERR();
         ERRNO(0);
     }
-#else
+#elif defined BSD_ALL_LIKE
     ERR(-1);
-#endif
+#else
     /* musl throws no error */
+#endif
     
     unlink(TMP);
 

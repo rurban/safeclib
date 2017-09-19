@@ -162,11 +162,12 @@ int test_wscanf_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef __GLIBC__
-    fclose(stream); /* crashes with linux glibc: double free */
-#endif
+#ifdef __linux
+    debug_printf("%s %u skip test reading from closed stream\n",
+                 __FUNCTION__, __LINE__);
+#else
+    fclose(stream); /* crashes with linux glibc or musl: double free */
 
-#if 0
     wcscpy(wstr1, L"qqweqq");
     stuff_stdin(wstr1);
     /* would block reading */
