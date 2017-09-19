@@ -33,8 +33,12 @@
 
 /**
  * @brief
- *    Nulls dmax characters of dest.  This function can be used
- *    to clear strings that contained sensitive data.
+ *    Nulls maximal dmax characters of dest.  This function can be used
+ *    to clear strings that contained sensitive data, until the terminating NULL
+ *    character.
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -75,11 +79,15 @@ strzero_s (char *dest, rsize_t dmax)
     }
 
     /* null string to eliminate data */
-    while (dmax) {
+    while (dmax && *dest) {
         *dest = '\0';
         dmax--;
         dest++;
     }
+#ifdef SAFECLIB_STR_NULL_SLACK
+    if (!*dest)
+        memset(dest, 0, dmax);
+#endif
 
     return (EOK);
 }

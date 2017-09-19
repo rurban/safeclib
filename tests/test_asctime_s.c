@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_asctime_s
  * File 'os/asctime_s.c'
- * Lines executed:90.91% of 55
+ * Lines executed:87.93% of 58
  *
  *------------------------------------------------------------------
  */
@@ -19,6 +19,7 @@ int test_asctime_s (void)
     int errs = 0;
     int old;
     int ind;
+    int len;
     struct tm *tm;
     const time_t timet = 20000000;
     char *str2;
@@ -77,6 +78,8 @@ int test_asctime_s (void)
     tm->tm_year = 0;
     rc = asctime_s(str1, 40, tm);
     ERR(EOK);
+    len = strlen(str1);
+    CHECK_SLACK(&str1[len], 40-len);
 
     /* darwin asctime_r overflows >= 8100 */
     for (ind=8090; ind<=8200; ind++) {
@@ -94,6 +97,8 @@ int test_asctime_s (void)
     rc = asctime_s(str1, 40, tm);
     str2 = asctime(tm);
     EXPSTR(str1, str2);
+    len = strlen(str1);
+    CHECK_SLACK(&str1[len], 40-len);
 
 /*--------------------------------------------------*/
 

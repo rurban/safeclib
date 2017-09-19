@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strzero_s
  * File 'extstr/strzero_s.c'
- * Lines executed:100.00% of 15
- *
+ * Lines executed:100.00% of 17
  *
  *------------------------------------------------------------------
  */
@@ -24,16 +23,20 @@ int main()
 
     rc = strzero_s(NULL, 5);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     rc = strzero_s(str1, 0);
     ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = strzero_s(str1, RSIZE_MAX_STR+1);
     ERR(ESLEMAX)
+
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc");
     max_len = 1;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
@@ -47,6 +50,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc\0xxxxxxxxxxxxxxxxxxx");
     max_len = 2;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
@@ -60,6 +64,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc\0xxxxxxxxxxxxxxxxxxx");
     max_len = 3;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
@@ -73,7 +78,8 @@ int main()
 
 /*--------------------------------------------------*/
 
-    max_len = LEN;
+    strcpy(str1, "abc\0xxxxxxxxxxxxxxxxxxx");
+    max_len = 4;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
     for (i=0; i<max_len; i++) {
@@ -83,6 +89,21 @@ int main()
            errs++;
        }
     }
+    CHECK_SLACK(&str1[3], 1);
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abc\0xxxxxxxxxxxxxxxxxxx");
+    rc = strzero_s(str1, LEN);
+    ERR(EOK)
+    for (i=0; i<3; i++) {
+       if (str1[i] != '\0') {
+           debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+           errs++;
+       }
+    }
+    CHECK_SLACK(&str1[3], LEN-3);
 
 /*--------------------------------------------------*/
 
@@ -97,6 +118,8 @@ int main()
                &str1[max_len]);
         errs++;
     }
+    CHECK_SLACK(str1, max_len);
+
 /*--------------------------------------------------*/
 
     return (errs);

@@ -66,6 +66,10 @@
  *    conforming). ASCII-based systems with __STDC_ISO_10646__ defined
  *    leave __STDC_MB_MIGHT_NEQ_WC__ undefined.
  *
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the array of dmax
+ *    characters pointed to by dest are nulled. Also in the error cases for
+ *    ESNOSPC and EILSEQ.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -98,6 +102,7 @@
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
+ * @retval  EILSEQ     if returned by wctomb()
  *
  * @see
  *    wcrtomb_s()
@@ -107,7 +112,7 @@ wctomb_s(int *restrict retval,
          char *restrict dest, rsize_t dmax,
          wchar_t wc)
 {
-    char *orig_dest;
+    int len;
 #if defined(__CYGWIN__) && defined(__x86_64)
     mbstate_t st;
 #endif
@@ -131,21 +136,22 @@ wctomb_s(int *restrict retval,
         return RCNEGATE(ESLEMAX);
     }
 
-    /* hold base of dest in case src was not copied */
-    orig_dest = dest;
+    len = *retval = wctomb(dest, wc);
 
-    *retval = wctomb(dest, wc);
-
-    if (likely(*retval > 0 && *retval < (int)dmax)) {
+    if (likely(len > 0 && (rsize_t)len < dmax)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+        if (dest)
+            memset(&dest[len], 0, dmax-len);
+#endif
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = (*retval > 0) ? ESNOSPC : errno;
+        errno_t rc = (len > 0) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
              */
-            handle_error(orig_dest, dmax,
+            handle_error(dest, dmax,
                          rc == ESNOSPC ? "wctomb_s: not enough space for src"
                                        : "wctomb_s: illegal sequence",
                          rc);

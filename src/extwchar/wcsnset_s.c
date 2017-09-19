@@ -33,7 +33,11 @@
 
 /**
  * @brief
- *    Sets n wide characters of dest to a wide character value.
+ *    Sets maximal n wide characters of dest to a wide character value,
+ *    but not the final NULL character.
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax wide characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO
  *    * ISO/IEC TR 24731, Programming languages, environments
@@ -53,12 +57,15 @@
  * @retval  ESNOSPC     when n > dmax
  *
  * @see
- *    wcsset_s(), wmemset_s(), strzero_s(), strset_s(), strispassword_s()
+ *    wcsset_s(), wmemset_s(), strzero_s(), strnset_s(), strispassword_s()
  *
  */
 EXPORT errno_t
 wcsnset_s (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n)
 {
+#ifdef SAFECLIB_STR_NULL_SLACK
+    wchar_t * orig_dest;
+#endif
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("wcsnset_s: dest is null",
                    NULL, ESNULLP);
@@ -83,11 +90,19 @@ wcsnset_s (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n)
         return (ESNOSPC);
     }
 
-    while (n) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+    orig_dest = dest;
+#endif
+    while (n && *dest) {
         *dest = value;
         n--;
         dest++;
     }
+#ifdef SAFECLIB_STR_NULL_SLACK
+    /* null slack to clear any data */
+    if (!*dest)
+        memset(dest, 0, (dmax-(dest-orig_dest))*sizeof(wchar_t));
+#endif
 
     return (EOK);
 }

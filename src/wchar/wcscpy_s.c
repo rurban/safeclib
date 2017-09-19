@@ -34,13 +34,13 @@
 
 /**
  * @brief
- *    The wcscpy_s function copies the string pointed to by src
+ *    The \c wcscpy_s function copies the string pointed to by \c src
  *    (including the terminating null character) into the array
  *    pointed to by dest.
- *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by wcscpy_s in the
- *    array of dmax characters pointed to by dest are nulled when
- *    wcscpy_s returns.
+ *    With \c SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written by \c wcscpy_s in the
+ *    array of \c dmax characters pointed to by \c dest are nulled when
+ *    \c wcscpy_s returns.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):

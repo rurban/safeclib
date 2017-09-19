@@ -45,7 +45,7 @@
  *    LC_CTYPE locale.
  *    If \c dest is not null, converted characters are
  *    stored in the successive elements of \c dest. No more than \c len bytes
- *    written to the destination array. Each wide character is
+ *    are written to the destination array. Each wide character is
  *    converted as if by a call to \c wcrtomb.  \c wcstombs_s
  *    clobbers the destination array from the terminating null and
  *    until \c dmax.
@@ -62,6 +62,11 @@
  *    - the next multibyte character to be stored would exceed \c len.
  *      This condition is not checked if \c dst==NULL.
  *
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the array of dmax
+ *    characters pointed to by dest are nulled. Also in the error cases for
+ *    src = NULL, ESNOSPC and EILSEQ.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.6.5.2 The wcstombs_s function (p: 612-613)
@@ -70,17 +75,19 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval pointer to a \c size_t object where the result will be stored
- * @param[out]  dest  pointer to character array where the result will be stored
- * @param[in]   dmax  restricted maximum length of \c dest
- * @param[in]   src   wide string that will be copied to \c dest
- * @param[in]   len   number of bytes available in \c dest
+ * @param[out]  retval the number of characters converted
+ * @param[out]  dest   buffer for the resulting converted multibyte
+ *                     character string
+ * @param[in]   dmax   The size in bytes of dest
+ * @param[in]   src    wide string that will be converted to \c dest
+ * @param[in]   len    number of bytes to be stored in \c dest, not
+ *                     including the terminating null character.
  *
- * @pre retval and src shall not be a null pointer.
+ * @pre \c retval and \c src shall not be a null pointer.
  * @pre dmax and len shall not be greater than \c RSIZE_MAX_STR
- *      (unless dest is null).
- * @pre dmax shall not equal zero (unless dest is null).
- * @pre dmax shall be greater than \c len.
+ *      (unless \c dest is null).
+ * @pre \c dmax shall not equal zero (unless \c dest is null).
+ * @pre \c dmax shall be greater than \c len.
  * @pre Copying shall not take place between objects that overlap.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
@@ -98,6 +105,7 @@
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the src array and len is
  *                     greater than dmax (unless dest is null)
+ * @retval  EILSEQ     if returned by wcstombs()
  *
  * @see
  *    mbstowc_s()
@@ -107,27 +115,13 @@ wcstombs_s (size_t *restrict retval,
              char *restrict dest, rsize_t dmax,
              const wchar_t *restrict src, rsize_t len)
 {
-    char *orig_dest;
+    size_t l;
 #if defined(__CYGWIN__) && defined(__x86_64)
     mbstate_t st;
 #endif
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wcstombs_s: retval is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        if (dest) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-            /* null string to clear data */
-            memset_s((void*)dest,dmax,0,len);
-#else
-            *dest = '\0';
-#endif
-        }
-        invoke_safe_str_constraint_handler("wcstombs_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
@@ -148,21 +142,34 @@ wcstombs_s (size_t *restrict retval,
         return RCNEGATE(ESOVRLP);
     }
 
-    /* hold base of dest in case src was not copied */
-    orig_dest = dest;
+    if (unlikely(src == NULL)) {
+        if (dest)
+            handle_error(dest, dmax, "wcstombs_s: src is null",
+                         ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
 
-    *retval = wcstombs(dest, src, len);
+    /* l is the strlen, excluding NULL */
+    l = *retval = wcstombs(dest, src, len);
 
-    if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+    if (likely((ssize_t)l > 0 && (rsize_t)l < dmax)) {
+        if (dest) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+            memset(&dest[l], 0, dmax-l);
+#else
+            /* wcstombs only ensures null-termination when len is big enough.
+             * Above we ensured l < dmax, otherwise ESNOSPC. */
+            dest[l] = '\0';
+#endif
+        }
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)*retval > 0) ? ESNOSPC : errno;
+        errno_t rc = ((ssize_t)l > 0) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
-             * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
-             */
-            handle_error(orig_dest, dmax,
+             * to null the string with SAFECLIB_STR_NULL_SLACK. */
+            handle_error(dest, dmax,
                          rc == ESNOSPC ? "wcstombs_s: not enough space for src"
                                        : "wcstombs_s: illegal sequence",
                          rc);

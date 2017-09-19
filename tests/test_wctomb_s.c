@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wctomb_s
  * File 'wchar/wctomb_s.c'
- * Lines executed:100.00% of 18
+ * Lines executed:100.00% of 19
  *
  *------------------------------------------------------------------
  */
@@ -40,6 +40,7 @@ int test_wctomb_s (void)
     rc = wctomb_s(&ind, dest, LEN, L'\0');
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
 
     rc = wctomb_s(&ind, dest, 0, src);
     ERR(ESZEROL);
@@ -52,6 +53,7 @@ int test_wctomb_s (void)
     rc = wctomb_s(&ind, dest, LEN, L'\a');
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
 
     SETLOCALE_C;
     SETLANG("C");
@@ -72,6 +74,7 @@ int test_wctomb_s (void)
                __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
         errs++;
       }
+      CHECK_SLACK(&dest[1], LEN-1);
     } else {
       ERR(EILSEQ); /* or illegal */
       INDCMP(!= -1);
@@ -80,19 +83,21 @@ int test_wctomb_s (void)
                __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
         errs++;
       }
+      CHECK_SLACK(&dest[0], LEN);
     }
 
     rc = wctomb_s(&ind, dest, LEN, L'\x78');
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
 
     /* surrogates */
     rc = wctomb_s(&ind, dest, LEN, L'\xdf81');
     if (rc == 0) { /* well, musl on ASCII allows this */
-      INDCMP(!= 1);
+        INDCMP(!= 1);
     } else {
-      ERR(EILSEQ);
-      INDCMP(!= -1);
+        ERR(EILSEQ); /* FIXME NOSPC */
+        INDCMP(!= -1);
     }
 
     SETLOCALE_UTF8;
@@ -106,8 +111,10 @@ int test_wctomb_s (void)
     /* overlarge utf-8 sequence */
     rc = wctomb_s(&ind, dest, 2, L'\x2219');
     ERR(ESNOSPC);
+    CHECK_SLACK(&dest[0], 2);
     rc = wctomb_s(&ind, dest, 3, L'\x2219');
     ERR(ESNOSPC);
+    CHECK_SLACK(&dest[0], 3);
 
     rc = wctomb_s(&ind, dest, 4, L'\x2219');
     ERR(EOK);
@@ -138,9 +145,11 @@ int test_wctomb_s (void)
     rc = wctomb_s(&ind, dest, LEN, L'\xd834df01');
 #if SIZEOF_WCHAR_T == 2
     ERR(0);
+    CHECK_SLACK(&dest[ind], LEN-ind);
 #else
-    ERR(EILSEQ);
+    ERR(EILSEQ); /* FIXME NOSPC */
     INDCMP(!= -1);
+    CHECK_SLACK(&dest[0], LEN);
 #endif
 
 /*--------------------------------------------------*/

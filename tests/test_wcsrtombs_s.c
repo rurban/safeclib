@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsrtombs_s
  * File 'wchar/wcsrtombs_s.c'
- * Lines executed:100.00% of 31
+ * Lines executed:100.00% of 32
  *
  *------------------------------------------------------------------
  */
@@ -48,11 +48,13 @@ int test_wcsrtombs_s (void)
 
     rc = wcsrtombs_s(&ind, dest, LEN, NULL, 0, &ps);
     ERR(ESNULLP);
+    CHECK_SLACK(dest, LEN);
     CLRPS;
 
     src[0] = L'\0';
-    rc = wcsrtombs_s(&ind, NULL, LEN, (const wchar_t**)&src, 0, &ps);
+    rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&src, 0, &ps);
     ERR(ESNULLP);
+    CHECK_SLACK(dest, LEN);
     CLRPS;
 
     rc = wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps);
@@ -66,6 +68,7 @@ int test_wcsrtombs_s (void)
     cs = L"abcdef";
     rc = wcsrtombs_s(&ind, dest, 2, &cs, 3, &ps);
     ERR(ESNOSPC);
+    CHECK_SLACK(dest, 2);
     CLRPS;
 
     rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 0, &ps);
@@ -86,11 +89,13 @@ int test_wcsrtombs_s (void)
     rc = wcsrtombs_s(&ind, dest, LEN, (cs=L"abcdef",&cs), 3, &ps);
     ERR(EOK);
     INDCMP(!= 3);
+    CHECK_SLACK(&dest[3], LEN-3);
     CLRPS;
 
     rc = wcsrtombs_s(&ind, dest, LEN, (cs=L"abcdef",&cs), 8, &ps);
     ERR(EOK);
     INDCMP(!= 6);
+    CHECK_SLACK(&dest[6], LEN-6);
     CLRPS;
 
     rc = wcsrtombs_s(&ind, NULL, LEN, (cs=L"abcdef",&cs), 2, &ps);
@@ -118,6 +123,7 @@ int test_wcsrtombs_s (void)
                __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
         errs++;
       }
+      CHECK_SLACK(&dest[4], LEN-4);
       if (cs) { /* needs to be at the end */
         printf("%s %u  Error  ind=%d rc=%d %p\n",
                __FUNCTION__, __LINE__, (int)ind, rc, cs);
@@ -131,6 +137,7 @@ int test_wcsrtombs_s (void)
                __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
         errs++;
       }
+      CHECK_SLACK(&dest[0], LEN);
     }
     CLRPS;
 
@@ -145,9 +152,11 @@ int test_wcsrtombs_s (void)
     rc = wcsrtombs_s(&ind, dest, LEN, &cs, LEN, &ps);
     if (rc == 0) { /* well, musl on ASCII allows this */
       INDCMP(!= 1);
+      CHECK_SLACK(&dest[1], LEN-1);
     } else {
       ERR(EILSEQ);
       INDCMP(!= -1);
+      CHECK_SLACK(&dest[0], LEN);
     }
     CLRPS;
 

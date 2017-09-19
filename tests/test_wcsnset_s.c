@@ -40,6 +40,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     value = L' ';
     max_len = 1;
     rc = wcsnset_s(str1, LEN, value, max_len);
@@ -54,6 +55,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     value = 0;
     max_len = 2;
     rc = wcsnset_s(str1, LEN, value, max_len);
@@ -68,6 +70,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     max_len = 3;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)
@@ -78,19 +81,22 @@ int main()
            errs++;
        }
     }
+    WCHECK_SLACK(&str1[3], LEN-3);
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     max_len = LEN;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
+    for (i=0; i<3; i++) {
        if (str1[i] != value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
        }
     }
+    WCHECK_SLACK(&str1[3], LEN-3);
 
 /*--------------------------------------------------*/
 
@@ -105,6 +111,7 @@ int main()
                &str1[max_len]);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     return (errs);

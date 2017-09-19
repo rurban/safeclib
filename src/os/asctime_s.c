@@ -162,6 +162,14 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
 #if defined(HAVE_ASCTIME_R)
     if (dmax >= 120) { /* glibc reserves 114 */
         buf = asctime_r(tm, dest);
+        if (!buf) {
+# ifdef SAFECLIB_STR_NULL_SLACK
+            memset(dest, 0, dmax);
+# else
+            *dest = '\0';
+# endif
+            return -1;
+        }
     }
     else {
         static char tmp[120];

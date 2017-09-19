@@ -67,18 +67,7 @@ int test_gets_s (void)
     sub = gets_s(dest, 5); /* but got more */
     SUBNULL();
     ERRNO(ESNOSPC);
-    if (dest[0]) {
-        debug_printf("%s %u   Expected null, got \"%s\" \n",
-                     __FUNCTION__, __LINE__, dest);
-        errs++;
-    }
-#ifdef SAFECLIB_STR_NULL_SLACK
-    if (dest[1]) {
-        debug_printf("%s %u   Expected slack null, got \"%s\" \n",
-                     __FUNCTION__, __LINE__, &dest[1]);
-        errs++;
-    }
-#endif
+    CHECK_SLACK(dest, 5);
 
     sub = gets_s(dest, LEN); /* drain the rest of xxx.. */
     SUBNN();
@@ -93,6 +82,7 @@ int test_gets_s (void)
     sub = gets_s(dest, 5); /* edge-case len==dmax-1 */
     SUBNULL();
     ERRNO(ESNOSPC);
+    CHECK_SLACK(dest, 5);
 
     sub = gets_s(dest, LEN); /* EOF */
     SUBNULL();
@@ -105,6 +95,7 @@ int test_gets_s (void)
     /* musl does not return EBADF when fgets from the closed fd */
     if (errno && errno != EBADF) {
         ERRNO(EBADF);
+        CHECK_SLACK(dest, LEN);
     }
 
     unlink(TMP);

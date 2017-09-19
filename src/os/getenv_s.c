@@ -41,9 +41,13 @@
  *    are implementation-defined.  The value of the environment variable is
  *    written to the user-provided buffer value (unless null) and the number
  *    of bytes written is stored in the user-provided location *len (unless
- *    null). If the environment variable is not set in the environment, zero
+ *    null).
+ *    If the environment variable is not set in the environment, zero
  *    is written to *len (unless null) and '\0' is written to value[0] (unless
  *    null).
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax characters pointed to by dest are nulled.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -102,14 +106,8 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(name == NULL)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        while (dmax) {  *dest = '\0'; dmax--; dest++; }
-#else
-        *dest = '\0';
-#endif
-        invoke_safe_str_constraint_handler("getenv_s: name is null",
-                   NULL, ESNULLP);
+        handle_error(dest, dmax, "getenv_s: name is null",
+                     ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
@@ -117,29 +115,21 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
     buf = getenv(name);
 
     if (unlikely(buf == NULL)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        while (dmax) {  *dest = '\0'; dmax--; dest++; }
-#else
-        *dest = '\0';
-#endif
+        char errstr[128] = "getenv_s: ";
         if (len)
             *len = 0;
+        strcat(errstr, strerror(errno));
+        handle_error(dest, dmax, errstr,
+                     -1);
         return -1;
     }
     
     len1 = strlen(buf);
     if (unlikely((rsize_t)len1 >= dmax)) {
-        invoke_safe_str_constraint_handler("getenv_s: dmax is too small",
-                   NULL, ESNOSPC);
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        while (dmax) {  *dest = '\0'; dmax--; dest++; }
-#else
-        *dest = '\0';
-#endif
         if (len)
             *len = 0;
+        handle_error(dest, dmax, "getenv_s: dmax is too small",
+                     ESNOSPC);
         return RCNEGATE(ESNOSPC);
     } else {
         if (len)

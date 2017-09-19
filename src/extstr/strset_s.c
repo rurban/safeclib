@@ -33,7 +33,11 @@
 
 /**
  * @brief
- *    Sets dmax characters of dest to a character value.
+ *    Sets maximal dmax characters of dest to a character value, but not
+ *    the final NULL character.
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO
  *    * ISO/IEC TR 24731, Programming languages, environments
@@ -44,6 +48,11 @@
  * @param[out]  dest    string that will be set.
  * @param[in]   dmax    restricted maximum length of dest
  * @param[in]   value   character value to write
+ *
+ * @pre dest shall not be a null pointer, and shall be null-terminated.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not equal zero.
+ * @pre value shall not be greater than 255
  *
  * @retval  EOK         when successful
  * @retval  ESNULLP     when dest is NULL pointer
@@ -69,17 +78,22 @@ strset_s (char *restrict dest, rsize_t dmax, int value)
         return (ESZEROL);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR || value > 255)) {
+    if (unlikely(dmax > RSIZE_MAX_STR || (unsigned)value > 255)) {
         invoke_safe_str_constraint_handler("strset_s: dmax/value exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
     }
 
-    while (dmax) {
+    while (dmax && *dest) {
         *dest = (char)value;
         dmax--;
         dest++;
     }
+#ifdef SAFECLIB_STR_NULL_SLACK
+    /* null slack to clear any data */
+    if (!*dest)
+        memset(dest, 0, dmax);
+#endif
 
     return (EOK);
 }

@@ -133,6 +133,14 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
 #if defined(HAVE_CTIME_R)
     if (dmax >= 120) { /* glibc reserves 114 */
         buf = ctime_r(timer, dest);
+        if (!buf) {
+# ifdef SAFECLIB_STR_NULL_SLACK
+            memset(dest, 0, dmax);
+# else
+            *dest = '\0';
+# endif
+            return -1;
+        }
     }
     else {
         static char tmp[120];
@@ -151,8 +159,9 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
     buf = ctime(timer);
     if (0) goto esnospc;
 #endif
-    if (!buf)
+    if (!buf) {
         return -1;
+    }
     len = strlen(buf);
 
     if (likely(len < dmax)) {

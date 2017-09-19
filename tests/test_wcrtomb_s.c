@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcrtomb_s
  * File 'wchar/wcrtomb_s.c'
- * Lines executed:100.00% of 21
+ * Lines executed:100.00% of 22
  *
  *------------------------------------------------------------------
  */
@@ -13,7 +13,7 @@
 #define LEN   ( 128 )
 
 static char      dest[LEN];
-static wchar_t   src;
+static wchar_t   wc;
 
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
@@ -36,12 +36,13 @@ int test_wcrtomb_s (void)
 
 /*--------------------------------------------------*/
 
-    src = L'a';
-    rc = wcrtomb_s(NULL, NULL, LEN, src, &ps);
+    memset(dest, '-', LEN);
+    wc = L'a';
+    rc = wcrtomb_s(NULL, NULL, LEN, wc, &ps);
     ERR(ESNULLP);
     CLRPS;
 
-    rc = wcrtomb_s(&ind, NULL, LEN, src, NULL);
+    rc = wcrtomb_s(&ind, NULL, LEN, wc, NULL);
     ERR(ESNULLP);
 
     rc = wcrtomb_s(&ind, dest, LEN, L'\0', &ps);
@@ -49,25 +50,28 @@ int test_wcrtomb_s (void)
     INDCMP(!= 1);
     CLRPS;
 
-    rc = wcrtomb_s(&ind, dest, 0, src, &ps);
+    rc = wcrtomb_s(&ind, dest, 0, wc, &ps);
     ERR(ESZEROL);
     CLRPS;
 
-    rc = wcrtomb_s(&ind, dest, RSIZE_MAX_STR+1, src, &ps);
+    rc = wcrtomb_s(&ind, dest, RSIZE_MAX_STR+1, wc, &ps);
     ERR(ESLEMAX);
     CLRPS;
 
 /*--------------------------------------------------*/
 
+    memset(dest, ' ', LEN);
     rc = wcrtomb_s(&ind, dest, LEN, L'\a', &ps);
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
     CLRPS;
 
     SETLOCALE_C;
     SETLANG("C");
     CHKLOCALE_C;
 
+    memset(dest, ' ', LEN);
     /* no-breaking space illegal in ASCII, but legal in C */
     rc = wcrtomb_s(&ind, dest, LEN, L'\xa0', &ps);
     if (rc == 0) { /* legal */
@@ -78,6 +82,7 @@ int test_wcrtomb_s (void)
                __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
         errs++;
       }
+      CHECK_SLACK(&dest[1], LEN-1);
       if (dest[1] != L'\0') {
         printf("%s %u  Error  ind=%d rc=%d %d\n",
                __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
@@ -86,6 +91,7 @@ int test_wcrtomb_s (void)
     } else {
       ERR(EILSEQ); /* or illegal */
       INDCMP(!= -1);
+      CHECK_SLACK(dest, LEN);
       if (dest[0] != '\0') {
         printf("%s %u  Error  ind=%d rc=%d %d\n",
                __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
@@ -97,15 +103,19 @@ int test_wcrtomb_s (void)
     rc = wcrtomb_s(&ind, dest, LEN, L'\x78', &ps);
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
     CLRPS;
 
     /* surrogates */
+    memset(dest, ' ', LEN);
     rc = wcrtomb_s(&ind, dest, LEN, L'\xdf81', &ps);
     if (rc == 0) { /* well, musl on ASCII allows this */
       INDCMP(!= 1);
+      CHECK_SLACK(&dest[1], LEN-1);
     } else {
       ERR(EILSEQ);
       INDCMP(!= -1);
+      CHECK_SLACK(dest, LEN);
     }
     CLRPS;
 
@@ -120,9 +130,12 @@ int test_wcrtomb_s (void)
     /* overlarge utf-8 sequence */
     rc = wcrtomb_s(&ind, dest, 2, L'\x2219', &ps);
     ERR(ESNOSPC);
+    CHECK_SLACK(dest, 2);
     CLRPS;
+
     rc = wcrtomb_s(&ind, dest, 3, L'\x2219', &ps);
     ERR(ESNOSPC);
+    CHECK_SLACK(dest, 3);
     CLRPS;
 
     rc = wcrtomb_s(&ind, dest, 4, L'\x2219', &ps);
@@ -159,6 +172,7 @@ int test_wcrtomb_s (void)
 #else
     ERR(EILSEQ);
     INDCMP(!= -1);
+    CHECK_SLACK(dest, LEN);
 #endif
 
 /*--------------------------------------------------*/

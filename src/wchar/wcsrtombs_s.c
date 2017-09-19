@@ -63,6 +63,11 @@
  *      \c *src is set to point at the beginning of the first unconverted
  *      wide character. This condition is not checked if \c dst==NULL.
  *
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the array of dmax
+ *    characters pointed to by dest are nulled. Also in the error cases for
+ *    src = NULL, *src = NULL, ESNOSPC and EILSEQ.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.3.2.2 The wcsrtombs_s function (p: 649-650)
@@ -100,6 +105,7 @@
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the *src array and len is
  *                     greater than dmax (unless dest is null)
+ * @retval  EILSEQ     if returned by wctomb()
  *
  * @see
  *    wcrtomb_s(), wcstombs_s()
@@ -111,8 +117,7 @@ wcsrtombs_s (size_t *restrict retval,
              const wchar_t **restrict src, rsize_t len,
              mbstate_t *restrict ps)
 {
-    char *orig_dest;
-
+    size_t l;
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wcsrtombs_s: retval is null",
                    NULL, ESNULLP);
@@ -121,26 +126,6 @@ wcsrtombs_s (size_t *restrict retval,
 
     if (unlikely(ps == NULL)) {
         invoke_safe_str_constraint_handler("wcsrtombs_s: ps is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        if (dest) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-            /* null string to clear data */
-            memset_s((void*)dest,dmax,0,len);
-#else
-            *dest = '\0';
-#endif
-        }
-        invoke_safe_str_constraint_handler("wcsrtombs_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(*src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsrtombs_s: *src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
@@ -162,21 +147,36 @@ wcsrtombs_s (size_t *restrict retval,
         return RCNEGATE(ESOVRLP);
     }
 
-    /* hold base of dest in case src was not copied */
-    orig_dest = dest;
+    if (unlikely(src == NULL)) {
+        if (dest)
+            handle_error(dest, dmax, "wcsrtombs_s: src is null",
+                         ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
 
-    *retval = wcsrtombs(dest, src, len, ps);
+    if (unlikely(*src == NULL)) {
+        if (dest)
+            handle_error(dest, dmax, "wcsrtombs_s: *src is null",
+                         ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
 
-    if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+    l = *retval = wcsrtombs(dest, src, len, ps);
+
+    if (likely((ssize_t)l > 0 && l < dmax)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+        if (dest)
+            memset(&dest[l], 0, dmax-l);
+#endif
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)*retval > 0) ? ESNOSPC : errno;
+        errno_t rc = ((ssize_t)l > 0) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
              */
-            handle_error(orig_dest, dmax,
+            handle_error(dest, dmax,
                          rc == ESNOSPC ? "wcsrtombs_s: not enough space for src"
                                        : "wcsrtombs_s: illegal sequence",
                          rc);

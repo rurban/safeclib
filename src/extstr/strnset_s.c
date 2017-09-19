@@ -33,7 +33,11 @@
 
 /**
  * @brief
- *    Sets n characters of dest to a character value.
+ *    Sets maximal n characters of dest to a character value,
+ *    but not the final NULL character.
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO
  *    * ISO/IEC TR 24731, Programming languages, environments
@@ -46,6 +50,12 @@
  * @param[in]   value   character value to write
  * @param[in]   n       number of characters to be written
  *
+ * @pre dest shall not be a null pointer, and shall be null-terminated.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not equal zero.
+ * @pre n shall not be greater than dmax
+ * @pre value shall not be greater than 255
+ *
  * @retval  EOK         when successful
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
@@ -53,12 +63,16 @@
  * @retval  ESNOSPC     when n > dmax
  *
  * @see
- *    strzero_s(), strset_s(), strispassword_s()
+ *    strzero_s(), strset_s(), wcsnset_s(), strispassword_s()
  *
  */
 EXPORT errno_t
 strnset_s (char *restrict dest, rsize_t dmax, int value, rsize_t n)
 {
+#ifdef SAFECLIB_STR_NULL_SLACK
+    char * orig_dest;
+#endif
+
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strnset_s: dest is null",
                    NULL, ESNULLP);
@@ -83,11 +97,19 @@ strnset_s (char *restrict dest, rsize_t dmax, int value, rsize_t n)
         return (ESNOSPC);
     }
         
-    while (n) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+    orig_dest = dest;
+#endif
+    while (n && *dest) {
         *dest = (char)value;
         n--;
         dest++;
     }
+#ifdef SAFECLIB_STR_NULL_SLACK
+    /* null slack to clear any data */
+    if (!*dest)
+        memset(dest, 0, dmax-(dest-orig_dest));
+#endif
 
     return (EOK);
 }

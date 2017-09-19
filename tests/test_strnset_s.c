@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_strnset_s
  * File 'strnset_s.c'
- * Lines executed:100.00% of 18
+ * Lines executed:100.00% of 21
  *
  *------------------------------------------------------------------
  */
@@ -28,6 +28,7 @@ int main()
 
     rc = strnset_s(str1, 0, 0, 5);
     ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
     rc = strnset_s(str1, RSIZE_MAX_STR+1, 0, 5);
@@ -38,11 +39,13 @@ int main()
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc");
     rc = strnset_s(str1, 5, 0, 6);
     ERR(ESNOSPC);
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc");
     value = 20;
     max_len = 1;
     rc = strnset_s(str1, LEN, value, max_len);
@@ -57,6 +60,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc");
     value = 0;
     max_len = 2;
     rc = strnset_s(str1, LEN, value, max_len);
@@ -71,7 +75,23 @@ int main()
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc");
     max_len = 3;
+    rc = strnset_s(str1, LEN, value, max_len); /* !! */
+    ERR(EOK)
+    for (i=0; i<max_len; i++) {
+        if (str1[i] != (char)value) {
+           debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+           errs++;
+       }
+    }
+    CHECK_SLACK(&str1[3], LEN-3);
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abc");
+    max_len = 4;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
     for (i=0; i<max_len; i++) {
@@ -81,19 +101,37 @@ int main()
            errs++;
        }
     }
+    CHECK_SLACK(&str1[3], LEN-3);
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "abc");
+    max_len = 5;
+    rc = strnset_s(str1, LEN, value, max_len);
+    ERR(EOK)
+    for (i=0; i<3; i++) {
+        if (str1[i] != (char)value) {
+           debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+           errs++;
+       }
+    }
+    CHECK_SLACK(&str1[3], LEN-3);
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "abc");
     max_len = LEN;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
+    for (i=0; i<3; i++) {
        if (str1[i] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
        }
     }
+    CHECK_SLACK(&str1[3], LEN-3);
 
 /*--------------------------------------------------*/
 
@@ -108,6 +146,7 @@ int main()
                &str1[max_len]);
         errs++;
     }
+
 /*--------------------------------------------------*/
 
     return (errs);

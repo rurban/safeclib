@@ -67,6 +67,9 @@
  *    conforming). ASCII-based systems with __STDC_ISO_10646__ defined
  *    leave __STDC_MB_MIGHT_NEQ_WC__ undefined.
  *
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax characters pointed to by dest are nulled.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -109,7 +112,7 @@ wcrtomb_s(size_t *restrict retval,
           char *restrict dest, rsize_t dmax,
           wchar_t wc, mbstate_t *restrict ps)
 {
-    char *orig_dest;
+    size_t len;
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wcrtomb_s: retval is null",
@@ -136,21 +139,24 @@ wcrtomb_s(size_t *restrict retval,
         return RCNEGATE(ESLEMAX);
     }
 
-    /* hold base of dest in case src was not copied */
-    orig_dest = dest;
+    len = *retval = wcrtomb(dest, wc, ps);
 
-    *retval = wcrtomb(dest, wc, ps);
-
-    if (likely((ssize_t)*retval > 0 && *retval < dmax)) {
+    if (likely((ssize_t)len > 0 && (rsize_t)len < dmax)) {
+        if (dest)
+#ifdef SAFECLIB_STR_NULL_SLACK
+            memset(&dest[len], 0, dmax-len);
+#else
+            dest[len] = '\0';
+#endif
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)*retval > 0) ? ESNOSPC : errno;
+        errno_t rc = ((ssize_t)len > 0) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
              */
-            handle_error(orig_dest, dmax,
+            handle_error(dest, dmax,
                          rc == ESNOSPC ? "wcrtomb_s: not enough space for src"
                                        : "wcrtomb_s: illegal sequence",
                          rc);

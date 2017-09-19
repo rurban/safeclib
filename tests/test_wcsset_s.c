@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsset_s
  * File 'wcsset_s.c'
- * Lines executed:100.00% of 15
+ * Lines executed:100.00% of 17
  *
  *------------------------------------------------------------------
  */
@@ -35,6 +35,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     value = 20;
     max_len = 1;
     rc = wcsset_s(str1, max_len, value);
@@ -49,6 +50,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     value = 0;
     max_len = 2;
     rc = wcsset_s(str1, max_len, value);
@@ -63,6 +65,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"abc");
     max_len = 3;
     rc = wcsset_s(str1, max_len, value);
     ERR(EOK)
@@ -76,16 +79,33 @@ int main()
 
 /*--------------------------------------------------*/
 
-    max_len = LEN;
+    wcscpy(str1, L"abc");
+    max_len = 4;
     rc = wcsset_s(str1, max_len, value);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
+    for (i=0; i<3; i++) {
        if (str1[i] != value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
        }
     }
+    WCHECK_SLACK(&str1[3], 1);
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"abc");
+    max_len = LEN;
+    rc = wcsset_s(str1, max_len, value);
+    ERR(EOK)
+    for (i=0; i<3; i++) {
+       if (str1[i] != value) {
+           debug_printf("%s %u   Error rc=%u \n",
+                     __FUNCTION__, __LINE__,  rc );
+           errs++;
+       }
+    }
+    WCHECK_SLACK(&str1[3], LEN-3);
 
 /*--------------------------------------------------*/
 

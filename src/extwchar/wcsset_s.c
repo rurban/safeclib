@@ -33,7 +33,11 @@
 
 /**
  * @brief
- *    Sets dmax wide characters of dest to a wide character value.
+ *    Sets maximal dmax wide characters of dest to a wide character value,
+ *    but not the final NULL character.
+ *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
+ *    terminating null character (if any) written in the
+ *    array of dmax wide characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO
  *    * ISO/IEC TR 24731, Programming languages, environments
@@ -75,11 +79,16 @@ wcsset_s (wchar_t *restrict dest, rsize_t dmax, wchar_t value)
         return (ESLEMAX);
     }
 
-    while (dmax) {
+    while (dmax && *dest) {
         *dest = value;
         dmax--;
         dest++;
     }
+#ifdef SAFECLIB_STR_NULL_SLACK
+    /* null slack to clear any data */
+    if (!*dest)
+        memset(dest, 0, dmax*sizeof(wchar_t));
+#endif
 
     return (EOK);
 }

@@ -37,9 +37,6 @@ int test_wcstombs_s (void)
     rc = wcstombs_s(NULL, NULL, LEN, cs, 0);
     ERR(ESNULLP);
 
-    rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
-    ERR(ESNULLP);
-
     rc = wcstombs_s(&ind, dest, 0, cs, 0);
     ERR(ESZEROL);
 
@@ -57,16 +54,24 @@ int test_wcstombs_s (void)
     rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 1);
     ERR(ESOVRLP);
 
+    rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
+    ERR(ESNULLP);
+    CHECK_SLACK(dest, LEN);
+
 /*--------------------------------------------------*/
 
+    memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"abcdef",cs), 3);
     ERR(EOK);
     INDCMP(!= 3);
+    CHECK_SLACK(&dest[3], LEN-3);
 
-    rc = wcstombs_s(&ind, dest, LEN, (cs=L"abcdef",cs), 8);
+    rc = wcstombs_s(&ind, dest, LEN, (cs=L"abcdef",cs), 6);
     ERR(EOK);
     INDCMP(!= 6);
+    CHECK_SLACK(&dest[6], LEN-6);
 
+    memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, NULL, LEN, (cs=L"abcdef",cs), 2);
     ERR(EOK);
     INDCMP(!= 6);
@@ -75,19 +80,24 @@ int test_wcstombs_s (void)
     SETLANG("C");
     CHKLOCALE_C;
 
+    memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"\x78",cs), 1);
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
 
     src[0] = 0xdf81;
     src[1] = 0;
     cs = src;
+    memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, dest, LEN, cs, LEN);
     if (rc == 0) { /* well, musl on ASCII allows this */
       INDCMP(!= 1);
+      CHECK_SLACK(&dest[1], LEN-1);
     } else {
       ERR(EILSEQ);
       INDCMP(!= -1);
+      CHECK_SLACK(&dest[0], LEN);
     }
 
     SETLOCALE_UTF8;
@@ -100,9 +110,11 @@ int test_wcstombs_s (void)
 
     /* illegal sequences (locale independent) */
 
+    memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"0xdf79",cs), 1);
     ERR(EOK);
     INDCMP(!= 1);
+    CHECK_SLACK(&dest[1], LEN-1);
 
 /*--------------------------------------------------*/
     
