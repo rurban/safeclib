@@ -34,9 +34,9 @@
 #include <assert.h>
 
 /* generated via cperl Unicode-Normalize/mkheader -uni */
-#include "unifcan.h"
-#include "unifexc.h"
+#include "unifcan.h" /* NFD */
 #ifdef HAVE_NFC
+#include "unifexc.h"
 #include "unifcmb.h"
 #include "unifcmp.h"
 #endif
@@ -51,7 +51,7 @@
 
 #define _UNICODE_MAX 0x10ffff
 
-int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
+int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp);
 
 /**
  * @brief
@@ -110,7 +110,7 @@ iswcomposed(const wchar_t *src, rsize_t smax) {
     (void)smax;
     if (*src > 0xff && isw_maybe_composed(*src)) {
         wchar_t dest[5]; /* with non-canonical must be 19 */
-        int c = _decomp_s(dest, 5, src);
+        int c = _decomp_s(dest, 5, *src);
         return c > 1 ? 1 : 0;
     } else 
         return 0;
@@ -125,7 +125,7 @@ iswdecomposed(const wchar_t *src, rsize_t smax) {
     (void)smax;
     if (*src > 0xff && isw_maybe_decomposed(*src)) {
         wchar_t dest[5]; /* with non-canonical must be 19 */
-        int c = _decomp_s((wchar_t *)dest, 5, src);
+        int c = _decomp_s((wchar_t *)dest, 5, *src);
         return c > 1 ? 1 : 0;
     } else 
         return 0;
@@ -139,27 +139,34 @@ static int
 _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
-    wchar_t ***plane, **row;
     if (unlikely(_UNICODE_MAX < cp)) {
         invoke_safe_str_constraint_handler("_decomp_canonical_s: "
                    "cp is too high",
                    NULL, ESLEMAX);
         *dest = 0;
 	return 0;
-    }
-    plane = UNIF_canon[cp >> 16];
-    if (! plane) {
-	return 0;
-    }
-    row = plane[(cp >> 8) & 0xff];
-    if (row) {
-        int c = wcslen(row[cp & 0xff]);
-        wmemcpy_s(dest, dmax, row[cp & 0xff], c);
-        return c;
-    }
-    else {
-        *dest = 0;
-        return 0;
+    } else {
+        const wchar_t ***plane = UNIF_canon[cp >> 16];
+        if (! plane) {
+            return 0;
+        } else {
+            const wchar_t **row = plane[(cp >> 8) & 0xff];
+            if (row) {
+                const wchar_t *s = row[cp & 0xff];
+                if (s) {
+                    const int c = wcslen(row[cp & 0xff]);
+                    wmemcpy_s(dest, dmax, row[cp & 0xff], c);
+                    return c;
+                } else {
+                    *dest = 0;
+                    return 0;
+                }
+            }
+            else {
+                *dest = 0;
+                return 0;
+            }
+        }
     }
 #else
     /* the new format generated with Unicode-Normalize/mkheader -uni -ind */
@@ -184,16 +191,17 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
             /* value => length and index */
             const int l = UNIF_canon_LEN(vi);
             const int i = UNIF_canon_IDX(vi);
-            const wchar_t* w = (const wchar_t*)&UNIF_canon_tbl[l-1][i];
+            const wchar_t* tbl = (const wchar_t*)UNIF_canon_tbl[l-1];
 #if 0 && defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &&fff) => %d|TBL(%d)\n", cp, vi, i, l);
 #endif
             assert(l>0 && l<=4);
             /* (917,762,227,36) */
-            assert((l==1 && i<917) || (l==2 && i<762) || (l==3 && i<227) || (l==4 && i<36)
-                   || 0);
-            memmove_s(dest, dmax, w, sizeof(wchar_t)*l);
-            dest[l] = 0;
+            assert((l==1 && i<917) || (l==2 && i<762) || (l==3 && i<227) ||
+                   (l==4 && i<36) || 0);
+            assert(dmax > 4);
+            memcpy(dest, &tbl[i*l], l*sizeof(wchar_t));
+            dest[l] = L'\0';
             return l;
         }
     }
@@ -231,17 +239,15 @@ _decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 }
 
 
-/* codepoint canonical decomposition of one NFD sequence,
-   with possible mult. src chars, if decomposed. 
+/* codepoint canonical decomposition.
    dmax should be > 4,
    19 with the single arabic outlier U+FDFA for compat accepted,
    but we only do canon here.
 */
 
 EXPORT int
-_decomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
+_decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp)
 {
-    wint_t cp = *src;
     assert(dmax > 4);
     /* The costly is_HANGUL_cp_high(cp) checks also all composing chars.
        Hangul_IsS only for the valid start points. Which we can do here. */
@@ -377,9 +383,10 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
 
     while (*src && dmax) {
         if (isw_maybe_composed(*src)) {
-            int c = _decomp_s(dest, dmax, src);
-            src += c;
-            dmax -=  c;
+            int c = _decomp_s(dest, dmax, *src);
+            src++;
+            dmax += c;
+            dmax -= c;
         }
         else {
             *dest++ = *src++;
@@ -430,9 +437,10 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
 
     while (*src && dmax) {
         if (isw_maybe_composed(*src)) {
-            int c = _decomp_s(dest, dmax, src);
-            src += c;
-            dmax -=  c;
+            int c = _decomp_s(dest, dmax, *src);
+            src++;
+            dmax += c;
+            dmax -= c;
         }
         else {
             *dest++ = *src++;

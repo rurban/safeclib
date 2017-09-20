@@ -193,13 +193,13 @@
     }
 #define WEXPNULL(str1)                             \
     if ((str1)[0] != L'\0') {                      \
-        debug_printf("%s %u  Expected null, got L\"%ls\"\n", \
+        wprintf(L"%s %u  Expected null, got L\"%ls\"\n", \
                      __FUNCTION__, __LINE__, str1); \
         errs++;                                    \
     }
 #define WEXPSTR(str1, str2)                        \
     if (wcscmp(str1, str2)) {                      \
-        debug_printf("%s %u  Expected L\"%ls\", got L\"%ls\"  \"", \
+        wprintf(L"%s %u  Expected L\"%ls\", got L\"%ls\"  \"", \
             __FUNCTION__, __LINE__, str2, str1);   \
         for (ind=0; (size_t)ind<wcslen(str2); ind++) { \
             debug_printf("\\x%x", str2[ind]);      \

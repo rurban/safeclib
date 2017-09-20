@@ -33,13 +33,16 @@
 #include <wctype.h>
 #include <locale.h>
 
+#include <unistd.h> /* DEBUG */
+#include <assert.h>
+
 errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
 #ifndef HAVE_TOWLOWER
 EXTERN wint_t towlower(wint_t wc);
 #endif
 /* from wcsnorm_s.c */
 EXPORT int isw_maybe_composed(const wint_t cp);
-EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
+EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp);
 
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
@@ -160,7 +163,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
     orig_dmax = dmax;
 
     while (*src && dmax > 0) {
-        static wchar_t tmp[4];
+        wchar_t tmp[4];
         int c = iswfc(*src);
         if (unlikely(c > 1)) {
             /* can this be further decomposed? */
@@ -170,15 +173,26 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             /* I-Dot for Turkish and Azeri */
             if (unlikely(is_tr_az && *src == 0x130)) {
                 *dest++ = 0x69; dmax--; /* skip the \x307 dot */
-            } else {
-                *dest++ = tmp[0];
-                *dest++ = tmp[1];
-                dmax--;
-                dmax--;
-                if (c == 3) {
-                    *dest++ = tmp[2];
-                    dmax--;
+            } else if (unlikely(*src >= 0x1f80 && *src <= 0x1ff4)) {
+                /* only some greek PROSGEGRAMMENI + YPOGEGRAMMENI need to be decomposed further */
+                /* decompose mult. chars */
+                wchar_t tmpd[8];
+                int i;
+                for (i=0; i<c; i++) {
+                    int d = _decomp_s(tmpd, 8, tmp[i]);
+                    if (d) { /* decomp. max 4 */
+                        memcpy(dest, tmpd, d*sizeof(wchar_t));
+                        dest += d;
+                        dmax -= d;
+                    } else {
+                        *dest++ = tmp[i];
+                        dmax--;
+                    }
                 }
+            } else {
+                memcpy(dest, tmp, c*sizeof(wchar_t));
+                dest += c;
+                dmax -= c;
             }
             src++;
         } else { /* c = 0 or 1. 1 might still be special case */
@@ -257,35 +271,34 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
                           *(src+1) != 0x130)) {
                     *dest++ = 0x131; src++; dmax--;
                 } else {
-                    goto is_single;
+                  is_single:
+                    (void)_towfc_single(dest, (wint_t)*src++);
+                    /* even if not found dest[0] still contains towlower */
+                    dest++;
+                    dmax--;
                 }
             } else {
-                if (isw_maybe_composed(*src)) {
-                    int c;
-                    if (unlikely(dmax <= 5)) {
-                        invoke_safe_str_constraint_handler("wcsfc_s: "
-                                                           "dmax too small",
-                                                           NULL, ESNOSPC);
-                        memzero_s(orig_dest, orig_dmax*sizeof(wchar_t));
-                        return (ESNOSPC);
-                    }
-                    c = _decomp_s(dest, dmax, src);
-                    if (!c)
-                        goto is_single;
-                    src += c;
-                    dmax -= c;
-                } else {
-                  is_single:
-                    (void)_towfc_single(tmp, (wint_t)*src++);
-                    /* even if not found tmp[0] still contains towlower */
+                if (unlikely(dmax < 5))
+                    goto too_small;
+                (void)_towfc_single(tmp, (wint_t)*src++);
+                if (tmp[0] >= 0xc0)
+                    c = _decomp_s(dest, dmax, tmp[0]);
+                else
+                    c = 0;
+                if (!c) {
                     *dest++ = tmp[0];
                     dmax--;
+                } else {
+                    /* eg accents 101 => 61 304 */
+                    dest += c;
+                    dmax -= c;
                 }
             }
         }
     }
 
     if (unlikely(dmax <= 0)) {
+      too_small:
         handle_werror(orig_dest, orig_dmax,
                      "wcsfc_s: " "dmax too small",
                      ESNOSPC);
