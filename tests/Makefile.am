@@ -85,8 +85,8 @@ SAFEC_BUILT_TESTS += \
 	t_towfc_s	\
 	t_towlower	\
 	t_towupper	\
-	t_wcsfc_s
-#	t_wcsnorm_s
+	t_wcsfc_s	\
+	t_wcsnorm_s
 endif
 endif
 
@@ -309,7 +309,7 @@ t_towfc_s_SOURCES             = test_towfc_s.c $(SAFEC_TEST_COMMON)
 t_towlower_SOURCES            = test_towlower.c $(SAFEC_TEST_COMMON)
 t_towupper_SOURCES            = test_towupper.c $(SAFEC_TEST_COMMON)
 t_wcsfc_s_SOURCES             = test_wcsfc_s.c $(SAFEC_TEST_COMMON)
-#t_wcsnorm_s_SOURCES           = test_wcsnorm_s.c $(SAFEC_TEST_COMMON)
+t_wcsnorm_s_SOURCES           = test_wcsnorm_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
