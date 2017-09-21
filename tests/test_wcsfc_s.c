@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsfc_s
  * File 'wcsfc_s.c'
- * Lines executed:93.20% of 103
+ * Lines executed:94.83% of 116
  *
  *------------------------------------------------------------------
  */
@@ -15,7 +15,7 @@
 
 #define LEN   ( 128 )
 
-#define PERL_TEST
+/*#define PERL_TEST*/
 /* Must have the same Unicode version 9.0, at least 5.26.
    Better 5.27.3 with Unicode 10.
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
@@ -23,7 +23,7 @@
 #ifndef PERL
 /*# define PERL "perl"*/
 /*# define PERL "cperl5.27.2"*/
-# define PERL "perl5.27.3"
+# define PERL   "perl5.27.3"
 #endif
 #define TESTPL  "test-fc.pl"
 
@@ -136,7 +136,7 @@ int main()
 
     rc = wcsfc_s(str, LEN, L"\x388"); /* c=0, fc=3ad, nfd=3b5 301 */
     ERR(EOK);
-    wcscpy(str1, L"\x3b5" L"\x301");
+    wcscpy(str1, L"\x3b5" L"\x301");  /* 3ad: 249|TBL(2) */
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 

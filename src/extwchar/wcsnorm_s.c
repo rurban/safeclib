@@ -34,11 +34,11 @@
 #include <assert.h>
 
 /* generated via cperl Unicode-Normalize/mkheader -uni */
-#include "unifcan.h" /* NFD */
+#include "unwifcan.h" /* NFD */
 #ifdef HAVE_NFC
-#include "unifexc.h"
-#include "unifcmb.h"
-#include "unifcmp.h"
+#include "unwiexc.h"
+#include "unwicmb.h"
+#include "unwicmp.h"
 #endif
 
 /* generated via cperl regen/regcharclass-safec.pl (via CharClass::Matcher) */
@@ -146,7 +146,7 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
         *dest = 0;
 	return 0;
     } else {
-        const wchar_t ***plane = UNIF_canon[cp >> 16];
+        const wchar_t ***plane = UNWIF_canon[cp >> 16];
         if (! plane) {
             return 0;
         } else {
@@ -170,7 +170,7 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     }
 #else
     /* the new format generated with Unicode-Normalize/mkheader -uni -ind */
-    const UNIF_canon_PLANE_T **plane, *row;
+    const UNWIF_canon_PLANE_T **plane, *row;
     if (unlikely(_UNICODE_MAX < cp)) {
         invoke_safe_str_constraint_handler("_decomp_canonical_s: "
                    "cp is too high",
@@ -178,20 +178,27 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
         *dest = 0;
 	return 0;
     }
-    plane = UNIF_canon[cp >> 16];
+    if (unlikely(dmax < 5)) {
+        invoke_safe_str_constraint_handler("_decomp_canonical_s: "
+                   "dmax is < 5",
+                   NULL, ESLEMIN);
+        *dest = 0;
+	return 0;
+    }
+    plane = UNWIF_canon[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */
 	return 0;
     }
     row = plane[(cp >> 8) & 0xff];
     if (row) { /* the first row is pretty filled, the rest very sparse */
-        const UNIF_canon_PLANE_T vi = row[cp & 0xff];
+        const UNWIF_canon_PLANE_T vi = row[cp & 0xff];
         if (!vi)
             return 0;
         else {
             /* value => length and index */
-            const int l = UNIF_canon_LEN(vi);
-            const int i = UNIF_canon_IDX(vi);
-            const wchar_t* tbl = (const wchar_t*)UNIF_canon_tbl[l-1];
+            const int l = UNWIF_canon_LEN(vi);
+            const int i = UNWIF_canon_IDX(vi);
+            const wchar_t* tbl = (const wchar_t*)UNWIF_canon_tbl[l-1];
 #if 0 && defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &&fff) => %d|TBL(%d)\n", cp, vi, i, l);
 #endif
@@ -266,22 +273,22 @@ typedef struct {
     uint8_t cc;	/* combining class */
     wint_t cp;	/* codepoint */
     size_t pos; /* position */
-} UNIF_cc;
+} UNWIF_cc;
 
 static int _compare_cc(const void *a, const void *b)
 {
     int ret_cc;
-    ret_cc = ((UNIF_cc*) a)->cc - ((UNIF_cc*) b)->cc;
+    ret_cc = ((UNWIF_cc*) a)->cc - ((UNWIF_cc*) b)->cc;
     if (ret_cc)
 	return ret_cc;
 
-    return ( ((UNIF_cc*) a)->pos > ((UNIF_cc*) b)->pos )
-	 - ( ((UNIF_cc*) a)->pos < ((UNIF_cc*) b)->pos );
+    return ( ((UNWIF_cc*) a)->pos > ((UNWIF_cc*) b)->pos )
+	 - ( ((UNWIF_cc*) a)->pos < ((UNWIF_cc*) b)->pos );
 }
 
 static wint_t _composite_cp_s(wint_t cp, wint_t cp2)
 {
-    UNIF_complist ***plane, **row, *cell, *i;
+    UNWIF_complist ***plane, **row, *cell, *i;
 
     if (unlikely(!cp2)) {
         invoke_safe_str_constraint_handler("_composite_cp_s: "
@@ -306,7 +313,7 @@ static wint_t _composite_cp_s(wint_t cp, wint_t cp2)
 	wint_t tindex = cp2 - Hangul_TBase;
 	return(cp + tindex);
     }
-    plane = UNIF_compos[cp >> 16];
+    plane = UNWIF_compos[cp >> 16];
     if (!plane) { /* only 3 of 16 are defined */
 	return 0;
     row = plane[(cp >> 8) & 0xff];
@@ -331,7 +338,7 @@ static int _getCombinClass_s(wchar_t* dest, rsize_t dmax, wint_t cp)
                    NULL, ESLEMAX);
 	return 0;
     }
-    plane = UNIF_combin[cp >> 16];
+    plane = UNWIF_combin[cp >> 16];
     if (! plane)
 	return 0;
     row = plane[(cp >> 8) & 0xff];
