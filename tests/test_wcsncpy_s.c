@@ -20,7 +20,6 @@ int test_wcsncpy_s (void)
 {
     errno_t rc;
     rsize_t nlen;
-    int ind;
     int errs = 0;
 
 /*--------------------------------------------------*/

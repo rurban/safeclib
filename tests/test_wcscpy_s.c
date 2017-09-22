@@ -18,7 +18,6 @@ static wchar_t   str2[LEN];
 int test_wcscpy_s (void)
 {
     errno_t rc;
-    int     ind;
     size_t  len;
     int errs = 0;
 

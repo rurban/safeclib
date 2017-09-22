@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_towfc_s.c
  * File 'towfc_s.c'
- * Lines executed:94.78% of 115
+ * Lines executed:94.83% of 116
  *
  * Full case-folding regarding latest Unicode (10.0) CaseFolding.txt
  * Some F characters fold to multiples.
@@ -17,7 +17,7 @@
 
 int test_towfc_s (void)
 {
-    errno_t rc;
+    int rc;
     int ind;
     int errs = 0;
     int c;
@@ -68,15 +68,18 @@ int test_towfc_s (void)
                 n = iswfc(wc);
 
                 rc = towfc_s(result, 4, wc);
-                if (rc) {
-                    ind = n;
+                if (rc < 0) {
                     ERR(ESNOTFND);
-                    INDZERO();
+                    if (n) {
+                        wprintf(L"%s %u  Error %d U+%04X n=%d \"%ls\"\n",
+                                __FUNCTION__, __LINE__, rc, wc, n, result);
+                        errs++;
+                    }
                 }
-                else {
-                    ind = n;
-                    ERR(EOK);
-                    /*INDCMP(<= 0);*/
+                else if (rc != n && n) { /* n may be 0, but fc 1 */
+                    wprintf(L"%s %u  Error %d U+%04X n=%d \"%ls\"\n",
+                            __FUNCTION__, __LINE__, rc, wc, n, result);
+                    errs++;
                 }
                 len = wcslen(result);
                 c = sscanf(mapping, "%X", &m0);

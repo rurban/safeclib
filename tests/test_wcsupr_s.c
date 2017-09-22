@@ -14,7 +14,6 @@
 int main()
 {
     errno_t rc;
-    int ind;
     rsize_t len;
     wchar_t str[LEN];
     int errs = 0;

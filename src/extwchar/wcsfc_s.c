@@ -84,17 +84,19 @@ _is_lt_accented(wint_t wc) {
  *
  * @param[out]  dest  wide string to hold the result (~130% larger than src)
  * @param[in]   dmax  maximum result buffer size
- * @param[out]  src   wide string
+ * @param[in]   src   wide string
+ * @param[out]  lenp  pointer to length of the result, may be NULL
  *
  * @pre  dest and src shall not be null pointers.
- * @pre  dmax shall not be smaller than 5.
+ * @pre  dmax shall not be smaller than 5 and big enough for dest.
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
  *
  * @retval  EOK         on successful operation
  * @retval  ESNULLP     when dest or src is NULL pointer
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR
- * @retval  ESNOSPC     when dmax is too small for the decomposition
+ * @retval  ESNOSPC     when dmax is too small for the decomposition.
+ *                      *lenp is still written, to know how much space is needed.
  * @retval  ESNOTFND    Internal error as returned by towfc_s() for multi-char foldings.
  *                      happens only when the internal implementations of iswfc() and
  *                      towfc_s() are mismatched.
@@ -105,13 +107,16 @@ _is_lt_accented(wint_t wc) {
  */
 
 EXPORT errno_t
-wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
+wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+        rsize_t *restrict lenp)
 {
     wchar_t *orig_dest;
     rsize_t orig_dmax;
     int is_lithuanian = 0;
     int is_tr_az = 0;
 
+    if (lenp)
+        *lenp = 0;
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("wcsfc_s: "
                    "dest is null",
@@ -168,7 +173,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
         if (unlikely(c > 1)) {
             /* can this be further decomposed? */
             errno_t rc = towfc_s(tmp, 4, (wint_t)*src);
-            if (rc)
+            if (rc < 0)
                 return rc;
             /* I-Dot for Turkish and Azeri */
             if (unlikely(is_tr_az && *src == 0x130)) {
@@ -296,7 +301,10 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
             }
         }
     }
-
+    /* write the length even if too small,
+       so the client knows how mush is needed */
+    if (lenp)
+        *lenp = orig_dmax - dmax;
     if (unlikely(dmax <= 0)) {
       too_small:
         handle_werror(orig_dest, orig_dmax,

@@ -18,7 +18,6 @@ static wchar_t   str2[LEN];
 int test_wcscat_s (void)
 {
     errno_t rc;
-    int  ind;
     int32_t  len1;
     int32_t  len2;
     int32_t  len3;

@@ -226,7 +226,7 @@ strfirstchar_s(char *dest, rsize_t dmax, char c, char **first);
 
 
 /* returns index of first difference */
-EXTERN  errno_t
+EXTERN errno_t
 strfirstdiff_s(const char *dest, rsize_t dmax,
                const char *src, rsize_t *index);
 
@@ -277,7 +277,7 @@ strlastchar_s(char *str, rsize_t smax, char c, char **first);
 
 
 /* returns index of last difference */
-EXTERN  errno_t
+EXTERN errno_t
 strlastdiff_s(const char *dest, rsize_t dmax,
               const char *src, rsize_t *index);
 
@@ -285,7 +285,6 @@ strlastdiff_s(const char *dest, rsize_t dmax,
 /* left justify */
 EXTERN errno_t
 strljustify_s(char *dest, rsize_t dmax);
-
 
 
 /* string terminate */
@@ -537,25 +536,28 @@ EXTERN int
 iswfc(wint_t wc);
 
 /* full foldcase a single upper char to mult. lower chars */
-EXTERN errno_t
+EXTERN int
 towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src);
 
 /* full foldcase + NFD normalization */
 EXTERN errno_t
-wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src);
+wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
+        const wchar_t *restrict src, rsize_t *restrict lenp);
 
 /* Normalize to NFD */
 EXTERN errno_t
-wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src);
+wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
+                    wchar_t *restrict src, rsize_t *restrict lenp);
 
-/* Normalize to NFC (but currently only NFD) */
+/* Normalize to NFC or NFD */
 EXTERN errno_t
-wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src);
+wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
+          int nfc, rsize_t *restrict lenp);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
-  
+
 #ifdef __cplusplus
 }
 #endif

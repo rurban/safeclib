@@ -53,39 +53,6 @@
 
 int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp);
 
-/**
- * @brief
- *    Converts the wide string to the canonical NFD normalization (later NFC),
- *    as defined in the latest Unicode standard, latest 10.0.  The conversion
- *    stops at the first null or after dmax characters.
- *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
- *    and not on solaris, aix with 32bit.
- * 
- * @details
- *    Decomposed characters are checked for the right-hand-side of the
- *    Decomposition_Mapping Unicode property, which means the codepoint will be
- *    normalized if the sequence is decomposed (NFD or NFKD).
- *    This is equivalent to all 1963 combining mark characters,
- *    plus some remaining 869 non-mark and non-hangul normalizables.
- *    Hangul has some special normalization logic.
- *
- * @param[out]  dest  wide string to hold the result
- * @param[in]   dmax  maximum length of string
- * @param[out]  src   wide string
- *
- * @pre  dest and src shall not be null pointers.
- * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
- *
- * @retval  EOK         on successful operation
- * @retval  ESNULLP     when dest or src is NULL pointer
- * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR
- *
- * @see
- *    wcsfc_s()
- */
-
 /* Assumes 4-byte wchar, and cp > 0xff */
 EXPORT int
 isw_maybe_composed(const wint_t cp) {
@@ -132,13 +99,14 @@ iswdecomposed(const wchar_t *src, rsize_t smax) {
 }
 
 /* Note that we can generate two versions of the tables.  The old format as
- * used in Unicode::Normalize, and the new smaller NORMALIZE_IND_TBL cperl
+ * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
  * variant, as used here and in cperl core since 5.27.2 (planned).
  */
 static int
 _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
+    /* the old big format */
     if (unlikely(_UNICODE_MAX < cp)) {
         invoke_safe_str_constraint_handler("_decomp_canonical_s: "
                    "cp is too high",
@@ -169,7 +137,7 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
         }
     }
 #else
-    /* the new format generated with Unicode-Normalize/mkheader -uni -ind */
+    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind */
     const UNWIF_canon_PLANE_T **plane, *row;
     if (unlikely(_UNICODE_MAX < cp)) {
         invoke_safe_str_constraint_handler("_decomp_canonical_s: "
@@ -207,6 +175,7 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
             assert((l==1 && i<917) || (l==2 && i<762) || (l==3 && i<227) ||
                    (l==4 && i<36) || 0);
             assert(dmax > 4);
+            /* TODO: on sizeof(wchar_t)==2 pre-converted to surrogate pairs */
             memcpy(dest, &tbl[i*l], l*sizeof(wchar_t));
             dest[l] = L'\0';
             return l;
@@ -355,112 +324,227 @@ static int _getCombinClass_s(wchar_t* dest, rsize_t dmax, wint_t cp)
 
 #endif
 
-/* create a NFD wide string */
+/**
+ * @brief
+ *    Converts the wide string to the canonical NFD normalization,
+ *    as defined in the latest Unicode standard, latest 10.0.  The conversion
+ *    stops at the first null or after dmax characters.
+ *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
+ *    and not on solaris, aix with 32bit.
+ * 
+ * @details
+ *    Composed characters are checked for the left-hand-size of the
+ *    Decomposition_Mapping Unicode property, which means the codepoint will
+ *    be normalized if the sequence is composed.
+ *    This is equivalent to all 1963 combining mark characters, plus some
+ *    remaining 869 non-mark and non-hangul normalizables.  Hangul has some
+ *    special normalization logic.
+ *
+ * @param[out]  dest  wide string to hold the result
+ * @param[in]   dmax  maximum result buffer size
+ * @param[in]   src   wide string
+ * @param[out]  lenp  pointer to length of the result, may be NULL
+ *
+ * @pre  dest and src shall not be null pointers.
+ * @pre  dmax shall not equal zero and big enough for dest.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ *
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and dmax is greater than zero and
+ *          not greater than RSIZE_MAX_WSTR, then wcsnorm_s nulls dest.
+ * @retval  EOK         on success
+ * @retval  ESNULLP    when dest or src is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
+ * @retval  ESOVRLP    when buffers overlap
+ * @retval  ESNOSPC    when dest < src
+ *
+ * @see
+ *    wcsfc_s(), ICU, gnulib/libunistring, utf8proc
+ */
 
+/* create a NFD wide string */
 EXPORT errno_t
-wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
+wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
+                    rsize_t *restrict lenp)
 {
+    rsize_t orig_dmax;
+    wchar_t *orig_dest;
+    const wchar_t *overlap_bumper;
+
+    if (lenp)
+        *lenp = 0;
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "src is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax is 0",
                    NULL, ESZEROL);
-        return (ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
 
-    while (*src && dmax) {
-        if (isw_maybe_composed(*src)) {
-            int c = _decomp_s(dest, dmax, *src);
-            src++;
-            dmax += c;
-            dmax -= c;
+    if (unlikely(dest == src)) {
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
+                   "overlapping objects",
+                   NULL, ESOVRLP);
+        return RCNEGATE(ESOVRLP);
+    }
+
+    /* hold base of dest in case src was not copied */
+    orig_dmax = dmax;
+    orig_dest = dest;
+    
+    if (dest < src) {
+        overlap_bumper = src;
+    
+        while (dmax > 0) {
+            if (unlikely(dest == overlap_bumper)) {
+                handle_werror(orig_dest, orig_dmax, "wcsnorm_s: "
+                             "overlapping objects",
+                             ESOVRLP);
+                return RCNEGATE(ESOVRLP);
+            }
+
+            /* TODO probably need to pass in the whole string. e.g. A+ACCENT */
+            if (1 || isw_maybe_composed(*src)) {
+                int c = _decomp_s(dest, dmax, *src);
+                if (c) {
+                    dest += c;
+                    dmax -= c;
+                } else {
+                    *dest++ = *src;
+                    dmax--;
+                }
+                src++;
+            }
+            else {
+                *dest++ = *src++;
+                dmax--;
+            }
+            
+            if (*src == '\0')
+                goto done;
         }
-        else {
-            *dest++ = *src++;
-            dmax--;
+    } else {
+        overlap_bumper = dest;
+
+        while (dmax > 0) {
+            if (unlikely(src == overlap_bumper)) {
+                handle_werror(orig_dest, orig_dmax, "wcsnorm_s: "
+                             "overlapping objects",
+                             ESOVRLP);
+                return RCNEGATE(ESOVRLP);
+            }
+
+            if (1 || isw_maybe_composed(*src)) {
+                int c = _decomp_s(dest, dmax, *src);
+                if (c) {
+                    dest += c;
+                    dmax -= c;
+                } else {
+                    *dest++ = *src;
+                    dmax--;
+                }
+                src++;
+            }
+            else {
+                *dest++ = *src++;
+                dmax--;
+            }
+            
+            if (*src == '\0')
+                goto done;
         }
     }
-    if (unlikely(!dmax && *src)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "dmax too small",
-                   NULL, ESNOSPC);
-        return (ESNOSPC);
-    }
-    return (EOK);
+
+    handle_werror(orig_dest, orig_dmax, "wcsnorm_s: "
+                  "dmax too small",
+                  ESNOSPC);
+    return RCNEGATE(ESNOSPC);
+
+  done:
+    if (lenp)
+        *lenp = orig_dmax - dmax;
+#ifdef SAFECLIB_STR_NULL_SLACK
+    memset(dest, 0, dmax*sizeof(wchar_t));
+#else
+    *dest = 0;
+#endif
+    return EOK;
 }
 
-/* create a canonical NFC wide string (not yet, just NFD) */
+/**
+ * @brief
+ *    Converts the wide string to the canonical NFC or NFD normalization,
+ *    as defined in the latest Unicode standard, latest 10.0.  The conversion
+ *    stops at the first null or after dmax characters.
+ *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
+ *    and not on solaris, aix with 32bit.
+ * 
+ * @details
+ *    Decomposed characters are checked for the left-hand-size and then
+ *    right-hand-side of the Decomposition_Mapping Unicode property, which
+ *    means the codepoint will be normalized if the sequence is composed or
+ *    decomposed (NFD or NFKD).  This is equivalent to all 1963 combining mark
+ *    characters, plus some remaining 869 non-mark and non-hangul
+ *    normalizables.  Hangul has some special normalization logic.
+ *
+ *    The compat tables for NFKC or NFKD are too large for a libc, and
+ *    mostly unused. We only provide the small and canonical conversions.
+ *
+ * @param[out]  dest  wide string to hold the result
+ * @param[in]   dmax  maximum length of string
+ * @param[in]   src   wide string
+ * @param[in]   nfc   convert to nfc if >0, or just nfd if 0
+ * @param[out]  lenp  pointer to length of the result, may be NULL
+ *
+ * @pre  dest and src shall not be null pointers.
+ * @pre  dmax shall not equal zero and big enough for dest.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ *
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and dmax is greater than zero and
+ *          not greater than RSIZE_MAX_WSTR, then wcsnorm_s nulls dest.
+ * @retval  EOK         on success
+ * @retval  ESNULLP    when dest or src is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
+ * @retval  ESOVRLP    when buffers overlap
+ * @retval  ESNOSPC    when dest < src
+ *
+ * @see
+ *    wcsfc_s(), ICU, gnulib/libunistring, utf8proc
+ */
 
+/* create a canonical NFC or NFD wide string (not yet, just NFD) */
 EXPORT errno_t
-wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
+wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
+          int nfc, rsize_t *restrict lenp)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
-    while (*src && dmax) {
-        if (isw_maybe_composed(*src)) {
-            int c = _decomp_s(dest, dmax, *src);
-            src++;
-            dmax += c;
-            dmax -= c;
-        }
-        else {
-            *dest++ = *src++;
-            dmax--;
-        }
-    }
-
-    if (unlikely(!dmax && *src)) {
-        invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dmax too small",
-                   NULL, ESNOSPC);
-        return (ESNOSPC);
-    }
+    const errno_t rc = wcsnorm_decompose_s(dest, dmax, src, lenp);
+    if (rc)
+        return rc;
+    if (!nfc)
+        return (EOK);
 
 #ifdef HAVE_NFC
     /* TODO: need temp. scratch space here */
@@ -472,6 +556,7 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src)
         return (EOF);
     }
     
+  compose:
     /* TODO: need temp. scratch space again */
     wcsnorm_compose_s(dest, dmax, src);
     if (unlikely(!rc)) {

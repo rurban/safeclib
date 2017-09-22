@@ -65,13 +65,13 @@
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
  *          not greater than RSIZE_MAX_WSTR, then wcscpy_s nulls dest.
- * @retval  EOK        when successful operation, the wide characters in src were
- *                     copied into dest and the result is null terminated.
- * @retval  ESNULLP    when dest or src is a NULL pointer
- * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
- * @retval  ESOVRLP    when buffers overlap
- * @retval  ESNOSPC    when dest < src
+ * @retval  EOK         when successful operation, the wide characters in src were
+ *                      copied into dest and the result is null terminated.
+ * @retval  -ESNULLP    when dest or src is a NULL pointer
+ * @retval  -ESZEROL    when dmax = 0
+ * @retval  -ESLEMAX    when dmax > RSIZE_MAX_WSTR
+ * @retval  -ESOVRLP    when buffers overlap
+ * @retval  -ESNOSPC    when dest < src
  *
  * @see
  *    wcsncpy(), wmemcpy(), wmemmove(), strncpy_s()

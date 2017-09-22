@@ -193,22 +193,31 @@
     }
 #define WEXPNULL(str1)                             \
     if ((str1)[0] != L'\0') {                      \
-        wprintf(L"%s %u  Expected null, got L\"%ls\"\n", \
-                     __FUNCTION__, __LINE__, str1); \
+        debug_printf("%s %u  Expected null, got ", \
+                     __FUNCTION__, __LINE__);      \
+        WPRINTLSN(str1);                           \
         errs++;                                    \
     }
+#define WPRINTLSN(str)                             \
+    WPRINTLS(str);                                 \
+    debug_printf("\n");
+#define WPRINTLS(str)                              \
+    debug_printf("\"");                            \
+    { int i;                                       \
+      for (i=0; (size_t)i<wcslen(str); i++) {      \
+          if ((str)[i] >= 32 && (str)[i] < 0x7f)   \
+              debug_printf("%c", (str)[i]);        \
+          else                                     \
+              debug_printf("\\x%x", (str)[i]);     \
+    }}                                             \
+    debug_printf("\"");
 #define WEXPSTR(str1, str2)                        \
     if (wcscmp(str1, str2)) {                      \
-        wprintf(L"%s %u  Expected L\"%ls\", got L\"%ls\"  \"", \
-            __FUNCTION__, __LINE__, str2, str1);   \
-        for (ind=0; (size_t)ind<wcslen(str2); ind++) { \
-            debug_printf("\\x%x", str2[ind]);      \
-        }                                          \
-        debug_printf("\" <=> \"");                 \
-        for (ind=0; (size_t)ind<wcslen(str1); ind++) { \
-            debug_printf("\\x%x", str1[ind]);      \
-        }                                          \
-        debug_printf("\"\n");                      \
+        debug_printf("%s %u  Expected ",           \
+                     __FUNCTION__, __LINE__);      \
+        WPRINTLS(str2);                            \
+        debug_printf(", got ");                    \
+        WPRINTLSN(str1);                           \
         errs++;                                    \
     }
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -263,7 +272,7 @@
     }
 #define WSUBNULL()                                 \
     if (sub) {                                     \
-        printf("%s %u  Error  sub=\"%ls\" rc=%d \n",\
+        wprintf(L"%s %u  Error  sub=\"%ls\" rc=%d \n",\
                      __FUNCTION__, __LINE__, sub, rc); \
         errs++;                                    \
     }

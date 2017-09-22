@@ -187,6 +187,9 @@ static const struct {
    the given uppercase character. Returns 0, 1, 2 or 3.
    0 if the charcater stays the same, 1 if one character changes,
    2 or 3 if the character will be replaced with 2 or 3.
+
+   Note that accents expand to more characters than 1 via NFD decomposition.
+   iswfc only matches towfc_s, but not wcsfc_s which does NFD decomposition also.
 */
 int
 iswfc(wint_t wc)
@@ -218,13 +221,27 @@ iswfc(wint_t wc)
         return 3;
     if (wc < 0x1f80)
         goto single;
+    /* Note these ranges 1f80 - 1faf deviate in fc from lc */
     if (wc <= 0x1faf || (wc >= 0x1fb2 && wc < 0x1fb6)) {
         if (wc == 0x1fb5) goto single;
         else return 2;
     }
+    /* XXX 1f80- expand via nfd => 3-4
+    if (wc <= 0x1faf) {
+        if ((wc & 0x7) == 0 || (wc & 0x7) == 1)
+            return 2;
+        else
+            return 3;
+    }
+    if (wc >= 0x1fb2 && wc < 0x1fb6)
+        return 2;
+    */
     if (wc == 0x1fb7 || wc == 0x1fc7 || wc == 0x1fd2 || wc == 0x1fd3 || wc == 0x1fd7 ||
         wc == 0x1fe2 || wc == 0x1fe3 || wc == 0x1fe7 || wc == 0x1ff7)
         return 3;
+    if (wc == 0x1fb5) goto single;
+    else if (0)
+        return 2;
     if (wc == 0x1fc5) goto single;
     if (wc == 0x1fb6 || wc == 0x1fbc ||
         (wc >= 0x1fc2 && wc <= 0x1fc6) ||
@@ -250,7 +267,7 @@ iswfc(wint_t wc)
 
 /* The 194 single fc chars where fc is different to lc.
    Must only be called when we know for sure that the length is 1!
-   Returns EOK if fc is different to lc, else ESNOTFND.
+   Returns 1 if fc is different to lc, else -ESNOTFND.
 
    perl5.27.3 -E'no warnings; for (0..0x10ffff){
      my ($lc,$fc) = (lc(pack"W",$_), fc(pack"W",$_));
@@ -258,7 +275,7 @@ iswfc(wint_t wc)
        if $lc ne $fc and length($fc)==1;
    }'
  */
-errno_t
+int
 _towfc_single(wchar_t *restrict dest, const wint_t src)
 {
     /* fc exceptions: not towlower */
@@ -326,7 +343,7 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
 
   single:
     dest[0] = src < 128 ? tolower(src) : _towcase(src, 1);
-    return (wint_t)dest[0] == src ? ESNOTFND : EOK;
+    return (wint_t)dest[0] == src ? -(ESNOTFND) : 1;
 }
 
 /**
@@ -336,6 +353,10 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
  *    table. Even in most the unsuccessul cases, just not with with ESNULLP
  *    and ESZEROL dest is being written to.
  *
+ *  @details
+ *    As of Unicode 10.0 there are no possible results as surrogate pairs with
+ *    \c sizeof(wchar_t)==2, all results are below U+FFFF.
+ *
  * @param[out]  dest  wide string buffer to store result
  * @param[in]   dmax  maximum size of dest, should be 4. (3 + NULL)
  * @param[in]   src   wide character to convert to lowercase
@@ -344,12 +365,13 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
  * @pre  dmax shall be bigger than 3
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
  *
- * @retval  EOK         on successful operation
- * @retval  ESNULLP     when dest is NULL pointer
- * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMIN     when dmax < 4
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR
- * @retval  ESNOTFND    when no mapping for src was found, iswfc is wrong
+ * @retval  >=0          on successful operation, returns the number
+ *                       of converted wide characters: 0-3
+ * @retval  -ESNULLP     when dest is NULL pointer
+ * @retval  -ESZEROL     when dmax = 0
+ * @retval  -ESLEMIN     when dmax < 4
+ * @retval  -ESLEMAX     when dmax > RSIZE_MAX_WSTR
+ * @retval  -ESNOTFND    when no mapping for src was found, iswfc is wrong.
  *
  * @see
  *    iswfc(), wcsfc_s(), towlower()
@@ -357,9 +379,9 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
 
 /* Writes the fold-cased wide string to dest from the given uppercase wide
    character. dmax should be 4 (3 wchar's + \0).
-   Returns EOK if replaced, or ESNOTFND if not replaced.
+   Returns the number of replaced wide characters, or -ESNOTFND if not replaced.
 */
-errno_t
+int
 towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src)
 {
     int i;
@@ -368,26 +390,26 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src)
         invoke_safe_str_constraint_handler("_towfc_s: "
                    "dest is null",
                    NULL, ESNULLP);
-        return (ESNULLP);
+        return -(ESNULLP);
     }
     if (unlikely(dmax < 4)) {
         invoke_safe_str_constraint_handler("_towfc_s: "
                    "dmax is < 4",
                    NULL, ESLEMIN);
-        return (ESLEMIN);
+        return -(ESLEMIN);
     }
     dest[0] = L'\0';
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("_towfc_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
-        return (ESLEMAX);
+        return -(ESLEMAX);
     }
 
     if (src < 128) {
         dest[1] = L'\0';
         dest[0] = tolower(src);
-        return (wint_t)dest[0] == src ? ESNOTFND : EOK;
+        return (wint_t)dest[0] == src ? -(ESNOTFND) : 1;
     }
 
     for (i=0; tbl2[i].upper; i++) {
@@ -395,7 +417,7 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src)
             dest[0] = tbl2[i].lower1;
             dest[1] = tbl2[i].lower2;
             dest[2] = L'\0';
-            return EOK;
+            return 2;
         }
         if (tbl2[i].upper > src)
             break;
@@ -406,7 +428,7 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src)
             dest[1] = tbl3[i].lower2;
             dest[2] = tbl3[i].lower3;
             dest[3] = L'\0';
-            return EOK;
+            return 3;
         }
         if (tbl3[i].upper > src)
             break;
