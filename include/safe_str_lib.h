@@ -549,7 +549,7 @@ EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
                     wchar_t *restrict src, rsize_t *restrict lenp);
 
-/* Normalize to NFC or NFD */
+/* Normalize to NFC nfc=1 or NFD nfc=0. no compat modes */
 EXTERN errno_t
 wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
           int nfc, rsize_t *restrict lenp);

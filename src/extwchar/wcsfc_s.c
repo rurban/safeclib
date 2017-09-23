@@ -41,7 +41,7 @@ errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
 EXTERN wint_t towlower(wint_t wc);
 #endif
 /* from wcsnorm_s.c */
-EXPORT int isw_maybe_composed(const wint_t cp);
+/*EXPORT int isw_maybe_composed(const wint_t cp);*/
 EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp);
 
 /* with lithuanian only grave, acute, tilde above, and ogonek

@@ -6,7 +6,7 @@ Darwin) # macports compilers
     make=gmake
 
 gmake -s clean
-CC="clang-mp-3.9 -fsanitize=address" ./configure --enable-debug --enable-unsafe && \
+CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" ./configure --enable-debug --enable-unsafe && \
     gmake -s -j4 check-log || exit
 CC="clang-mp-4.0 -std=c99" ./configure && \
     gmake -s -j4 check-log || exit
@@ -33,7 +33,7 @@ Linux)
     make=make
 
 make -s clean
-CC="clang-3.9 -fsanitize=address" ./configure --enable-debug --enable-unsafe && \
+CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" ./configure --enable-debug --enable-unsafe && \
     make -s -j4 check-log || exit
 CC="clang-4.0 -std=c99" ./configure && \
     make -s -j4 check-log || exit

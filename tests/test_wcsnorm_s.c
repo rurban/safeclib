@@ -75,14 +75,29 @@ int main()
     INDCMP(!= 5);
     WCHECK_SLACK(&str[5], LEN-5);
 
+    rc = wcsnorm_s(str, LEN, L"Cafe\x301", 1, &ind);
+    ERR(EOK)
+    WEXPSTR(str, L"Caf\xe9");
+    INDCMP(!= 4);
+    WCHECK_SLACK(&str[4], LEN-4);
+
 /*--------------------------------------------------*/
 
+    /* echo "Aᾳ" | unorm -n nfd | iconv -t UTF-32LE | od -h */
     rc = wcsnorm_s(str, LEN, L"A" L"\x1fb3", 0, &ind);
     ERR(EOK);
     wcscpy(str1, L"A" L"\x3b1" L"\x345");
     WEXPSTR(str, str1);
     INDCMP(!= 3);
     WCHECK_SLACK(&str[3], LEN-3);
+
+    /* Aᾳ => A≈ᾳ */
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345", 1, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"A" L"\x1fb3");
+    WEXPSTR(str, str1);
+    INDCMP(!= 2);
+    WCHECK_SLACK(&str[2], LEN-2);
 
     rc = wcsnorm_s(str, LEN, L"A" L"\x1fb7", 0, &ind);
     ERR(EOK);
@@ -91,12 +106,45 @@ int main()
     INDCMP(!= 4);
     WCHECK_SLACK(&str[4], LEN-4);
 
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x342" L"\x345", 1, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"A" L"\x1fb7");
+    WEXPSTR(str, str1);
+    INDCMP(!= 2);
+    WCHECK_SLACK(&str[2], LEN-2);
+
+/*--------------------------------------------------*/
+
+    /* reordering */
+    rc = wcsnorm_s(str, LEN, L"A" L"\x342" L"\x3b1" L"\x345", 0, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"A" L"\x3b1" L"\x342" L"\x345");
+    WEXPSTR(str, str1);
+    INDCMP(!= 4);
+    WCHECK_SLACK(&str[4], LEN-4);
+
+    rc = wcsnorm_s(str, LEN, L"A" L"\x342" L"\x3b1" L"\x345", 1, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"A" L"\x1fb7");
+    WEXPSTR(str, str1);
+    INDCMP(!= 2);
+    WCHECK_SLACK(&str[2], LEN-2);
+
+/*--------------------------------------------------*/
+
     rc = wcsnorm_s(str, LEN, L"\x101", 0, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x61" L"\x304");
     WEXPSTR(str, str1);
     INDCMP(!= 2);
     WCHECK_SLACK(&str[2], LEN-2);
+
+    rc = wcsnorm_s(str, LEN, L"\x61" L"\x304", 1, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x101");
+    WEXPSTR(str, str1);
+    INDCMP(!= 1);
+    WCHECK_SLACK(&str[1], LEN-1);
 
     rc = wcsnorm_s(str, LEN, L"\x115", 0, &ind);
     ERR(EOK);
