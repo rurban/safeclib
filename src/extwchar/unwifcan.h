@@ -16,11 +16,9 @@
 /* l: 1-4 */
 /* max size: 917 0x395 */
 #define UNWIF_canon_MAXLEN  4
-#define TBL(i)             (0x1000<<(i-1))
+#define TBL(i)             ((i-1) << 12)
 /* value = (const wchar_t*)&UNWIF_canon_tbl[LEN-1][IDX] */
-/*                     1,2,   4,         8 */
-static char l4[] = {-1,1,2,-1,3,-1,-1,-1,4};
-#define UNWIF_canon_LEN(v)  l4[(v) >> 12]
+#define UNWIF_canon_LEN(v)  (((v) >> 12) + 1)
 #define UNWIF_canon_IDX(v)  ((v) & 0xfff)
 #define UNWIF_canon_PLANE_T uint16_t
 

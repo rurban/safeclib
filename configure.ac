@@ -279,6 +279,24 @@ fi
 AC_SUBST(INSERT_UNSAFE)
 AM_CONDITIONAL([ENABLE_UNSAFE], test "x$enable_unsafe" = "xtrue")
 
+AC_ARG_ENABLE(norm-compat,
+	AS_HELP_STRING([--enable-norm-compat],
+		       [Enable NFKC and NFKD modes for wcsnorm. @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_norm_compat=true ;;
+	no)  enable_norm_compat=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-norm-compat]) ;;
+	esac], [enable_norm_compat=false ])
+AC_MSG_CHECKING([for --enable-norm-compat])
+if test "x$enable_norm_compat" = "xtrue" ; then
+	AC_MSG_RESULT([yes])
+	AC_DEFINE([HAVE_NORM_COMPAT], [ 1 ],
+	 	  [Define to 1 to enable the compat normalization modes for wcsnorm_s
+                  NFKC and NFKD])
+else
+	AC_MSG_RESULT([no (default)])
+fi
+
 # Maintainer switches
 AC_ARG_ENABLE(debug-build,
 	AS_HELP_STRING([--enable-debug-build],

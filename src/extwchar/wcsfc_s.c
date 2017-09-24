@@ -42,7 +42,8 @@ EXTERN wint_t towlower(wint_t wc);
 #endif
 /* from wcsnorm_s.c */
 /*EXPORT int isw_maybe_composed(const wint_t cp);*/
-EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp);
+EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp,
+                     const bool iscompat);
 
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
@@ -184,7 +185,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
                 wchar_t tmpd[8];
                 int i;
                 for (i=0; i<c; i++) {
-                    int d = _decomp_s(tmpd, 8, tmp[i]);
+                    int d = _decomp_s(tmpd, 8, tmp[i], false);
                     if (d) { /* decomp. max 4 */
                         memcpy(dest, tmpd, d*sizeof(wchar_t));
                         dest += d;
@@ -287,7 +288,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
                     goto too_small;
                 (void)_towfc_single(tmp, (wint_t)*src++);
                 if (tmp[0] >= 0xc0)
-                    c = _decomp_s(dest, dmax, tmp[0]);
+                    c = _decomp_s(dest, dmax, tmp[0], false);
                 else
                     c = 0;
                 if (!c) {

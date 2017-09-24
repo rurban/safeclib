@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsnorm_s
  * File 'wcsnorm_s.c'
- * Lines executed:62.30% of 122
+ * Lines executed:69.77% of 301
  *
  *------------------------------------------------------------------
  */
@@ -15,7 +15,7 @@
 
 #define LEN   ( 128 )
 
-/* #define PERL_TEST */
+/*#define PERL_TEST*/
 /* Must have the same Unicode version 10, since 5.27.3
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
@@ -32,6 +32,7 @@ int main()
     wchar_t str[LEN];
     wchar_t str1[LEN];
     rsize_t ind;
+    ssize_t len;
     int errs = 0;
 #ifdef PERL_TEST
     FILE *pl;
@@ -42,26 +43,26 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = wcsnorm_s(NULL, LEN, L"test", 0, NULL);
+    rc = wcsnorm_s(NULL, LEN, L"test", WCSNORM_NFD, NULL);
     ERR(ESNULLP);
 
-    rc = wcsnorm_s(str, LEN, NULL, 0, NULL);
+    rc = wcsnorm_s(str, LEN, NULL, WCSNORM_NFD, NULL);
     ERR(ESNULLP);
 
 /*--------------------------------------------------*/
 
-    rc = wcsnorm_s(str, 0, L"test", 0, &ind);
+    rc = wcsnorm_s(str, 0, L"test", WCSNORM_NFD, &ind);
     ERR(ESZEROL)
     INDZERO();
 
 /*--------------------------------------------------*/
 
-    rc = wcsnorm_s(str, 99999, L"test", 0, NULL);
+    rc = wcsnorm_s(str, 99999, L"test", WCSNORM_NFD, NULL);
     ERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
-    rc = wcsnorm_s(str, LEN, L"Caf\xe9", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"Caf\xe9", WCSNORM_NFD, &ind);
     ERR(EOK);
     WEXPSTR(str, L"Cafe\x301");
     INDCMP(!= 5);
@@ -69,13 +70,13 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = wcsnorm_s(str, LEN, L"Café", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"Café", WCSNORM_NFD, &ind);
     ERR(EOK)
     WEXPSTR(str, L"Cafe\x301");
     INDCMP(!= 5);
     WCHECK_SLACK(&str[5], LEN-5);
 
-    rc = wcsnorm_s(str, LEN, L"Cafe\x301", 1, &ind);
+    rc = wcsnorm_s(str, LEN, L"Cafe\x301", WCSNORM_NFC, &ind);
     ERR(EOK)
     WEXPSTR(str, L"Caf\xe9");
     INDCMP(!= 4);
@@ -84,7 +85,7 @@ int main()
 /*--------------------------------------------------*/
 
     /* echo "Aᾳ" | unorm -n nfd | iconv -t UTF-32LE | od -h */
-    rc = wcsnorm_s(str, LEN, L"A" L"\x1fb3", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"A" L"\x1fb3", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"A" L"\x3b1" L"\x345");
     WEXPSTR(str, str1);
@@ -92,21 +93,21 @@ int main()
     WCHECK_SLACK(&str[3], LEN-3);
 
     /* Aᾳ => A≈ᾳ */
-    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345", 1, &ind);
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345", WCSNORM_NFC, &ind);
     ERR(EOK);
     wcscpy(str1, L"A" L"\x1fb3");
     WEXPSTR(str, str1);
     INDCMP(!= 2);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"A" L"\x1fb7", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"A" L"\x1fb7", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"A" L"\x3b1" L"\x342" L"\x345");
     WEXPSTR(str, str1);
     INDCMP(!= 4);
     WCHECK_SLACK(&str[4], LEN-4);
 
-    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x342" L"\x345", 1, &ind);
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x342" L"\x345", WCSNORM_NFC, &ind);
     ERR(EOK);
     wcscpy(str1, L"A" L"\x1fb7");
     WEXPSTR(str, str1);
@@ -116,87 +117,109 @@ int main()
 /*--------------------------------------------------*/
 
     /* reordering */
-    rc = wcsnorm_s(str, LEN, L"A" L"\x342" L"\x3b1" L"\x345", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345" L"\x342", WCSNORM_NFD, &ind);
     ERR(EOK);
-    wcscpy(str1, L"A" L"\x3b1" L"\x342" L"\x345");
+    wcscpy(str1, L"A" L"\x3b1" L"\x342" L"\x345"); /* do reorder */
     WEXPSTR(str, str1);
     INDCMP(!= 4);
     WCHECK_SLACK(&str[4], LEN-4);
 
-    rc = wcsnorm_s(str, LEN, L"A" L"\x342" L"\x3b1" L"\x345", 1, &ind);
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345" L"\x342", WCSNORM_FCD, &ind);
     ERR(EOK);
-    wcscpy(str1, L"A" L"\x1fb7");
+    wcscpy(str1, L"A" L"\x3b1" L"\x345" L"\x342"); /* no reorder */
+    WEXPSTR(str, str1);
+    INDCMP(!= 4);
+    WCHECK_SLACK(&str[4], LEN-4);
+
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345" L"\x342", WCSNORM_NFC, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"A" L"\x1fb7"); /* nfc */
+    WEXPSTR(str, str1);
+    INDCMP(!= 2);
+    WCHECK_SLACK(&str[2], LEN-2);
+
+    rc = wcsnorm_s(str, LEN, L"A" L"\x3b1" L"\x345" L"\x342", WCSNORM_FCC, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"A" L"\x1fb7"); /* the same in this case */
     WEXPSTR(str, str1);
     INDCMP(!= 2);
     WCHECK_SLACK(&str[2], LEN-2);
 
 /*--------------------------------------------------*/
 
-    rc = wcsnorm_s(str, LEN, L"\x101", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x101", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x61" L"\x304");
     WEXPSTR(str, str1);
     INDCMP(!= 2);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x61" L"\x304", 1, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x61" L"\x304", WCSNORM_NFC, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x101");
     WEXPSTR(str, str1);
     INDCMP(!= 1);
     WCHECK_SLACK(&str[1], LEN-1);
 
-    rc = wcsnorm_s(str, LEN, L"\x115", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x115", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x65" L"\x306");
     WEXPSTR(str, str1);
     INDCMP(!= 2);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\xdf", 0, &ind); /* !nfd */
+    rc = wcsnorm_s(str, LEN, L"\xdf", WCSNORM_NFD, &ind); /* !nfd */
     ERR(EOK);
     wcscpy(str1, L"\xdf");
     WEXPSTR(str, str1);
     INDCMP(!= 1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x385", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x37e", WCSNORM_NFD, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x37e"); /* NFKC => 3b */
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[len], LEN-len);
+
+    rc = wcsnorm_s(str, LEN, L"\x385", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\xa8" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x3ac", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x3ac", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x3b1" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x3ad", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x3ad", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x3b5" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x1f71", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x1f71", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x3b1" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x1f02", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x1f02", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x3b1" L"\x313" L"\x300");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[3], LEN-3);
 
-    rc = wcsnorm_s(str, LEN, L"\x1feb", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x1feb", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\x3a5" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsnorm_s(str, LEN, L"\x1fee", 0, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x1fee", WCSNORM_NFD, &ind);
     ERR(EOK);
     wcscpy(str1, L"\xa8" L"\x301");
     WEXPSTR(str, str1);
@@ -204,27 +227,109 @@ int main()
 
 /*--------------------------------------------------*/
 
+    /* compat NFKD */
+    /* echo "㈝" | unorm -n nfkd | iconv -t UTF-32LE | od -h */
+    rc = wcsnorm_s(str, LEN, L"\x321d", WCSNORM_NFKD, &ind);
+#ifdef HAVE_NORM_COMPAT
+    ERR(EOK);
+    wcscpy(str1, L"(\x110b\x1169\x110c\x1165\x11ab)");
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[len], LEN-len);
+#else
+    ERR(-1);
+#endif
+
+#ifdef HAVE_NORM_COMPAT
+    rc = wcsnorm_s(str, LEN, L"\x37e", WCSNORM_NFKC, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x3b");
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WEXPSTR(str, str1);
+    WCHECK_SLACK(&str[len], LEN-len);
+
+    /* (오전) */
+    rc = wcsnorm_s(str, LEN, L"\x321d", WCSNORM_NFKC, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"(\xc624\xc804)");
+    WEXPSTR(str, str1);
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WCHECK_SLACK(&str[ind], LEN-ind);
+
+    rc = wcsnorm_s(str, LEN, L"\xfdfb", WCSNORM_NFKD, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x062c\x0644\x0020\x062c\x0644\x0627\x0644\x0647");
+    WEXPSTR(str, str1);
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WCHECK_SLACK(&str[ind], LEN-ind);
+
+    rc = wcsnorm_s(str, LEN, L"\x2103", WCSNORM_NFKD, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\xb0" L"\x43");
+    WEXPSTR(str, str1);
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WCHECK_SLACK(&str[ind], LEN-ind);
+
+    rc = wcsnorm_s(str, LEN, L"\x2150", WCSNORM_NFKD, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x31" L"\x2044" L"\x37");
+    WEXPSTR(str, str1);
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WCHECK_SLACK(&str[ind], LEN-ind);
+
+    rc = wcsnorm_s(str, LEN, L"\x3382", WCSNORM_NFKD, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x03bc" L"\x41");
+    WEXPSTR(str, str1);
+    len = wcslen(str1);
+    INDCMP(!= len);
+    WCHECK_SLACK(&str[ind], LEN-ind);
+
+#endif
+
+/*--------------------------------------------------*/
+
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
-    fprintf_s(pl, "use v5.27.2;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
-              "sub chk {\n"
+    fprintf_s(pl, "use v5.27.2;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
+              "sub wstr ($) {\n"
+              "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
+              "}\n"
+              "sub chknfd {\n"
               "  my ($ch, $got) = @_;\n"
               "  my $nfd = NFD($ch);\n"
               "  if ($nfd ne $got) {\n"
               "    printf \"Error NFD \\\\x{%%X} = %%s; got: %%s\\n\",\n"
-              "         unpack('W*',$ch),\n"
-              "         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$nfd),\n"
-              "         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$got);\n"
+              "         unpack('W*',$ch), wstr $nfd, wstr $got;\n"
               "    1\n"
               "  }\n"
               "}\n");
+# ifdef HAVE_NORM_COMPAT
+    fprintf_s(pl,
+              "sub chknfkd {\n"
+              "  my ($ch, $got) = @_;\n"
+              "  my $nfd = NFKD($ch);\n"
+              "  if ($nfd ne $got) {\n"
+              "    printf \"Error NFKD \\\\x{%%X} = %%s; got: %%s\\n\",\n"
+              "         unpack('W*',$ch), wstr $nfd, wstr $got;\n"
+              "    1\n"
+              "  }\n"
+              "}\n"
+        );
+# endif
 #endif
     for (ind=0xc0; ind<0x02fa20; ind++) {
         static wchar_t src[5];
         rsize_t len;
         src[0] = ind;
         src[1] = 0;
-        rc = wcsnorm_s(str, 5, src, 0, &len);
+        rc = wcsnorm_s(str, 5, src, WCSNORM_NFD, &len);
         if (rc || len < 1) {
             debug_printf("%s %u  Error %d U+%04X len=%ld ",
                          __FUNCTION__, __LINE__, (int)rc, (int)ind, (long)len);
@@ -235,14 +340,22 @@ int main()
         }
 #ifdef PERL_TEST
         {
-            int len = wcslen(str);
-            int i;
+            size_t i;
             /* cross-check with perl */
-            fprintf_s(pl, "$err += chk(\"\\N{U+%04X}\",\"\\N{U+%04X}", ind, str[0]);
+            fprintf_s(pl, "$err += chknfd(\"\\N{U+%04X}\",\"\\N{U+%04X}", ind, str[0]);
             for (i=1;i<len;i++) {
                 fprintf_s(pl, "\\N{U+%04X}", str[i]);
             }
             fprintf_s(pl, "\");\n");
+
+# ifdef HAVE_NORM_COMPAT
+            rc = wcsnorm_s(str, LEN, src, WCSNORM_NFKD, &len);
+            fprintf_s(pl, "$err += chknfkd(\"\\N{U+%04X}\",\"\\N{U+%04X}", ind, str[0]);
+            for (i=1;i<len;i++) {
+                fprintf_s(pl, "\\N{U+%04X}", str[i]);
+            }
+            fprintf_s(pl, "\");\n");
+# endif
         }
 #endif
     }

@@ -547,12 +547,24 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
 /* Normalize to NFD */
 EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
-                    wchar_t *restrict src, rsize_t *restrict lenp);
+                    wchar_t *restrict src, rsize_t *restrict lenp,
+                    bool iscompat);
 
-/* Normalize to NFC nfc=1 or NFD nfc=0. no compat modes */
+enum wcsnorm_mode {
+    WCSNORM_NFD  = 0,
+    WCSNORM_NFC  = 1, /* default */
+    WCSNORM_FCD  = 2, /* not reordered */
+    WCSNORM_FCC  = 3, /* contiguous composition only */
+    WCSNORM_NFKD = 4, /* compat. OPTIONAL with --enable-norm-compat */
+    WCSNORM_NFKC = 5  /* compat. OPTIONAL with --enable-norm-compat */
+};
+typedef enum wcsnorm_mode wcsnorm_mode_t;
+
+/* Normalize to NFC (default), NFD nfc=0.
+   experim. nfc>1: FCD, FCC */
 EXTERN errno_t
 wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
-          int nfc, rsize_t *restrict lenp);
+          wcsnorm_mode_t mode, rsize_t *restrict lenp);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

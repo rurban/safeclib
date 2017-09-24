@@ -17,13 +17,13 @@ CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
 CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check-log || exit
 CC="g++-mp-6 -std=c++11" ./configure && \
-    $make -s -j4 check-log || exit
+    gmake -s -j4 check-log || exit
 CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe && \
-    $make -s -j4 gcov && \
+    gmake -s -j4 gcov && \
     perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
     gcov2perl src/*/*.gcov src/*.gcov && \
     cover -no-gcov
-$make clean
+gmake clean
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check-log || exit
