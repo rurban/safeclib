@@ -1,7 +1,8 @@
 #!/bin/sh
 
-CC=gcc-mp-6 ./configure --enable-unsafe --enable-gcov=gcov-mp-6 --disable-shared \
+CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared \
+                        --enable-unsafe --enable-norm-compat $@ \
     && gmake all \
-    && gmake gcov 2> cov.lst
+    && gmake gcov
 
-build-tools/gcov-upd.pl cov.lst
+#build-tools/gcov-upd.pl cov.lst

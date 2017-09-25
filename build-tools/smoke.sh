@@ -6,7 +6,8 @@ Darwin) # macports compilers
     make=gmake
 
 gmake -s clean
-CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" ./configure --enable-debug --enable-unsafe && \
+CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 CC="clang-mp-4.0 -std=c99" ./configure && \
     gmake -s -j4 check-log || exit
@@ -17,13 +18,11 @@ CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
 CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check-log || exit
 CC="g++-mp-6 -std=c++11" ./configure && \
-    gmake -s -j4 check-log || exit
-CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe && \
-    gmake -s -j4 gcov && \
-    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
-    gcov2perl src/*/*.gcov src/*.gcov && \
-    cover -no-gcov
-gmake clean
+    $make -s -j4 check-log || exit
+CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe \
+                        --enable-norm-compat && \
+    $make -s -j4 gcov
+$make clean
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check-log || exit
@@ -33,7 +32,8 @@ Linux)
     make=make
 
 make -s clean
-CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" ./configure --enable-debug --enable-unsafe && \
+CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" \
+   ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
 CC="clang-4.0 -std=c99" ./configure && \
     make -s -j4 check-log || exit
@@ -47,11 +47,11 @@ CC="gcc-6" ./configure && \
     make -s -j4 check-log || exit
 CC="gcc-7" ./configure && \
     make -s -j4 check-log || exit
-./configure --enable-gcov --disable-shared --enable-unsafe && \
-    $make -s -j4 gcov && \
-    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
-    gcov2perl src/*/*.gcov src/*.gcov && \
-    cover -no-gcov
+./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat && \
+    $make -s -j4 gcov
+#    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
+#    gcov2perl src/*/*.gcov src/*.gcov && \
+#    cover -no-gcov
 $make clean
 CC="c++ -std=c++11" ./configure && \
     $make -s -j4 check-log || exit
