@@ -183,7 +183,7 @@ Functions</h2></td></tr>
 <tr class="memitem:aa551803180fa7df9ff5ab8d15d5fec80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> struct tm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d69/safe__lib_8h.html#aa551803180fa7df9ff5ab8d15d5fec80">localtime_s</a> (const time_t *restrict timer, struct tm *restrict dest)</td></tr>
 <tr class="memdesc:aa551803180fa7df9ff5ab8d15d5fec80"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>localtime_s</code> function converts the given time since epoch to a calendar time, expressed in the current timezone in the struct tm format.  <a href="#aa551803180fa7df9ff5ab8d15d5fec80">More...</a><br /></td></tr>
 <tr class="separator:aa551803180fa7df9ff5ab8d15d5fec80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad77020bffa0961d294c95e594867ef4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d69/safe__lib_8h.html#ad77020bffa0961d294c95e594867ef4a">getenv_s</a> (size_t *restrict len, char *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const char *restrict name)</td></tr>
+<tr class="memitem:ad77020bffa0961d294c95e594867ef4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d69/safe__lib_8h.html#ad77020bffa0961d294c95e594867ef4a">getenv_s</a> (size_t *restrict <a class="el" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, char *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const char *restrict name)</td></tr>
 <tr class="memdesc:ad77020bffa0961d294c95e594867ef4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>getenv_s</code> function searches for an environmental variable with name name in the host-specified environment list and returns a pointer to the string that is associated with the matched environment variable.  <a href="#ad77020bffa0961d294c95e594867ef4a">More...</a><br /></td></tr>
 <tr class="separator:ad77020bffa0961d294c95e594867ef4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68a9b943a87c27391ebfaf5055d51f0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/d69/safe__lib_8h.html#a68a9b943a87c27391ebfaf5055d51f0c">bsearch_s</a> (const void *key, const void *base, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> nmemb, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> size, int(*compar)(const void *k, const void *y, void *context), void *context)</td></tr>
@@ -959,7 +959,7 @@ dmax shall not be less than 26 and greater than RSIZE_MAX_STR.</dd></dl>
 </div><div class="memdoc">
 
 <p>The <code>getenv_s</code> function searches for an environmental variable with name name in the host-specified environment list and returns a pointer to the string that is associated with the matched environment variable. </p>
-<p>The set of environmental variables and methods of altering it are implementation-defined. The value of the environment variable is written to the user-provided buffer value (unless null) and the number of bytes written is stored in the user-provided location *len (unless null). If the environment variable is not set in the environment, zero is written to *len (unless null) and '\0' is written to value[0] (unless null).</p>
+<p>The set of environmental variables and methods of altering it are implementation-defined. The value of the environment variable is written to the user-provided buffer value (unless null) and the number of bytes written is stored in the user-provided location *len (unless null). If the environment variable is not set in the environment, zero is written to *len (unless null) and '\0' is written to value[0] (unless null). With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled.</p>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.6.2.1 The getenv_s function (p: 607-607) <a href="http://en.cppreference.com/w/c/program/getenv">http://en.cppreference.com/w/c/program/getenv</a></li>
 </ul>
@@ -993,7 +993,7 @@ dmax shall be greater than the strlen of the returned env value.</dd></dl>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d1/d26/getenv__s_8c_source.html#l00080">80</a> of file <a class="el" href="../../d1/d26/getenv__s_8c_source.html">getenv_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d1/d26/getenv__s_8c_source.html#l00084">84</a> of file <a class="el" href="../../d1/d26/getenv__s_8c_source.html">getenv_s.c</a>.</p>
 
 </div>
 </div>
@@ -1132,6 +1132,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.186-gd27927-dirty 3.0
+Generated for Safe C Library 30082017.216-g2422a2 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

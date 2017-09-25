@@ -158,6 +158,7 @@ Functions</h2></td></tr>
 <p>If wc is the null wide character L'\0', a null byte is stored, preceded by any shift sequence necessary to restore the initial shift state and the conversion state parameter *ps is updated to represent the initial shift state.</p>
 <p>If the environment macro <b>STDC_ISO_10646</b> is defined, the values of type wchar_t are the same as the short identifiers of the characters in the Unicode required set (typically UTF-32 encoding); otherwise, it is implementation-defined. In any case, the multibyte character encoding used by this function is specified by the currently active C locale.</p>
 <p>If the environment macro <b>STDC_MB_MIGHT_NEQ_WC</b> is defined, then for members of the basic character set multibyte-character encoding might not equal wide-character encoding (non-ASCII-based systems, such as EBCDIC-based systems, may use Unicode for their wide character encoding and still be conforming). ASCII-based systems with <b>STDC_ISO_10646</b> defined leave <b>STDC_MB_MIGHT_NEQ_WC</b> undefined.</p>
+<p>With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled.</p>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.9.3.1.1 The wcrtomb_s function (p: 647-648) <a href="http://en.cppreference.com/w/c/string/wide/wcrtomb">http://en.cppreference.com/w/c/string/wide/wcrtomb</a></li>
 <li>ISO/IEC TR 24731, Programming languages, environments and system software interfaces, Extensions to the C Library, Part I: Bounds-checking interfaces</li>
@@ -194,13 +195,13 @@ dmax must be zero if dest is null.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d6/dd4/wctomb__s_8c.html#af5811dc63ddf86777b7674a155d63a76" title="The wctomb_s function converts a single wide character to its narrow multibyte representation from th...">wctomb_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../db/d37/wcrtomb__s_8c_source.html#l00108">108</a> of file <a class="el" href="../../db/d37/wcrtomb__s_8c_source.html">wcrtomb_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../db/d37/wcrtomb__s_8c_source.html#l00111">111</a> of file <a class="el" href="../../db/d37/wcrtomb__s_8c_source.html">wcrtomb_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.186-gd27927-dirty 3.0
+Generated for Safe C Library 30082017.216-g2422a2 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

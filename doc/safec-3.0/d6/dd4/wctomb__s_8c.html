@@ -151,6 +151,7 @@ Functions</h2></td></tr>
 <p>If <code>dest</code> is a null pointer, the call is equivalent to <code>wcrtomb_s(&amp;retval, buf, sizeof buf, L'\0', ps)</code> with internal variables <code>retval</code> and <code>buf</code> (whose size is greater than <code>MB_CUR_MAX</code>).</p>
 <p>If the environment macro <b>STDC_ISO_10646</b> is defined, the values of type wchar_t are the same as the short identifiers of the characters in the Unicode required set (typically UTF-32 encoding); otherwise, it is implementation-defined. In any case, the multibyte character encoding used by this function is specified by the currently active C locale.</p>
 <p>If the environment macro <b>STDC_MB_MIGHT_NEQ_WC</b> is defined, then for members of the basic character set multibyte-character encoding might not equal wide-character encoding (non-ASCII-based systems, such as EBCDIC-based systems, may use Unicode for their wide character encoding and still be conforming). ASCII-based systems with <b>STDC_ISO_10646</b> defined leave <b>STDC_MB_MIGHT_NEQ_WC</b> undefined.</p>
+<p>With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled. Also in the error cases for ESNOSPC and EILSEQ.</p>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.6.4.1 The wctomb_s function (p: 610-611) <a href="http://en.cppreference.com/w/c/string/multibyte/wctomb">http://en.cppreference.com/w/c/string/multibyte/wctomb</a></li>
 <li>ISO/IEC TR 24731, Programming languages, environments and system software interfaces, Extensions to the C Library, Part I: Bounds-checking interfaces</li>
@@ -180,19 +181,20 @@ dmax must be zero if dest is null.</dd></dl>
     <tr><td class="paramname">ESNULLP</td><td>when retval is a NULL pointer </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = 0, unless dest is NULL </td></tr>
     <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_STR, unless dest is NULL </td></tr>
-    <tr><td class="paramname">ESNOSPC</td><td>when dmax is smaller than the number of required bytes</td></tr>
+    <tr><td class="paramname">ESNOSPC</td><td>when dmax is smaller than the number of required bytes </td></tr>
+    <tr><td class="paramname">EILSEQ</td><td>if returned by wctomb()</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../db/d37/wcrtomb__s_8c.html#a45b0fbb8f40fb56bec9d9240d83907d9" title="Does not permit the ps parameter (the pointer to the conversion state) to be a null pointer...">wcrtomb_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d6/dd4/wctomb__s_8c_source.html#l00106">106</a> of file <a class="el" href="../../d6/dd4/wctomb__s_8c_source.html">wctomb_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d6/dd4/wctomb__s_8c_source.html#l00111">111</a> of file <a class="el" href="../../d6/dd4/wctomb__s_8c_source.html">wctomb_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.186-gd27927-dirty 3.0
+Generated for Safe C Library 30082017.216-g2422a2 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

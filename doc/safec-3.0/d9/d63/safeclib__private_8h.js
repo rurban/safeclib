@@ -1,5 +1,6 @@
 var safeclib__private_8h =
 [
+    [ "NDEBUG", "d9/d63/safeclib__private_8h.html#a8de3ed741dadc9c979a4ff17c0a9116e", null ],
     [ "EOVERFLOW", "d9/d63/safeclib__private_8h.html#a888552a5e3c78b5883904cf5d55244ab", null ],
     [ "strnstr", "d9/d63/safeclib__private_8h.html#ae55cc81b86cbf5663d337cada226ddef", null ],
     [ "MAX_TIME_T_STR", "d9/d63/safeclib__private_8h.html#afdb45ff071ad6b9b7a75e134a670c75d", null ],

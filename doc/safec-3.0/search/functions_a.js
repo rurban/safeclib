@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['qsort_5fmusl',['qsort_musl',['../d2/d94/qsort__s_8c.html#aa65f344bd9be46ff911be29b0295ac9e',1,'qsort_s.c']]],
-  ['qsort_5fs',['qsort_s',['../d2/d94/qsort__s_8c.html#a63380aff0b332239260433fa75872a37',1,'qsort_s(void *base, rsize_t nmemb, rsize_t size, int(*compar)(const void *k, const void *y, void *context), void *context):&#160;qsort_s.c'],['../db/d69/safe__lib_8h.html#a34276646826a508c60ccdb381045a621',1,'qsort_s(void *base, rsize_t nmemb, rsize_t size, int(*compar)(const void *x, const void *y, void *context), void *context):&#160;safe_lib.h']]]
+  ['pntz',['pntz',['../d2/d94/qsort__s_8c.html#a366444d5a8d78b40a6e6d7fec328d996',1,'qsort_s.c']]],
+  ['printf_5fs',['printf_s',['../d4/d68/printf__s_8c.html#acb53e5b3cc02e83fcd6496b082020499',1,'printf_s.c']]]
 ];
