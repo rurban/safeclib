@@ -59,56 +59,6 @@
 
 int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool iscompat);
 
-#if 0 /* save space for unneeded tables. the 3-level lookup is faster
-         then the generated trie lookup. TODO benchmark */
-
-/* Assumes 4-byte wchar, and cp > 0xff */
-EXPORT int
-isw_maybe_composed(const wint_t cp) {
-    /* TODO: 340 => 300 is not found, is composed.h wrong? No, it's not */
-    return (Hangul_IsS(cp) || is_COMPOSED_cp_high(cp))
-        ? 1 : 0;
-}
-
-/* Assumes 4-byte wchar, and cp > 0xff */
-EXPORT int
-isw_maybe_decomposed(const wint_t cp) {
-    return (is_MARK_cp_high(cp) || Hangul_IsS(cp) || is_DECOMPOSED_REST_cp_high(cp))
-        ? 1 : 0;
-}
-
-/* Check for the left-hand-side of the Decomposition_Mapping property,
- * which means the codepoint can be normalized and decomposed.
- * Assumes 4-byte wchar.
- */
-EXPORT int
-iswcomposed(const wchar_t *src, rsize_t smax) {
-    (void)smax;
-    if (*src > 0xff && isw_maybe_composed(*src)) {
-        wchar_t dest[5]; /* with non-canonical must be 19 */
-        int c = _decomp_s(dest, 5, *src, false);
-        return c > 1 ? 1 : 0;
-    } else 
-        return 0;
-}
-
-/* Check for the right-hand-side of the Decomposition_Mapping property,
- * which means the codepoint can be normalized and composed.
- * Assumes 4-byte wchar. TODO.
- */
-EXPORT int
-iswdecomposed(const wchar_t *src, rsize_t smax) {
-    (void)smax;
-    if (*src > 0xff && isw_maybe_decomposed(*src)) {
-        wchar_t dest[5]; /* with non-canonical must be 19 */
-        int c = _decomp_s((wchar_t *)dest, 5, *src, false);
-        return c > 1 ? 1 : 0;
-    } else 
-        return 0;
-}
-
-#endif /* disabled */
-
 /* Note that we can generate two versions of the tables.  The old format as
  * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
  * variant, as used here and in cperl core since 5.27.2.
