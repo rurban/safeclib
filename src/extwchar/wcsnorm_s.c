@@ -118,19 +118,8 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
-    if (unlikely(_UNICODE_MAX < cp)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "cp is too high",
-                   NULL, ESLEMAX);
-        *dest = 0;
-	return 0;
-    }
-    else if (unlikely(dmax < 5)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "dmax is < 5",
-                   NULL, ESLEMIN);
-        *dest = 0;
-	return 0;
+    if (unlikely(dmax < 5)) {
+	return -ESNOSPC;
     } else {
         const wchar_t ***plane = UNWIF_canon[cp >> 16];
         if (! plane) {
@@ -157,19 +146,9 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #else
     /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind */
     const UNWIF_canon_PLANE_T **plane, *row;
-    if (unlikely(_UNICODE_MAX < cp)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "cp is too high",
-                   NULL, ESLEMAX);
-        *dest = 0;
-	return 0;
-    }
     if (unlikely(dmax < 5)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "dmax is < 5",
-                   NULL, ESLEMIN);
         *dest = 0;
-	return 0;
+	return -ESNOSPC;
     }
     plane = UNWIF_canon[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */
@@ -194,7 +173,7 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
                    (l==4 && i<36) || 0);
             assert(dmax > 4);
             /* TODO: on sizeof(wchar_t)==2 pre-converted to surrogate pairs */
-            memcpy(dest, &tbl[i*l], l*sizeof(wchar_t));
+            memcpy(dest, &tbl[i*l], l*sizeof(wchar_t)); /* 33% perf */
             dest[l] = L'\0';
             return l;
         }
@@ -212,20 +191,11 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
-    if (unlikely(_UNICODE_MAX < cp)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "cp is too high",
-                   NULL, ESLEMAX);
+    if (unlikely(dmax < 19)) {
         *dest = 0;
-	return 0;
+	return -ESNOSPC;
     }
-    else if (unlikely(dmax < 5)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "dmax is < 5",
-                   NULL, ESLEMIN);
-        *dest = 0;
-	return 0;
-    } else {
+    else {
         const wchar_t ***plane = UNWF_compat[cp >> 16];
         if (! plane) {
             return 0;
@@ -252,20 +222,6 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #else
     /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind */
     const UNWIF_compat_PLANE_T **plane, *row;
-    if (unlikely(_UNICODE_MAX < cp)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "cp is too high",
-                   NULL, ESLEMAX);
-        *dest = 0;
-	return 0;
-    }
-    else if (unlikely(dmax < 5)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "dmax is < 5",
-                   NULL, ESLEMIN);
-        *dest = 0;
-	return 0;
-    }
     plane = UNWIF_compat[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */
 	return 0;
@@ -280,7 +236,11 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
             for (e=(UNWIF_compat_exc_t*)UNWIF_compat_exc; e->cp; e++) {
                 if (cp == e->cp) {
                     size_t l = wcslen(e->v);
-                    assert(l < dmax);
+                    if (unlikely(dmax < l)) {
+                        *dest = 0;
+                        return -(ESNOSPC);
+                    }
+                    /*assert(l < dmax);*/
                     memcpy(dest, e->v, (l+1)*sizeof(wchar_t)); /* incl \0 */
                     return l;
                 }
@@ -297,11 +257,10 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #if 0 && defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &&fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
-            /*assert(l>0 && l<=4);*/
-            /* (1665,1190,638,109,16,14,1,1,,,,,,,,,,1) */
-            /*assert((l==1 && i<917) || (l==2 && i<762) || (l==3 && i<227) ||
-              (l==4 && i<36) || 0);*/
-            assert(dmax > 4);
+            if (unlikely(dmax < (rsize_t)l)) {
+                *dest = 0;
+                return -(ESNOSPC);
+            }
             /* TODO: on sizeof(wchar_t)==2 pre-converted to surrogate pairs */
             memcpy(dest, &tbl[i*l], l*sizeof(wchar_t));
             dest[l] = L'\0';
@@ -324,10 +283,7 @@ _decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     wint_t tindex =  sindex % Hangul_TCount;
     
     if (unlikely(dmax < 4)) {
-        invoke_safe_str_constraint_handler("wcsnorm_decompose_s: "
-                   "dmax is < 4",
-                   NULL, ESNOSPC);
-        return (ESNOSPC);
+        return -(ESNOSPC);
     }
 
     dest[0] = lindex + Hangul_LBase;
@@ -347,13 +303,13 @@ _decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
    dmax should be > 4,
    19 with the single arabic outlier U+FDFA for compat accepted,
    but we only do canon here.
+   returns a negative errno_t on error
 */
 
 EXPORT int
 _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool iscompat)
 {
-    assert(dmax > 4);
-
+    /*assert(dmax > 4);*/
     /* The costly is_HANGUL_cp_high(cp) checks also all composing chars.
        Hangul_IsS only for the valid start points. Which we can do here. */
     if (Hangul_IsS(cp)) {
@@ -400,10 +356,7 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
 	return 0;
     }
     if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
-        invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
-                   "cp is too high",
-                   NULL, ESLEMAX);
-	return 0;
+	return -(ESLEMAX);
     }
 
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
@@ -450,12 +403,6 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
 static uint8_t _combin_class(wint_t cp)
 {
     const uint8_t **plane, *row;
-    if (unlikely(_UNICODE_MAX < cp)) {
-        invoke_safe_str_constraint_handler("wcsnorm_reorder_s: "
-                   "cp is too high",
-                   NULL, ESLEMAX);
-	return 0;
-    }
     plane = UNWIF_combin[cp >> 16];
     if (!plane)
 	return 0;
@@ -501,9 +448,11 @@ static uint8_t _combin_class(wint_t cp)
  * @retval  EOK         on success
  * @retval  ESNULLP    when dest or src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMIN    when dmax < 5 or 19 with a compat mode
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
  * @retval  ESOVRLP    when buffers overlap
- * @retval  ESNOSPC    when dest < src
+ * @retval  ESNOSPC    when dmax too small for the result buffer
+ * @retval  EOF        on some normalization error
  *
  * @see
  *    wcsfc_s(), ICU, gnulib/libunistring, utf8proc
@@ -532,6 +481,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "src is null",
                    NULL, ESNULLP);
+        *dest = 0;
         return RCNEGATE(ESNULLP);
     }
 
@@ -539,13 +489,23 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax is 0",
                    NULL, ESZEROL);
+        *dest = 0;
         return RCNEGATE(ESZEROL);
+    }
+
+    if (unlikely(dmax < 5)) {
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
+                   "dmax < 5",
+                   NULL, ESLEMIN);
+        *dest = 0;
+        return RCNEGATE(ESLEMIN);
     }
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
+        *dest = 0;
         return RCNEGATE(ESLEMAX);
     }
 
@@ -557,10 +517,19 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
     }
 #ifndef HAVE_NORM_COMPAT
     if (iscompat) {
-        handle_werror(dest, dmax, "wcsnorm_s: "
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
                       "not configured with --enable-norm-compat",
-                      EOF);
+                      NULL, EOF);
+        *dest = 0;
         return RCNEGATE(EOF);
+    }
+#else
+    if (unlikely(iscompat && dmax < 19)) {
+        invoke_safe_str_constraint_handler("wcsnorm_s: "
+                      "dmax is < 19",
+                      NULL, ESLEMIN);
+        *dest = 0;
+	return RCNEGATE(ESLEMIN);
     }
 #endif
 
@@ -578,16 +547,27 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
+            if (unlikely(_UNICODE_MAX < *src)) {
+                handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
+                              "cp is too high",
+                              ESLEMAX);
+                return ESLEMAX;
+            }
 
             /* TODO benchmark */
             if (1 /*|| isw_maybe_composed(*src) */) {
                 int c = _decomp_s(dest, dmax, *src, iscompat);
-                if (c) {
+                if (c > 0) {
                     dest += c;
                     dmax -= c;
-                } else {
+                } else if (c == 0) {
                     *dest++ = *src;
                     dmax--;
+                } else {
+                    handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
+                                  "decomposition error",
+                                  -c);
+                    return -c;
                 }
                 src++;
             }
@@ -609,15 +589,26 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
+            if (unlikely(_UNICODE_MAX < *src)) {
+                handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
+                              "cp is too high",
+                              ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            }
 
             if (1 /*|| isw_maybe_composed(*src) */) {
                 int c = _decomp_s(dest, dmax, *src, iscompat);
-                if (c) {
+                if (c > 0) {
                     dest += c;
                     dmax -= c;
-                } else {
+                } else if (c == 0) {
                     *dest++ = *src;
                     dmax--;
+                } else {
+                    handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
+                                  "decomposition error",
+                                  -c);
+                    return RCNEGATE(-c);
                 }
                 src++;
             }
@@ -648,6 +639,34 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
 #endif
     return EOK;
 }
+
+/**
+ * @brief
+ *    Reorder all decomposed sequences in a wide string to NFD,
+ *    as defined in the latest Unicode standard, latest 10.0. The conversion
+ *    stops at the first null or after dmax characters.
+ *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
+ *    and not on solaris, aix with 32bit.
+ *
+ * @param[out]  dest      wide string to hold the result
+ * @param[in]   dmax      maximum result buffer size
+ * @param[in]   p         wide string to be converted
+ * @param[in]   len       length of p
+ *
+ * @pre  dest and p shall not be null pointers.
+ * @pre  dmax shall not equal zero and big enough for dest.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ *
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and dmax is greater than zero and
+ *          not greater than RSIZE_MAX_WSTR, then \c wcsnorm_reorder_s nulls dest.
+ * @retval  EOK        on success
+ * @retval  ESNOSPC    when dmax too small for the result buffer
+ * @retval  EOF        on some normalization error
+ *
+ * @see
+ *    wcsnorm_s(), ICU, gnulib/libunistring, utf8proc
+ */
 
 /* reorder decomposed sequence to NFD */
 EXPORT errno_t
@@ -728,6 +747,35 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
     *dest = 0;
     return EOK;
 }
+
+/**
+ * @brief
+ *    Combine all decomposed sequences in a wide string to NFC,
+ *    as defined in the latest Unicode standard, latest 10.0. The conversion
+ *    stops at the first null or after dmax characters.
+ *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
+ *    and not on solaris, aix with 32bit.
+ *
+ * @param[out]  dest      wide string to hold the result
+ * @param[in]   dmax      maximum result buffer size
+ * @param[in]   p         wide string to be converted
+ * @param[out]  lenp      pointer to length of p and the result length.
+ * @param[in]   iscontig  if true, the result will only be a fast FCC
+ *
+ * @pre  dest, p and lenp shall not be null pointers.
+ * @pre  dmax shall not equal zero and big enough for dest.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ *
+ * @return  If there is a runtime-constraint violation, then if dest
+ *          is not a null pointer and dmax is greater than zero and
+ *          not greater than RSIZE_MAX_WSTR, then \c wcsnorm_reorder_s nulls dest.
+ * @retval  EOK        on success
+ * @retval  ESNOSPC    when dmax too small for the result buffer
+ * @retval  EOF        on some normalization error
+ *
+ * @see
+ *    wcsnorm_s(), ICU, gnulib/libunistring, utf8proc
+ */
 
 /* combine decomposed sequences to NFC. */
 /* iscontig = false; composeContiguous? FCC if true */
@@ -835,11 +883,17 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
             return RCNEGATE(ESNOSPC);
         }
 
-	if (cc_pos) {
-            /* TODO surrogate pairs */
-            memcpy(dest, seq_ptr, cc_pos*sizeof(wchar_t));
+        /* TODO surrogate pairs */
+	if (cc_pos == 1) {
+            *dest++ = *seq_ptr;
+            dmax--;
 	    cc_pos = 0;
-	}
+	} else if (cc_pos > 1) {
+            memcpy(dest, seq_ptr, cc_pos*sizeof(wchar_t));
+            dest += cc_pos;
+            dmax -= cc_pos;
+	    cc_pos = 0;
+        }
 
 	cpS = cp;
     }
@@ -872,13 +926,16 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  *    normalizables.  Hangul has some special normalization logic.
  *
  *    The compat tables for NFKC or NFKD are too large for a libc, and
- *    mostly unused. We only provide the small and canonical conversions.
+ *    mostly unused. As default we only provide the smaller canonical
+ *    conversions. The compat modes also don't roundtrip.
  *
  * @param[out]  dest  wide string to hold the result
  * @param[in]   dmax  maximum length of string
  * @param[in]   src   wide string
- * @param[in]   mode  convert to nfc if >0, or just nfd if 0.
- *                    experimentally to FCC if 2. compat modes not yet.
+ * @param[in]   mode  convert to nfc or just nfd.
+ *                    experimentally to fast modes FCD or FCC.
+ *                    optionally to compat modes NFKD, NFKC with \c --enable-norm-compat
+ *                    @see enum \c wcsnorm_mode.
  * @param[out]  lenp  pointer to length of the result, may be NULL
  *
  * @pre  dest and src shall not be null pointers.
@@ -888,25 +945,27 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
  *          not greater than RSIZE_MAX_WSTR, then wcsnorm_s nulls dest.
- * @retval  EOK         on success
+ * @retval  EOK        on success
  * @retval  ESNULLP    when dest or src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMIN    when dmax < 5
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
  * @retval  ESOVRLP    when buffers overlap
- * @retval  ESNOSPC    when dest < src
+ * @retval  ESNOSPC    when dmax too small for the result buffer
  * @retval  EOF        any other normalization error
  *
  * @see
  *    wcsfc_s(), ICU, gnulib/libunistring, utf8proc
  */
 
-/* create a canonical NFC or NFD wide string */
+/* Normalize to NFC, NFD, FCC, FCD (fastest, used in wcsfc_s), and optionally NFKD, NFKC */
 EXPORT errno_t
 wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
           wcsnorm_mode_t mode, rsize_t *restrict lenp)
 {
-    wchar_t *tmp;
-    wchar_t *orig_dest;
+    wchar_t tmp_stack[128];
+    wchar_t *tmp_ptr;
+    wchar_t *tmp = NULL;
     rsize_t len;
     const bool iscompat = mode & WCSNORM_NFKD; /* WCSNORM_NFKD or WCSNORM_NFKC */
 
@@ -918,32 +977,35 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
     if (unlikely(mode == WCSNORM_FCD))
         return EOK;
 
-    orig_dest = dest;
-    /* temp. scratch space. TODO: on the stack if <120 */
-    tmp = (wchar_t*)malloc((len+10) * sizeof(wchar_t));
+    /* temp. scratch space, on stack or heap */
+    if (len+2 < 128)
+        tmp_ptr = tmp_stack;
+    else
+        tmp_ptr = tmp = (wchar_t*)malloc((len+2) * sizeof(wchar_t));
 
-    rc = wcsnorm_reorder_s(tmp, len+10, dest, len);
+    rc = wcsnorm_reorder_s(tmp_ptr, len+2, dest, len);
     if (unlikely(rc)) {
-        free(tmp);
-        handle_werror(orig_dest, dmax, "wcsnorm_s: "
-                   "reorder error",
-                   EOF);
-        return (EOF);
+        if (tmp)
+            free(tmp);
+#ifdef SAFECLIB_STR_NULL_SLACK
+        memset(dest, 0, dmax*sizeof(wchar_t));
+#else
+        *dest = L'\0';
+#endif
+        return (rc);
     }
     if (mode == WCSNORM_NFD || mode == WCSNORM_NFKD) {
-        memcpy(dest, tmp, (len+1)*sizeof(wchar_t));
-        free(tmp);
+        memcpy(dest, tmp_ptr, (len+1)*sizeof(wchar_t));
+        if (tmp)
+            free(tmp);
         return (EOK);
     }
 
-    rc = wcsnorm_compose_s(dest, dmax, tmp, &len, mode == WCSNORM_FCC);
-    free(tmp);
-    if (unlikely(rc)) {
-        handle_werror(orig_dest, dmax, "wcsnorm_s: "
-                   "reorder error",
-                   EOF);
-        return (EOF);
-    }
+    rc = wcsnorm_compose_s(dest, dmax, tmp_ptr, &len, mode == WCSNORM_FCC);
+    if (tmp)
+        free(tmp);
+    if (unlikely(rc))
+        return (rc);
     if (lenp)
         *lenp = len;
 

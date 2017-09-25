@@ -44,6 +44,7 @@ EXTERN wint_t towlower(wint_t wc);
 /*EXPORT int isw_maybe_composed(const wint_t cp);*/
 EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp,
                      const bool iscompat);
+#define _UNICODE_MAX 0x10ffff
 
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
@@ -95,7 +96,7 @@ _is_lt_accented(wint_t wc) {
  * @retval  EOK         on successful operation
  * @retval  ESNULLP     when dest or src is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR or a cp > 0x10ffff
  * @retval  ESNOSPC     when dmax is too small for the decomposition.
  *                      *lenp is still written, to know how much space is needed.
  * @retval  ESNOTFND    Internal error as returned by towfc_s() for multi-char foldings.
@@ -132,17 +133,17 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
         return (ESZEROL);
     }
 
-    if (unlikely(src == NULL)) {
-        handle_werror(dest, dmax, "wcsfc_s: " "src is null",
-                   ESNULLP);
-        return (ESNULLP);
-    }
-
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("wcsfc_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
         return (ESLEMAX);
+    }
+
+    if (unlikely(src == NULL)) {
+        handle_werror(dest, dmax, "wcsfc_s: " "src is null",
+                   ESNULLP);
+        return (ESNULLP);
     }
 
     if (unlikely(
@@ -185,7 +186,14 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
                 wchar_t tmpd[8];
                 int i;
                 for (i=0; i<c; i++) {
-                    int d = _decomp_s(tmpd, 8, tmp[i], false);
+                    int d;
+                    if (unlikely(_UNICODE_MAX < tmp[i])) {
+                        handle_werror(orig_dest, orig_dmax, "wcsfc_s: "
+                                      "cp is too high",
+                                      ESLEMAX);
+                        return ESLEMAX;
+                    }
+                    d = _decomp_s(tmpd, 8, tmp[i], false);
                     if (d) { /* decomp. max 4 */
                         memcpy(dest, tmpd, d*sizeof(wchar_t));
                         dest += d;

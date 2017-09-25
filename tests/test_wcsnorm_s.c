@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsnorm_s
  * File 'wcsnorm_s.c'
- * Lines executed:69.77% of 301
+ * Lines executed:78.49% of 344
  *
  *------------------------------------------------------------------
  */
@@ -46,20 +46,44 @@ int main()
     rc = wcsnorm_s(NULL, LEN, L"test", WCSNORM_NFD, NULL);
     ERR(ESNULLP);
 
+    wcscpy(str, L"A" L"\x1fb3");
     rc = wcsnorm_s(str, LEN, NULL, WCSNORM_NFD, NULL);
     ERR(ESNULLP);
+    WEXPSTR(str, L"\0");
 
 /*--------------------------------------------------*/
 
     rc = wcsnorm_s(str, 0, L"test", WCSNORM_NFD, &ind);
     ERR(ESZEROL)
     INDZERO();
+    WEXPSTR(str, L"\0");
 
 /*--------------------------------------------------*/
 
     rc = wcsnorm_s(str, 99999, L"test", WCSNORM_NFD, NULL);
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
+    WEXPSTR(str, L"\0");
 
+    rc = wcsnorm_s(str, LEN, L"\x11ffff", WCSNORM_NFD, NULL);
+    ERR(ESLEMAX);
+    WEXPSTR(str, L"\0");
+
+    rc = wcsnorm_decompose_s(str, LEN, L"\x11ffff", NULL, false);
+    ERR(ESLEMAX);
+    WEXPSTR(str, L"\0");
+
+    rc = wcsnorm_decompose_s(str, LEN, L"\x11ffff", NULL, true);
+#ifdef HAVE_NORM_COMPAT
+    ERR(ESLEMAX);
+    WEXPSTR(str, L"\0");
+#else
+    ERR(EOF);
+#endif
+
+    rc = wcsnorm_s(str, 4, L"\x10fff0", WCSNORM_NFD, NULL);
+    ERR(ESLEMIN);
+    WEXPSTR(str, L"\0");
+    
 /*--------------------------------------------------*/
 
     rc = wcsnorm_s(str, LEN, L"Caf\xe9", WCSNORM_NFD, &ind);
@@ -83,6 +107,22 @@ int main()
     WCHECK_SLACK(&str[4], LEN-4);
 
 /*--------------------------------------------------*/
+
+    wcscpy(str, L"A" L"\x1fb3");
+    rc = wcsnorm_s(str1, LEN, str, WCSNORM_NFC, NULL);
+    ERR(EOK);
+    
+    wcscpy(str, L"Abc" L"\x1fb7");
+    rc = wcsnorm_s(str1, 6, str, WCSNORM_NFD, NULL);
+    ERR(ESNOSPC);
+    WEXPSTR(str1, L"\0");
+
+#ifdef HAVE_NORM_COMPAT
+    wcscpy(str, L"A" L"\x321d");
+    rc = wcsnorm_s(str1, 18, str, WCSNORM_NFKC, NULL);
+    ERR(ESLEMIN);
+    WEXPSTR(str1, L"\0");
+#endif
 
     /* echo "Aᾳ" | unorm -n nfd | iconv -t UTF-32LE | od -h */
     rc = wcsnorm_s(str, LEN, L"A" L"\x1fb3", WCSNORM_NFD, &ind);
@@ -342,7 +382,7 @@ int main()
         {
             size_t i;
             /* cross-check with perl */
-            fprintf_s(pl, "$err += chknfd(\"\\N{U+%04X}\",\"\\N{U+%04X}", ind, str[0]);
+            fprintf_s(pl, "$err += chknfd (\"\\N{U+%04X}\",\"\\N{U+%04X}", ind, str[0]);
             for (i=1;i<len;i++) {
                 fprintf_s(pl, "\\N{U+%04X}", str[i]);
             }
