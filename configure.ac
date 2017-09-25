@@ -479,7 +479,8 @@ return (towupper(0x1C80) == 0x412) ? 0 : 1;
           ac_cv_towupper_ok=yes
           AC_DEFINE_UNQUOTED([HAVE_TOWUPPER_OK], 1, [Define to 1 if 'towupper' is usable.])
 	],
-	[ AC_MSG_RESULT([no]) ])
+	[ AC_MSG_RESULT([no]) ],
+	[ AC_MSG_RESULT([no (cross)]) ])
 fi
 
 dnl this user choice needs to probe first for the default
