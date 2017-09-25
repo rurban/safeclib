@@ -394,7 +394,7 @@ static uint8_t _combin_class(wint_t cp)
  * @param[in]   dmax      maximum result buffer size
  * @param[in]   src       wide string
  * @param[out]  lenp      pointer to length of the result, may be NULL
- * @param[in]   iscompat  do NFKD, and not NFD (not yet)
+ * @param[in]   iscompat  do NFKD, and not NFD (with \c --enable-norm-compat)
  *
  * @pre  dest and src shall not be null pointers.
  * @pre  dmax shall not equal zero and big enough for dest.
@@ -881,7 +881,8 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  *
  *    The compat tables for NFKC or NFKD are too large for a libc, and
  *    mostly unused. As default we only provide the smaller canonical
- *    conversions. The compat modes also don't roundtrip.
+ *    conversions, but it can be enabled with \c --enable-norm-compat.
+ *    The compat modes also don't roundtrip.
  *
  * @param[out]  dest  wide string to hold the result
  * @param[in]   dmax  maximum length of string

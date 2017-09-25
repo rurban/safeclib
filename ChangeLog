@@ -48,7 +48,11 @@ Changes in vxx092017 3.0.0
         defines SAFECLIB_DISABLE_WCHAR
         - Better debugging support: add .i target
         - Fixed memset32_s for n > RSIZE_MAX_MEM32 ESLEMAX,
-          was only RSIZE_MAX_MEM16.
+        was only RSIZE_MAX_MEM16.
+        - Added the wcsfc_s and wcsnorm_s extensions to be able to compare wide
+        strings.
+        - Added --enable-norm-compat to enable the big compatbility modes NFKD, NFKC
+        for wcsnorm_s.
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.
