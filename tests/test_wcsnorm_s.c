@@ -64,15 +64,23 @@ int main()
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
 
-    rc = wcsnorm_s(str, LEN, L"\x11ffff", WCSNORM_NFD, NULL);
+#if SIZEOF_WCHAR_T >= 4
+# define OVMAX_WC L"\x11ffff"
+# define MAX_WC1  L"\x10fff0"
+#else
+# define OVMAX_WC L"\xdbff" L"\xdfff"
+# define MAX_WC1  L"\xdb3f" L"\xdff0"
+#endif
+
+    rc = wcsnorm_s(str, LEN, OVMAX_WC, WCSNORM_NFD, NULL);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
 
-    rc = wcsnorm_decompose_s(str, LEN, L"\x11ffff", NULL, false);
+    rc = wcsnorm_decompose_s(str, LEN, OVMAX_WC, NULL, false);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
 
-    rc = wcsnorm_decompose_s(str, LEN, L"\x11ffff", NULL, true);
+    rc = wcsnorm_decompose_s(str, LEN, OVMAX_WC, NULL, true);
 #ifdef HAVE_NORM_COMPAT
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
@@ -80,9 +88,10 @@ int main()
     ERR(EOF);
 #endif
 
-    rc = wcsnorm_s(str, 4, L"\x10fff0", WCSNORM_NFD, NULL);
+    rc = wcsnorm_s(str, 4, MAX_WC1, WCSNORM_NFD, NULL);
     ERR(ESLEMIN);
     WEXPSTR(str, L"\0");
+
     
 /*--------------------------------------------------*/
 

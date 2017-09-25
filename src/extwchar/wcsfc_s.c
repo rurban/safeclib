@@ -186,12 +186,14 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
                 int i;
                 for (i=0; i<c; i++) {
                     int d;
+#if SIZEOF_WCHAR_T > 2
                     if (unlikely(_UNICODE_MAX < tmp[i])) {
                         handle_werror(orig_dest, orig_dmax, "wcsfc_s: "
                                       "cp is too high",
                                       ESLEMAX);
                         return ESLEMAX;
                     }
+#endif
                     d = _decomp_s(tmpd, 8, tmp[i], false);
                     if (d) { /* decomp. max 4 */
                         memcpy(dest, tmpd, d*sizeof(wchar_t));

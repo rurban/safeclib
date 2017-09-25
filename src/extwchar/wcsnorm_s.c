@@ -31,24 +31,30 @@
 
 #include "safeclib_private.h"
 #include <wctype.h>
-#include <assert.h>
+
+#if SIZEOF_WCHAR_T > 2
+# include <assert.h>
 
 /* generated via cperl Unicode-Normalize/mkheader -uni -ind */
-#include "unwifcan.h" /* for NFD Canonical Decomposition */
-#include "unwifcmb.h" /* for reorder Canonical_Combining_Class_Values */
-#include "unwifcmp.h" /* for NFC Canonical Composition lists */
-#include "unwifexc.h" /* for NFC Composite exclusions */
-#ifdef HAVE_NORM_COMPAT
-#include "unwifcpt.h"  /* for NFKD/NFKC Compat. Decomposition. */
+# include "unwifcan.h" /* for NFD Canonical Decomposition */
+# include "unwifcmb.h" /* for reorder Canonical_Combining_Class_Values */
+# include "unwifcmp.h" /* for NFC Canonical Composition lists */
+# include "unwifexc.h" /* for NFC Composite exclusions */
+# ifdef HAVE_NORM_COMPAT
+#  include "unwifcpt.h" /* for NFKD/NFKC Compat. Decomposition. */
+# endif
+#else /* with UTF-16 surrogate pairs */
+# include "unw16ifcan.h" /* for NFD Canonical Decomposition */
+# include "unw16ifcmb.h" /* for reorder Canonical_Combining_Class_Values */
+# include "unw16ifcmp.h" /* for NFC Canonical Composition lists */
+# include "unw16ifexc.h" /* for NFC Composite exclusions */
+# ifdef HAVE_NORM_COMPAT
+#  include "unw16ifcpt.h" /* for NFKD/NFKC Compat. Decomposition. */
+# endif
 #endif
 
 /* Korean/Hangul has special (easy) normalization rules */
 #include "hangul.h"
-/* generated via cperl regen/regcharclass-safec.pl (via CharClass::Matcher) */
-/* 1963 single mark characters (Combining, Overlay, ...) */
-/* #include "mark.h" */
-/* If it starts with a composed or decomposed codepoint. */
-/* #include "composed.h" */
 
 #define _UNICODE_MAX 0x10ffff
 
@@ -117,11 +123,13 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #if 0 && defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
+#if SIZEOF_WCHAR_T > 2
             assert(l>0 && l<=4);
             /* (917,762,227,36) */
             assert((l==1 && i<917) || (l==2 && i<762) || (l==3 && i<227) ||
                    (l==4 && i<36) || 0);
             assert(dmax > 4);
+#endif
             /* TODO: on sizeof(wchar_t)==2 pre-converted to surrogate pairs */
             memcpy(dest, &tbl[i*l], l*sizeof(wchar_t)); /* 33% perf */
             dest[l] = L'\0';
@@ -305,9 +313,11 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
                    NULL, ESZEROL);
 	return 0;
     }
+#if SIZEOF_WCHAR_T > 2
     if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
 	return -(ESLEMAX);
     }
+#endif
 
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
 	wint_t lindex = cp  - Hangul_LBase;
@@ -368,8 +378,6 @@ static uint8_t _combin_class(wint_t cp)
  *    Converts the wide string to the canonical NFD normalization,
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
  *    stops at the first null or after dmax characters.
- *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
- *    and not on solaris, aix with 32bit.
  * 
  * @details
  *    Composed characters are checked for the left-hand-size of the
@@ -497,13 +505,14 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
+#if SIZEOF_WCHAR_T > 2
             if (unlikely(_UNICODE_MAX < *src)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                               "cp is too high",
                               ESLEMAX);
                 return ESLEMAX;
             }
-
+#endif
             /* TODO benchmark */
             if (1 /*|| isw_maybe_composed(*src) */) {
                 int c = _decomp_s(dest, dmax, *src, iscompat);
@@ -539,13 +548,14 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
+#if SIZEOF_WCHAR_T > 2
             if (unlikely(_UNICODE_MAX < *src)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                               "cp is too high",
                               ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
-
+#endif
             if (1 /*|| isw_maybe_composed(*src) */) {
                 int c = _decomp_s(dest, dmax, *src, iscompat);
                 if (c > 0) {
@@ -595,8 +605,6 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
  *    Reorder all decomposed sequences in a wide string to NFD,
  *    as defined in the latest Unicode standard, latest 10.0. The conversion
  *    stops at the first null or after dmax characters.
- *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
- *    and not on solaris, aix with 32bit.
  *
  * @param[out]  dest      wide string to hold the result
  * @param[in]   dmax      maximum result buffer size
@@ -703,8 +711,6 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  *    Combine all decomposed sequences in a wide string to NFC,
  *    as defined in the latest Unicode standard, latest 10.0. The conversion
  *    stops at the first null or after dmax characters.
- *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
- *    and not on solaris, aix with 32bit.
  *
  * @param[out]  dest      wide string to hold the result
  * @param[in]   dmax      maximum result buffer size
@@ -864,8 +870,6 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  *    Converts the wide string to the canonical NFC or NFD normalization,
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
  *    stops at the first null or after dmax characters.
- *    Currently only works with 4-byte wchar's. So not on cygwin, windows,
- *    and not on solaris, aix with 32bit.
  * 
  * @details
  *    Decomposed characters are checked for the left-hand-size and then
