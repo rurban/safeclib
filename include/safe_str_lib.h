@@ -540,9 +540,9 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src);
 /* full foldcase + NFD normalization */
 EXTERN errno_t
 wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
-        const wchar_t *restrict src, rsize_t *restrict lenp);
+        wchar_t *restrict src, rsize_t *restrict lenp);
 
-/* Normalize to NFD */
+/* Normalize to FCD */
 EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
                     wchar_t *restrict src, rsize_t *restrict lenp,

@@ -95,6 +95,9 @@ void abort(void) __attribute__((noreturn));
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #endif
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 /* mingw 3.4 */
 #ifndef EOVERFLOW
@@ -103,16 +106,6 @@ void abort(void) __attribute__((noreturn));
 
 #ifndef HAVE_STRNSTR
 #define strnstr(a,b,c) strstr(a,b)
-#endif
-
-/* for a proper asctime string with 26 digits, i.e. max 4 digit year.
-   01.01.10000 00:00 */
-#ifndef MAX_TIME_T_STR
-# if SIZEOF_TIME_T < 8
-#  define MAX_TIME_T_STR (0x7fffffff)
-# else
-#  define MAX_TIME_T_STR (313360441200L)
-# endif
 #endif
 
 #define EXPORT_SYMBOL(sym)
@@ -143,6 +136,18 @@ void abort(void) __attribute__((noreturn));
 
 #endif /* __KERNEL__ */
 
+/* for a proper asctime string with 26 digits, i.e. max 4 digit year.
+   01.01.10000 00:00 */
+#ifndef MAX_TIME_T_STR
+# if SIZEOF_TIME_T < 8
+#  define MAX_TIME_T_STR (0x7fffffff)
+# else
+#  define MAX_TIME_T_STR (313360441200L)
+# endif
+#endif
+
+#define _UNICODE_MAX 0x10ffff
+
 #ifndef sldebug_printf
 # ifdef HAVE_C99
 #  define sldebug_printf(...)
@@ -161,6 +166,7 @@ void abort(void) __attribute__((noreturn));
 #include "safe_str_constraint.h"
 
 /* platform quirks */
+#ifndef SAFECLIB_DISABLE_WCHAR
 
 /* mingw32 3.15.2 */
 #if defined(_WIN32) && defined(__MINGW32_MAJOR_VERSION) && \
@@ -170,5 +176,39 @@ void abort(void) __attribute__((noreturn));
 
 /* mingw64 3.0.1
    has strtok_s, wcstok_s, and vsnprintf_s, which we patch in the tests. */
+
+/* windows, cygwin + 32bit aix, solaris */
+#if SIZEOF_WCHAR_T > 2
+#define _dec_w16(src) *(src)
+#define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
+
+#else
+/* convert surrogate pair to unicode codepoint */
+EXTERN wint_t _dec_w16(wchar_t *src);
+
+/* convert unicode codepoint to surrogate pair, advancing dest */
+#define _ENC_W16(dest,dmax,cp)                  \
+    if (unlikely((cp) < 0x10000)) {             \
+        *(dest)++ = (cp); (dmax)--;             \
+    } else {                                    \
+        *dest++ = 0xd800 + (((cp) >> 10) & 0x3ff);\
+        *dest++ = 0xdc00 + ((cp) & 0x3ff);      \
+        (dmax)--; (dmax)--;                     \
+    }
+
+#endif
+
+/* is start of a surrogate pair? */
+#define _IS_W16(cp) ((cp) >= 0xd800 && (cp) < 0xdc00)
+
+EXTERN errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
+#ifndef HAVE_TOWLOWER
+EXTERN wint_t towlower(wint_t wc);
+#endif
+/* from wcsnorm_s.c */
+EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp,
+                     const bool iscompat);
+
+#endif /* SAFECLIB_DISABLE_WCHAR */
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

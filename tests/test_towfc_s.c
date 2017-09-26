@@ -15,6 +15,14 @@
 
 #define CFOLD "CaseFolding.txt"
 
+#if SIZEOF_WCHAR_T > 2
+#define MAX_LEN 4
+#define _dec_w16(src) *(src)
+#else
+#define MAX_LEN 8
+EXTERN wint_t _dec_w16(wchar_t *src);
+#endif
+
 int test_towfc_s (void)
 {
     int rc;
@@ -62,26 +70,32 @@ int test_towfc_s (void)
             if (c) {
                 wint_t m0;
                 int n, len;
-                wchar_t result[4];
+                wchar_t result[MAX_LEN];
+                wint_t cp;
 
                 result[0] = L'\0';
                 n = iswfc(wc);
 
-                rc = towfc_s(result, 4, wc);
+                rc = towfc_s(result, MAX_LEN, wc);
+                len = wcslen(result);
+                cp = _dec_w16(result);
+                if (cp > 0x20000) /* XXX */
+                    cp -= 0x10000;
                 if (rc < 0) {
                     ERR(ESNOTFND);
                     if (n) {
-                        wprintf(L"%s %u  Error %d U+%04X n=%d \"%ls\"\n",
-                                __FUNCTION__, __LINE__, rc, wc, n, result);
+                        printf("%s %u  Error %d U+%04X n=%d 0x%x\n",
+                               __FUNCTION__, __LINE__, rc, wc, n, (int)cp);
                         errs++;
                     }
                 }
+#if SIZEOF_WCHAR_T > 2
                 else if (rc != n && n) { /* n may be 0, but fc 1 */
-                    wprintf(L"%s %u  Error %d U+%04X n=%d \"%ls\"\n",
-                            __FUNCTION__, __LINE__, rc, wc, n, result);
+                    printf("%s %u  Error %d U+%04X n=%d 0x%x\n",
+                           __FUNCTION__, __LINE__, rc, wc, n, (int)cp);
                     errs++;
                 }
-                len = wcslen(result);
+#endif
                 c = sscanf(mapping, "%X", &m0);
 
                 /* we have 104 unhandled F multi-char mappings,
@@ -91,15 +105,15 @@ int test_towfc_s (void)
                     /* check the length, must be or 3 */
                     if (n < 2) {
                         errs++;
-                        printf("Error: iswfc(U+%04X) => %d (towfc=>%d) \"%s\" %s\n",
-                               wc, n, len, mapping, name);
+                        printf("%s %u  Error: iswfc(U+%04X) => %d (towfc=>%d) \"%s\" %s\n",
+                               __FUNCTION__, __LINE__, wc, n, len, mapping, name);
                     }
                     else {
-                        static wchar_t cmp[4];
+                        static wchar_t cmp[MAX_LEN];
                         if (n != len) {
                             errs++;
-                            printf("Error: towfc(U+%04X) => %d (iswfc=>%d) \"%s\" %s\n",
-                                   wc, len, n, mapping, name);
+                            printf("%s %u  Error: towfc(U+%04X) => %d (iswfc=>%d) \"%s\" %s\n",
+                                   __FUNCTION__, __LINE__, wc, len, n, mapping, name);
                         }
                         /* also compare the content */
                         if (n == 2) {
@@ -111,7 +125,7 @@ int test_towfc_s (void)
                             cmp[3] = 0;
                         } else {
                             errs++;
-                            printf("Error: Wrong n=%d\n", n);
+                            printf("%s %u  Error: Wrong n=%d\n", __FUNCTION__, __LINE__, n);
                             goto next_line;
                         }
                         cmp[0] = (wchar_t)m0;
@@ -119,8 +133,8 @@ int test_towfc_s (void)
                         ind = wcscmp(result, cmp);
                         INDZERO();
                         if (ind) {
-                            printf("Error: towfc(U+%04X) => %X... \"%s\"\n",
-                                   wc, result[0], mapping);
+                            printf("%s %u  Error: towfc(U+%04X) => %X... \"%s\"\n",
+                                   __FUNCTION__, __LINE__, wc, cp, mapping);
                             if (n == 3)
                                 printf("    { 0x%04X, 0x%04X,0x%04X,0x%04X },\t/* %s */\n",
                                        wc, m0, m1, m2, name);
@@ -133,7 +147,8 @@ int test_towfc_s (void)
                 else
                 if (*status == 'T') { /* Turkish special case */
                     if (wc != 0x130 && wc != 0x49) {
-                        printf("Error: Unknown turkish wc=%d\n", wc);
+                        printf("%s %u  Error: Unknown turkish wc=%d\n",
+                               __FUNCTION__, __LINE__, wc);
                         errs++;
                     } else {
                         ind = n;
@@ -150,14 +165,19 @@ int test_towfc_s (void)
                 } else if (*status == 'S') { /* ignore as we handle the other F case */
                     ;
                 } else { /* the simple 1:1 C case */
-                    if (n > 1) {
+#if SIZEOF_WCHAR_T > 2
+                    if (n > 1)
+#else
+                    if (n > 2)
+#endif
+                    {
                         errs++;
-                        printf("Error: iswfc(U+%04X) => %d (towfc=>%d) \"%s\" status=%s %s\n",
-                               wc, n, len, mapping, status, name);
-                    } else if (result[0] != m0) {
+                        printf("%s %u  Error: iswfc(U+%04X) => %d (towfc=>%d) \"%s\" status=%s %s\n",
+                               __FUNCTION__, __LINE__, wc, n, len, mapping, status, name);
+                    } else if (cp != m0) {
                         errs++;
-                        printf("Error: towfc(U+%04X) => %X \"%s\" status=%s %s\n",
-                               wc, result[0], mapping, status, name);
+                        printf("%s %u  Error: towfc(U+%04X) => %X \"%s\" status=%s %s\n",
+                               __FUNCTION__, __LINE__, wc, cp, mapping, status, name);
                     }
                 }
             }

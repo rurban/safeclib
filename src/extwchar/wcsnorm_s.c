@@ -31,10 +31,9 @@
 
 #include "safeclib_private.h"
 #include <wctype.h>
+#include <assert.h>
 
 #if SIZEOF_WCHAR_T > 2
-# include <assert.h>
-
 /* generated via cperl Unicode-Normalize/mkheader -uni -ind */
 # include "unwifcan.h" /* for NFD Canonical Decomposition */
 # include "unwifcmb.h" /* for reorder Canonical_Combining_Class_Values */
@@ -63,7 +62,27 @@
 #define CC_SEQ_SIZE  10
 #define CC_SEQ_STEP  5
 
-int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool iscompat);
+/* else a passthru macro in *_private.h */
+#if SIZEOF_WCHAR_T == 2
+/* convert surrogate pair to unicode codepoint */
+EXPORT wint_t _dec_w16(wchar_t *src) {
+    wint_t s1 = src[0];
+    /*if (unlikely(s1 >= 0xd800 && s1 < 0xdc00)) {*/
+    if (unlikely((s1 & 0xfc00) == 0xd800)) {
+        wint_t s2 = src[1];
+        if (likely((s2 & 0xfc00) == 0xdc00)) {
+            return 0x10000 + ((s1 & 0x3ff) << 10) + (s2 & 0x3ff);
+        } else {
+            invoke_safe_str_constraint_handler("wcsnorm_s: "
+                "illegal surrogate pair",
+                NULL, EILSEQ);
+            return 0;
+        }
+    } else {
+        return *src;
+    }
+}
+#endif
 
 /* Note that we can generate two versions of the tables.  The old format as
  * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
@@ -145,6 +164,13 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #ifdef HAVE_NORM_COMPAT
 
 static int
+_bsearch_exc (const void *ptr1, const void *ptr2) {
+    UNWIF_compat_exc_t *e1 = (UNWIF_compat_exc_t *)ptr1;
+    UNWIF_compat_exc_t *e2 = (UNWIF_compat_exc_t *)ptr2;
+    return e1->cp > e2->cp ? 1 : e1->cp == e2->cp ? 0 : -1;
+}
+
+static int
 _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
@@ -191,6 +217,16 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
             return 0;
         else if (unlikely(vi == (uint16_t)-1)) { /* overlong */
             UNWIF_compat_exc_t *e;
+            assert(UNWIF_compat_exc_size);
+#if 1
+            e = (UNWIF_compat_exc_t *)bsearch(&cp, &UNWIF_compat_exc,
+                    UNWIF_compat_exc_size, sizeof(UNWIF_compat_exc[0]), _bsearch_exc);
+            if (e) {
+                size_t l = wcslen(e->v);
+                memcpy(dest, e->v, (l+1)*sizeof(wchar_t)); /* incl \0 */
+                return (int)l;
+            }
+#else
             for (e=(UNWIF_compat_exc_t*)UNWIF_compat_exc; e->cp; e++) {
                 if (cp == e->cp) {
                     size_t l = wcslen(e->v);
@@ -200,11 +236,12 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
                     }
                     /*assert(l < dmax);*/
                     memcpy(dest, e->v, (l+1)*sizeof(wchar_t)); /* incl \0 */
-                    return l;
+                    return (int)l;
                 }
                 else if (cp < e->cp)
                     break;
             }
+#endif
             return 0;
         }
         else {
@@ -268,6 +305,7 @@ EXPORT int
 _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool iscompat)
 {
     /*assert(dmax > 4);*/
+
     /* The costly is_HANGUL_cp_high(cp) checks also all composing chars.
        Hangul_IsS only for the valid start points. Which we can do here. */
     if (Hangul_IsS(cp)) {
@@ -286,9 +324,9 @@ _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool isco
 
 /* canonical ordering of combining characters (c.c.). */
 typedef struct {
-    uint8_t cc;	/* combining class */
-    wint_t  cp;	/* codepoint */
-    size_t  pos; /* position */
+    uint8_t  cc;  /* combining class */
+    wint_t cp;  /* codepoint */
+    size_t   pos; /* position */
 } UNWIF_cc;
 
 /* rc = wcsnorm_reorder_s(tmp, len+1, dest); */
@@ -313,11 +351,9 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
                    NULL, ESZEROL);
 	return 0;
     }
-#if SIZEOF_WCHAR_T > 2
     if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
 	return -(ESLEMAX);
     }
-#endif
 
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
 	wint_t lindex = cp  - Hangul_LBase;
@@ -340,6 +376,8 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
         return 0;
     /* no indirection here, but search in the composition lists */
     /* only 16 lists 011099-01d1bc need uint32, the rest can be short, uint16 */
+    /* TODO: above which length is bsearch faster?
+       But then we'd need to store the lengths also */
     if (likely(cp < UNWIF_COMPLIST_FIRST_LONG)) {
         UNWIF_complist_s *i;
         for (i = (UNWIF_complist_s *)cell; i->nextchar; i++) {
@@ -424,6 +462,8 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
+    wint_t cp;
+    int c;
 
     if (lenp)
         *lenp = 0;
@@ -499,49 +539,55 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         overlap_bumper = src;
     
         while (dmax > 0) {
+            cp = _dec_w16(src);
             if (unlikely(dest == overlap_bumper)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
+            /* A surrogate pair can only represent max _UNICODE_MAX */
 #if SIZEOF_WCHAR_T > 2
-            if (unlikely(_UNICODE_MAX < *src)) {
+            if (unlikely(_UNICODE_MAX < cp)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                               "cp is too high",
                               ESLEMAX);
                 return ESLEMAX;
             }
 #endif
-            /* TODO benchmark */
-            if (1 /*|| isw_maybe_composed(*src) */) {
-                int c = _decomp_s(dest, dmax, *src, iscompat);
-                if (c > 0) {
-                    dest += c;
-                    dmax -= c;
-                } else if (c == 0) {
-                    *dest++ = *src;
-                    dmax--;
-                } else {
-                    handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
-                                  "decomposition error",
-                                  -c);
-                    return -c;
-                }
-                src++;
-            }
-            else {
-                *dest++ = *src++;
-                dmax--;
-            }
-            
-            if (*src == '\0')
+            if (!cp)
                 goto done;
+
+            c = _decomp_s(dest, dmax, cp, iscompat);
+            if (c > 0) {
+                dest += c;
+                dmax -= c;
+#if SIZEOF_WCHAR_T == 2
+                if (cp > 0xffff)
+                    src++;
+#endif                
+            } else if (c == 0) {
+#if SIZEOF_WCHAR_T == 2
+                if (cp > 0xffff) {
+                    *dest++ = *src++;
+                    dmax--;
+                }
+#endif
+                *dest++ = *src;
+                dmax--;
+            } else {
+                handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
+                              "decomposition error",
+                              -c);
+                return -c;
+            }
+            src++;
         }
     } else {
         overlap_bumper = dest;
 
         while (dmax > 0) {
+            cp = _dec_w16(src);
             if (unlikely(src == overlap_bumper)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                              "overlapping objects",
@@ -549,36 +595,40 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                 return RCNEGATE(ESOVRLP);
             }
 #if SIZEOF_WCHAR_T > 2
-            if (unlikely(_UNICODE_MAX < *src)) {
+            if (unlikely(_UNICODE_MAX < cp)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                               "cp is too high",
                               ESLEMAX);
-                return RCNEGATE(ESLEMAX);
+                return ESLEMAX;
             }
 #endif
-            if (1 /*|| isw_maybe_composed(*src) */) {
-                int c = _decomp_s(dest, dmax, *src, iscompat);
-                if (c > 0) {
-                    dest += c;
-                    dmax -= c;
-                } else if (c == 0) {
-                    *dest++ = *src;
-                    dmax--;
-                } else {
-                    handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
-                                  "decomposition error",
-                                  -c);
-                    return RCNEGATE(-c);
-                }
-                src++;
-            }
-            else {
-                *dest++ = *src++;
-                dmax--;
-            }
-            
-            if (*src == '\0')
+            if (!cp)
                 goto done;
+
+            c = _decomp_s(dest, dmax, cp, iscompat);
+            if (c > 0) {
+                dest += c;
+                dmax -= c;
+#if SIZEOF_WCHAR_T == 2
+                if (cp > 0xffff)
+                    src++;
+#endif                
+            } else if (c == 0) {
+#if SIZEOF_WCHAR_T == 2
+                if (cp > 0xffff) {
+                    *dest++ = *src++;
+                    dmax--;
+                }
+#endif
+                *dest++ = *src;
+                dmax--;
+            } else {
+                handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
+                              "decomposition error",
+                              -c);
+                return RCNEGATE(-c);
+            }
+            src++;
         }
     }
 
@@ -642,7 +692,12 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 
     while (p < e) {
 	uint8_t cur_cc;
-	wint_t cp = *p++;
+        wint_t cp = _dec_w16(p);
+        p++;
+#if SIZEOF_WCHAR_T == 2
+        if (cp > 0xffff)
+            p++;
+#endif
 
 	cur_cc = _combin_class(cp);
 	if (cur_cc != 0) {
@@ -682,15 +737,13 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 		qsort((void*)seq_ptr, cc_pos, sizeof(UNWIF_cc), _compare_cc);
 
 	    for (i = 0; i < cc_pos; i++) {
-		*dest++ = seq_ptr[i].cp;
-                dmax--;
+                _ENC_W16(dest, dmax, seq_ptr[i].cp);
 	    }
 	    cc_pos = 0;
 	}
 
 	if (cur_cc == 0) {
-	    *dest++ = cp;
-            dmax--;
+            _ENC_W16(dest, dmax, cp);
         }
 
         if (unlikely(!dmax)) {
@@ -702,7 +755,12 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
     }
     if (seq_ext)
 	free(seq_ext);
+    /* surrogate pairs can actually collapse */
+#if defined(SAFECLIB_STR_NULL_SLACK) && SIZEOF_WCHAR_T == 2
+    memset(dest, 0, dmax*sizeof(wchar_t));
+#else
     *dest = 0;
+#endif
     return EOK;
 }
 
@@ -754,7 +812,12 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 
     while (p < e) {
 	uint8_t cur_cc;
-	wint_t cp = *p++;
+        wint_t cp = _dec_w16(p);
+        p++;
+#if SIZEOF_WCHAR_T == 2
+        if (cp > 0xffff)
+            p++;
+#endif
 
 	cur_cc = _combin_class(cp);
 
@@ -766,8 +829,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 		    continue;
 	    }
 	    else {
-		*dest++ = cp;
-                dmax--;
+                _ENC_W16(dest, dmax, cp);
                 if (unlikely(!dmax)) {
                     handle_werror(orig_dest, orig_dmax, "wcsnorm_compose_s: "
                                   "dmax too small",
@@ -830,8 +892,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 	}
 
 	/* output */
-        *dest++ = cpS; /* starter (composed or not) */
-        dmax--;
+        _ENC_W16(dest, dmax, cpS); /* starter (composed or not) */
         if (unlikely(!dmax)) {
             handle_werror(orig_dest, orig_dmax, "wcsnorm_compose_s: "
                           "dmax too small",
@@ -839,10 +900,8 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
             return RCNEGATE(ESNOSPC);
         }
 
-        /* TODO surrogate pairs */
 	if (cc_pos == 1) {
-            *dest++ = *seq_ptr;
-            dmax--;
+            _ENC_W16(dest, dmax, *seq_ptr);
 	    cc_pos = 0;
 	} else if (cc_pos > 1) {
             memcpy(dest, seq_ptr, cc_pos*sizeof(wchar_t));

@@ -36,15 +36,6 @@
 #include <unistd.h> /* DEBUG */
 #include <assert.h>
 
-errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
-#ifndef HAVE_TOWLOWER
-EXTERN wint_t towlower(wint_t wc);
-#endif
-/* from wcsnorm_s.c */
-EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp,
-                     const bool iscompat);
-#define _UNICODE_MAX 0x10ffff
-
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
 static inline int
@@ -108,7 +99,7 @@ _is_lt_accented(wint_t wc) {
  */
 
 EXPORT errno_t
-wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         rsize_t *restrict lenp)
 {
     wchar_t *orig_dest;
@@ -170,10 +161,15 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
 
     while (*src && dmax > 0) {
         wchar_t tmp[4];
-        int c = iswfc(*src);
+        wint_t cp = _dec_w16((wchar_t *)src);
+        int c = iswfc(cp);
+#if SIZEOF_WCHAR_T == 2
+        if (cp > 0xffff)
+            src++;
+#endif
         if (unlikely(c > 1)) {
             /* can this be further decomposed? */
-            errno_t rc = towfc_s(tmp, 4, (wint_t)*src);
+            errno_t rc = towfc_s(tmp, 4, cp);
             if (rc < 0)
                 return rc;
             /* I-Dot for Turkish and Azeri */
@@ -186,22 +182,22 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
                 int i;
                 for (i=0; i<c; i++) {
                     int d;
+                    wint_t cp1 = _dec_w16(&tmp[i]);
 #if SIZEOF_WCHAR_T > 2
-                    if (unlikely(_UNICODE_MAX < tmp[i])) {
+                    if (unlikely(_UNICODE_MAX < cp1)) {
                         handle_werror(orig_dest, orig_dmax, "wcsfc_s: "
                                       "cp is too high",
                                       ESLEMAX);
                         return ESLEMAX;
                     }
 #endif
-                    d = _decomp_s(tmpd, 8, tmp[i], false);
+                    d = _decomp_s(tmpd, 8, cp1, false);
                     if (d) { /* decomp. max 4 */
                         memcpy(dest, tmpd, d*sizeof(wchar_t));
                         dest += d;
                         dmax -= d;
                     } else {
-                        *dest++ = tmp[i];
-                        dmax--;
+                        _ENC_W16(dest, dmax, cp1);
                     }
                 }
             } else {
@@ -287,7 +283,8 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
                     *dest++ = 0x131; src++; dmax--;
                 } else {
                   is_single:
-                    (void)_towfc_single(dest, (wint_t)*src++);
+                    (void)_towfc_single(dest, _dec_w16((wchar_t*)src));
+                    src++;
                     /* even if not found dest[0] still contains towlower */
                     dest++;
                     dmax--;
@@ -295,9 +292,12 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
             } else {
                 if (unlikely(dmax < 5))
                     goto too_small;
-                (void)_towfc_single(tmp, (wint_t)*src++);
-                if (tmp[0] >= 0xc0)
-                    c = _decomp_s(dest, dmax, tmp[0], false);
+                (void)_towfc_single(tmp, _dec_w16((wchar_t*)src));
+                src++;
+                if (tmp[0] >= 0xc0) {
+                    cp = _dec_w16(tmp);
+                    c = _decomp_s(dest, dmax, cp, false);
+                }
                 else
                     c = 0;
                 if (!c) {

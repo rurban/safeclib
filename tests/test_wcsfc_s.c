@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsfc_s
  * File 'wcsfc_s.c'
- * Lines executed:93.50% of 123
+ * Lines executed:93.70% of 127
  *
  *------------------------------------------------------------------
  */
@@ -334,10 +334,16 @@ int main()
 #endif
     for (wc=0xc0; wc<0x02fa20; wc++) {
         static wchar_t src[5];
+        wchar_t *dest = &src[0];
+        rsize_t dmax = 5;
         int c;
         rsize_t len;
-        src[0] = wc;
-        src[1] = 0;
+        if (wc == 0xd800) {
+            wc = 0xdfff;
+            continue;
+        }
+        _ENC_W16(dest, dmax, wc);
+        *dest = 0;
         c = iswfc(wc);
         /*debug_printf("%s %u  U+%04X\n", __FUNCTION__, __LINE__, (int)ind);*/
         rc = wcsfc_s(str, 5, src, &len);

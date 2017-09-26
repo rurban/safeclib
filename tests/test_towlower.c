@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-EXTERN wchar_t _towcase(wchar_t wc, int lower);
+EXTERN wint_t _towcase(wint_t wc, int lower);
 
 #define CFOLD "CaseFolding.txt"
 

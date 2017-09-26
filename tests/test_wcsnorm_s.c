@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsnorm_s
  * File 'wcsnorm_s.c'
- * Lines executed:78.49% of 344
+ * Lines executed:79.53% of 342
  *
  *------------------------------------------------------------------
  */
@@ -14,6 +14,12 @@
 #include <locale.h>
 
 #define LEN   ( 128 )
+
+#if SIZEOF_WCHAR_T > 2
+#define _dec_w16(src) *(src)
+#else
+EXTERN wint_t _dec_w16(wchar_t *src);
+#endif
 
 /*#define PERL_TEST*/
 /* Must have the same Unicode version 10, since 5.27.3
@@ -68,24 +74,34 @@ int main()
 # define OVMAX_WC L"\x11ffff"
 # define MAX_WC1  L"\x10fff0"
 #else
+    /* => capped at 0x10ffff */
 # define OVMAX_WC L"\xdbff" L"\xdfff"
 # define MAX_WC1  L"\xdb3f" L"\xdff0"
 #endif
 
     rc = wcsnorm_s(str, LEN, OVMAX_WC, WCSNORM_NFD, NULL);
+#if SIZEOF_WCHAR_T >= 4
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
+#else
+    ERR(EOK); /* cp collapses to 0x10ffff, decompose keeps it */
+    wcscpy(str1, L"\xd876" L"\xdfff");
+    WEXPSTR(&str[1], &str1[1]);
+    WCHECK_SLACK(&str[2], LEN-2);
+#endif
 
+#if SIZEOF_WCHAR_T >= 4
     rc = wcsnorm_decompose_s(str, LEN, OVMAX_WC, NULL, false);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
 
     rc = wcsnorm_decompose_s(str, LEN, OVMAX_WC, NULL, true);
-#ifdef HAVE_NORM_COMPAT
+# ifdef HAVE_NORM_COMPAT
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
-#else
+# else
     ERR(EOF);
+# endif
 #endif
 
     rc = wcsnorm_s(str, 4, MAX_WC1, WCSNORM_NFD, NULL);
@@ -278,7 +294,7 @@ int main()
 
     /* compat NFKD */
     /* echo "㈝" | unorm -n nfkd | iconv -t UTF-32LE | od -h */
-    rc = wcsnorm_s(str, LEN, L"\x321d", WCSNORM_NFKD, &ind);
+    rc = wcsnorm_s(str, LEN, L"\x321d", WCSNORM_NFKD, &ind); /* TODO wchar2 */
 #ifdef HAVE_NORM_COMPAT
     ERR(EOK);
     wcscpy(str1, L"(\x110b\x1169\x110c\x1165\x11ab)");
@@ -375,10 +391,16 @@ int main()
 #endif
     for (ind=0xc0; ind<0x02fa20; ind++) {
         static wchar_t src[5];
+        wchar_t *dest = &src[0];
+        rsize_t dmax = 5;
         rsize_t len;
-        src[0] = ind;
-        src[1] = 0;
-        rc = wcsnorm_s(str, 5, src, WCSNORM_NFD, &len);
+        if (ind == 0xd800) {
+            ind = 0xdfff;
+            continue;
+        }
+        _ENC_W16(dest, dmax, ind);
+        *dest = 0;
+        rc = wcsnorm_s(str, 10, src, WCSNORM_NFD, &len);
         if (rc || len < 1) {
             debug_printf("%s %u  Error %d U+%04X len=%ld ",
                          __FUNCTION__, __LINE__, (int)rc, (int)ind, (long)len);

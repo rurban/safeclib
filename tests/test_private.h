@@ -356,4 +356,20 @@
                " (lc_cat=%s, codeset=%s)\n", l, lc_cat, lang); \
     } else
 
+
+#if SIZEOF_WCHAR_T > 2
+#define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
+#else
+/* convert unicode codepoint to surrogate pair, advancing dest */
+#define _ENC_W16(dest,dmax,cp)                  \
+    if ((cp) < 0x10000) {                       \
+        *(dest)++ = (cp); (dmax)--;             \
+    } else {                                    \
+        *dest++ = 0xd800 + (((cp) >> 10) & 0x3ff);\
+        *dest++ = 0xdc00 + ((cp) & 0x3ff);      \
+        (dmax)--; (dmax)--;                     \
+    }
+
+#endif
+
 #endif /* __TEST_PRIVATE_H__ */

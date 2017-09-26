@@ -20,7 +20,7 @@
 EXTERN wint_t _towupper(wint_t wc);
 #endif
 
-EXTERN wchar_t _towcase(wchar_t wc, int lower);
+EXTERN wint_t _towcase(wint_t wc, int lower);
 
 #define GENCAT  "DerivedGeneralCategory.txt"
 #define CFOLD   "CaseFolding.txt"
