@@ -21,6 +21,8 @@ var safe__mem__lib_8h =
     [ "memzero32_s", "d8/d03/safe__mem__lib_8h.html#a713f1dc1760a1ae9092fce15745acd00", null ],
     [ "memchr_s", "d8/d03/safe__mem__lib_8h.html#ac3dfe8bcce4cff95e439da7f1509bd63", null ],
     [ "memrchr_s", "d8/d03/safe__mem__lib_8h.html#ab783d9be5a494fd4b47ccef3f9b29471", null ],
+    [ "timingsafe_bcmp", "d8/d03/safe__mem__lib_8h.html#aa43b67d1ffb76c001bf184c6f3e73271", null ],
+    [ "timingsafe_memcmp", "d8/d03/safe__mem__lib_8h.html#a368da6e27a5c2451a44df9a5d211fdfd", null ],
     [ "wmemcpy_s", "d8/d03/safe__mem__lib_8h.html#a43b33f733765f4630ec44f719eacfe41", null ],
     [ "wmemmove_s", "d8/d03/safe__mem__lib_8h.html#a5d48b67a8c6609359fd01fd1517c1d8a", null ],
     [ "wmemcmp_s", "d8/d03/safe__mem__lib_8h.html#a696699e5725ab26a98b34d3f9699464b", null ]

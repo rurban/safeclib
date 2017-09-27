@@ -6,6 +6,7 @@ var unwifcan_8h =
     [ "UNWIF_canon_LEN", "dc/d06/unwifcan_8h.html#a51513c2eab311a4ea2b3ef96f97e004d", null ],
     [ "UNWIF_canon_IDX", "dc/d06/unwifcan_8h.html#a850441566b372684eb1b23d5b95b9c4b", null ],
     [ "UNWIF_canon_PLANE_T", "dc/d06/unwifcan_8h.html#a7374053c053db9d328241b9a14230cbd", null ],
+    [ "UNWIF_canon_exc_size", "dc/d06/unwifcan_8h.html#a9c89ad3ccfd39682be5d67dccb37d6c5", null ],
     [ "UNWIF_canon_tbl_1", "dc/d06/unwifcan_8h.html#a1b3bbedf8c3b5e45ceea7364504b5a57", null ],
     [ "UNWIF_canon_tbl_2", "dc/d06/unwifcan_8h.html#ab1d9c5cf05545d11b0c6a74be2704dbe", null ],
     [ "UNWIF_canon_tbl_3", "dc/d06/unwifcan_8h.html#a57cdc574885c7b847d23b4b1283aa265", null ],

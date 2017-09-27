@@ -6,9 +6,9 @@ var searchData=
   ['invoke_5fsafe_5fmem_5fconstraint_5fhandler',['invoke_safe_mem_constraint_handler',['../d6/da6/safe__mem__constraint_8c.html#add0276a6e71652719dde97fbf8e5a7b6',1,'invoke_safe_mem_constraint_handler(const char *msg, void *ptr, errno_t error):&#160;safe_mem_constraint.c'],['../d4/d81/safe__mem__constraint_8h.html#a9b49cc73b106962dbeade80160404344',1,'invoke_safe_mem_constraint_handler(const char *msg, void *ptr, errno_t error):&#160;safe_mem_constraint.c']]],
   ['invoke_5fsafe_5fstr_5fconstraint_5fhandler',['invoke_safe_str_constraint_handler',['../d1/d53/safe__str__constraint_8c.html#a69a05b15bf6aeffa3982dc4ffc750e5d',1,'invoke_safe_str_constraint_handler(const char *msg, void *ptr, errno_t error):&#160;safe_str_constraint.c'],['../d2/d62/safe__str__constraint_8h.html#a876c14a8738557deab3770161e576480',1,'invoke_safe_str_constraint_handler(const char *msg, void *ptr, errno_t error):&#160;safe_str_constraint.c']]],
   ['is_5fhangul_5fcp_5fhigh',['is_HANGUL_cp_high',['../d5/dbc/hangul_8h.html#a6deea900a0f5268bac6ca99a94d11c87',1,'hangul.h']]],
-  ['iscomp2nd',['isComp2nd',['../db/dab/unwifexc_8h.html#ab1b8bbbb527a23039077147e7136efbb',1,'unwifexc.h']]],
-  ['isexclusion',['isExclusion',['../db/dab/unwifexc_8h.html#adf648241f551c8c6d52237abda88c70c',1,'unwifexc.h']]],
-  ['isnonstdecomp',['isNonStDecomp',['../db/dab/unwifexc_8h.html#abd82f796c60f210192ae1746da7ad79e',1,'unwifexc.h']]],
-  ['issingleton',['isSingleton',['../db/dab/unwifexc_8h.html#a51ad837401fa7575d75d40e5b975b0d1',1,'unwifexc.h']]],
+  ['iscomp2nd',['isComp2nd',['../d0/dd5/unw16ifexc_8h.html#ab1b8bbbb527a23039077147e7136efbb',1,'isComp2nd(wint_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#ab1b8bbbb527a23039077147e7136efbb',1,'isComp2nd(wint_t uv):&#160;unwifexc.h']]],
+  ['isexclusion',['isExclusion',['../d0/dd5/unw16ifexc_8h.html#adf648241f551c8c6d52237abda88c70c',1,'isExclusion(wint_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#adf648241f551c8c6d52237abda88c70c',1,'isExclusion(wint_t uv):&#160;unwifexc.h']]],
+  ['isnonstdecomp',['isNonStDecomp',['../d0/dd5/unw16ifexc_8h.html#abd82f796c60f210192ae1746da7ad79e',1,'isNonStDecomp(wint_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#abd82f796c60f210192ae1746da7ad79e',1,'isNonStDecomp(wint_t uv):&#160;unwifexc.h']]],
+  ['issingleton',['isSingleton',['../d0/dd5/unw16ifexc_8h.html#a51ad837401fa7575d75d40e5b975b0d1',1,'isSingleton(wint_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#a51ad837401fa7575d75d40e5b975b0d1',1,'isSingleton(wint_t uv):&#160;unwifexc.h']]],
   ['iswfc',['iswfc',['../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00',1,'towfc_s.c']]]
 ];

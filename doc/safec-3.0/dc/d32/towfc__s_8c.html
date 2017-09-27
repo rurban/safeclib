@@ -106,8 +106,8 @@ $(document).ready(function(){initNavTree('dc/d32/towfc__s_8c.html','../../');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7c994b7d5f3b3817cddfdebacf33ed52"><td class="memItemLeft" align="right" valign="top">wchar_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d32/towfc__s_8c.html#a7c994b7d5f3b3817cddfdebacf33ed52">_towcase</a> (wchar_t wc, int <a class="el" href="../../d8/dbe/towctrans_8c.html#ac13b052b7d9ebd654550edf0944ad270">lower</a>)</td></tr>
-<tr class="separator:a7c994b7d5f3b3817cddfdebacf33ed52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10d3688cdc518750915f109ab77f7ea7"><td class="memItemLeft" align="right" valign="top">wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d32/towfc__s_8c.html#a10d3688cdc518750915f109ab77f7ea7">_towcase</a> (wint_t wc, int <a class="el" href="../../d8/dbe/towctrans_8c.html#ac13b052b7d9ebd654550edf0944ad270">lower</a>)</td></tr>
+<tr class="separator:a10d3688cdc518750915f109ab77f7ea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1181e32e32d8033baab847608b84c00"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00">iswfc</a> (wint_t wc)</td></tr>
 <tr class="separator:ae1181e32e32d8033baab847608b84c00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4ab25fd67f8da0edb8c6ec1a6c90ba1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d32/towfc__s_8c.html#af4ab25fd67f8da0edb8c6ec1a6c90ba1">_towfc_single</a> (wchar_t *restrict dest, const wint_t src)</td></tr>
@@ -141,16 +141,16 @@ Variables</h2></td></tr>
 <tr class="separator:a0809e187b0588b93d9a15d118e30e3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a7c994b7d5f3b3817cddfdebacf33ed52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c994b7d5f3b3817cddfdebacf33ed52">&#9670;&nbsp;</a></span>_towcase()</h2>
+<a id="a10d3688cdc518750915f109ab77f7ea7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10d3688cdc518750915f109ab77f7ea7">&#9670;&nbsp;</a></span>_towcase()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">wchar_t _towcase </td>
+          <td class="memname">wint_t _towcase </td>
           <td>(</td>
-          <td class="paramtype">wchar_t&#160;</td>
+          <td class="paramtype">wint_t&#160;</td>
           <td class="paramname"><em>wc</em>, </td>
         </tr>
         <tr>
@@ -280,9 +280,9 @@ dmax shall not be greater than RSIZE_MAX_WSTR.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00">iswfc()</a>, <a class="el" href="../../d9/d47/wcsfc__s_8c.html#a3536c75d34ec2b3785b6bccc6061b052" title="Converts the wide string via full case-folding normalized to lowercase. ">wcsfc_s()</a>, <a class="el" href="../../d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce">towlower()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00">iswfc()</a>, <a class="el" href="../../d9/d47/wcsfc__s_8c.html#a692cc4f6619a725907aa0b227f443950" title="Converts the wide string via full case-folding normalized to lowercase. ">wcsfc_s()</a>, <a class="el" href="../../d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce">towlower()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../dc/d32/towfc__s_8c_source.html#l00385">385</a> of file <a class="el" href="../../dc/d32/towfc__s_8c_source.html">towfc_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../dc/d32/towfc__s_8c_source.html#l00400">400</a> of file <a class="el" href="../../dc/d32/towfc__s_8c_source.html">towfc_s.c</a>.</p>
 
 </div>
 </div>
@@ -364,7 +364,7 @@ dmax shall not be greater than RSIZE_MAX_WSTR.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d32/towfc__s_8c.html#a641c8489795192bd197158bb662de3c3" title="towfc_s() converts a wide character to fully fold-cased (lowercased with possible expansions)...">towfc_s()</a>, <a class="el" href="../../d9/d47/wcsfc__s_8c.html#a3536c75d34ec2b3785b6bccc6061b052" title="Converts the wide string via full case-folding normalized to lowercase. ">wcsfc_s()</a>, <a class="el" href="../../d8/dbe/towctrans_8c.html#a4f34aecc26d74e8ab8aa14e1995910b9">towupper()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d32/towfc__s_8c.html#a641c8489795192bd197158bb662de3c3" title="towfc_s() converts a wide character to fully fold-cased (lowercased with possible expansions)...">towfc_s()</a>, <a class="el" href="../../d9/d47/wcsfc__s_8c.html#a692cc4f6619a725907aa0b227f443950" title="Converts the wide string via full case-folding normalized to lowercase. ">wcsfc_s()</a>, <a class="el" href="../../d8/dbe/towctrans_8c.html#a4f34aecc26d74e8ab8aa14e1995910b9">towupper()</a> </dd></dl>
 
 </div>
 </div>
@@ -401,6 +401,6 @@ dmax shall not be greater than RSIZE_MAX_WSTR.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.216-g2422a2 3.0
+Generated for Safe C Library 30082017.227-g01d729 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

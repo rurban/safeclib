@@ -2,7 +2,7 @@ var towctrans_8c =
 [
     [ "CASEMAP", "d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e", null ],
     [ "CASELACE", "d8/dbe/towctrans_8c.html#a6b1d06ec45db25df0cd9d19536f220a6", null ],
-    [ "_towcase", "d8/dbe/towctrans_8c.html#adf6ad182c7f8c0611a76abc74422f812", null ],
+    [ "_towcase", "d8/dbe/towctrans_8c.html#a3187adc2ff392bf78295dedf88f12b1d", null ],
     [ "_towupper", "d8/dbe/towctrans_8c.html#aefa485be22f5a203780de336d70a91b6", null ],
     [ "towupper", "d8/dbe/towctrans_8c.html#a4f34aecc26d74e8ab8aa14e1995910b9", null ],
     [ "towlower", "d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce", null ],

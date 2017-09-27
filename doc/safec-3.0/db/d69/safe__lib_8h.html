@@ -253,7 +253,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../db/d69/safe__lib_8h_source.html#l00090">90</a> of file <a class="el" href="../../db/d69/safe__lib_8h_source.html">safe_lib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../db/d69/safe__lib_8h_source.html#l00087">87</a> of file <a class="el" href="../../db/d69/safe__lib_8h_source.html">safe_lib.h</a>.</p>
 
 </div>
 </div>
@@ -269,7 +269,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../db/d69/safe__lib_8h_source.html#l00097">97</a> of file <a class="el" href="../../db/d69/safe__lib_8h_source.html">safe_lib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../db/d69/safe__lib_8h_source.html#l00094">94</a> of file <a class="el" href="../../db/d69/safe__lib_8h_source.html">safe_lib.h</a>.</p>
 
 </div>
 </div>
@@ -959,7 +959,7 @@ dmax shall not be less than 26 and greater than RSIZE_MAX_STR.</dd></dl>
 </div><div class="memdoc">
 
 <p>The <code>getenv_s</code> function searches for an environmental variable with name name in the host-specified environment list and returns a pointer to the string that is associated with the matched environment variable. </p>
-<p>The set of environmental variables and methods of altering it are implementation-defined. The value of the environment variable is written to the user-provided buffer value (unless null) and the number of bytes written is stored in the user-provided location *len (unless null). If the environment variable is not set in the environment, zero is written to *len (unless null) and '\0' is written to value[0] (unless null). With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled.</p>
+<p>The set of environmental variables and methods of altering it are implementation-defined. The value of the environment variable is written to the user-provided buffer value (unless null) and the number of bytes written is stored in the user-provided location *len (unless null). If the environment variable is not set in the environment, zero is written to *len (unless null) and '\0' is written to value[0] (unless null). With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled. If <code>secure_getenv()</code> is available, it is used.</p>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.6.2.1 The getenv_s function (p: 607-607) <a href="http://en.cppreference.com/w/c/program/getenv">http://en.cppreference.com/w/c/program/getenv</a></li>
 </ul>
@@ -1132,6 +1132,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.216-g2422a2 3.0
+Generated for Safe C Library 30082017.227-g01d729 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

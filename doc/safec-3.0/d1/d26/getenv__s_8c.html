@@ -88,7 +88,6 @@ $(document).ready(function(){initNavTree('d1/d26/getenv__s_8c.html','../../');})
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
-<code>#include &lt;stdlib.h&gt;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for getenv_s.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -96,7 +95,7 @@ $(document).ready(function(){initNavTree('d1/d26/getenv__s_8c.html','../../');})
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../d3/dc6/getenv__s_8c__incl.png" border="0" usemap="#getenv__s_8c" alt=""/></div>
 <map name="getenv__s_8c" id="getenv__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="218,80,318,107"/>
+<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="259,80,359,107"/>
 </map>
 </div>
 </div>
@@ -148,7 +147,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The <code>getenv_s</code> function searches for an environmental variable with name name in the host-specified environment list and returns a pointer to the string that is associated with the matched environment variable. </p>
-<p>The set of environmental variables and methods of altering it are implementation-defined. The value of the environment variable is written to the user-provided buffer value (unless null) and the number of bytes written is stored in the user-provided location *len (unless null). If the environment variable is not set in the environment, zero is written to *len (unless null) and '\0' is written to value[0] (unless null). With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled.</p>
+<p>The set of environmental variables and methods of altering it are implementation-defined. The value of the environment variable is written to the user-provided buffer value (unless null) and the number of bytes written is stored in the user-provided location *len (unless null). If the environment variable is not set in the environment, zero is written to *len (unless null) and '\0' is written to value[0] (unless null). With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled. If <code>secure_getenv()</code> is available, it is used.</p>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.6.2.1 The getenv_s function (p: 607-607) <a href="http://en.cppreference.com/w/c/program/getenv">http://en.cppreference.com/w/c/program/getenv</a></li>
 </ul>
@@ -189,6 +188,6 @@ dmax shall be greater than the strlen of the returned env value.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.216-g2422a2 3.0
+Generated for Safe C Library 30082017.227-g01d729 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
