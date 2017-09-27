@@ -48,6 +48,7 @@
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written in the
  *    array of dmax characters pointed to by dest are nulled.
+ *    If \c secure_getenv() is available, it is used.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -112,7 +113,11 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
     }
 
     errno = 0;
+#ifdef HAVE_SECURE_GETENV
+    buf = secure_getenv(name);
+#else
     buf = getenv(name);
+#endif
 
     if (unlikely(buf == NULL)) {
         char errstr[128] = "getenv_s: ";
