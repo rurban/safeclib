@@ -182,6 +182,8 @@ int test_fwscanf_s (void)
         ERR(14); /* older glibc upstream bug */
         ERRNO(0);
     }
+#elif defined __CYGWIN__
+    ERR(1);
 #else
     ERR(-1);
 #endif
