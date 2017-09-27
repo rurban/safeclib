@@ -97,7 +97,12 @@ int test_fprintf_s (void)
         ERRNO(0);
     }
 #else
-    ERR(-1);
+    /* musl returns 14, all other -1 */
+    if (rc != 14 && rc != -1) {
+        debug_printf("%s %u  Error rc=%d \n",
+                     __FUNCTION__, __LINE__,  (int)rc);
+        errs++;
+    }
 #endif
     /* musl throws no error */
 
