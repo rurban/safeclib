@@ -60,15 +60,30 @@
 
 #include "config.h"
 
+#if defined(HAVE_SECURE_GETENV)
+# ifdef _GNU_SOURCE
+#  define _GNU_SOURCE_WAS_DEFINED
+# else
+#  define _GNU_SOURCE
+# endif
+#endif
 #include <stdio.h>
 #ifdef STDC_HEADERS
 # include <ctype.h>
 # include <stdlib.h>
+# ifndef _GNU_SOURCE_WAS_DEFINED
+#  undef _GNU_SOURCE
+# else
+#  undef _GNU_SOURCE_WAS_DEFINED
+# endif
 # include <stddef.h>
 # include <stdarg.h>
 #else
 /* newlib, cygwin64 has no STDC_HEADERS */
 # ifdef HAVE_STDLIB_H
+#  ifdef HAVE_SECURE_GETENV
+#   define _GNU_SOURCE
+#  endif
 #  include <stdlib.h>
 # else
 /* cygwin64 */
