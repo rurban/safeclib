@@ -129,7 +129,7 @@ if test "x$enable_gcov" = "xtrue" ; then
 	GCOV_LIBS=-lgcov
 	AC_SUBST(GCOV_LIBS)
 else
-	AC_MSG_RESULT([no])
+	AC_MSG_RESULT([no (default)])
 fi
 AM_CONDITIONAL(ENABLE_GCOV, test "x$enable_gcov" = "xtrue")
 
@@ -198,7 +198,7 @@ if test "x$enable_extensions" = "xfalse" ; then
 	AC_MSG_RESULT([yes])
 	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTENSIONS 1"
 else
-	AC_MSG_RESULT([no])
+	AC_MSG_RESULT([no (default)])
 	INSERT_EXTS="#undef SAFECLIB_DISABLE_EXTENSIONS"
 fi
 #	AC_DEFINE([SAFECLIB_DISABLE_EXTENSIONS], [ 1 ],
