@@ -317,7 +317,9 @@
     if (!lc_cat)                                        \
         lc_cat = setlocale(LC_CTYPE, "UTF-8");          \
     if (!lc_cat)                                        \
-        lc_cat = setlocale(LC_CTYPE, "")
+        lc_cat = setlocale(LC_CTYPE, "")                \
+    debug_printf(__FILE__ ": set locale %s "            \
+        "lc_cat=%s, codeset=%s\n", lc, lc_cat, lang)
 
 #define SETLOCALE(lc)                                   \
     lc_cat = setlocale(LC_CTYPE, lc);                   \

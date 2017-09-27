@@ -33,7 +33,8 @@
 #ifdef HAVE_WCHAR_H
 
 #if defined(__CYGWIN__) && defined(__x86_64)
-#define wcstombs(dest, src, len) wcsrtombs((dest), &(src), (len), &st)
+#define wcstombs(dest, src, len) \
+    wcsrtombs((dest), (const wchar_t ** restrict)&(src), (len), &st)
 #endif
 
 

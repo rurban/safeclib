@@ -37,7 +37,8 @@
  */
 
 #if defined(__CYGWIN__) && defined(__x86_64)
-#define mbstowcs(dest, src, len) mbsrtowcs((dest), &(src), (len), &st)
+#define mbstowcs(dest, src, len) \
+    mbsrtowcs((dest), (const char ** restrict)&(src), (len), &st)
 #endif
 
 /**
