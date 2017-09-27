@@ -458,6 +458,7 @@ dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
+                bcmp \
                 asctime_r ctime_r gmtime_r localtime_r memcpy_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AX_GCC_BUILTIN(__builtin_ctz)

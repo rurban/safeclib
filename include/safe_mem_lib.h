@@ -137,20 +137,20 @@ EXTERN errno_t
 memrchr_s(const void *restrict dest, rsize_t dlen,
           const int ch, void **result);
 
-/* possible extensions: */
-#if 0
+/* timing-safe byte sequence comparisons (OpenBSD) */
+EXTERN int
+timingsafe_bcmp(const void *b1, const void *b2, size_t n);
 
+EXTERN int
+timingsafe_memcmp(const void *b1, const void *b2, size_t len);
+
+/* possible extensions: */
+
+#if 0
 /* freebsd:
    copy string until character found */
 EXTERN errno_t
 memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n);
-
-/* timing-safe byte sequence comparisons */
-EXTERN int
-timingsafe_bcmp(const void *b1, const void *b2, size_t len);
-
-EXTERN int
-timingsafe_memcmp(const void *b1, const void *b2, size_t len);
 
 #endif
 
