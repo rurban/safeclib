@@ -317,9 +317,9 @@
     if (!lc_cat)                                        \
         lc_cat = setlocale(LC_CTYPE, "UTF-8");          \
     if (!lc_cat)                                        \
-        lc_cat = setlocale(LC_CTYPE, "")                \
+        lc_cat = setlocale(LC_CTYPE, "");               \
     debug_printf(__FILE__ ": set locale %s "            \
-        "lc_cat=%s, codeset=%s\n", lc, lc_cat, lang)
+        "lc_cat=%s, codeset=%s\n", "UTF-8", lc_cat, lang)
 
 #define SETLOCALE(lc)                                   \
     lc_cat = setlocale(LC_CTYPE, lc);                   \
@@ -352,8 +352,8 @@
         printf(__FILE__ ": cannot test locale C" \
                " (lc_cat=%s, codeset=%s)\n", lc_cat, lang)
 
-#define CHKLOCALE(l)                             \
-    if (!lc_cat || strncmp(lc_cat, l, 2)) {                 \
+#define CHKLOCALE(l)                              \
+    if (!lc_cat || !strstr(lc_cat, l)) {          \
         printf(__FILE__ ": cannot test locale %s" \
                " (lc_cat=%s, codeset=%s)\n", l, lc_cat, lang); \
     } else

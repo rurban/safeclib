@@ -94,11 +94,7 @@ int test_mbstowcs_s (void)
 
     SETLOCALE_UTF8;
     SETLANG("default");
-    if (strcmp(lang, "UTF-8")) {
-        printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (category=%s, codeset=%s)\n", lc_cat, lang);
-        return 0;
-    }
+    CHKLOCALE("UTF-8");
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xe2\x86\x92" "abc",cs), 32);
     /* TODO: EILSEQ with cygwin64 */

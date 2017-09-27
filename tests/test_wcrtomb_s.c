@@ -120,12 +120,8 @@ int test_wcrtomb_s (void)
     CLRPS;
 
     SETLOCALE_UTF8;
-    SETLANG("UTF-8");
-    if (!strstr(lang, "UTF-8")) {
-        printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (codeset=%s)\n", lang);
-        return 0;
-    }
+    SETLANG("default");
+    CHKLOCALE("UTF-8");
 
     /* overlarge utf-8 sequence */
     rc = wcrtomb_s(&ind, dest, 2, L'\x2219', &ps);

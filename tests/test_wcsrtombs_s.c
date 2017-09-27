@@ -161,12 +161,8 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     SETLOCALE_UTF8;
-    SETLANG("UTF-8");
-    if (!strstr(lang, "UTF-8")) {
-        printf(__FILE__ ": cannot set UTF-8 locale for test"
-               " (codeset=%s)\n", lang);
-        return 0;
-    }
+    SETLANG("default");
+    CHKLOCALE("UTF-8");
 
     /* illegal sequences (locale independent) */
 
