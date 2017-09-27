@@ -156,7 +156,8 @@ SAFEC_BUILT_TESTS += \
 	t_strzero_s	      \
 	t_strcoll_s	      \
 	t_timingsafe_memcmp   \
-	t_timingsafe_bcmp
+	t_timingsafe_bcmp     \
+	t_memccpy_s
 endif
 
 # 	t_vsscanf_s
@@ -369,6 +370,7 @@ t_strnset_s_SOURCES           = test_strnset_s.c $(SAFEC_TEST_COMMON)
 t_strcoll_s_SOURCES           = test_strcoll_s.c $(SAFEC_TEST_COMMON)
 t_timingsafe_memcmp_SOURCES   = test_timingsafe_memcmp.c $(SAFEC_TEST_COMMON)
 t_timingsafe_bcmp_SOURCES     = test_timingsafe_bcmp.c $(SAFEC_TEST_COMMON)
+t_memccpy_s_SOURCES           = test_memccpy_s.c $(SAFEC_TEST_COMMON)
 endif
 
 if ENABLE_UNSAFE

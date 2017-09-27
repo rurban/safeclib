@@ -61,7 +61,8 @@ EXT_MEM_FILES = \
 	extmem/memchr_s.c	\
 	extmem/memrchr_s.c	\
 	extmem/timingsafe_memcmp.c	\
-	extmem/timingsafe_bcmp.c
+	extmem/timingsafe_bcmp.c	\
+	extmem/memccpy_s.c
 
 STD_STR_FILES = \
 	str/safe_str_constraint.h \

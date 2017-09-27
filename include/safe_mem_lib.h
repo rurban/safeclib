@@ -144,15 +144,9 @@ timingsafe_bcmp(const void *b1, const void *b2, size_t n);
 EXTERN int
 timingsafe_memcmp(const void *b1, const void *b2, size_t len);
 
-/* possible extensions: */
-
-#if 0
-/* freebsd:
-   copy string until character found */
+/* copy string until character found (FreeBSD) */
 EXTERN errno_t
 memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n);
-
-#endif
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

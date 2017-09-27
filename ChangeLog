@@ -53,7 +53,8 @@ Changes in vxx092017 3.0.0
         strings.
         - Added --enable-norm-compat to enable the big compatbility modes NFKD, NFKC
         for wcsnorm_s.
-        - Added the timingsafe_bcmp and timingsafe_memcmp extensions from OpenBSD
+        - Added the timingsafe_bcmp and timingsafe_memcmp extensions from OpenBSD,
+        and memccpy_s derived from FreeBSD.
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.
