@@ -20,6 +20,7 @@ var files =
     [ "mbstowcs_s.c", "d9/d3d/mbstowcs__s_8c.html", null ],
     [ "mem_primitives_lib.c", "d8/dd8/mem__primitives__lib_8c.html", "d8/dd8/mem__primitives__lib_8c" ],
     [ "mem_primitives_lib.h", "da/d8c/mem__primitives__lib_8h.html", "da/d8c/mem__primitives__lib_8h" ],
+    [ "memccpy_s.c", "d2/d61/memccpy__s_8c.html", "d2/d61/memccpy__s_8c" ],
     [ "memchr_s.c", "d7/d0e/memchr__s_8c.html", "d7/d0e/memchr__s_8c" ],
     [ "memcmp16_s.c", "d2/df8/memcmp16__s_8c.html", "d2/df8/memcmp16__s_8c" ],
     [ "memcmp32_s.c", "de/df0/memcmp32__s_8c.html", "de/df0/memcmp32__s_8c" ],

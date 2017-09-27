@@ -177,6 +177,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a368da6e27a5c2451a44df9a5d211fdfd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a368da6e27a5c2451a44df9a5d211fdfd">timingsafe_memcmp</a> (const void *b1, const void *b2, size_t <a class="el" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>)</td></tr>
 <tr class="memdesc:a368da6e27a5c2451a44df9a5d211fdfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare all memory bytes.  <a href="#a368da6e27a5c2451a44df9a5d211fdfd">More...</a><br /></td></tr>
 <tr class="separator:a368da6e27a5c2451a44df9a5d211fdfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebe81f3402741d8beb417dfca8da74d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#aebe81f3402741d8beb417dfca8da74d1">memccpy_s</a> (void *dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const void *src, int c, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> n)</td></tr>
+<tr class="separator:aebe81f3402741d8beb417dfca8da74d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43b33f733765f4630ec44f719eacfe41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a43b33f733765f4630ec44f719eacfe41">wmemcpy_s</a> (wchar_t *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *restrict src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax)</td></tr>
 <tr class="separator:a43b33f733765f4630ec44f719eacfe41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d48b67a8c6609359fd01fd1517c1d8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a5d48b67a8c6609359fd01fd1517c1d8a">wmemmove_s</a> (wchar_t *dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax)</td></tr>
@@ -1618,6 +1620,52 @@ ch shall not be greater than 255</dd></dl>
 
 </div>
 </div>
+<a id="aebe81f3402741d8beb417dfca8da74d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebe81f3402741d8beb417dfca8da74d1">&#9670;&nbsp;</a></span>memccpy_s()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3">EXTERN</a> errno_t memccpy_s </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramname"><em>dmax</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a43b33f733765f4630ec44f719eacfe41"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a43b33f733765f4630ec44f719eacfe41">&#9670;&nbsp;</a></span>wmemcpy_s()</h2>
 
@@ -1814,6 +1862,6 @@ smax shall not be greater than dmax.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.227-g01d729 3.0
+Generated for Safe C Library 30082017.232-ga8d449 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

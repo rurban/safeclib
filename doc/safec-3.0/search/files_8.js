@@ -4,6 +4,7 @@ var searchData=
   ['mbstowcs_5fs_2ec',['mbstowcs_s.c',['../d9/d3d/mbstowcs__s_8c.html',1,'']]],
   ['mem_5fprimitives_5flib_2ec',['mem_primitives_lib.c',['../d8/dd8/mem__primitives__lib_8c.html',1,'']]],
   ['mem_5fprimitives_5flib_2eh',['mem_primitives_lib.h',['../da/d8c/mem__primitives__lib_8h.html',1,'']]],
+  ['memccpy_5fs_2ec',['memccpy_s.c',['../d2/d61/memccpy__s_8c.html',1,'']]],
   ['memchr_5fs_2ec',['memchr_s.c',['../d7/d0e/memchr__s_8c.html',1,'']]],
   ['memcmp16_5fs_2ec',['memcmp16_s.c',['../d2/df8/memcmp16__s_8c.html',1,'']]],
   ['memcmp32_5fs_2ec',['memcmp32_s.c',['../de/df0/memcmp32__s_8c.html',1,'']]],
