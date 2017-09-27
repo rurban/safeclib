@@ -21,6 +21,7 @@ matrix:
 branches:
   except:
   - /^v[0-9]+/
+  - appveyor
 
 install:
   - build-tools/autogen.sh

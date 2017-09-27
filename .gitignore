@@ -9,7 +9,11 @@
 #
 # Normal rules
 #
-.*
+.libs
+.deps
+.dirstamp
+.gdbinit
+.version
 *.o
 *.o.*
 *.lo
