@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_vfwscanf_s
  * File 'wchar/vfwscanf_s.c'
- * Lines executed:100.00% of 21
+ * Lines executed:85.71% of 21
  *
  *------------------------------------------------------------------
  */
@@ -190,13 +190,15 @@ static int test_vfwscanf_s (void)
 
 /*--------------------------------------------------*/
 
+    /* TODO: we want to test a vfwscanf error propagated through vfwscanf_s.
+       The only error is EOF(stream), but this is blocking.
+       Reading from a closed stream is platform dependent.
+     */
     fclose(stream);
+    close(p[1]);
+#if 0
+    rc = vtwscanf_s(f, L"%ls", wstr2, LEN);
 
-    wcscpy(wstr1, L"qqweqq");
-    wcscpy(wstr2, L"1");
-    stuff_stream(wstr1);
-
-    rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
 #if defined(__GLIBC__)
     if (rc < 0) {
         ERR(-1);
@@ -211,10 +213,10 @@ static int test_vfwscanf_s (void)
     ERR(-1);
 #endif
     /*WEXPNULL(wstr2); TODO zero the output args */
+#endif
 
 /*--------------------------------------------------*/
     
-    close(p[1]);
     unlink(TMP);
     
     return (errs);

@@ -3,7 +3,6 @@
  * File 'extstr/strremovews_s.c'
  * Lines executed:100.00% of 36
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -18,7 +17,7 @@ int main()
     int ind;
 
     uint32_t len;
-    char   str[LEN];
+    char str[LEN];
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -35,10 +34,10 @@ int main()
 
     len = 99999;
     rc = strremovews_s("test", len);
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
 /*--------------------------------------------------*/
 
-    strzero_s(str, LEN);
+    memset(str, 0, LEN);
     strcpy (str, "ABCDEFGHIJK");
     len = 1;
     rc = strremovews_s(str, len);

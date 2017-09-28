@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_vsnwprintf_s
  * File 'wchar/vsnwprintf_s.c'
- * Lines executed:100.00% of 42
+ * Lines executed:83.33% of 42
  *
  *------------------------------------------------------------------
  */
@@ -195,9 +195,10 @@ int test_vsnwprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    /* crashes with g++ -std=c11 */
-#ifndef __cplusplus
+    /* crashes with g++ -std=c11 or darwin clang-mp-4.0 -std=c99 */
+#if !defined(__cplusplus) && !defined( __APPLE__)
 
+    /* XXX valgrind error in __vfprintf */
     rc = vtwprintf_s(str1, 10, L"%vls", str2);
 #if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
     /* they print unknown formats verbatim */
@@ -210,6 +211,7 @@ int test_vsnwprintf_s (void)
 
     {
         wchar_t *wstr3;
+        *str1 = 0;
         /* not the fast stack-branch */
         wstr3 = (wchar_t*)malloc(513);
         rc = vtwprintf_s(wstr3, 513, L"%vls", str1);

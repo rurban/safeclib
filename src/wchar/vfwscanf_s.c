@@ -66,6 +66,9 @@ any of the arguments corresponding to %s is a null pointer.
  *         was assigned or if there is a runtime constraint
  *         violation.
  *
+ * @todo   When an argument is not assigned to, it should be zero'd
+ *         (not yet).
+ *
  * @retval  > 0  on success, the number of arguments assigned
  * @retval  EOF  on error
  *
@@ -125,6 +128,7 @@ vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
         char errstr[128] = "vfwscanf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
+        /* TODO: zero the out args */
     }
 
     return ret;

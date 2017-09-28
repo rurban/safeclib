@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_fwscanf_s
  * File 'wchar/fwscanf_s.c'
- * Lines executed:100.00% of 23
+ * Lines executed:86.96% of 23
  *
  *------------------------------------------------------------------
  */
@@ -168,17 +168,23 @@ int test_fwscanf_s (void)
 
 /*--------------------------------------------------*/
 
+    /* TODO: we want to test a vfwscanf error propagated through vfwscanf_s.
+       The only error is EOF(stream), but this is blocking.
+       Reading from a closed stream is platform dependent.
+     */
     fclose(stream);
+    close(p[1]);
 
+#if 0
     wcscpy(wstr1, L"qqweqq");
     stuff_stream(wstr1);
 
-    rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
+    rc = fwscanf_s(f, L"%ls", wstr2, LEN);
 #if defined(__GLIBC__)
     if (rc < 0) {
         ERR(-1);
         ERRNO(EBADF);
-    } else {
+    } else { /* TODO: reads from closed pipe */
         ERR(14); /* older glibc upstream bug */
         ERRNO(0);
     }
@@ -188,10 +194,10 @@ int test_fwscanf_s (void)
     ERR(-1);
 #endif
     /*WEXPNULL(wstr2); TODO zero the output args */
+#endif
 
 /*--------------------------------------------------*/
 
-    close(p[1]);
     unlink(TMP);
     
     return (errs);

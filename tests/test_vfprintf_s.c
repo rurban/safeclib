@@ -103,9 +103,10 @@ int test_vfprintf_s (void)
 
     fclose(out);
 
-    /* print to closed stream */
+    /* print to closed stream: unportable, and not valgrind-safe */
+#ifndef __GLIBC__
     rc = vtfprintf_s(out, "%s", str1);
-#if defined(__GLIBC__)
+# if defined(__GLIBC__)
     if (rc < 0) {
         ERR(-1);
         ERRNO(EBADF);
@@ -114,10 +115,11 @@ int test_vfprintf_s (void)
         NOERR();
         ERRNO(0);
     }
-#elif defined BSD_ALL_LIKE
+# elif defined BSD_ALL_LIKE
     ERR(-1);
-#else
+# else
     /* musl throws no error */
+# endif
 #endif
     
     unlink(TMP);

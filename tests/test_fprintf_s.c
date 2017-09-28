@@ -86,9 +86,10 @@ int test_fprintf_s (void)
 
     fclose(out);
 
-    /* print to closed stream */
+    /* print to closed stream: unportable, and not valgrind-safe */
+#ifndef __GLIBC__
     rc = fprintf_s(out, "%s", str);
-#if defined(__GLIBC__)
+# if defined(__GLIBC__)
     if (rc < 0) {
         ERR(-1);
         ERRNO(EBADF);
@@ -96,15 +97,16 @@ int test_fprintf_s (void)
         ERR(14); /* older glibc upstream bug */
         ERRNO(0);
     }
-#else
+# else
     /* musl returns 14, all other -1 */
     if (rc != 14 && rc != -1) {
         debug_printf("%s %u  Error rc=%d \n",
                      __FUNCTION__, __LINE__,  (int)rc);
         errs++;
     }
-#endif
+# endif
     /* musl throws no error */
+#endif
 
     unlink(TMP);
         
