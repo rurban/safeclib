@@ -355,6 +355,15 @@ if test -z "POD2MAN";
 fi
 AM_CONDITIONAL([HAVE_DSYMUTIL], [test -n "$ac_ct_DSYMUTIL"])
 
+case $host_os in
+  darwin*)
+    enable_valgrind_helgrind=no
+    enable_valgrind_drd=no
+    ;;
+esac
+AX_VALGRIND_DFLT([sgcheck],  [off])
+AX_VALGRIND_CHECK()
+
 # Checks for libraries
 # ===============================================
 # None

@@ -383,6 +383,10 @@ t_vsnwprintf_s_SOURCES        = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 
+@VALGRIND_CHECK_RULES@
+#VALGRIND_SUPPRESSIONS_FILES = $(PACKAGE).supp
+#EXTRA_DIST = $(PACKAGE).supp
+
 if HAVE_DSYMUTIL
 clean-local:
 	rm -rf *.dSYM

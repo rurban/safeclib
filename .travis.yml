@@ -6,7 +6,7 @@ os:
   - linux
   - osx
 env:
-  - XCC="gcc"
+  - XCC="gcc" CONF="--enable-debug --enable-norm-compat" VG=1
   - XCC="cc" CONF="--enable-unsafe"
   - XCC="clang" CONF="--disable-nullslack"
   - XCC="cc" CONF="--disable-extensions"
@@ -16,12 +16,18 @@ matrix:
   exclude:
   - env: XCC="gcc"
     env: TRAVIS_OS_NAME=osx
-
+  - env: XCC="cc"
+    env: TRAVIS_OS_NAME=osx
 
 branches:
   except:
   - /^v[0-9]+/
   - appveyor
+
+addons:
+  apt:
+    packages:
+    - valgrind
 
 install:
   - build-tools/autogen.sh
@@ -32,6 +38,7 @@ script:
   - CC="$XCC" ./configure $CONF
   - make -j4
   - make check || (cat tests/test-suite.log; false)
+  - if [ "$VG" = "1" ]; then make check-valgrind ; fi
 
 matrix:
   fast_finish: true
