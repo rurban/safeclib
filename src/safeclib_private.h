@@ -2,8 +2,10 @@
  * safeclib_private.h - Internal library references
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * 2017 Reini Urban
  *
  * Copyright (c) 2012, 2013 by Cisco Systems, Inc
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -59,6 +61,10 @@
 #else  /* !__KERNEL__ */
 
 #include "config.h"
+
+#if defined(__CYGWIN__) && defined(__x86_64)
+#define HAVE_CYGWIN64
+#endif
 
 #if defined(HAVE_SECURE_GETENV)
 # ifdef _GNU_SOURCE

@@ -66,13 +66,17 @@
 #endif
 
 #ifdef _WIN32
-#define __STRICT_ANSI__
-#include <io.h>
-#define pipe(p) _pipe(p,2,0)
+# define __STRICT_ANSI__
+# include <io.h>
+# define pipe(p) _pipe(p,2,0)
 #endif
 
-/* libc variant: musl not detectable. and there's __GLIBC__ and _WIN32.
-   uClibc? dietlibc? minilibc? exots? */
+#if defined(__CYGWIN__) && defined(__x86_64)
+# define HAVE_CYGWIN64
+#endif
+/* libc variants:
+   musl not detectable. and there's __GLIBC__ and _WIN32.
+   TODO uClibc? dietlibc? minilibc? exots? */
 #if defined(__FreeBSD__) || \
     defined(__NetBSD__)  || \
     defined(__OpenBSD__) || \
@@ -91,7 +95,7 @@
 #endif
 
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
-#  define NO_C11
+# define NO_C11
 #endif
 
 #if defined(__has_feature)

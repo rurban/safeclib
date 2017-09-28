@@ -96,15 +96,15 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xe2\x86\x92" "abc",cs), 32);
     {
     /* TODO: EILSEQ with cygwin64 */
-#if defined(__CYGWIN__) && defined(__x86_64)
+#ifdef HAVE_CYGWIN64
     int saveerrs = errs;
     const char *todo = "Todo";
 #else
     const char *todo = "Error";
 #endif
     if (rc != EOK) {
-        debug_printf("%s %u  %s rc=%d \n",
-                     __FUNCTION__, __LINE__, todo, (int)rc);
+        debug_printf("%s %u  %s rc=%d ind=%d\n",
+                     __FUNCTION__, __LINE__, todo, (int)rc, (int)ind);
         errs++;
     }
     if (ind != 4) {
@@ -123,7 +123,7 @@ int test_mbstowcs_s (void)
                __FUNCTION__, __LINE__, todo, (int)ind, rc, (long)dest[1]);
         errs++;
     }
-#if defined(__CYGWIN__) && defined(__x86_64)
+#ifdef HAVE_CYGWIN64
     if (errs)
         printf("TODO cygwin64 EILSEQ of \"\\xe2\\x86\\x92\"\n");
     errs = saveerrs;
@@ -133,11 +133,13 @@ int test_mbstowcs_s (void)
     /* illegal sequences (locale dependent) */
     
     /* illegal initial */
+#ifndef HAVE_CYGWIN64
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0",cs), 1);
     /* TODO and this is legal on cygwin64 */
     ERR(EILSEQ);
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
+#endif
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc2",cs), 1);
     ERR(EILSEQ);
