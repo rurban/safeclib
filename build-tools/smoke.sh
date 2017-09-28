@@ -9,8 +9,10 @@ gmake -s clean
 CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-CC="clang-mp-4.0 -std=c99" ./configure && \
+CC="clang-mp-4.0 -std=c99" \
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
+    gmake -s -j4 check-valgrind || exit
 CC="gcc-mp-4.3 -ansi" ./configure && \
     gmake -s -j4 check-log || exit
 CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
@@ -19,8 +21,9 @@ CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check-log || exit
 CC="g++-mp-6 -std=c++11" ./configure && \
     $make -s -j4 check-log || exit
-CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe \
-                        --enable-norm-compat && \
+CC=gcc-mp-6 \
+    ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe \
+                --enable-norm-compat && \
     $make -s -j4 gcov
 $make clean
 #clang++ not
@@ -33,10 +36,12 @@ Linux)
 
 make -s clean
 CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" \
-   ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-CC="clang-4.0 -std=c99" ./configure && \
+CC="clang-4.0 -std=c99" \
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
+    make -s -j4 check-valgrind || exit
 CC="gcc-4.4 -ansi" ./configure && \
     make -s -j4 check-log || exit
 CC="gcc-4.4 -std=iso9899:199409" ./configure && \
@@ -76,7 +81,8 @@ CC="cc -m32" ./configure && \
     $make -s -j4 && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
-        for t in tests/.libs/t_*.exe; do wine $t | tee tests/${t:12}.log; done
+        for t in tests/.libs/t_*.exe; do
+          b=$(basename $t); wine $t | tee tests/$b.log; done
         rm *.dll
     fi
     $make clean
@@ -84,7 +90,8 @@ CC="cc -m32" ./configure && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
-        for t in tests/.libs/t_*.exe; do wine $t | tee tests/${t:12}.log; done
+        for t in tests/.libs/t_*.exe; do
+          b=$(basename $t); wine $t | tee tests/$b.log; done
         rm *.dll
     fi
     $make clean
@@ -93,7 +100,8 @@ CC="cc -m32" ./configure && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
-        for t in tests/.libs/t_*.exe; do wine $t | tee tests/${t:12}.log; done
+        for t in tests/.libs/t_*.exe; do
+          b=$(basename $t); wine $t | tee tests/$b.log; done
         rm *.dll
     fi
     $make clean
