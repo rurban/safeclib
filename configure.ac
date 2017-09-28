@@ -31,11 +31,11 @@
 #                                               -*- Autoconf -*-
 
 # Autoconf requirements
-AC_PREREQ([2.60])
+AC_PREREQ([2.69])
 
 # information on the package
 AC_INIT([Safe C Library],
-         m4_esyscmd([build-tools/version-gen.sh .tarball-version]),
+        [m4_esyscmd(build-tools/version-gen.sh .tarball-version)],
         [https://github.com/rurban/safeclib/issues],
         [libsafec],
         [http://github.com/rurban/safeclib/])
