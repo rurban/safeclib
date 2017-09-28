@@ -164,6 +164,7 @@ No encoding error shall occur. </dd>
 <dd>
 <code>c</code>, <code>s</code>, and <code>%</code>[ conversion specifiers each expect two arguments (the usual pointer and a value of type <code>rsize_t</code> indicating the size of the receiving array, which may be 1 when reading with a <code>lc</code> into a single wide character) and except that the following errors are detected at runtime and call the currently installed constraint handler function.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of receiving arguments successfully assigned, or <code>EOF</code> if read failure occurs before the first receiving argument was assigned or if there is a runtime constraint violation.</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="../../dd/da0/todo.html#_todo000001">Todo:</a></b></dt><dd>When an argument is not assigned to, it should be zero'd (not yet).</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">&gt;</td><td>0 on success, the number of arguments assigned </td></tr>
@@ -173,13 +174,13 @@ No encoding error shall occur. </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d0/d9a/vswscanf__s_8c.html#ad5d12da65d550624489545ed32403cbf" title="The vswscanf_s function reads a formatted wide string. ">vswscanf_s()</a>, <a class="el" href="../../d3/d42/fwscanf__s_8c.html#a980109ae08a082f7658918f49bb9be16" title="The fwscanf_s function reads a formatted wide string. ">fwscanf_s()</a>, <a class="el" href="../../d4/dd5/vfwprintf__s_8c.html#abd998918fd5ab94982c1b7841ab001d5" title="The vfwprintf_s function prints formatted output to a wide stream. ">vfwprintf_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d00/vfwscanf__s_8c_source.html#l00078">78</a> of file <a class="el" href="../../d4/d00/vfwscanf__s_8c_source.html">vfwscanf_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d00/vfwscanf__s_8c_source.html#l00081">81</a> of file <a class="el" href="../../d4/d00/vfwscanf__s_8c_source.html">vfwscanf_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.232-ga8d449 3.0
+Generated for Safe C Library 30082017.239-g0bf826 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
