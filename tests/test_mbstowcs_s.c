@@ -139,11 +139,11 @@ int test_mbstowcs_s (void)
     ERR(EILSEQ);
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
-#endif
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc2",cs), 1);
     ERR(EILSEQ);
     INDCMP(!= -1);
+#endif
 
     /* aliasing nul */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0\x80",cs), 2);

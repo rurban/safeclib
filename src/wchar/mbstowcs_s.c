@@ -36,7 +36,7 @@
    more importantly it has but does not declare mbstowcs.
  */
 
-#if defined(__CYGWIN__) && defined(__x86_64)
+#ifdef HAVE_CYGWIN64
 #define mbstowcs(dest, src, len) \
     mbsrtowcs((dest), (const char ** restrict)&(src), (len), &st)
 #endif
@@ -111,7 +111,7 @@ mbstowcs_s(size_t *restrict retval,
            const char *restrict src, rsize_t len)
 {
     wchar_t *orig_dest;
-#if defined(__CYGWIN__) && defined(__x86_64)
+#ifdef HAVE_CYGWIN64
     mbstate_t st;
 #endif
 
@@ -153,6 +153,7 @@ mbstowcs_s(size_t *restrict retval,
 
     /* hold base of dest in case src was not copied */
     orig_dest = dest;
+    errno = 0;
 
     *retval = mbstowcs(dest, src, len);
 
