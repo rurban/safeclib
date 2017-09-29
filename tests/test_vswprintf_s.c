@@ -40,30 +40,36 @@ int test_vswprintf_s (void)
 
     /* not testable
       rc = vtwprintf_s(str1, LEN, L"%ls", NULL);
-      NEGERR(ESNULLP)
+      ERR(0);
+    ERRNO(ESNULLP)
     */
 
     rc = vtwprintf_s(NULL, LEN, L"%ls", str2);
-    NEGERR(ESNULLP);
+    ERR(0);
+    ERRNO(ESNULLP);
 
     rc = vtwprintf_s(str1, LEN, NULL, NULL);
-    NEGERR(ESNULLP);
+    ERR(0);
+    ERRNO(ESNULLP);
 
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, 0, L"%ls", str2);
-    NEGERR(ESZEROL)
+    ERR(0);
+    ERRNO(ESZEROL)
 
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
-    NEGERR(ESLEMAX);
+    ERR(0);
+    ERRNO(ESLEMAX);
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = vtwprintf_s(str1, LEN, L"%s %n", str2);
-    NEGERR(EINVAL)
+    ERR(0);
+    ERRNO(EINVAL)
 
     rc = vtwprintf_s(str1, LEN, L"%s %%n", str2);
     ERR(3)
@@ -96,7 +102,8 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = vtwprintf_s(str1, 1, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -105,7 +112,8 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = vtwprintf_s(str1, 2, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -150,13 +158,15 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = vtwprintf_s(str1, 12, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
     wcscpy(str1, L"1234");
 
     rc = vtwprintf_s(str1, 5, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/

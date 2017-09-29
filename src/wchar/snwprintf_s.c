@@ -102,11 +102,12 @@ any of the arguments corresponding to %s is a null pointer.
  * @retval  -ESNULLP when \c dest/fmt is NULL pointer
  * @retval  -ESZEROL when \c dmax = 0
  * @retval  -ESLEMAX when \c dmax > \c RSIZE_MAX_WSTR
+ * @retval  -ESNOSPC when return value exceeds dmax
  * @retval  -EINVAL  when \c fmt contains \c %n
  * @retval  -1       on some other error. errno is set then
  *
  * @see
- *    vswprintf_s(), snwprintf_s(), vsnprintf_s()
+ *    vswprintf_s(), swprintf_s(), vsnprintf_s()
  *
  */
 
@@ -132,8 +133,8 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("snwprintf_s: fmt is null",
-                   NULL, ESNULLP);
+        handle_werror(dest, dmax, "snwprintf_s: fmt is null",
+                      ESNULLP);
         *dest = L'\0';
         return -(ESNULLP);
     }
@@ -209,8 +210,8 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     } else if (unlikely(ret < 0)) {
         char errstr[128] = "snwprintf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
-        *dest = L'\0'; /* no truncation. a real error */
+        handle_werror(dest, dmax, errstr, -ret);
+        /* no truncation. a real error */
         /* dest[dmax-1] = L'\0'; */
     }
 #endif

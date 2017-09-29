@@ -36,32 +36,44 @@ int test_vsprintf_s (void)
 
     /* not testable
       rc = vtprintf_s(str1, LEN, "%s", NULL);
-      NEGERR(ESNULLP)
+      ERR(0);
+      ERRNO(ESNULLP);
     */
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, LEN, NULL, NULL);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP)
+    /* Unknown error: 400 */
+    debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
+                 strerror(errno));
 
     rc = vtprintf_s(NULL, LEN, "%s", str2);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP);
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
-    NEGERR(ESZEROL)
+    ERR(0);
+    ERRNO(ESZEROL)
+    /* Unknown error: 401 */
+    debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
+                 strerror(errno));
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    NEGERR(ESLEMAX)
+    ERR(0);
+    ERRNO(ESLEMAX)
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = vtprintf_s(str1, LEN, "%s %n", str2);
-    NEGERR(EINVAL)
+    ERR(0);
+    ERRNO(EINVAL)
 
     rc = vtprintf_s(str1, LEN, "%s %%n", str2);
     ERR(3)
@@ -75,7 +87,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -84,7 +97,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
     
     rc = vtprintf_s(str1, 2, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -112,7 +126,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -121,7 +136,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -166,7 +182,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 12, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
 
 /*--------------------------------------------------*/
 
@@ -182,7 +199,8 @@ int test_vsprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/

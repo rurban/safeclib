@@ -39,11 +39,6 @@
  *    would be printed if format was used on printf. Instead of being 
  *    printed, the content is stored in dest.
  *
- * @note
- *    POSIX specifies that \c errno is set on error. However, the safeclib
- *    extended \c ES* errors do not set \c errno, only when the underlying
- *    system \c vsnprintf call fails, \c errno is set.
- *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.5.3.6 The sprintf_s function (p: 595-596)
@@ -62,20 +57,28 @@
  * @pre None of the arguments corresponding to %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
  *
- * @return  On success the total number of characters written is returned. 
- * @return  On failure a negative number is returned.
+ * @return  If no runtime-constraint violation occurred, the \c sprintf_s function
+ *          returns the number of characters written in the array, not counting
+ *          the terminating null character. If an encoding error occurred,
+ *          \c sprintf_s returns a negative value. If any other runtime-
+ *          constraint violation in \c vsnprintf occurred, \c sprintf_s
+ *          returns zero.
  * @return  If the buffer dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
  *          empty string by placing a null character at dest[0], and the
  *          invalid parameter handler is invoked. Unlike _snprintf,
  *          sprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
- * @retval  -ESNULLP when dest/fmt is NULL pointer
- * @retval  -ESZEROL when dmax = 0
- * @retval  -ESLEMAX when dmax > RSIZE_MAX_STR
- * @retval  -ESNOSPC when return value exceeds dmax
- * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error. errno is set then.
+
+ * errno:   ESNULLP when \c dest/fmt is NULL pointer
+ *          ESZEROL when \c dmax = 0
+ *          ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ *          ESNOSPC when return value exceeds dmax
+ *          EINVAL  when \c fmt contains \c %n
+ *
+ * @retval -1  if an encoding error occurred or the return buffer size
+ *             exceeds dmax.
+ * @retval 0   on some other error in \c vsnprintf().
  *
  */
 
@@ -89,25 +92,29 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return -(ESLEMAX);
+        errno = ESLEMAX;
+        return 0;
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: dest is null",
                    NULL, ESNULLP);
-        return -(ESNULLP);
+        errno = ESNULLP;
+        return 0;
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return -(ESNULLP);
+        errno = ESNULLP;
+        return 0;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        return -(ESZEROL);
+        errno = ESZEROL;
+        return 0;
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -115,7 +122,8 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return -(EINVAL);
+            errno = EINVAL;
+            return 0;
         }
     }
 
@@ -133,16 +141,16 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     va_end(ap);
 
     if (unlikely(ret >= (int)dmax)) {
-        invoke_safe_str_constraint_handler("sprintf_s: len exceeds dmax",
-                   NULL, ESNOSPC);
-        *dest = 0;
-        ret = -(ESNOSPC);
+        handle_error(dest, dmax, "sprintf_s: len exceeds dmax",
+                     ESNOSPC);
+        errno = ESNOSPC;
+        return 0;
     }
 
-    if (unlikely(ret < 0)) {
+    if (unlikely(ret <= 0)) {
         char errstr[128] = "sprintf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+        handle_error(dest, dmax, errstr, -ret);
     }
 
     return ret;

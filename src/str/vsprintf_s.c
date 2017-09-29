@@ -41,11 +41,6 @@
  *    array of \c dmax characters pointed to by dest are nulled when
  *    \c vsprintf_s returns.
  *
- * @note
- *    POSIX specifies that \c errno is set on error. However, the safeclib
- *    extended \c ES* errors do not set \c errno, only when the underlying
- *    system \c vsnprintf call fails, \c errno is set.
- *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.5.3.13 The vsprintf_s function (p: 601)
@@ -74,10 +69,16 @@
  *          invalid parameter handler is invoked. Unlike vsnprintf,
  *          vsprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
- * @retval  -ESNULLP when dest/fmt is NULL pointer
- * @retval  -ESZEROL when dmax = 0
- * @retval  -ESLEMAX when dmax > RSIZE_MAX_STR
- * @retval  -ESNOSPC when return value exceeds dmax
+ *
+ * errno:   ESNULLP when \c dest/fmt is NULL pointer
+ *          ESZEROL when \c dmax = 0
+ *          ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ *          ESNOSPC when return value exceeds dmax
+ *          EINVAL  when \c fmt contains \c %n
+ *
+ * @retval -1  if an encoding error occurred or the return buffer size
+ *             exceeds dmax.
+ * @retval 0   on some other error in \c vsnprintf().
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
@@ -93,25 +94,29 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return -(ESLEMAX);
+        errno = ESLEMAX;
+        return 0;
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dest is null",
                    NULL, ESNULLP);
-        return -(ESNULLP);
+        errno = ESNULLP;
+        return 0;
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return -(ESNULLP);
+        errno = ESNULLP;
+        return 0;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        return -(ESZEROL);
+        errno = ESZEROL;
+        return 0;
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -119,7 +124,8 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("vsprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return -(EINVAL);
+            errno = EINVAL;
+            return 0;
         }
     }
 
@@ -127,16 +133,16 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
     if (unlikely(ret >= (int)dmax)) {
-        invoke_safe_str_constraint_handler("vsprintf_s: len exceeds dmax",
-                   NULL, ESNOSPC);
-        *dest = 0;
-        ret = -(ESNOSPC);
+        handle_error(dest, dmax, "vsprintf_s: len exceeds dmax",
+                     ESNOSPC);
+        errno = ESNOSPC;
+        return 0;
     }
 
     if (unlikely(ret < 0)) {
         char errstr[128] = "vsprintf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+        handle_error(dest, dmax, errstr, -ret);
     }
 
     return ret;

@@ -25,28 +25,33 @@ int test_sprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
-    NEGERR(ESLEMAX)
+    ERR(0);
+    ERRNO(ESLEMAX)
 
 /*--------------------------------------------------*/
 
     rc = sprintf_s(NULL, LEN, "%s", NULL);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, LEN, NULL, NULL);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, 0, "%s", str2);
-    NEGERR(ESZEROL)
+    ERR(0);
+    ERRNO(ESZEROL)
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
-    NEGERR(EINVAL)
+    ERR(0);
+    ERRNO(EINVAL)
 
     rc = sprintf_s(str1, LEN, "%s %%n", str2);
     ERR(3)
@@ -58,7 +63,8 @@ int test_sprintf_s (void)
 
     /* TODO
     rc = sprintf_s(str1, LEN, "%p", NULL);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP)
     */
 
 /*--------------------------------------------------*/
@@ -67,7 +73,8 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 1, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -76,7 +83,8 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 2, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -104,7 +112,8 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 1, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)  
 
 /*--------------------------------------------------*/
@@ -113,7 +122,8 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 2, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -158,7 +168,8 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 12, "%s", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
 
 /*--------------------------------------------------*/
 
@@ -174,7 +185,8 @@ int test_sprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = sprintf_s(str1, 8, "%s", &str1[7]);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     EXPNULL(str1)
 
 /*--------------------------------------------------*/

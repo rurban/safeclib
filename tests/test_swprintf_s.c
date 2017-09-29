@@ -26,28 +26,33 @@ int test_swprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
-    NEGERR(ESLEMAX)
+    ERR(0);
+    ERRNO(ESLEMAX);
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, LEN, NULL, NULL);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP);
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(NULL, 0, L"%ls", str2);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP);
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, 0, L"%ls", str2);
-    NEGERR(ESZEROL)
+    ERR(0);
+    ERRNO(ESZEROL)
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = swprintf_s(str1, LEN, L"%s %n", str2);
-    NEGERR(EINVAL)
+    ERR(0);
+    ERRNO(EINVAL)
 
     rc = swprintf_s(str1, LEN, L"%s %%n", str2);
     ERR(3)
@@ -59,7 +64,8 @@ int test_swprintf_s (void)
 
     /* TODO
     rc = swprintf_s(str1, LEN, L"%s", NULL);
-    NEGERR(ESNULLP)
+    ERR(0);
+    ERRNO(ESNULLP)
     */
 
 /*--------------------------------------------------*/
@@ -87,7 +93,8 @@ int test_swprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 1, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -96,7 +103,8 @@ int test_swprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 2, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -141,7 +149,8 @@ int test_swprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 12, L"%ls", str2);
-    NEGERR(ESNOSPC)
+    ERR(0);
+    ERRNO(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -158,11 +167,12 @@ int test_swprintf_s (void)
     wcscpy(str1, L"12345678901234567890");
 
     rc = swprintf_s(str1, 8, L"%ls", &str1[7]);
-    if (rc == 0) {
-        NEGERR(EOK); /* overlapping implementation defined */
+    ERR(0); /* overlapping implementation defined */
+    if (errno != ESNOSPC) {
+        /* darwin throws errno 84 EOVERFLOW */
         WEXPSTR(str1, L"8901234");
     } else {
-        NEGERR(ESNOSPC);
+        ERRNO(ESNOSPC);
         WEXPNULL(str1);
     }
 
