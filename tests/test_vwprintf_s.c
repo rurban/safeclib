@@ -33,13 +33,13 @@ int test_vwprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     wstr[0] = L'\0'; 
     rc = vtwprintf_s(L"%s%n\n", wstr, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
 /*--------------------------------------------------*/
 
@@ -58,7 +58,7 @@ int test_vwprintf_s (void)
 
     /* TODO
     rc = vtwprintf_s(L"%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/

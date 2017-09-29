@@ -28,13 +28,13 @@ int test_fwprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = fwprintf_s(out, NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     wstr[0] = L'\0'; 
     rc = fwprintf_s(out, L"%s%n\n", wstr, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
     if (!out) {
         printf("Failed to open file %s for write: %s\n",
@@ -54,7 +54,7 @@ int test_fwprintf_s (void)
 
     /* TODO
     rc = fwprintf_s(out, L"%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/

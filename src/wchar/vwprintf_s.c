@@ -74,7 +74,7 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vwprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
@@ -82,7 +82,7 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("vwprintf_s: illegal %n",
                    NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
@@ -92,7 +92,7 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("vwprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #else

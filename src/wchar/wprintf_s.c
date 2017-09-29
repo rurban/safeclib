@@ -39,6 +39,11 @@ Any of the arguments corresponding to %s is a null pointer
  * @brief 
  *    The wprintf_s function prints formatted output to stdout as wide string.
  *
+ * @note
+ *    POSIX specifies that \c errno is set on error. However, the safeclib
+ *    extended \c ES* errors do not set \c errno, only when the underlying
+ *    system \c vwprintf call fails, \c errno is set.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.1.13 The wprintf_s function (p: 637-638)
@@ -75,7 +80,7 @@ wprintf_s(const wchar_t *restrict fmt, ...)
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("wprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
@@ -83,7 +88,7 @@ wprintf_s(const wchar_t *restrict fmt, ...)
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("wprintf_s: illegal %n",
                    NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
@@ -93,7 +98,7 @@ wprintf_s(const wchar_t *restrict fmt, ...)
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("wprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #else

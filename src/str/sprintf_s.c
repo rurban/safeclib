@@ -39,10 +39,15 @@
  *    would be printed if format was used on printf. Instead of being 
  *    printed, the content is stored in dest.
  *
+ * @note
+ *    POSIX specifies that \c errno is set on error. However, the safeclib
+ *    extended \c ES* errors do not set \c errno, only when the underlying
+ *    system \c vsnprintf call fails, \c errno is set.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.5.3.6 The sprintf_s function (p: 595-596)
- *    http://en.cppreference.com/w/c/string/byte/sprintf
+ *    http://en.cppreference.com/w/c/io/fprintf
  *
  * @param[out] dest  storage location for output buffer.
  * @param[in]  dmax  maximum number of characters to store in buffer.
@@ -70,7 +75,7 @@
  * @retval  -ESLEMAX when dmax > RSIZE_MAX_STR
  * @retval  -ESNOSPC when return value exceeds dmax
  * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error.
+ * @retval  -1       on some other error. errno is set then.
  *
  */
 
@@ -84,25 +89,25 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+        return -(ESLEMAX);
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: dest is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+        return -(ESZEROL);
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -110,7 +115,7 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 
@@ -118,7 +123,7 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     va_copy(ap2, ap);
     void *ptr = va_arg(*ap2, void*);
     if (ptr == NULL)
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     va_end(ap2);
     */
 
@@ -131,7 +136,7 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
         invoke_safe_str_constraint_handler("sprintf_s: len exceeds dmax",
                    NULL, ESNOSPC);
         *dest = 0;
-        ret = RCNEGATE(ESNOSPC);
+        ret = -(ESNOSPC);
     }
 
     if (unlikely(ret < 0)) {

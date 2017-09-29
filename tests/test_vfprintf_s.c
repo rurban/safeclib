@@ -37,24 +37,24 @@ int test_vfprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtfprintf_s(out, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
     rc = vtfprintf_s(NULL, "");
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
     rc = vtfprintf_s(out, "", NULL);
-    ERR(EOK)
+    NEGERR(EOK)
 
     /* TODO
     rc = vtfprintf_s(NULL, "%s", NULL);
-    ERR(ESNULLP);
+    NEGERR(ESNULLP);
     */
 
 /*--------------------------------------------------*/
 
     str1[0] = '\0'; 
     rc = vtfprintf_s(out, "%s%n\n", str1, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
 /*--------------------------------------------------*/
 
@@ -73,7 +73,7 @@ int test_vfprintf_s (void)
 
     /* TODO
     rc = vtfprintf_s(out, "%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/

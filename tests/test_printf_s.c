@@ -24,23 +24,23 @@ int test_printf_s (void)
 /*--------------------------------------------------*/
 
     rc = printf_s(NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = printf_s("");
-    ERR(EOK)
+    NEGERR(EOK)
 
     /* TODO
     rc = printf_s("%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
 
     str1[0] = '\0'; 
     rc = printf_s("%s%n\n", str1, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
 /*--------------------------------------------------*/
 

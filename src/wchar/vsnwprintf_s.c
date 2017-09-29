@@ -52,6 +52,11 @@ any of the arguments corresponding to %s is a null pointer.
  *    guarantee that the buffer will be null-terminated unless
  *    the buffer size is zero.
  *
+ * @note
+ *    POSIX specifies that \c errno is set on error. However, the safeclib
+ *    extended \c ES* errors do not set \c errno, only when the underlying
+ *    system \c vswprintf or \c vsnwprintf call fails, \c errno is set.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.1.8 The vsnwprintf_s function (p: 634-635)
@@ -97,7 +102,7 @@ any of the arguments corresponding to %s is a null pointer.
  * @retval  -ESNULLP when dest/fmt is NULL pointer
  * @retval  -ESZEROL when dmax = 0
  * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error.
+ * @retval  -1       on some other error. errno is set then
  *
  * @see
  *    vswprintf_s(), snwprintf_s(), vsnprintf_s()
@@ -117,27 +122,27 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+        return -(ESLEMAX);
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dest is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: fmt is null",
                    NULL, ESNULLP);
         *dest = L'\0';
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dmax is 0",
                    NULL, ESZEROL);
         *dest = L'\0';
-        return RCNEGATE(ESZEROL);
+        return -(ESZEROL);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
@@ -146,7 +151,7 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n",
                    NULL, EINVAL);
             *dest = L'\0';
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
@@ -157,7 +162,7 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n",
                                                NULL, EINVAL);
             *dest = L'\0';
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #else

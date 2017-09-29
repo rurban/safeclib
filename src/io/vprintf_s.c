@@ -36,6 +36,11 @@
  *    The vprintf_s function composes a string via the format string
  *    and writes it to a FILE buffer.
  *
+ * @note
+ *    POSIX specifies that \c errno is set on error. However, the safeclib
+ *    extended \c ES* errors do not set \c errno, only when the underlying
+ *    system \c vprintf call fails, \c errno is set.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.5.3.10 The vprintf_s function (p: 599-599)
@@ -53,7 +58,7 @@
  * @return  On failure a negative number is returned.
  * @retval  -ESNULLP when fmt is NULL pointer
  * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error.
+ * @retval  -1       on some other error. errno is set then.
  */
 
 EXPORT int
@@ -65,7 +70,7 @@ vprintf_s(const char *restrict fmt, va_list ap)
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -73,7 +78,7 @@ vprintf_s(const char *restrict fmt, va_list ap)
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("vprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 

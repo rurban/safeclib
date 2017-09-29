@@ -46,6 +46,11 @@ any of the arguments corresponding to %s is a null pointer
  *    array of dmax wide characters pointed to by dest are nulled when
  *    vswprintf_s returns.
  *
+ * @note
+ *    POSIX specifies that \c errno is set on error. However, the safeclib
+ *    extended \c ES* errors do not set \c errno, only when the underlying
+ *    system \c vswprintf call fails, \c errno is set.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.1.9 The vswprintf_s function (p: 634-635)
@@ -101,25 +106,25 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("vswprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+        return -(ESLEMAX);
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vswprintf_s: dest is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vswprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vswprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+        return -(ESZEROL);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
@@ -127,7 +132,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
                    NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
@@ -137,7 +142,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #else
@@ -168,7 +173,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             invoke_safe_str_constraint_handler("vswprintf_s: len exceeds dmax",
                                                NULL, ESNOSPC);
             *dest = 0;
-            return RCNEGATE(ESNOSPC);
+            return -(ESNOSPC);
         }
     }
 #endif

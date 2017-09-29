@@ -33,23 +33,23 @@ int test_vprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s("");
-    ERR(EOK)
+    NEGERR(EOK)
 
     /* TODO
     rc = vtprintf_s("%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
 
     str1[0] = '\0'; 
     rc = vtprintf_s("%s%n\n", str1, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
 /*--------------------------------------------------*/
 

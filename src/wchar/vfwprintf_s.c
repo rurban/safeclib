@@ -39,6 +39,11 @@ any of the arguments corresponding to %s is a null pointer
  * @brief 
  *    The vfwprintf_s function prints formatted output to a wide stream.
  *
+ * @note
+ *    POSIX specifies that \c errno is set on error. However, the safeclib
+ *    extended \c ES* errors do not set \c errno, only when the underlying
+ *    system \c vfwprintf call fails, \c errno is set.
+ *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.1.6 The vfwprintf_s function (p: 632)
@@ -75,13 +80,13 @@ vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("vfprintf_s: stream is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vfwprintf_s: fmt is null",
                    NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return -(ESNULLP);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
@@ -89,7 +94,7 @@ vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("vfwprintf_s: illegal %n",
                    NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
@@ -99,7 +104,7 @@ vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("vfwprintf_s: illegal %n",
                                                NULL, EINVAL);
-            return RCNEGATE(EINVAL);
+            return -(EINVAL);
         }
     }
 #else

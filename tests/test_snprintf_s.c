@@ -23,28 +23,28 @@ int test_snprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = snprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
-    ERR(ESLEMAX)
+    NEGERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
     rc = snprintf_s(NULL, LEN, "%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = snprintf_s(str1, LEN, NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = snprintf_s(str1, 0, "%s", str2);
-    ERR(ESZEROL)
+    NEGERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = snprintf_s(str1, LEN, "%s %n", str2, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
     rc = snprintf_s(str1, LEN, "%s %%n", str2);
     ERR(3)
@@ -56,7 +56,7 @@ int test_snprintf_s (void)
 
     /* TODO
     rc = snprintf_s(str1, LEN, "%p", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/

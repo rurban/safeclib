@@ -38,23 +38,23 @@ int test_vsnprintf_s (void)
 
     /* not testable
       rc = vtprintf_s(str1, LEN, "%s", NULL);
-      ERR(ESNULLP)
+      NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, LEN, NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
-    ERR(ESZEROL)
+    NEGERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    ERR(ESLEMAX)
+    NEGERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 

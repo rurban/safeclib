@@ -38,24 +38,24 @@ int test_vfwprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(out, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
     rc = vtwprintf_s(NULL, L"");
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
     rc = vtwprintf_s(out, L"");
-    ERR(EOK)
+    NEGERR(EOK)
 
     /* TODO
     rc = vtwprintf_s(out, L"%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
 
     wstr[0] = L'\0'; 
     rc = vtwprintf_s(out, L"%s%n\n", wstr, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
     if (!out) {
         printf("Failed to open file %s for write: %s\n",

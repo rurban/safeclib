@@ -26,28 +26,28 @@ int test_swprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
-    ERR(ESLEMAX)
+    NEGERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, LEN, NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(NULL, 0, L"%ls", str2);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, 0, L"%ls", str2);
-    ERR(ESZEROL)
+    NEGERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = swprintf_s(str1, LEN, L"%s %n", str2);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
     rc = swprintf_s(str1, LEN, L"%s %%n", str2);
     ERR(3)
@@ -59,7 +59,7 @@ int test_swprintf_s (void)
 
     /* TODO
     rc = swprintf_s(str1, LEN, L"%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
@@ -87,7 +87,7 @@ int test_swprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 1, L"%ls", str2);
-    ERR(ESNOSPC)
+    NEGERR(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -96,7 +96,7 @@ int test_swprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 2, L"%ls", str2);
-    ERR(ESNOSPC)
+    NEGERR(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -141,7 +141,7 @@ int test_swprintf_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 12, L"%ls", str2);
-    ERR(ESNOSPC)
+    NEGERR(ESNOSPC)
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -159,10 +159,10 @@ int test_swprintf_s (void)
 
     rc = swprintf_s(str1, 8, L"%ls", &str1[7]);
     if (rc == 0) {
-        ERR(EOK); /* overlapping implementation defined */
+        NEGERR(EOK); /* overlapping implementation defined */
         WEXPSTR(str1, L"8901234");
     } else {
-        ERR(ESNOSPC);
+        NEGERR(ESNOSPC);
         WEXPNULL(str1);
     }
 

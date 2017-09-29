@@ -24,13 +24,13 @@ int test_wprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = wprintf_s(NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     wstr[0] = L'\0';
     rc = wprintf_s(L"%s%n\n", wstr, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
 /*--------------------------------------------------*/
 

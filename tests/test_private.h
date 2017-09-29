@@ -151,6 +151,12 @@
                      __FUNCTION__, __LINE__,  (int)rc); \
         errs++;                                    \
     }
+#define NEGERR(n)                                     \
+    if (rc != -(n)) {                               \
+        debug_printf("%s %u  Error rc=%d \n",     \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
 #define ANYERR()                                    \
     if (rc >= 0) {                                  \
         debug_printf("%s %u  Error rc=%d \n",       \

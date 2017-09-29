@@ -29,28 +29,28 @@ int test_snwprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = snwprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
-    ERR(ESLEMAX)
+    NEGERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
     rc = snwprintf_s(str1, LEN, NULL, NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = snwprintf_s(NULL, 0, L"%ls", str2);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
     rc = snwprintf_s(str1, 0, L"%ls", str2);
-    ERR(ESZEROL)
+    NEGERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = snwprintf_s(str1, LEN, L"%s %n", str2, &ind);
-    ERR(EINVAL)
+    NEGERR(EINVAL)
 
     rc = snwprintf_s(str1, LEN, L"%s %%n", str2);
     ERR(3)
@@ -62,7 +62,7 @@ int test_snwprintf_s (void)
 
     /* TODO
     rc = snwprintf_s(str1, LEN, L"%s", NULL);
-    ERR(ESNULLP)
+    NEGERR(ESNULLP)
     */
 
 /*--------------------------------------------------*/
