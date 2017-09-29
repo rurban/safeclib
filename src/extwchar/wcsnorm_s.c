@@ -451,7 +451,8 @@ static uint8_t _combin_class(wint_t cp)
  * @retval  EOF        on some normalization error
  *
  * @see
- *    wcsfc_s(), ICU, gnulib/libunistring, utf8proc
+ *    wcsfc_s(), wcsnorm_s(), wcsnorm_compose_s(), wcsnorm_reorder_s(),
+ *    ICU, gnulib/libunistring, utf8proc
  */
 
 /* create an unordered decomposed wide string */
@@ -673,7 +674,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
  * @retval  EOF        on some normalization error
  *
  * @see
- *    wcsnorm_s(), ICU, gnulib/libunistring, utf8proc
+ *    wcsnorm_s(), wcsnorm_decompose_s(), ICU, gnulib/libunistring, utf8proc
  */
 
 /* reorder decomposed sequence to NFD */
@@ -788,7 +789,7 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  * @retval  EOF        on some normalization error
  *
  * @see
- *    wcsnorm_s(), ICU, gnulib/libunistring, utf8proc
+ *    wcsnorm_s(), wcsnorm_decompose_s(), ICU, gnulib/libunistring, utf8proc
  */
 
 /* combine decomposed sequences to NFC. */

@@ -15,7 +15,7 @@
 
 #define LEN   ( 128 )
 
-/*#define PERL_TEST*/
+#define PERL_TEST
 /* Must have the same Unicode version 9.0, at least 5.26.
    Better 5.27.3 with Unicode 10.
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
@@ -169,6 +169,35 @@ int main()
 
 /*--------------------------------------------------*/
 
+    /* reorder? Aᾷ  fc A=>a 345=>3b9! See [GH #25] */
+    /*
+      FC        \x{41}\x{3B1}\x{345}\x{342} = \x{61}\x{3B1}\x{3B9}\x{342}
+      NFD FC                           Aᾷ  = \x{61}\x{3B1}\x{3B9}\x{342}
+      NFD       \x{41}\x{3B1}\x{345}\x{342} = \x{41}\x{3B1}\x{342}\x{345}
+      FC NFD                           Aᾷ  = \x{61}\x{3B1}\x{342}\x{3B9} */
+    
+    rc = wcsfc_s(str, LEN, L"A" L"\x3b1" L"\x345" L"\x342", &ind);
+    ERR(EOK);
+    wcscpy(str1, L"a" L"\x3b1" L"\x3b9" L"\x342"); /* no reordering of 3b9 */
+    WEXPSTR(str, str1);
+
+    /*rc = wcsnorm_reorder_s(str, LEN, L"a" L"\x3b1" L"\x3b9" L"\x342", 4);
+    ERR(EOK);
+    wcscpy(str1, L"a" L"\x3b1" L"\x3b9" L"\x342");
+    WEXPSTR(str, str1);*/
+
+    rc = wcsfc_s(str, LEN, L"\x1d5", &ind); /* NFD=U\x308\x304 */
+    ERR(EOK);
+    wcscpy(str1, L"u" L"\x308" L"\x304"); /* no reordering */
+    WEXPSTR(str, str1);
+
+    /* no ordering defined, both CC 230 */
+    /*rc = wcsnorm_reorder_s(str, LEN, L"U" L"\x304" L"\x308", 3);
+    wcscpy(str1, L"U" L"\x304" L"\x308");
+    WEXPSTR(str, str1);*/
+
+/*--------------------------------------------------*/
+
     /* wcsfc_s() locale-independent special rules */
     rc = wcsfc_s(str, LEN, L"\x3a3" L" ", &ind); /* final sigma */
     ERR(EOK);
@@ -313,22 +342,18 @@ int main()
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
     fprintf_s(pl, "use v5.27.2;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
+              "sub wstr ($) {\n"
+              "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
+              "}\n"
               "sub chk {\n"
               "  my ($ch, $got) = @_;\n"
               "  my $fc = fc($ch);\n"
               "  my $nfd = NFD($fc);\n"
               "  if ($nfd ne $got) {\n"
-              "    printf \"Error NFD \\\\x{%%X} = %%s; fc = %%s; got: %%s\\n\",\n"
-              "         unpack('W*',$ch),\n"
-              "         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$nfd),\n"
-              "         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$fc),\n"
-              "         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$got);\n"
+              "    print \"Error \" if $fc ne $got;\n"
+              "    printf \"NFD \\\\x{%%X} = %%s; fc = %%s; got: %%s\\n\",\n"
+              "         unpack('W*',$ch), wstr $nfd, wstr $fc, wstr $got;\n"
               "    1\n"
-              "#  } elsif ($fc ne $nfd) {\n"
-              "#    printf \"  NFD \\\\x{%%X} = %%s; fc = %%s;\\n\",\n"
-              "#         unpack('W*',$ch),\n"
-              "#         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$nfd),\n"
-              "#         join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',$fc);\n"
               "  }\n"
               "}\n");
 #endif
@@ -369,7 +394,7 @@ int main()
             int len = wcslen(str);
             int i;
             /* cross-check with perl */
-            fprintf_s(pl, "$err += chk(\"\\N{U+%04X}\",\"\\N{U+%04X}", ind, str[0]);
+            fprintf_s(pl, "$err += chk(\"\\N{U+%04X}\",\"\\N{U+%04X}", wc, str[0]);
             for (i=1;i<len;i++) {
                 fprintf_s(pl, "\\N{U+%04X}", str[i]);
             }

@@ -49,15 +49,16 @@ _is_lt_accented(wint_t wc) {
 
 /**
  * @brief
- *    Converts the wide string via full case-folding normalized to lowercase.
+ *    Converts the wide string via full case-folding NFD normalized to lowercase.
  *    The conversion stops at the first null or after dmax characters.  The
  *    conversion is determined by the LC_CTYPE category setting of the
  *    locale. Other characters are not affected. fold-case performs full case
  *    folding, i.e. if iswfc() of a character > 1, the length of dest might be
  *    greater than the length of src (max 4 per char), the conversion is done
  *    via \c towfc_s() and Unicode 10.0, the Unicode special-casing rules are
- *    obeyed, and composed characters are normalized to NFD via \c
- *    wcsnorm_decompose_s().  If not, the conversion is per character done via
+ *    obeyed, and composed characters are normalized to NFD via
+ *    \c wcsnorm_decompose_s() and \c wcsnorm_reorder_s().
+ *    If not, the conversion is per character done via
  *    normal \c towlower().  Note that decomposition creates larger strings,
  *    typically 2-3 chars more.
  *
@@ -72,7 +73,9 @@ _is_lt_accented(wint_t wc) {
  *
  *   Composed characters are checked for the left-hand-side of the
  *   Decomposition_Mapping Unicode property, which means the codepoint will be
- *   normalized to NFD if any codepoint is composed.
+ *   normalized to NFD if any codepoint is composed. Technically only FCD as all
+ *   FC expansions are already properly ordered, and all mangled marks will not
+ *   be reordered, as the have the same Combining Class.
  *
  * @param[out]  dest  wide string to hold the result (~130% larger than src)
  * @param[in]   dmax  maximum result buffer size
@@ -292,10 +295,12 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
             } else {
                 if (unlikely(dmax < 5))
                     goto too_small;
+#if 1
                 (void)_towfc_single(tmp, _dec_w16((wchar_t*)src));
                 src++;
                 if (tmp[0] >= 0xc0) {
                     cp = _dec_w16(tmp);
+                    /* needed? I thought only 0x1f80-0x1ff4 needs to be decomposed */
                     c = _decomp_s(dest, dmax, cp, false);
                 }
                 else
@@ -308,6 +313,14 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                     dest += c;
                     dmax -= c;
                 }
+#else
+                c = _towfc_single(dest, _dec_w16((wchar_t*)src));
+                if (c > 0) {
+                    dest += c;
+                    dmax -= c;
+                }
+                src++;
+#endif
             }
         }
     }

@@ -542,11 +542,20 @@ EXTERN errno_t
 wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
         wchar_t *restrict src, rsize_t *restrict lenp);
 
-/* Normalize to FCD */
+/* Normalize to FCD/pre-NFKD */
 EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
                     wchar_t *restrict src, rsize_t *restrict lenp,
                     bool iscompat);
+/* Normalize to NCD/NFKD */
+EXTERN errno_t
+wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax,
+                  wchar_t *restrict src, rsize_t len);
+/* Normalize to NFC/NFKC */
+EXTERN errno_t
+wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax,
+                  wchar_t *restrict src, rsize_t *restrict lenp,
+                  bool iscontig);
 
 enum wcsnorm_mode {
     WCSNORM_NFD  = 0,

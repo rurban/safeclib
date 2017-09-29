@@ -268,6 +268,7 @@ iswfc(wint_t wc)
 /* The 194 single fc chars where fc is different to lc.
    Must only be called when we know for sure that the length is 1!
    Returns 1 if fc is different to lc, else -ESNOTFND.
+   May return 2 on sizeof(wchar_t)==2 if >0xffff, i.e. converted to surrogate pair
 
    perl5.27.3 -E'no warnings; for (0..0x10ffff){
      my ($lc,$fc) = (lc(pack"W",$_), fc(pack"W",$_));
@@ -283,17 +284,17 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
     if (src < 0xb5) goto single;
     if (src >= 0xb5 && src <= 0x3f5) {
         switch(src) {
-        case 0xb5:  dest[0] = 0x3bc; return EOK; /* lc b5 */
-        case 0x17f: dest[0] = 0x73;  return EOK; /* lc 17f */
-        case 0x345: dest[0] = 0x3b9; return EOK; /* lc 345 */
-        case 0x3c2: dest[0] = 0x3c3; return EOK; /* lc 3c2 */
-        case 0x3d0: dest[0] = 0x3b2; return EOK; /* lc 3d0 */
-        case 0x3d1: dest[0] = 0x3b8; return EOK; /* lc 3d1 */
-        case 0x3d5: dest[0] = 0x3c6; return EOK; /* lc 3d5 */
-        case 0x3d6: dest[0] = 0x3c0; return EOK; /* lc 3d6 */
-        case 0x3f0: dest[0] = 0x3ba; return EOK; /* lc 3f0 */
-        case 0x3f1: dest[0] = 0x3c1; return EOK; /* lc 3f1 */
-        case 0x3f5: dest[0] = 0x3b5; return EOK; /* lc 3f5 */
+        case 0xb5:  dest[0] = 0x3bc; return EOK; /* lc=b5 */
+        case 0x17f: dest[0] = 0x73;  return EOK; /* lc=17f */
+        case 0x345: dest[0] = 0x3b9; return EOK; /* lc=345 special casing fc */
+        case 0x3c2: dest[0] = 0x3c3; return EOK; /* lc=3c2 */
+        case 0x3d0: dest[0] = 0x3b2; return EOK; /* lc=3d0 */
+        case 0x3d1: dest[0] = 0x3b8; return EOK; /* lc=3d1 */
+        case 0x3d5: dest[0] = 0x3c6; return EOK; /* lc=3d5 */
+        case 0x3d6: dest[0] = 0x3c0; return EOK; /* lc=3d6 */
+        case 0x3f0: dest[0] = 0x3ba; return EOK; /* lc=3f0 */
+        case 0x3f1: dest[0] = 0x3c1; return EOK; /* lc=3f1 */
+        case 0x3f5: dest[0] = 0x3b5; return EOK; /* lc=3f5 */
         }
         goto single;
     }
