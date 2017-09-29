@@ -90,6 +90,10 @@ extern "C" {
 #define ESNOTFND        ( 409 )       /* not found                   */
 #endif
 
+#ifndef ESILFMTN
+#define ESILFMTN        ( 410 )       /* not found                   */
+#endif
+
 #ifndef ESLAST
 #define ESLAST ESNOTFND
 #endif

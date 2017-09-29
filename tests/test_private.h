@@ -145,6 +145,8 @@
 # endif
 #endif
 
+const char *_strerror(int errcode);
+
 #define ERR(n)                                     \
     if (rc != (n)) {                               \
         debug_printf("%s %u  Error rc=%d \n",      \

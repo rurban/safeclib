@@ -181,6 +181,9 @@ void abort(void) __attribute__((noreturn));
 # endif
 #endif
 
+const char *_strerror(int errcode);
+const char *_safec_strerror(const char* prefix, int errcode);
+
 #ifdef _WIN32
 #define EXPORT __declspec(dllexport)
 #else
