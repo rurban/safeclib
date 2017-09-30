@@ -331,9 +331,9 @@ fi
 dnl AM_CONDITIONAL([HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
 AC_SUBST(HAVE_C99)
 
-dnl For wcsnorm_s / mark.h
-AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
-    [AM_CFLAGS="$AM_CFLAGS -fbracket-depth=512"], [], [], [])
+dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
+dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
+dnl    [AM_CFLAGS="$AM_CFLAGS -fbracket-depth=512"], [], [], [])
 
 AM_CONDITIONAL([HAVE_MINGW], [test "x$host_os" = "xmingw32"])
 AM_CONDITIONAL([HAVE_MINGW_CROSS],
