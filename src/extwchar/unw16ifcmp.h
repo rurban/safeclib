@@ -7,7 +7,10 @@
  * Any changes here will be lost!
  */
 /* Composition */
-typedef struct { wint_t nextchar; wint_t composite; } UNWIF_complist;
+/* mingw32 needs wint_t to be unsigned for 0x1d1be.
+   extwchar/unw16ifcmp.h:1468:2: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+ */
+typedef struct { uint32_t nextchar; uint32_t composite; } UNWIF_complist;
 typedef struct { uint16_t nextchar; uint16_t composite; } UNWIF_complist_s;
 
 /* max nextchar: 119154/0x1d172, max composite: 119232/0x1d1c0, max length: 20 */
