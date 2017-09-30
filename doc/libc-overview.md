@@ -78,16 +78,12 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 ## safeclib
 
-* safeclib does not check optional NULL parameters to the `scanf_s`,
-  `printf_s` functions. This would need tighter integration into the
-  upstream libc.
+* safeclib does not check optional NULL parameters to the vararg
+  `scanf_s` and `printf_s` functions. This would need tighter
+  integration into the upstream libc.
 
 * safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
-
-* does not work fine with 2-byte wchar_t
-  (i.e. cygwin/windows/solaris/aix), esp. the new case converters and
-  `wcsnorm_s`. surrogate pairs are not yet supported everywhere.
 
 # Other caveats
 
@@ -95,7 +91,7 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 * SEGV with `freopen(NULL, "rb", stdin)` with asan on some systems,
   calling an invalid `strlen()` on NULL.
-  
+
 * quirky declaration of various standards, which conflict with each other.
   
   glibc needs the correct standard to include some extensions
@@ -127,7 +123,7 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 ## musl
 
-* `wmemcmp` returns not -1,0,1 but the full ptr diff.
+* `wmemcmp` returns not `-1,0,1` but the full ptr diff.
 
 * `mbtowc` and `wctomb` accept and convert illegal 4 byte characters
   in the ASCII locale to surrogate pairs, as it would be unicode.
