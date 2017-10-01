@@ -501,6 +501,7 @@ wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t slen,
          wchar_t **restrict substring);
 
+/* compare */
 EXTERN errno_t
 wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t smax,
@@ -511,6 +512,12 @@ wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax,
           rsize_t count, int *diff);
 
+/* compare case-folded */
+EXTERN errno_t
+wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t smax,
+          int *diff);
+    
 EXTERN errno_t
 wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value);
 

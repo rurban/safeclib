@@ -168,6 +168,7 @@ STD_WCHAR_FILES += \
 	extwchar/wmemcmp_s.c	\
 	extwchar/wcscmp_s.c	\
 	extwchar/wcsncmp_s.c	\
+	extwchar/wcsicmp_s.c	\
 	extwchar/wcsset_s.c	\
 	extwchar/wcsnset_s.c	\
 	extwchar/wcscoll_s.c	\

@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
- * wcscmp_s.c -- string compare
+ * wcsicmp_s.c -- case-folded wide string compare
  *
- * September 2017, Reini Urban
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
@@ -33,12 +33,9 @@
 
 /**
  * @brief
- *    Compares wide string src to wide string dest.
- *
- * @remark EXTENSION TO
- *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
- *    and system software interfaces, Extensions to the C Library,
- *    Part I: Bounds-checking interfaces
+ *    Compares two wide strings case-folded, via \c wcsfc_s(), i.e.
+ *    case-folded and normalized, and returns if difference in the last parameter.
+ *    The two strings may overlap.
  *
  * @param[in]   dest       wide string to compare against
  * @param[in]   dmax       restricted maximum length of wide string dest
@@ -59,58 +56,67 @@
  * @retval  ESLEMAX      when dmax/smax > RSIZE_MAX_WSTR
  *
  * @see
- *    strcmp_s(), wcsncmp_s(), wcsicmp_s()
+ *    strcmp_s(), wcscmp_s(), wcsncmp_s(), wcsfc_s()
  *
  */
 EXPORT errno_t
-wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src, rsize_t smax,
-         int *diff)
+wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
+          const wchar_t *restrict src, rsize_t smax,
+          int *diff)
 {
+    errno_t rc;
+    wchar_t *d1, *d2;
+    rsize_t l1, l2;
+
     if (unlikely(diff == NULL)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: diff is null",
+        invoke_safe_str_constraint_handler("wcsncmp_s: diff is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
     *diff = 0;
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: dest is null",
+        invoke_safe_str_constraint_handler("wcsncmp_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: src is null",
+        invoke_safe_str_constraint_handler("wcsncmp_s: src is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(dmax == 0 || smax == 0)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: dmax/smax is 0",
+        invoke_safe_str_constraint_handler("wcsncmp_s: dmax/smax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
     if (unlikely(dmax > RSIZE_MAX_WSTR || smax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: dmax/smax exceeds max",
+        invoke_safe_str_constraint_handler("wcsncmp_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
-    while (*dest && *src && dmax && smax) {
-
-        if (*dest != *src) {
-            break;
-        }
-
-        dest++;
-        src++;
-        dmax--;
-        smax--;
+    d1 = (wchar_t*)malloc(dmax*2*sizeof(wchar_t));
+    rc = wcsfc_s(d1, dmax*2, (wchar_t *restrict)dest, &l1);
+    if (rc != EOK) {
+        free(d1);
+        return rc;
     }
 
-    *diff = *dest - *src;
-    return RCNEGATE(EOK);
+    d2 = (wchar_t*)malloc(smax*2*sizeof(wchar_t));
+    rc = wcsfc_s(d2, smax*2, (wchar_t *restrict)src, &l2);
+    if (rc != EOK) {
+        free(d1);
+        free(d2);
+        return rc;
+    }
+
+    rc = wcscmp_s(d1, dmax*2, d2, smax*2, diff);
+    free(d1);
+    free(d2);
+    return rc;
 }
-EXPORT_SYMBOL(wcscmp_s)
+EXPORT_SYMBOL(wcsicmp_s)
