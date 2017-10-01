@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcstok_s
  * File 'wchar/wcstok_s.c'
- * Lines executed:81.08% of 74
- *
+ * Lines executed:86.36% of 88
  *
  *------------------------------------------------------------------
  */
@@ -18,11 +17,9 @@
 
 int main()
 {
-#if defined(DEBUG) || defined(__cplusplus)
-    errno_t rc = 0;
-#endif
-    wchar_t *p2str;
+    wchar_t *p2str = NULL;
     wchar_t *p2tok;
+    wchar_t *rc;
 
     rsize_t  len;
     wchar_t  str1[LEN];
@@ -30,55 +27,48 @@ int main()
     int errs = 0;
 
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
 
-    p2tok = wcstok_s(str1, NULL, str2,  &p2str);
-    if (p2tok) {
-        debug_printf("%s %u   Error rc=%d \n",
-               __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    len = LEN;
+    rc = wcstok_s(NULL, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESNULLP);
+
+    rc = wcstok_s(str1, NULL, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESNULLP);
+
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
 
     len = 0;
-    p2tok = wcstok_s(str1, &len, str2,  &p2str);
-    if (p2tok) {
-        debug_printf("%s %u   Error rc=%d \n",
-               __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    rc = wcstok_s(str1, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESZEROL);
+
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
 
     len = RSIZE_MAX_STR + 1;
-    p2tok = wcstok_s(str1, &len, str2,  &p2str);
-    if (p2tok) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    rc = wcstok_s(str1, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESLEMAX);
+
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
+
+    len = LEN;
+    rc = wcstok_s(str1, &len, NULL, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESNULLP);
 
     len = 0;
-    p2tok = wcstok_s(str1, &len, NULL,  &p2str);
-    if (p2tok) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
-/*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
+    rc = wcstok_s(str1, &len, NULL, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESZEROL);
 
-    p2tok = wcstok_s(str1, &len, str2,  NULL);
-    if (p2tok) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-        errs++;
-    }
+    len = LEN;
+    rc = wcstok_s(str1, &len, str2, NULL);
+    ERRPTR(NULL);
+    ERRNO(ESNULLP);
+
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
 
     /* no token test */
     wcscpy(str1, L"aaaaaaaa");
@@ -92,8 +82,9 @@ int main()
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
+    ERRNO(EOK);
+
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
 
     wcscpy(str1, L"jklmnopqrst");
     len = wcslen(str1) - 2;             /* cheat on len */
@@ -106,8 +97,9 @@ int main()
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
+    ERRNO(ESUNTERM);
+
 /*--------------------------------------------------*/
-    debug_printf("line:%u \n", __LINE__);
 
     wcscpy(str1, L"aaamnopqrst");
     len = wcslen(str1);
@@ -120,9 +112,10 @@ int main()
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
+    ERRNO(EOK);
+
 /*--------------------------------------------------*/
 /** [1] **/
-    debug_printf("line:%u \n", __LINE__);
 
     wcscpy(str1, L"aaamnopqrstfedcba");
     len = wcslen(str1);
@@ -140,6 +133,7 @@ int main()
         errs++;
     }
     /* printf("token -%ls-  -%ls- len=%d \n", p2tok, p2str, (int)len ); */
+    ERRNO(EOK);
 
 /*--------------------------------------------------*/
 /** [2] **/
@@ -150,11 +144,11 @@ int main()
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
+    ERRNO(EOK);
     /* printf("token -%ls-  -%ls- len=%d \n", p2tok, p2str, (int)len ); */
 
 /*--------------------------------------------------*/
 /** [1] **/
-    debug_printf("line:%u \n", __LINE__);
 
     wcscpy(str1, L"?a???b,,,#c");
     len = wcslen(str1);
@@ -162,6 +156,7 @@ int main()
     wcscpy(str2, L"?");
 
     p2tok = wcstok_s(str1, &len, str2, &p2str);
+    ERRNO(EOK);
 
     if (wcscmp(p2tok, L"a") ) {
         debug_printf("%s %u token -%ls-  -%ls- len=%d \n",
@@ -172,7 +167,6 @@ int main()
 
 /*--------------------------------------------------*/
 /** [2] **/
-    debug_printf("line:%u \n", __LINE__);
     wcscpy(str1, L"?a???b,,,#c");
     len = wcslen(str1);
 
@@ -180,6 +174,7 @@ int main()
 
     /** p2tok = wcstok_s(p2str, &len, str2, &p2str); **/
     p2tok = wcstok_s(NULL, &len, str2, &p2str);
+    ERRNO(EOK);
 
     if (wcscmp(p2tok, L"??b") ) {
         debug_printf("%s %u token -%ls-  -%ls- len=%d \n",
@@ -195,7 +190,6 @@ int main()
 
     wcscpy(str2, L",");   /* change the tokenizer string */
 
-    debug_printf("line:%u\n", __LINE__);
     debug_printf("String to tokenize str1 = \"%ls\"  len = %u\n", str1, (unsigned)len);
     debug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
@@ -209,6 +203,7 @@ int main()
         if (p2tok)
             debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
+        ERRNO(EOK);
     }
 /*--------------------------------------------------*/
 
@@ -218,7 +213,6 @@ int main()
 
     wcscpy(str2, L",.;*");
 
-    debug_printf("line:%u\n", __LINE__);
     debug_printf("String to tokenize str1 = \"%ls\"  len = %u\n", str1, (unsigned)len);
     debug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
@@ -252,6 +246,7 @@ int main()
     if (p2tok)
         debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__, p2tok, p2str, (int)len );
 
+    ERRNO(EOK);
     debug_printf("\n");
 
 /*--------------------------------------------------*/
@@ -262,7 +257,6 @@ int main()
 
     wcscpy(str2, L",.;*");
 
-    debug_printf("line:%u\n", __LINE__);
     debug_printf("String to tokenize str1 = \"%ls\"  len = %u\n", str1, (unsigned)len);
     debug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
@@ -272,9 +266,9 @@ int main()
     while (p2tok && len) {
         debug_printf("  p2tok = wcstok_s(p2str, &len, str2, &p2str); \n");
         p2tok = wcstok_s(p2str, &len, str2, &p2str);
-        if (p2tok)
-            debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
-                         p2tok, p2str, (int)len );
+        ERRNO(EOK);
+        debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
+                     p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 
@@ -284,7 +278,6 @@ int main()
 
     wcscpy(str2, L",.;*");
 
-    debug_printf("line:%u\n", __LINE__);
     debug_printf("String to tokenize str1 = \"%ls\"  len = %u\n", str1, (unsigned)len);
     debug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
@@ -294,9 +287,13 @@ int main()
     while (p2tok && len) {
         debug_printf("  p2tok = wcstok_s(p2str, &len, str2, &p2str); \n");
         p2tok = wcstok_s(p2str, &len, str2, &p2str);
-        if (p2tok)
+        if (p2tok) {
+            ERRNO(EOK);
             debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
+        } else {
+            ERRNO(ESUNTERM);
+        }
     }
 /*--------------------------------------------------*/
 
@@ -306,7 +303,6 @@ int main()
 
     wcscpy(str2, L",.;*");
 
-    debug_printf("line:%u\n", __LINE__);
     debug_printf("String to tokenize str1 = \"%ls\"  len = %u\n", str1, (unsigned)len);
     debug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
@@ -317,9 +313,13 @@ int main()
         debug_printf("  p2tok = wcstok_s(p2str, &len, str2, &p2str); \n");
         /* p2tok = wcstok_s(p2str, &len, str2, &p2str); */
         p2tok = wcstok_s(NULL, &len, str2, &p2str);
-        if (p2tok)
+        if (p2tok) {
+            ERRNO(EOK);
             debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
+        } else {
+            ERRNO(ESUNTERM);
+        }
     }
 /*--------------------------------------------------*/
 

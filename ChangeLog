@@ -55,6 +55,8 @@ Changes in vxx092017 3.0.0
         for wcsnorm_s.
         - Added the timingsafe_bcmp and timingsafe_memcmp extensions from OpenBSD,
         and memccpy_s derived from FreeBSD.
+        - Changed strtok_s to set errno to ES* values. C11 does nothing,
+        but with wcstok_s sets errno to EINVAL.
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.

@@ -147,21 +147,27 @@
 
 #define ERR(n)                                     \
     if (rc != (n)) {                               \
-        debug_printf("%s %u  Error rc=%d \n",     \
+        debug_printf("%s %u  Error rc=%d \n",      \
                      __FUNCTION__, __LINE__,  (int)rc); \
         errs++;                                    \
     }
-#define NEGERR(n)                                     \
-    if (rc != -(n)) {                               \
+#define ERRPTR(n)                                 \
+    if (rc != (n)) {                              \
+        debug_printf("%s %u  Error rc=%p \n",     \
+                     __FUNCTION__, __LINE__,  rc);\
+        errs++;                                   \
+    }
+#define NEGERR(n)                                 \
+    if (rc != -(n)) {                             \
         debug_printf("%s %u  Error rc=%d \n",     \
                      __FUNCTION__, __LINE__,  (int)rc); \
-        errs++;                                    \
+        errs++;                                   \
     }
 #define ANYERR()                                    \
     if (rc >= 0) {                                  \
         debug_printf("%s %u  Error rc=%d \n",       \
                      __FUNCTION__, __LINE__,  (int)rc); \
-        errs++;                                    \
+        errs++;                                     \
     }
 #define ERRNO(n)                                   \
     if (errno != (n)) {                            \
