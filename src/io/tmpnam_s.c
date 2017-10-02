@@ -132,16 +132,16 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
         int len = strlen(result);
 
         if (unlikely((rsize_t)len > maxsize)) {
+            *result = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds size",
                                                NULL, ESNOSPC);
-            *result = '\0';
             return ESNOSPC;
         }
 
         if (unlikely(len > L_tmpnam_s)) {
+            *result = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds L_tmpnam_s",
                                                NULL, ESLEMAX);
-            *result = '\0';
             return ESLEMAX;
         }
 #ifdef SAFECLIB_STR_NULL_SLACK

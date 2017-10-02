@@ -84,9 +84,9 @@ tmpfile_s(FILE * restrict * restrict streamptr)
 
     ++count;
     if (unlikely(count > TMP_MAX_S)) {
+        *streamptr = NULL;
         invoke_safe_str_constraint_handler("tmpfile_s: exceeds TMP_MAX_S",
                    NULL, ESLEMAX);
-        *streamptr = NULL;
         return ESLEMAX;
     }
 

@@ -73,30 +73,30 @@ strchr_s (const char *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(dest == NULL)) {
+        *result = NULL;
         invoke_safe_str_constraint_handler("strchr_s: dest is null",
                    NULL, ESNULLP);
-        *result = NULL;
         return (ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
+        *result = NULL;
         invoke_safe_str_constraint_handler("strchr_s: dmax is 0",
                    NULL, ESZEROL);
-        *result = NULL;
         return (ESZEROL);
     }
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
+        *result = NULL;
         invoke_safe_str_constraint_handler("strchr_s: dmax exceeds max",
                    NULL, ESLEMAX);
-        *result = NULL;
         return (ESLEMAX);
     }
 
     if (unlikely(ch > 255)) {
+        *result = NULL;
         invoke_safe_str_constraint_handler("strchr_s: ch exceeds max",
                    NULL, ESLEMAX);
-        *result = NULL;
         return (ESLEMAX);
     }
 

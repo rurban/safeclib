@@ -133,25 +133,25 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(fmt == NULL)) {
+        *dest = L'\0';
         handle_werror(dest, dmax, "snwprintf_s: fmt is null",
                       ESNULLP);
-        *dest = L'\0';
         return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
+        *dest = L'\0';
         invoke_safe_str_constraint_handler("snwprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        *dest = L'\0';
         return -(ESZEROL);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
     if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
         if ((p-fmt == 0) || *(p-1) != L'%') {
+            *dest = L'\0';
             invoke_safe_str_constraint_handler("snwprintf_s: illegal %n",
                    NULL, EINVAL);
-            *dest = L'\0';
             return -(EINVAL);
         }
     }
@@ -160,9 +160,9 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         /* at the beginning or if inside, not %%n */
         if (((p-fmt >= 1) && *(p-1) == L'%') &&
             ((p-fmt == 1) || *(p-2) != L'%')) {
+            *dest = L'\0';
             invoke_safe_str_constraint_handler("snwprintf_s: illegal %n",
                                                NULL, EINVAL);
-            *dest = L'\0';
             return -(EINVAL);
         }
     }
