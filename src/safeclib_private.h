@@ -183,8 +183,11 @@ void abort(void) __attribute__((noreturn));
 #define EXPORT
 #endif
 
-#include "safe_lib.h"
+#include "safe_str_lib.h"
 #include "safe_str_constraint.h"
+#include "safe_mem_lib.h"
+#include "safe_mem_constraint.h"
+#include "safe_lib.h"
 
 /* platform quirks */
 #ifndef SAFECLIB_DISABLE_WCHAR

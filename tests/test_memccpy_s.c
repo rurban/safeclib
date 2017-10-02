@@ -7,7 +7,7 @@
  */
 
 #include "test_private.h"
-#include "safe_str_lib.h"
+#include "safe_mem_lib.h"
 
 #define LEN   ( 128 )
 

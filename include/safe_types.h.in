@@ -37,6 +37,13 @@
 extern "C" {
 #endif
 
+/* C11 appendix K types - specific for bounds checking */
+typedef size_t  rsize_t;
+
+#ifndef RSIZE_MAX
+# define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
+#endif
+
 #ifdef __KERNEL__
 /* linux kernel environment */
 
@@ -62,6 +69,10 @@ typedef int errno_t;
 #endif
 
 #endif /* __KERNEL__ */
+
+typedef void (*constraint_handler_t) (const char *restrict /* msg */,
+                                      void *restrict       /* ptr */,
+                                      errno_t              /* error */);
 
 #ifdef __cplusplus
 }

@@ -8,7 +8,7 @@
  */
 
 #include "test_private.h"
-#include "safe_lib.h"
+#include "safe_str_lib.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>

@@ -122,4 +122,4 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
 }
 EXPORT_SYMBOL(gmtime_s)
 
-#endif /* MINGW_HAS_SECURE_API */
+#endif /* HAVE_MINGW64 */

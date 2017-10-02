@@ -9,7 +9,7 @@
  */
 
 #include "test_private.h"
-#include "safe_lib.h"
+#include "safe_str_lib.h"
 #include <stdlib.h>
 #include <ctype.h>
 

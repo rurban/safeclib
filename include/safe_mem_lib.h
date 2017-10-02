@@ -39,10 +39,23 @@
 extern "C" {
 #endif
 
-#include "safe_lib.h"
+#include "safe_config.h"
+#include "safe_lib_errno.h"
+#include "safe_types.h"
 
 #ifndef SAFECLIB_DISABLE_WCHAR
 #include <wchar.h>
+#endif
+
+/* we disable static builds on mingw for now */
+#if defined _WIN32 /* && defined DLL_EXPORT */
+# if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
+#  define EXTERN extern __declspec(dllexport)
+# else
+#  define EXTERN extern __declspec(dllimport)
+# endif
+#else
+# define EXTERN extern
 #endif
 
 #define RSIZE_MAX_MEM16    ( RSIZE_MAX_MEM/2 )

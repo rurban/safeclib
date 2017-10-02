@@ -38,11 +38,28 @@
 extern "C" {
 #endif
 
-#include "safe_lib.h"
+#include "safe_config.h"
+#include "safe_lib_errno.h"
+#include "safe_types.h"
 
 #include <stdarg.h>
+#include <time.h>
+#if defined HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
 #ifndef SAFECLIB_DISABLE_WCHAR
 #include <wchar.h>
+#endif
+
+/* we disable static builds on mingw for now */
+#if defined _WIN32 /* && defined DLL_EXPORT */
+# if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
+#  define EXTERN extern __declspec(dllexport)
+# else
+#  define EXTERN extern __declspec(dllimport)
+# endif
+#else
+# define EXTERN extern
 #endif
 
 /*
@@ -62,6 +79,13 @@ extern "C" {
 #define SAFE_STR_PASSWORD_MIN_LENGTH   ( 6 )
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 
+EXTERN void
+abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
+
+EXTERN void
+ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
+
+#define sl_default_handler ignore_handler_s
 
 /* set string constraint handler */
 EXTERN constraint_handler_t

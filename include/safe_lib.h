@@ -1,10 +1,11 @@
 /*------------------------------------------------------------------
  * safe_lib.h -- Safe C Library
  *
- * October 2008, Bo Berry
+ * September 2017, Reini Urban
  * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
  * Copyright (c) 2008-2013 by Cisco Systems, Inc
+ * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -38,8 +39,8 @@ extern "C" {
 #endif
 
 #include "safe_config.h"
-#include "safe_types.h"
 #include "safe_lib_errno.h"
+#include "safe_types.h"
 
 #include <time.h>
 #if defined HAVE_SYS_TIME_H
@@ -57,17 +58,6 @@ extern "C" {
 # define EXTERN extern
 #endif
 
-/* C11 appendix K types - specific for bounds checking */
-typedef size_t  rsize_t;
-
-#ifndef RSIZE_MAX
-# define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
-#endif
-
-typedef void (*constraint_handler_t) (const char *restrict /* msg */,
-                                      void *restrict       /* ptr */,
-                                      errno_t              /* error */);
-
 EXTERN void
 abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 
@@ -75,10 +65,6 @@ EXTERN void
 ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 
 #define sl_default_handler ignore_handler_s
-
-#include "safe_mem_lib.h"
-#include "safe_str_lib.h"
-
 
 #ifndef TMP_MAX_S
 # ifdef TMP_MAX
