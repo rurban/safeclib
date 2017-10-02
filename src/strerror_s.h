@@ -29,34 +29,28 @@
  *------------------------------------------------------------------
  */
 
-#include "safeclib_private.h"
+static const char* errmsgs_s[] = {
+    "null ptr",       	     /* ESNULLP */
+    "length is zero",         /* ESZEROL */
+    "length is below min",    /* ESLEMIN */
+    "length exceeds RSIZE_MAX",/* ESLEMAX */
+    "overlap undefined",      /* ESOVRLP */
+    "empty string",           /* ESEMPTY */
+    "not enough space",       /* ESNOSPC */
+    "unterminated string",    /* ESUNTERM */
+    "no difference",          /* ESNODIFF */
+    "not found",              /* ESNOTFND */
+};
 
-/** 
- * @brief
- *    The \c strerrorlen_s function returns the untruncated length of the
- *    textual description of the system error code \c errnum, identical to the
- *    description that would be printed by \c perror().
- *
- * @remark SPECIFIED IN
- *    * C11 standard (ISO/IEC 9899:2011):
- *    K.3.7.4.2 The strerrorlen_s function (p: 622)
- *    http://en.cppreference.com/w/c/byte/strerror
- *    * ISO/IEC TR 24731, Programming languages, environments
- *    and system software interfaces, Extensions to the C Library,
- *    Part I: Bounds-checking interfaces
- *
- * @param[in]   errnum  integer value referring to an error code
- *
- * @return The length of the error message or 0
- *
- * @see
- *    strerror_s()
- */
-
-EXPORT size_t
-strerrorlen_s(errno_t errnum)
-{
-    const char *buf = strerror(errnum);
-    return buf ? strlen(buf) : 0;
-}
-EXPORT_SYMBOL(strerrorlen_s)
+static const int len_errmsgs_s[] = {
+    sizeof "null ptr",       	     /* ESNULLP */
+    sizeof "length is zero",         /* ESZEROL */
+    sizeof "length is below min",    /* ESLEMIN */
+    sizeof "length exceeds RSIZE_MAX",/* ESLEMAX */
+    sizeof "overlap undefined",      /* ESOVRLP */
+    sizeof "empty string",           /* ESEMPTY */
+    sizeof "not enough space",       /* ESNOSPC */
+    sizeof "unterminated string",    /* ESUNTERM */
+    sizeof "no difference",          /* ESNODIFF */
+    sizeof "not found",              /* ESNOTFND */
+};

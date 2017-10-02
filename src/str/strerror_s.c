@@ -30,6 +30,7 @@
  */
 
 #include "safeclib_private.h"
+#include "strerror_s.h"
 
 /** 
  * @brief
@@ -103,10 +104,17 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
 
     len = strerrorlen_s(errnum);
     if (likely(len < dmax)) {
-        const char *tmpbuf = strerror(errnum);
-        strcpy_s(dest, dmax, tmpbuf);
+        if (errnum >= ESNULLP && errnum <= ESLAST) {
+            const char *tmpbuf = errmsgs_s[errnum-ESNULLP];
+            strcpy_s(dest, dmax, tmpbuf);
+        } else {
+            const char *tmpbuf = strerror(errnum);
+            strcpy_s(dest, dmax, tmpbuf);
+        }
     } else if (dmax > 3) { /* truncate */
-        const char *tmpbuf = strerror(errnum);
+        const char *tmpbuf = (errnum >= ESNULLP && errnum <= ESLAST)
+            ? errmsgs_s[errnum-ESNULLP]
+            : strerror(errnum);
         strncpy_s(dest, dmax, tmpbuf, dmax-4);
         strcat_s(dest, dmax, "...");
     } else {
@@ -118,3 +126,37 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
     return EOK;
 }
 EXPORT_SYMBOL(strerror_s)
+
+/** 
+ * @brief
+ *    The \c strerrorlen_s function returns the untruncated length of the
+ *    textual description of the system error code \c errnum, identical to the
+ *    description that would be printed by \c perror().
+ *
+ * @remark SPECIFIED IN
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.7.4.2 The strerrorlen_s function (p: 622)
+ *    http://en.cppreference.com/w/c/byte/strerror
+ *    * ISO/IEC TR 24731, Programming languages, environments
+ *    and system software interfaces, Extensions to the C Library,
+ *    Part I: Bounds-checking interfaces
+ *
+ * @param[in]   errnum  integer value referring to an error code
+ *
+ * @return The length of the error message or 0
+ *
+ * @see
+ *    strerror_s()
+ */
+
+EXPORT size_t
+strerrorlen_s(errno_t errnum)
+{
+    if (errnum >= ESNULLP && errnum <= ESLAST) {
+        return len_errmsgs_s[errnum-ESNULLP]-1;
+    } else {
+        const char *buf = strerror(errnum);
+        return buf ? strlen(buf) : 0;
+    }
+}
+EXPORT_SYMBOL(strerrorlen_s)

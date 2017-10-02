@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strerror_s
  * File 'str/strerror_s.c'
- * Lines executed:100.00% of 21
- *
+ * Lines executed:96.77% of 31
  *
  *------------------------------------------------------------------
  */
@@ -51,6 +50,16 @@ int test_strerror_s (void)
         rc = strerror_s(str1, LEN, i);
         ERR(EOK);
     }
+
+    for (i=ELAST+1; i<400; i++) {
+        rc = strerror_s(str1, LEN, i);
+        ERR(EOK); /* Unknown error */
+    }
+
+    for (i=400; i<=ESLAST; i++) {
+        rc = strerror_s(str1, LEN, i);
+        ERR(EOK);
+    }
     
 /*--------------------------------------------------*/
     
@@ -70,7 +79,24 @@ int test_strerror_s (void)
             ERR(EOK);
         }
     }
-    
+
+    for (i=400; i<=409; i++) {
+        rc = strerror_s(str1, 30, i);
+        len = strerrorlen_s(i);
+        if (len < 30) {
+            ERR(EOK);
+        } else {
+            size_t ind = strlen(str1);
+            if (ind != 29) {
+                INDCMP(!= 29);
+                debug_printf("%s %u  strerror_s(%d) => %d:%d \"%s\" \n",
+                         __FUNCTION__, __LINE__, i, (int)len,
+                         (int)strlen(str1), str1);
+            }
+            ERR(EOK);
+        }
+    }
+
 /*--------------------------------------------------*/
 
     return (errs);

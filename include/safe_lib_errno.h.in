@@ -46,8 +46,10 @@ extern "C" {
 
 /*
  * Safe Lib specific errno codes.  These can be added to the errno.h file
- * if desired.
+ * if desired. strerror/perror does not know about these errors though,
+ * and it's messages are not extendable, only strerror_s() does.
  */
+
 #ifndef ESNULLP
 #define ESNULLP         ( 400 )       /* null ptr                    */
 #endif
@@ -86,6 +88,10 @@ extern "C" {
 
 #ifndef ESNOTFND
 #define ESNOTFND        ( 409 )       /* not found                   */
+#endif
+
+#ifndef ESLAST
+#define ESLAST ESNOTFND
 #endif
 
 /* EOK may or may not be defined in errno.h */

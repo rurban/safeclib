@@ -75,7 +75,6 @@ STD_STR_FILES = \
 	str/strnlen_s.c         \
 	str/strtok_s.c          \
 	str/strerror_s.c        \
-	str/strerrorlen_s.c     \
 	str/vsprintf_s.c
 
 # but they are in the C11 standard
