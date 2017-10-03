@@ -95,7 +95,7 @@
 #endif
 
 #if defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1)
-# define HAVE_C11
+# define WANT_C11
 #endif
 
 #if defined(__has_feature)

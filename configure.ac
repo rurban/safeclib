@@ -317,6 +317,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_CC_C_O
 AC_PROG_CC_C99
+AC_PROG_CC_C11
 if test "x$ac_cv_prog_cc_c99" = "xno"; then
    dnl we really should ERROR, lets see how far can come without
    AC_MSG_WARN([This compiler ${CC} has no c99 support])
@@ -330,6 +331,16 @@ else
 fi
 dnl AM_CONDITIONAL([HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
 AC_SUBST(HAVE_C99)
+
+if test "x$ac_cv_prog_cc_c11" != "xno"; then
+   AC_DEFINE([HAVE_C11], [1],
+        [Defined to 1 when the compiler supports c11])
+   if test "x$ac_cv_prog_cc_c11" != "x"; then
+      AC_MSG_RESULT([added $ac_cv_prog_cc_c11 to CFLAGS])
+      AM_CFLAGS="$AM_CFLAGS $ac_cv_prog_cc_c11"
+   fi
+fi
+AC_SUBST(HAVE_C11)
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
@@ -467,7 +478,7 @@ dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
-                bcmp secure_getenv \
+                bcmp secure_getenv memset_s \
                 asctime_r ctime_r gmtime_r localtime_r memcpy_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AX_GCC_BUILTIN(__builtin_ctz)

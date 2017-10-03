@@ -27,7 +27,8 @@ int test_memset_s (void)
 
     value = 34;
     rc = memset_s(NULL, LEN, value, LEN);
-#ifndef HAVE_C11
+    /* C11 upstream */
+#if !defined HAVE_MEMSET_S && !defined WANT_C11
     if (rc != ESNULLP)
 #else
     if (rc != EINVAL)
@@ -53,7 +54,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, MAX+1, value, LEN);
-#ifndef HAVE_C11
+#if !defined HAVE_MEMSET_S && !defined WANT_C11
     if (rc != ESLEMAX)
 #else
     if (rc != 0)
@@ -67,7 +68,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, LEN, value, MAX+1);
-#ifndef HAVE_C11
+#if !defined HAVE_MEMSET_S && !defined WANT_C11
     if (rc != ESLEMAX)
 #else
     if (rc != EOVERFLOW)
@@ -81,7 +82,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, LEN, value, LEN+1);
-#ifndef HAVE_C11
+#if !defined HAVE_MEMSET_S && !defined WANT_C11
     if (rc != ESNOSPC)
 #else
     if (rc != EOVERFLOW)

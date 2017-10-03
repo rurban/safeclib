@@ -31,6 +31,11 @@
  */
 
 #include "safeclib_private.h"
+
+#if defined HAVE_MEMSET_S && defined WANT_C11
+/* use the libc function */
+#else
+
 #include "safe_mem_constraint.h"
 #include "mem_primitives_lib.h"
 #include "safe_mem_lib.h"
@@ -80,7 +85,7 @@
  *    memset16_s(), memset32_s()
  *
  */
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+
 EXPORT errno_t
 memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
 {
@@ -94,7 +99,7 @@ memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
 
     if (unlikely(n == 0)) {
         /* on C11 n=0 is allowed */
-#if defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1)
+#ifdef HAVE_C11
         return EOK;
 #else
         invoke_safe_mem_constraint_handler("memset_s: n is 0",
