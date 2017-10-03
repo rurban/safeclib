@@ -3,7 +3,6 @@
  * File 'memset_s.c'
  * Lines executed:100.00% of 21
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -28,7 +27,7 @@ int test_memset_s (void)
 
     value = 34;
     rc = memset_s(NULL, LEN, value, LEN);
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#ifndef HAVE_C11
     if (rc != ESNULLP)
 #else
     if (rc != EINVAL)
@@ -45,21 +44,16 @@ int test_memset_s (void)
 
     /* no error with C11 */
     rc = memset_s(mem1, LEN, value, 0);
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
-    if (rc != ESZEROL)
+#ifdef HAVE_C11
+    ERR(EOK);
 #else
-    if (rc != 0)
+    ERR(ESZEROL)
 #endif
-    {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
 
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, MAX+1, value, LEN);
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#ifndef HAVE_C11
     if (rc != ESLEMAX)
 #else
     if (rc != 0)
@@ -73,7 +67,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, LEN, value, MAX+1);
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#ifndef HAVE_C11
     if (rc != ESLEMAX)
 #else
     if (rc != EOVERFLOW)
@@ -87,7 +81,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, LEN, value, LEN+1);
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#ifndef HAVE_C11
     if (rc != ESNOSPC)
 #else
     if (rc != EOVERFLOW)

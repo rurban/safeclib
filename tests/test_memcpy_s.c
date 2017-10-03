@@ -3,7 +3,6 @@
  * File 'mem/memcpy_s.c'
  * Lines executed:100.00% of 30
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -45,8 +44,12 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 10, mem2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
-
+#endif
+  
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
@@ -138,23 +141,11 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, 0);
+#ifdef HAVE_C11
+    ERR(EOK)
+#else
     ERR(ESZEROL)
-    else {
-
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-        }
-    }
-
-    if (mem1[len] != 33) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, (int)len, mem1[len], mem2[len]);
-        errs++;
-    }
-    }
+#endif
 
 /*--------------------------------------------------*/
 

@@ -3,8 +3,6 @@
  * File 'extmem/memset32_s.c'
  * Lines executed:100.00% of 21
  *
- *
- *=
  *------------------------------------------------------------------
  */
 
@@ -39,7 +37,11 @@ int main()
     value = 34;
 
     rc = memset32_s(mem1, MAX, value, 0);
-    ERR(ESZEROL)
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
+    ERR(ESZEROL);
+#endif
 
 /*--------------------------------------------------*/
 

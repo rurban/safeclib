@@ -3,7 +3,6 @@
  * File 'extmem/memcpy32_s.c'
  * Lines executed:100.00% of 28
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -41,7 +40,12 @@ int main()
 /*--------------------------------------------------*/
 
     rc = memcpy32_s(mem1, 10, mem2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
+#endif
+
 /*--------------------------------------------------*/
 
     rc = memcpy32_s(mem1, LEN, mem2, RSIZE_MAX_MEM32+1);
@@ -101,15 +105,11 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy32_s(mem1, LEN, mem2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
-    /* verify mem1 was zeroed */
-    for (i=0; i<LEN; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-            errs++;
-        }
-    }
+#endif
 
 /*--------------------------------------------------*/
 

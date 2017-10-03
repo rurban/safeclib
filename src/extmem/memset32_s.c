@@ -46,32 +46,33 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out]  dest   pointer to memory that will be set to the value
- * @param[in]   smax   maximum number of bytes to be written
+ * @param[in]   dmax   maximum number of bytes to be written
  * @param[in]   value  byte value to be written
  * @param[in]   n      number of 4-byte words to be set
  *
  * @pre  dest shall not be a null pointer.
- * @pre  smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
- * @pre  n shall not be 0 nor greater than RSIZE_MAX_MEM32.
- * @pre  smax*4 may not be smaller than n.
+ * @pre  dmax shall not be 0
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre  n shall not be greater than RSIZE_MAX_MEM32.
+ * @pre  dmax*4 may not be smaller than n.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
- *          pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
+ *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
  *          reporting the runtime-constraints violation, memset32_s() copies
- *          smax bytes to the destination.
+ *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
- * @retval  ESZEROL     when n = ZERO
- * @retval  ESLEMAX     when smax > RSIZE_MAX_MEM
+ * @retval  ESZEROL     Only before C11 when n = ZERO
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
  * @retval  ESLEMAX     when n > RSIZE_MAX_MEM32
- * @retval  ESNOSPC     when smax/4 < n
+ * @retval  ESNOSPC     when dmax/4 < n
  *
  * @see 
  *    memset_s(), memset16_s()
  *
  */
 EXPORT errno_t
-memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
+memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
 {
     errno_t err = EOK;
 
@@ -82,13 +83,18 @@ memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
     }
 
     if (unlikely(n == 0)) {
+        /* Since C11 n=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         invoke_safe_mem_constraint_handler("memset32_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
+#endif
     }
 
-    if (unlikely(smax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memset32_s: smax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_MEM)) {
+        invoke_safe_mem_constraint_handler("memset32_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
@@ -97,14 +103,14 @@ memset32_s(uint32_t *dest, rsize_t smax, uint32_t value, rsize_t n)
         invoke_safe_mem_constraint_handler("memset32_s: n exceeds max",
                    NULL, ESLEMAX);
         err = ESLEMAX;
-        n = smax/4;
+        n = dmax/4;
     }
 
-    if (unlikely(n > smax/4)) {
-        invoke_safe_mem_constraint_handler("memset32_s: n exceeds smax/4",
+    if (unlikely(n > dmax/4)) {
+        invoke_safe_mem_constraint_handler("memset32_s: n exceeds dmax/4",
                    NULL, ESNOSPC);
         err = ESNOSPC;
-        n = smax/4;
+        n = dmax/4;
     }
 
     mem_prim_set32(dest, n, value);

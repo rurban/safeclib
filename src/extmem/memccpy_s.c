@@ -49,7 +49,7 @@
  * @param[in]  n     maximum number bytes of src that can be copied
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  Neither dmax nor n shall be 0.
+ * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
  * @pre  n shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
@@ -63,7 +63,7 @@
  *          by dest if dest is not a null pointer and n is valid.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest/src is NULL POINTER
- * @retval  ESZEROL     when dmax/n = ZERO
+ * @retval  ESZEROL     when dmax = ZERO. Before C11 also with n = ZERO
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < n
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -101,10 +101,15 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
     }
 
     if (unlikely(n == 0)) {
+        /* Since C11 n=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memccpy_s: n is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
+#endif
     }
 
     if (unlikely(n > dmax)) {

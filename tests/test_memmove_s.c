@@ -45,7 +45,11 @@ int test_memmove_s (void)
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, 10, mem2, 0);
+#ifdef HAVE_C11
+    ERR(EOK)
+#else
     ERR(ESZEROL)
+#endif
 
 /*--------------------------------------------------*/
 
@@ -97,16 +101,11 @@ int test_memmove_s (void)
     /* invalid length - zero dest */
     len = LEN;
     rc = memmove_s(mem1, len, mem2, 0);
+#ifdef HAVE_C11
+    ERR(EOK)
+#else
     ERR(ESZEROL)
-
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
-        }
-    }
+#endif
 
 /*--------------------------------------------------*/
 

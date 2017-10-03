@@ -39,7 +39,7 @@
 /**
  * @brief
  *    Sets the first n uint16_t values starting at dest to the specified value,
- *    but maximal smax bytes.
+ *    but maximal dmax bytes.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -47,32 +47,33 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out]  dest   pointer to memory that will be set to the value
- * @param[in]   smax   maximum number of bytes to be written
+ * @param[in]   dmax   maximum number of bytes to be written
  * @param[in]   value  byte value to be written
  * @param[in]   n      number of short (2-byte) words to be set
  *
  * @pre  dest shall not be a null pointer.
- * @pre  smax and n shall not be 0 nor greater than RSIZE_MAX_MEM.
- * @pre  n shall not be 0 nor greater than RSIZE_MAX_MEM16.
- * @pre  smax*2 may not be smaller than n.
+ * @pre  dmax shall not be 0
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre  n shall not be greater than RSIZE_MAX_MEM16.
+ * @pre  dmax*2 may not be smaller than n.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
- *          pointer, and if smax is not larger than RSIZE_MAX_MEM, then, before
+ *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
  *          reporting the runtime-constraints violation, memset16_s() copies
- *          smax bytes to the destination.
+ *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
- * @retval  ESZEROL     when n = ZERO
- * @retval  ESLEMAX     when smax > RSIZE_MAX_MEM
+ * @retval  ESZEROL     Only before C11 when n = ZERO
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
  * @retval  ESLEMAX     when n > RSIZE_MAX_MEM16
- * @retval  ESNOSPC     when smax/2 < n
+ * @retval  ESNOSPC     when dmax/2 < n
  *
  * @see 
  *    memset_s(), memset32_s()
  *
  */
 EXPORT errno_t
-memset16_s(uint16_t *dest, rsize_t smax, uint16_t value, rsize_t n)
+memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
 {
     errno_t err = EOK;
 
@@ -83,13 +84,18 @@ memset16_s(uint16_t *dest, rsize_t smax, uint16_t value, rsize_t n)
     }
 
     if (unlikely(n == 0)) {
+        /* Since C11 n=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         invoke_safe_mem_constraint_handler("memset16_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
+#endif
     }
 
-    if (unlikely(smax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memset16_s: smax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_MEM)) {
+        invoke_safe_mem_constraint_handler("memset16_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
@@ -98,14 +104,14 @@ memset16_s(uint16_t *dest, rsize_t smax, uint16_t value, rsize_t n)
         invoke_safe_mem_constraint_handler("memset16_s: n exceeds max",
                    NULL, ESLEMAX);
         err = ESLEMAX;
-        n = smax/2;
+        n = dmax/2;
     }
 
-    if (unlikely(n > smax/2)) {
-        invoke_safe_mem_constraint_handler("memset16_s: n exceeds smax/2",
+    if (unlikely(n > dmax/2)) {
+        invoke_safe_mem_constraint_handler("memset16_s: n exceeds dmax/2",
                    NULL, ESNOSPC);
         err = ESNOSPC;
-        n = smax/2;
+        n = dmax/2;
     }
 
     mem_prim_set16(dest, n, value);

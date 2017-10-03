@@ -71,7 +71,7 @@
  *          reporting the runtime-constraints violation, memset_s() copies
  *          dmax bytes to the destination. 
  * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dest is NULL POINTER (EINVAL with C11)
+ * @retval  ESNULLP     when dest is NULL pointer (EINVAL with C11)
  * @retval  ESZEROL     when n = ZERO (unless C11)
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < n
@@ -92,11 +92,15 @@ memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
         return (RCNEGATE(ESNULLP));
     }
 
-    /* different on C11! */
     if (unlikely(n == 0)) {
+        /* on C11 n=0 is allowed */
+#if defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1)
+        return EOK;
+#else
         invoke_safe_mem_constraint_handler("memset_s: n is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
+#endif
     }
 
     if (unlikely(dmax > RSIZE_MAX_MEM)) {

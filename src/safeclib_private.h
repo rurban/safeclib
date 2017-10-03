@@ -120,6 +120,10 @@ void abort(void) __attribute__((noreturn));
 #include <wchar.h>
 #endif
 
+#if defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1)
+# define HAVE_C11
+#endif
+
 /* mingw 3.4 */
 #ifndef EOVERFLOW
 #define EOVERFLOW 139

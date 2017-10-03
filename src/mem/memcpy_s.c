@@ -2,8 +2,10 @@
  * memcpy_s
  *
  * October 2008, Bo Berry
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -54,7 +56,7 @@
  * @param[in]  smax  maximum number bytes of src that can be copied
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  Neither dmax nor smax shall be 0.
+ * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
  * @pre  smax shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
@@ -66,7 +68,7 @@
  *          by dest if dest is not a null pointer and smax is valid.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest/src is NULL POINTER
- * @retval  ESZEROL     when dmax/smax = ZERO
+ * @retval  ESZEROL     when dmax = ZERO. Before C11 also with smax = ZERO
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -102,11 +104,16 @@ memcpy_s (void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t
         return RCNEGATE(ESLEMAX);
     }
 
+    /* Note that MSVC checks this at very first. We check it after dest, dmax */
     if (unlikely(smax == 0)) {
-        mem_prim_set(dp, dmax, 0);
+        /* Since C11 smax=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         invoke_safe_mem_constraint_handler("memcpy_s: smax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
+#endif
     }
 
     if (unlikely(smax > dmax)) {

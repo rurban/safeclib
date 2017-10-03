@@ -40,8 +40,12 @@ int test_memccpy_s (void)
     str2[0] = '\0';
 
     rc = memccpy_s(str1, 5, str2, 0, 0);
+#ifdef HAVE_C11
+    ERR(EOK)
+#else
     ERR(ESZEROL)
     CHECK_SLACK(str1, 5);
+#endif
 
 /*--------------------------------------------------*/
 

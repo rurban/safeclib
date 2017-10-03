@@ -61,7 +61,7 @@
  *          by dest if dest is not a null pointer and smax is valid.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax/smax = ZERO
+ * @retval  ESZEROL     when dmax = ZERO. Before C11 also with smax = ZERO
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM16
  * @retval  ESNOSPC     when dmax < smax
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -92,10 +92,15 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
     }
 
     if (unlikely(smax == 0)) {
+        /* Since C11 smax=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         mem_prim_set16(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy16_s: smax is 0",
                    NULL, ESZEROL);
         return (RCNEGATE(ESZEROL));
+#endif
     }
 
     if (unlikely(smax > dmax)) {
