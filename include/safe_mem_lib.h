@@ -81,7 +81,7 @@ memmove_s(void *dest, rsize_t  dmax,
 /* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
 EXTERN errno_t
-memset_s(void *dest, rsize_t dmax, uint8_t value, rsize_t n);
+memset_s(void *dest, rsize_t dmax, int value, rsize_t n);
 #endif
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS

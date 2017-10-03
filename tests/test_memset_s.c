@@ -12,6 +12,10 @@
 #define LEN   ( 256 )
 #define MAX   RSIZE_MAX_MEM
 
+#if defined HAVE_MEMSET_S && defined HAVE_C11 && defined WANT_C11
+#define USE_LIBC_MEMSET
+#endif
+
 static uint8_t mem1[LEN];
 
 int test_memset_s (void)
@@ -28,7 +32,7 @@ int test_memset_s (void)
     value = 34;
     rc = memset_s(NULL, LEN, value, LEN);
     /* C11 upstream */
-#if !defined HAVE_MEMSET_S && !defined WANT_C11
+#ifndef USE_LIBC_MEMSET
     if (rc != ESNULLP)
 #else
     if (rc != EINVAL)
@@ -54,7 +58,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, MAX+1, value, LEN);
-#if !defined HAVE_MEMSET_S && !defined WANT_C11
+#ifndef USE_LIBC_MEMSET
     if (rc != ESLEMAX)
 #else
     if (rc != 0)
@@ -68,7 +72,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, LEN, value, MAX+1);
-#if !defined HAVE_MEMSET_S && !defined WANT_C11
+#ifndef USE_LIBC_MEMSET
     if (rc != ESLEMAX)
 #else
     if (rc != EOVERFLOW)
@@ -82,7 +86,7 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     rc = memset_s(mem1, LEN, value, LEN+1);
-#if !defined HAVE_MEMSET_S && !defined WANT_C11
+#ifndef USE_LIBC_MEMSET
     if (rc != ESNOSPC)
 #else
     if (rc != EOVERFLOW)

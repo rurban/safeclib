@@ -32,7 +32,7 @@
 
 #include "safeclib_private.h"
 
-#if defined HAVE_MEMSET_S && defined WANT_C11
+#if defined HAVE_MEMSET_S && defined HAVE_C11 && defined WANT_C11
 /* use the libc function */
 #else
 
@@ -61,6 +61,7 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax and n shall not be greater than RSIZE_MAX_MEM.
+ * @pre  value shall not be greater than 255.
  * @pre  dmax may not be smaller than n.
  * @pre  Without C11 dmax and n shall not be 0
  *
@@ -78,7 +79,7 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL pointer (EINVAL with C11)
  * @retval  ESZEROL     when n = ZERO (unless C11)
- * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or value > 255
  * @retval  ESNOSPC     when dmax < n
  *
  * @see 
@@ -87,7 +88,7 @@
  */
 
 EXPORT errno_t
-memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
+memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
 {
     errno_t err = EOK;
 
@@ -114,6 +115,12 @@ memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
         return (RCNEGATE(ESLEMAX));
     }
 
+    if (unlikely(value > 255)) {
+        invoke_safe_mem_constraint_handler("memset_s: value exceeds max",
+                   NULL, ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
+    }
+
     if (unlikely(n > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memset_s: n exceeds max",
                    NULL, ESLEMAX);
@@ -128,7 +135,7 @@ memset_s (void *dest, rsize_t dmax, uint8_t value, rsize_t n)
         n = dmax;
     }
 
-    mem_prim_set(dest, n, value);
+    mem_prim_set(dest, n, (uint8_t)value);
 
     return (RCNEGATE(err));
 }
