@@ -88,6 +88,9 @@ memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
     }
 
     if (unlikely(dmax > RSIZE_MAX_MEM32 || smax > RSIZE_MAX_MEM32)) {
+        if (dmax < RSIZE_MAX_MEM32) {
+            mem_prim_set32(dest, dmax, 0);
+        }
         invoke_safe_mem_constraint_handler("memcpy32_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));

@@ -99,6 +99,9 @@ memcpy_s (void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t
     }
 
     if (unlikely(dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM)) {
+        if (dmax < RSIZE_MAX_MEM) {
+            mem_prim_set(dp, dmax, 0);
+        }
         invoke_safe_mem_constraint_handler("memcpy_s: dmax/smax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);

@@ -48,12 +48,14 @@ int test_memcpy_s (void)
     ERR(EOK);
 #else
     ERR(ESZEROL)
+    CHECK_SLACK(mem1, 10);
 #endif
   
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
+    CHECK_SLACK(mem1, LEN);
 
 /*--------------------------------------------------*/
 
