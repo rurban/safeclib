@@ -372,7 +372,8 @@ case $host_os in
     enable_valgrind_drd=no
     ;;
 esac
-AX_VALGRIND_DFLT([sgcheck],  [off])
+dnl passes only on some systems. --enable-valgrind-sgcheck
+AX_VALGRIND_DFLT([sgcheck], [off])
 AX_VALGRIND_CHECK()
 
 # Checks for libraries
