@@ -74,6 +74,7 @@ STD_STR_FILES = \
 	str/strncpy_s.c         \
 	str/strnlen_s.c         \
 	str/strtok_s.c          \
+	str/strerror_s.h        \
 	str/strerror_s.c        \
 	str/vsprintf_s.c
 
@@ -176,6 +177,17 @@ STD_WCHAR_FILES += \
 	extwchar/towfc_s.c	\
 	extwchar/towctrans.c	\
 	extwchar/wcsfc_s.c	\
+	extwchar/hangul.h	\
+	extwchar/unw16ifcan.h	\
+	extwchar/unw16ifcmb.h	\
+	extwchar/unw16ifcmp.h	\
+	extwchar/unw16ifcpt.h	\
+	extwchar/unw16ifexc.h	\
+	extwchar/unwifcan.h	\
+	extwchar/unwifcmb.h	\
+	extwchar/unwifcmp.h	\
+	extwchar/unwifcpt.h	\
+	extwchar/unwifexc.h	\
 	extwchar/wcsnorm_s.c
 endif
 
@@ -219,7 +231,7 @@ ALL_SRC_FILES =
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
 # wcsnorm_CFLAGS = -fbracket-depth=512
-AM_CFLAGS += -Imem -Istr
+AM_CFLAGS += -I$(top_builddir)/include -I$(srcdir)/mem -I$(srcdir)/str
 if !HAVE_MINGW
 AM_CFLAGS += -Wextra -Werror -pedantic
 endif

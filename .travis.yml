@@ -38,7 +38,7 @@ script:
   - CC="$XCC" ./configure $CONF
   - make -j4
   - make check || (cat tests/test-suite.log; false)
-  - if [ "$VG" = "1" ]; then make check-valgrind ; fi
+  - if [ "$VG" = "1" ]; then make check-valgrind && make distcheck ; fi
 
 matrix:
   fast_finish: true

@@ -204,6 +204,7 @@ SAFEC_TEST_COMMON = \
 # WARNING: tests won't build with -Werror right now. A few minor warnings
 #AM_CFLAGS   += -Werror
 
+AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
 LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
 TESTS = $(SAFEC_BUILT_TESTS)
@@ -394,7 +395,7 @@ clean-local:
 	rm -rf *.dSYM
 endif
 CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe test-fc.pl test-upr.pl
-CLEANFILES  += *.gcno *.gcda
+CLEANFILES  += *.gcno *.gcda DerivedGeneralCategory.txt CaseFolding.txt
 if ENABLE_GCOV
 CLEANFILES  += *.gcov gcov.log
 endif
