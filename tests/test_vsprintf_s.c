@@ -61,8 +61,6 @@ int test_vsprintf_s (void)
     /* Unknown error: 401 */
     debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
                  strerror(errno));
-    debug_printf("%s %u  _strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
-                 _strerror(errno));
 
 /*--------------------------------------------------*/
 

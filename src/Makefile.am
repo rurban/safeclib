@@ -36,8 +36,7 @@ MEM_PRIM_FILES = \
 CORE_FILES = \
 	safeclib_private.h    \
 	abort_handler_s.c     \
-	ignore_handler_s.c    \
-	safe_strerror_s.c
+	ignore_handler_s.c
 
 STD_MEM_FILES = \
 	mem/safe_mem_constraint.h \

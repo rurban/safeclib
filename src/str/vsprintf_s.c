@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * vsprintf_s.c
+ * vsprintf_s_s.c
  *
  * August 2017, Reini Urban
  *
@@ -30,7 +30,6 @@
  */
 
 #include "safeclib_private.h"
-static const char funcname[] = "vsprintf_s: ";
 
 /**
  * @brief 
@@ -86,36 +85,35 @@ static const char funcname[] = "vsprintf_s: ";
  */
 
 EXPORT int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,
-           va_list ap)
+vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
 {
 
     int ret = -1;
     const char *p;
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESLEMAX),
+        invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         errno = ESLEMAX;
         return 0;
     }
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESNULLP),
+        invoke_safe_str_constraint_handler("vsprintf_s: dest is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
         return 0;
     }
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESNULLP),
+        invoke_safe_str_constraint_handler("vsprintf_s: fmt is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
         return 0;
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESZEROL),
+        invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
                    NULL, ESZEROL);
         errno = ESZEROL;
         return 0;
@@ -124,7 +122,7 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESILFMTN),
+            invoke_safe_str_constraint_handler("vsprintf_s: illegal %n",
                                                NULL, EINVAL);
             errno = EINVAL;
             return 0;
@@ -135,15 +133,14 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
     if (unlikely(ret >= (int)dmax)) {
-        handle_error(dest, dmax, _safec_strerror(funcname, ESNOSPC),
+        handle_error(dest, dmax, "vsprintf_s: len exceeds dmax",
                      ESNOSPC);
         errno = ESNOSPC;
         return 0;
     }
 
     if (unlikely(ret < 0)) {
-        char errstr[128];
-        strcpy(errstr, funcname);
+        char errstr[128] = "vsprintf_s: ";
         strcat(errstr, strerror(errno));
         handle_error(dest, dmax, errstr, -ret);
     }

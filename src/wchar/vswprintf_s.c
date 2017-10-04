@@ -31,7 +31,6 @@
 
 #define __STDC_WANT_LIB_EXT1__ 1
 #include "safeclib_private.h"
-static const char funcname[] = "vswprintf_s: ";
 
 /* TODO:
 any of the arguments corresponding to %s is a null pointer
@@ -108,21 +107,28 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #endif
 
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESLEMAX),
+        invoke_safe_str_constraint_handler("vswprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         errno = ESLEMAX;
         return 0;
     }
 
-    if (unlikely(dest == NULL || fmt == NULL)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESNULLP),
+    if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("vswprintf_s: dest is null",
+                   NULL, ESNULLP);
+        errno = ESNULLP;
+        return 0;
+    }
+
+    if (unlikely(fmt == NULL)) {
+        invoke_safe_str_constraint_handler("vswprintf_s: fmt is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
         return 0;
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESZEROL),
+        invoke_safe_str_constraint_handler("vswprintf_s: dmax is 0",
                    NULL, ESZEROL);
         errno = ESZEROL;
         return 0;
@@ -131,7 +137,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
     if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
         if ((p-fmt == 0) || *(p-1) != L'%') {
-            invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESILFMTN),
+            invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
                                                NULL, EINVAL);
             errno = EINVAL;
             return 0;
@@ -142,7 +148,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
         /* at the beginning or if inside, not %%n */
         if (((p-fmt >= 1) && *(p-1) == L'%') &&
             ((p-fmt == 1) || *(p-2) != L'%')) {
-            invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESILFMTN),
+            invoke_safe_str_constraint_handler("vswprintf_s: illegal %n",
                                                NULL, EINVAL);
             errno = EINVAL;
             return 0;
@@ -173,7 +179,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
         }
         if (ret > 0) {
           nospc:
-            handle_werror(dest, dmax, _safec_strerror(funcname, ESNOSPC),
+            handle_werror(dest, dmax, "vswprintf_s: len exceeds dmax",
                           ESNOSPC);
             errno = ESNOSPC;
             return 0;
@@ -185,8 +191,7 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
         goto nospc; /* probably dead code. vswprintf will cut this already */
     } else if (unlikely(ret < 0)) {
 #ifndef HAVE_VSNWPRINTF_S
-        char errstr[128];
-        strcpy(errstr, funcname);
+        char errstr[128] = "vswprintf_s: ";
         strcat(errstr, strerror(errno));
         handle_werror(dest, dmax, errstr, -ret);
 #endif

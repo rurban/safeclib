@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * vsnprintf_s.c
+ * vsnprintf_s_s.c
  *
  * August 2017, Reini Urban
  *
@@ -34,8 +34,6 @@
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
 #else
 #ifdef SAFECLIB_ENABLE_UNSAFE
-
-static const char funcname[] = "vsnprintf_s: ";
 
 /**
  * @brief 
@@ -93,27 +91,32 @@ static const char funcname[] = "vsnprintf_s: ";
  */
 
 EXPORT int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,
-            va_list ap)
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
 {
 
     int ret = -1;
     const char *p;
 
     if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESLEMAX),
+        invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return -(ESLEMAX);
     }
 
-    if (unlikely(dest == NULL || fmt == NULL)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESNULLP),
+    if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("vsnprintf_s: dest is null",
+                   NULL, ESNULLP);
+        return -(ESNULLP);
+    }
+
+    if (unlikely(fmt == NULL)) {
+        invoke_safe_str_constraint_handler("vsnprintf_s: fmt is null",
                    NULL, ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESZEROL),
+        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is 0",
                    NULL, ESZEROL);
         return -(ESZEROL);
     }
@@ -121,7 +124,7 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler(_safec_strerror(funcname, ESILFMTN),
+            invoke_safe_str_constraint_handler("vsnprintf_s: illegal %n",
                                                NULL, EINVAL);
             return -(EINVAL);
         }
@@ -131,10 +134,9 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
     if (unlikely(ret < 0)) {
-        char errstr[128];
-        strcpy(errstr, funcname);
+        char errstr[128] = "vsnprintf_s: ";
         strcat(errstr, strerror(errno));
-        handle_error(dest, dmax, errstr, -ret);
+        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
 
     return ret;
