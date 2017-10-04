@@ -1,7 +1,7 @@
 
                 ChangeLog file for safeclib
 
-Changes in vxx092017 3.0.0
+Changes in v04102017 3.0.0
         - Added mingw cross-compilation support and changes.
         The MINGW_HAS_SECURE_API deviates in strtok_s, vsnprintf_s, wcstok_s
         from C11 in w64, and in vswprintf for w32. (!__STRICT_ANSI__).
@@ -23,11 +23,12 @@ Changes in vxx092017 3.0.0
         plus all the new C11 functions.
         defines SAFECLIB_DISABLE_EXTENSIONS
         - Rearranged src layout
-        - Macrofied many more tests
+        - Macrofied many more tests, add CHECK_SLACK, errnot_t return and ERRNO checks.
         - Improved some tests for old gcc -ansi (c89) memcmp
         - Add unlikely() to improve branch prediction
         - Added --enable-gcov and a gcov target. lcov support not yet,
-        but via gcov2perl and some fixups essentially the same. see build-tools/smoke.sh
+        but via gcov2perl and some fixups essentially the same. See build-tools/smoke.sh
+        - Added a check-valgrind make target with support for BSD make
         - Added all missing safe wchar and multibyte string C11 functions:
         mbsrtowcs_s, mbstowcs_s, wcsrtombs_s, wcstombs_s, wcrtomb_s,
         wctomb_s, wcsnlen_s, wcscpy_s, wcsncpy_s, wcscat_s, wcsncat_s,
@@ -49,7 +50,7 @@ Changes in vxx092017 3.0.0
         - Better debugging support: add .i target
         - Fixed memset32_s for n > RSIZE_MAX_MEM32 ESLEMAX,
         was only RSIZE_MAX_MEM16.
-        - Added the wcsfc_s and wcsnorm_s extensions to be able to compare wide
+        - Added the wcsfc_s, wcsnorm_s, wcsicmp_s extensions to be able to compare wide
         strings.
         - Added --enable-norm-compat to enable the big compatbility modes NFKD, NFKC
         for wcsnorm_s.
@@ -57,6 +58,16 @@ Changes in vxx092017 3.0.0
         and memccpy_s derived from FreeBSD.
         - Changed strtok_s to set errno to ES* values. C11 does nothing,
         but with wcstok_s sets errno to EINVAL.
+        - Changed memset_s, harmonized with C11 API
+        - Changed mem{cpy,move,set}_s with smax/n=0, dependent if compiled with
+        a C11 compiler or not.
+        - Added a C11 compiler probe from latest autoconf git.
+        - Eliminated str/mem/lib inclusion loops. You need to include the right header(s).
+        - Clarify return values for {str,wcs}tok_s
+        - Negative return error values for all printf functions,
+          Make clear that errno is not set with _s violations, only the underlying
+        system call sets it. (EINVAL, EOVERFLOW, EILSEQ, EOF)
+        - Updated from autoconf 2.68 to 2.69
 
 Changes in v30082017 2.1.1
         - Added vsprintf_s, vsnprintf_s. They are C11.
