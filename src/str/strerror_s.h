@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
- * strerrorlen_s.c
+ * strerror_s.h
  *
- * September 2017, Reini Urban
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
