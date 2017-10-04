@@ -103,7 +103,7 @@ $(document).ready(function(){initNavTree('da/d1a/wcstok__s_8c.html','../../');})
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af7ed0d37e3a7ec161ae9cf29f37f2e92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wchar_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a> (wchar_t *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict dmax, const wchar_t *restrict delim, wchar_t **restrict ptr)</td></tr>
+<tr class="memitem:af7ed0d37e3a7ec161ae9cf29f37f2e92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wchar_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a> (wchar_t *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict dmax, const wchar_t *restrict delim, wchar_t **restrict ptr)</td></tr>
 <tr class="memdesc:af7ed0d37e3a7ec161ae9cf29f37f2e92"><td class="mdescLeft">&#160;</td><td class="mdescRight">A sequence of calls to the wcstok_s function breaks the string pointed to by dest into a sequence of tokens, each of which is delimited by a character from the string pointed to by delim.  <a href="#af7ed0d37e3a7ec161ae9cf29f37f2e92">More...</a><br /></td></tr>
 <tr class="separator:af7ed0d37e3a7ec161ae9cf29f37f2e92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -123,7 +123,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict&#160;</td>
           <td class="paramname"><em>dmax</em>, </td>
         </tr>
         <tr>
@@ -182,28 +182,20 @@ dest must not be unterminated. </dd>
 The value of *dmax shall not be greater than RSIZE_MAX_WSTR. The end of the token found shall occur within the first *dmax characters of dest for the first call, and shall occur within the first *dmax characters of where searching resumes on subsequent calls. </dd>
 <dd>
 delim must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The mingw MINGW_HAS_SECURE_API declares it without the dmax argument. Skip it there.</dd>
+<dl class="section note"><dt>Note</dt><dd>The mingw MINGW_HAS_SECURE_API declares it without the dmax argument and without restrict. Skip it there. <code>wchar_t* wcstok_s(wchar_t *str, const wchar_t *delim, wchar_t **next_token)</code></dd>
 <dd>
 C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>The wcstok_s function returns a pointer to the first character of a token; or a null pointer if there is no token or there is a runtime-constraint violation. </dd></dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">ESNULLP</td><td>when dest/delim/ptr is NULL pointer </td></tr>
-    <tr><td class="paramname">ESZEROL</td><td>when *dmax = 0 </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when *dmax &gt; RSIZE_MAX_WSTR </td></tr>
-    <tr><td class="paramname">ESUNTERM</td><td>when unterminated string</td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>The wcstok_s function returns a pointer to the first character of a token; or a null pointer if there is no token or there is a runtime-constraint violation. Each call modifies dest by substituting a wide NULL character for the first delimiter that occurs after the returned token. If there is a runtime-constraint violation, the strtok_s function does not indirect through the dest/delim pointers, and does not store a value in the object pointed to by ptr.</dd></dl>
+<p>errno is set to: ESNULLP when dest/delim/ptr is NULL pointer ESZEROL when *dmax = 0 ESLEMAX when *dmax &gt; RSIZE_MAX_WSTR ESUNTERM when unterminated string C11 just returns EINVAL</p>
 <dl class="section remark"><dt>Remarks</dt><dd>Example to demonstrate usage of <a class="el" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92" title="A sequence of calls to the wcstok_s function breaks the string pointed to by dest into a sequence of ...">wcstok_s()</a> to tokenize a string <div class="fragment"><div class="line"><span class="comment">// Approach1: sequential wcstok_s() calls</span></div><div class="line">str1 = L<span class="stringliteral">&quot;,.:*one,two;three,;four*.*.five-six***&quot;</span>; <span class="comment">// String to tokenize </span></div><div class="line"><a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a> = 38;</div><div class="line">str2 = L<span class="stringliteral">&quot;,.;*&quot;</span>; <span class="comment">// String of delimiters</span></div><div class="line"></div><div class="line">p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(str1, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str); </div><div class="line"><span class="comment">// token: one, remaining: two;three,;four*.*.five-six***, len: 30</span></div><div class="line"></div><div class="line">p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(NULL, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str);</div><div class="line"><span class="comment">// token: two, remaining: three,;four*.*.five-six***, len: 26</span></div><div class="line"></div><div class="line">p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(NULL, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str);</div><div class="line"><span class="comment">// token: three,  remaining: ;four*.*.five-six***, len: 20</span></div><div class="line"></div><div class="line">p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(NULL, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str);</div><div class="line"><span class="comment">// token: four, remaining .*.five-six***, len: 14</span></div><div class="line"></div><div class="line">p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(NULL, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str);</div><div class="line"><span class="comment">// token: five-six, remaining: **, len: 2</span></div><div class="line"></div><div class="line"> p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(NULL, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str);</div><div class="line"> <span class="comment">// token: (null), remaining: **, len: 0</span></div><div class="line"></div><div class="line"> <span class="comment">// Approach2: Use of while loop with same entry data as used above</span></div><div class="line"> p2tok = str1;</div><div class="line"> <span class="keywordflow">while</span> (p2tok &amp;&amp; <a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>) </div><div class="line"> {</div><div class="line">   p2tok = <a class="code" href="../../da/d1a/wcstok__s_8c.html#af7ed0d37e3a7ec161ae9cf29f37f2e92">wcstok_s</a>(NULL, &amp;<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a>, str2, &amp;p2str);</div><div class="line">   printf(<span class="stringliteral">&quot;  token --   remaining --  len=0 \n&quot;</span>, p2tok, p2str, (<span class="keywordtype">int</span>)<a class="code" href="../../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d">len</a> );</div><div class="line"> }</div></div><!-- fragment --> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../da/d1a/wcstok__s_8c_source.html#l00160">160</a> of file <a class="el" href="../../da/d1a/wcstok__s_8c_source.html">wcstok_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../da/d1a/wcstok__s_8c_source.html#l00170">170</a> of file <a class="el" href="../../da/d1a/wcstok__s_8c_source.html">wcstok_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

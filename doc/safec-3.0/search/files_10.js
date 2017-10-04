@@ -6,6 +6,7 @@ var searchData=
   ['wcscoll_5fs_2ec',['wcscoll_s.c',['../d6/dd8/wcscoll__s_8c.html',1,'']]],
   ['wcscpy_5fs_2ec',['wcscpy_s.c',['../de/d33/wcscpy__s_8c.html',1,'']]],
   ['wcsfc_5fs_2ec',['wcsfc_s.c',['../d9/d47/wcsfc__s_8c.html',1,'']]],
+  ['wcsicmp_5fs_2ec',['wcsicmp_s.c',['../d6/d6c/wcsicmp__s_8c.html',1,'']]],
   ['wcslwr_5fs_2ec',['wcslwr_s.c',['../d8/d67/wcslwr__s_8c.html',1,'']]],
   ['wcsncat_5fs_2ec',['wcsncat_s.c',['../d0/df6/wcsncat__s_8c.html',1,'']]],
   ['wcsncmp_5fs_2ec',['wcsncmp_s.c',['../de/d15/wcsncmp__s_8c.html',1,'']]],

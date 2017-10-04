@@ -52,6 +52,7 @@ var menudata={children:[
 {text:"Variables",url:"globals_vars.html",children:[
 {text:"c",url:"globals_vars.html#index_c"},
 {text:"d",url:"globals_vars_d.html#index_d"},
+{text:"e",url:"globals_vars_e.html#index_e"},
 {text:"l",url:"globals_vars_l.html#index_l"},
 {text:"m",url:"globals_vars_m.html#index_m"},
 {text:"p",url:"globals_vars_p.html#index_p"},

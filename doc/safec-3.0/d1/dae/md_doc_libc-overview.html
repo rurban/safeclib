@@ -134,9 +134,8 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 </ul>
 <h2>safeclib</h2>
 <ul>
-<li>safeclib does not check optional NULL parameters to the <code>scanf_s</code>, <code>printf_s</code> functions. This would need tighter integration into the upstream libc.</li>
+<li>safeclib does not check optional NULL parameters to the vararg <code>scanf_s</code> and <code>printf_s</code> functions. This would need tighter integration into the upstream libc.</li>
 <li>safeclib <code>fgets_s</code> permits temporary writes of <code>dmax+1</code> characters into dest.</li>
-<li>does not work fine with 2-byte wchar_t (i.e. cygwin/windows/solaris/aix), esp. the new case converters and <code>wcsnorm_s</code>. surrogate pairs are not yet supported everywhere.</li>
 </ul>
 <h1>Other caveats</h1>
 <h2>glibc</h2>
@@ -158,7 +157,7 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 </ul>
 <h2>musl</h2>
 <ul>
-<li><code>wmemcmp</code> returns not -1,0,1 but the full ptr diff.</li>
+<li><code>wmemcmp</code> returns not <code>-1,0,1</code> but the full ptr diff.</li>
 <li><code>mbtowc</code> and <code>wctomb</code> accept and convert illegal 4 byte characters in the ASCII locale to surrogate pairs, as it would be unicode. e.g. it converts <code>\xa0</code> to <code>\xdfa0</code>. <hr/>
 </li>
 </ul>
@@ -167,6 +166,6 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

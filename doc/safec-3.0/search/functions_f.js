@@ -6,6 +6,7 @@ var searchData=
   ['wcscoll_5fs',['wcscoll_s',['../d6/dd8/wcscoll__s_8c.html#a14da8ac69ed63c0dd6cb517fc73d9095',1,'wcscoll_s.c']]],
   ['wcscpy_5fs',['wcscpy_s',['../de/d33/wcscpy__s_8c.html#aaa7f86195bbc6387118d2d78f9813ed2',1,'wcscpy_s.c']]],
   ['wcsfc_5fs',['wcsfc_s',['../d9/d47/wcsfc__s_8c.html#a692cc4f6619a725907aa0b227f443950',1,'wcsfc_s.c']]],
+  ['wcsicmp_5fs',['wcsicmp_s',['../d6/d6c/wcsicmp__s_8c.html#a99ca6c84ad44dd60446ec9a73e059a98',1,'wcsicmp_s.c']]],
   ['wcslwr_5fs',['wcslwr_s',['../d8/d67/wcslwr__s_8c.html#ab69dbdc53fa8ddebff72b3f16250ec7d',1,'wcslwr_s.c']]],
   ['wcsncat_5fs',['wcsncat_s',['../d0/df6/wcsncat__s_8c.html#ac3eab59b6151768858c8091b76bb6b01',1,'wcsncat_s.c']]],
   ['wcsncmp_5fs',['wcsncmp_s',['../de/d15/wcsncmp__s_8c.html#a09ffbcf6eb202b718ac7af4e2a6a01b6',1,'wcsncmp_s.c']]],

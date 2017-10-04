@@ -135,6 +135,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The printf_s function composes a string via the format string and writes it to a FILE buffer. </p>
+<dl class="section note"><dt>Note</dt><dd>POSIX specifies that <code>errno</code> is set on error. However, the safeclib extended <code>ES*</code> errors do not set <code>errno</code>, only when the underlying system <code>vprintf</code> call fails, <code>errno</code> is set.</dd></dl>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.5.3.3 The printf_s function (p: 593-594) <a href="http://en.cppreference.com/w/c/io/fprintf">http://en.cppreference.com/w/c/io/fprintf</a></li>
 </ul>
@@ -160,18 +161,18 @@ On failure a negative number is returned. </dd></dl>
   <table class="retval">
     <tr><td class="paramname">-ESNULLP</td><td>when fmt is NULL pointer </td></tr>
     <tr><td class="paramname">-EINVAL</td><td>when fmt contains n </td></tr>
-    <tr><td class="paramname">-1</td><td>on some other error. </td></tr>
+    <tr><td class="paramname">-1</td><td>on some other error. errno is set then. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d68/printf__s_8c_source.html#l00060">60</a> of file <a class="el" href="../../d4/d68/printf__s_8c_source.html">printf_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d68/printf__s_8c_source.html#l00065">65</a> of file <a class="el" href="../../d4/d68/printf__s_8c_source.html">printf_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

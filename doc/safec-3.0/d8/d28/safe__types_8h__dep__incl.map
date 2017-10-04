@@ -1,11 +1,11 @@
 <map id="safe_types.h" name="safe_types.h">
-<area shape="rect" id="node2" href="$db/d69/safe__lib_8h.html" title="safe_lib.h" alt="" coords="123,80,189,107"/>
-<area shape="rect" id="node3" href="$d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="226,155,326,181"/>
-<area shape="rect" id="node10" href="$d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="110,155,202,181"/>
-<area shape="rect" id="node4" href="$d8/d04/abort__handler__s_8c.html" title="abort_handler_s.c" alt="" coords="450,229,553,256"/>
-<area shape="rect" id="node5" href="$d2/d61/memccpy__s_8c.html" title="memccpy_s.c" alt="" coords="5,229,88,256"/>
-<area shape="rect" id="node6" href="$d7/d0e/memchr__s_8c.html" title="memchr_s.c" alt="" coords="577,229,653,256"/>
-<area shape="rect" id="node7" href="$d2/df8/memcmp16__s_8c.html" title="memcmp16_s.c" alt="" coords="229,229,321,256"/>
-<area shape="rect" id="node8" href="$de/df0/memcmp32__s_8c.html" title="memcmp32_s.c" alt="" coords="113,229,205,256"/>
-<area shape="rect" id="node9" href="$d9/d4d/memcmp__s_8c.html" title="memcmp_s.c" alt="" coords="345,229,426,256"/>
+<area shape="rect" id="node2" href="$db/d69/safe__lib_8h.html" title="safe_lib.h" alt="" coords="239,80,304,107"/>
+<area shape="rect" id="node10" href="$d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="328,80,420,107"/>
+<area shape="rect" id="node3" href="$d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="229,155,329,181"/>
+<area shape="rect" id="node4" href="$d2/d61/memccpy__s_8c.html" title="memccpy_s.c" alt="" coords="365,229,447,256"/>
+<area shape="rect" id="node5" href="$de/df0/memcmp32__s_8c.html" title="memcmp32_s.c" alt="" coords="472,229,564,256"/>
+<area shape="rect" id="node6" href="$dd/de1/memcpy16__s_8c.html" title="memcpy16_s.c" alt="" coords="588,229,677,256"/>
+<area shape="rect" id="node7" href="$db/dc0/memcpy32__s_8c.html" title="memcpy32_s.c" alt="" coords="5,229,95,256"/>
+<area shape="rect" id="node8" href="$d8/daf/memmove16__s_8c.html" title="memmove16_s.c" alt="" coords="119,229,218,256"/>
+<area shape="rect" id="node9" href="$d0/d50/memmove32__s_8c.html" title="memmove32_s.c" alt="" coords="242,229,341,256"/>
 </map>

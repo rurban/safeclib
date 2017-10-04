@@ -98,10 +98,10 @@ $(document).ready(function(){initNavTree('db/dc0/memcpy32__s_8c.html','../../');
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../d8/dd9/memcpy32__s_8c__incl.png" border="0" usemap="#memcpy32__s_8c" alt=""/></div>
 <map name="memcpy32__s_8c" id="memcpy32__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="140,155,240,181"/>
-<area shape="rect" id="node8" href="../../d4/d81/safe__mem__constraint_8h.html" title="safe_mem_constraint.h" alt="" coords="127,80,253,107"/>
-<area shape="rect" id="node9" href="../../da/d8c/mem__primitives__lib_8h.html" title="mem_primitives_lib.h" alt="" coords="277,80,393,107"/>
-<area shape="rect" id="node10" href="../../d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="417,80,509,107"/>
+<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="279,155,379,181"/>
+<area shape="rect" id="node8" href="../../d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="552,229,644,256"/>
+<area shape="rect" id="node9" href="../../d4/d81/safe__mem__constraint_8h.html" title="safe_mem_constraint.h" alt="" coords="402,229,527,256"/>
+<area shape="rect" id="node10" href="../../da/d8c/mem__primitives__lib_8h.html" title="mem_primitives_lib.h" alt="" coords="329,80,445,107"/>
 </map>
 </div>
 </div>
@@ -109,7 +109,7 @@ $(document).ready(function(){initNavTree('db/dc0/memcpy32__s_8c.html','../../');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:acdb39550adf594478041ab18833498a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dc0/memcpy32__s_8c.html#acdb39550adf594478041ab18833498a3">memcpy32_s</a> (uint32_t *dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const uint32_t *src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax)</td></tr>
+<tr class="memitem:acdb39550adf594478041ab18833498a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dc0/memcpy32__s_8c.html#acdb39550adf594478041ab18833498a3">memcpy32_s</a> (uint32_t *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const uint32_t *src, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax)</td></tr>
 <tr class="memdesc:acdb39550adf594478041ab18833498a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function copies at most smax uint32_ts from src to dest, up to dmax.  <a href="#acdb39550adf594478041ab18833498a3">More...</a><br /></td></tr>
 <tr class="separator:acdb39550adf594478041ab18833498a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -129,7 +129,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
           <td class="paramname"><em>dmax</em>, </td>
         </tr>
         <tr>
@@ -141,7 +141,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
           <td class="paramname"><em>smax</em>&#160;</td>
         </tr>
         <tr>
@@ -165,7 +165,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section pre"><dt>Precondition</dt><dd>Neither dest nor src shall be a null pointer. </dd>
 <dd>
-Neither dmax nor smax shall be 0. </dd>
+dmax shall not be 0. </dd>
 <dd>
 dmax shall not be greater than RSIZE_MAX_MEM. </dd>
 <dd>
@@ -177,7 +177,7 @@ Copying shall not take place between regions that overlap.</dd></dl>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>when operation is successful </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dst/src is NULL POINTER </td></tr>
-    <tr><td class="paramname">ESZEROL</td><td>when dmax/smax = ZERO </td></tr>
+    <tr><td class="paramname">ESZEROL</td><td>when dmax = ZERO. Before C11 also with smax = ZERO </td></tr>
     <tr><td class="paramname">ESLEMAX</td><td>when dmax/smax &gt; RSIZE_MAX_MEM </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when dmax &lt; smax </td></tr>
     <tr><td class="paramname">ESOVRLP</td><td>when src memory overlaps dst</td></tr>
@@ -186,13 +186,13 @@ Copying shall not take place between regions that overlap.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/d70/memcpy__s_8c.html#a2b3780df9328d2295f334d6b6749ced9" title="This function copies at most smax bytes from src to dest, up to dmax. ">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#ad9db82fd73c95551ded2484fad84fcb2" title="This function copies at most smax uint16_ts from src to dest, up to dmax. ">memcpy16_s()</a>, <a class="el" href="../../d8/d56/memmove__s_8c.html#a79e91cbda1e03ea8b0ad4dd2b6130cb5" title="The memmove_s function copies smax bytes from the region pointed to by src into the region pointed to...">memmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#ac062caf14052a7866006f63e36f040bd" title="The memmove16_s function copies smax uint16_t from the region pointed to by src into the region point...">memmove16_s()</a>, <a class="el" href="../../d0/d50/memmove32__s_8c.html#a25bb34bd911dcc45eb927aebfc9c3c98" title="The memmove32_s function copies smax uint32_ts from the region pointed to by src into the region poin...">memmove32_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../db/dc0/memcpy32__s_8c_source.html#l00074">74</a> of file <a class="el" href="../../db/dc0/memcpy32__s_8c_source.html">memcpy32_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../db/dc0/memcpy32__s_8c_source.html#l00076">76</a> of file <a class="el" href="../../db/dc0/memcpy32__s_8c_source.html">memcpy32_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

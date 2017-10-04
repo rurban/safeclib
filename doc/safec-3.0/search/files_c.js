@@ -29,7 +29,7 @@ var searchData=
   ['strcpyfldout_5fs_2ec',['strcpyfldout_s.c',['../d1/dae/strcpyfldout__s_8c.html',1,'']]],
   ['strcspn_5fs_2ec',['strcspn_s.c',['../dd/d73/strcspn__s_8c.html',1,'']]],
   ['strerror_5fs_2ec',['strerror_s.c',['../d9/d02/strerror__s_8c.html',1,'']]],
-  ['strerrorlen_5fs_2ec',['strerrorlen_s.c',['../d6/deb/strerrorlen__s_8c.html',1,'']]],
+  ['strerror_5fs_2eh',['strerror_s.h',['../d0/d29/strerror__s_8h.html',1,'']]],
   ['strfirstchar_5fs_2ec',['strfirstchar_s.c',['../d3/d01/strfirstchar__s_8c.html',1,'']]],
   ['strfirstdiff_5fs_2ec',['strfirstdiff_s.c',['../de/d3e/strfirstdiff__s_8c.html',1,'']]],
   ['strfirstsame_5fs_2ec',['strfirstsame_s.c',['../d5/d5e/strfirstsame__s_8c.html',1,'']]],

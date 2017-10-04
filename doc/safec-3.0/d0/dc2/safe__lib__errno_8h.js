@@ -10,5 +10,6 @@ var safe__lib__errno_8h =
     [ "ESUNTERM", "d0/dc2/safe__lib__errno_8h.html#a5a23b3bf978250a97a9498051a2da2ff", null ],
     [ "ESNODIFF", "d0/dc2/safe__lib__errno_8h.html#a9a34ee6f3a60d9e349f49414f0c49505", null ],
     [ "ESNOTFND", "d0/dc2/safe__lib__errno_8h.html#a530ade2683f55ba71db096c4ca72d8d2", null ],
+    [ "ESLAST", "d0/dc2/safe__lib__errno_8h.html#addbf5232885d2d87b94a0c5eb43aeb33", null ],
     [ "EOK", "d0/dc2/safe__lib__errno_8h.html#acf2e4414e0bf0d331a111e70f9317434", null ]
 ];

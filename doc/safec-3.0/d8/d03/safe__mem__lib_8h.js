@@ -1,12 +1,13 @@
 var safe__mem__lib_8h =
 [
+    [ "EXTERN", "d8/d03/safe__mem__lib_8h.html#a77366c1bd428629dc898e188bfd182a3", null ],
     [ "RSIZE_MAX_MEM16", "d8/d03/safe__mem__lib_8h.html#a465ad220127ae535a10ce71d8bfe9b9f", null ],
     [ "RSIZE_MAX_MEM32", "d8/d03/safe__mem__lib_8h.html#a700c1607a01312f96ce02654f47bc3f3", null ],
     [ "RSIZE_MAX_WMEM", "d8/d03/safe__mem__lib_8h.html#a041df9f8e15d7cbb5249b9fd40bd0300", null ],
     [ "set_mem_constraint_handler_s", "d8/d03/safe__mem__lib_8h.html#af8df4fce12110c4ba1365e6c45ab8d29", null ],
     [ "memcpy_s", "d8/d03/safe__mem__lib_8h.html#a0a7719e94966c7f3a680138382e17454", null ],
     [ "memmove_s", "d8/d03/safe__mem__lib_8h.html#aa66d46a342971fee9890877e24a7f98a", null ],
-    [ "memset_s", "d8/d03/safe__mem__lib_8h.html#a9953d0e59f42a41062f9392c2f79fc47", null ],
+    [ "memset_s", "d8/d03/safe__mem__lib_8h.html#a8a1b559320985ab90001abc207567435", null ],
     [ "memcmp_s", "d8/d03/safe__mem__lib_8h.html#ada0963a4520256b9eb9f2f845584b655", null ],
     [ "memcmp16_s", "d8/d03/safe__mem__lib_8h.html#a79ce82afe6f6bce7bbedb872a32dedcf", null ],
     [ "memcmp32_s", "d8/d03/safe__mem__lib_8h.html#a47d9df3ab9e9c0f0976603142c620192", null ],

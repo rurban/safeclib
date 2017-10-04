@@ -103,7 +103,7 @@ $(document).ready(function(){initNavTree('d1/dbf/wcscmp__s_8c.html','../../');})
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a828628cf15c596c2ff5165cd7d2a2cab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/dbf/wcscmp__s_8c.html#a828628cf15c596c2ff5165cd7d2a2cab">wcscmp_s</a> (const wchar_t *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *restrict src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax, int *diff)</td></tr>
+<tr class="memitem:a828628cf15c596c2ff5165cd7d2a2cab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/dbf/wcscmp__s_8c.html#a828628cf15c596c2ff5165cd7d2a2cab">wcscmp_s</a> (const wchar_t *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *restrict src, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> smax, int *diff)</td></tr>
 <tr class="memdesc:a828628cf15c596c2ff5165cd7d2a2cab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares wide string src to wide string dest.  <a href="#a828628cf15c596c2ff5165cd7d2a2cab">More...</a><br /></td></tr>
 <tr class="separator:a828628cf15c596c2ff5165cd7d2a2cab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -123,7 +123,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
           <td class="paramname"><em>dmax</em>, </td>
         </tr>
         <tr>
@@ -135,7 +135,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
           <td class="paramname"><em>smax</em>, </td>
         </tr>
         <tr>
@@ -171,12 +171,8 @@ diff shall not be a null pointer. </dd>
 dmax/smax shall not be 0 </dd>
 <dd>
 dmax/smax shall not be greater than RSIZE_MAX_WSTR</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>diff (when the return code is OK) </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">&gt;0</td><td>when dest greater than src </td></tr>
-    <tr><td class="paramname">0</td><td>when wide strings the same </td></tr>
-    <tr><td class="paramname">&lt;0</td><td>when dest less than src </td></tr>
     <tr><td class="paramname">EOK</td><td>when comparison is complete </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src/diff is NULL pointer </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax/smax = 0 </td></tr>
@@ -184,15 +180,15 @@ dmax/smax shall not be greater than RSIZE_MAX_WSTR</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d7b/strcmp__s_8c.html#a1af73c8a0a8e2f7abc5a1a78f154fa8e" title="Compares string src to string dest. ">strcmp_s()</a>, <a class="el" href="../../de/d15/wcsncmp__s_8c.html#a09ffbcf6eb202b718ac7af4e2a6a01b6" title="Compares at most count wide characters of wide string src with wide string dest. ">wcsncmp_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d7b/strcmp__s_8c.html#a1af73c8a0a8e2f7abc5a1a78f154fa8e" title="Compares string src to string dest. ">strcmp_s()</a>, <a class="el" href="../../de/d15/wcsncmp__s_8c.html#a09ffbcf6eb202b718ac7af4e2a6a01b6" title="Compares at most count wide characters of wide string src with wide string dest. ">wcsncmp_s()</a>, <a class="el" href="../../d6/d6c/wcsicmp__s_8c.html#a99ca6c84ad44dd60446ec9a73e059a98" title="Compares two wide strings case-folded, via wcsfc_s(), i.e. ">wcsicmp_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d1/dbf/wcscmp__s_8c_source.html#l00070">70</a> of file <a class="el" href="../../d1/dbf/wcscmp__s_8c_source.html">wcscmp_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d1/dbf/wcscmp__s_8c_source.html#l00066">66</a> of file <a class="el" href="../../d1/dbf/wcscmp__s_8c_source.html">wcscmp_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

@@ -103,7 +103,7 @@ $(document).ready(function(){initNavTree('d4/d4f/swprintf__s_8c.html','../../');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a719abdc1626b4bcf6cbd9aefa0b505e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d4f/swprintf__s_8c.html#a719abdc1626b4bcf6cbd9aefa0b505e9">swprintf_s</a> (wchar_t *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *restrict fmt,...)</td></tr>
+<tr class="memitem:a719abdc1626b4bcf6cbd9aefa0b505e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d4f/swprintf__s_8c.html#a719abdc1626b4bcf6cbd9aefa0b505e9">swprintf_s</a> (wchar_t *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const wchar_t *restrict fmt,...)</td></tr>
 <tr class="memdesc:a719abdc1626b4bcf6cbd9aefa0b505e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>swprintf_s</code> function composes a wide string with same test that would be printed if format was used on <code>wprintf</code>.  <a href="#a719abdc1626b4bcf6cbd9aefa0b505e9">More...</a><br /></td></tr>
 <tr class="separator:a719abdc1626b4bcf6cbd9aefa0b505e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -123,7 +123,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
           <td class="paramname"><em>dmax</em>, </td>
         </tr>
         <tr>
@@ -148,6 +148,7 @@ Functions</h2></td></tr>
 
 <p>The <code>swprintf_s</code> function composes a wide string with same test that would be printed if format was used on <code>wprintf</code>. </p>
 <p>Instead of being printed, the content is stored in dest. With <code>SAFECLIB_STR_NULL_SLACK</code> defined all elements following the terminating null character (if any) written by <code>swprintf_s</code> in the array of dmax wide characters pointed to by <code>dest</code> are nulled when <code>swprintf_s</code> returns.</p>
+<dl class="section note"><dt>Note</dt><dd>POSIX specifies that <code>errno</code> is set on error. However, the safeclib extended <code>ES*</code> errors do not set <code>errno</code>, only when the underlying system <code>vswprintf</code> call fails, <code>errno</code> is set.</dd></dl>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN<ul>
 <li>C11 standard (ISO/IEC 9899:2011): K.3.9.1.4 The swprintf_s function (p: 630-631) <a href="http://en.cppreference.com/w/c/io/fwprintf">http://en.cppreference.com/w/c/io/fwprintf</a></li>
 </ul>
@@ -177,31 +178,26 @@ No encoding error shall occur.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.</dd>
 <dd>
 While narrow strings provide <code>snprintf</code>, which makes it possible to determine the required output buffer size, there is no equivalent for wide strings (until C11's <code>swprintf_s</code>), and in order to determine the buffer size, the program may need to call <code>swprintf</code>, check the result value, and reallocate a larger buffer, trying again until successful.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>On success the total number of wide characters written is returned. </dd>
-<dd>
-On failure a negative number is returned, and possibly errno set to EINVAL or EOVERFLOW. </dd>
+<dl class="section return"><dt>Returns</dt><dd>If no runtime-constraint violation occurred, the swprintf_s function returns the number of wide characters written in the array, not counting the terminating null wide character. If an encoding error occurred or if n or more wide characters are requested to be written, swprintf_s returns a negative value. If any other runtime-constraint violation occurred, swprintf_s returns zero, and sets errno. </dd>
 <dd>
 If the buffer <code>dest</code> is too small for the formatted text, including the terminating null, then the buffer is set to an empty string by placing a null wide character at <code>dest</code>[0], and the invalid parameter handler is invoked.</dd></dl>
+<p>errno: ESNULLP when <code>dest/fmt</code> is NULL pointer ESZEROL when <code>dmax</code> = 0 ESLEMAX when <code>dmax</code> &gt; <code>RSIZE_MAX_WSTR</code> ESNOSPC when return value exceeds dmax EINVAL when <code>fmt</code> contains <code>n</code> </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">-ESNULLP</td><td>when <code>dest/fmt</code> is NULL pointer </td></tr>
-    <tr><td class="paramname">-ESZEROL</td><td>when <code>dmax</code> = 0 </td></tr>
-    <tr><td class="paramname">-ESLEMAX</td><td>when <code>dmax</code> &gt; <code>RSIZE_MAX_WSTR</code> </td></tr>
-    <tr><td class="paramname">-EINVAL</td><td>when <code>fmt</code> contains <code>n</code> </td></tr>
-    <tr><td class="paramname">-ESNOSPC</td><td>when return value exceeds dmax </td></tr>
-    <tr><td class="paramname">-1</td><td>on some other error (errno: EINVAL, EOVERFLOW)</td></tr>
+    <tr><td class="paramname">-1</td><td>if an encoding error occurred or if n or more wide characters are requested to be written. </td></tr>
+    <tr><td class="paramname">0</td><td>on some other error</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dd/d33/vswprintf__s_8c.html#ad293751332435e7b360de1b2fd1bf005" title="The vswprintf_s function composes a wide string with same test that would be printed if format was us...">vswprintf_s()</a>, <a class="el" href="../../d6/d6b/snwprintf__s_8c.html#a2994a6a76b2853b7bd59f48d02609eef" title="The truncating snwprintf_s function composes a wide string with same test that would be printed if fo...">snwprintf_s()</a>, <a class="el" href="../../db/d8d/vsnprintf__s_8c.html#a59ed915174ea1f259742749f64549e55" title="The truncating vsnprintf_s function composes a string with same test that would be printed if format ...">vsnprintf_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d4/d4f/swprintf__s_8c_source.html#l00097">97</a> of file <a class="el" href="../../d4/d4f/swprintf__s_8c_source.html">swprintf_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d4/d4f/swprintf__s_8c_source.html#l00109">109</a> of file <a class="el" href="../../d4/d4f/swprintf__s_8c_source.html">swprintf_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

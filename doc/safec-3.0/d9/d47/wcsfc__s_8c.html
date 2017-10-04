@@ -109,8 +109,8 @@ $(document).ready(function(){initNavTree('d9/d47/wcsfc__s_8c.html','../../');});
 Functions</h2></td></tr>
 <tr class="memitem:a0fe46074dcfb33cdd34c4507f3eec5c7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d47/wcsfc__s_8c.html#a0fe46074dcfb33cdd34c4507f3eec5c7">_is_lt_accented</a> (wint_t wc)</td></tr>
 <tr class="separator:a0fe46074dcfb33cdd34c4507f3eec5c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a692cc4f6619a725907aa0b227f443950"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d47/wcsfc__s_8c.html#a692cc4f6619a725907aa0b227f443950">wcsfc_s</a> (wchar_t *restrict dest, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, wchar_t *restrict src, <a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict lenp)</td></tr>
-<tr class="memdesc:a692cc4f6619a725907aa0b227f443950"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the wide string via full case-folding normalized to lowercase.  <a href="#a692cc4f6619a725907aa0b227f443950">More...</a><br /></td></tr>
+<tr class="memitem:a692cc4f6619a725907aa0b227f443950"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d47/wcsfc__s_8c.html#a692cc4f6619a725907aa0b227f443950">wcsfc_s</a> (wchar_t *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, wchar_t *restrict src, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict lenp)</td></tr>
+<tr class="memdesc:a692cc4f6619a725907aa0b227f443950"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the wide string via full case-folding NFD normalized to lowercase.  <a href="#a692cc4f6619a725907aa0b227f443950">More...</a><br /></td></tr>
 <tr class="separator:a692cc4f6619a725907aa0b227f443950"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -157,7 +157,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a>&#160;</td>
           <td class="paramname"><em>dmax</em>, </td>
         </tr>
         <tr>
@@ -169,7 +169,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="../../db/d69/safe__lib_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *restrict&#160;</td>
           <td class="paramname"><em>lenp</em>&#160;</td>
         </tr>
         <tr>
@@ -180,11 +180,11 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Converts the wide string via full case-folding normalized to lowercase. </p>
-<p>The conversion stops at the first null or after dmax characters. The conversion is determined by the LC_CTYPE category setting of the locale. Other characters are not affected. fold-case performs full case folding, i.e. if <a class="el" href="../../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00">iswfc()</a> of a character &gt; 1, the length of dest might be greater than the length of src (max 4 per char), the conversion is done via <code><a class="el" href="../../dc/d32/towfc__s_8c.html#a641c8489795192bd197158bb662de3c3" title="towfc_s() converts a wide character to fully fold-cased (lowercased with possible expansions)...">towfc_s()</a></code> and Unicode 10.0, the Unicode special-casing rules are obeyed, and composed characters are normalized to NFD via <code><a class="el" href="../../d3/dd5/wcsnorm__s_8c.html#a5e12aa6178b1e2084a8c7cf89b882772" title="Converts the wide string to the canonical NFD normalization, as defined in the latest Unicode standar...">wcsnorm_decompose_s()</a></code>. If not, the conversion is per character done via normal <code><a class="el" href="../../d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce">towlower()</a></code>. Note that decomposition creates larger strings, typically 2-3 chars more.</p>
+<p>Converts the wide string via full case-folding NFD normalized to lowercase. </p>
+<p>The conversion stops at the first null or after dmax characters. The conversion is determined by the LC_CTYPE category setting of the locale. Other characters are not affected. fold-case performs full case folding, i.e. if <a class="el" href="../../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00">iswfc()</a> of a character &gt; 1, the length of dest might be greater than the length of src (max 4 per char), the conversion is done via <code><a class="el" href="../../dc/d32/towfc__s_8c.html#a641c8489795192bd197158bb662de3c3" title="towfc_s() converts a wide character to fully fold-cased (lowercased with possible expansions)...">towfc_s()</a></code> and Unicode 10.0, the Unicode special-casing rules are obeyed, and composed characters are normalized to NFD via <code><a class="el" href="../../d3/dd5/wcsnorm__s_8c.html#a5e12aa6178b1e2084a8c7cf89b882772" title="Converts the wide string to the canonical NFD normalization, as defined in the latest Unicode standar...">wcsnorm_decompose_s()</a></code> and <code><a class="el" href="../../d3/dd5/wcsnorm__s_8c.html#a5b6c4b1185cf5dcb07fc0e2b4785e7c6" title="Reorder all decomposed sequences in a wide string to NFD, as defined in the latest Unicode standard...">wcsnorm_reorder_s()</a></code>. If not, the conversion is per character done via normal <code><a class="el" href="../../d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce">towlower()</a></code>. Note that decomposition creates larger strings, typically 2-3 chars more.</p>
 <p>With SAFECLIB_STR_NULL_SLACK defined all elements following the terminating null character (if any) written in the array of dmax characters pointed to by dest are nulled.</p>
 <p>SpecialCasing checks for conditional boundary context at the begin or end of certain characters (final greek sigma), and locale sensitive rules for the Lithuanian and the Turkish/Azeri I-dot.</p>
-<p>Composed characters are checked for the left-hand-side of the Decomposition_Mapping Unicode property, which means the codepoint will be normalized to NFD if any codepoint is composed.</p>
+<p>Composed characters are checked for the left-hand-side of the Decomposition_Mapping Unicode property, which means the codepoint will be normalized to NFD if any codepoint is composed. Technically only FCD as all FC expansions are already properly ordered, and all mangled marks will not be reordered, as the have the same Combining Class.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">dest</td><td>wide string to hold the result (~130% larger than src) </td></tr>
@@ -212,13 +212,13 @@ dmax shall not be greater than RSIZE_MAX_WSTR.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d32/towfc__s_8c.html#ae1181e32e32d8033baab847608b84c00">iswfc()</a>, <a class="el" href="../../dc/d32/towfc__s_8c.html#a641c8489795192bd197158bb662de3c3" title="towfc_s() converts a wide character to fully fold-cased (lowercased with possible expansions)...">towfc_s()</a>, <a class="el" href="../../d8/dbe/towctrans_8c.html#a4f34aecc26d74e8ab8aa14e1995910b9">towupper()</a>, <a class="el" href="../../d8/d67/wcslwr__s_8c.html#ab69dbdc53fa8ddebff72b3f16250ec7d" title="Scans the string converting uppercase characters to simple lowercase, leaving all other characters un...">wcslwr_s()</a>, <a class="el" href="../../d7/dbb/wcsupr__s_8c.html#ad06be943f400324463015330d586479e" title="Scans the string converting lowercase characters to uppercase, leaving all other characters unchanged...">wcsupr_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d9/d47/wcsfc__s_8c_source.html#l00102">102</a> of file <a class="el" href="../../d9/d47/wcsfc__s_8c_source.html">wcsfc_s.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="../../d9/d47/wcsfc__s_8c_source.html#l00105">105</a> of file <a class="el" href="../../d9/d47/wcsfc__s_8c_source.html">wcsfc_s.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 30082017.239-g0bf826 3.0
+Generated for Safe C Library 04102017.0-gab130d 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
