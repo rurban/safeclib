@@ -60,9 +60,13 @@ EXT_MEM_FILES = \
 	extmem/memzero32_s.c	\
 	extmem/memchr_s.c	\
 	extmem/memrchr_s.c	\
-	extmem/timingsafe_memcmp.c	\
-	extmem/timingsafe_bcmp.c	\
 	extmem/memccpy_s.c
+
+if !HAVE_TIMINGSAFE_BCMP
+EXT_MEM_FILES += \
+	extmem/timingsafe_memcmp.c \
+	extmem/timingsafe_bcmp.c
+endif
 
 STD_STR_FILES = \
 	str/safe_str_constraint.h \

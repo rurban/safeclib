@@ -529,7 +529,7 @@ dnl the last 4 deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
-                bcmp secure_getenv memset_s \
+                bcmp secure_getenv memset_s timingsafe_memcmp timingsafe_bcmp \
                 asctime_r ctime_r gmtime_r localtime_r memcpy_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s])
 AX_GCC_BUILTIN(__builtin_ctz)
@@ -537,6 +537,8 @@ AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
+AM_CONDITIONAL([HAVE_TIMINGSAFE_BCMP],
+   [test "x$ac_cv_func_timingsafe_memcmp" = "xyes" -a "x$ac_cv_func_timingsafe_bcmp" = "xyes" ])
 
 if test "x$ac_cv_func_towupper" = "xyes"; then
   AC_MSG_CHECKING([for towupper usability])

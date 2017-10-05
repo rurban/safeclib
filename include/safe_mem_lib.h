@@ -150,12 +150,15 @@ EXTERN errno_t
 memrchr_s(const void *restrict dest, rsize_t dlen,
           const int ch, void **result);
 
-/* timing-safe byte sequence comparisons (OpenBSD) */
+/* timing-safe byte sequence comparisons
+   (already in OpenBSD, cygwin, newlib) */
+#if !(defined(__NEWLIB__) || defined(__OpenBSD__))
 EXTERN int
 timingsafe_bcmp(const void *b1, const void *b2, size_t n);
 
 EXTERN int
 timingsafe_memcmp(const void *b1, const void *b2, size_t len);
+#endif
 
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
