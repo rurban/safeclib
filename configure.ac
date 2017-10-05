@@ -58,8 +58,7 @@ AC_CONFIG_AUX_DIR([build-tools])
 # really severe build strictness also place generated object files (.o)
 # into the same directory as their source files, in order to avoid
 # collisions when non-recursive make is used.
-AM_INIT_AUTOMAKE([1.10 no-define foreign subdir-objects dist-bzip2 -Wall
-		  -Werror])
+AM_INIT_AUTOMAKE([1.10 no-define foreign subdir-objects dist-bzip2])
 
 # Check if automake supports 'pretty' builds, if so enable them by default
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -82,9 +81,6 @@ TARBALL_VERSION_FILE=".tarball-version"
 
 # Initial values for automake variables AM_*
 AM_CPPFLAGS="-I\$(top_srcdir)/include"
-# Not all code supports -Werror so each makefile enables it as appropriate.
-# For debugging add -Werror to this and then go fix those errors :)
-AM_CFLAGS="-Wall"
 
 dnl we manually export the symbols via dllexport, we only use shared
 dnl no libtool -DDLL_EXPORT support yet
@@ -342,6 +338,16 @@ if test "x$ac_cv_prog_cc_c11" != "xno"; then
 fi
 AC_SUBST(HAVE_C11)
 
+dnl we still have some empty src files
+ax_cv_check_ldflags___Wl___fatal_warnings=no
+ax_cv_check_ldflags___Wl__fatal_warnings=no
+dnl sprintf_s passing through to vsnprintf_s
+ax_cv_check_cflags__Wformat_2=no
+ax_cv_check_cflags__Wformat_nonliteral=no
+AX_COMPILER_FLAGS
+dnl AX_COMPILER_FLAGS_CFLAGS
+dnl AX_COMPILER_FLAGS_LDFLAGS
+
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
 dnl    [AM_CFLAGS="$AM_CFLAGS -fbracket-depth=512"], [], [], [])
@@ -574,13 +580,16 @@ AC_SUBST([SAFEC_API_VERSION], [3.0])
 # Automake variables, these variables get automagically included at the top
 # of all automake generated make files. This is why you don't see them
 # referenced in Makefile.am files.
+AM_LDFLAGS="$AM_LDFLAGS $WARN_LDFLAGS"
 AC_SUBST([AM_CPPFLAGS])
 AC_SUBST([AM_CFLAGS])
+AC_SUBST([AM_LDFLAGS])
 
 # Some build debugging output
 if test "x$enable_debug_build" = "xtrue"; then
 	AC_MSG_RESULT([AM_CPPFLAGS = $AM_CPPFLAGS])
 	AC_MSG_RESULT([AM_CFLAGS = $AM_CFLAGS])
+	AC_MSG_RESULT([AM_LDFLAGS = $AM_LDFLAGS])
 	AC_MSG_RESULT([CFLAGS = $CFLAGS])
 fi
 

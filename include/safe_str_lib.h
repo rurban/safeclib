@@ -80,8 +80,12 @@ extern "C" {
 #define SAFE_STR_PASSWORD_MAX_LENGTH   ( 32 )
 
 EXTERN void
-abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
-
+abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error)
+#ifdef __GNUC__
+__attribute__((noreturn))
+#endif
+;
+    
 EXTERN void
 ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 

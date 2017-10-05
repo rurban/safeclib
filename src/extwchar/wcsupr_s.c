@@ -38,9 +38,6 @@
 #ifdef HAVE_TOWUPPER
 #include <wctype.h>
 #endif
-#ifndef HAVE_TOWUPPER_OK
-EXTERN wint_t _towupper(wint_t wc);
-#endif
 
 /**
  * @brief

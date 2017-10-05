@@ -193,6 +193,19 @@ void abort(void) __attribute__((noreturn));
 #include "safe_mem_constraint.h"
 #include "safe_lib.h"
 
+/* needed for -Wcast-align */
+#if defined(__clang__) || defined(__clang) || \
+       (defined( __GNUC__) && ((__GNUC__ * 100) + __GNUC_MINOR__) >= 406)
+#  define GCC_DIAG_PRAGMA(x) _Pragma (#x)
+/* clang has "clang diagnostic" pragmas, but also understands gcc. */
+#  define GCC_DIAG_IGNORE(x) _Pragma("GCC diagnostic push") \
+                             GCC_DIAG_PRAGMA(GCC diagnostic ignored #x)
+#  define GCC_DIAG_RESTORE   _Pragma("GCC diagnostic pop")
+#else
+#  define GCC_DIAG_IGNORE(w)
+#  define GCC_DIAG_RESTORE
+#endif
+
 /* platform quirks */
 #ifndef SAFECLIB_DISABLE_WCHAR
 
@@ -230,6 +243,8 @@ EXTERN wint_t _dec_w16(wchar_t *src);
 #define _IS_W16(cp) ((cp) >= 0xd800 && (cp) < 0xdc00)
 
 EXTERN errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
+EXPORT wint_t _towcase(wint_t wc, int lower);
+EXPORT wint_t _towupper(wint_t wc);
 #ifndef HAVE_TOWLOWER
 EXTERN wint_t towlower(wint_t wc);
 #endif

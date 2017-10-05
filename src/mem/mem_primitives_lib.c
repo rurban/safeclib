@@ -73,7 +73,10 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
     /*
      * Then do the uint32_ts, unrolled the loop for performance
      */
+    GCC_DIAG_IGNORE(-Wcast-align)
     lp = (uint32_t *)dp;
+    GCC_DIAG_RESTORE
+
     lcount = count >> 2;
 
     while (lcount != 0) {
@@ -309,7 +312,9 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
         if (tsp > 0) {
 
             do {
+                GCC_DIAG_IGNORE(-Wcast-align)
                 *(uint32_t *)dp = *(uint32_t *)sp;
+                GCC_DIAG_RESTORE
 
                 sp += wsize;
                 dp += wsize;
@@ -376,7 +381,9 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
                 sp -= wsize;
                 dp -= wsize;
 
+                GCC_DIAG_IGNORE(-Wcast-align)
                 *(uint32_t *)dp = *(uint32_t *)sp;
+                GCC_DIAG_RESTORE
             } while (--tsp);
         }
 

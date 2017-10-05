@@ -37,6 +37,11 @@
 #include <assert.h>
 #endif
 
+bool isExclusion (wint_t uv);
+bool isSingleton (wint_t uv);
+bool isNonStDecomp (wint_t uv);
+bool isComp2nd (wint_t uv);
+
 #if SIZEOF_WCHAR_T > 2
 /* generated via cperl Unicode-Normalize/mkheader -uni -ind */
 # include "unwifcan.h" /* for NFD Canonical Decomposition */
@@ -392,7 +397,9 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
         }
     } else {
         UNWIF_complist *i;
+        GCC_DIAG_IGNORE(-Wcast-align)
         for (i = (UNWIF_complist *)cell; i->nextchar; i++) {
+            GCC_DIAG_RESTORE
             if (cp2 == i->nextchar)
                 return i->composite;
             else if (cp2 < i->nextchar) /* nextchar is sorted */

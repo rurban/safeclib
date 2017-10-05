@@ -233,8 +233,9 @@ ALL_SRC_FILES =
 # wcsnorm_CFLAGS = -fbracket-depth=512
 AM_CFLAGS += -I$(top_builddir)/include -I$(srcdir)/mem -I$(srcdir)/str
 if !HAVE_MINGW
-AM_CFLAGS += -Wextra -Werror -pedantic
+AM_CFLAGS += -pedantic
 endif
+AM_CFLAGS += $(WARN_CFLAGS)
 
 .c.i:
 	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
