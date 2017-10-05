@@ -59,12 +59,12 @@
  * @param[in]   slen  maximum length of string
  *
  * @pre  src shall not be a null pointer.
- * @pre  slen shall not equal zero.
+ * @pre  slen shall not equal zero before C11. Since C11 zero is allowed.
  * @pre  slen shall not be greater than RSIZE_MAX_WSTR.
  *
  * @retval  EOK         on successful operation
  * @retval  ESNULLP     when src is NULL pointer
- * @retval  ESZEROL     when slen = 0
+ * @retval  ESZEROL     when slen = 0 before C11.
  * @retval  ESLEMAX     when slen > RSIZE_MAX_WSTR
  *
  * @see
@@ -82,10 +82,15 @@ wcsupr_s(wchar_t *restrict src, rsize_t slen)
     }
 
     if (unlikely(slen == 0)) {
+        /* Since C11 slen=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         invoke_safe_str_constraint_handler("wcsupr_s: "
                    "slenx is 0",
                    NULL, ESZEROL);
         return (ESZEROL);
+#endif
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {

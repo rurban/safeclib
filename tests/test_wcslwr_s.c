@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcslwr_s
  * File 'wcslwr_s.c'
- * Lines executed:100.00% of 15
+ * Lines executed:100.00% of 14
  *
  *------------------------------------------------------------------
  */
@@ -20,20 +20,26 @@ int main()
 
 /*--------------------------------------------------*/
 
-    len = 5;
-    rc = wcslwr_s(NULL, len);
+    rc = wcslwr_s(NULL, 5);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
-    len = 0;
-    rc = wcslwr_s(L"test", len);
+    wcscpy(str, L"test");
+    rc = wcslwr_s(str, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
+#endif
+    WEXPSTR(str, L"test");
 
 /*--------------------------------------------------*/
 
-    len = 99999;
-    rc = wcslwr_s(L"test", len);
+    wcscpy(str, L"test");
+    rc = wcslwr_s(str, 99999);
     ERR(ESLEMAX)
+    WEXPSTR(str, L"test");
 
 /*--------------------------------------------------*/
 
