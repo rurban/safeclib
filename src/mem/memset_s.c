@@ -30,16 +30,16 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_mem_lib.h"
+#else
 #include "safeclib_private.h"
+#include "mem_primitives_lib.h"
+#endif
 
 #if defined HAVE_MEMSET_S && defined HAVE_C11 && defined WANT_C11
 /* use the libc function */
 #else
-
-#include "safe_mem_constraint.h"
-#include "mem_primitives_lib.h"
-#include "safe_mem_lib.h"
-
 
 /**
  * @brief

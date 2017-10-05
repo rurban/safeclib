@@ -25,11 +25,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ----------------------------------------------------------------------
 */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
-
 #include <ctype.h>
 #include <wctype.h>
 #include <assert.h>
+#endif
 
 #define CASEMAP(u1,u2,l) { (u1), (l)-(u1), (u2)-(u1)+1 }
 #define CASELACE(u1,u2) CASEMAP((u1),(u2),(u1)+1)

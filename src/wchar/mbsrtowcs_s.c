@@ -29,13 +29,13 @@
  *------------------------------------------------------------------
  */
 
-#include "config.h"
-#ifdef HAVE_WCHAR_H
-
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
-
-#include <wchar.h>
+#ifdef HAVE_WCHAR_H
 
 /**
  * @brief

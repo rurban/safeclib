@@ -32,7 +32,11 @@
 #ifndef __SAFE_MEM_CONSTRAINT_H__
 #define __SAFE_MEM_CONSTRAINT_H__
 
+#ifdef FOR_DOXYGEN
+#include "safe_mem_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /*
  * Function used by the libraries to invoke the registered

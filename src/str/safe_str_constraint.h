@@ -32,7 +32,11 @@
 #ifndef __SAFE_STR_CONSTRAINT_H__
 #define __SAFE_STR_CONSTRAINT_H__
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /*
  * Function used by the libraries to invoke the registered

@@ -29,7 +29,12 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
+
 /* conflicting API */
 #ifndef HAVE_MINGW64
 

@@ -29,7 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /**
  * @brief
@@ -49,7 +53,6 @@
  *
  * @see 
  * ignore_handler_s()
- *
  */
 
 EXPORT void

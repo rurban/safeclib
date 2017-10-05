@@ -57,6 +57,7 @@
 # LICENSE
 #
 #   Copyright (c) 2008 Kaveh Ghazi <ghazi@caip.rutgers.edu>
+#   Copyright (c) 2017 Reini Urban <rurban@cpan.org>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -84,9 +85,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-# Fixed to use AC_COMPILE_IFELSE: rurban Sep 2017
-
-#serial 6
+#serial 7
 
 AU_ALIAS([AC_COMPILE_CHECK_SIZEOF], [AX_COMPILE_CHECK_SIZEOF])
 AC_DEFUN([AX_COMPILE_CHECK_SIZEOF],

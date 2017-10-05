@@ -29,7 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 #if defined(HAVE_WCHAR_H) && defined(HAVE_MBSTOWCS)
 /* newlib, cygwin64 has no STDC_HEADERS!

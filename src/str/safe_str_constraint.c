@@ -29,16 +29,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *------------------------------------------------------------------
  */
-
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 static constraint_handler_t str_handler = NULL;
-
 
 /**
  * @brief
  *    The set_str_constraint_handler_s function sets the runtime-constraint
- *    handler to be handler. 
+ *    handler to be handler.
  * @details
  *    The runtime-constraint handler is the function to
  *    be called when a library function detects a runtime-constraint

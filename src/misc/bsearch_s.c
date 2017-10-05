@@ -29,8 +29,12 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_lib.h"
+#else
 #include "safeclib_private.h"
 #include <stdlib.h>
+#endif
 
 /* not in mingw sec_api */
 

@@ -29,8 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_mem_lib.h"
+#else
 #include "safeclib_private.h"
-#include "safe_mem_constraint.h"
+#endif
 
 /**
  * @brief

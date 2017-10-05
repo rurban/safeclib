@@ -29,10 +29,13 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
-
 #include <ctype.h>
 #include <wctype.h>
+#endif
 
 extern wint_t _towcase(wint_t wc, int lower);
 

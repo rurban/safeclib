@@ -30,11 +30,12 @@
  *------------------------------------------------------------------
  */
 
-#include "safeclib_private.h"
-#include "safe_mem_constraint.h"
-#include "mem_primitives_lib.h"
+#ifdef FOR_DOXYGEN
 #include "safe_mem_lib.h"
-
+#else
+#include "safeclib_private.h"
+#include "mem_primitives_lib.h"
+#endif
 
 /**
  * @brief

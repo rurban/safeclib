@@ -29,12 +29,16 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
 #include <wctype.h>
 #include <locale.h>
 
 #include <unistd.h> /* DEBUG */
 #include <assert.h>
+#endif
 
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */

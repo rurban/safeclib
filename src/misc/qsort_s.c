@@ -35,7 +35,13 @@
 /* Smoothsort, an adaptive variant of Heapsort.  Memory usage: O(1).
    Run time: Worst case O(n log n), close to O(n) in the mostly-sorted case. */
 
+#ifdef FOR_DOXYGEN
+#include "safe_lib.h"
+#else
 #include "safeclib_private.h"
+#include <stdlib.h>
+#endif
+
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 

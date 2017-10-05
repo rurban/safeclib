@@ -29,9 +29,13 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
 #include <wctype.h>
 #include <assert.h>
+#endif
 
 #if SIZEOF_WCHAR_T > 2
 /* generated via cperl Unicode-Normalize/mkheader -uni -ind */

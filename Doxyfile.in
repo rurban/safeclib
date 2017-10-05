@@ -77,8 +77,8 @@ CASE_SENSE_NAMES       = NO
 HIDE_SCOPE_NAMES       = NO
 #HIDE_COMPOUND_REFERENCE= NO
 SHOW_INCLUDE_FILES     = YES
-SHOW_GROUPED_MEMB_INC  = NO
 FORCE_LOCAL_INCLUDES   = NO
+SHOW_GROUPED_MEMB_INC  = NO
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = NO
 SORT_BRIEF_DOCS        = NO
@@ -87,7 +87,7 @@ SORT_GROUP_NAMES       = NO
 SORT_BY_SCOPE_NAME     = NO
 STRICT_PROTO_MATCHING  = NO
 GENERATE_TODOLIST      = YES
-GENERATE_TESTLIST      = YES
+GENERATE_TESTLIST      = NO
 GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       =
@@ -117,9 +117,8 @@ INPUT                  = README.md @top_srcdir@/doc/libc-overview.md \
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c *.h
 RECURSIVE              = YES
-EXCLUDE                = @top_srcdir@/include/safe_str_constraint.h \
-                         @top_srcdir@/include/safe_str_lib.h \
-                         @top_srcdir@/include/safeclib_private.h
+EXCLUDE                = @top_srcdir@/src/safeclib_private.h \
+                         @top_srcdir@/tests/test_private.h
 EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        =
@@ -135,15 +134,15 @@ USE_MDFILE_AS_MAINPAGE = @top_srcdir@/README.md
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
-SOURCE_BROWSER         = YES
+SOURCE_BROWSER         = NO
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = NO
 REFERENCES_RELATION    = NO
-REFERENCES_LINK_SOURCE = YES
-SOURCE_TOOLTIPS        = YES
+REFERENCES_LINK_SOURCE = NO
+SOURCE_TOOLTIPS        = NO
 USE_HTAGS              = NO
-VERBATIM_HEADERS       = YES
+VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
@@ -246,6 +245,7 @@ GENERATE_MAN           = YES
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
 MAN_SUBDIR             =
+# empty sourced .3 links without the .c (i.e. asctime_s.3 -> asctime_s.c.3)
 MAN_LINKS              = YES
 #---------------------------------------------------------------------------
 # Configuration options related to the XML output
@@ -279,7 +279,7 @@ EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = src
 INCLUDE_FILE_PATTERNS  =
-PREDEFINED             = HAVE_WCHAR_H SAFECLIB_ENABLE_UNSAFE HAVE_STRNLEN
+PREDEFINED             = FOR_DOXYGEN HAVE_WCHAR_H SAFECLIB_ENABLE_UNSAFE HAVE_STRNLEN
 EXPAND_AS_DEFINED      =
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------

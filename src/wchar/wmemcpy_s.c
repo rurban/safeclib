@@ -31,11 +31,14 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_mem_lib.h"
+#else
 #include "safeclib_private.h"
-#ifdef HAVE_WCHAR_H
-
-#include "safe_mem_constraint.h"
 #include "mem_primitives_lib.h"
+#endif
+
+#ifdef HAVE_WCHAR_H
 
 #if SIZEOF_WCHAR_T == 2
 #define wmem_type uint16_t

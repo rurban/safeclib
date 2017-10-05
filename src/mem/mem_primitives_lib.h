@@ -32,7 +32,9 @@
 #ifndef __MEM_PRIMITIVES_LIB_H__
 #define __MEM_PRIMITIVES_LIB_H__
 
+#ifndef FOR_DOXYGEN
 #include "safeclib_private.h"
+#endif
 
 /*
  * These are prototypes for _unguarded_ memory routines.  The caller must

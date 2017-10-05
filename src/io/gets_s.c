@@ -29,7 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /* i386-mingw32-gcc */
 #ifndef HAVE_STRNLEN

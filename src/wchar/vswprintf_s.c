@@ -30,7 +30,11 @@
  */
 
 #define __STDC_WANT_LIB_EXT1__ 1
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /* TODO:
 any of the arguments corresponding to %s is a null pointer

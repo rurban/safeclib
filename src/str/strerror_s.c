@@ -29,8 +29,12 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
 #include "strerror_s.h"
+#endif
 
 /** 
  * @brief

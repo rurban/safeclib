@@ -29,7 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /* TODO SEGV
 Any of the arguments corresponding to %s is a null pointer.

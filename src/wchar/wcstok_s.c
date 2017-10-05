@@ -31,7 +31,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 #if defined(_WIN32) && defined(HAVE_WCSTOK_S)
 #else

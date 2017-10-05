@@ -29,7 +29,12 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
+
 #ifdef HAVE_WCHAR_H
 
 #if defined(__CYGWIN__) && defined(__x86_64)

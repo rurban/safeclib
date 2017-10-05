@@ -29,7 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_mem_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 #ifdef HAVE_MEMRCHR
 #ifndef _ISOC11_SOURCE

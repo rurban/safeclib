@@ -29,7 +29,11 @@
  *------------------------------------------------------------------
  */
 
+#ifdef FOR_DOXYGEN
+#include "safe_str_lib.h"
+#else
 #include "safeclib_private.h"
+#endif
 
 /* not via the naive byte copy, but aligned long word copy
    via the (((X) - 0x0101010101010101) & ~(X) & 0x8080808080808080)
