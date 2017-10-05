@@ -1041,7 +1041,7 @@ Copying shall not takeplace between objects that overlap</dd></dl>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>successful operation, all the characters from src null terminated. </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src is NULL pointer </td></tr>
-    <tr><td class="paramname">ESZEROL</td><td>when dmax/slen = 0 </td></tr>
+    <tr><td class="paramname">ESZEROL</td><td>when dmax = 0 </td></tr>
     <tr><td class="paramname">ESLEMAX</td><td>when dmax/slen &gt; RSIZE_MAX_STR </td></tr>
     <tr><td class="paramname">ESUNTERM</td><td>when dest not terminated </td></tr>
     <tr><td class="paramname">ESOVRLP</td><td>when src overlaps with dest </td></tr>
@@ -5585,7 +5585,7 @@ Copying shall not takeplace between objects that overlap</dd></dl>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>successful operation, all the wide characters from src null terminated. </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src is NULL pointer </td></tr>
-    <tr><td class="paramname">ESZEROL</td><td>when dmax/slen = 0 </td></tr>
+    <tr><td class="paramname">ESZEROL</td><td>when dmax = 0 </td></tr>
     <tr><td class="paramname">ESLEMAX</td><td>when dmax/slen &gt; RSIZE_MAX_WSTR </td></tr>
     <tr><td class="paramname">ESUNTERM</td><td>when dest not terminated </td></tr>
     <tr><td class="paramname">ESOVRLP</td><td>when src overlaps with dest</td></tr>
@@ -7786,6 +7786,6 @@ dmax shall not be greater than RSIZE_MAX_WSTR.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
+Generated for Safe C Library 04102017.3-g6464ae 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
