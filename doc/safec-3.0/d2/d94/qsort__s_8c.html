@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('d2/d94/qsort__s_8c.html','../../');});
 <div class="title">qsort_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../db/d69/safe__lib_8h.html">safe_lib.h</a>&quot;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
@@ -100,12 +100,13 @@ $(document).ready(function(){initNavTree('d2/d94/qsort__s_8c.html','../../');});
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../d0/ddf/qsort__s_8c__incl.png" border="0" usemap="#qsort__s_8c" alt=""/></div>
 <map name="qsort__s_8c" id="qsort__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="258,80,358,107"/>
+<area shape="rect" id="node2" href="../../db/d69/safe__lib_8h.html" title="safe_lib.h" alt="" coords="180,80,245,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../d2/d94/qsort__s_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a7498d7d85df9105a7ade7ee6abe30e4a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d94/qsort__s_8c.html#a7498d7d85df9105a7ade7ee6abe30e4a">ntz</a>(x)&#160;&#160;&#160;<a class="el" href="../../d2/d94/qsort__s_8c.html#ab4e21bbfc5cdd33fd4cd671dd8444762">a_ctz_l</a>((x))</td></tr>
@@ -139,7 +140,7 @@ Functions</h2></td></tr>
 <tr class="separator:a2b5791f02963a5e9623a5c62d13614b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa65f344bd9be46ff911be29b0295ac9e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d94/qsort__s_8c.html#aa65f344bd9be46ff911be29b0295ac9e">qsort_musl</a> (void *base, size_t nel, size_t width, <a class="el" href="../../d2/d94/qsort__s_8c.html#acf2d7c36a034079f02c1fe2311e3ab57">cmpfun</a> cmp, void *ctx)</td></tr>
 <tr class="separator:aa65f344bd9be46ff911be29b0295ac9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63380aff0b332239260433fa75872a37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d94/qsort__s_8c.html#a63380aff0b332239260433fa75872a37">qsort_s</a> (void *base, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> nmemb, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> size, int(*compar)(const void *k, const void *y, void *context), void *context)</td></tr>
+<tr class="memitem:a63380aff0b332239260433fa75872a37"><td class="memItemLeft" align="right" valign="top">EXPORT errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d94/qsort__s_8c.html#a63380aff0b332239260433fa75872a37">qsort_s</a> (void *base, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> nmemb, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> size, int(*compar)(const void *k, const void *y, void *context), void *context)</td></tr>
 <tr class="separator:a63380aff0b332239260433fa75872a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
@@ -164,8 +165,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00150">150</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
@@ -180,8 +179,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00046">46</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
 
 </div>
 </div>
@@ -233,8 +230,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d6/dcc/bsearch__s_8c.html#a4434be144da57b569d16b7feb9dc601c" title="The bsearch_s function finds an element equal to element pointed to by key in an array pointed to by ...">bsearch_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00119">119</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
@@ -262,8 +257,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00127">127</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <a id="ab4e21bbfc5cdd33fd4cd671dd8444762"></a>
@@ -290,8 +283,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00145">145</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <a id="a366444d5a8d78b40a6e6d7fec328d996"></a>
@@ -317,8 +308,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00153">153</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
 
 </div>
 </div>
@@ -362,8 +351,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00161">161</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <a id="ad7e80c4e5f5f6cee70849bd1f980695e"></a>
@@ -400,8 +387,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00184">184</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <a id="a3709e60091f7da91469b3a98cb374f8d"></a>
@@ -437,8 +422,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00196">196</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
 
 </div>
 </div>
@@ -499,8 +482,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00208">208</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
 
 </div>
 </div>
@@ -574,8 +555,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00238">238</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <a id="aa65f344bd9be46ff911be29b0295ac9e"></a>
@@ -630,8 +609,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00281">281</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <a id="a63380aff0b332239260433fa75872a37"></a>
@@ -641,7 +618,7 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t qsort_s </td>
+          <td class="memname">EXPORT errno_t qsort_s </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>base</em>, </td>
@@ -678,8 +655,6 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00345">345</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -703,13 +678,11 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    0, 1, 23, 2, 29, 24, 19, 3, 30, 27, 25, 11, 20, 8, 4, 13,</div><div class="line">    31, 22, 28, 18, 26, 10, 7, 12, 21, 17, 9, 6, 16, 5, 15, 14</div><div class="line">}</div></div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="../../d2/d94/qsort__s_8c_source.html#l00123">123</a> of file <a class="el" href="../../d2/d94/qsort__s_8c_source.html">qsort_s.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

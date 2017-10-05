@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('da/db5/strlastsame__s_8c.html','../../
 <div class="title">strlastsame_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d8/dff/safe__str__lib_8h.html">safe_str_lib.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for strlastsame_s.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -95,15 +95,16 @@ $(document).ready(function(){initNavTree('da/db5/strlastsame__s_8c.html','../../
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../de/dfd/strlastsame__s_8c__incl.png" border="0" usemap="#strlastsame__s_8c" alt=""/></div>
 <map name="strlastsame__s_8c" id="strlastsame__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="259,80,359,107"/>
+<area shape="rect" id="node2" href="../../d8/dff/safe__str__lib_8h.html" title="safe_str_lib.h" alt="" coords="275,80,356,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../da/db5/strlastsame__s_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:afc7a385ce2e44ee19042af09fc0ce36f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db5/strlastsame__s_8c.html#afc7a385ce2e44ee19042af09fc0ce36f">strlastsame_s</a> (const char *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const char *src, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *index)</td></tr>
+<tr class="memitem:afc7a385ce2e44ee19042af09fc0ce36f"><td class="memItemLeft" align="right" valign="top">EXPORT errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db5/strlastsame__s_8c.html#afc7a385ce2e44ee19042af09fc0ce36f">strlastsame_s</a> (const char *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const char *src, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> *index)</td></tr>
 <tr class="memdesc:afc7a385ce2e44ee19042af09fc0ce36f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the index of the last character that is the same between dest and src.  <a href="#afc7a385ce2e44ee19042af09fc0ce36f">More...</a><br /></td></tr>
 <tr class="separator:afc7a385ce2e44ee19042af09fc0ce36f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -115,7 +116,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t strlastsame_s </td>
+          <td class="memname">EXPORT errno_t strlastsame_s </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -178,13 +179,11 @@ dmax shall not be greater than RSIZE_MAX_STR.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d3/d01/strfirstchar__s_8c.html#a72b0c60fced8d289a6adcb11b0516217" title="This function returns a pointer to the first occurrence of character c in dest. ">strfirstchar_s()</a>, <a class="el" href="../../de/d3e/strfirstdiff__s_8c.html#a8de98455a2e24d2da4911cbd19d56d8e" title="Returns the index of the first character that is different between dest and src. ">strfirstdiff_s()</a>, <a class="el" href="../../d5/d5e/strfirstsame__s_8c.html#a489bc1f6ad88c01073f128cad2a45d1f" title="Returns the index of the first character that is the same between dest and src. ">strfirstsame_s()</a>, <a class="el" href="../../d7/d19/strlastchar__s_8c.html#a467f98690a5729be9d4ea0c620147cf9" title="Returns a pointer to the last occurrence of character c in dest. ">strlastchar_s()</a>, <a class="el" href="../../d9/dfe/strlastdiff__s_8c.html#a11e1abfe1dae56e7a198c19e6c1c6dc5" title="Returns the index of the last character that is different between dest and src. ">strlastdiff_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../da/db5/strlastsame__s_8c_source.html#l00071">71</a> of file <a class="el" href="../../da/db5/strlastsame__s_8c_source.html">strlastsame_s.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

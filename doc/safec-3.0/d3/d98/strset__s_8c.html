@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('d3/d98/strset__s_8c.html','../../');})
 <div class="title">strset_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d8/dff/safe__str__lib_8h.html">safe_str_lib.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for strset_s.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -95,15 +95,16 @@ $(document).ready(function(){initNavTree('d3/d98/strset__s_8c.html','../../');})
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../dd/d70/strset__s_8c__incl.png" border="0" usemap="#strset__s_8c" alt=""/></div>
 <map name="strset__s_8c" id="strset__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="259,80,359,107"/>
+<area shape="rect" id="node2" href="../../d8/dff/safe__str__lib_8h.html" title="safe_str_lib.h" alt="" coords="275,80,356,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../d3/d98/strset__s_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a697c3cdacea11c16986a91cec67b52b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d98/strset__s_8c.html#a697c3cdacea11c16986a91cec67b52b5">strset_s</a> (char *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, int value)</td></tr>
+<tr class="memitem:a697c3cdacea11c16986a91cec67b52b5"><td class="memItemLeft" align="right" valign="top">EXPORT errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d98/strset__s_8c.html#a697c3cdacea11c16986a91cec67b52b5">strset_s</a> (char *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, int value)</td></tr>
 <tr class="memdesc:a697c3cdacea11c16986a91cec67b52b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets maximal dmax characters of dest to a character value, but not the final NULL character.  <a href="#a697c3cdacea11c16986a91cec67b52b5">More...</a><br /></td></tr>
 <tr class="separator:a697c3cdacea11c16986a91cec67b52b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -115,7 +116,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t strset_s </td>
+          <td class="memname">EXPORT errno_t strset_s </td>
           <td>(</td>
           <td class="paramtype">char *restrict&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -173,13 +174,11 @@ value shall not be greater than 255</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d88/strzero__s_8c.html#a8f450ba4c1ab7a4a7471b9be7007ae03" title="Nulls maximal dmax characters of dest. ">strzero_s()</a>, <a class="el" href="../../da/d45/strnset__s_8c.html#ac8ee0f7bddb6dd004118488a4fef6b85" title="Sets maximal n characters of dest to a character value, but not the final NULL character. ">strnset_s()</a>, <a class="el" href="../../d2/d08/strispassword__s_8c.html#acf0187b8c0aeb42c265ea1a79e5ccab9" title="This function validates the make-up of a password string. ">strispassword_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d3/d98/strset__s_8c_source.html#l00067">67</a> of file <a class="el" href="../../d3/d98/strset__s_8c_source.html">strset_s.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

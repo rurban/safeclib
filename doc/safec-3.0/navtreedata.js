@@ -19,6 +19,8 @@ var NAVTREE =
         [ "Functions", "globals_func.html", "globals_func" ],
         [ "Variables", "globals_vars.html", "globals_vars" ],
         [ "Typedefs", "globals_type.html", null ],
+        [ "Enumerations", "globals_enum.html", null ],
+        [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -28,14 +30,14 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d4/d6a/slkm__init_8c.html#a76e70ef101730976806586abb16eddbf",
-"d5/d67/unw16ifcmb_8h_source.html",
-"d9/d10/strljustify__s_8c_source.html",
-"d9/dfd/unw16ifcmp_8h.html#a6b08eed0dd08e13d33b6abe29291c019",
-"d9/dfd/unw16ifcmp_8h.html#af6e5ff1bdf76c9e4cebdbd76dd38fb36",
-"de/da4/vprintf__s_8c.html",
-"df/d54/unwifcmp_8h.html#a7d4ada863c35b50eeb6ccbdb573250f4",
-"df/d8e/strcpy__s_8c.html#aa5d4bb11f2e2390d7d8bc0593f8c0b12"
+"d4/de0/unw16ifcpt_8h.html#a4c9882a6de5aa6356efe410cfa46a871",
+"d6/d43/unwifcmb_8h.html#a784c9f7038f9459b1c585f11b69efa3b",
+"d8/dff/safe__str__lib_8h.html#ac4f1003adfb3b52164ce332b72d51678",
+"d9/dfd/unw16ifcmp_8h.html#a6cc8931dfd1b0982685f6f772572735d",
+"d9/dfd/unw16ifcmp_8h.html#af8f1b7b5421bb727d2677791ae0608f5",
+"df/d54/unwifcmp_8h.html#a11b7e29c6d22e51cb24ccd59bb0bca2a",
+"df/d54/unwifcmp_8h.html#aa3ce3ed9c5ef7461783db3625f45e7cc",
+"globals_vars_m.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

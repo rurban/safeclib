@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('d6/da6/safe__mem__constraint_8c.html',
 <div class="title">safe_mem_constraint.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d4/d81/safe__mem__constraint_8h_source.html">safe_mem_constraint.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d4/d81/safe__mem__constraint_8h.html">safe_mem_constraint.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for safe_mem_constraint.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -96,19 +96,20 @@ $(document).ready(function(){initNavTree('d6/da6/safe__mem__constraint_8c.html',
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../dc/d12/safe__mem__constraint_8c__incl.png" border="0" usemap="#safe__mem__constraint_8c" alt=""/></div>
 <map name="safe__mem__constraint_8c" id="safe__mem__constraint_8c">
-<area shape="rect" id="node2" href="../../d4/d81/safe__mem__constraint_8h.html" title="safe_mem_constraint.h" alt="" coords="206,80,331,107"/>
-<area shape="rect" id="node3" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="219,155,319,181"/>
+<area shape="rect" id="node2" href="../../d4/d81/safe__mem__constraint_8h.html" title="safe_mem_constraint.h" alt="" coords="150,80,275,107"/>
+<area shape="rect" id="node3" href="../../d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="167,155,259,181"/>
+<area shape="rect" id="node4" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,229,87,256"/>
+<area shape="rect" id="node5" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,229,205,256"/>
+<area shape="rect" id="node7" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,229,308,256"/>
 </map>
 </div>
-</div>
-<p><a href="../../d6/da6/safe__mem__constraint_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aab44e36c5f5fa57c90b45941d9c83d13"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> <a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/da6/safe__mem__constraint_8c.html#aab44e36c5f5fa57c90b45941d9c83d13">set_mem_constraint_handler_s</a> (<a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a> handler)</td></tr>
+<tr class="memitem:aab44e36c5f5fa57c90b45941d9c83d13"><td class="memItemLeft" align="right" valign="top">EXPORT <a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/da6/safe__mem__constraint_8c.html#aab44e36c5f5fa57c90b45941d9c83d13">set_mem_constraint_handler_s</a> (<a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a> handler)</td></tr>
 <tr class="memdesc:aab44e36c5f5fa57c90b45941d9c83d13"><td class="mdescLeft">&#160;</td><td class="mdescRight">The set_mem_constraint_handler_s function sets the runtime-constraint handler to be handler.  <a href="#aab44e36c5f5fa57c90b45941d9c83d13">More...</a><br /></td></tr>
 <tr class="separator:aab44e36c5f5fa57c90b45941d9c83d13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add0276a6e71652719dde97fbf8e5a7b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/da6/safe__mem__constraint_8c.html#add0276a6e71652719dde97fbf8e5a7b6">invoke_safe_mem_constraint_handler</a> (const char *msg, void *ptr, errno_t error)</td></tr>
+<tr class="memitem:add0276a6e71652719dde97fbf8e5a7b6"><td class="memItemLeft" align="right" valign="top">EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/da6/safe__mem__constraint_8c.html#add0276a6e71652719dde97fbf8e5a7b6">invoke_safe_mem_constraint_handler</a> (const char *msg, void *ptr, errno_t error)</td></tr>
 <tr class="memdesc:add0276a6e71652719dde97fbf8e5a7b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invokes the currently set constraint handler or the default.  <a href="#add0276a6e71652719dde97fbf8e5a7b6">More...</a><br /></td></tr>
 <tr class="separator:add0276a6e71652719dde97fbf8e5a7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -125,7 +126,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> <a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a> set_mem_constraint_handler_s </td>
+          <td class="memname">EXPORT <a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a> set_mem_constraint_handler_s </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a94a54e98967ccb6be4bb4ad7e39fc290">constraint_handler_t</a>&#160;</td>
           <td class="paramname"><em>handler</em></td><td>)</td>
@@ -143,8 +144,6 @@ Variables</h2></td></tr>
 <dl class="section remark"><dt>Remarks</dt><dd>SPECIFIED IN ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments and system software interfaces, Extensions to the C Library, Part I: Bounds-checking interfaces</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d53/safe__str__constraint_8c.html#a596833872de6fd62a0e7f013bab34cb2" title="The set_str_constraint_handler_s function sets the runtime-constraint handler to be handler...">set_str_constraint_handler_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d6/da6/safe__mem__constraint_8c_source.html#l00068">68</a> of file <a class="el" href="../../d6/da6/safe__mem__constraint_8c_source.html">safe_mem_constraint.c</a>.</p>
-
 </div>
 </div>
 <a id="add0276a6e71652719dde97fbf8e5a7b6"></a>
@@ -154,7 +153,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> void invoke_safe_mem_constraint_handler </td>
+          <td class="memname">EXPORT void invoke_safe_mem_constraint_handler </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>msg</em>, </td>
@@ -189,8 +188,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d6/da6/safe__mem__constraint_8c_source.html#l00091">91</a> of file <a class="el" href="../../d6/da6/safe__mem__constraint_8c_source.html">safe_mem_constraint.c</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -214,13 +211,11 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d6/da6/safe__mem__constraint_8c_source.html#l00035">35</a> of file <a class="el" href="../../d6/da6/safe__mem__constraint_8c_source.html">safe_mem_constraint.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

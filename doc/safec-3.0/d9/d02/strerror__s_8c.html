@@ -87,8 +87,7 @@ $(document).ready(function(){initNavTree('d9/d02/strerror__s_8c.html','../../');
 <div class="title">strerror_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="../../d0/d29/strerror__s_8h_source.html">strerror_s.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d8/dff/safe__str__lib_8h.html">safe_str_lib.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for strerror_s.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -96,19 +95,19 @@ $(document).ready(function(){initNavTree('d9/d02/strerror__s_8c.html','../../');
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../da/d2b/strerror__s_8c__incl.png" border="0" usemap="#strerror__s_8c" alt=""/></div>
 <map name="strerror__s_8c" id="strerror__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="219,80,319,107"/>
-<area shape="rect" id="node10" href="../../d0/d29/strerror__s_8h.html" title="strerror_s.h" alt="" coords="343,80,416,107"/>
+<area shape="rect" id="node2" href="../../d8/dff/safe__str__lib_8h.html" title="safe_str_lib.h" alt="" coords="275,80,356,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../d9/d02/strerror__s_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a62f8350a28021362c72a0fb816c0f517"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#a62f8350a28021362c72a0fb816c0f517">strerror_s</a> (char *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, errno_t errnum)</td></tr>
+<tr class="memitem:a62f8350a28021362c72a0fb816c0f517"><td class="memItemLeft" align="right" valign="top">EXPORT errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#a62f8350a28021362c72a0fb816c0f517">strerror_s</a> (char *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, errno_t errnum)</td></tr>
 <tr class="memdesc:a62f8350a28021362c72a0fb816c0f517"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>strerror_s</code> function returns a pointer to the textual description of the system error code errnum, identical to the description that would be printed by perror().  <a href="#a62f8350a28021362c72a0fb816c0f517">More...</a><br /></td></tr>
 <tr class="separator:a62f8350a28021362c72a0fb816c0f517"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#a3f6ed5e17ae53f1dd3b4527d3111c6fc">strerrorlen_s</a> (errno_t errnum)</td></tr>
+<tr class="memitem:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="memItemLeft" align="right" valign="top">EXPORT size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#a3f6ed5e17ae53f1dd3b4527d3111c6fc">strerrorlen_s</a> (errno_t errnum)</td></tr>
 <tr class="memdesc:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>strerrorlen_s</code> function returns the untruncated length of the textual description of the system error code <code>errnum</code>, identical to the description that would be printed by <code>perror()</code>.  <a href="#a3f6ed5e17ae53f1dd3b4527d3111c6fc">More...</a><br /></td></tr>
 <tr class="separator:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -120,7 +119,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t strerror_s </td>
+          <td class="memname">EXPORT errno_t strerror_s </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -179,8 +178,6 @@ dmax shall not equal zero.</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d02/strerror__s_8c.html#a3f6ed5e17ae53f1dd3b4527d3111c6fc" title="The strerrorlen_s function returns the untruncated length of the textual description of the system er...">strerrorlen_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d9/d02/strerror__s_8c_source.html#l00083">83</a> of file <a class="el" href="../../d9/d02/strerror__s_8c_source.html">strerror_s.c</a>.</p>
-
 </div>
 </div>
 <a id="a3f6ed5e17ae53f1dd3b4527d3111c6fc"></a>
@@ -190,7 +187,7 @@ dmax shall not equal zero.</dd></dl>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> size_t strerrorlen_s </td>
+          <td class="memname">EXPORT size_t strerrorlen_s </td>
           <td>(</td>
           <td class="paramtype">errno_t&#160;</td>
           <td class="paramname"><em>errnum</em></td><td>)</td>
@@ -214,13 +211,11 @@ dmax shall not equal zero.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The length of the error message or 0</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d02/strerror__s_8c.html#a62f8350a28021362c72a0fb816c0f517" title="The strerror_s function returns a pointer to the textual description of the system error code errnum...">strerror_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d9/d02/strerror__s_8c_source.html#l00153">153</a> of file <a class="el" href="../../d9/d02/strerror__s_8c_source.html">strerror_s.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

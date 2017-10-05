@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('d7/d0e/memchr__s_8c.html','../../');})
 <div class="title">memchr_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d8/d03/safe__mem__lib_8h.html">safe_mem_lib.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for memchr_s.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -95,15 +95,16 @@ $(document).ready(function(){initNavTree('d7/d0e/memchr__s_8c.html','../../');})
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../d7/d85/memchr__s_8c__incl.png" border="0" usemap="#memchr__s_8c" alt=""/></div>
 <map name="memchr__s_8c" id="memchr__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="259,80,359,107"/>
+<area shape="rect" id="node2" href="../../d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="167,80,259,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../d7/d0e/memchr__s_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abad54ce7977ff35586d1bbf954802a2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d0e/memchr__s_8c.html#abad54ce7977ff35586d1bbf954802a2d">memchr_s</a> (const void *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dlen, const int ch, void **result)</td></tr>
+<tr class="memitem:abad54ce7977ff35586d1bbf954802a2d"><td class="memItemLeft" align="right" valign="top">EXPORT errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d0e/memchr__s_8c.html#abad54ce7977ff35586d1bbf954802a2d">memchr_s</a> (const void *restrict dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dlen, const int ch, void **result)</td></tr>
 <tr class="memdesc:abad54ce7977ff35586d1bbf954802a2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the first occurrence of <code>ch</code> (after conversion to unsigned char as if by <code>(unsigned char)ch</code>) in the null-terminated buffer pointed to by <code>dest</code> (each character interpreted as <code>unsigned char</code>).  <a href="#abad54ce7977ff35586d1bbf954802a2d">More...</a><br /></td></tr>
 <tr class="separator:abad54ce7977ff35586d1bbf954802a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -115,7 +116,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t memchr_s </td>
+          <td class="memname">EXPORT errno_t memchr_s </td>
           <td>(</td>
           <td class="paramtype">const void *restrict&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -177,13 +178,11 @@ ch shall not be greater than 255</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d3/dfa/strchr__s_8c.html#a95f8084c2c56e2046db592e3c87d15a1" title="Finds the first occurrence of ch (after conversion to char as if by (char)ch) in the null-terminated ...">strchr_s()</a>, <a class="el" href="../../d9/df1/strspn__s_8c.html#a88170b384d5975577bb20c898bdc6c5d" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strspn_s()</a>, <a class="el" href="../../dd/d73/strcspn__s_8c.html#ac8ef1278758db78e33f613b09ac63299" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strcspn_s()</a>, <a class="el" href="../../de/dd3/strpbrk__s_8c.html#ab7cdbee62fb36f9883dbc4eb7a9629a0" title="Returns a pointer, first, to the first ocurrence of any character in src which is contained in dest...">strpbrk_s()</a>, <a class="el" href="../../db/dc3/strstr__s_8c.html#afe35931c44fd83a3ff820e2570005beb" title="The strstr_s() function locates the first occurrence of the substring pointed to by src which would b...">strstr_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d7/d0e/memchr__s_8c_source.html#l00066">66</a> of file <a class="el" href="../../d7/d0e/memchr__s_8c_source.html">memchr_s.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

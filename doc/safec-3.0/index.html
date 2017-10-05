@@ -138,7 +138,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <ul>
 <li>Header Files</li>
 </ul>
-<p>The specification states the various functions would be added to existing Standard C header files: stdio.h, string.h, etc. This implementation separates the memory related functions into the <a class="el" href="d8/d03/safe__mem__lib_8h.html">safe_mem_lib.h</a> header, the string related functions into the safe_str_lib.h header, and the rest into the <a class="el" href="db/d69/safe__lib_8h.html">safe_lib.h</a> header.</p>
+<p>The specification states the various functions would be added to existing Standard C header files: stdio.h, string.h, etc. This implementation separates the memory related functions into the <a class="el" href="d8/d03/safe__mem__lib_8h.html">safe_mem_lib.h</a> header, the string related functions into the <a class="el" href="d8/dff/safe__str__lib_8h.html">safe_str_lib.h</a> header, and the rest into the <a class="el" href="db/d69/safe__lib_8h.html">safe_lib.h</a> header.</p>
 <p>The make file builds a single library libsafec-VERSION.a and .so in the src/.libs directory. Built but not installed are also libmemprims, libsafeccore and libstdunsafe.</p>
 <p>It is possible to split the make such that a separate safe_mem_lib.so and safe_str_lib.so are built. It is also possible to integrate the prototypes into the Standard C header files, but that may require changes to your development tool chain.</p>
 <h2>Userspace Library </h2>
@@ -195,6 +195,6 @@ $ make -f Makefile.kernel
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

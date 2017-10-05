@@ -87,7 +87,7 @@ $(document).ready(function(){initNavTree('d5/df1/strcmpfld__s_8c.html','../../')
 <div class="title">strcmpfld_s.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d8/dff/safe__str__lib_8h.html">safe_str_lib.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for strcmpfld_s.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -95,15 +95,16 @@ $(document).ready(function(){initNavTree('d5/df1/strcmpfld__s_8c.html','../../')
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../de/dc7/strcmpfld__s_8c__incl.png" border="0" usemap="#strcmpfld__s_8c" alt=""/></div>
 <map name="strcmpfld__s_8c" id="strcmpfld__s_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="259,80,359,107"/>
+<area shape="rect" id="node2" href="../../d8/dff/safe__str__lib_8h.html" title="safe_str_lib.h" alt="" coords="275,80,356,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../d5/df1/strcmpfld__s_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac8eb3078be053d77b64b44cab2a8a9fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/df1/strcmpfld__s_8c.html#ac8eb3078be053d77b64b44cab2a8a9fc">strcmpfld_s</a> (const char *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const char *src, int *indicator)</td></tr>
+<tr class="memitem:ac8eb3078be053d77b64b44cab2a8a9fc"><td class="memItemLeft" align="right" valign="top">EXPORT errno_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/df1/strcmpfld__s_8c.html#ac8eb3078be053d77b64b44cab2a8a9fc">strcmpfld_s</a> (const char *dest, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> dmax, const char *src, int *indicator)</td></tr>
 <tr class="memdesc:ac8eb3078be053d77b64b44cab2a8a9fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares the character array pointed to by src to the character array pointed to by dest for dmax characters.  <a href="#ac8eb3078be053d77b64b44cab2a8a9fc">More...</a><br /></td></tr>
 <tr class="separator:ac8eb3078be053d77b64b44cab2a8a9fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -115,7 +116,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> errno_t strcmpfld_s </td>
+          <td class="memname">EXPORT errno_t strcmpfld_s </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -180,13 +181,11 @@ dmax shall not be greater than RSIZE_MAX_STR</dd></dl>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dd/d38/strcpyfld__s_8c.html#ab1ef30c509655a53db8b4ba86dde59da" title="The strcpyfld_s function copies slen characters from the character array pointed to by src into the c...">strcpyfld_s()</a>, <a class="el" href="../../db/def/strcpyfldin__s_8c.html#aa400259d7a9ef29bdcc0c7410cfdb255" title="The strcpyfldin_s function copies at most slen characters from the null terminated string pointed to ...">strcpyfldin_s()</a>, <a class="el" href="../../d1/dae/strcpyfldout__s_8c.html#aa7c806c65deea2d60540853bcf95a435" title="The strcpyfldout_s function copies slen characters from the character array pointed to by src into th...">strcpyfldout_s()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="../../d5/df1/strcmpfld__s_8c_source.html#l00075">75</a> of file <a class="el" href="../../d5/df1/strcmpfld__s_8c_source.html">strcmpfld_s.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

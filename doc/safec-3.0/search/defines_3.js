@@ -1,7 +1,6 @@
 var searchData=
 [
   ['eok',['EOK',['../d0/dc2/safe__lib__errno_8h.html#acf2e4414e0bf0d331a111e70f9317434',1,'safe_lib_errno.h']]],
-  ['eoverflow',['EOVERFLOW',['../d9/d63/safeclib__private_8h.html#a888552a5e3c78b5883904cf5d55244ab',1,'safeclib_private.h']]],
   ['esempty',['ESEMPTY',['../d0/dc2/safe__lib__errno_8h.html#a972680d6fbeed945532d00242f0fa9e1',1,'safe_lib_errno.h']]],
   ['eslast',['ESLAST',['../d0/dc2/safe__lib__errno_8h.html#addbf5232885d2d87b94a0c5eb43aeb33',1,'safe_lib_errno.h']]],
   ['eslemax',['ESLEMAX',['../d0/dc2/safe__lib__errno_8h.html#a37338d1cd52473db60939dc2b3617aa9',1,'safe_lib_errno.h']]],
@@ -13,7 +12,5 @@ var searchData=
   ['esovrlp',['ESOVRLP',['../d0/dc2/safe__lib__errno_8h.html#a676f867855bb06eeda6b9d220f173730',1,'safe_lib_errno.h']]],
   ['esunterm',['ESUNTERM',['../d0/dc2/safe__lib__errno_8h.html#a5a23b3bf978250a97a9498051a2da2ff',1,'safe_lib_errno.h']]],
   ['eszerol',['ESZEROL',['../d0/dc2/safe__lib__errno_8h.html#a9ff9a755b9b61037a02d1220ec8a7808',1,'safe_lib_errno.h']]],
-  ['export',['EXPORT',['../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49',1,'safeclib_private.h']]],
-  ['export_5fsymbol',['EXPORT_SYMBOL',['../d9/d63/safeclib__private_8h.html#af783dacce2382842e3e8e0af1b423013',1,'safeclib_private.h']]],
-  ['extern',['EXTERN',['../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN():&#160;safe_lib.h'],['../d8/d03/safe__mem__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN():&#160;safe_mem_lib.h']]]
+  ['extern',['EXTERN',['../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN():&#160;safe_lib.h'],['../d8/d03/safe__mem__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN():&#160;safe_mem_lib.h'],['../d8/dff/safe__str__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN():&#160;safe_str_lib.h']]]
 ];

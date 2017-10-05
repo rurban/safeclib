@@ -89,10 +89,7 @@ $(document).ready(function(){initNavTree('d8/dbe/towctrans_8c.html','../../');})
 <div class="title">towctrans.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="../../d9/d63/safeclib__private_8h_source.html">safeclib_private.h</a>&quot;</code><br />
-<code>#include &lt;ctype.h&gt;</code><br />
-<code>#include &lt;wctype.h&gt;</code><br />
-<code>#include &lt;assert.h&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="../../d8/dff/safe__str__lib_8h.html">safe_str_lib.h</a>&quot;</code><br />
 </div><div class="textblock"><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Include dependency graph for towctrans.c:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -100,12 +97,13 @@ $(document).ready(function(){initNavTree('d8/dbe/towctrans_8c.html','../../');})
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="../../db/dae/towctrans_8c__incl.png" border="0" usemap="#towctrans_8c" alt=""/></div>
 <map name="towctrans_8c" id="towctrans_8c">
-<area shape="rect" id="node2" href="../../d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="141,80,241,107"/>
+<area shape="rect" id="node2" href="../../d8/dff/safe__str__lib_8h.html" title="safe_str_lib.h" alt="" coords="275,80,356,107"/>
+<area shape="rect" id="node3" href="../../d3/ddb/safe__config_8h.html" title="safe_config.h" alt="" coords="5,155,87,181"/>
+<area shape="rect" id="node4" href="../../d0/dc2/safe__lib__errno_8h.html" title="safe_lib_errno.h" alt="" coords="111,155,205,181"/>
+<area shape="rect" id="node6" href="../../dd/d0a/safe__types_8h.html" title="safe_types.h" alt="" coords="229,155,308,181"/>
 </map>
 </div>
-</div>
-<p><a href="../../d8/dbe/towctrans_8c_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a158ea2740f5d15f173f2c42173dd768e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(u1,  u2,  l)&#160;&#160;&#160;{ (u1), (l)-(u1), (u2)-(u1)+1 }</td></tr>
@@ -115,13 +113,13 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3187adc2ff392bf78295dedf88f12b1d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a3187adc2ff392bf78295dedf88f12b1d">_towcase</a> (wint_t wc, int <a class="el" href="../../d8/dbe/towctrans_8c.html#ac13b052b7d9ebd654550edf0944ad270">lower</a>)</td></tr>
+<tr class="memitem:a3187adc2ff392bf78295dedf88f12b1d"><td class="memItemLeft" align="right" valign="top">EXPORT wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a3187adc2ff392bf78295dedf88f12b1d">_towcase</a> (wint_t wc, int <a class="el" href="../../d8/dbe/towctrans_8c.html#ac13b052b7d9ebd654550edf0944ad270">lower</a>)</td></tr>
 <tr class="separator:a3187adc2ff392bf78295dedf88f12b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefa485be22f5a203780de336d70a91b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#aefa485be22f5a203780de336d70a91b6">_towupper</a> (wint_t wc)</td></tr>
+<tr class="memitem:aefa485be22f5a203780de336d70a91b6"><td class="memItemLeft" align="right" valign="top">EXPORT wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#aefa485be22f5a203780de336d70a91b6">_towupper</a> (wint_t wc)</td></tr>
 <tr class="separator:aefa485be22f5a203780de336d70a91b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f34aecc26d74e8ab8aa14e1995910b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a4f34aecc26d74e8ab8aa14e1995910b9">towupper</a> (wint_t wc)</td></tr>
+<tr class="memitem:a4f34aecc26d74e8ab8aa14e1995910b9"><td class="memItemLeft" align="right" valign="top">EXPORT wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a4f34aecc26d74e8ab8aa14e1995910b9">towupper</a> (wint_t wc)</td></tr>
 <tr class="separator:a4f34aecc26d74e8ab8aa14e1995910b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64130b4edd82cc2a8cfcdbf4da8cc6ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce">towlower</a> (wint_t wc)</td></tr>
+<tr class="memitem:a64130b4edd82cc2a8cfcdbf4da8cc6ce"><td class="memItemLeft" align="right" valign="top">EXPORT wint_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dbe/towctrans_8c.html#a64130b4edd82cc2a8cfcdbf4da8cc6ce">towlower</a> (wint_t wc)</td></tr>
 <tr class="separator:a64130b4edd82cc2a8cfcdbf4da8cc6ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
@@ -180,8 +178,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00034">34</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
-
 </div>
 </div>
 <a id="a6b1d06ec45db25df0cd9d19536f220a6"></a>
@@ -210,8 +206,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00035">35</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
@@ -222,7 +216,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t _towcase </td>
+          <td class="memname">EXPORT wint_t _towcase </td>
           <td>(</td>
           <td class="paramtype">wint_t&#160;</td>
           <td class="paramname"><em>wc</em>, </td>
@@ -241,8 +235,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00343">343</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
-
 </div>
 </div>
 <a id="aefa485be22f5a203780de336d70a91b6"></a>
@@ -252,7 +244,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t _towupper </td>
+          <td class="memname">EXPORT wint_t _towupper </td>
           <td>(</td>
           <td class="paramtype">wint_t&#160;</td>
           <td class="paramname"><em>wc</em></td><td>)</td>
@@ -260,8 +252,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00399">399</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
 
 </div>
 </div>
@@ -272,7 +262,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t towupper </td>
+          <td class="memname">EXPORT wint_t towupper </td>
           <td>(</td>
           <td class="paramtype">wint_t&#160;</td>
           <td class="paramname"><em>wc</em></td><td>)</td>
@@ -280,8 +270,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00405">405</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
 
 </div>
 </div>
@@ -292,7 +280,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d9/d63/safeclib__private_8h.html#a3472d8cdbb788d5f1815b3522595bc49">EXPORT</a> wint_t towlower </td>
+          <td class="memname">EXPORT wint_t towlower </td>
           <td>(</td>
           <td class="paramtype">wint_t&#160;</td>
           <td class="paramname"><em>wc</em></td><td>)</td>
@@ -300,8 +288,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00413">413</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
 
 </div>
 </div>
@@ -318,8 +304,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00041">41</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
-
 </div>
 </div>
 <a id="ac13b052b7d9ebd654550edf0944ad270"></a>
@@ -334,8 +318,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00042">42</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
-
 </div>
 </div>
 <a id="ad4c01009aad5a218ea64c329ebfe653d"></a>
@@ -349,8 +331,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00043">43</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
 
 </div>
 </div>
@@ -379,8 +359,7 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x13a0,0x13ef,0xab70),    </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0xab70,0xabbf,0x13a0),    </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x10400,0x10427,0x10428),</div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x104b0,0x104d3,0x104d8), </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x10c80,0x10cb2,0x10cc0), </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x118a0,0x118bf,0x118c0), </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x1e900,0x1e921,0x1e922), </div><div class="line">    { 0,0,0 }</div><div class="line">}</div><div class="ttc" id="towctrans_8c_html_a158ea2740f5d15f173f2c42173dd768e"><div class="ttname"><a href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a></div><div class="ttdeci">#define CASEMAP(u1, u2, l)</div><div class="ttdef"><b>Definition:</b> <a href="../../d8/dbe/towctrans_8c_source.html#l00034">towctrans.c:34</a></div></div>
-</div><!-- fragment -->
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x13a0,0x13ef,0xab70),    </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0xab70,0xabbf,0x13a0),    </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x10400,0x10427,0x10428),</div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x104b0,0x104d3,0x104d8), </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x10c80,0x10cb2,0x10cc0), </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x118a0,0x118bf,0x118c0), </div><div class="line">    <a class="code" href="../../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e">CASEMAP</a>(0x1e900,0x1e921,0x1e922), </div><div class="line">    { 0,0,0 }</div><div class="line">}</div></div><!-- fragment -->
 </div>
 </div>
 <a id="ac057063c07b9fecc5de94ef25c8f592e"></a>
@@ -403,13 +382,11 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="../../d8/dbe/towctrans_8c_source.html#l00150">150</a> of file <a class="el" href="../../d8/dbe/towctrans_8c_source.html">towctrans.c</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 04102017.0-gab130d 3.0
+Generated for Safe C Library 04102017.0-gab130d-dirty 3.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

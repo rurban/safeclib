@@ -6,6 +6,7 @@ var safe__lib_8h =
     [ "L_tmpnam_s", "db/d69/safe__lib_8h.html#a09b140e9e420babafa898f896b581253", null ],
     [ "abort_handler_s", "db/d69/safe__lib_8h.html#a58587c173fa4c66368d5ba43095d6f72", null ],
     [ "ignore_handler_s", "db/d69/safe__lib_8h.html#a7fdc3594c01813cc1fdf77dc378715de", null ],
+    [ "tmpnam_s", "db/d69/safe__lib_8h.html#a93ff7f1654666a0ae01a8d753175cf1e", null ],
     [ "tmpfile_s", "db/d69/safe__lib_8h.html#a3fddd2f0108b1c172c87c4f9767575b0", null ],
     [ "gets_s", "db/d69/safe__lib_8h.html#a7230527f9f21bafbb601b0c33fc1a96d", null ],
     [ "fopen_s", "db/d69/safe__lib_8h.html#ab41eff44f4b8bc42540b3862fe7261cb", null ],

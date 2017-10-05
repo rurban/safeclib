@@ -1,11 +1,11 @@
 <map id="safe_config.h" name="safe_config.h">
-<area shape="rect" id="node2" href="$db/d69/safe__lib_8h.html" title="safe_lib.h" alt="" coords="239,80,304,107"/>
-<area shape="rect" id="node10" href="$d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="328,80,420,107"/>
-<area shape="rect" id="node3" href="$d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="229,155,329,181"/>
-<area shape="rect" id="node4" href="$d2/d61/memccpy__s_8c.html" title="memccpy_s.c" alt="" coords="365,229,447,256"/>
-<area shape="rect" id="node5" href="$de/df0/memcmp32__s_8c.html" title="memcmp32_s.c" alt="" coords="472,229,564,256"/>
-<area shape="rect" id="node6" href="$dd/de1/memcpy16__s_8c.html" title="memcpy16_s.c" alt="" coords="588,229,677,256"/>
-<area shape="rect" id="node7" href="$db/dc0/memcpy32__s_8c.html" title="memcpy32_s.c" alt="" coords="5,229,95,256"/>
-<area shape="rect" id="node8" href="$d8/daf/memmove16__s_8c.html" title="memmove16_s.c" alt="" coords="119,229,218,256"/>
-<area shape="rect" id="node9" href="$d0/d50/memmove32__s_8c.html" title="memmove32_s.c" alt="" coords="242,229,341,256"/>
+<area shape="rect" id="node2" href="$db/d69/safe__lib_8h.html" title="safe_lib.h" alt="" coords="236,80,301,107"/>
+<area shape="rect" id="node9" href="$d8/d03/safe__mem__lib_8h.html" title="safe_mem_lib.h" alt="" coords="325,80,417,107"/>
+<area shape="rect" id="node10" href="$d8/dff/safe__str__lib_8h.html" title="safe_str_lib.h" alt="" coords="441,80,523,107"/>
+<area shape="rect" id="node3" href="$dc/d7e/fopen__s_8c.html" title="fopen_s.c" alt="" coords="5,155,71,181"/>
+<area shape="rect" id="node4" href="$df/d73/fprintf__s_8c.html" title="fprintf_s.c" alt="" coords="95,155,160,181"/>
+<area shape="rect" id="node5" href="$d6/dfe/freopen__s_8c.html" title="freopen_s.c" alt="" coords="185,155,259,181"/>
+<area shape="rect" id="node6" href="$df/d1c/fscanf__s_8c.html" title="fscanf_s.c" alt="" coords="283,155,350,181"/>
+<area shape="rect" id="node7" href="$d2/d59/gets__s_8c.html" title="gets_s.c" alt="" coords="374,155,433,181"/>
+<area shape="rect" id="node8" href="$d4/d68/printf__s_8c.html" title="printf_s.c" alt="" coords="457,155,520,181"/>
 </map>

@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['max_5ftime_5ft_5fstr',['MAX_TIME_T_STR',['../d9/d63/safeclib__private_8h.html#afdb45ff071ad6b9b7a75e134a670c75d',1,'safeclib_private.h']]],
-  ['mbsrtowcs_5fs',['mbsrtowcs_s',['../df/db3/mbsrtowcs__s_8c.html#a5d3619a657a4ddc2a3bd7f4502b972a7',1,'mbsrtowcs_s.c']]],
+  ['mbsrtowcs_5fs',['mbsrtowcs_s',['../df/db3/mbsrtowcs__s_8c.html#a5d3619a657a4ddc2a3bd7f4502b972a7',1,'mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest, rsize_t dmax, const char **restrict src, rsize_t len, mbstate_t *restrict ps):&#160;mbsrtowcs_s.c'],['../d8/dff/safe__str__lib_8h.html#addb3b0ad918710ecfe6fe25e58cb7410',1,'mbsrtowcs_s(size_t *restrict retval, wchar_t *restrict dest, rsize_t dmax, const char **restrict src, rsize_t len, mbstate_t *restrict ps):&#160;mbsrtowcs_s.c']]],
   ['mbsrtowcs_5fs_2ec',['mbsrtowcs_s.c',['../df/db3/mbsrtowcs__s_8c.html',1,'']]],
+  ['mbstowcs_5fs',['mbstowcs_s',['../d8/dff/safe__str__lib_8h.html#aba404d1c29fcf07405871166222e61f4',1,'safe_str_lib.h']]],
   ['mbstowcs_5fs_2ec',['mbstowcs_s.c',['../d9/d3d/mbstowcs__s_8c.html',1,'']]],
   ['mem_5fhandler',['mem_handler',['../d6/da6/safe__mem__constraint_8c.html#ab1ec2132768517b05afb865bbf41a19e',1,'safe_mem_constraint.c']]],
   ['mem_5fprim_5fmove',['mem_prim_move',['../d8/dd8/mem__primitives__lib_8c.html#aa0b666ddb8d014f1fcbdb452915a246c',1,'mem_prim_move(void *dest, const void *src, uint32_t len):&#160;mem_primitives_lib.c'],['../da/d8c/mem__primitives__lib_8h.html#aa0b666ddb8d014f1fcbdb452915a246c',1,'mem_prim_move(void *dest, const void *src, uint32_t len):&#160;mem_primitives_lib.c']]],

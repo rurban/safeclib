@@ -1,11 +1,4 @@
 <map id="safe_str_constraint.h" name="safe_str_constraint.h">
-<area shape="rect" id="node2" href="$d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="393,80,493,107"/>
-<area shape="rect" id="node3" href="$d8/d04/abort__handler__s_8c.html" title="abort_handler_s.c" alt="" coords="5,155,108,181"/>
-<area shape="rect" id="node4" href="$d2/d61/memccpy__s_8c.html" title="memccpy_s.c" alt="" coords="133,155,215,181"/>
-<area shape="rect" id="node5" href="$d7/d0e/memchr__s_8c.html" title="memchr_s.c" alt="" coords="240,155,316,181"/>
-<area shape="rect" id="node6" href="$d2/df8/memcmp16__s_8c.html" title="memcmp16_s.c" alt="" coords="340,155,432,181"/>
-<area shape="rect" id="node7" href="$de/df0/memcmp32__s_8c.html" title="memcmp32_s.c" alt="" coords="456,155,548,181"/>
-<area shape="rect" id="node8" href="$d9/d4d/memcmp__s_8c.html" title="memcmp_s.c" alt="" coords="572,155,653,181"/>
-<area shape="rect" id="node9" href="$dd/de1/memcpy16__s_8c.html" title="memcpy16_s.c" alt="" coords="677,155,767,181"/>
-<area shape="rect" id="node10" href="$db/dc0/memcpy32__s_8c.html" title="memcpy32_s.c" alt="" coords="791,155,880,181"/>
+<area shape="rect" id="node2" href="$d9/d63/safeclib__private_8h.html" title="safeclib_private.h" alt="" coords="13,80,113,107"/>
+<area shape="rect" id="node3" href="$d7/df5/wcsstr_8c.html" title="wcsstr.c" alt="" coords="33,155,92,181"/>
 </map>

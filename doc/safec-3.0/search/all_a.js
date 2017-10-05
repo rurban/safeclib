@@ -4,7 +4,6 @@ var searchData=
   ['len',['len',['../d8/dbe/towctrans_8c.html#ad4c01009aad5a218ea64c329ebfe653d',1,'towctrans.c']]],
   ['len_5ferrmsgs_5fs',['len_errmsgs_s',['../d0/d29/strerror__s_8h.html#a427368a688cb7c3c9182624f8a62fd4e',1,'strerror_s.h']]],
   ['libc_2doverview_2emd',['libc-overview.md',['../d7/d17/libc-overview_8md.html',1,'']]],
-  ['likely',['likely',['../d9/d63/safeclib__private_8h.html#aa0672ea7123854cc5f51902a06c473fb',1,'safeclib_private.h']]],
   ['localtime_5fs',['localtime_s',['../dc/d72/localtime__s_8c.html#ad91854a711f6ee3aebcf1bd3adad1a63',1,'localtime_s(const time_t *restrict timer, struct tm *restrict dest):&#160;localtime_s.c'],['../db/d69/safe__lib_8h.html#aa551803180fa7df9ff5ab8d15d5fec80',1,'localtime_s(const time_t *restrict timer, struct tm *restrict dest):&#160;localtime_s.c']]],
   ['localtime_5fs_2ec',['localtime_s.c',['../dc/d72/localtime__s_8c.html',1,'']]],
   ['lower',['lower',['../d8/dbe/towctrans_8c.html#ac13b052b7d9ebd654550edf0944ad270',1,'towctrans.c']]],
