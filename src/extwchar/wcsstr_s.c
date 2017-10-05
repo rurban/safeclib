@@ -49,7 +49,7 @@
  * @param[in]   dest       wide string to be searched for the substring
  * @param[in]   dmax       restricted maximum length of dest
  * @param[in]   src        pointer to the wide sub string
- * @param[in]   slen       the maximum number of wide characters to copy from src
+ * @param[in]   slen       the maximum number of wide characters to use from src
  * @param[out]  substring  the returned substring pointer
  *
  * @pre  Neither dest nor src shall be a null pointer.
