@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsncpy_s
  * File 'wchar/wcsncpy_s.c'
- * Lines executed:96.49% of 57
+ * Lines executed:96.43% of 56
  *
  *------------------------------------------------------------------
  */
@@ -40,8 +40,12 @@ int test_wcsncpy_s (void)
     str2[0] = L'\0';
 
     rc = wcsncpy_s(str1, 5, str2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
     WCHECK_SLACK(str1, 5);
+#endif
 
 /*--------------------------------------------------*/
 

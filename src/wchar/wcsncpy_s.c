@@ -75,7 +75,7 @@
  * @retval  EOK        when successful operation, the wide characters in src were
  *                     copied into dest and the result is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
- * @retval  ESZEROL    when dmax = 0
+ * @retval  ESZEROL    when dmax = 0. Before C11 also with slen = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
  * @retval  ESOVRLP    when buffers overlap
  * @retval  ESNOSPC    when dest < src
@@ -126,10 +126,15 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
     }
 
     if (unlikely(slen == 0)) {
-      handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
+        /* Since C11 slen=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
+        handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
                      "slen is zero",
                      ESZEROL);
         return RCNEGATE(ESZEROL);
+#endif
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {

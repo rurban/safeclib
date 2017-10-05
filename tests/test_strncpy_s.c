@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strncpy_s
  * File 'str/strncpy_s.c'
- * Lines executed:100.00% of 56
- *
+ * Lines executed:100.00% of 55
  *
  *------------------------------------------------------------------
  */
@@ -38,14 +37,18 @@ int test_strncpy_s (void)
     ERR(ESNULLP);
     CHECK_SLACK(str1, 5);
 
+/*--------------------------------------------------*/
+
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     str2[0] = '\0';
 
     rc = strncpy_s(str1, 5, str2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
     CHECK_SLACK(str1, 5);
-
-/*--------------------------------------------------*/
+#endif
 
     nlen = 5;
     rc = strncpy_s(str1, 0, str2, nlen);

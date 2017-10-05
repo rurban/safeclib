@@ -2,8 +2,10 @@
  * strncpy_s.c
  *
  * October 2008, Bo Berry
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -61,8 +63,7 @@
  * @param[in]   src   pointer to the string that will be copied to dest
  * @param[in]   slen  the maximum number of characters to copy from src
  *
- * @pre  Neither dmax nor slen shall be equal to zero.
- * @pre  Neither dmax nor slen shall be equal zero.
+ * @pre  dmax shall not be zero.
  * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
  * @pre  If slen is either greater than or equal to dmax, then dmax should
  *       be more than strnlen_s(src,dmax) to avoid truncation.
@@ -76,7 +77,7 @@
  * @retval  EOK        successful operation, the characters in src were copied
  *                     to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESZEROL    when dmax = 0. Before C11 also with slen = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
@@ -122,10 +123,15 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     }
 
     if (unlikely(slen == 0)) {
+        /* Since C11 slen=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "slen is zero",
                      ESZEROL);
         return RCNEGATE(ESZEROL);
+#endif
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {
