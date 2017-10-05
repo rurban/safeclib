@@ -2,8 +2,10 @@
  * strcpyfldin_s.c
  *
  * November 2008, Bo Berry
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -39,7 +41,7 @@
  * @brief
  *    The strcpyfldin_s function copies at most slen characters from the
  *    null terminated string pointed to by src into the fixed character
- *    array pointed to by dest. The copy operation stops on the  null
+ *    array pointed to by dest. The copy operation stops on the null
  *    character if encountered and then continues to fill the field
  *    with nulls up to dmax characters.
  *
@@ -57,7 +59,7 @@
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not equal zero.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR.
- * @pre  slen shall not equal zero.
+ * @pre  slen shall not equal zero before C11. Since C11 zero is allowed.
  * @pre  slen shall not exceed dmax
  * @pre  Copying shall not take place between objects that overlap.
  *
@@ -66,7 +68,7 @@
  *          not greater than RSIZE_MAX_STR, then strcpyfldin_s nulls dest
  * @retval  EOK        when successful operation
  * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESZEROL    when dmax = 0. Before C11 also with slen = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dmax < slen
@@ -101,29 +103,25 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     }
 
     if (unlikely(src == NULL)) {
-        /* null string to clear data */
-        while (dmax) {  *dest = '\0'; dmax--; dest++; }
-
-        invoke_safe_str_constraint_handler("strcpyfldin_s: src is null",
-                   NULL, ESNULLP);
+        handle_error(dest, dmax, "strcpyfldin_s: src is null",
+                     ESNULLP);
         return (ESNULLP);
     }
 
     if (unlikely(slen == 0)) {
-        /* null string to clear data */
-        while (dmax) {  *dest = '\0'; dmax--; dest++; }
-
-        invoke_safe_str_constraint_handler("strcpyfldin_s: slen is 0",
-                   NULL, ESZEROL);
+        /* Since C11 slen=0 is allowed */
+#ifdef HAVE_C11
+        return EOK;
+#else
+        handle_error(dest, dmax, "strcpyfldin_s: slen is 0",
+                     ESZEROL);
         return (ESZEROL);
+#endif
     }
 
     if (unlikely(slen > dmax)) {
-        /* null string to clear data */
-        while (dmax) {  *dest = '\0'; dmax--; dest++; }
-
-        invoke_safe_str_constraint_handler("strcpyfldin_s: slen exceeds max",
-                   NULL, ESNOSPC);
+        handle_error(dest, dmax, "strcpyfldin_s: src exceeds max",
+                     ESNOSPC);
         return (ESNOSPC);
     }
 
@@ -138,15 +136,8 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         while (dmax > 0 && *src) {
 
             if (unlikely(dest == overlap_bumper)) {
-                dmax = orig_dmax;
-                dest = orig_dest;
-
-                /* null string to eliminate partial copy */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
-
-                invoke_safe_str_constraint_handler(
-                          "strcpyfldin_s: overlapping objects",
-                           NULL, ESOVRLP);
+                handle_error(orig_dest, orig_dmax, "strcpyfldin_s: overlapping objects",
+                             ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -160,15 +151,8 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         while (dmax > 0 && *src) {
 
             if (unlikely(src == overlap_bumper)) {
-                dmax = orig_dmax;
-                dest = orig_dest;
-
-                /* null string to eliminate partial copy */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
-
-                invoke_safe_str_constraint_handler(
-                          "strcpyfldin_s: overlapping objects",
-                           NULL, ESOVRLP);
+                handle_error(orig_dest, orig_dmax, "strcpyfldin_s: overlapping objects",
+                             ESOVRLP);
                 return (ESOVRLP);
             }
 

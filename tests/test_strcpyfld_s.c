@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strcpyfld_s
  * File 'extstr/strcpyfld_s.c'
- * Lines executed:100.00% of 49
- *
+ * Lines executed:100.00% of 39
  *
  *------------------------------------------------------------------
  */
@@ -31,19 +30,13 @@ int main()
 
 /*--------------------------------------------------*/
 
-   strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     len = 5;
     slen = 5;
     rc = strcpyfld_s(str1, len, NULL, slen);
     ERR(ESNULLP)
-    for (i=0; i<len; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-        }
-    }
+    CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
 
@@ -62,13 +55,19 @@ int main()
 
     len = 5;
     rc = strcpyfld_s(str1, len, str2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL);
+    CHECK_SLACK(str1, len);
+#endif
 
 /*--------------------------------------------------*/
 
     len = 5;
     rc = strcpyfld_s(str1, len-1, str2, len);
     ERR(ESNOSPC);
+    CHECK_SLACK(str1, len-1);
 
 /*--------------------------------------------------*/
 
@@ -133,6 +132,7 @@ int main()
 
     rc = strcpyfld_s(str1, len, &str1[5], 10);
     ERR(ESOVRLP)
+    CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
 
@@ -141,6 +141,7 @@ int main()
 
     rc = strcpyfld_s(&str1[5], len, &str1[0], 10);
     ERR(ESOVRLP)
+    CHECK_SLACK(&str1[5], len);
 
 /*--------------------------------------------------*/
 

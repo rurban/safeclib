@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------
  * test_strcpyfldout_s
  * File 'extstr/strcpyfldout_s.c'
- * Lines executed:100.00% of 49
- *
+ * Lines executed:100.00% of 39
  *
  *------------------------------------------------------------------
  */
@@ -34,18 +33,14 @@ int main()
     len = 5;
     rc = strcpyfldout_s(str1, len, NULL, LEN);
     ERR(ESNULLP)
-    for (i=0; i<len; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc );
-            errs++;
-        }
-    }
+    CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
 
     rc = strcpyfldout_s(str1, 0, str2, LEN);
     ERR(ESZEROL)
+    CHECK_SLACK(str1, len);
+
 /*--------------------------------------------------*/
 
     rc = strcpyfldout_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
@@ -53,9 +48,13 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
-    slen = 0;
-    rc = strcpyfldout_s(str1, len, str2, slen);
+    rc = strcpyfldout_s(str1, len, str2, 0);
+#ifdef HAVE_C11
+    ERR(EOK);
+#else
     ERR(ESZEROL)
+    CHECK_SLACK(str1, len);
+#endif
 
 /*--------------------------------------------------*/
 
@@ -124,13 +123,7 @@ int main()
     len = LEN;
     rc = strcpyfldout_s(str1, len, str1, len);
     ERR(ESOVRLP)
-    for (i=0; i<len; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-            errs++;
-        }
-    }
+    CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
 
@@ -140,13 +133,7 @@ int main()
     /* overlap */
     rc = strcpyfldout_s(&str1[0], len, &str1[5], len);
     ERR(ESOVRLP)
-    for (i=0; i<len; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-            errs++;
-        }
-    }
+    CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
 
@@ -156,13 +143,7 @@ int main()
     /* overlap */
     rc = strcpyfldout_s(&str1[10], len, &str1[0], len);
     ERR(ESOVRLP)
-    for (i=10; i<len; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
-            errs++;
-        }
-    }
+    CHECK_SLACK(&str1[10], len);
 
 /*--------------------------------------------------*/
 
