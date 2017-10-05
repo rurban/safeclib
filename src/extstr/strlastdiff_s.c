@@ -50,7 +50,7 @@
  * @param[in]   dest   pointer to string to compare against
  * @param[in]   dmax   restricted maximum length of string dest
  * @param[in]   src    pointer to the string to be compared to dest
- * @param[out]  index  pointer to returned index to last difference
+ * @param[out]  idx    pointer to returned index to last difference
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  indicator shall not be a null pointer.
@@ -58,9 +58,9 @@
  * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
  * @return  index to last difference, when the return code is OK
- * @retval  EOK         when index to last diff is returned
+ * @retval  EOK         when idx to last diff is returned
  * @retval  ESNODIFF    when no difference
- * @retval  ESNULLP     when dest/src/index is NULL pointer
+ * @retval  ESNULLP     when dest/src/idx is NULL pointer
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
  *
@@ -71,17 +71,17 @@
  */
 EXPORT errno_t
 strlastdiff_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *index)
+              const char *src, rsize_t *idx)
 {
     const char *rp;
     bool there_is_a_diff = false;
 
-    if (unlikely(index == NULL)) {
-        invoke_safe_str_constraint_handler("strlastdiff_s: index is null",
+    if (unlikely(idx == NULL)) {
+        invoke_safe_str_constraint_handler("strlastdiff_s: idx is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
-    *index = 0;
+    *idx = 0;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strlastdiff_s: dest is null",
@@ -117,7 +117,7 @@ strlastdiff_s(const char *dest, rsize_t dmax,
 
         if (*dest != *src) {
             there_is_a_diff = true;
-            *index = dest - rp;
+            *idx = dest - rp;
         }
 
         dest++;

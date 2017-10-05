@@ -19,13 +19,14 @@
 # LICENSE
 #
 #   Copyright (c) 2014, 2015 Philip Withnall <philip@tecnocode.co.uk>
+#   Copyright (c) 2017 Reini Urban <rurban@cpan.org>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 14
+#serial 15
 
 AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AC_REQUIRE([AC_PROG_SED])
@@ -100,6 +101,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
             -Wreturn-type dnl
             -Wswitch-enum dnl
             -Wswitch-default dnl
+            -Wduplicated-cond dnl
+            -Wduplicated-branches dnl
+            -Wlogical-op dnl
+            -Wrestrict dnl
+            -Wnull-dereference dnl
+            -Wjump-misses-init dnl
+            -Wdouble-promotion dnl
             $4 dnl
             $5 dnl
             $6 dnl

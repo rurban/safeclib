@@ -38,10 +38,7 @@
 /* i386-mingw32-gcc */
 #ifndef HAVE_STRNLEN
 #define strnlen(s,smax) strlen(s)
-#else
-size_t strnlen(const char *, size_t);
 #endif
-
 
 /**
  * @brief

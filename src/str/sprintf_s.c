@@ -141,7 +141,9 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 
     errno = 0;
     va_start(ap, fmt);
+    /* FIXME: gcc 4.3 GCC_DIAG_IGNORE(-Wmissing-format-attribute) */
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
+    /* GCC_DIAG_RESTORE */
     va_end(ap);
 
     if (unlikely(ret >= (int)dmax)) {

@@ -52,8 +52,9 @@ EXTERN void invoke_safe_str_constraint_handler(
  * With SAFECLIB_STR_NULL_SLACK clear the dest buffer to eliminate
  * partial copy.
  */
-static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
-                                const char *err_msg, errno_t err_code)
+static inline void
+handle_error(char *orig_dest, rsize_t orig_dmax,
+             const char *err_msg, errno_t err_code)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
@@ -73,8 +74,9 @@ static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
  * With SAFECLIB_STR_NULL_SLACK clear the dest wide buffer to eliminate
  * partial copy.
  */
-static inline void handle_werror(wchar_t *orig_dest, rsize_t orig_dmax,
-                                const char *err_msg, errno_t err_code)
+static inline void
+handle_werror(wchar_t *orig_dest, rsize_t orig_dmax,
+              const char *err_msg, errno_t err_code)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */

@@ -58,6 +58,9 @@ extern "C" {
 # define EXTERN extern
 #endif
 
+/* duplicate decls */
+#ifndef __SAFE_STR_LIB_H__
+
 EXTERN void
 abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error)
 #ifdef __GNUC__
@@ -67,6 +70,8 @@ __attribute__((noreturn))
 
 EXTERN void
 ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
+
+#endif
 
 #define sl_default_handler ignore_handler_s
 

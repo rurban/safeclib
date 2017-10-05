@@ -285,8 +285,8 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                 /* Unless an I is before a dot_above, it turns
                    into a dotless i. */
                 else if (*src == 0x49 &&
-                         (*(src+1) != 0x307 ||
-                          *(src+1) != 0x130)) {
+                          *(src+1) != 0x307 &&
+                          *(src+1) != 0x130) {
                     *dest++ = 0x131; src++; dmax--;
                 } else {
                   is_single:

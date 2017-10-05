@@ -254,7 +254,7 @@ strfirstchar_s(char *dest, rsize_t dmax, char c, char **first);
 /* returns index of first difference */
 EXTERN errno_t
 strfirstdiff_s(const char *dest, rsize_t dmax,
-               const char *src, rsize_t *index);
+               const char *src, rsize_t *idx);
 
 
 /* validate alphanumeric string */
@@ -305,7 +305,7 @@ strlastchar_s(char *str, rsize_t smax, char c, char **first);
 /* returns index of last difference */
 EXTERN errno_t
 strlastdiff_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *index);
+              const char *src, rsize_t *idx);
 
 
 /* left justify */
@@ -326,11 +326,11 @@ strpbrk_s(char *dest, rsize_t dmax,
 
 EXTERN errno_t
 strfirstsame_s(const char *dest, rsize_t dmax,
-               const char *src,  rsize_t *index);
+               const char *src,  rsize_t *idx);
 
 EXTERN errno_t
 strlastsame_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *index);
+              const char *src, rsize_t *idx);
 
 
 /* searches for a prefix */

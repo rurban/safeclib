@@ -49,16 +49,16 @@
  * @param[in]   dest   pointer to string to compare against
  * @param[in]   dmax   restricted maximum length of string dest
  * @param[in]   src    pointer to the string to be compared to dest
- * @param[out]  index  pointer to returned index
+ * @param[out]  idx    pointer to returned index
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  indicator shall not be a null pointer.
  * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
- * @return  index to first same char, when the return code is OK
- * @retval  EOK         when index to first same char is returned
- * @retval  ESNULLP     when dst/src/index is NULL pointer
+ * @return  idx to first same char, when the return code is OK
+ * @retval  EOK         when idx to first same char is returned
+ * @retval  ESNULLP     when dst/src/idx is NULL pointer
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
  * @retval  ESNOTFND    when not found
@@ -70,16 +70,16 @@
  */
 EXPORT errno_t
 strfirstsame_s (const char *dest, rsize_t dmax,
-                const char *src,  rsize_t *index)
+                const char *src,  rsize_t *idx)
 {
     const char *rp = 0;
 
-    if (unlikely(index == NULL)) {
-        invoke_safe_str_constraint_handler("strfirstsame_s: index is null",
+    if (unlikely(idx == NULL)) {
+        invoke_safe_str_constraint_handler("strfirstsame_s: idx is null",
                    NULL, ESNULLP);
         return (ESNULLP);
     }
-    *index = 0;
+    *idx = 0;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strfirstsame_s: dest is null",
@@ -114,7 +114,7 @@ strfirstsame_s (const char *dest, rsize_t dmax,
     while (*dest && *src && dmax) {
 
         if (*dest == *src) {
-            *index = (uint32_t)(dest - rp);
+            *idx = (uint32_t)(dest - rp);
             return (EOK);
         }
 

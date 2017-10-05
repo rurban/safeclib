@@ -37,8 +37,6 @@
 #include <wctype.h>
 #endif
 
-extern wint_t _towcase(wint_t wc, int lower);
-
 /**
  * @brief
  *    \c iswfc() checks the uppercase character for a mapping to foldcase,
@@ -298,6 +296,7 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
         case 0x3f0: dest[0] = 0x3ba; return EOK; /* lc=3f0 */
         case 0x3f1: dest[0] = 0x3c1; return EOK; /* lc=3f1 */
         case 0x3f5: dest[0] = 0x3b5; return EOK; /* lc=3f5 */
+        default: break;
         }
         goto single;
     }
@@ -319,6 +318,8 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
         case 0x1c86: dest[0] = 0x44a; return EOK;
         case 0x1c87: dest[0] = 0x463; return EOK;
         case 0x1c88: dest[0] = 0xa64b; return EOK;
+        default:
+            goto single;
         }
     }
     else if (unlikely( src <= 0x1fbe )) {

@@ -159,9 +159,9 @@ else
 	   DEBUG_CFLAGS="-O2"
            if test x$GCC = xyes; then
 	      DEBUG_CFLAGS="-O2 -D_FORTIFY_SOURCE=2"
-              if test x$host_os != xcygwin; then
-                  AM_LDFLAGS="-Wl,--as-needed -Wl,-z,relro -Wl,-z,now"
-              fi
+              #if test x$host_os != xcygwin; then
+              #    AM_LDFLAGS="-Wl,--as-needed -Wl,-z,relro -Wl,-z,now"
+              #fi
            fi
         fi
         AC_MSG_RESULT([no CFLAGS = $DEBUG_CFLAGS])
@@ -314,6 +314,7 @@ AC_PROG_INSTALL
 AM_PROG_CC_C_O
 AC_PROG_CC_C99
 AC_PROG_CC_C11
+
 if test "x$ac_cv_prog_cc_c99" = "xno"; then
    dnl we really should ERROR, lets see how far can come without
    AC_MSG_WARN([This compiler ${CC} has no c99 support])
@@ -344,9 +345,49 @@ ax_cv_check_ldflags___Wl__fatal_warnings=no
 dnl sprintf_s passing through to vsnprintf_s
 ax_cv_check_cflags__Wformat_2=no
 ax_cv_check_cflags__Wformat_nonliteral=no
+dnl gcc 4.2 fails with -Wmissing-format-attribute
+dnl https://gcc.gnu.org/bugzilla/show_bug.cgi?id=28492
+if test "x$GCC" != "x" ; then
+  AC_MSG_CHECKING([for -Wmissing-format-attribute usability])
+  old_cflags="$CFLAGS"
+  CFLAGS="-Wmissing-format-attribute -Werror"
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <stdarg.h>
+
+void myvsprintf(char *dest, const char *fmt, va_list ap);
+int mysprintf(char *dest, const char *fmt, ...);
+
+int myvsprintf(char *dest, const char *fmt, va_list ap) {
+    return vsprintf(dest, fmt, ap);
+}
+int mysprintf(char *dest, const char *fmt, ...) {
+    va_list ap;
+    int ret;
+    va_start(ap, fmt);
+    ret = myvsprintf(dest, fmt, ap);
+    va_end(ap);
+    return ret;
+}
+    ]],[[
+      const char* fmt = "%s";
+      char dest[12];
+      return mysprintf(dest, fmt) ? 0: 1;
+      ]]
+    )],
+    [ AC_MSG_RESULT([yes])],
+    [ AC_MSG_RESULT([no])
+      ax_cv_check_cflags__Winline=no
+      ax_cv_check_cflags__Wmissing_format_attribute=no
+    ],
+    [ AC_MSG_RESULT([no (cross)])
+      ax_cv_check_cflags__Winline=no
+      ax_cv_check_cflags__Wmissing_format_attribute=no
+    ])
+  CFLAGS="$old_cflags"
+fi
 AX_COMPILER_FLAGS
-dnl AX_COMPILER_FLAGS_CFLAGS
-dnl AX_COMPILER_FLAGS_LDFLAGS
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],

@@ -33,14 +33,16 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include <time.h>
 #endif
 
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 
-#if defined(HAVE_ASCTIME_R)
+/*#if defined(HAVE_ASCTIME_R)
 char *asctime_r(const struct tm * __restrict, char * __restrict);
 #endif
+*/
 
 /** 
  * @brief

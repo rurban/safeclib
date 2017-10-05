@@ -33,14 +33,16 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include <time.h>
 #endif
 
 /* conflicting API */
 #ifndef HAVE_MINGW64
 
-#if defined(HAVE_GMTIME_R)
+/*#if defined(HAVE_GMTIME_R)
 struct tm *gmtime_r(const time_t * __restrict, struct tm * __restrict);
 #endif
+*/
 
 /** 
  * @brief

@@ -25,7 +25,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 8
+#serial 9
 
 AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
     AX_REQUIRE_DEFINED([AX_APPEND_LINK_FLAGS])
@@ -48,7 +48,20 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         ax_compiler_flags_test=""
     ])
 
-    # macOS linker does not have --as-needed
+    AX_CHECK_LINK_FLAG([-Wl,--as-needed], [
+        AX_APPEND_LINK_FLAGS([-Wl,--as-needed],
+          [AM_LDFLAGS],[$ax_compiler_flags_test])
+    ])
+    AX_CHECK_LINK_FLAG([-Wl,-z,relro], [
+        AX_APPEND_LINK_FLAGS([-Wl,-z,relro],
+          [AM_LDFLAGS],[$ax_compiler_flags_test])
+    ])
+    AX_CHECK_LINK_FLAG([-Wl,-z,now], [
+        AX_APPEND_LINK_FLAGS([-Wl,-z,now],
+          [AM_LDFLAGS],[$ax_compiler_flags_test])
+    ])
+  
+    # macOS and cygwin linker does not have --as-needed
     AX_CHECK_LINK_FLAG([-Wl,--no-as-needed], [
         ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
     ], [

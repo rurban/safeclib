@@ -33,11 +33,14 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include <time.h>
 #endif
 
+/*
 #if defined(HAVE_CTIME_R)
 char *ctime_r(const time_t *, char *);
 #endif
+*/
 
 /** 
  * @brief
