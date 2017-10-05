@@ -2,8 +2,10 @@
  * strncat_s.c
  *
  * October 2008, Bo Berry
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -34,9 +36,6 @@
 #else
 #include "safeclib_private.h"
 #endif
-
-
-
 
 /**
  * @brief
@@ -84,7 +83,7 @@
  * @retval  EOK        successful operation, all the characters from src
  *                     null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
  * @retval  ESUNTERM   when dest not terminated
  * @retval  ESOVRLP    when src overlaps with dest
@@ -168,7 +167,8 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #else
                 *dest = '\0';
 #endif
@@ -179,7 +179,8 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             if (unlikely(*dest == '\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear data */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }
@@ -224,7 +225,8 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #else
                 *dest = '\0';
 #endif
@@ -235,7 +237,8 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             if (unlikely(*dest == '\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                memset(dest, 0, dmax);
+                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #endif
                 return RCNEGATE(EOK);
             }

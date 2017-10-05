@@ -83,7 +83,7 @@
  * @retval  EOK        successful operation, all the wide characters from src
  *                     null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax/slen = 0
+ * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR
  * @retval  ESUNTERM   when dest not terminated
  * @retval  ESOVRLP    when src overlaps with dest
