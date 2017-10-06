@@ -388,6 +388,9 @@ int mysprintf(char *dest, const char *fmt, ...) {
   CFLAGS="$old_cflags"
 fi
 AX_COMPILER_FLAGS
+case $host_os in
+     mingw*|cygwin*) WARN_CFLAGS="-Wall -Wextra" ;;
+esac
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
