@@ -1,6 +1,24 @@
 
                 ChangeLog file for safeclib
 
+Changes in v09102017 3.1.0
+        Summary: With a non-C11 compiler not on windows the API didn't change, only docs.
+        - Fixed man pages: show public headers, hide private headers.
+        - Removed html pages from the release tarball
+        - Fixed slen=0 behaviour with cpy functions: When the library is compiled
+        with a C11 compiler, slen=0 is permitted, with an older compiler keep
+        erroring with ESZEROL: strncpy_s, wcsncpy_s, wcslwr_s, wcsupr_s, strcpyfld_s,
+        strcpyfldin_s, strcpyfldout_s
+        - Fixed docs for this behaviour: wcsncat_s, strncat_s
+        - Added hardened WARN_CFLAGS and WARN_LDFLAGS, minor fixes for the
+        hardened flags on older compilers,
+        probe for -Wl,--as-needed -Wl,-z,relro -Wl,-z,now
+        - Fixed NFD canon table for windows (sizeof wchar_t == 2) for 9 expansions
+        of length 6: U+1D160 - U+1D1C0
+        - Fixed _dec_w16 and _ENC_W16 encoding on windows, convert from and to
+        surrogate pair.
+        - Fixed distcheck and release targets, added distcheck to travis
+
 Changes in v04102017 3.0.0
         - Added mingw cross-compilation support and changes.
         The MINGW_HAS_SECURE_API deviates in strtok_s, vsnprintf_s, wcstok_s

@@ -127,7 +127,6 @@ dist_man_MANS += \
 	doc/man/man3/ESUNTERM.3	\
 	doc/man/man3/ESZEROL.3	\
 	doc/man/man3/L_tmpnam_s.3	\
-	doc/man/man3/MAX_TIME_T_STR.3	\
 	doc/man/man3/RSIZE_MAX.3	\
 	doc/man/man3/RSIZE_MAX_MEM.3	\
 	doc/man/man3/RSIZE_MAX_MEM16.3	\
@@ -135,8 +134,20 @@ dist_man_MANS += \
 	doc/man/man3/RSIZE_MAX_STR.3	\
 	doc/man/man3/RSIZE_MAX_WMEM.3	\
 	doc/man/man3/SAFECLIB_STR_NULL_SLACK.3	\
+	doc/man/man3/SAFE_STR_MIN_LOWERCASE.3	\
+	doc/man/man3/SAFE_STR_MIN_NUMBERS.3	\
+	doc/man/man3/SAFE_STR_MIN_SPECIALS.3	\
+	doc/man/man3/SAFE_STR_MIN_UPPERCASE.3	\
+	doc/man/man3/SAFE_STR_PASSWORD_MAX_LENGTH.3	\
+	doc/man/man3/SAFE_STR_PASSWORD_MIN_LENGTH.3	\
 	doc/man/man3/STRTOK_DELIM_MAX_LEN.3	\
 	doc/man/man3/TMP_MAX_S.3	\
+	doc/man/man3/WCSNORM_FCC.3	\
+	doc/man/man3/WCSNORM_FCD.3	\
+	doc/man/man3/WCSNORM_NFC.3	\
+	doc/man/man3/WCSNORM_NFD.3	\
+	doc/man/man3/WCSNORM_NFKC.3	\
+	doc/man/man3/WCSNORM_NFKD.3	\
 	doc/man/man3/abort_handler_s.3	\
 	doc/man/man3/abort_handler_s.c.3	\
 	doc/man/man3/asctime_s.3	\
@@ -235,7 +246,6 @@ dist_man_MANS += \
 	doc/man/man3/safe_str_constraint.c.3	\
 	doc/man/man3/safe_str_constraint.h.3	\
 	doc/man/man3/safe_types.h.3	\
-	doc/man/man3/safeclib_private.h.3	\
 	doc/man/man3/scanf_s.3	\
 	doc/man/man3/scanf_s.c.3	\
 	doc/man/man3/set_mem_constraint_handler_s.3	\
@@ -311,12 +321,10 @@ dist_man_MANS += \
 	doc/man/man3/strncat_s.c.3	\
 	doc/man/man3/strncpy_s.3	\
 	doc/man/man3/strncpy_s.c.3	\
-	doc/man/man3/strnlen.3	\
 	doc/man/man3/strnlen_s.3	\
 	doc/man/man3/strnlen_s.c.3	\
 	doc/man/man3/strnset_s.3	\
 	doc/man/man3/strnset_s.c.3	\
-	doc/man/man3/strnstr.3	\
 	doc/man/man3/strnterminate_s.3	\
 	doc/man/man3/strnterminate_s.c.3	\
 	doc/man/man3/strpbrk_s.3	\
@@ -556,7 +564,7 @@ gh-pages: docs
 	mv doc/html/* doc/safec-$(SAFEC_API_VERSION)/
 	rm -rf doc/html
 	git add doc/safec-$(SAFEC_API_VERSION)
-release: docs checkdist
+release: docs distcheck
 	git checkout master
 	git tag -f v`date +%d%m%Y`
 	build-tools/autogen.sh
