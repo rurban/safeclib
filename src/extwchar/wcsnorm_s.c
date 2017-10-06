@@ -144,10 +144,16 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
         if (!vi)
             return 0;
         else {
-            /* value => length and index */
+            /* value => length-index and offset */
             const int l = UNWIF_canon_LEN(vi);
             const int i = UNWIF_canon_IDX(vi);
             const wchar_t* tbl = (const wchar_t*)UNWIF_canon_tbl[l-1];
+#if SIZEOF_WCHAR_T > 2
+            const int len = l;
+#else
+            /* unw16ifcan.h needs TBL(5) for len 6 */
+            const int len = (l == 5) ? 6 : l;
+#endif
 #if 0 && defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
@@ -158,10 +164,9 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
                    (l==4 && i<36) || 0);
             assert(dmax > 4);
 #endif
-            /* TODO: on sizeof(wchar_t)==2 pre-converted to surrogate pairs */
-            memcpy(dest, &tbl[i*l], l*sizeof(wchar_t)); /* 33% perf */
-            dest[l] = L'\0';
-            return l;
+            memcpy(dest, &tbl[i*len], len*sizeof(wchar_t)); /* 33% perf */
+            dest[len] = L'\0';
+            return len;
         }
     }
     else {

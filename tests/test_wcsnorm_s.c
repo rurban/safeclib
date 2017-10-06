@@ -107,7 +107,6 @@ int main()
     rc = wcsnorm_s(str, 4, MAX_WC1, WCSNORM_NFD, NULL);
     ERR(ESLEMIN);
     WEXPSTR(str, L"\0");
-
     
 /*--------------------------------------------------*/
 
@@ -178,6 +177,29 @@ int main()
     WEXPSTR(str, str1);
     INDCMP(!= 2);
     WCHECK_SLACK(&str[2], LEN-2);
+
+    /* TBL(6) on windows, no _exc tbl with canon */
+#if SIZEOF_WCHAR_T == 2
+    {
+        wchar_t* sp = &str1[0];
+        wint_t cp = 0x1d1c0; /* need surrogate pair for this */
+        wcscpy(str1, L"\x0\x0\x0");
+        _ENC_W16(sp,len,cp);
+        rc = wcsnorm_s(str, LEN, str1, WCSNORM_NFD, &ind);
+    }
+    ERR(EOK);
+    wcscpy(str1, L"\xd834\xddba\xd834\xdd65\xd834\xdd6f");
+    WEXPSTR(str, str1);
+    INDCMP(!= 6);
+    WCHECK_SLACK(&str[6], LEN-6);
+#else
+    rc = wcsnorm_s(str, LEN, L"\x1d1c0", WCSNORM_NFD, &ind);
+    ERR(EOK);
+    wcscpy(str1, L"\x1d1ba\x1d165\x1d16f");
+    WEXPSTR(str, str1);
+    INDCMP(!= 3);
+    WCHECK_SLACK(&str[3], LEN-3);
+#endif
 
 /*--------------------------------------------------*/
 

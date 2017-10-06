@@ -279,6 +279,7 @@ static const wchar_t UNWIF_canon_tbl_6 [9][6] = {
  /*   0 */  {L'\xd834',L'\xdd58',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6e'}, {L'\xd834',L'\xdd58',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6f'}, {L'\xd834',L'\xdd58',L'\xd834',L'\xdd65',L'\xd834',L'\xdd70'}, {L'\xd834',L'\xdd58',L'\xd834',L'\xdd65',L'\xd834',L'\xdd71'}, {L'\xd834',L'\xdd58',L'\xd834',L'\xdd65',L'\xd834',L'\xdd72'}, {L'\xd834',L'\xddb9',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6e'}, {L'\xd834',L'\xddb9',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6f'}, {L'\xd834',L'\xddba',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6e'},
  /*   8 */  {L'\xd834',L'\xddba',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6f'}};
 
+#if 0
 /* the special-cased overlong entries */
 typedef struct { const wint_t cp; const wchar_t* v; } UNWIF_canon_exc_t;
 /* sorted for binary search */
@@ -294,13 +295,13 @@ static const UNWIF_canon_exc_t UNWIF_canon_exc [9] = {
 	{ 0x1d1bf, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6f"},
 	{ 0x1d1c0, L"\xd834\xddba\xd834\xdd65\xd834\xdd6f"}
 };
+#endif
 
-static const wchar_t* UNWIF_canon_tbl [6] = {
+static const wchar_t* UNWIF_canon_tbl [5] = {
 	(const wchar_t*) UNWIF_canon_tbl_1,
 	(const wchar_t*) UNWIF_canon_tbl_2,
 	(const wchar_t*) UNWIF_canon_tbl_3,
 	(const wchar_t*) UNWIF_canon_tbl_4,
-	NULL,
 	(const wchar_t*) UNWIF_canon_tbl_6
 };
 
@@ -1368,7 +1369,7 @@ static const uint16_t UNWIF_canon_01_d1 [256] = {
 /* 01d148 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d150 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d158 */  0, 0, 0, 0, 0, 0, TBL(4)|48, TBL(4)|49,
-/* 01d160 */  (uint16_t)-1 /*TBL(6)|0*/, (uint16_t)-1 /*TBL(6)|1*/, (uint16_t)-1 /*TBL(6)|2*/, (uint16_t)-1 /*TBL(6)|3*/, (uint16_t)-1 /*TBL(6)|4*/, 0, 0, 0,
+/* 01d160 */  TBL(5)|0, TBL(5)|1, TBL(5)|2, TBL(5)|3, TBL(5)|4, 0, 0, 0,
 /* 01d168 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d170 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d178 */  0, 0, 0, 0, 0, 0, 0, 0,
@@ -1379,8 +1380,8 @@ static const uint16_t UNWIF_canon_01_d1 [256] = {
 /* 01d1a0 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d1a8 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d1b0 */  0, 0, 0, 0, 0, 0, 0, 0,
-/* 01d1b8 */  0, 0, 0, TBL(4)|50, TBL(4)|51, (uint16_t)-1 /*TBL(6)|5*/, (uint16_t)-1 /*TBL(6)|7*/, (uint16_t)-1 /*TBL(6)|6*/,
-/* 01d1c0 */  (uint16_t)-1 /*TBL(6)|8*/, 0, 0, 0, 0, 0, 0, 0,
+/* 01d1b8 */  0, 0, 0, TBL(4)|50, TBL(4)|51, TBL(5)|5, TBL(5)|7, TBL(5)|6,
+/* 01d1c0 */  TBL(5)|8, 0, 0, 0, 0, 0, 0, 0,
 /* 01d1c8 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d1d0 */  0, 0, 0, 0, 0, 0, 0, 0,
 /* 01d1d8 */  0, 0, 0, 0, 0, 0, 0, 0,

@@ -160,12 +160,10 @@ int test_wcrtomb_s (void)
     CLRPS;
 
     /* illegal unicode. but some may allow it: 0xf0 0x9d 0x8c 0x81 */
-    /* 32bit: hex escape sequence out of range */
-    rc = wcrtomb_s(&ind, dest, LEN, L'\xd834df01', &ps);
+    /* wc =  0x10000 + ((0xd834 & 0x3ff) << 10) + (0xdf01 & 0x3ff); */
     /* 32bit compilers reject the illegal wchar_t */
-#if SIZEOF_WCHAR_T == 2
-    ERR(0);
-#else
+#if SIZEOF_WCHAR_T > 2
+    rc = wcrtomb_s(&ind, dest, LEN, 0xd834df01UL, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
     CHECK_SLACK(dest, LEN);
