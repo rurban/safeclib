@@ -183,7 +183,7 @@ int main()
     {
         wchar_t* sp = &str1[0];
         wint_t cp = 0x1d1c0; /* need surrogate pair for this */
-        wcscpy(str1, L"\x0\x0\x0");
+        wcscpy(str1, L"\x0\x0\x0"); /* 0xd874 0xddc0 */
         _ENC_W16(sp,len,cp);
         rc = wcsnorm_s(str, LEN, str1, WCSNORM_NFD, &ind);
     }
@@ -193,8 +193,11 @@ int main()
     INDCMP(!= 6);
     WCHECK_SLACK(&str[6], LEN-6);
 #else
+    /* MUSICAL SYMBOL FUSA BLACK */
     rc = wcsnorm_s(str, LEN, L"\x1d1c0", WCSNORM_NFD, &ind);
     ERR(EOK);
+    /* MUSICAL SYMBOL MINIMA BLACK (U+1D1BC) MUSICAL SYMBOL COMBINING FLAG-2 (U+1D16F) */
+    /* => MUSICAL SYMBOL SEMIBREVIS BLACK (U+1D1BA) MUSICAL SYMBOL COMBINING STEM (U+1D165) + U+1D16F */
     wcscpy(str1, L"\x1d1ba\x1d165\x1d16f");
     WEXPSTR(str, str1);
     INDCMP(!= 3);

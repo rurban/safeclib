@@ -80,7 +80,14 @@ EXPORT wint_t _dec_w16(wchar_t *src) {
     if (unlikely((s1 & 0xfc00) == 0xd800)) {
         wint_t s2 = src[1];
         if (likely((s2 & 0xfc00) == 0xdc00)) {
-            return 0x10000 + ((s1 & 0x3ff) << 10) + (s2 & 0x3ff);
+#if 0
+            s1 = ((s1 & 0x3ff) << 10) + (s2 & 0x3ff);
+            if (s1 < 0x10000)
+                s1 += 0x10000;
+            return s1;
+#else
+            return (s1 << 10) + s2 - 0x35FDC00;
+#endif
         } else {
             invoke_safe_str_constraint_handler("wcsnorm_s: "
                 "illegal surrogate pair",

@@ -232,8 +232,8 @@ EXTERN wint_t _dec_w16(wchar_t *src);
     if (unlikely((cp) < 0x10000)) {             \
         *(dest)++ = (cp); (dmax)--;             \
     } else {                                    \
-        *dest++ = 0xd800 + (((cp) >> 10) & 0x3ff);\
-        *dest++ = 0xdc00 + ((cp) & 0x3ff);      \
+        *dest++ = ((cp) >> 10) + 0xd7c0;        \
+        *dest++ = ((cp) & 0x3ff) + 0xdc00;      \
         (dmax)--; (dmax)--;                     \
     }
 
