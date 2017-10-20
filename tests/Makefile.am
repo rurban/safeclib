@@ -390,6 +390,12 @@ endif
 #VALGRIND_SUPPRESSIONS_FILES = $(PACKAGE).supp
 #EXTRA_DIST = $(PACKAGE).supp
 
+# emacs flymake-mode
+check-syntax:
+	test -n "$(CHK_SOURCES)" && \
+	  $(COMPILE) -o /dev/null -S $(CHK_SOURCES)
+.PHONY: check-syntax
+
 if HAVE_DSYMUTIL
 clean-local:
 	rm -rf *.dSYM

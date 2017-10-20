@@ -293,6 +293,12 @@ libsafec_@SAFEC_API_VERSION@_la_LDFLAGS = \
 #	-export-symbols $(EXPORT_SYM)
 #libsafec_@SAFEC_API_VERSION@_la_DEPENDENCIES = $(EXPORT_SYM)
 
+# emacs flymake-mode
+check-syntax:
+	test -n "$(CHK_SOURCES)" && \
+	  $(COMPILE) -o /dev/null -S $(CHK_SOURCES)
+.PHONY: check-syntax
+
 if ENABLE_GCOV
 AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
