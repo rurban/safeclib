@@ -142,12 +142,6 @@ dist_man_MANS += \
 	doc/man/man3/SAFE_STR_PASSWORD_MIN_LENGTH.3	\
 	doc/man/man3/STRTOK_DELIM_MAX_LEN.3	\
 	doc/man/man3/TMP_MAX_S.3	\
-	doc/man/man3/WCSNORM_FCC.3	\
-	doc/man/man3/WCSNORM_FCD.3	\
-	doc/man/man3/WCSNORM_NFC.3	\
-	doc/man/man3/WCSNORM_NFD.3	\
-	doc/man/man3/WCSNORM_NFKC.3	\
-	doc/man/man3/WCSNORM_NFKD.3	\
 	doc/man/man3/abort_handler_s.3	\
 	doc/man/man3/abort_handler_s.c.3	\
 	doc/man/man3/asctime_s.3	\
@@ -461,6 +455,15 @@ dist_man_MANS += \
 	doc/man/man3/wprintf_s.c.3	\
 	doc/man/man3/wscanf_s.3	\
 	doc/man/man3/wscanf_s.c.3
+if ENABLE_WCHAR
+dist_man_MANS += \
+	doc/man/man3/WCSNORM_FCC.3      \
+	doc/man/man3/WCSNORM_FCD.3      \
+	doc/man/man3/WCSNORM_NFC.3      \
+	doc/man/man3/WCSNORM_NFD.3      \
+	doc/man/man3/WCSNORM_NFKC.3     \
+	doc/man/man3/WCSNORM_NFKD.3
+endif
 CLEANFILES += Doxyfile doc/footer README.md
 
 # avoid parallel doxygen
