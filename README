@@ -80,6 +80,9 @@ http://en.cppreference.com/w/c
 Stackoverflow discussion:
 https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions
 
+DrDobbs review
+http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670
+
 * Use of errno
 
 The TR24731 specification says an implementation may set errno for the
@@ -237,3 +240,4 @@ Known Issues
 - [[[4]]] CERT C Secure Coding Standard
           https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard
 - [[[5]]] C11 Standard (ISO/IEC 9899:2011) Annex K
+- [[[6]]] DrDobbs review http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670

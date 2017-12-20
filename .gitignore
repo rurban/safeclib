@@ -123,3 +123,6 @@ GTAGS
 *~
 \#*#
 doc/Doxyfile.bak
+
+# Should not be distributed
+doc/n3631.pdf
