@@ -17,7 +17,6 @@ var searchData=
   ['safe_5fstr_5fpassword_5fmax_5flength',['SAFE_STR_PASSWORD_MAX_LENGTH',['../d8/dff/safe__str__lib_8h.html#a27dbd49bd0bab60ec22e31f47759bd2a',1,'safe_str_lib.h']]],
   ['safe_5fstr_5fpassword_5fmin_5flength',['SAFE_STR_PASSWORD_MIN_LENGTH',['../d8/dff/safe__str__lib_8h.html#a1ad5ec9e1933bab308f8157d8f9b1296',1,'safe_str_lib.h']]],
   ['safe_5ftypes_2eh',['safe_types.h',['../dd/d0a/safe__types_8h.html',1,'']]],
-  ['safeclib_5fenable_5funsafe',['SAFECLIB_ENABLE_UNSAFE',['../d3/ddb/safe__config_8h.html#ab9de5d04540cbd6782af6736556dce51',1,'safe_config.h']]],
   ['safeclib_5fstr_5fnull_5fslack',['SAFECLIB_STR_NULL_SLACK',['../d3/ddb/safe__config_8h.html#a78f0402a42149c6c7e080e409287ff87',1,'safe_config.h']]],
   ['scanf_5fs',['scanf_s',['../d0/dad/scanf__s_8c.html#a840cbd850ba8cf5b2b53a4dea464cff7',1,'scanf_s(const char *restrict fmt,...):&#160;scanf_s.c'],['../d8/dff/safe__str__lib_8h.html#ae9efcc59a87e6ea1fa8aaccb2f4c9a00',1,'scanf_s(const char *restrict format,...):&#160;scanf_s.c']]],
   ['scanf_5fs_2ec',['scanf_s.c',['../d0/dad/scanf__s_8c.html',1,'']]],
