@@ -145,17 +145,18 @@ wcrtomb_s(size_t *restrict retval,
 
     len = *retval = wcrtomb(dest, wc, ps);
 
-    if (likely((ssize_t)len > 0 && (rsize_t)len < dmax)) {
-        if (dest)
+    if (likely(len > 0 && (rsize_t)len < dmax)) {
+        if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(&dest[len], 0, dmax-len);
+            memset(&dest[len], 0, dmax - len);
 #else
             dest[len] = '\0';
 #endif
+        }
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)len > 0) ? ESNOSPC : errno;
+        errno_t rc = (len > 0 && len <= RSIZE_MAX_STR) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
