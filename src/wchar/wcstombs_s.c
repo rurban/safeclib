@@ -149,19 +149,19 @@ wcstombs_s (size_t *restrict retval,
     }
 
     if (unlikely(src == NULL)) {
-        if (dest)
-            handle_error(dest, dmax, "wcstombs_s: src is null",
-                         ESNULLP);
+        if (dest) {
+            handle_error(dest, dmax, "wcstombs_s: src is null", ESNULLP);
+        }
         return RCNEGATE(ESNULLP);
     }
 
     /* l is the strlen, excluding NULL */
     l = *retval = wcstombs(dest, src, len);
 
-    if (likely((ssize_t)l > 0 && (rsize_t)l < dmax)) {
+    if (likely(l > 0 && (rsize_t)l < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(&dest[l], 0, dmax-l);
+            memset(&dest[l], 0, dmax - l);
 #else
             /* wcstombs only ensures null-termination when len is big enough.
              * Above we ensured l < dmax, otherwise ESNOSPC. */
@@ -171,7 +171,7 @@ wcstombs_s (size_t *restrict retval,
         return EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = ((ssize_t)l > 0) ? ESNOSPC : errno;
+        errno_t rc = (l > 0 && l <= RSIZE_MAX_STR) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string with SAFECLIB_STR_NULL_SLACK. */
