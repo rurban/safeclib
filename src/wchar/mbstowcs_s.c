@@ -161,7 +161,7 @@ mbstowcs_s(size_t *restrict retval,
 
     *retval = mbstowcs(dest, src, len);
 
-    if (likely(*retval > 0 && *retval < dmax)) {
+    if (likely(*retval < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
             memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
@@ -175,7 +175,7 @@ mbstowcs_s(size_t *restrict retval,
         if (dest) {
             size_t tmp = 0;
             errno = 0;
-            if (*retval > RSIZE_MAX_STR) { /* else ESNOSPC */
+            if (*retval > RSIZE_MAX_WSTR) { /* else ESNOSPC */
                 tmp = mbstowcs(NULL, src, len);
             }
             /* with NULL either 0 or -1 is returned */
