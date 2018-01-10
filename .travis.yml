@@ -10,7 +10,7 @@ env:
   - XCC="cc" CONF="--enable-unsafe"
   - XCC="clang" CONF="--disable-nullslack"
   - XCC="cc" CONF="--disable-extensions"
-  - XCC="clang -fsanitize=address" CONF="--enable-debug"
+  - XCC="clang-3.8 -fsanitize=address" CONF="--enable-debug"
 # clang++ does not allow c anymore. gcc is duplicate to cc
 matrix:
   exclude:
@@ -28,6 +28,7 @@ addons:
   apt:
     packages:
     - valgrind
+    - clang-3.8
 
 install:
   - build-tools/autogen.sh
@@ -35,6 +36,9 @@ install:
 script:
   # skip duplicate compilers and overly strict clang++
   - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "clang-3.8 -fsanitize=address" ]; then
+      XCC="clang -fsanitize=address";
+    fi
   - CC="$XCC" ./configure $CONF
   - make -j4
   - make check || (cat tests/test-suite.log; false)
