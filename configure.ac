@@ -339,6 +339,21 @@ if test "x$ac_cv_prog_cc_c11" != "xno"; then
 fi
 AC_SUBST(HAVE_C11)
 
+dnl c++ needs less warnings
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+  [[#ifndef __cplusplus
+    #error "broken C++"
+    #endif]])],,
+  [CXX=;])
+if test "x$CXX" != "x" ; then
+  ax_cv_check_cflags__Wnested_externs=no
+  ax_cv_check_cflags__Wmissing_prototypes=no
+  ax_cv_check_cflags__Wstrict_prototypes=no
+  ax_cv_check_cflags__Wimplicit_function_declaration=no
+  ax_cv_check_cflags__Wdeclaration_after_statement=no
+  ax_cv_check_cflags__Wjump_misses_init=no
+fi
+
 dnl we still have some empty src files
 ax_cv_check_ldflags___Wl___fatal_warnings=no
 ax_cv_check_ldflags___Wl__fatal_warnings=no
