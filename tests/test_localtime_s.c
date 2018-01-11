@@ -10,7 +10,7 @@
 #include "safe_lib.h"
 
 /* conflicting API */
-#ifndef MINGW_HAS_SECURE_API
+#ifndef HAVE_MINGW64
 
 int test_localtime_s (void)
 {
