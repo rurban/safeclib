@@ -41,8 +41,10 @@ bool isExclusion (wint_t uv)
 	|| (64320 <= uv && uv <= 64321)
 	|| (64323 <= uv && uv <= 64324)
 	|| (64326 <= uv && uv <= 64334)
+  #if SIZEOF_WCHAR_T > 2
 	|| (119134 <= uv && uv <= 119140)
 	|| (119227 <= uv && uv <= 119232)
+  #endif
 	? 1 : 0;
 }
 
@@ -87,7 +89,9 @@ bool isSingleton (wint_t uv)
 	|| (64037 <= uv && uv <= 64038)
 	|| (64042 <= uv && uv <= 64109)
 	|| (64112 <= uv && uv <= 64217)
+  #if SIZEOF_WCHAR_T > 2
 	|| (194560 <= uv && uv <= 195101)
+  #endif
 	? 1 : 0;
 }
 
@@ -138,6 +142,7 @@ bool isComp2nd (wint_t uv)
 	|| (4449 <= uv && uv <= 4469)
 	|| (4520 <= uv && uv <= 4546)
 	|| uv == 6965
+  #if SIZEOF_WCHAR_T > 2
 	|| (12441 <= uv && uv <= 12442)
 	|| uv == 69818
 	|| uv == 69927
@@ -147,6 +152,7 @@ bool isComp2nd (wint_t uv)
 	|| uv == 70842
 	|| uv == 70845
 	|| uv == 71087
+  #endif
 	? 1 : 0;
 }
 

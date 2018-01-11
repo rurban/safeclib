@@ -115,6 +115,7 @@ mbstowcs_s(size_t *restrict retval,
            const char *restrict src, rsize_t len)
 {
     wchar_t *orig_dest;
+    errno_t rc;
 #ifdef HAVE_CYGWIN64
     mbstate_t st;
 #endif
@@ -169,9 +170,8 @@ mbstowcs_s(size_t *restrict retval,
             dest[*retval] = L'\0';
 #endif
         }
-        return EOK;
+        rc = EOK;
     } else {
-        errno_t rc; /* either EILSEQ or ESNOSPC */
         if (dest) {
             size_t tmp = 0;
             errno = 0;
@@ -186,12 +186,12 @@ mbstowcs_s(size_t *restrict retval,
                               : "mbstowcs_s: illegal sequence",
                          rc);
         }
-        else
+        else {
             rc = ((size_t)*retval == 0) ? EOK : errno;
-        return RCNEGATE(rc);
+        }
     }
 
-    return RCNEGATE(ESNOSPC);
+    return RCNEGATE(rc);
 }
 EXPORT_SYMBOL(mbstowcs_s)
 

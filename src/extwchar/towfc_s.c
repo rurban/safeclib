@@ -260,10 +260,8 @@ iswfc(wint_t wc)
         return 3;
     return 2;
 
-    if (0) {
-      single:
-        return iswupper(wc) ? 1 : 0;
-    }
+  single:
+    return iswupper(wc) ? 1 : 0;
 }
 
 /* The 194 single fc chars where fc is different to lc.
@@ -347,23 +345,8 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
     */
 
   single:
-#if SIZEOF_WCHAR_T > 2
     dest[0] = src < 128 ? (wint_t)tolower(src) : _towcase(src, 1);
     return (wint_t)dest[0] == src ? -(ESNOTFND) : 1;
-#else
-    {
-        wint_t cp = src < 128 ? (wint_t)tolower(src) : _towcase(src, 1);
-        if (unlikely(cp > 0xffff)) {
-            dest[0] = 0xd800 + ((cp >> 10) & 0x3ff);
-            dest[1] = 0xdc00 + (cp & 0x3ff);
-            dest[2] = 0;
-            return cp == src ? -(ESNOTFND) : 2;
-        } else {
-            dest[0] = cp;
-            return cp == src ? -(ESNOTFND) : 1;
-        }
-    }
-#endif
 }
 
 /**

@@ -117,6 +117,7 @@ wctomb_s(int *restrict retval,
          wchar_t wc)
 {
     int len;
+    errno_t rc;
 #if defined(__CYGWIN__) && defined(__x86_64)
     mbstate_t st;
 #endif
@@ -147,10 +148,10 @@ wctomb_s(int *restrict retval,
         if (dest)
             memset(&dest[len], 0, dmax-len);
 #endif
-        return EOK;
+        rc = EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = (len > 0) ? ESNOSPC : errno;
+        rc = (len > 0) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
@@ -160,10 +161,9 @@ wctomb_s(int *restrict retval,
                                        : "wctomb_s: illegal sequence",
                          rc);
         }
-        return RCNEGATE(rc);
     }
 
-    return EOK;
+    return RCNEGATE(rc);
 }
 EXPORT_SYMBOL(wctomb_s)
 
