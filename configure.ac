@@ -340,19 +340,23 @@ fi
 AC_SUBST(HAVE_C11)
 
 dnl c++ needs less warnings
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
-  [[#ifndef __cplusplus
-    #error "broken C++"
-    #endif]])],,
-  [CXX=;])
-if test "x$CXX" != "x" ; then
-  ax_cv_check_cflags__Wnested_externs=no
-  ax_cv_check_cflags__Wmissing_prototypes=no
-  ax_cv_check_cflags__Wstrict_prototypes=no
-  ax_cv_check_cflags__Wimplicit_function_declaration=no
-  ax_cv_check_cflags__Wdeclaration_after_statement=no
-  ax_cv_check_cflags__Wjump_misses_init=no
-fi
+dnl AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+dnl   [#ifndef __cplusplus
+dnl    #error "no C++"
+dnl    #endif]])],
+dnl   [ax_compiler_cxx=yes;],
+dnl   [ax_compiler_cxx=no;])
+dnl if test "$ax_compiler_cxx" = "yes" ; then
+dnl   AC_DEFINE([HAVE_CXX], [1],
+dnl         [Defined to 1 when the compiler is C++])
+dnl   ax_cv_check_cflags__Wnested_externs=no
+dnl   ax_cv_check_cflags__Wmissing_prototypes=no
+dnl   ax_cv_check_cflags__Wstrict_prototypes=no
+dnl   ax_cv_check_cflags__Wimplicit_function_declaration=no
+dnl   ax_cv_check_cflags__Wdeclaration_after_statement=no
+dnl   ax_cv_check_cflags__Wold_style_definition=no
+dnl   ax_cv_check_cflags__Wjump_misses_init=no
+dnl fi
 
 dnl we still have some empty src files
 ax_cv_check_ldflags___Wl___fatal_warnings=no
