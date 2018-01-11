@@ -133,9 +133,9 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
 #endif
 
     if (result) {
-        int len = strlen(result);
+        size_t len = strlen(result);
 
-        if (unlikely((rsize_t)len > maxsize)) {
+        if (unlikely(len > maxsize)) {
             *result = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds size",
                                                NULL, ESNOSPC);
