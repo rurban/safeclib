@@ -182,7 +182,7 @@ int main()
 #if SIZEOF_WCHAR_T == 2
     {
         wchar_t* sp = &str1[0];
-        wint_t cp = 0x1d1c0; /* need surrogate pair for this */
+        wint_t cp = 0x1d1c0UL; /* need surrogate pair for this */
         wcscpy(str1, L"\x0\x0\x0"); /* 0xd874 0xddc0 */
         _ENC_W16(sp,len,cp);
         rc = wcsnorm_s(str, LEN, str1, WCSNORM_NFD, &ind);
