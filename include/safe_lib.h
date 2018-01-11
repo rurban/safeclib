@@ -58,6 +58,12 @@ extern "C" {
 # define EXTERN extern
 #endif
 
+#if defined __MINGW64_VERSION_MAJOR
+#  define HAVE_MINGW64  /* mingw-w64 (either 32 or 64bit) */
+#elif defined __MINGW32__
+#  define HAVE_MINGW32  /* old mingw */
+#endif
+
 /* duplicate decls */
 #ifndef __SAFE_STR_LIB_H__
 
@@ -123,7 +129,11 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm);
 EXTERN errno_t
 ctime_s(char *dest, rsize_t dmax, const time_t *timer);
 
-/* this return errno_t on windows sec_api */
+/* Beware: This return errno_t on the MINGW64 windows sec_api,
+   and switched its args:
+
+   errno_t gmtime_s(struct tm *_Tm, const time_t *_Time);
+   errno_t localtime_s(struct tm *_Tm,const time_t *_Time); */
 #ifndef HAVE_MINGW64
 EXTERN struct tm *
 gmtime_s(const time_t *restrict timer, struct tm *restrict dest);

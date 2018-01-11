@@ -19,14 +19,14 @@
 # LICENSE
 #
 #   Copyright (c) 2014, 2015 Philip Withnall <philip@tecnocode.co.uk>
-#   Copyright (c) 2017 Reini Urban <rurban@cpan.org>
+#   Copyright (c) 2017, 2018 Reini Urban <rurban@cpan.org>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 15
+#serial 16
 
 AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AC_REQUIRE([AC_PROG_SED])
@@ -39,6 +39,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
               [m4_normalize(ifelse([$1],,[WARN_CFLAGS],[$1]))])
 
     AC_LANG_PUSH([C])
+
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+      [#ifndef __cplusplus
+       #error "no C++"
+       #endif]])],
+      [ax_compiler_cxx=yes;],
+      [ax_compiler_cxx=no;])
 
     # Always pass -Werror=unknown-warning-option to get Clang to fail on bad
     # flags, otherwise they are always appended to the warn_cflags variable, and
@@ -70,18 +77,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
             -Wall dnl
             -Wextra dnl
             -Wundef dnl
-            -Wnested-externs dnl
             -Wwrite-strings dnl
             -Wpointer-arith dnl
             -Wmissing-declarations dnl
-            -Wmissing-prototypes dnl
-            -Wstrict-prototypes dnl
             -Wredundant-decls dnl
             -Wno-unused-parameter dnl
             -Wno-missing-field-initializers dnl
-            -Wdeclaration-after-statement dnl
             -Wformat=2 dnl
-            -Wold-style-definition dnl
             -Wcast-align dnl
             -Wformat-nonliteral dnl
             -Wformat-security dnl
@@ -97,7 +99,6 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
             -Wmissing-include-dirs dnl
             -Wunused-but-set-variable dnl
             -Warray-bounds dnl
-            -Wimplicit-function-declaration dnl
             -Wreturn-type dnl
             -Wswitch-enum dnl
             -Wswitch-default dnl
@@ -106,13 +107,24 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
             -Wlogical-op dnl
             -Wrestrict dnl
             -Wnull-dereference dnl
-            -Wjump-misses-init dnl
             -Wdouble-promotion dnl
             $4 dnl
             $5 dnl
             $6 dnl
             $7 dnl
         ],ax_warn_cflags_variable,[$ax_compiler_flags_test])
+        if test "$ax_compiler_cxx" = "no" ; then
+            # C-only flags. Warn in C++
+            AX_APPEND_COMPILE_FLAGS([ dnl
+            -Wnested-externs dnl
+            -Wmissing-prototypes dnl
+            -Wstrict-prototypes dnl
+            -Wdeclaration-after-statement dnl
+            -Wimplicit-function-declaration dnl
+            -Wold-style-definition dnl
+            -Wjump-misses-init dnl
+            ],ax_warn_cflags_variable,[$ax_compiler_flags_test])
+        fi
     ])
     AS_IF([test "$ax_enable_compile_warnings" = "error"],[
         # "error" flags; -Werror has to be appended unconditionally because

@@ -1,6 +1,13 @@
 
                 ChangeLog file for safeclib
 
+Changes in vxx012018 3.1.0
+        - Removed ssize_t GNU extension (jeremyhannon)
+        - Removed illegal warnings with C++
+        - Fixed tests failing with C++
+        - Fixed cygwin smokes on Appveyor
+        - Workaround broken gcc-4.8 strchr macro
+
 Changes in v09102017 3.1.0
         Summary: With a non-C11 compiler not on windows the API didn't change, only docs.
         - Fixed man pages: show public headers, hide private headers.

@@ -5,40 +5,55 @@ sudo: false
 os:
   - linux
   - osx
-env:
-  - XCC="gcc" CONF="--enable-debug --enable-norm-compat" VG=1
-  - XCC="cc" CONF="--enable-unsafe"
-  - XCC="clang" CONF="--disable-nullslack"
-  - XCC="cc" CONF="--disable-extensions"
-  - XCC="clang -fsanitize=address" CONF="--enable-debug"
-# clang++ does not allow c anymore. gcc is duplicate to cc
 matrix:
-  exclude:
-  - env: XCC="gcc"
-    env: TRAVIS_OS_NAME=osx
-  - env: XCC="cc"
-    env: TRAVIS_OS_NAME=osx
+  fast_finish: true
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          packages:
+            - valgrind
+      env: CONF="--enable-debug --enable-norm-compat" VG=1
+    - compiler: gcc
+      env: CONF="--enable-unsafe"
+    - compiler: g++
+      env: CONF="--enable-unsafe"
+    - compiler: gcc
+      os: osx
+      env: CONF="--enable-unsafe"
+    - compiler: clang
+      env: CONF="--disable-nullslack"
+    - compiler: gcc
+      env: CONF="--disable-extensions"
+    - compiler: clang
+      os: osx
+      env: CONF="--disable-extensions"
+    - compiler: clang
+      addons:
+        apt:
+          packages:
+            - clang-3.8
+      env: CC="clang-3.8 -fsanitize=address" CONF="--enable-debug"
+  # clang++ does not allow c anymore. gcc is duplicate to cc
+  #exclude:
+  #  - env: XCC="gcc" TRAVIS_OS_NAME=osx
+  #  - env: XCC="cc"  TRAVIS_OS_NAME=osx
 
 branches:
   except:
-  - /^v[0-9]+/
-  - appveyor
-
-addons:
-  apt:
-    packages:
-    - valgrind
+    - /^v[0-9]+/
+    - appveyor
 
 install:
   - build-tools/autogen.sh
 
 script:
   # skip duplicate compilers and overly strict clang++
-  - if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
-  - CC="$XCC" ./configure $CONF
+  #- if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
+  #- if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "clang-3.8 -fsanitize=address" ]; then
+  #    CC="clang -fsanitize=address";
+  #  fi
+  - ./configure $CONF
   - make -j4
   - make check || (cat tests/test-suite.log; false)
   - if [ "$VG" = "1" ]; then make check-valgrind && make distcheck ; fi
-
-matrix:
-  fast_finish: true

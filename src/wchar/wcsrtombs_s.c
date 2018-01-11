@@ -155,30 +155,31 @@ wcsrtombs_s (size_t *restrict retval,
     }
 
     if (unlikely(src == NULL)) {
-        if (dest)
-            handle_error(dest, dmax, "wcsrtombs_s: src is null",
-                         ESNULLP);
+        if (dest) {
+            handle_error(dest, dmax, "wcsrtombs_s: src is null", ESNULLP);
+        }
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(*src == NULL)) {
-        if (dest)
-            handle_error(dest, dmax, "wcsrtombs_s: *src is null",
-                         ESNULLP);
+        if (dest) {
+            handle_error(dest, dmax, "wcsrtombs_s: *src is null", ESNULLP);
+        }
         return RCNEGATE(ESNULLP);
     }
 
     l = *retval = wcsrtombs(dest, src, len, ps);
 
-    if (likely((ssize_t)l > 0 && l < dmax)) {
+    if (likely(l > 0 && l < dmax)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-        if (dest)
+        if (dest) {
             memset(&dest[l], 0, dmax-l);
+        }
 #endif
         rc = EOK;
     } else {
         /* errno is usually EILSEQ */
-        rc = ((ssize_t)l > 0) ? ESNOSPC : errno;
+        rc = (l > 0 && l <= RSIZE_MAX_STR) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)

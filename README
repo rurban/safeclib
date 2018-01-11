@@ -210,9 +210,9 @@ kernel.
 Tested Platforms
 ----------------
 
-.The library has been tested on the following systems
-- Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc+clang)
-- Linux Debian 10 amd64/i386 glibc 2.24
+.The library has been tested on the following systems:
+- Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc + clang)
+- Linux Debian 10 amd64/i386 glibc 2.24 + 2.25
 - Linux Void amd64 musl-1.1.16
 - x86_64-w64-mingw32, i686-w64-mingw32 cross-compiled and tested under wine
 - i386-mingw32 cross-compiled and tested under wine

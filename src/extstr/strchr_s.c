@@ -105,7 +105,18 @@ strchr_s (const char *restrict dest, rsize_t dmax,
     }
 
     /* compares wordwise */
+    /* XXX gcc-4.4 fails with logical ‘&&’ with non-zero constant
+       will always evaluate as true.
+       Expands to *result = (char*)(__extension__ (__builtin_constant_p (ch)
+        && !__builtin_constant_p ((const char *)dest) && (ch) == '\0'
+          ? (char *) __rawmemchr ((const char *)dest, ch)
+          : __builtin_strchr ((const char *)dest, ch)));
+    */
+#if defined( __GNUC__) && (((__GNUC__ * 100) + __GNUC_MINOR__) == 404)
+    *result = (char*) __builtin_strchr((const char *)dest, ch);
+#else
     *result = (char*)strchr((const char *)dest, ch);
+#endif
 
     if (!*result)
         return (ESNOTFND);

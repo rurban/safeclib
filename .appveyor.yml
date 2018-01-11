@@ -1,12 +1,19 @@
 version: 3.0.{build}
 max_jobs: 4
-platform:
-  - x64
-  - x86
 environment:
   matrix:
     - MINGW: 1
+      MSYS2_ARCH: x86_64
+      MSYSTEM: MINGW64
+      PLATFORM: x64
+    - MINGW: 1
+      MSYS2_ARCH: i686
+      MSYSTEM: MINGW32
+      PLATFORM: x86
     - CYGWIN: 1
+      PLATFORM: x86
+    - CYGWIN: 1
+      PLATFORM: x64
 matrix:
   allow_failures:
     - MINGW: 1
@@ -41,13 +48,15 @@ init:
   - set P=
   - if "%PLATFORM%"=="x64" set P=64
   - if "%CYGWIN%"=="1" set CYGR=c:\cygwin%P%
-  - if "%CYGWIN%"=="1" set PATH=%CYGR%\bin;c:\Windows\system32;c:\Windows;c:\Windows\system32\Wbem
-  - if "%MINGW%"=="1" set PATH=C:\MinGW%P%\msys\1.0\bin;%PATH%;
+  # mingw32 fails needing automake 3.69
 
 build_script:
-  - sh -c "build-tools/autogen.sh"
-  - sh -c "./configure -enable-unsafe --enable-norm-compat --enable-debug"
-  - sh -c "make"
+  #- if "%MINGW%"=="1" set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PATH%;
+  - if "%CYGWIN%"=="1" set PATH=%CYGR%\bin;c:\Windows\system32;c:\Windows;c:\Windows\system32\Wbem
+  - if "%MINGW%"=="1" call build-tools\msys2.bat
+  - bash -c "build-tools/autogen.sh"
+  - bash -c "./configure -enable-unsafe --enable-norm-compat"
+  - bash -c "make"
 
 test_script:
-  - sh -c "make check || (cat tests/test-suite.log; false)"
+  - bash -c "make check || (cat tests/test-suite.log; false)"

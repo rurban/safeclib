@@ -38,7 +38,7 @@ int main()
     wchar_t str[LEN];
     wchar_t str1[LEN];
     rsize_t ind;
-    ssize_t len;
+    size_t len;
     int errs = 0;
 #ifdef PERL_TEST
     FILE *pl;
