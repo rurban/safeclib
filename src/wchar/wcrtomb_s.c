@@ -117,6 +117,7 @@ wcrtomb_s(size_t *restrict retval,
           wchar_t wc, mbstate_t *restrict ps)
 {
     size_t len;
+    errno_t rc;
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wcrtomb_s: retval is null",
@@ -145,7 +146,7 @@ wcrtomb_s(size_t *restrict retval,
 
     len = *retval = wcrtomb(dest, wc, ps);
 
-    if (likely(len > 0 && (rsize_t)len < dmax)) {
+    if (likely(len < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
             memset(&dest[len], 0, dmax - len);
@@ -153,10 +154,10 @@ wcrtomb_s(size_t *restrict retval,
             dest[len] = '\0';
 #endif
         }
-        return EOK;
+        rc = EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = (len > 0 && len <= RSIZE_MAX_STR) ? ESNOSPC : errno;
+        rc = (len <= RSIZE_MAX_STR) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
@@ -166,10 +167,9 @@ wcrtomb_s(size_t *restrict retval,
                                        : "wcrtomb_s: illegal sequence",
                          rc);
         }
-        return RCNEGATE(rc);
     }
 
-    return EOK;
+    return RCNEGATE(rc);
 }
 EXPORT_SYMBOL(wcrtomb_s)
 

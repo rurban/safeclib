@@ -123,6 +123,8 @@ wcsrtombs_s (size_t *restrict retval,
              mbstate_t *restrict ps)
 {
     size_t l;
+    errno_t rc;
+
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("wcsrtombs_s: retval is null",
                    NULL, ESNULLP);
@@ -174,10 +176,10 @@ wcsrtombs_s (size_t *restrict retval,
             memset(&dest[l], 0, dmax-l);
         }
 #endif
-        return EOK;
+        rc = EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = (l > 0 && l <= RSIZE_MAX_STR) ? ESNOSPC : errno;
+        rc = (l <= RSIZE_MAX_STR) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
@@ -187,10 +189,9 @@ wcsrtombs_s (size_t *restrict retval,
                                        : "wcsrtombs_s: illegal sequence",
                          rc);
         }
-        return RCNEGATE(rc);
     }
 
-    return EOK;
+    return RCNEGATE(rc);
 }
 EXPORT_SYMBOL(wcsrtombs_s)
 

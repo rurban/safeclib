@@ -117,6 +117,7 @@ mbsrtowcs_s (size_t *restrict retval,
 {
     wchar_t *orig_dest;
     mbstate_t orig_ps;
+    errno_t rc;
 
     if (unlikely(retval == NULL)) {
         invoke_safe_str_constraint_handler("mbsrtowcs_s: retval is null",
@@ -180,9 +181,8 @@ mbsrtowcs_s (size_t *restrict retval,
             dest[*retval] = L'\0';
 #endif
         }
-        return EOK;
+        rc = EOK;
     } else {
-        errno_t rc; /* either EILSEQ or ESNOSPC */
         if (dest) {
             size_t tmp = 0;
             errno = 0;
@@ -201,10 +201,9 @@ mbsrtowcs_s (size_t *restrict retval,
         else {
             rc = ((size_t)*retval == 0) ? EOK : errno;
         }
-        return RCNEGATE(rc);
     }
 
-    return RCNEGATE(ESNOSPC);
+    return RCNEGATE(rc);
 }
 EXPORT_SYMBOL(mbsrtowcs_s)
 

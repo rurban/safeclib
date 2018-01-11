@@ -144,9 +144,13 @@ static inline int a_ctz_64(uint64_t x)
             y = x >> 32;
             return 32 + debruijn32[(y&-y)*0x076be629 >> 27];
         }
-        return debruijn32[(y&-y)*0x076be629 >> 27];
+        else {
+            return debruijn32[(y&-y)*0x076be629 >> 27];
+        }
     }
-    return debruijn64[(x&-x)*0x022fdd63cc95386dull >> 58];
+    else {
+        return debruijn64[(x&-x)*0x022fdd63cc95386dull >> 58];
+    }
 }
 static inline int a_ctz_l(unsigned long x)
 {

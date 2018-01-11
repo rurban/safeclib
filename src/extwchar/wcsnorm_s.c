@@ -297,7 +297,7 @@ _decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     wint_t lindex =  sindex / Hangul_NCount;
     wint_t vindex = (sindex % Hangul_NCount) / Hangul_TCount;
     wint_t tindex =  sindex % Hangul_TCount;
-    
+
     if (unlikely(dmax < 4)) {
         return -(ESNOSPC);
     }
@@ -370,31 +370,37 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
         invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
                    "cp is 0",
                    NULL, ESZEROL);
-	return 0;
-    }
-    if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
-	return -(ESLEMAX);
+        return 0;
     }
 
+#if SIZEOF_WCHAR_T > 2
+    if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
+        return -(ESLEMAX);
+    }
+#endif
+
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
-	wint_t lindex = cp  - Hangul_LBase;
-	wint_t vindex = cp2 - Hangul_VBase;
-	return(Hangul_SBase + (lindex * Hangul_VCount + vindex) *
-	       Hangul_TCount);
+        wint_t lindex = cp  - Hangul_LBase;
+        wint_t vindex = cp2 - Hangul_VBase;
+        return(Hangul_SBase + (lindex * Hangul_VCount + vindex) *
+               Hangul_TCount);
     }
     if (Hangul_IsLV(cp) && Hangul_IsT(cp2)) {
-	wint_t tindex = cp2 - Hangul_TBase;
-	return (cp + tindex);
+        wint_t tindex = cp2 - Hangul_TBase;
+        return (cp + tindex);
     }
     plane = UNWIF_compos[cp >> 16];
-    if (!plane)  /* only 3 of 16 are defined */
-	return 0;
-    row = plane[(cp >> 8) & 0xff];
-    if (!row)  /* the zero plane is pretty filled, the others sparse */
-	return 0;
-    cell = row[cp & 0xff];
-    if (!cell)
+    if (!plane) {  /* only 3 of 16 are defined */
         return 0;
+    }
+    row = plane[(cp >> 8) & 0xff];
+    if (!row) { /* the zero plane is pretty filled, the others sparse */
+        return 0;
+    }
+    cell = row[cp & 0xff];
+    if (!cell) {
+        return 0;
+    }
     /* no indirection here, but search in the composition lists */
     /* only 16 lists 011099-01d1bc need uint32, the rest can be short, uint16 */
     /* TODO: above which length is bsearch faster?
@@ -402,20 +408,24 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
     if (likely(cp < UNWIF_COMPLIST_FIRST_LONG)) {
         UNWIF_complist_s *i;
         for (i = (UNWIF_complist_s *)cell; i->nextchar; i++) {
-            if ((uint16_t)cp2 == i->nextchar)
+            if ((uint16_t)cp2 == i->nextchar) {
                 return (wint_t)(i->composite);
-            else if ((uint16_t)cp2 < i->nextchar) /* nextchar is sorted */
+            }
+            else if ((uint16_t)cp2 < i->nextchar) { /* nextchar is sorted */
                 break;
+            }
         }
     } else {
         UNWIF_complist *i;
         GCC_DIAG_IGNORE(-Wcast-align)
         for (i = (UNWIF_complist *)cell; i->nextchar; i++) {
             GCC_DIAG_RESTORE
-            if (cp2 == i->nextchar)
+            if (cp2 == i->nextchar) {
                 return i->composite;
-            else if (cp2 < i->nextchar) /* nextchar is sorted */
+            }
+            else if (cp2 < i->nextchar) { /* nextchar is sorted */
                 break;
+            }
         }
     }
     return 0;
@@ -439,7 +449,7 @@ static uint8_t _combin_class(wint_t cp)
  *    Converts the wide string to the canonical NFD normalization,
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
  *    stops at the first null or after dmax characters.
- * 
+ *
  * @details
  *    Composed characters are checked for the left-hand-size of the
  *    Decomposition_Mapping Unicode property, which means the codepoint will
@@ -558,10 +568,10 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
     orig_dest = dest;
-    
+
     if (dest < src) {
         overlap_bumper = src;
-    
+
         while (dmax > 0) {
             cp = _dec_w16(src);
             if (unlikely(dest == overlap_bumper)) {
@@ -587,9 +597,10 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                 dest += c;
                 dmax -= c;
 #if SIZEOF_WCHAR_T == 2
-                if (cp > 0xffff)
+                if (cp > 0xffff) {
                     src++;
-#endif                
+                }
+#endif
             } else if (c == 0) {
 #if SIZEOF_WCHAR_T == 2
                 if (cp > 0xffff) {
@@ -636,7 +647,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
 #if SIZEOF_WCHAR_T == 2
                 if (cp > 0xffff)
                     src++;
-#endif                
+#endif
             } else if (c == 0) {
 #if SIZEOF_WCHAR_T == 2
                 if (cp > 0xffff) {
@@ -719,8 +730,9 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
         wint_t cp = _dec_w16(p);
         p++;
 #if SIZEOF_WCHAR_T == 2
-        if (cp > 0xffff)
+        if (cp > 0xffff) {
             p++;
+        }
 #endif
 
 	cur_cc = _combin_class(cp);
@@ -839,8 +851,9 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
         wint_t cp = _dec_w16(p);
         p++;
 #if SIZEOF_WCHAR_T == 2
-        if (cp > 0xffff)
+        if (cp > 0xffff) {
             p++;
+        }
 #endif
 
 	cur_cc = _combin_class(cp);
@@ -953,7 +966,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  *    Converts the wide string to the canonical NFC or NFD normalization,
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
  *    stops at the first null or after dmax characters.
- * 
+ *
  * @details
  *    Decomposed characters are checked for the left-hand-size and then
  *    right-hand-side of the Decomposition_Mapping Unicode property, which

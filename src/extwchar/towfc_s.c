@@ -260,10 +260,8 @@ iswfc(wint_t wc)
         return 3;
     return 2;
 
-    if (0) {
-      single:
-        return iswupper(wc) ? 1 : 0;
-    }
+  single:
+    return iswupper(wc) ? 1 : 0;
 }
 
 /* The 194 single fc chars where fc is different to lc.
