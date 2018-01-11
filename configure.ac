@@ -408,7 +408,7 @@ int mysprintf(char *dest, const char *fmt, ...) {
 fi
 AX_COMPILER_FLAGS
 case $host_os in
-     mingw*|cygwin*) WARN_CFLAGS="-Wall -Wextra" ;;
+     mingw*|cygwin*) WARN_CFLAGS="-Wall -Wextra -Wno-attributes" ;;
 esac
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
