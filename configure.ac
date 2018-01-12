@@ -408,7 +408,13 @@ int mysprintf(char *dest, const char *fmt, ...) {
 fi
 AX_COMPILER_FLAGS
 case $host_os in
-     mingw*|cygwin*) WARN_CFLAGS="-Wall -Wextra -Wno-attributes" ;;
+     mingw*|cygwin*)
+        WARN_CFLAGS="-Wall -Wextra"
+        dnl gcc 3.4 cannot do -Wno-attributes
+        AX_CHECK_COMPILE_FLAG([-Wno-attributes],[
+          WARN_CFLAGS="$WARN_CFLAGS -Wno-attributes"
+        ],[])
+        ;;
 esac
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
