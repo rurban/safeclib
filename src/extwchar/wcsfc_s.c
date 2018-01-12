@@ -36,7 +36,9 @@
 #include <wctype.h>
 #include <locale.h>
 
-#include <unistd.h> /* DEBUG */
+#ifdef HAVE_UNISTD_H
+  #include <unistd.h> /* DEBUG */
+#endif
 #include <assert.h>
 #endif
 
@@ -170,9 +172,9 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         wchar_t tmp[4];
         wint_t cp = _dec_w16((wchar_t *)src);
         int c = iswfc(cp);
-#if SIZEOF_WCHAR_T == 2
-        if (cp > 0xffff)
-            src++;
+#if SIZEOF_WCHAR_T == 2		
+        if (cp > 0xffff)		
+            src++;	
 #endif
         if (unlikely(c > 1)) {
             /* can this be further decomposed? */

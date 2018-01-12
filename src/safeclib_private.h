@@ -221,7 +221,7 @@ void abort(void) __attribute__((noreturn));
 /* windows, cygwin + 32bit aix, solaris */
 #if SIZEOF_WCHAR_T > 2
 #define _dec_w16(src) *(src)
-#define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
+#define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--;
 
 #else
 /* convert surrogate pair to unicode codepoint */
@@ -230,11 +230,11 @@ EXTERN wint_t _dec_w16(wchar_t *src);
 /* convert unicode codepoint to surrogate pair, advancing dest */
 #define _ENC_W16(dest,dmax,cp)                  \
     if (unlikely((cp) < 0x10000)) {             \
-        *(dest)++ = (cp); (dmax)--;             \
-    } else {                                    \
-        *dest++ = ((cp) >> 10) + 0xd7c0;        \
-        *dest++ = ((cp) & 0x3ff) + 0xdc00;      \
-        (dmax)--; (dmax)--;                     \
+        *(dest)++ = (cp); (dmax)--;             \		
+    } else {                                    \		
+        *dest++ = ((cp) >> 10) + 0xd7c0;        \		
+        *dest++ = ((cp) & 0x3ff) + 0xdc00;      \		
+        (dmax)--; (dmax)--;                     \		
     }
 
 #endif

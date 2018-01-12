@@ -122,6 +122,7 @@ wcstombs_s (size_t *restrict retval,
              const wchar_t *restrict src, rsize_t len)
 {
     size_t l;
+    errno_t rc;
 #if defined(__CYGWIN__) && defined(__x86_64)
     mbstate_t st;
 #endif
@@ -168,10 +169,10 @@ wcstombs_s (size_t *restrict retval,
             dest[l] = '\0';
 #endif
         }
-        return EOK;
+        rc = EOK;
     } else {
         /* errno is usually EILSEQ */
-        errno_t rc = (l > 0 && l <= RSIZE_MAX_STR) ? ESNOSPC : errno;
+        rc = (l > 0 && l <= RSIZE_MAX_STR) ? ESNOSPC : errno;
         if (dest) {
             /* the entire src must have been copied, if not reset dest
              * to null the string with SAFECLIB_STR_NULL_SLACK. */
@@ -180,10 +181,9 @@ wcstombs_s (size_t *restrict retval,
                                        : "wcstombs_s: illegal sequence",
                          rc);
         }
-        return RCNEGATE(rc);
     }
 
-    return EOK;
+    return RCNEGATE(rc);
 }
 EXPORT_SYMBOL(wcstombs_s)
 
