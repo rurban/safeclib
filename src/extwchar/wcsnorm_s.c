@@ -370,32 +370,32 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
         invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
                    "cp is 0",
                    NULL, ESZEROL);
-	      return 0;
+        return 0;
     }
 
 #if SIZEOF_WCHAR_T > 2
     if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
-	      return -(ESLEMAX);
+        return -(ESLEMAX);
     }
 #endif
 
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
-	      wint_t lindex = cp  - Hangul_LBase;
-	      wint_t vindex = cp2 - Hangul_VBase;
-	      return(Hangul_SBase + (lindex * Hangul_VCount + vindex) *
-	             Hangul_TCount);
+        wint_t lindex = cp  - Hangul_LBase;
+        wint_t vindex = cp2 - Hangul_VBase;
+        return(Hangul_SBase + (lindex * Hangul_VCount + vindex) *
+               Hangul_TCount);
     }
     if (Hangul_IsLV(cp) && Hangul_IsT(cp2)) {
-	      wint_t tindex = cp2 - Hangul_TBase;
-	      return (cp + tindex);
+        wint_t tindex = cp2 - Hangul_TBase;
+        return (cp + tindex);
     }
     plane = UNWIF_compos[cp >> 16];
     if (!plane) {  /* only 3 of 16 are defined */
-	      return 0;
+        return 0;
     }
     row = plane[(cp >> 8) & 0xff];
     if (!row) { /* the zero plane is pretty filled, the others sparse */
-	      return 0;
+        return 0;
     }
     cell = row[cp & 0xff];
     if (!cell) {
@@ -405,9 +405,7 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
     /* only 16 lists 011099-01d1bc need uint32, the rest can be short, uint16 */
     /* TODO: above which length is bsearch faster?
        But then we'd need to store the lengths also */
-#if SIZEOF_WCHAR_T > 2
     if (likely(cp < UNWIF_COMPLIST_FIRST_LONG)) {
-#endif
         UNWIF_complist_s *i;
         for (i = (UNWIF_complist_s *)cell; i->nextchar; i++) {
             if ((uint16_t)cp2 == i->nextchar) {
@@ -417,7 +415,6 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
                 break;
             }
         }
-#if SIZEOF_WCHAR_T > 2
     } else {
         UNWIF_complist *i;
         GCC_DIAG_IGNORE(-Wcast-align)
@@ -431,7 +428,6 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
             }
         }
     }
-#endif
     return 0;
 }
 
@@ -599,8 +595,19 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
             c = _decomp_s(dest, dmax, cp, iscompat);
             if (c > 0) {
                 dest += c;
-                dmax -= c;             
+                dmax -= c;
+#if SIZEOF_WCHAR_T == 2-                
+                if (cp > 0xffff) {
+                    src++;
+                }
+#endif                		
             } else if (c == 0) {
+#if SIZEOF_WCHAR_T == 2		
+                if (cp > 0xffff) {		
+                    *dest++ = *src++;		
+                    dmax--;		
+                }		
+#endif
                 *dest++ = *src;
                 dmax--;
             } else {
@@ -637,7 +644,17 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
             if (c > 0) {
                 dest += c;
                 dmax -= c;
+#if SIZEOF_WCHAR_T == 2		
+                if (cp > 0xffff)		
+                    src++;		
+#endif                		
             } else if (c == 0) {
+#if SIZEOF_WCHAR_T == 2		
+                if (cp > 0xffff) {		
+                    *dest++ = *src++;		
+                    dmax--;		
+                }		
+#endif
                 *dest++ = *src;
                 dmax--;
             } else {
@@ -712,6 +729,11 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 	uint8_t cur_cc;
         wint_t cp = _dec_w16(p);
         p++;
+#if SIZEOF_WCHAR_T == 2		
+        if (cp > 0xffff) {
+            p++;
+        }		
+#endif
 
 	cur_cc = _combin_class(cp);
 	if (cur_cc != 0) {
@@ -828,6 +850,11 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 	uint8_t cur_cc;
         wint_t cp = _dec_w16(p);
         p++;
+#if SIZEOF_WCHAR_T == 2		
+        if (cp > 0xffff) {
+            p++;
+        }
+#endif
 
 	cur_cc = _combin_class(cp);
 

@@ -228,8 +228,14 @@ void abort(void) __attribute__((noreturn));
 EXTERN wint_t _dec_w16(wchar_t *src);
 
 /* convert unicode codepoint to surrogate pair, advancing dest */
-
-#define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--;
+#define _ENC_W16(dest,dmax,cp)                  \
+    if (unlikely((cp) < 0x10000)) {             \
+        *(dest)++ = (cp); (dmax)--;             \		
+    } else {                                    \		
+        *dest++ = ((cp) >> 10) + 0xd7c0;        \		
+        *dest++ = ((cp) & 0x3ff) + 0xdc00;      \		
+        (dmax)--; (dmax)--;                     \		
+    }
 
 #endif
 
