@@ -50,7 +50,7 @@ static int test_vfwscanf_s (void)
     int errs = 0;
     int p[2];
     FILE *f;
-   
+
 /*--------------------------------------------------*/
 
     pipe(p);
@@ -216,9 +216,9 @@ static int test_vfwscanf_s (void)
 #endif
 
 /*--------------------------------------------------*/
-    
+
     unlink(TMP);
-    
+
     return (errs);
 }
 

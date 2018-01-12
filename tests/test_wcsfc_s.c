@@ -175,7 +175,7 @@ int main()
       NFD FC                           Aᾷ  = \x{61}\x{3B1}\x{3B9}\x{342}
       NFD       \x{41}\x{3B1}\x{345}\x{342} = \x{41}\x{3B1}\x{342}\x{345}
       FC NFD                           Aᾷ  = \x{61}\x{3B1}\x{342}\x{3B9} */
-    
+
     rc = wcsfc_s(str, LEN, L"A" L"\x3b1" L"\x345" L"\x342", &ind);
     ERR(EOK);
     wcscpy(str1, L"a" L"\x3b1" L"\x3b9" L"\x342"); /* no reordering of 3b9 */

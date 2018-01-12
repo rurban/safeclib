@@ -49,7 +49,7 @@ int test_gets_s (void)
     sub = gets_s(dest, RSIZE_MAX_STR+1);
     SUBNULL();
     ERRNO(ESLEMAX);
-        
+
 /*--------------------------------------------------*/
 
     sub = gets_s(dest, LEN);
@@ -72,13 +72,13 @@ int test_gets_s (void)
     sub = gets_s(dest, LEN); /* drain the rest of xxx.. */
     SUBNN();
     ERRNO(0);
-    
+
     sub = gets_s(dest, 5); /* got exactly 5: "1234\n" => "1234\0" */
     SUBNN()
     else
     EXPSTR(sub, "1234");
     ERRNO(0);
-    
+
     sub = gets_s(dest, 5); /* edge-case len==dmax-1 */
     SUBNULL();
     ERRNO(ESNOSPC);

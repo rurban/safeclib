@@ -100,7 +100,7 @@ strnset_s (char *restrict dest, rsize_t dmax, int value, rsize_t n)
                    NULL, ESNOSPC);
         return (ESNOSPC);
     }
-        
+
 #ifdef SAFECLIB_STR_NULL_SLACK
     orig_dest = dest;
 #endif

@@ -36,9 +36,9 @@
 #endif
 
 /**
- * @brief 
- *    The \c vsprintf_s function composes a string with same test that 
- *    would be printed if format was used on \c printf. Instead of being 
+ * @brief
+ *    The \c vsprintf_s function composes a string with same test that
+ *    would be printed if format was used on \c printf. Instead of being
  *    printed, the content is stored in dest.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written by vsprintf_s in the

@@ -44,7 +44,7 @@ struct tm *gmtime_r(const time_t * __restrict, struct tm * __restrict);
 #endif
 */
 
-/** 
+/**
  * @brief
  *    The \c gmtime_s function converts the given time since epoch to a
  *    calendar time, expressed in Coordinated Universal Time (UTC) in the

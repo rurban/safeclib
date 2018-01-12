@@ -16,7 +16,7 @@
 static FILE* out;
 static wchar_t   wstr[LEN];
 static char      str[LEN];
- 
+
 int test_fwprintf_s (void)
 {
     errno_t rc;
@@ -32,7 +32,7 @@ int test_fwprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    wstr[0] = L'\0'; 
+    wstr[0] = L'\0';
     rc = fwprintf_s(out, L"%s%n\n", wstr, &ind);
     NEGERR(EINVAL)
 

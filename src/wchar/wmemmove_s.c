@@ -55,7 +55,7 @@
 /**
  * @brief
  *    The wmemmove_s function copies smax wchar_t's from the region
- *    pointed to by src into the region pointed to by dest. 
+ *    pointed to by src into the region pointed to by dest.
  * @details
  *    This copying takes place as if the smax wchar_ts from the region
  *    pointed to by src are ﬁrst copied into a temporary array of
@@ -88,7 +88,7 @@
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  *
- * @see 
+ * @see
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */

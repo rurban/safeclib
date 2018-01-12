@@ -26,7 +26,7 @@ void stuff_stdin(char *restrict dest)
     fclose(stream);
     freopen(TMP, "r", stdin);
 }
- 
+
 int test_scanf_s (void)
 {
     errno_t rc;
@@ -35,7 +35,7 @@ int test_scanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
-   
+
 /*--------------------------------------------------*/
 
     rc = scanf_s(NULL, NULL);
@@ -207,7 +207,7 @@ int test_scanf_s (void)
 /*--------------------------------------------------*/
 
     unlink(TMP);
-    
+
     return (errs);
 }
 

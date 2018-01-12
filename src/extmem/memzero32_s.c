@@ -51,13 +51,13 @@
  * @pre dest shall not be a null pointer.
  * @pre len shall not be 0 nor greater than RSIZE_MAX_MEM32.
  *
- * @return  If there is a runtime constraint, the operation is not performed. 
+ * @return  If there is a runtime constraint, the operation is not performed.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when len = ZERO
  * @retval  ESLEMAX     when len > RSIZE_MAX_MEM32
  *
- * @see 
+ * @see
  *    memzero_s(), memzero16_s()
  *
  */

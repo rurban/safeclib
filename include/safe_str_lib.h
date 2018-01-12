@@ -85,7 +85,7 @@ abort_handler_s(const char *restrict msg, void *restrict ptr, errno_t error)
 __attribute__((noreturn))
 #endif
 ;
-    
+
 EXTERN void
 ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 
@@ -182,7 +182,7 @@ EXTERN int
 printf_s(const char *restrict format, ...);
 
 EXTERN int
-fprintf_s(FILE *restrict stream, const char *restrict format, ...); 
+fprintf_s(FILE *restrict stream, const char *restrict format, ...);
 
 EXTERN int
 vprintf_s(const char *restrict format, va_list arg);
@@ -393,7 +393,7 @@ strset_s(char *restrict dest, rsize_t dmax, int value);
 
 EXTERN errno_t
 strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n);
-  
+
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 
@@ -507,14 +507,14 @@ vswscanf_s(const wchar_t *restrict buffer,
            const wchar_t *restrict fmt, va_list ap);
 
 EXTERN int
-wscanf_s( const wchar_t *restrict fmt, ...);  
+wscanf_s( const wchar_t *restrict fmt, ...);
 
 EXTERN int
 vwscanf_s(const wchar_t *restrict fmt, va_list ap);
 
 EXTERN int
 fwscanf_s(FILE *restrict stream,
-          const wchar_t *restrict fmt, ...);  
+          const wchar_t *restrict fmt, ...);
 
 EXTERN int
 vfwscanf_s(FILE *restrict stream,
@@ -545,7 +545,7 @@ EXTERN errno_t
 wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax,
           int *diff);
-    
+
 EXTERN errno_t
 wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value);
 

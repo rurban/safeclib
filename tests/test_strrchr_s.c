@@ -19,7 +19,7 @@ int test_strrchr_s (void)
     errno_t rc;
     int  ch;
     char *sub;
-#ifdef HAVE_STRRCHR    
+#ifdef HAVE_STRRCHR
     char *std_sub;
 #endif
     size_t len;

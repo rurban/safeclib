@@ -73,7 +73,7 @@
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR
  * @pre  dmax shall be greater than wcsnlen_s(src,m).
  * @pre  Copying shall not takeplace between objects that overlap
- *  
+ *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @returns  If there is a runtime-constraint violation, then if dest is

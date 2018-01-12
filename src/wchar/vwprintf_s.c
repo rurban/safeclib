@@ -40,7 +40,7 @@ any of the arguments corresponding to %s is a null pointer
 */
 
 /**
- * @brief 
+ * @brief
  *    The vwprintf_s function prints formatted output to stdout as wide string.
  *
  * @remark SPECIFIED IN
@@ -113,6 +113,6 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
     }
 
     return ret;
-    
+
 }
 EXPORT_SYMBOL(vwprintf_s)

@@ -40,7 +40,7 @@
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /**
- * @brief 
+ * @brief
  *    The truncating \c vsnprintf_s function composes a string with
  *    same test that would be printed if format was used on \c
  *    printf. Instead of being printed, the content is stored in dest.

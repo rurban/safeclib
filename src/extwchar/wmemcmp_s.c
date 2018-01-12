@@ -48,7 +48,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param  dest   pointer to wchar_t buffer to compare against
- * @param  src    pointer to the source wchar_t buffer to compare with dest 
+ * @param  src    pointer to the source wchar_t buffer to compare with dest
  * @param  dmax   maximum length of dest, in number of wchar_t
  * @param  smax   length of the source memory block
  * @param  *diff  pointer to the diff which is -1, 0 or 1 according to
@@ -68,7 +68,7 @@
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_WMEM
  * @retval  ESNOSPC     when dmax < smax
  *
- * @see 
+ * @see
  *    memcmp16_s(), memcmp32_s()
  *
  */

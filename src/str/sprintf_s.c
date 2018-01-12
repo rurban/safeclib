@@ -37,10 +37,10 @@
 #include "safeclib_private.h"
 #endif
 
-/** 
+/**
  * @brief
- *    The sprintf_s function composes a string with same test that 
- *    would be printed if format was used on printf. Instead of being 
+ *    The sprintf_s function composes a string with same test that
+ *    would be printed if format was used on printf. Instead of being
  *    printed, the content is stored in dest.
  *
  * @remark SPECIFIED IN

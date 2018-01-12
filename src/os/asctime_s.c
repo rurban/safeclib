@@ -44,10 +44,10 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
 #endif
 */
 
-/** 
+/**
  * @brief
  *    The \c asctime_s function converts the given calendar time \c tm to a
- *    textual representation of the following fixed 25-character form: 
+ *    textual representation of the following fixed 25-character form:
  *    \c "Www Mmm dd hh:mm:ss yyyy\n", as with asctime. The message is copied into
  *    user-provided \c dest buffer, which is guaranteed to be null-terminated.
  *
@@ -139,7 +139,7 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
 #ifdef HAVE_TM_GMTOFF
         || tm->tm_gmtoff < -1036800 /* 12*86400 */
 #endif
-        ) 
+        )
     {
         invoke_safe_str_constraint_handler("asctime_s: a tm member is too small",
                    NULL, ESLEMIN);

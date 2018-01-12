@@ -37,14 +37,14 @@
  * @remark from OpenBSD
  *
  * @param  b1    pointer to memory to compare against
- * @param  b2    pointer to the source memory to compare with b1 
+ * @param  b2    pointer to the source memory to compare with b1
  * @param  len   number of bytes to compare in both buffers
  *
  * @pre    Neither b1 nor b2 shall be a null pointer.
  *
  * @retval  -1, 0, or 1
  *
- * @see 
+ * @see
  *    memcmp_s(), timingsafe_bcmp()
  *
  */
@@ -62,7 +62,7 @@ timingsafe_memcmp (const void *b1, const void *b2, size_t len)
 
         /* gt is -1 if p1[i] > p2[i]; else 0. */
         int gt = (p2[i] - p1[i]) >> CHAR_BIT;
-        
+
         /* cmp is 1 if p1[i] > p2[i]; -1 if p1[i] < p2[i]; else 0. */
         int cmp = lt - gt;
 

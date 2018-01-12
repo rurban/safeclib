@@ -43,7 +43,7 @@ int main()
 /* FIXME: known bug: this test causes a bus error if the string max size is
    not restricted via RSIZE_MAX_STR */
     len = 99999;
-	printf("debug - 04\n");
+        printf("debug - 04\n");
     rc = strtouppercase_s("test", len);
     ERR(ESLEMAX)
 /*--------------------------------------------------*/

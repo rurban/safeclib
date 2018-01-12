@@ -153,7 +153,7 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                 return RCNEGATE(ESOVRLP);
             }
 
-	    if (unlikely(slen == 0)) {
+            if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
@@ -193,7 +193,7 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                 return RCNEGATE(ESOVRLP);
             }
 
-	    if (unlikely(slen == 0)) {
+            if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.

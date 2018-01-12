@@ -38,7 +38,7 @@
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 
-/** 
+/**
  * @brief
  *    The \c freopen_s function first, attempts to close the file associated
  *    with the stream, ignoring any errors. Then, if filename is not null,

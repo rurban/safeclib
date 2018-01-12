@@ -116,7 +116,7 @@ memrchr_s (const void *restrict dest, rsize_t dlen,
     return (EOK);
 #else
     {
-    	const uint8_t *s = (uint8_t *)dest;
+        const uint8_t *s = (uint8_t *)dest;
         uint8_t u8 = (uint8_t)ch;
         while (dlen--) {
             if (s[dlen] == u8) {

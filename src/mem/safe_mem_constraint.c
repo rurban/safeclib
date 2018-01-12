@@ -37,7 +37,7 @@ static constraint_handler_t mem_handler = NULL;
 /**
  * @brief
  *    The set_mem_constraint_handler_s function sets the runtime-constraint
- *    handler to be handler. 
+ *    handler to be handler.
  * @details
  *    The runtime-constraint handler is the function to
  *    be called when a library function detects a runtime-constraint

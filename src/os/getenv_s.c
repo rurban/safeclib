@@ -35,7 +35,7 @@
 #include "safeclib_private.h"
 #endif
 
-/** 
+/**
  * @brief
  *    The \c getenv_s function searches for an environmental variable with
  *    name name in the host-specified environment list and returns a pointer
@@ -90,7 +90,7 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
 {
     const char* buf;
     int len1;
-    
+
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("getenv_s: dest is null",
                    NULL, ESNULLP);
@@ -131,7 +131,7 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
                      -1);
         return -1;
     }
-    
+
     len1 = strlen(buf);
     if (unlikely((rsize_t)len1 >= dmax)) {
         if (len)

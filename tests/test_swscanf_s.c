@@ -15,7 +15,7 @@
 static wchar_t   wstr1[LEN];
 static wchar_t   wstr2[LEN];
 static char      str3[LEN];
- 
+
 int test_swscanf_s (void)
 {
     errno_t rc;

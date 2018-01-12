@@ -52,7 +52,7 @@ int test_vfprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    str1[0] = '\0'; 
+    str1[0] = '\0';
     rc = vtfprintf_s(out, "%s%n\n", str1, &ind);
     NEGERR(EINVAL)
 
@@ -121,7 +121,7 @@ int test_vfprintf_s (void)
     /* musl throws no error */
 # endif
 #endif
-    
+
     unlink(TMP);
 
     return (errs);

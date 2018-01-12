@@ -3,7 +3,7 @@
  *
  * Test the musl-inherited towupper regarding Unicode 10.0
  * Unicode has no explicit lower->upper mapping document.
- * 
+ *
  *------------------------------------------------------------------
  */
 
@@ -159,7 +159,7 @@ int test_towupper (void)
         printf(" done\n");
         cf = fopen(CFOLD, "r");
     }
-    
+
     while (!feof(f)) {
         int l;
         char *p = fgets(s, sizeof(s), f);

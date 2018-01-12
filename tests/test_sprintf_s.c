@@ -114,7 +114,7 @@ int test_sprintf_s (void)
     rc = sprintf_s(str1, 1, "%s", str2);
     ERR(0);
     ERRNO(ESNOSPC)
-    EXPNULL(str1)  
+    EXPNULL(str1)
 
 /*--------------------------------------------------*/
 

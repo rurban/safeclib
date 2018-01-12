@@ -36,10 +36,10 @@
 #endif
 
 /**
- * @brief 
+ * @brief
  *    Removes beginning whitespace from the string pointed to by
  *    dest by shifting the text left over writting the beginning
- *    whitespace, left justifying the text.  
+ *    whitespace, left justifying the text.
  * @details
  *    The left justified text is null terminated.
  *    The text is shifted so the original pointer can continue

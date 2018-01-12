@@ -110,7 +110,7 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
     if (unlikely(dmax < 5)) {
-	return -ESNOSPC;
+        return -ESNOSPC;
     } else {
         const wchar_t ***plane = UNWIF_canon[cp >> 16];
         if (! plane) {
@@ -139,11 +139,11 @@ _decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     const UNWIF_canon_PLANE_T **plane, *row;
     if (unlikely(dmax < 5)) {
         *dest = 0;
-	return -ESNOSPC;
+        return -ESNOSPC;
     }
     plane = UNWIF_canon[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */
-	return 0;
+        return 0;
     }
     row = plane[(cp >> 8) & 0xff];
     if (row) { /* the first row is pretty filled, the rest very sparse */
@@ -198,7 +198,7 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     /* the old big format */
     if (unlikely(dmax < 19)) {
         *dest = 0;
-	return -ESNOSPC;
+        return -ESNOSPC;
     }
     else {
         const wchar_t ***plane = UNWF_compat[cp >> 16];
@@ -229,7 +229,7 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     const UNWIF_compat_PLANE_T **plane, *row;
     plane = UNWIF_compat[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */
-	return 0;
+        return 0;
     }
     row = plane[(cp >> 8) & 0xff];
     if (row) { /* the first row is pretty filled, the rest very sparse */
@@ -305,7 +305,7 @@ _decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
     dest[0] = lindex + Hangul_LBase;
     dest[1] = vindex + Hangul_VBase;
     if (tindex) {
-	dest[2] = tindex + Hangul_TBase;
+        dest[2] = tindex + Hangul_TBase;
         dest[3] = 0;
         return 3;
     } else {
@@ -356,10 +356,10 @@ static int _compare_cc(const void *a, const void *b)
     int ret_cc;
     ret_cc = ((UNWIF_cc*) a)->cc - ((UNWIF_cc*) b)->cc;
     if (ret_cc)
-	return ret_cc;
+        return ret_cc;
 
     return ( ((UNWIF_cc*) a)->pos > ((UNWIF_cc*) b)->pos )
-	 - ( ((UNWIF_cc*) a)->pos < ((UNWIF_cc*) b)->pos );
+         - ( ((UNWIF_cc*) a)->pos < ((UNWIF_cc*) b)->pos );
 }
 
 static wint_t _composite_cp(wint_t cp, wint_t cp2)
@@ -436,7 +436,7 @@ static uint8_t _combin_class(wint_t cp)
     const uint8_t **plane, *row;
     plane = UNWIF_combin[cp >> 16];
     if (!plane)
-	return 0;
+        return 0;
     row = plane[(cp >> 8) & 0xff];
     if (row)
         return row[cp & 0xff];
@@ -561,7 +561,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                       "dmax is < 19",
                       NULL, ESLEMIN);
         *dest = 0;
-	return RCNEGATE(ESLEMIN);
+        return RCNEGATE(ESLEMIN);
     }
 #endif
 
@@ -726,7 +726,7 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
     rsize_t orig_dmax = dmax;
 
     while (p < e) {
-	uint8_t cur_cc;
+        uint8_t cur_cc;
         wint_t cp = _dec_w16(p);
         p++;
 #if SIZEOF_WCHAR_T == 2
@@ -735,32 +735,32 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
         }
 #endif
 
-	cur_cc = _combin_class(cp);
-	if (cur_cc != 0) {
-	    if (seq_max < cc_pos + 1) {         /* extend if need */
-		seq_max = cc_pos + CC_SEQ_STEP; /* new size */
-		if (CC_SEQ_SIZE == cc_pos) {    /* seq_ary full */
+        cur_cc = _combin_class(cp);
+        if (cur_cc != 0) {
+            if (seq_max < cc_pos + 1) {         /* extend if need */
+                seq_max = cc_pos + CC_SEQ_STEP; /* new size */
+                if (CC_SEQ_SIZE == cc_pos) {    /* seq_ary full */
                     seq_ext = (UNWIF_cc*)malloc(seq_max*sizeof(UNWIF_cc));
                     memcpy(seq_ext, seq_ary, cc_pos*sizeof(UNWIF_cc));
-		}
-		else {
+                }
+                else {
                     seq_ext = (UNWIF_cc*)realloc(seq_ext, seq_max*sizeof(UNWIF_cc));
-		}
-		seq_ptr = seq_ext; /* use seq_ext from now */
-	    }
+                }
+                seq_ptr = seq_ext; /* use seq_ext from now */
+            }
 
-	    seq_ptr[cc_pos].cc  = cur_cc;
-	    seq_ptr[cc_pos].cp  = cp;
-	    seq_ptr[cc_pos].pos = cc_pos;
-	    ++cc_pos;
+            seq_ptr[cc_pos].cc  = cur_cc;
+            seq_ptr[cc_pos].cp  = cp;
+            seq_ptr[cc_pos].pos = cc_pos;
+            ++cc_pos;
 
-	    if (p < e)
-		continue;
-	}
+            if (p < e)
+                continue;
+        }
 
-	/* output */
-	if (cc_pos) {
-	    size_t i;
+        /* output */
+        if (cc_pos) {
+            size_t i;
 
             if (unlikely(dmax - cc_pos <= 0)) {
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_reorder_s: "
@@ -770,15 +770,15 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
             }
 
             if (cc_pos > 1) /* reorder if there are two Combining Classes */
-		qsort((void*)seq_ptr, cc_pos, sizeof(UNWIF_cc), _compare_cc);
+                qsort((void*)seq_ptr, cc_pos, sizeof(UNWIF_cc), _compare_cc);
 
-	    for (i = 0; i < cc_pos; i++) {
+            for (i = 0; i < cc_pos; i++) {
                 _ENC_W16(dest, dmax, seq_ptr[i].cp);
-	    }
-	    cc_pos = 0;
-	}
+            }
+            cc_pos = 0;
+        }
 
-	if (cur_cc == 0) {
+        if (cur_cc == 0) {
             _ENC_W16(dest, dmax, cp);
         }
 
@@ -790,7 +790,7 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
         }
     }
     if (seq_ext)
-	free(seq_ext);
+        free(seq_ext);
     /* surrogate pairs can actually collapse */
 #if defined(SAFECLIB_STR_NULL_SLACK) && SIZEOF_WCHAR_T == 2
     memset(dest, 0, dmax*sizeof(wchar_t));
@@ -847,7 +847,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
     rsize_t orig_dmax = dmax;
 
     while (p < e) {
-	uint8_t cur_cc;
+        uint8_t cur_cc;
         wint_t cp = _dec_w16(p);
         p++;
 #if SIZEOF_WCHAR_T == 2
@@ -856,16 +856,16 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
         }
 #endif
 
-	cur_cc = _combin_class(cp);
+        cur_cc = _combin_class(cp);
 
-	if (!valid_cpS) {
-	    if (cur_cc == 0) {
-		cpS = cp; /* found the first Starter */
-		valid_cpS = true;
-		if (p < e)
-		    continue;
-	    }
-	    else {
+        if (!valid_cpS) {
+            if (cur_cc == 0) {
+                cpS = cp; /* found the first Starter */
+                valid_cpS = true;
+                if (p < e)
+                    continue;
+            }
+            else {
                 _ENC_W16(dest, dmax, cp);
                 if (unlikely(!dmax)) {
                     handle_werror(orig_dest, orig_dmax, "wcsnorm_compose_s: "
@@ -873,62 +873,62 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
                                   ESNOSPC);
                     return RCNEGATE(ESNOSPC);
                 }
-		continue;
-	    }
-	}
-	else {
-	    bool composed;
+                continue;
+            }
+        }
+        else {
+            bool composed;
 
-	    /* blocked */
-	    if ((iscontig && cc_pos) || /* discontiguous combination (FCC) */
-		 (cur_cc != 0 && pre_cc == cur_cc) || /* blocked by same CC */
-		 (pre_cc > cur_cc)) /* blocked by higher CC: revised D2 */
-		composed = false;
+            /* blocked */
+            if ((iscontig && cc_pos) || /* discontiguous combination (FCC) */
+                 (cur_cc != 0 && pre_cc == cur_cc) || /* blocked by same CC */
+                 (pre_cc > cur_cc)) /* blocked by higher CC: revised D2 */
+                composed = false;
 
-	    /* not blocked:
-		 iscontig && cc_pos == 0      -- contiguous combination
-		 cur_cc == 0 && pre_cc == 0     -- starter + starter
-		 cur_cc != 0 && pre_cc < cur_cc  -- lower CC */
-	    else {
-		/* try composition */
-		wint_t cpComp = _composite_cp(cpS, cp);
+            /* not blocked:
+                 iscontig && cc_pos == 0      -- contiguous combination
+                 cur_cc == 0 && pre_cc == 0     -- starter + starter
+                 cur_cc != 0 && pre_cc < cur_cc  -- lower CC */
+            else {
+                /* try composition */
+                wint_t cpComp = _composite_cp(cpS, cp);
 
-		if (cpComp && !isExclusion(cpComp))  {
-		    cpS = cpComp;
-		    composed = true;
+                if (cpComp && !isExclusion(cpComp))  {
+                    cpS = cpComp;
+                    composed = true;
 
-		    /* pre_cc should not be changed to cur_cc */
-		    /* e.g. 1E14 = 0045 0304 0300 where CC(0304) == CC(0300) */
-		    if (p < e)
-			continue;
-		}
-		else
-		    composed = false;
-	    }
+                    /* pre_cc should not be changed to cur_cc */
+                    /* e.g. 1E14 = 0045 0304 0300 where CC(0304) == CC(0300) */
+                    if (p < e)
+                        continue;
+                }
+                else
+                    composed = false;
+            }
 
-	    if (!composed) {
-		pre_cc = cur_cc;
-		if (cur_cc != 0 || !(p < e)) {
-		    if (seq_max < cc_pos + 1) { /* extend if need */
-			seq_max = cc_pos + CC_SEQ_STEP; /* new size */
-			if (CC_SEQ_SIZE == cc_pos) { /* seq_ary full */
+            if (!composed) {
+                pre_cc = cur_cc;
+                if (cur_cc != 0 || !(p < e)) {
+                    if (seq_max < cc_pos + 1) { /* extend if need */
+                        seq_max = cc_pos + CC_SEQ_STEP; /* new size */
+                        if (CC_SEQ_SIZE == cc_pos) { /* seq_ary full */
                             seq_ext = (wint_t*)malloc(seq_max*sizeof(wint_t));
                             memcpy(seq_ext, seq_ary, cc_pos*sizeof(wint_t));
-			}
-			else {
+                        }
+                        else {
                             seq_ext = (wint_t*)realloc(seq_ext, seq_max*sizeof(wint_t));
-			}
-			seq_ptr = seq_ext; /* use seq_ext from now */
-		    }
-		    seq_ptr[cc_pos] = cp;
-		    ++cc_pos;
-		}
-		if (cur_cc != 0 && p < e)
-		    continue;
-	    }
-	}
+                        }
+                        seq_ptr = seq_ext; /* use seq_ext from now */
+                    }
+                    seq_ptr[cc_pos] = cp;
+                    ++cc_pos;
+                }
+                if (cur_cc != 0 && p < e)
+                    continue;
+            }
+        }
 
-	/* output */
+        /* output */
         _ENC_W16(dest, dmax, cpS); /* starter (composed or not) */
         if (unlikely(!dmax)) {
             handle_werror(orig_dest, orig_dmax, "wcsnorm_compose_s: "
@@ -937,17 +937,17 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
             return RCNEGATE(ESNOSPC);
         }
 
-	if (cc_pos == 1) {
+        if (cc_pos == 1) {
             _ENC_W16(dest, dmax, *seq_ptr);
-	    cc_pos = 0;
-	} else if (cc_pos > 1) {
+            cc_pos = 0;
+        } else if (cc_pos > 1) {
             memcpy(dest, seq_ptr, cc_pos*sizeof(wchar_t));
             dest += cc_pos;
             dmax -= cc_pos;
-	    cc_pos = 0;
+            cc_pos = 0;
         }
 
-	cpS = cp;
+        cpS = cp;
     }
     if (seq_ext)
         free(seq_ext);

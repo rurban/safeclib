@@ -22,7 +22,7 @@
                      __FUNCTION__, __LINE__,  (int)count, std_count, rc); \
         errs++;                                                 \
     }
-  
+
 
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )

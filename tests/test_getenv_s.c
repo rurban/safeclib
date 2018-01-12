@@ -22,7 +22,7 @@ int test_getenv_s (void)
     size_t len;
     char *str2;
     char *name = "PATH";
-    
+
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, NULL, LEN, name);
@@ -45,7 +45,7 @@ int test_getenv_s (void)
 
     rc = getenv_s(&len, dest, 1, name);
     ERR(ESNOSPC);
-    
+
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, dest, LEN, name);
@@ -58,7 +58,7 @@ int test_getenv_s (void)
     rc = getenv_s(NULL, dest, LEN, name);
     ERR(EOK);
     EXPSTR(dest, str2);
-    
+
 /*--------------------------------------------------*/
 
     rc = getenv_s(NULL, dest, LEN, "c#hewhc&wehc%erwhc$weh");

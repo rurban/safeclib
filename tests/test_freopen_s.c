@@ -45,7 +45,7 @@ int test_freopen_s (void)
 # ifndef HAVE_ASAN
     file = stdin;
     rc = freopen_s(&tmp, NULL, "rb", file);
-    if (rc == 0) { 
+    if (rc == 0) {
         ERR(0); /* EINVAL or EFAULT */
         if (errno)
             ERRNO(EINVAL);
@@ -68,7 +68,7 @@ int test_freopen_s (void)
     fclose(newf);
 
 /*--------------------------------------------------*/
-    
+
     unlink(TMP);
 
     return (errs);

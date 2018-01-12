@@ -104,7 +104,7 @@ int test_wcscat_s (void)
     rc = wcscat_s(str1, 1, str2);
     ERR(ESUNTERM);
     WCHECK_SLACK(str1, 1);
-    
+
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaa");

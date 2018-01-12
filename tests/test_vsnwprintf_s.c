@@ -25,7 +25,7 @@ int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
     va_end(ap);
     return rc;
 }
- 
+
 int test_vsnwprintf_s (void)
 {
     errno_t rc;

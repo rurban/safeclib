@@ -60,9 +60,9 @@ int test_strerror_s (void)
         rc = strerror_s(str1, LEN, i);
         ERR(EOK);
     }
-    
+
 /*--------------------------------------------------*/
-    
+
     for (i=0; i<=ELAST; i++) {
         rc = strerror_s(str1, 30, i);
         len = strerrorlen_s(i);

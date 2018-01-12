@@ -35,7 +35,7 @@
 #include "safeclib_private.h"
 #endif
 
-/** 
+/**
  * @brief
  *    The \c tmpfile_s function creates a temporary binary file that is
  *    different from any other existing file and that will

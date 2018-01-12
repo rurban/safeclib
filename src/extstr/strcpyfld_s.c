@@ -60,7 +60,7 @@
  * @pre  slen shall not equal zero before C11. Since C11 zero is allowed.
  * @pre  slen shall not exceed dmax
  * @pre  Copying shall not take place between objects that overlap.
- *    
+ *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and destmax is greater than zero and
  *          not greater than RSIZE_MAX_STR, then strcpyfld_s nulls dest.

@@ -69,7 +69,7 @@
  * @retval  ESLEMAX     when n > RSIZE_MAX_MEM16
  * @retval  ESNOSPC     when dmax/2 < n
  *
- * @see 
+ * @see
  *    memset_s(), memset32_s()
  *
  */

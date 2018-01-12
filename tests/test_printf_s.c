@@ -38,7 +38,7 @@ int test_printf_s (void)
 
 /*--------------------------------------------------*/
 
-    str1[0] = '\0'; 
+    str1[0] = '\0';
     rc = printf_s("%s%n\n", str1, &ind);
     NEGERR(EINVAL)
 

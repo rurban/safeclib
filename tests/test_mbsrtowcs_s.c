@@ -142,7 +142,7 @@ int test_mbsrtowcs_s (void)
     REQLOCALE("UTF-8")
 
     /* illegal sequences (locale dependent) */
-    
+
     /* illegal initial */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xc0",&cs), 1, &ps);
     ERR(EILSEQ);
@@ -214,7 +214,7 @@ int test_mbsrtowcs_s (void)
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
     CLRPS;
-      
+
     /* aliasing U+FFFD */
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs="\xf0\x8f\xbf\xbd",&cs), 4, &ps);
     ERR(EILSEQ);
@@ -247,7 +247,7 @@ int test_mbsrtowcs_s (void)
     WCHECK_SLACK(dest, LEN);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 
@@ -262,6 +262,6 @@ int main (void)
     return (test_mbsrtowcs_s());
 #else
     return 0;
-#endif    
+#endif
 }
 #endif

@@ -36,7 +36,7 @@
 #include "strerror_s.h"
 #endif
 
-/** 
+/**
  * @brief
  *    The \c strerror_s function returns a pointer to the textual description
  *    of the system error code errnum, identical to the description that would
@@ -131,7 +131,7 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
 }
 EXPORT_SYMBOL(strerror_s)
 
-/** 
+/**
  * @brief
  *    The \c strerrorlen_s function returns the untruncated length of the
  *    textual description of the system error code \c errnum, identical to the

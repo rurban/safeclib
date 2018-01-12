@@ -35,8 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
-/** 
- * @brief 
+/**
+ * @brief
  *    Creates a unique valid file name (no longer than L_tmpnam in
  *    length) and stores it in character string pointed to by
  *    filename. The function is capable of generating up to TMP_MAX_S
@@ -51,7 +51,7 @@
  *
  * @param[out] filename_s pointer to the character array capable of holding at
  *                        least L_tmpnam_s bytes, to be used as a result buffer.
- * @param[in]  maxsize	  maximum number of characters the function is allowed
+ * @param[in]  maxsize    maximum number of characters the function is allowed
  *                        to write (typically the size of the filename_s array).
  *
  * @pre No more than TMP_MAX_S files may be opened

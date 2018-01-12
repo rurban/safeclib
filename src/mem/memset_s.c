@@ -75,14 +75,14 @@
  * @return  If there is a runtime-constraints violation, and if dest is not a null
  *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
  *          reporting the runtime-constraints violation, memset_s() copies
- *          dmax bytes to the destination. 
+ *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL pointer (EINVAL with C11)
  * @retval  ESZEROL     when n = ZERO (unless C11)
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or value > 255
  * @retval  ESNOSPC     when dmax < n
  *
- * @see 
+ * @see
  *    memset16_s(), memset32_s()
  *
  */

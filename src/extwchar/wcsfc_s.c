@@ -71,7 +71,7 @@ _is_lt_accented(wint_t wc) {
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written in the
  *    array of dmax characters pointed to by dest are nulled.
- * 
+ *
  * @details
  *   SpecialCasing checks for conditional boundary context at the begin or end
  *   of certain characters (final greek sigma), and locale sensitive rules

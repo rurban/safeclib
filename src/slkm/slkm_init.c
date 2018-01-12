@@ -64,11 +64,11 @@ MODULE_ALIAS("slk");
  */
 static int __init slk_init(void)
 {
-	printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
-	       DRV_COPYRIGHT);
-	(void) set_mem_constraint_handler_s(abort_handler_s);
-	(void) set_str_constraint_handler_s(abort_handler_s);
-	return 0;
+        printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
+               DRV_COPYRIGHT);
+        (void) set_mem_constraint_handler_s(abort_handler_s);
+        (void) set_str_constraint_handler_s(abort_handler_s);
+        return 0;
 }
 
 /**
@@ -76,7 +76,7 @@ static int __init slk_init(void)
  */
 static void __exit slk_exit(void)
 {
-	printk(KERN_INFO "%s called\n", __func__);
+        printk(KERN_INFO "%s called\n", __func__);
 }
 
 /* Module entry and exit points */

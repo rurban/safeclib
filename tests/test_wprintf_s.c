@@ -14,7 +14,7 @@
 
 static wchar_t   wstr[LEN];
 static char      str[LEN];
- 
+
 int test_wprintf_s (void)
 {
     errno_t rc;

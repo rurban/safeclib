@@ -36,7 +36,7 @@
 #endif
 
 /**
- * @brief 
+ * @brief
  *    Removes beginning and trailing whitespace from the string pointed to by
  *    dest by shifting the text left over writting the beginning whitespace
  *    (space or tab).

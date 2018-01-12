@@ -57,7 +57,7 @@
  * @retval  ESZEROL     when len = ZERO
  * @retval  ESLEMAX     when len > RSIZE_MAX_MEM
  *
- * @see 
+ * @see
  *    memzero16_s(), memzero32_s()
  *
  */

@@ -35,7 +35,7 @@
 #include "safeclib_private.h"
 #endif
 
-/** 
+/**
  * @brief
  *    The fprintf_s function composes a string via the format string
  *    and writes it to a FILE buffer.
@@ -59,7 +59,7 @@
  * @pre None of the arguments corresponding to %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
  *
- * @return  On success the total number of characters written is returned. 
+ * @return  On success the total number of characters written is returned.
  * @return  On failure a negative number is returned.
  * @retval  -ESNULLP when stream/fmt is NULL pointer
  * @retval  -EINVAL  when fmt contains %n

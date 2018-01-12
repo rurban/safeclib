@@ -39,14 +39,14 @@
 #endif
 
 /**
- * @brief 
- *    The memmove_s function copies smax bytes from the region pointed to by 
- *    src into the region pointed to by dest. 
+ * @brief
+ *    The memmove_s function copies smax bytes from the region pointed to by
+ *    src into the region pointed to by dest.
  * @details
- *    This copying takes place as if the smax bytes from the region pointed 
- *    to by src are ﬁrst copied into a temporary array of smax bytes that does 
- *    not overlap the region pointed to by dest or src, and then the smax 
- *    bytes from the temporary array are copied into the object region to by 
+ *    This copying takes place as if the smax bytes from the region pointed
+ *    to by src are ﬁrst copied into a temporary array of smax bytes that does
+ *    not overlap the region pointed to by dest or src, and then the smax
+ *    bytes from the temporary array are copied into the object region to by
  *    dest.
  *
  * @remark SPECIFIED IN
@@ -79,7 +79,7 @@
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  *
- * @see 
+ * @see
  *    memmove16_s(), memmove32_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */

@@ -56,8 +56,8 @@ MODULE_ALIAS("test-slkm");
  */
 
 struct test_entry {
-	int (*test_func) (void);
-	char *name;
+        int (*test_func) (void);
+        char *name;
 };
 
 extern int test_memset_s(void);
@@ -84,35 +84,35 @@ extern int test_strcspn_s(void);
  */
 static int __init testslkm_init(void)
 {
-	int rc = 0;
-	int i  = 0;
-	struct test_entry test_vec[] = {
-		{ test_memset_s, "test_memset_s" },
-		{ test_memcpy_s, "test_memcpy_s" },
-		{ test_memmove_s, "test_memmove_s" },
-		{ test_memcmp_s, "test_memcmp_s" },
-		{ test_strcpy_s, "test_strcpy_s" },
-		{ test_strncpy_s, "test_strncpy_s" },
-		{ test_strcat_s, "test_strcat_s" },
-		{ test_strncat_s, "test_strncat_s" },
-		{ test_strcmp_s, "test_strcmp_s" },
-		{ test_strcasecmp_s, "test_strcasecmp_s" },
-		{ test_strstr_s, "test_strstr_s" },
-		{ test_strnlen_s, "test_strnlen_s" },
-		{ test_strpbrk_s, "test_strpbrk_s" },
-		{ test_strspn_s, "test_strspn_s" },
-		{ test_strcspn_s, "test_strcspn_s" }
-	};
+        int rc = 0;
+        int i  = 0;
+        struct test_entry test_vec[] = {
+                { test_memset_s, "test_memset_s" },
+                { test_memcpy_s, "test_memcpy_s" },
+                { test_memmove_s, "test_memmove_s" },
+                { test_memcmp_s, "test_memcmp_s" },
+                { test_strcpy_s, "test_strcpy_s" },
+                { test_strncpy_s, "test_strncpy_s" },
+                { test_strcat_s, "test_strcat_s" },
+                { test_strncat_s, "test_strncat_s" },
+                { test_strcmp_s, "test_strcmp_s" },
+                { test_strcasecmp_s, "test_strcasecmp_s" },
+                { test_strstr_s, "test_strstr_s" },
+                { test_strnlen_s, "test_strnlen_s" },
+                { test_strpbrk_s, "test_strpbrk_s" },
+                { test_strspn_s, "test_strspn_s" },
+                { test_strcspn_s, "test_strcspn_s" }
+        };
 
-	printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
-	       DRV_COPYRIGHT);
+        printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
+               DRV_COPYRIGHT);
 
-	for (i = 0; i < ARRAY_SIZE(test_vec); i++) {
-		rc = test_vec[i].test_func();
-		if (rc)
-			printk(KERN_INFO "%s tests failed\n", test_vec[i].name);
-	}
-	return rc;
+        for (i = 0; i < ARRAY_SIZE(test_vec); i++) {
+                rc = test_vec[i].test_func();
+                if (rc)
+                        printk(KERN_INFO "%s tests failed\n", test_vec[i].name);
+        }
+        return rc;
 }
 
 /**
@@ -120,7 +120,7 @@ static int __init testslkm_init(void)
  */
 static void __exit testslkm_exit(void)
 {
-	printk(KERN_INFO "%s called\n", __func__);
+        printk(KERN_INFO "%s called\n", __func__);
 }
 
 /* Module entry and exit points */

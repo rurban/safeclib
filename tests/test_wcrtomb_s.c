@@ -170,7 +170,7 @@ int test_wcrtomb_s (void)
 #endif
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 
@@ -185,6 +185,6 @@ int main (void)
     return (test_wcrtomb_s());
 #else
     return 0;
-#endif    
+#endif
 }
 #endif

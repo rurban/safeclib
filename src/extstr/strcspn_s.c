@@ -63,9 +63,9 @@
  *
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest/src/count is NULL pointer
- * @retval  ESZEROL     when dmax/slen = 0 
+ * @retval  ESZEROL     when dmax/slen = 0
  * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_STR
- * 
+ *
  * @see
  *    strspn_s(), strpbrk_s(), strstr_s()
  *

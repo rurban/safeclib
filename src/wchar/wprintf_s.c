@@ -40,7 +40,7 @@ Any of the arguments corresponding to %s is a null pointer
 */
 
 /**
- * @brief 
+ * @brief
  *    The wprintf_s function prints formatted output to stdout as wide string.
  *
  * @note

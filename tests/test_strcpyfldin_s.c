@@ -47,7 +47,7 @@ int main()
     ERR(ESZEROL);
     CHECK_SLACK(str1, len);
 #endif
-        
+
 /*--------------------------------------------------*/
 
     rc = strcpyfldin_s(str1, (RSIZE_MAX_STR+1), str2, LEN);

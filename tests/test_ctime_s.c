@@ -20,7 +20,7 @@ int test_ctime_s (void)
     time_t timer;
 
     timer = time(NULL);
-    
+
 /*--------------------------------------------------*/
 
     rc = ctime_s(NULL, 0, &timer);
@@ -66,7 +66,7 @@ int test_ctime_s (void)
     ERR(ESLEMAX);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 

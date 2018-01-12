@@ -49,14 +49,14 @@
 #include <stdint.h>
 #else
 /* ignored on 32bit, thus safe */
-typedef unsigned long	uint64_t;
+typedef unsigned long   uint64_t;
 #endif
 #include <stdlib.h>
 #include <string.h>
 
 /* in mingw sec_api returning void */
 
-/** 
+/**
  * @brief
 
  *    The \c qsort_s function sorts the given array pointed to by base in

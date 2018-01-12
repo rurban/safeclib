@@ -146,7 +146,7 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
     /* fmt + args might be empty which is then valid
-    if (unlikely(dmax == 1)) { 
+    if (unlikely(dmax == 1)) {
         invoke_safe_str_constraint_handler("swprintf_s: dmax is 0",
                    NULL, ESNOSPC);
         errno = ESNOSPC;
@@ -186,7 +186,7 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(ret ==  -1)) {
         if (likely(dmax < 512)) { /* stacksize 2k */
             static wchar_t tmp[512];
-            if (unlikely(dmax == 1)) 
+            if (unlikely(dmax == 1))
                 goto nospc;
             va_start(ap2, fmt);
             ret = vswprintf(tmp, 512, fmt, ap2);
@@ -206,7 +206,7 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
             return 0;
         }
     }
-    
+
     if (unlikely(ret >= (int)dmax)) {
         goto nospc;
     } else if (unlikely(ret < 0)) {
@@ -214,7 +214,7 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
         strcat(errstr, strerror(errno));
         handle_werror(dest, dmax, errstr, -ret);
     }
-    
+
     return ret;
 }
 EXPORT_SYMBOL(swprintf_s)

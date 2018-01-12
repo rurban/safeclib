@@ -15,7 +15,7 @@
 static char   str1[LEN];
 static char   str2[LEN];
 static char   str3[LEN];
- 
+
 int test_sscanf_s (void)
 {
     errno_t rc;

@@ -38,7 +38,7 @@
 
 /* not in mingw sec_api */
 
-/** 
+/**
  * @brief
  *    The \c bsearch_s function finds an element equal to element pointed to
  *    by key in an array pointed to by base. The array contains count elements
@@ -94,7 +94,7 @@
  *    is qsort_s).
  *
  * @retval  NULL       when not found or any error
- * 
+ *
  * errno values:
  *   ESNULLP   when key, base or compar are a NULL pointer, and nmemb is > 0
  *   ESLEMAX   when nmemb or size > RSIZE_MAX_MEM

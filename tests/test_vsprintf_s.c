@@ -23,7 +23,7 @@ int vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...
     va_end(ap);
     return rc;
 }
- 
+
 int test_vsprintf_s (void)
 {
     errno_t rc;
@@ -95,7 +95,7 @@ int test_vsprintf_s (void)
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
-    
+
     rc = vtprintf_s(str1, 2, "%s", str2);
     ERR(0);
     ERRNO(ESNOSPC)

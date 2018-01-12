@@ -52,7 +52,7 @@
  * @param[in]   slen   restricted maximum length of string src
  * @param[out]  count  pointer to a count variable that will be updated
  *                     with the dest substring length
- *  
+ *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  count shall not be a null pointer.
  * @pre  Neither dmax nor slen shall not be 0.

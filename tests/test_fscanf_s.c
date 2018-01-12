@@ -28,7 +28,7 @@ void stuff_stream(char *restrict dest)
     fprintf(stream, "%s\n", dest);
     rewind(stream);
 }
- 
+
 int test_fscanf_s (void)
 {
     errno_t rc;
@@ -37,7 +37,7 @@ int test_fscanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
-   
+
 /*--------------------------------------------------*/
 
     rc = fscanf_s(NULL, "");
@@ -171,7 +171,7 @@ int test_fscanf_s (void)
 /*--------------------------------------------------*/
 
     unlink(TMP);
-    
+
     return (errs);
 }
 

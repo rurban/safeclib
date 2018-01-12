@@ -29,7 +29,7 @@ void stuff_stream(wchar_t *restrict dest)
     fwprintf(stream, L"%ls\n", dest);
     rewind(stream);
 }
- 
+
 int test_fwscanf_s (void)
 {
     errno_t rc;
@@ -40,7 +40,7 @@ int test_fwscanf_s (void)
     int errs = 0;
     int p[2];
     FILE *f;
-   
+
 /*--------------------------------------------------*/
 
     pipe(p);
@@ -199,7 +199,7 @@ int test_fwscanf_s (void)
 /*--------------------------------------------------*/
 
     unlink(TMP);
-    
+
     return (errs);
 }
 

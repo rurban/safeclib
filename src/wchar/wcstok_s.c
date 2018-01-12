@@ -134,15 +134,15 @@
  *          ESUNTERM    when unterminated string
  * C11 just returns EINVAL
  *
- * @remarks 
+ * @remarks
  * Example to demonstrate usage of wcstok_s() to tokenize a string
  * @code{.c}
  *   // Approach1: sequential wcstok_s() calls
- *   str1 = L",.:*one,two;three,;four*.*.five-six***"; // String to tokenize 
+ *   str1 = L",.:*one,two;three,;four*.*.five-six***"; // String to tokenize
  *   len = 38;
  *   str2 = L",.;*"; // String of delimiters
  *
- *   p2tok = wcstok_s(str1, &len, str2, &p2str); 
+ *   p2tok = wcstok_s(str1, &len, str2, &p2str);
  *   // token: one, remaining: two;three,;four*.*.five-six***, len: 30
  *
  *   p2tok = wcstok_s(NULL, &len, str2, &p2str);
@@ -162,7 +162,7 @@
  *
  *    // Approach2: Use of while loop with same entry data as used above
  *    p2tok = str1;
- *    while (p2tok && len) 
+ *    while (p2tok && len)
  *    {
  *      p2tok = wcstok_s(NULL, &len, str2, &p2str);
  *      printf("  token --   remaining --  len=0 \n", p2tok, p2str, (int)len );

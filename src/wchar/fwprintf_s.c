@@ -40,7 +40,7 @@ any of the arguments corresponding to %s is a null pointer
 */
 
 /**
- * @brief 
+ * @brief
  *    The fwprintf_s function prints formatted output to a wide stream.
  *
  * @note

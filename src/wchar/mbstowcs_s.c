@@ -61,7 +61,7 @@
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
  *    0.
  *
- *    The conversion stops if: 
+ *    The conversion stops if:
  *
  *    - The multibyte null character was converted and stored.
  *

@@ -37,7 +37,7 @@
 #endif
 
 /**
- * @brief 
+ * @brief
  *    This function copies at most smax uint16_ts from src to dest, up to
  *    dmax.
  *
@@ -56,7 +56,7 @@
  * @pre   dmax shall not be greater than RSIZE_MAX_MEM16.
  * @pre   smax shall not be greater than dmax.
  * @pre   Copying shall not take place between regions that overlap.
- *    
+ *
  * @return  If there is a runtime-constraint violation, the memcpy_s function
  *          stores zeros in the ﬁrst dmax bytes of the region pointed to
  *          by dest if dest is not a null pointer and smax is valid.
@@ -67,7 +67,7 @@
  * @retval  ESNOSPC     when dmax < smax
  * @retval  ESOVRLP     when src memory overlaps dst
  *
- * @see 
+ * @see
  *    wmemcpy_s(), memcpy_s(), memcpy32_s(), wmemmove_s(), memmove16_s()
  *
  */

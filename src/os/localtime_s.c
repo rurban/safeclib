@@ -45,7 +45,7 @@ struct tm *localtime_r(const time_t * __restrict, struct tm * __restrict);
 #endif
 */
 
-/** 
+/**
  * @brief
  *    The \c localtime_s function converts the given time since epoch to a
  *    calendar time, expressed in the current timezone in the struct tm

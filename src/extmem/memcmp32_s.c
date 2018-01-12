@@ -46,7 +46,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param  dest   pointer to memory to compare against
- * @param  src    pointer to the source memory to compare with dest 
+ * @param  src    pointer to the source memory to compare with dest
  * @param  dmax   maximum length of dest, in bytess
  * @param  smax   length of the source memory block
  * @param  *diff  pointer to the diff which is an integer greater
@@ -66,7 +66,7 @@
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  *
- * @see 
+ * @see
  *    memcmp_s(), memcmp16_s()
  *
  */

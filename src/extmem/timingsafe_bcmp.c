@@ -36,14 +36,14 @@
  * @remark from OpenBSD
  *
  * @param  b1    pointer to memory to compare against
- * @param  b2    pointer to the source memory to compare with b1 
+ * @param  b2    pointer to the source memory to compare with b1
  * @param  n     number of bytes to compare in both buffers
  *
  * @pre     Neither b1 nor b2 shall be a null pointer.
  *
  * @retval  0 if the buffers are equal, or not zero if they are not equal.
  *
- * @see 
+ * @see
  *    memcmp_s(), timingsafe_memcmp()
  *
  */

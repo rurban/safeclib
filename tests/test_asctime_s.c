@@ -25,7 +25,7 @@ int test_asctime_s (void)
     char *str2;
 
     tm = gmtime(&timet);
-    
+
 /*--------------------------------------------------*/
 
     rc = asctime_s(NULL, 0, tm);
@@ -47,18 +47,18 @@ int test_asctime_s (void)
 #define TM_RANGE(memb, mmin, mmax) \
     old = tm->tm_##memb;                \
     tm->tm_##memb = mmin-1;             \
-    rc = asctime_s(str1, LEN, tm);	\
+    rc = asctime_s(str1, LEN, tm);      \
     ERR(ESLEMIN);                       \
                                         \
     tm->tm_##memb = mmax+1;             \
-    rc = asctime_s(str1, LEN, tm);	\
+    rc = asctime_s(str1, LEN, tm);      \
     ERR(ESLEMAX);                       \
                                         \
     tm->tm_##memb = mmin;               \
-    rc = asctime_s(str1, LEN, tm);	\
+    rc = asctime_s(str1, LEN, tm);      \
     ERR(EOK);                           \
     tm->tm_##memb = mmax;               \
-    rc = asctime_s(str1, LEN, tm);	\
+    rc = asctime_s(str1, LEN, tm);      \
     tm->tm_##memb = old;                \
     ERR(EOK)
 
@@ -90,7 +90,7 @@ int test_asctime_s (void)
             debug_printf("year %d => %d ", ind, rc);
         }
     }
-    
+
 /*--------------------------------------------------*/
 
     tm = gmtime(&timet);

@@ -14,7 +14,7 @@
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
 
- 
+
 int test_snwprintf_s (void)
 {
     errno_t rc;

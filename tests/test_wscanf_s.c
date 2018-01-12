@@ -27,7 +27,7 @@ void stuff_stdin(wchar_t *restrict dest)
     fclose(stream);
     freopen(TMP, "r", stdin);
 }
- 
+
 int test_wscanf_s (void)
 {
     errno_t rc;
@@ -36,7 +36,7 @@ int test_wscanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
-   
+
 /*--------------------------------------------------*/
 
     rc = wscanf_s(NULL, NULL);
@@ -177,7 +177,7 @@ int test_wscanf_s (void)
 /*--------------------------------------------------*/
 
     unlink(TMP);
-    
+
     return (errs);
 }
 

@@ -42,7 +42,7 @@ char *ctime_r(const time_t *, char *);
 #endif
 */
 
-/** 
+/**
  * @brief
  *    The \c ctime_s function converts the given time since epoch to a
  *    calendar local time and then to a textual representation, as if by

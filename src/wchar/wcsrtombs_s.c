@@ -53,9 +53,9 @@
  *    until \c dmax. In extension to \c wcstombs_s you can re-use the
  *    state via \c ps.
  *
- *    The conversion stops if: 
+ *    The conversion stops if:
  *
- *    - The wide null character \c L'\0' was converted and stored. 
+ *    - The wide null character \c L'\0' was converted and stored.
  *      The bytes stored in this case are the unshift sequence (if necessary)
  *      followed by \c '\0', \c *src is set to \c NULL and \c *ps represents
  *      the initial shift state.

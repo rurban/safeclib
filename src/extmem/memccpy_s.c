@@ -55,7 +55,7 @@
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
  * @pre  n shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
- *    
+ *
  * @note from FreeBSD
  *
  * @return  The memccpy() function returns a pointer to the next character in
@@ -70,7 +70,7 @@
  * @retval  ESNOSPC     when dmax < n
  * @retval  ESOVRLP     when src memory overlaps dst
  *
- * @see 
+ * @see
  *    memcpy_s(), strncpy_s()
  */
 EXPORT errno_t

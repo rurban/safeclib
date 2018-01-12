@@ -38,7 +38,7 @@
 /* conflicting API */
 #ifndef MINGW_HAS_SECURE_API
 
-/** 
+/**
  * @brief
  *    The \c fopen_s function opens a file indicated by filename and updates
  *    the pointer to the file stream associated with that file. mode is used to

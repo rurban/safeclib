@@ -418,7 +418,7 @@ void
 mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
 {
     uint8_t *dp = dest;
-	const uint8_t *sp = src;
+        const uint8_t *sp = src;
     /*
      * Determine if we need to copy forward or backward (overlap)
      */
@@ -632,7 +632,7 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
 
 
 /**
- * @brief 
+ * @brief
  *    Moves at most len of uint32_t's from src to dest.
  *    The destination may overlap with source.
  *

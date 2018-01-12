@@ -131,7 +131,7 @@ int test_mbstowcs_s (void)
     }
 
     /* illegal sequences (locale dependent) */
-    
+
     /* illegal initial */
 #ifndef HAVE_CYGWIN64
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0",cs), 1);
@@ -193,7 +193,7 @@ int test_mbstowcs_s (void)
     ERR(EILSEQ);
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
-      
+
     /* aliasing U+FFFD */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xf0\x8f\xbf\xbd",cs), 4);
     ERR(EILSEQ);
@@ -205,7 +205,7 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, 6, (cs="abcdef",cs), 6);
     ERR(ESNOSPC);
     WCHECK_SLACK(dest, 6);
-    
+
     rc = mbstowcs_s(&ind, dest, 3, (cs="\xf0\x8f\xbf\xbd",cs), 4);
     ERR(EILSEQ);
     INDCMP(!= -1);
@@ -222,7 +222,7 @@ int test_mbstowcs_s (void)
     WCHECK_SLACK(dest, LEN);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 
@@ -237,6 +237,6 @@ int main (void)
     return (test_mbstowcs_s());
 #else
     return 0;
-#endif    
+#endif
 }
 #endif

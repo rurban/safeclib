@@ -53,7 +53,7 @@ int test_vfwprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    wstr[0] = L'\0'; 
+    wstr[0] = L'\0';
     rc = vtwprintf_s(out, L"%s%n\n", wstr, &ind);
     NEGERR(EINVAL)
 

@@ -69,7 +69,7 @@ int test_vsnprintf_s (void)
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
-    
+
     rc = vtprintf_s(str1, 2, "%s", str2);
     ERR(14)
 

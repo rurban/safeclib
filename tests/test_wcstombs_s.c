@@ -113,7 +113,7 @@ int test_wcstombs_s (void)
     CHECK_SLACK(&dest[1], LEN-1);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 
@@ -128,6 +128,6 @@ int main (void)
     return (test_wcstombs_s());
 #else
     return 0;
-#endif    
+#endif
 }
 #endif

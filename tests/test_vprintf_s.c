@@ -47,7 +47,7 @@ int test_vprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    str1[0] = '\0'; 
+    str1[0] = '\0';
     rc = vtprintf_s("%s%n\n", str1, &ind);
     NEGERR(EINVAL)
 

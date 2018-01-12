@@ -171,7 +171,7 @@ int test_wcsrtombs_s (void)
     INDCMP(!= 1);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 
@@ -186,6 +186,6 @@ int main (void)
     return (test_wcsrtombs_s());
 #else
     return 0;
-#endif    
+#endif
 }
 #endif

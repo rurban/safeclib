@@ -56,9 +56,9 @@
  *    clobbers the destination array from the terminating null and
  *    until \c dmax.
  *
- *    The conversion stops if: 
+ *    The conversion stops if:
  *
- *    - The wide null character \c L'\0' was converted and stored. 
+ *    - The wide null character \c L'\0' was converted and stored.
  *      The bytes stored in this case are the unshift sequence (if necessary)
  *      followed by \c '\0'.
  *

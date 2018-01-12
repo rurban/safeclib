@@ -107,7 +107,7 @@ int main()
     rc = wcsnorm_s(str, 4, MAX_WC1, WCSNORM_NFD, NULL);
     ERR(ESLEMIN);
     WEXPSTR(str, L"\0");
-    
+
 /*--------------------------------------------------*/
 
     rc = wcsnorm_s(str, LEN, L"Caf\xe9", WCSNORM_NFD, &ind);
@@ -135,7 +135,7 @@ int main()
     wcscpy(str, L"A" L"\x1fb3");
     rc = wcsnorm_s(str1, LEN, str, WCSNORM_NFC, NULL);
     ERR(EOK);
-    
+
     wcscpy(str, L"Abc" L"\x1fb7");
     rc = wcsnorm_s(str1, 6, str, WCSNORM_NFD, NULL);
     ERR(ESNOSPC);

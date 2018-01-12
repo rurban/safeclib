@@ -39,7 +39,7 @@ int vtwscanf_s (wchar_t *restrict dest, const wchar_t *restrict fmt, ...)
 
     return rc;
 }
- 
+
 int test_vwscanf_s (void)
 {
     errno_t rc;
@@ -171,7 +171,7 @@ int test_vwscanf_s (void)
 /*--------------------------------------------------*/
 
     unlink(TMP);
-    
+
     return (errs);
 }
 

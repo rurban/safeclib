@@ -20,7 +20,7 @@ int test_gmtime_s (void)
     struct tm *tmptr;
 
     timer = time(NULL);
-    
+
 /*--------------------------------------------------*/
 
     tmptr = gmtime_s(&timer, NULL);
@@ -63,7 +63,7 @@ int test_gmtime_s (void)
     PTRNULL(tmptr);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 

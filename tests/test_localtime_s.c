@@ -20,7 +20,7 @@ int test_localtime_s (void)
     struct tm *tmptr;
 
     timer = time(NULL);
-    
+
 /*--------------------------------------------------*/
 
     tmptr = localtime_s(&timer, NULL);
@@ -63,7 +63,7 @@ int test_localtime_s (void)
     PTRNULL(tmptr);
 
 /*--------------------------------------------------*/
-    
+
     return (errs);
 }
 

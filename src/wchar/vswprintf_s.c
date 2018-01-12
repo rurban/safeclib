@@ -41,9 +41,9 @@ any of the arguments corresponding to %s is a null pointer
 */
 
 /**
- * @brief 
- *    The \c vswprintf_s function composes a wide string with same test that 
- *    would be printed if format was used on \c wprintf. Instead of being 
+ * @brief
+ *    The \c vswprintf_s function composes a wide string with same test that
+ *    would be printed if format was used on \c wprintf. Instead of being
  *    printed, the content is stored in dest.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written by \c vswprintf_s in the

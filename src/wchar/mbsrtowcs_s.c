@@ -56,7 +56,7 @@
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
  *    0.
  *
- *    The conversion stops if: 
+ *    The conversion stops if:
  *
  *    - The multibyte null character was converted and stored. \c *src is
  *      set to \c NULL and \c *ps represents the initial shift state.
@@ -78,7 +78,7 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval	pointer to a \c size_t object where the result will be stored
+ * @param[out]  retval  pointer to a \c size_t object where the result will be stored
  * @param[out]  dest  pointer to wide character array where the results will be stored
  * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   src   pointer to the string that will be copied to \c dest

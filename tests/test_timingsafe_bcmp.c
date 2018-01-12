@@ -36,7 +36,7 @@ int test_timingsafe_bcmp (void)
 
     ind = timingsafe_bcmp(mem1, mem2, len);
     INDZERO();
-#ifdef HAVE_BCMP    
+#ifdef HAVE_BCMP
     std_ind = bcmp(mem1, mem2, len);
     if (ind != std_ind) {
         debug_printf("%s %u  Ind=%d  Std=%d \n",
@@ -53,7 +53,7 @@ int test_timingsafe_bcmp (void)
 
     ind = timingsafe_bcmp(&mem1[1], &mem2[1], len);
     INDZERO();
-#ifdef HAVE_BCMP    
+#ifdef HAVE_BCMP
     std_ind = bcmp(mem1, mem2, len);
     if (ind != std_ind) {
         debug_printf("%s %u  Ind=%d  Std=%d \n",
@@ -69,7 +69,7 @@ int test_timingsafe_bcmp (void)
 
     ind = timingsafe_bcmp(mem1, mem2, len);
     INDZERO();
-#ifdef HAVE_BCMP    
+#ifdef HAVE_BCMP
     std_ind = bcmp(mem1, mem2, len);
     if (ind != std_ind) {
         debug_printf("%s %u  Ind=%d  Std=%d \n",

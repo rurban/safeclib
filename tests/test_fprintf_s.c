@@ -47,7 +47,7 @@ int test_fprintf_s (void)
     }
 
 /*--------------------------------------------------*/
-        
+
     rc = fprintf_s(out, "%s %%n", str);
     ERR(3)
 
@@ -109,7 +109,7 @@ int test_fprintf_s (void)
 #endif
 
     unlink(TMP);
-        
+
     return (errs);
 }
 

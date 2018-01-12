@@ -39,7 +39,7 @@
  * @brief
  *    This function validates the make-up of a password string.
  * @details
- *       -Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters 
+ *       -Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters
  *    \n -Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters
  *    \n -Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters
  *    \n -Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters
