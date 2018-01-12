@@ -17,11 +17,13 @@ $make -s clean
 CC="clang-mp-5.0 -std=c11" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-    gmake -s -j4 check-valgrind || exit
+    # too many darwin kernel and libc leaks, esp. with locale and time.
+    # not getting better, getting worse
+    gmake -s -j4 check-valgrind
 CC="clang-mp-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-    gmake -s -j4 check-valgrind || exit
+    gmake -s -j4 check-valgrind
 CC="gcc-mp-4.3 -ansi" ./configure && \
     gmake -s -j4 check-log || exit
 CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
@@ -52,7 +54,7 @@ CC="clang-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
     #TODO: valgrind broken with kpti
-    #make -s -j4 check-valgrind || exit
+    #make -s -j4 check-valgrind
 CC="gcc-4.4 -ansi" ./configure && \
     make -s -j4 check-log || exit
 CC="gcc-4.4 -std=iso9899:199409" ./configure && \
