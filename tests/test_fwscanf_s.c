@@ -8,6 +8,7 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include "safe_lib.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>
@@ -208,6 +209,7 @@ int test_fwscanf_s (void)
    until a better solution can be created. */
 int main (void)
 {
+    SKIP_APPVEYOR(str3);
     return (test_fwscanf_s());
 }
 #endif

@@ -386,6 +386,16 @@
         return errs; \
     }
 
+#ifdef _WIN32
+/* hangs at appveyor */
+#define SKIP_APPVEYOR(str) \
+    if (getenv_s(NULL, (char * restrict)&(str), LEN, "APPVEYOR") == EOK) {  \
+        printf(__FILE__ ": SKIP appveyor %u\n", __LINE__); \
+        return 0; \
+    }
+#else
+#define SKIP_APPVEYOR(str)
+#endif
 
 #if SIZEOF_WCHAR_T > 2
 #define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
