@@ -376,8 +376,15 @@
 #define CHKLOCALE(l)                              \
     if (!lc_cat || !strstr(lc_cat, l)) {          \
         printf(__FILE__ ": cannot test locale %s" \
-               " (lc_cat=%s, codeset=%s)\n", l, lc_cat, lang); \
+               " (lc_cat=%s, codeset=%s)\n", l, lc_cat, lang);  \
     } else
+
+#define REQLOCALE(l)                              \
+    if (!lc_cat || !strstr(lc_cat, l)) {          \
+        printf(__FILE__ ": cannot test locale %s" \
+               " (lc_cat=%s, codeset=%s)\n", l, lc_cat, lang);  \
+        return errs; \
+    }
 
 
 #if SIZEOF_WCHAR_T > 2

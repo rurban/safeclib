@@ -12,7 +12,10 @@
 #define LEN   ( 128 )
 
 #if defined(_WIN32) && defined(HAVE_STRTOK_S)
-#define strtok_s(dest, dmax, delim, ptr) strtok_s(dest, delim, ptr)
+# ifndef MINGW_HAS_SECURE_API
+  char* strtok_s(char *_Str, const char *_Delim, char **_Context);
+# endif
+# define strtok_s(dest, dmax, delim, ptr) strtok_s(dest, delim, ptr)
 #endif
 
 int main()

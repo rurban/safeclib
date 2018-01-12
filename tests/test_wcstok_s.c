@@ -12,7 +12,10 @@
 #define LEN   ( 128 )
 
 #if defined(_WIN32) && defined(HAVE_WCSTOK_S)
-#define wcstok_s(dest, dmax, delim, ptr) wcstok_s(dest, delim, ptr)
+# ifndef MINGW_HAS_SECURE_API
+  wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context);
+# endif
+# define wcstok_s(dest, dmax, delim, ptr) wcstok_s(dest, delim, ptr)
 #endif
 
 int main()

@@ -91,12 +91,12 @@ int test_mbstowcs_s (void)
 
     SETLOCALE_UTF8;
     SETLANG("default");
-    CHKLOCALE("UTF-8");
+    REQLOCALE("UTF-8")
 
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xe2\x86\x92" "abc",cs), 32);
     {
     /* TODO: EILSEQ with cygwin64 */
-#ifdef HAVE_CYGWIN64
+#if defined(HAVE_CYGWIN64)
     int saveerrs = errs;
     const char *todo = "Todo";
 #else
@@ -123,7 +123,7 @@ int test_mbstowcs_s (void)
                __FUNCTION__, __LINE__, todo, (int)ind, rc, (long)dest[1]);
         errs++;
     }
-#ifdef HAVE_CYGWIN64
+#if defined(HAVE_CYGWIN64)
     if (errs)
         printf("TODO cygwin64 EILSEQ of \"\\xe2\\x86\\x92\"\n");
     errs = saveerrs;

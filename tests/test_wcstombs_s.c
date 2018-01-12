@@ -102,7 +102,7 @@ int test_wcstombs_s (void)
 
     SETLOCALE_UTF8;
     SETLANG("default");
-    CHKLOCALE("UTF-8");
+    REQLOCALE("UTF-8")
 
     /* illegal sequences (locale independent) */
 

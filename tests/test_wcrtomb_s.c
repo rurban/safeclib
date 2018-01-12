@@ -121,7 +121,7 @@ int test_wcrtomb_s (void)
 
     SETLOCALE_UTF8;
     SETLANG("default");
-    CHKLOCALE("UTF-8");
+    REQLOCALE("UTF-8")
 
     /* overlarge utf-8 sequence */
     rc = wcrtomb_s(&ind, dest, 2, L'\x2219', &ps);

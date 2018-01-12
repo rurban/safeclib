@@ -102,7 +102,7 @@ int test_wctomb_s (void)
 
     SETLOCALE_UTF8;
     SETLANG("default");
-    CHKLOCALE("UTF-8");
+    REQLOCALE("UTF-8");
 
     /* overlarge utf-8 sequence */
     rc = wctomb_s(&ind, dest, 2, L'\x2219');
