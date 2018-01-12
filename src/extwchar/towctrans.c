@@ -342,8 +342,8 @@ static const unsigned short pairs[][2] = {
     { 0,0 }
 };
 
-EXPORT wint_t
-_towcase(wint_t wc, int lower)
+EXPORT uint32_t
+_towcase(uint32_t wc, int lower)
 {
     int i;
     int lmul = 2*lower-1;
@@ -398,22 +398,22 @@ _towcase(wint_t wc, int lower)
     return wc;
 }
 
-EXPORT wint_t
-_towupper(wint_t wc)
+EXPORT uint32_t
+_towupper(uint32_t wc)
 {
     return (unsigned)wc < 128 ? (wint_t)toupper(wc) : _towcase(wc, 0);
 }
 #ifndef HAVE_TOWUPPER
-EXPORT wint_t
-towupper(wint_t wc)
+EXPORT uint32_t
+towupper(uint32_t wc)
 {
     return (unsigned)wc < 128 ? (wint_t)toupper(wc) : _towcase(wc, 0);
 }
 #endif
 
 #ifndef HAVE_TOWLOWER
-EXPORT wint_t
-towlower(wint_t wc)
+EXPORT uint32_t
+towlower(uint32_t wc)
 {
     return (unsigned)wc < 128 ? (wint_t)tolower(wc) : _towcase(wc, 1);
 }

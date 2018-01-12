@@ -218,14 +218,15 @@ void abort(void) __attribute__((noreturn));
 /* mingw64 3.0.1
    has strtok_s, wcstok_s, and vsnprintf_s, which we patch in the tests. */
 
-/* windows, cygwin + 32bit aix, solaris */
 #if SIZEOF_WCHAR_T > 2
+
 #define _dec_w16(src) *(src)
 #define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
 
 #else
+/* windows, cygwin + 32bit aix, solaris */
 /* convert surrogate pair to unicode codepoint */
-EXTERN wint_t _dec_w16(wchar_t *src);
+EXTERN uint32_t _dec_w16(wchar_t *src);
 
 /* convert unicode codepoint to surrogate pair, advancing dest */
 #define _ENC_W16(dest,dmax,cp)                  \
@@ -236,20 +237,19 @@ EXTERN wint_t _dec_w16(wchar_t *src);
         *dest++ = ((cp) & 0x3ff) + 0xdc00;      \
         (dmax)--; (dmax)--;                     \
     }
-
 #endif
 
 /* is start of a surrogate pair? */
 #define _IS_W16(cp) ((cp) >= 0xd800 && (cp) < 0xdc00)
 
-EXTERN errno_t _towfc_single(wchar_t *restrict dest, const wint_t src);
-EXPORT wint_t _towcase(wint_t wc, int lower);
-EXPORT wint_t _towupper(wint_t wc);
+EXTERN errno_t _towfc_single(wchar_t *restrict dest, const uint32_t src);
+EXPORT uint32_t _towcase(uint32_t wc, int lower);
+EXPORT uint32_t _towupper(uint32_t wc);
 #ifndef HAVE_TOWLOWER
 EXTERN wint_t towlower(wint_t wc);
 #endif
 /* from wcsnorm_s.c */
-EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp,
+EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
                      const bool iscompat);
 
 #endif /* SAFECLIB_DISABLE_WCHAR */

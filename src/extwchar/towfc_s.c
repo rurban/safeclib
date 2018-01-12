@@ -193,7 +193,7 @@ static const struct {
    iswfc only matches towfc_s, but not wcsfc_s which does NFD decomposition also.
 */
 int
-iswfc(wint_t wc)
+iswfc(uint32_t wc)
 {
     /* the slow variant would walk the 2 loops */
     if (likely((wc < 0xdf) ||
@@ -276,7 +276,7 @@ iswfc(wint_t wc)
    }'
  */
 int
-_towfc_single(wchar_t *restrict dest, const wint_t src)
+_towfc_single(wchar_t *restrict dest, const uint32_t src)
 {
     /* fc exceptions: not towlower */
     dest[1] = L'\0';
@@ -347,10 +347,10 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
   single:
 #if SIZEOF_WCHAR_T > 2
     dest[0] = src < 128 ? (wint_t)tolower(src) : _towcase(src, 1);
-    return (wint_t)dest[0] == src ? -(ESNOTFND) : 1;
+    return (uint32_t)dest[0] == src ? -(ESNOTFND) : 1;
 #else
     {
-        wint_t cp = src < 128 ? (wint_t)tolower(src) : _towcase(src, 1);
+        uint32_t cp = src < 128 ? (uint32_t)tolower(src) : _towcase(src, 1);
         if (unlikely(cp > 0xffff)) {
             dest[0] = 0xd800 + ((cp >> 10) & 0x3ff);
             dest[1] = 0xdc00 + (cp & 0x3ff);
@@ -400,7 +400,7 @@ _towfc_single(wchar_t *restrict dest, const wint_t src)
    Returns the number of replaced wide characters, or -ESNOTFND if not replaced.
 */
 int
-towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src)
+towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
 {
     int i;
 
@@ -427,7 +427,7 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src)
     if (src < 128) {
         dest[1] = L'\0';
         dest[0] = tolower(src);
-        return (wint_t)dest[0] == src ? -(ESNOTFND) : 1;
+        return (uint32_t)dest[0] == src ? -(ESNOTFND) : 1;
     }
 
     for (i=0; tbl2[i].upper; i++) {

@@ -7,6 +7,11 @@ Changes in vxx012018 3.1.0
         - Fixed tests failing with C++
         - Fixed cygwin smokes on Appveyor
         - Workaround broken gcc-4.8 strchr macro
+        - Fixed 32bit Windows wchar conversion functions, by changing wint_t to uint32_t
+          types for most internal conversions.
+        - Changed 2 public APIs:
+          int iswfc(uint32_t wc);
+          int towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src);
 
 Changes in v09102017 3.1.0
         Summary: With a non-C11 compiler not on windows the API didn't change, only docs.

@@ -111,7 +111,7 @@ autoreconf
     fi
     $make clean
 git clean -dxf src tests
-autoreconf    
+autoreconf
 ./configure --enable-unsafe --host=i686-w64-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then

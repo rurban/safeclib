@@ -37,10 +37,10 @@
 #include <assert.h>
 #endif
 
-bool isExclusion (wint_t uv);
-bool isSingleton (wint_t uv);
-bool isNonStDecomp (wint_t uv);
-bool isComp2nd (wint_t uv);
+bool isExclusion (uint32_t uv);
+bool isSingleton (uint32_t uv);
+bool isNonStDecomp (uint32_t uv);
+bool isComp2nd (uint32_t uv);
 
 #if SIZEOF_WCHAR_T > 2
 /* generated via cperl Unicode-Normalize/mkheader -uni -ind */
@@ -74,11 +74,11 @@ bool isComp2nd (wint_t uv);
 /* else a passthru macro in *_private.h */
 #if SIZEOF_WCHAR_T == 2
 /* convert surrogate pair to unicode codepoint */
-EXPORT wint_t _dec_w16(wchar_t *src) {
-    wint_t s1 = src[0];
+EXPORT uint32_t _dec_w16(wchar_t *src) {
+    uint32_t s1 = src[0];
     /*if (unlikely(s1 >= 0xd800 && s1 < 0xdc00)) {*/
     if (unlikely((s1 & 0xfc00) == 0xd800)) {
-        wint_t s2 = src[1];
+        uint32_t s2 = src[1];
         if (likely((s2 & 0xfc00) == 0xdc00)) {
 #if 0
             s1 = ((s1 & 0x3ff) << 10) + (s2 & 0x3ff);
@@ -105,7 +105,7 @@ EXPORT wint_t _dec_w16(wchar_t *src) {
  * variant, as used here and in cperl core since 5.27.2.
  */
 static int
-_decomp_canonical_s(wchar_t *dest, rsize_t dmax, wint_t cp)
+_decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
@@ -192,7 +192,7 @@ _bsearch_exc (const void *ptr1, const void *ptr2) {
 }
 
 static int
-_decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
+_decomp_compat_s(wchar_t *dest, rsize_t dmax, uint32_t cp)
 {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
@@ -291,12 +291,12 @@ _decomp_compat_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 #endif
 
 static int
-_decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
+_decomp_hangul_s(wchar_t *dest, rsize_t dmax, uint32_t cp)
 {
-    wint_t sindex =  cp - Hangul_SBase;
-    wint_t lindex =  sindex / Hangul_NCount;
-    wint_t vindex = (sindex % Hangul_NCount) / Hangul_TCount;
-    wint_t tindex =  sindex % Hangul_TCount;
+    uint32_t sindex =  cp - Hangul_SBase;
+    uint32_t lindex =  sindex / Hangul_NCount;
+    uint32_t vindex = (sindex % Hangul_NCount) / Hangul_TCount;
+    uint32_t tindex =  sindex % Hangul_TCount;
 
     if (unlikely(dmax < 4)) {
         return -(ESNOSPC);
@@ -323,7 +323,7 @@ _decomp_hangul_s(wchar_t *dest, rsize_t dmax, wint_t cp)
 */
 
 EXPORT int
-_decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool iscompat)
+_decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp, const bool iscompat)
 {
     /*assert(dmax > 4);*/
 
@@ -346,7 +346,7 @@ _decomp_s(wchar_t *restrict dest, rsize_t dmax, const wint_t cp, const bool isco
 /* canonical ordering of combining characters (c.c.). */
 typedef struct {
     uint8_t  cc;  /* combining class */
-    wint_t cp;  /* codepoint */
+    uint32_t cp;  /* codepoint */
     size_t   pos; /* position */
 } UNWIF_cc;
 
@@ -362,7 +362,7 @@ static int _compare_cc(const void *a, const void *b)
          - ( ((UNWIF_cc*) a)->pos < ((UNWIF_cc*) b)->pos );
 }
 
-static wint_t _composite_cp(wint_t cp, wint_t cp2)
+static uint32_t _composite_cp(uint32_t cp, uint32_t cp2)
 {
     const UNWIF_complist_s ***plane, **row, *cell;
 
@@ -380,13 +380,13 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
 #endif
 
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
-        wint_t lindex = cp  - Hangul_LBase;
-        wint_t vindex = cp2 - Hangul_VBase;
+        uint32_t lindex = cp  - Hangul_LBase;
+        uint32_t vindex = cp2 - Hangul_VBase;
         return(Hangul_SBase + (lindex * Hangul_VCount + vindex) *
                Hangul_TCount);
     }
     if (Hangul_IsLV(cp) && Hangul_IsT(cp2)) {
-        wint_t tindex = cp2 - Hangul_TBase;
+        uint32_t tindex = cp2 - Hangul_TBase;
         return (cp + tindex);
     }
     plane = UNWIF_compos[cp >> 16];
@@ -409,7 +409,7 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
         UNWIF_complist_s *i;
         for (i = (UNWIF_complist_s *)cell; i->nextchar; i++) {
             if ((uint16_t)cp2 == i->nextchar) {
-                return (wint_t)(i->composite);
+                return (uint32_t)(i->composite);
             }
             else if ((uint16_t)cp2 < i->nextchar) { /* nextchar is sorted */
                 break;
@@ -431,7 +431,7 @@ static wint_t _composite_cp(wint_t cp, wint_t cp2)
     return 0;
 }
 
-static uint8_t _combin_class(wint_t cp)
+static uint8_t _combin_class(uint32_t cp)
 {
     const uint8_t **plane, *row;
     plane = UNWIF_combin[cp >> 16];
@@ -496,7 +496,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
-    wint_t cp;
+    uint32_t cp;
     int c;
 
     if (lenp)
@@ -727,7 +727,7 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 
     while (p < e) {
         uint8_t cur_cc;
-        wint_t cp = _dec_w16(p);
+        uint32_t cp = _dec_w16(p);
         p++;
 #if SIZEOF_WCHAR_T == 2
         if (cp > 0xffff) {
@@ -834,13 +834,13 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
                   rsize_t *restrict lenp, bool iscontig)
 {
     const wchar_t *e = p + *lenp;
-    wint_t  cpS = 0;           /* starter code point */
+    uint32_t  cpS = 0;           /* starter code point */
     bool    valid_cpS = false; /* if false, cpS isn't initialized yet */
     uint8_t pre_cc = 0;
 
-    wint_t seq_ary[CC_SEQ_SIZE];
-    wint_t* seq_ptr = (wint_t*) seq_ary; /* either stack or heap */
-    wint_t* seq_ext = NULL;    /* heap */
+    uint32_t seq_ary[CC_SEQ_SIZE];
+    uint32_t* seq_ptr = (uint32_t*) seq_ary; /* either stack or heap */
+    uint32_t* seq_ext = NULL;    /* heap */
     size_t seq_max = CC_SEQ_SIZE;
     size_t cc_pos = 0;
     wchar_t *orig_dest = dest;
@@ -848,7 +848,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 
     while (p < e) {
         uint8_t cur_cc;
-        wint_t cp = _dec_w16(p);
+        uint32_t cp = _dec_w16(p);
         p++;
 #if SIZEOF_WCHAR_T == 2
         if (cp > 0xffff) {
@@ -891,7 +891,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
                  cur_cc != 0 && pre_cc < cur_cc  -- lower CC */
             else {
                 /* try composition */
-                wint_t cpComp = _composite_cp(cpS, cp);
+                uint32_t cpComp = _composite_cp(cpS, cp);
 
                 if (cpComp && !isExclusion(cpComp))  {
                     cpS = cpComp;
@@ -912,11 +912,11 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
                     if (seq_max < cc_pos + 1) { /* extend if need */
                         seq_max = cc_pos + CC_SEQ_STEP; /* new size */
                         if (CC_SEQ_SIZE == cc_pos) { /* seq_ary full */
-                            seq_ext = (wint_t*)malloc(seq_max*sizeof(wint_t));
-                            memcpy(seq_ext, seq_ary, cc_pos*sizeof(wint_t));
+                            seq_ext = (uint32_t*)malloc(seq_max*sizeof(uint32_t));
+                            memcpy(seq_ext, seq_ary, cc_pos*sizeof(uint32_t));
                         }
                         else {
-                            seq_ext = (wint_t*)realloc(seq_ext, seq_max*sizeof(wint_t));
+                            seq_ext = (uint32_t*)realloc(seq_ext, seq_max*sizeof(uint32_t));
                         }
                         seq_ptr = seq_ext; /* use seq_ext from now */
                     }

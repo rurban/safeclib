@@ -566,11 +566,11 @@ wcsupr_s(wchar_t *restrict src, rsize_t slen);
 
 /* is a wide upper character which folds to multiple lowercase chars? how many */
 EXTERN int
-iswfc(wint_t wc);
+iswfc(uint32_t wc);
 
 /* full foldcase a single upper char to mult. lower chars */
 EXTERN int
-towfc_s(wchar_t *restrict dest, rsize_t dmax, const wint_t src);
+towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src);
 
 /* full foldcase + NFD normalization */
 EXTERN errno_t

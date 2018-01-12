@@ -45,7 +45,7 @@
 /* with lithuanian only grave, acute, tilde above, and ogonek
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
 static inline int
-_is_lt_accented(wint_t wc) {
+_is_lt_accented(uint32_t wc) {
     return (wc == 0x300 || /* grave */
             wc == 0x301 || /* acute */
             wc == 0x303 || /* tilde */
@@ -170,7 +170,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
 
     while (*src && dmax > 0) {
         wchar_t tmp[4];
-        wint_t cp = _dec_w16((wchar_t *)src);
+        uint32_t cp = _dec_w16((wchar_t *)src);
         int c = iswfc(cp);
 #if SIZEOF_WCHAR_T == 2
         if (cp > 0xffff)
@@ -191,7 +191,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                 int i;
                 for (i=0; i<c; i++) {
                     int d;
-                    wint_t cp1 = _dec_w16(&tmp[i]);
+                    uint32_t cp1 = _dec_w16(&tmp[i]);
 #if SIZEOF_WCHAR_T > 2
                     if (unlikely(_UNICODE_MAX < cp1)) {
                         handle_werror(orig_dest, orig_dmax, "wcsfc_s: "
