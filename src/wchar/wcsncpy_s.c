@@ -141,6 +141,7 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
         handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
                      "slen exceeds max",
                      ESLEMAX);
+        *dest = L'\0';
         return RCNEGATE(ESLEMAX);
     }
 
@@ -194,7 +195,7 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
                 return RCNEGATE(ESOVRLP);
             }
 
-            if (unlikely(slen == 0)) {
+	    if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.

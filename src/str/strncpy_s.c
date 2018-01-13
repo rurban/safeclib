@@ -119,6 +119,7 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "src is null",
                      ESNULLP);
+        *dest = '\0';
         return RCNEGATE(ESNULLP);
     }
 
@@ -138,6 +139,7 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         handle_error(orig_dest, orig_dmax, "strncpy_s: "
                      "slen exceeds max",
                      ESLEMAX);
+        *dest = '\0';
         return RCNEGATE(ESLEMAX);
     }
 
@@ -153,7 +155,7 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                 return RCNEGATE(ESOVRLP);
             }
 
-            if (unlikely(slen == 0)) {
+	    if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.

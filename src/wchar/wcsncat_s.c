@@ -106,18 +106,6 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
         return RCNEGATE(ESNULLP);
     }
 
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsncat_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("wcsncat_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("wcsncat_s: dmax is 0",
                    NULL, ESZEROL);
@@ -127,6 +115,25 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("wcsncat_s: dmax exceeds max",
                    NULL, ESLEMAX);
+        return RCNEGATE(ESLEMAX);
+    }
+
+    if (unlikely(src == NULL)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+        /* null string to clear data */
+        while (dmax) {  *dest = L'\0'; dmax--; dest++; }
+#else
+        *dest = L'\0';
+#endif
+        invoke_safe_str_constraint_handler("wcsncat_s: src is null",
+                   NULL, ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
+
+    if (unlikely(slen > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("wcsncat_s: slen exceeds max",
+                   NULL, ESLEMAX);
+        *dest = L'\0';
         return RCNEGATE(ESLEMAX);
     }
 
