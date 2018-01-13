@@ -131,9 +131,11 @@ int test_mbstowcs_s (void)
     }
 
     /* illegal sequences (locale dependent) */
+#ifdef HAVE_CYGWIN64
+    return (errs);
+#endif
 
     /* illegal initial */
-#ifndef HAVE_CYGWIN64
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0",cs), 1);
     /* TODO and this is legal on cygwin64 */
     ERR(EILSEQ);
@@ -143,7 +145,6 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc2",cs), 1);
     ERR(EILSEQ);
     INDCMP(!= -1);
-#endif
 
     /* aliasing nul */
     rc = mbstowcs_s(&ind, dest, LEN, (cs="\xc0\x80",cs), 2);

@@ -46,8 +46,8 @@ int test_vsprintf_s (void)
     ERR(0);
     ERRNO(ESNULLP)
     /* Unknown error: 400 */
-    debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
-                 strerror(errno));
+    /* debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
+       strerror(errno)); */
 
     rc = vtprintf_s(NULL, LEN, "%s", str2);
     ERR(0);
@@ -59,8 +59,8 @@ int test_vsprintf_s (void)
     ERR(0);
     ERRNO(ESZEROL)
     /* Unknown error: 401 */
-    debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
-                 strerror(errno));
+    /* debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
+       strerror(errno)); */
 
 /*--------------------------------------------------*/
 
