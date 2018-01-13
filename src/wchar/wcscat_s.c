@@ -53,7 +53,7 @@
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
- *    K.3.7.2.1 The wcscat_s function (p: 617-618)
+ *    K.3.9.2.2.1 The wcscat_s function (p: 642-643)
  *    http://en.cppreference.com/w/c/string/wide/wcscat
  *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,

@@ -52,7 +52,7 @@
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
- *    7.21.2.4 The strncpy function (p: 326-327)
+ *    K.3.7.1.4 The strncpy_s function (p: 616-617)
  *    http://en.cppreference.com/w/c/string/byte/strncpy
  *    * ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,

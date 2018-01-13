@@ -60,7 +60,7 @@
  * @remark EXTENSION TO
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.2.1.3 The wmemcpy_s function (p: 641)
- *    http://en.cppreference.com/w/c/string/wide/wmemcpy_s
+ *    http://en.cppreference.com/w/c/string/wide/wmemcpy
  *    * ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces

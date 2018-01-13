@@ -76,7 +76,7 @@
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.6.5.2 The wcstombs_s function (p: 612-613)
- *    http://en.cppreference.com/w/c/string/byte/wcstombs
+ *    http://en.cppreference.com/w/c/string/multibyte/wcstombs
  *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces

@@ -64,7 +64,10 @@
  *    array are copied into the region pointed to by dest.
  *
  * @remark EXTENSION TO
- *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
+ *    * C11 standard (ISO/IEC 9899:2011):
+ *    K.3.9.2.1.4 The wmemmove_s function (p: 642)
+ *    http://en.cppreference.com/w/c/string/wide/wmemmove
+ *    * ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *

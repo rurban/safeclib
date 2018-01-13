@@ -87,8 +87,8 @@
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
- *    K.3.7.3.1 The wcstok_s function (p: 620-621)
- *    http://en.cppreference.com/w/c/string/byte/strok
+ *    K.3.9.2.3.1 The wcstok_s function (p: 645-646)
+ *    http://en.cppreference.com/w/c/string/wide/wcstok
  *    * ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces

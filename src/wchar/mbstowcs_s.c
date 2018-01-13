@@ -74,7 +74,7 @@
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.6.5.1 The mbstowcs_s function (p: 611-612)
- *    http://en.cppreference.com/w/c/string/byte/mbstowcs
+ *    http://en.cppreference.com/w/c/string/multibyte/mbstowcs
  *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces

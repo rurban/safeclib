@@ -88,7 +88,7 @@
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.7.3.1 The strtok_s function (p: 620-621)
- *    http://en.cppreference.com/w/c/string/byte/strok
+ *    http://en.cppreference.com/w/c/string/byte/strtok
  *    * ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces

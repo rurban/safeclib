@@ -73,7 +73,7 @@
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.3.2.1 The mbsrtowcs_s function (p: 648-649)
- *    http://en.cppreference.com/w/c/string/byte/mbsrtowcs
+ *    http://en.cppreference.com/w/c/string/multibyte/mbsrtowcs
  *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
