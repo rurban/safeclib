@@ -423,7 +423,7 @@ int main()
         if (system(PERL " " TESTPL) < 0) {
             printf("Redo with perl (probably wrong Unicode version):\n");
             fflush(stdout);
-            system("perl " TESTPL);
+            system("perl " TESTPL) || printf("perl " TESTPL " failed\n");
         }
     }
 #ifndef DEBUG

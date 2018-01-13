@@ -17,10 +17,10 @@
 #include <wctype.h>
 #endif
 #ifndef HAVE_TOWUPPER_OK
-EXTERN wint_t _towupper(wint_t wc);
+EXTERN uint32_t _towupper(uint32_t wc);
 #endif
 
-EXTERN wint_t _towcase(wint_t wc, int lower);
+EXTERN uint32_t _towcase(uint32_t wc, int lower);
 
 #define GENCAT  "DerivedGeneralCategory.txt"
 #define CFOLD   "CaseFolding.txt"
@@ -44,13 +44,13 @@ static int init = 0;
 /* TODO: try to malloc the whole table with 2 status bits.
    This linear-searches in the file buffer for extremely low-memory systems.
  */
-int check_casefolding(wint_t lwr, wint_t upr) {
+int check_casefolding(uint32_t lwr, uint32_t upr) {
     rewind(cf);
     while (!feof(cf)) {
         int l;
         char *p = fgets(s, sizeof(s), cf);
         char *p1;
-        wint_t wc, mp;
+        uint32_t wc, mp;
         int c;
         if (p && *p && s[0] != '#' && s[0] != '\n') {
             p = strstr(s, "; ");
@@ -104,14 +104,14 @@ int check_casefolding(wint_t lwr, wint_t upr) {
 }
 
 /* checks a lower case letter from DerivedGeneralCategory */
-int check(wint_t wc, const char* status, const char* name) {
+int check(uint32_t wc, const char* status, const char* name) {
     int errs = 0;
-    wint_t upr;
-    upr = (unsigned)wc < 128 ? toupper(wc) : _towcase(wc, 0);
+    uint32_t upr;
+    upr = wc < 128 ? (uint32_t)toupper(wc) : _towcase(wc, 0);
     if (upr == wc) {
         check_casefolding(wc, upr);
 #ifdef HAVE_TOWUPPER_OK
-        upr = towupper(wc);
+        upr = (uint32_t)towupper(wc);
         if (upr != wc) {
             printf("%u Error towupper(U+%04X) = U+%04X status=%s, name=%s\n",
                    __LINE__, wc, upr, status, name);
@@ -136,7 +136,7 @@ int test_towupper (void)
 {
     int errs = 0;
     int lowfound = 0;
-    wint_t wc;
+    uint32_t wc;
     struct stat st;
 
 /*--------------------------------------------------*/
@@ -146,8 +146,8 @@ int test_towupper (void)
     if (!f) {
         printf("downloading %s ...", GENCAT);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt");
-        printf(" done\n");
+        system("wget ftp://ftp.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt")
+            ? printf(" done\n") : printf(" failed\n");
         f = fopen(GENCAT, "r");
     }
 
@@ -155,8 +155,8 @@ int test_towupper (void)
     if (!cf) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt");
-        printf(" done\n");
+        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt")
+            ? printf(" done\n") : printf(" failed\n");
         cf = fopen(CFOLD, "r");
     }
 
@@ -178,7 +178,7 @@ int test_towupper (void)
             continue;
         }
         if (s[0] != '#' && s[0] != '\n') {
-            wint_t from, to;
+            uint32_t from, to;
             int c;
             p = strstr(s, "; ");
             if (!p)
@@ -228,7 +228,7 @@ int test_towupper (void)
         if (system(PERL " " TESTPL)) {
             printf("Redo with perl (probably wrong Unicode version):\n");
             fflush(stdout);
-            system("perl " TESTPL);
+            system("perl " TESTPL) || printf("perl " TESTPL " failed\n");
         }
     }
 #ifndef DEBUG

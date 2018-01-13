@@ -20,7 +20,7 @@
 #define _dec_w16(src) *(src)
 #else
 #define MAX_LEN 8
-EXTERN wint_t _dec_w16(wchar_t *src);
+EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
 
 int test_towfc_s (void)
@@ -36,7 +36,7 @@ int test_towfc_s (void)
     char name[80];
     FILE *f;
 
-    wint_t wc;
+    uint32_t wc;
 
 /*--------------------------------------------------*/
 
@@ -44,8 +44,8 @@ int test_towfc_s (void)
     if (!f) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt");
-        printf(" done\n");
+        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt")
+            ? printf(" done\n") : printf(" failed\n");
         f = fopen(CFOLD, "r");
     }
     while (!feof(f)) {
@@ -68,10 +68,10 @@ int test_towfc_s (void)
 
             c = sscanf(code, "%X", &wc);
             if (c) {
-                wint_t m0;
+                uint32_t m0;
                 int n, len;
                 wchar_t result[MAX_LEN];
-                wint_t cp;
+                uint32_t cp;
 
                 result[0] = L'\0';
                 n = iswfc(wc);
@@ -101,7 +101,7 @@ int test_towfc_s (void)
                 /* we have 104 unhandled F multi-char mappings,
                    handle them via towfc() (wide full-lowercase) */
                 if (*status == 'F') { /* lower is bigger than upper, ignored */
-                    wint_t m1, m2;
+                    uint32_t m1, m2;
                     /* check the length, must be or 3 */
                     if (n < 2) {
                         errs++;

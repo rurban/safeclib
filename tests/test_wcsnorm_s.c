@@ -18,7 +18,7 @@
 #if SIZEOF_WCHAR_T > 2
 #define _dec_w16(src) *(src)
 #else
-EXTERN wint_t _dec_w16(wchar_t *src);
+EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
 
 /*#define PERL_TEST*/
@@ -182,7 +182,7 @@ int main()
 #if SIZEOF_WCHAR_T == 2
     {
         wchar_t* sp = &str1[0];
-        wint_t cp = 0x1d1c0UL; /* need surrogate pair for this */
+        uint32_t cp = 0x1d1c0UL; /* need surrogate pair for this */
         wcscpy(str1, L"\x0\x0\x0"); /* 0xd874 0xddc0 */
         _ENC_W16(sp,len,cp);
         rc = wcsnorm_s(str, LEN, str1, WCSNORM_NFD, &ind);
@@ -476,7 +476,7 @@ int main()
         if (system(PERL " " TESTPL) < 0) {
             printf("Redo with perl (probably wrong Unicode version):\n");
             fflush(stdout);
-            system("perl " TESTPL);
+            system("perl " TESTPL) || printf("perl " TESTPL " failed\n");
         }
     }
 #ifndef DEBUG

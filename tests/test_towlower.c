@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-EXTERN wint_t _towcase(wint_t wc, int lower);
+EXTERN uint32_t _towcase(uint32_t wc, int lower);
 
 #define CFOLD "CaseFolding.txt"
 
@@ -30,7 +30,7 @@ int test_towlower (void)
     char name[80];
     FILE *f;
 
-    wint_t wc, lwr;
+    uint32_t wc, lwr;
 
 /*--------------------------------------------------*/
 
@@ -38,7 +38,8 @@ int test_towlower (void)
     if (!f) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt");
+        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt")
+            ? printf(" done\n") : printf(" failed\n");
         printf(" done\n");
         f = fopen(CFOLD, "r");
     }
@@ -62,8 +63,8 @@ int test_towlower (void)
 
             c = sscanf(code, "%X", &wc);
             if (c) {
-                wint_t mp;
-                lwr = (unsigned)wc < 128 ? tolower(wc) : _towcase(wc, 1);
+                uint32_t mp;
+                lwr = wc < 128 ? (uint32_t)tolower(wc) : _towcase(wc, 1);
                 c = sscanf(mapping, "%X", &mp);
                 if (*status == 'T')
                     mp = lwr;
