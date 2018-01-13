@@ -145,8 +145,13 @@ snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 
     if (unlikely(ret < 0)) {
         char errstr[128] = "snprintf_s: ";
-        strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+#ifdef __MINGW32__
+        if (errno == ERANGE)
+            strcat(errstr, "len exceeds dmax");
+        else
+#endif
+            strcat(errstr, strerror(errno));
+        handle_error(dest, dmax, errstr, ret);
     }
 
     return ret;
