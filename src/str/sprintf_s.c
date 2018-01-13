@@ -146,11 +146,15 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     /* GCC_DIAG_RESTORE */
     va_end(ap);
 
-    if (unlikely(ret >= (int)dmax)) {
+    if (unlikely(ret >= (int)dmax)
+#ifdef __MINGW32__
+        || (ret == -1 && errno == ERANGE)
+#endif
+        ) {
         handle_error(dest, dmax, "sprintf_s: len exceeds dmax",
                      ESNOSPC);
         errno = ESNOSPC;
-        return 0;
+        return -1;
     }
 
     if (unlikely(ret <= 0)) {

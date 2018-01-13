@@ -87,7 +87,7 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -97,7 +97,7 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -126,7 +126,7 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -136,7 +136,7 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -182,7 +182,7 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 12, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
 
 /*--------------------------------------------------*/
@@ -199,7 +199,7 @@ int test_vsprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -231,10 +231,10 @@ int test_vsprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    /* glibc allows illegal % specifiers, musl not. */
+    /* everybody incorrectly accepts illegal % specifiers, only musl not. */
     rc = vtprintf_s(str1, LEN, "%y");
-    /* TODO: win32, dietlibc, uClibc, minilibc */
-#if defined(__GLIBC__) || defined(BSD_ALL_LIKE)
+    /* TODO: dietlibc, uClibc, minilibc */
+#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) || defined(__MINGW32__)
     /* they print unknown formats verbatim */
     NOERR();
 #else

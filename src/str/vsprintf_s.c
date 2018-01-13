@@ -136,11 +136,15 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
     errno = 0;
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 
-    if (unlikely(ret >= (int)dmax)) {
+    if (unlikely(ret >= (int)dmax)
+#ifdef __MINGW32__
+        || (ret == -1 && errno == ERANGE)
+#endif
+        ) {
         handle_error(dest, dmax, "vsprintf_s: len exceeds dmax",
                      ESNOSPC);
         errno = ESNOSPC;
-        return 0;
+        return -1;
     }
 
     if (unlikely(ret < 0)) {

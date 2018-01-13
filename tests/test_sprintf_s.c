@@ -73,7 +73,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 1, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -83,7 +83,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 2, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -112,7 +112,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 1, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -122,7 +122,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 2, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
@@ -168,7 +168,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 12, "%s", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
 
 /*--------------------------------------------------*/
@@ -185,7 +185,7 @@ int test_sprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = sprintf_s(str1, 8, "%s", &str1[7]);
-    ERR(0);
+    ERR(-1);
     ERRNO(ESNOSPC)
     EXPNULL(str1)
 
