@@ -102,18 +102,6 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         return RCNEGATE(ESNULLP);
     }
 
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strncat_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strncat_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax is 0",
                    NULL, ESZEROL);
@@ -123,6 +111,20 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax exceeds max",
                    NULL, ESLEMAX);
+        return RCNEGATE(ESLEMAX);
+    }
+
+    if (unlikely(src == NULL)) {
+        invoke_safe_str_constraint_handler("strncat_s: src is null",
+                   NULL, ESNULLP);
+        *dest = '\0';
+        return RCNEGATE(ESNULLP);
+    }
+
+    if (unlikely(slen > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("strncat_s: slen exceeds max",
+                   NULL, ESLEMAX);
+        *dest = '\0';
         return RCNEGATE(ESLEMAX);
     }
 
