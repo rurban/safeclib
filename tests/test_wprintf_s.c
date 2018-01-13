@@ -58,7 +58,7 @@ int test_wprintf_s (void)
     strcpy(str, "34");
 
     rc = wprintf_s(L"%ls%s", wstr, str);
-    ERR(4)
+    ERRWCHAR(4)
 
 /*--------------------------------------------------*/
 

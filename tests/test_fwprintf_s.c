@@ -63,7 +63,7 @@ int test_fwprintf_s (void)
     strcpy(str, "34");
 
     rc = fwprintf_s(out, L"%ls%s", wstr, str);
-    ERR(4)
+    ERRWCHAR(4)
 
 /*--------------------------------------------------*/
     fclose(out);

@@ -77,7 +77,7 @@ int test_vfwprintf_s (void)
     strcpy(str, "34");
 
     rc = vtwprintf_s(out, L"%ls%s", wstr, str);
-    ERR(4)
+    ERRWCHAR(4)
 
 /*--------------------------------------------------*/
     fclose(out);

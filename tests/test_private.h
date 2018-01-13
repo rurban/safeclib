@@ -156,6 +156,22 @@
                      __FUNCTION__, __LINE__,  (int)rc); \
         errs++;                                    \
     }
+/* msvcrt wprintf prints one byte less. cygwin not */
+#ifdef __MINGW32__
+#define ERRWCHAR(n)                                \
+    if (rc != (n)-1) {                             \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#else
+#define ERRWCHAR(n)                                \
+    if (rc != (n)) {                               \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#endif
 #define ERRPTR(n)                                 \
     if (rc != (n)) {                              \
         debug_printf("%s %u  Error rc=%p \n",     \
