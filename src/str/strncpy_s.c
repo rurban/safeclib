@@ -111,15 +111,9 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         return RCNEGATE(ESLEMAX);
     }
 
-    /* hold base in case src was not copied */
-    orig_dmax = dmax;
-    orig_dest = dest;
-
     if (unlikely(src == NULL)) {
-        handle_error(orig_dest, orig_dmax, "strncpy_s: "
-                     "src is null",
+        handle_error(dest, strlen(dest), "strncpy_s: src is null",
                      ESNULLP);
-        *dest = '\0';
         return RCNEGATE(ESNULLP);
     }
 
@@ -128,21 +122,23 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
 #ifdef HAVE_C11
         return EOK;
 #else
-        handle_error(orig_dest, orig_dmax, "strncpy_s: "
-                     "slen is zero",
+        handle_error(dest, strlen(dest), "strncpy_s: slen is zero",
                      ESZEROL);
         return RCNEGATE(ESZEROL);
 #endif
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {
-        handle_error(orig_dest, orig_dmax, "strncpy_s: "
+        handle_error(dest, strlen(dest), "strncpy_s: "
                      "slen exceeds max",
                      ESLEMAX);
-        *dest = '\0';
         return RCNEGATE(ESLEMAX);
     }
 
+
+    /* hold base in case src was not copied */
+    orig_dmax = dmax;
+    orig_dest = dest;
 
     if (dest < src) {
        overlap_bumper = src;

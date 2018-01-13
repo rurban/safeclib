@@ -28,6 +28,7 @@ int test_strncpy_s (void)
     nlen = 5;
     rc = strncpy_s(NULL, LEN, str2, nlen);
     ERR(ESNULLP)
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");

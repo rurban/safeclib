@@ -23,11 +23,9 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = strncat_s(NULL, LEN, str2, LEN);
-    ERR(ESNULLP)
-/*--------------------------------------------------*/
+    strcpy(str1, "aaaaaaaaaa");
 
-    rc = strncat_s(str1, LEN, NULL, LEN);
+    rc = strncat_s(NULL, LEN, str2, LEN);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
 
@@ -40,7 +38,13 @@ int test_strncat_s (void)
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
+    EXPSTR(str1, "");
+/*--------------------------------------------------*/
+
+    rc = strncat_s(str1, LEN, NULL, LEN);
+    ERR(ESNULLP)
+    CHECK_SLACK(str1, LEN);
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");

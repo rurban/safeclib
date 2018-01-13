@@ -15,6 +15,7 @@ Changes in v15012018 3.2.0
         - Probe for broken strnstr, broken in newlib until Aug 2017.
         - Fixed mingw smokes on Appveyor, adjusted many tests using
           the native sec_api variants, which do deviate from safeclib.
+        - Clear dest on empty src with *ncpy_s and *ncat_s: PR #38 (Arjun Gour)
 
 Changes in v09102017 3.1.0
         Summary: With a non-C11 compiler not on windows the API didn't change, only docs.

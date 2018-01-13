@@ -22,11 +22,9 @@ int test_wcsncat_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = wcsncat_s(NULL, LEN, str2, LEN);
-    ERR(ESNULLP)
-/*--------------------------------------------------*/
+    wcscpy(str1, L"aaaaaaaaaa");
 
-    rc = wcsncat_s(str1, LEN, NULL, LEN);
+    rc = wcsncat_s(NULL, LEN, str2, LEN);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
 
@@ -39,7 +37,13 @@ int test_wcsncat_s (void)
 /*--------------------------------------------------*/
 
     rc = wcsncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
-    ERR(ESLEMAX)
+    ERR(ESLEMAX);
+    WEXPSTR(str1, L"");
+/*--------------------------------------------------*/
+
+    rc = wcsncat_s(str1, LEN, NULL, LEN);
+    ERR(ESNULLP)
+    WCHECK_SLACK(str1, LEN);
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaa");

@@ -78,8 +78,7 @@
  *
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
- *           greater than RSIZE_MAX_WSTR, then wcsncat_s sets dest[0] to the
- *           0 wide character.
+ *           greater than RSIZE_MAX_WSTR, then wcsncat_s nulls dest.
  * @retval  EOK        successful operation, all the wide characters from src
  *                     null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
@@ -119,21 +118,14 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(src == NULL)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        while (dmax) {  *dest = L'\0'; dmax--; dest++; }
-#else
-        *dest = L'\0';
-#endif
-        invoke_safe_str_constraint_handler("wcsncat_s: src is null",
-                   NULL, ESNULLP);
+        handle_werror(dest, wcslen(dest), "wcsncat_s: src is null",
+                     ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("wcsncat_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        *dest = L'\0';
+        handle_werror(dest, wcslen(dest), "wcsncat_s: slen exceeds max",
+                     ESNULLP);
         return RCNEGATE(ESLEMAX);
     }
 

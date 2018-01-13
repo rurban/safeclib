@@ -109,19 +109,9 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
         return RCNEGATE(ESLEMAX);
     }
 
-    /* hold base in case src was not copied */
-    orig_dmax = dmax;
-    orig_dest = dest;
-
     if (unlikely(src == NULL)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        while (dmax) {  *dest = L'\0'; dmax--; dest++; }
-#else
-        *dest = L'\0';
-#endif
-        invoke_safe_str_constraint_handler("wcsncpy_s: src is null",
-                   NULL, ESNULLP);
+        handle_werror(dest, wcslen(dest), "wcsncpy_s: slen is null",
+                     ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
@@ -130,20 +120,21 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
 #ifdef HAVE_C11
         return EOK;
 #else
-        handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
-                     "slen is zero",
+        handle_werror(dest, wcslen(dest), "wcsncpy_s: slen is zero",
                      ESZEROL);
         return RCNEGATE(ESZEROL);
 #endif
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {
-        handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
-                     "slen exceeds max",
+        handle_werror(dest, wcslen(dest), "wcsncpy_s: slen exceeds max",
                      ESLEMAX);
-        *dest = L'\0';
         return RCNEGATE(ESLEMAX);
     }
+
+    /* hold base in case src was not copied */
+    orig_dmax = dmax;
+    orig_dest = dest;
 
     if (dest < src) {
         overlap_bumper = src;

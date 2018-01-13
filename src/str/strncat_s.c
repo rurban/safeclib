@@ -78,8 +78,7 @@
  *
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
- *           greater than RSIZE_MAX_STR, then strncat_s sets dest[0] to the
- *           null character.
+ *           greater than RSIZE_MAX_STR, then strncat_s nulls dest.
  * @retval  EOK        successful operation, all the characters from src
  *                     null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
@@ -101,30 +100,24 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(dmax == 0)) {
+    else if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
+    else if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strncat_s: src is null",
-                   NULL, ESNULLP);
-        *dest = '\0';
+    else if (unlikely(src == NULL)) {
+        handle_error(dest, strlen(dest), "strncat_s: src is null",
+                     ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strncat_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        *dest = '\0';
+    else if (unlikely(slen > RSIZE_MAX_STR)) {
+        handle_error(dest, strlen(dest), "strncat_s: slen exceeds max",
+                     ESNULLP);
         return RCNEGATE(ESLEMAX);
     }
 
