@@ -1,7 +1,7 @@
 
                 ChangeLog file for safeclib
 
-Changes in vxx012018 3.1.0
+Changes in vxx012018 3.2.0
         - Removed ssize_t GNU extension (jeremyhannon)
         - Removed illegal warnings with C++
         - Fixed tests failing with C++
@@ -12,6 +12,7 @@ Changes in vxx012018 3.1.0
         - Changed 2 public APIs:
           int iswfc(uint32_t wc);
           int towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src);
+        - Probe for broken strnstr, broken in newlib until Aug 2017.
 
 Changes in v09102017 3.1.0
         Summary: With a non-C11 compiler not on windows the API didn't change, only docs.

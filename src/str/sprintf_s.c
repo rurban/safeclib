@@ -73,7 +73,7 @@
  *          invalid parameter handler is invoked. Unlike _snprintf,
  *          sprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
-
+ *
  * errno:   ESNULLP when \c dest/fmt is NULL pointer
  *          ESZEROL when \c dmax = 0
  *          ESLEMAX when \c dmax > \c RSIZE_MAX_STR

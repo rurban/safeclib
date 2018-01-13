@@ -238,7 +238,7 @@ my %gFuncConvertMap = (
     "strzero"        => "strzero_s",
     
     #    - BSD extensions
-    "strnstr"  => "strnlen_s",
+    #"strnstr"  => "strnlen_s", # broken in newlib
     "strlcat"  => "strcat_s",
     "strlcpy"  => "strcpy_s",
     "strsep"   => "??",

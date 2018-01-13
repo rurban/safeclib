@@ -582,6 +582,23 @@ return (towupper(0x1C80) == 0x412) ? 0 : 1;
 	[ AC_MSG_RESULT([no (cross)]) ])
 fi
 
+dnl cygwin had a broken strnstr until Aug 2017
+if test "x$ac_cv_func_strnstr" = "xyes"; then
+  AC_MSG_CHECKING([for strnstr usability])
+  AC_RUN_IFELSE( [AC_LANG_PROGRAM([[
+#include <string.h>
+]],
+        [[
+return strnstr("%s %n", "%n", 6) ? 0 : 1;
+]])],
+        [ AC_MSG_RESULT([yes])
+          ac_cv_strnstr_ok=yes
+          AC_DEFINE_UNQUOTED([HAVE_STRNSTR_OK], 1, [Define to 1 if 'strnstr' is usable.])
+	],
+	[ AC_MSG_RESULT([no]) ],
+	[ AC_MSG_RESULT([no (cross)]) ])
+fi
+
 dnl this user choice needs to probe first for the default
 AC_ARG_ENABLE(wchar,
 	AS_HELP_STRING([--disable-wchar],

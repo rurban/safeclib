@@ -131,6 +131,9 @@ void abort(void) __attribute__((noreturn));
 
 #ifndef HAVE_STRNSTR
 #define strnstr(a,b,c) strstr(a,b)
+/* broken in cygwin/newlib until Aug 2017 */
+#elif !defined HAVE_STRNSTR_OK
+#define strnstr(a,b,c) strstr(a,b)
 #endif
 
 #define EXPORT_SYMBOL(sym)
