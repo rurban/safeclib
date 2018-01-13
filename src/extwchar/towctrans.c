@@ -401,13 +401,13 @@ _towcase(uint32_t wc, int lower)
 EXPORT uint32_t
 _towupper(uint32_t wc)
 {
-    return (unsigned)wc < 128 ? (wint_t)toupper(wc) : _towcase(wc, 0);
+    return wc < 128 ? (uint32_t)toupper(wc) : _towcase(wc, 0);
 }
 #ifndef HAVE_TOWUPPER
 EXPORT uint32_t
 towupper(uint32_t wc)
 {
-    return (unsigned)wc < 128 ? (wint_t)toupper(wc) : _towcase(wc, 0);
+    return wc < 128 ? (uint32_t)toupper(wc) : _towcase(wc, 0);
 }
 #endif
 
