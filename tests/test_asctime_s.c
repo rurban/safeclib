@@ -9,6 +9,26 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
+#if defined(_WIN32) && defined(HAVE_ASCTIME_S)
+# define USE_MSVCRT
+#endif
+
+#ifdef USE_MSVCRT
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (winerr)) {                          \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#else
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (n)) {                               \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#endif
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -29,18 +49,18 @@ int test_asctime_s (void)
 /*--------------------------------------------------*/
 
     rc = asctime_s(NULL, 0, tm);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP,EINVAL);
 
     rc = asctime_s(str1, LEN, NULL);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = asctime_s(str1, 25, tm);
-    ERR(ESLEMIN);
+    ERR_MSVC(ESLEMIN,EINVAL);
 
     rc = asctime_s(str1, RSIZE_MAX_STR+1, tm);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX,0);
 
 /*--------------------------------------------------*/
 
@@ -70,10 +90,12 @@ int test_asctime_s (void)
     TM_RANGE(hour, 0, 23);
     TM_RANGE(mday, 1, 31);
     TM_RANGE(mon,  0, 11);
+#ifndef USE_MSVCRT
     TM_RANGE(year, 0, 8099);
     TM_RANGE(wday, 0, 6);
     TM_RANGE(yday, 0, 365);
     TM_RANGE(isdst,0, 1);
+#endif
 
     /* stack buffer branch */
     tm = gmtime(&timet);

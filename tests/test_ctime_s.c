@@ -9,6 +9,26 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
+#if defined(_WIN32) && defined(HAVE_CTIME_S)
+# define USE_MSVCRT
+#endif
+
+#ifdef USE_MSVCRT
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (winerr)) {                          \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#else
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (n)) {                               \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#endif
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -24,18 +44,18 @@ int test_ctime_s (void)
 /*--------------------------------------------------*/
 
     rc = ctime_s(NULL, 0, &timer);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP,EINVAL);
 
     rc = ctime_s(str1, LEN, NULL);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = ctime_s(str1, 25, &timer);
-    ERR(ESLEMIN);
+    ERR_MSVC(ESLEMIN,EINVAL);
 
     rc = ctime_s(str1, RSIZE_MAX_STR+1, &timer);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX,0);
 
 /*--------------------------------------------------*/
 
@@ -45,7 +65,7 @@ int test_ctime_s (void)
 
     timer = -1;
     rc = ctime_s(str1, LEN, &timer);
-    ERR(ESLEMIN);
+    ERR_MSVC(ESLEMIN,EINVAL);
 
     {
         struct tm *tm = gmtime(&timer);
