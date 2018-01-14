@@ -96,6 +96,8 @@
  * @pre Copying shall not take place between objects that overlap.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
+ * @note On the msvcrt with a NULL dest pointer, the retval length is limited
+ *       by the src \c len. In other libc's \c len is ignored.
  *
  * @return  If there is a runtime-constraint violation, then if \c dest
  *          is not a null pointer and \c dmax is greater than zero and
