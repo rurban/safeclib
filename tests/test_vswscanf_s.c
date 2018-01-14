@@ -38,7 +38,11 @@ static int test_vswscanf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtwscanf_s(wstr1, NULL, NULL);
+#ifndef __MINGW32__
     ERREOF(ESNULLP);
+#else
+    ERRNO(0);
+#endif
 
 /*--------------------------------------------------*/
 

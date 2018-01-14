@@ -91,6 +91,11 @@ swscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt, ...)
         errno = ESNULLP;
         return EOF;
     }
+#ifdef __MINGW32__
+    if (unlikely(!*buffer)) {
+        return EOF;
+    }
+#endif
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("swscanf_s: fmt is null",

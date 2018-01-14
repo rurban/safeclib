@@ -99,6 +99,11 @@ fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
         errno = ESNULLP;
         return EOF;
     }
+#ifdef __MINGW32__
+    if (unlikely(!*fmt)) {
+        return EOF;
+    }
+#endif
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
     if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {

@@ -27,6 +27,9 @@ int test_swscanf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifdef __MINGW32__
+    wcscpy(wstr1, L" ");
+#endif
     rc = swscanf_s(wstr1, NULL, NULL);
     ERREOF(ESNULLP);
 
@@ -69,7 +72,11 @@ int test_swscanf_s (void)
     rc = swscanf_s(wstr1, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
+#ifndef __MINGW32__
     EXPSTR(str3, "24");
+#else
+    EXPSTR(str3, "2");
+#endif
 
     rc = swscanf_s(wstr1, L" %d", &len1);
     ERR(1);

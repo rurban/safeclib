@@ -74,7 +74,11 @@ int test_wscanf_s (void)
     rc = wscanf_s(L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
+#ifndef __MINGW32__
     EXPSTR(str3, "24");
+#else
+    EXPSTR(str3, "2");
+#endif
 
     stuff_stdin(L"      24");
     rc = wscanf_s(L" %d", &len1);
@@ -121,7 +125,11 @@ int test_wscanf_s (void)
     stuff_stdin(wstr1);
 
     rc = wscanf_s(L"%ls", wstr2, LEN);
+#ifndef __MINGW32__
     ERR(-1);
+#else
+    ERR(0);
+#endif
     WEXPNULL(wstr2);
 
 /*--------------------------------------------------*/
@@ -130,7 +138,11 @@ int test_wscanf_s (void)
     stuff_stdin(wstr1);
 
     rc = wscanf_s(L"%ls", wstr2, LEN);
-    ERR(-1)
+#ifndef __MINGW32__
+    ERR(-1);
+#else
+    ERR(0);
+#endif
     WEXPNULL(wstr2);
 
 /*--------------------------------------------------*/
