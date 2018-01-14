@@ -12,10 +12,29 @@
 #define LEN   ( 128 )
 
 #if defined(_WIN32) && defined(HAVE_WCSTOK_S)
+# define USE_MSVCRT
 # ifndef MINGW_HAS_SECURE_API
   wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context);
 # endif
 # define wcstok_s(dest, dmax, delim, ptr) wcstok_s(dest, delim, ptr)
+#endif
+
+#ifdef USE_MSVCRT
+/* msvcrt also doesn't reset errno */
+#define ERRNO_MSVC(n, winerr)                      \
+    if (errno != (winerr)) {                       \
+        debug_printf("%s %u  Error errno=%d \n",   \
+                     __FUNCTION__, __LINE__,  (int)errno); \
+        errs++;                                    \
+    }                                              \
+    errno = 0
+#else
+#define ERRNO_MSVC(n, winerr)                      \
+    if (errno != (n)) {                            \
+        debug_printf("%s %u  Error errno=%d \n",   \
+                     __FUNCTION__, __LINE__,  (int)errno); \
+        errs++;                                    \
+    }
 #endif
 
 int main()
@@ -30,46 +49,51 @@ int main()
     int errs = 0;
 
 /*--------------------------------------------------*/
-
+#ifdef USE_MSVCRT
+    wcscpy(str1, L"aaaaaaaa");
+    wcscpy(str2, L"fedcba");
+#endif
     len = LEN;
+
     rc = wcstok_s(NULL, &len, str2, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    /* msvcrt also doesn't reset errno */
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
     rc = wcstok_s(str1, NULL, str2, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, 0);
 
 /*--------------------------------------------------*/
 
     len = 0;
     rc = wcstok_s(str1, &len, str2, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESZEROL);
+    ERRNO_MSVC(ESZEROL, 0);
 
 /*--------------------------------------------------*/
 
     len = RSIZE_MAX_STR + 1;
     rc = wcstok_s(str1, &len, str2, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESLEMAX);
+    ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     len = LEN;
     rc = wcstok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
     len = 0;
     rc = wcstok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESZEROL);
+    ERRNO_MSVC(ESZEROL, EINVAL);
 
     len = LEN;
     rc = wcstok_s(str1, &len, str2, NULL);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
@@ -81,7 +105,7 @@ int main()
 
     p2tok = wcstok_s(str1, &len, str2, &p2str);
     if (p2tok) {
-        debug_printf("%s %u token -%ls-  remaining -%ls-  \n",
+        debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -96,11 +120,13 @@ int main()
 
     p2tok = wcstok_s(str1, &len, str2, &p2str);
     if (p2tok) {
-        debug_printf("%s %u token -%ls-  remaining -%ls-  \n",
+#ifndef USE_MSVCRT /* has no dmax arg */
+        debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
+#endif
     }
-    ERRNO(ESUNTERM);
+    ERRNO_MSVC(ESUNTERM, 0);
 
 /*--------------------------------------------------*/
 
@@ -111,7 +137,7 @@ int main()
 
     p2tok = wcstok_s(str1, &len, str2, &p2str);
     if (!p2tok) {
-        debug_printf("%s %u token -%ls-  remaining -%ls-  \n",
+        debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -127,11 +153,11 @@ int main()
 
     p2tok = wcstok_s(str1, &len, str2, &p2str);
     if (!p2tok) {
-        debug_printf("%s %u token -null-  remaining -%ls-  \n",
+        debug_printf("%s %u token -null-  remaining -%ls- Error \n",
                      __FUNCTION__, __LINE__, p2str);
         errs++;
     } else if (wcscmp(p2tok, L"mnopqrst")) {
-        debug_printf("%s %u token -%ls-  remaining -%ls-  \n",
+        debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -143,7 +169,7 @@ int main()
 
     p2tok = wcstok_s(p2str, &len, str2, &p2str);
     if (p2tok) {
-        debug_printf("%s %u token -%ls-  remaining -%ls-  \n",
+        debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -162,7 +188,7 @@ int main()
     ERRNO(EOK);
 
     if (wcscmp(p2tok, L"a") ) {
-        debug_printf("%s %u token -%ls-  -%ls- len=%d \n",
+        debug_printf("%s %u token -%ls-  -%ls- len=%d Error \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
@@ -180,7 +206,7 @@ int main()
     ERRNO(EOK);
 
     if (wcscmp(p2tok, L"??b") ) {
-        debug_printf("%s %u token -%ls-  -%ls- len=%d \n",
+        debug_printf("%s %u token -%ls-  -%ls- len=%d Error \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
@@ -295,7 +321,7 @@ int main()
             debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
         } else {
-            ERRNO(ESUNTERM);
+            ERRNO_MSVC(ESUNTERM, 0);
         }
     }
 /*--------------------------------------------------*/
@@ -321,7 +347,7 @@ int main()
             debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
         } else {
-            ERRNO(ESUNTERM);
+            ERRNO_MSVC(ESUNTERM, 0);
         }
     }
 /*--------------------------------------------------*/

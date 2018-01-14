@@ -12,10 +12,29 @@
 #define LEN   ( 128 )
 
 #if defined(_WIN32) && defined(HAVE_STRTOK_S)
+# define USE_MSVCRT
 # ifndef MINGW_HAS_SECURE_API
   char* strtok_s(char *_Str, const char *_Delim, char **_Context);
 # endif
 # define strtok_s(dest, dmax, delim, ptr) strtok_s(dest, delim, ptr)
+#endif
+
+#ifdef USE_MSVCRT
+/* msvcrt also doesn't reset errno */
+#define ERRNO_MSVC(n, winerr)                      \
+    if (errno != (winerr)) {                       \
+        debug_printf("%s %u  Error errno=%d \n",   \
+                     __FUNCTION__, __LINE__,  (int)errno); \
+        errs++;                                    \
+    }                                              \
+    errno = 0
+#else
+#define ERRNO_MSVC(n, winerr)                      \
+    if (errno != (n)) {                            \
+        debug_printf("%s %u  Error errno=%d \n",   \
+                     __FUNCTION__, __LINE__,  (int)errno); \
+        errs++;                                    \
+    }
 #endif
 
 int main()
@@ -31,45 +50,51 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifdef USE_MSVCRT
+    strcpy(str1, "aaaaaaaa");
+    strcpy(str2, "fedcba");
+#endif
     len = LEN;
+
     rc = strtok_s(NULL, &len, str2, NULL);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    /* msvcrt also doesn't reset errno */
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
     rc = strtok_s(str1, NULL, str2,  &p2str);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, 0);
 
 /*--------------------------------------------------*/
 
     len = 0;
     rc = strtok_s(str1, &len, str2,  &p2str);
     ERRPTR(NULL);
-    ERRNO(ESZEROL);
+    ERRNO_MSVC(ESZEROL, 0);
 
 /*--------------------------------------------------*/
 
     len = RSIZE_MAX_STR + 1;
     rc = strtok_s(str1, &len, str2,  &p2str);
     ERRPTR(NULL);
-    ERRNO(ESLEMAX);
+    ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     len = LEN;
     rc = strtok_s(str1, &len, NULL,  &p2str);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
     len = 0;
     rc = strtok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
-    ERRNO(ESZEROL);
+    ERRNO_MSVC(ESZEROL, EINVAL);
 
     len = LEN;
     rc = strtok_s(str1, &len, str2, NULL);
     ERRPTR(NULL);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
@@ -81,7 +106,7 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok != NULL) {
-        debug_printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -96,11 +121,13 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok != NULL) {
-        debug_printf("%s %u token -%s-  remaining -%s-  \n",
+#ifndef USE_MSVCRT /* has no dmax arg */
+        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
+#endif
     }
-    ERRNO(ESUNTERM);
+    ERRNO_MSVC(ESUNTERM, 0);
 
 /*--------------------------------------------------*/
 
@@ -111,7 +138,7 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok == NULL) {
-        debug_printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -127,12 +154,12 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok == NULL) {
-        debug_printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
     if (strcmp(p2tok, "mnopqrst")) {
-        debug_printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
@@ -144,14 +171,13 @@ int main()
 
     p2tok = strtok_s(p2str, &len, str2, &p2str);
     if (p2tok != NULL) {
-        debug_printf("%s %u token -%s-  remaining -%s-  \n",
+        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
                      __FUNCTION__, __LINE__,  p2tok, p2str);
         errs++;
     }
     ERRNO(EOK);
     /* printf("token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len ); */
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 /** [1] **/
     /*debug_printf("test: %u \n", __LINE__);*/
@@ -165,7 +191,7 @@ int main()
     ERRNO(EOK);
 
     if (strcmp(p2tok, "a") ) {
-        debug_printf("%s %u token -%s-  -%s- len=%d \n",
+        debug_printf("%s %u token -%s-  -%s- len=%d error \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
@@ -183,7 +209,7 @@ int main()
     ERRNO(EOK);
 
     if (strcmp(p2tok, "??b") ) {
-        debug_printf("%s %u token -%s-  -%s- len=%d \n",
+        debug_printf("%s %u token -%s-  -%s- len=%d error \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
     }
@@ -303,7 +329,7 @@ int main()
             ERRNO(EOK);
             debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
         } else {
-            ERRNO(ESUNTERM);
+            ERRNO_MSVC(ESUNTERM, 0);
         }
     }
 /*--------------------------------------------------*/
@@ -330,7 +356,7 @@ int main()
             ERRNO(EOK);
             debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
         } else {
-            ERRNO(ESUNTERM);
+            ERRNO_MSVC(ESUNTERM, 0);
         }
     }
 /*--------------------------------------------------*/
