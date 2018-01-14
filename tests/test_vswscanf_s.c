@@ -73,7 +73,11 @@ static int test_vswscanf_s (void)
     rc = vtwscanf_s(wstr1, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
+#ifndef __MINGW32__
     EXPSTR(str3, "24");
+#else
+    EXPSTR(str3, "2");
+#endif
 
     rc = vtwscanf_s(wstr1, L" %d", &len1);
     ERR(1);
