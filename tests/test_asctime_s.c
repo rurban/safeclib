@@ -63,7 +63,9 @@ int test_asctime_s (void)
     ERR(EOK)
 
 
+#ifndef __MINGW32__
     TM_RANGE(sec,  0, 60);
+#endif
     TM_RANGE(min,  0, 59);
     TM_RANGE(hour, 0, 23);
     TM_RANGE(mday, 1, 31);

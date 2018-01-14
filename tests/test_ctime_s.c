@@ -63,7 +63,11 @@ int test_ctime_s (void)
 
     /* eg. 313360441200L */
     rc = ctime_s(str1, LEN, &timer);
+#ifndef __MINGW32__
     ERR(ESLEMAX);
+#else
+    ERR(0);
+#endif
 
 /*--------------------------------------------------*/
 
