@@ -12,6 +12,26 @@
 
 #define TMP "tmpfopen"
 
+#if defined(_WIN32) && defined(HAVE_FOPEN_S)
+# define USE_MSVCRT
+#endif
+
+#ifdef USE_MSVCRT
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (winerr)) {                          \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#else
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (n)) {                               \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#endif
+
 int test_fopen_s (void)
 {
     errno_t rc;
@@ -21,13 +41,13 @@ int test_fopen_s (void)
 /*--------------------------------------------------*/
 
     rc = fopen_s(NULL, TMP, "r");
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     rc = fopen_s(&tmp, NULL, "r");
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     rc = fopen_s(&tmp, TMP, NULL);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
