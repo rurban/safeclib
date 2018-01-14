@@ -34,6 +34,8 @@ CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
     gmake -s -j4 check-log || exit
 CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check-log || exit
+CC="gcc-mp-7" ./configure --enable-unsafe && \
+    gmake -s -j4 check-log || exit
 CC="g++-mp-6 -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
     $make -s -j4 check-log || exit
 CC=gcc-mp-6 \
@@ -86,6 +88,9 @@ CC="clang-5.0" \
 CC="clang-6.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
+# retpoline
+CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure && \
+    make -s -j4 check-log
 make -s clean
 ./configure --disable-wchar && \
     $make -s -j4 -f Makefile.kernel || exit

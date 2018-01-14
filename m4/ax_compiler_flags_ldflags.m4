@@ -26,7 +26,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 10
+#serial 11
 
 AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
     AX_REQUIRE_DEFINED([AX_APPEND_LINK_FLAGS])
@@ -63,7 +63,21 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         [AM_LDFLAGS],[$ax_compiler_flags_test])
     AX_APPEND_LINK_FLAGS([-Wl,-z,noexecstack],
         [AM_LDFLAGS],[$ax_compiler_flags_test])
-    # textonly, retpolineplt not yet
+    dnl /usr/bin/ld: warning: -z retpolineplt ignored.
+    case $RETPOLINE_CFLAGS in
+        *-mretpoline*|*-mindirect-branch=thunk-extern*)
+            AX_APPEND_LINK_FLAGS([-Wl,-z,retpolineplt],
+                [RETPOLINE_LDFLAGS],[$ax_compiler_flags_test])
+            if test -n "$RETPOLINE_LDFLAGS"; then
+                AM_CFLAGS="$AM_CFLAGS $RETPOLINE_CFLAGS"
+                AM_LDFLAGS="$AM_LDFLAGS $RETPOLINE_LDFLAGS"
+                AX_APPEND_LINK_FLAGS([-Wl,-z,textonly],
+                    [AM_LDFLAGS],[$ax_compiler_flags_test])
+            else
+                AC_MSG_WARN([Your LD does not support -z,retpolineplt try -fuse-ld=lld-7])
+            fi
+            ;;
+    esac
 
     # macOS linker speaks with a different accent
     ax_compiler_flags_fatal_warnings_option=""

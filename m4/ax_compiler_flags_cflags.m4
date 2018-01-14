@@ -26,7 +26,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 16
+#serial 17
 
 AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AC_REQUIRE([AC_PROG_SED])
@@ -64,6 +64,16 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     ],[
         ax_compiler_no_suggest_attribute_flags=""
     ])
+
+    # retpoline: clang-7. Note: requires lld-7 linker support
+    AX_APPEND_COMPILE_FLAGS(["-mretpoline -DRETPOLINE"],
+        [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
+    # or the equivalent gcc-7.3 variant
+    if test -z "$RETPOLINE_CFLAGS"; then
+        AX_APPEND_COMPILE_FLAGS(
+          ["-mindirect-branch=thunk-extern -mfunction-return=thunk-extern -mindirect-branch-register -DRETPOLINE"],
+          [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
+    fi
 
     # Base flags
     AX_APPEND_COMPILE_FLAGS([ dnl
