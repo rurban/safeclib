@@ -45,7 +45,7 @@ int test_fwscanf_s (void)
 /*--------------------------------------------------*/
 
 /* This pipe does not work on windows */
-#ifndef __MINGW32__
+#ifndef _WIN32
     pipe(p);
     f = fdopen(p[0], "rb");
     if (!f) {
@@ -78,13 +78,13 @@ int test_fwscanf_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef __MINGW32__
+#ifndef _WIN32
     write(p[1], L"      24", sizeof(L"      24"));
 #else
     stuff_stream(L"      24");
 #endif
     rc = fwscanf_s(f, L"%ls %n", wstr2, LEN, &ind);
-#ifndef __MINGW32__
+#ifndef _WIN32
     ERREOF(EINVAL);
 #else
     ERREOF(ESNULLP);
@@ -110,7 +110,7 @@ int test_fwscanf_s (void)
     rc = fwscanf_s(stream, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
-#ifndef __MINGW32__
+#ifndef _WIN32
     EXPSTR(str3, "24");
 #else
     EXPSTR(str3, "2");
@@ -231,7 +231,6 @@ int test_fwscanf_s (void)
    until a better solution can be created. */
 int main (void)
 {
-    SKIP_APPVEYOR(str3); /* mingw really */
     return (test_fwscanf_s());
 }
 #endif

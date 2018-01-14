@@ -54,6 +54,7 @@ static int test_vfwscanf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef _WIN32
     pipe(p);
     f = fdopen(p[0], "rb");
     if (!f) {
@@ -63,6 +64,9 @@ static int test_vfwscanf_s (void)
     }
 
     write(p[1], L"a", sizeof(L"a"));
+#else
+    stuff_stream(L"a");
+#endif
     wstr2[0] = '\0';
     rc = vtwscanf_s(NULL, L"%ls", wstr2, LEN);
     ERREOF(ESNULLP);
@@ -77,10 +81,17 @@ static int test_vfwscanf_s (void)
     */
 
 /*--------------------------------------------------*/
-
+#ifndef _WIN32
     write(p[1], L"      24", sizeof(L"      24"));
+#else
+    stuff_stream(L"      24");
+#endif
     rc = vtwscanf_s(f, L"%ls %n", wstr2, LEN, &ind);
+#ifndef _WIN32
     ERREOF(EINVAL);
+#else
+    ERREOF(ESNULLP);
+#endif
 
     stuff_stream(L"      24");
     rc = vtwscanf_s(stream, L"%ls %%n", wstr2, LEN);
@@ -102,7 +113,11 @@ static int test_vfwscanf_s (void)
     rc = vtwscanf_s(stream, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
+#ifndef _WIN32
     EXPSTR(str3, "24");
+#else
+    EXPSTR(str3, "2");
+#endif
 
     stuff_stream(L"      24");
     rc = vtwscanf_s(stream, L" %d", &len1);
@@ -228,7 +243,6 @@ static int test_vfwscanf_s (void)
    until a better solution can be created. */
 int main (void)
 {
-    SKIP_APPVEYOR(str3);
     return (test_vfwscanf_s());
 }
 #endif
