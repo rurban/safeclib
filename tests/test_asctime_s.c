@@ -64,15 +64,15 @@ int test_asctime_s (void)
 
 /*--------------------------------------------------*/
 
-#define TM_RANGE(memb, mmin, mmax) \
+#define TM_RANGE(memb, mmin, mmax)      \
     old = tm->tm_##memb;                \
     tm->tm_##memb = mmin-1;             \
     rc = asctime_s(str1, LEN, tm);      \
-    ERR(ESLEMIN);                       \
+    ERR_MSVC(ESLEMIN, EINVAL);          \
                                         \
     tm->tm_##memb = mmax+1;             \
     rc = asctime_s(str1, LEN, tm);      \
-    ERR(ESLEMAX);                       \
+    ERR_MSVC(ESLEMAX, EINVAL);          \
                                         \
     tm->tm_##memb = mmin;               \
     rc = asctime_s(str1, LEN, tm);      \

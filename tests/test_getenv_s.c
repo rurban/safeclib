@@ -10,7 +10,27 @@
 #include "safe_lib.h"
 #include <stdlib.h>
 
-#define LEN   ( 2048 )
+#if defined(_WIN32) && defined(HAVE_GETENV_S)
+# define USE_MSVCRT
+#endif
+
+#ifdef USE_MSVCRT
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (winerr)) {                          \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#else
+#define ERR_MSVC(n, winerr)                        \
+    if (rc != (n)) {                               \
+        debug_printf("%s %u  Error rc=%d \n",      \
+                     __FUNCTION__, __LINE__,  (int)rc); \
+        errs++;                                    \
+    }
+#endif
+
+#define LEN   ( 4090 )
 
 static char   dest[LEN];
 
@@ -26,25 +46,25 @@ int test_getenv_s (void)
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, NULL, LEN, name);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     rc = getenv_s(&len, dest, LEN, NULL);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, 0);
 
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, dest, 0, name);
-    ERR(ESZEROL);
+    ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, dest, RSIZE_MAX_STR+1, name);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, dest, 1, name);
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC, 34);
 
 /*--------------------------------------------------*/
 
@@ -53,20 +73,24 @@ int test_getenv_s (void)
     str2 = getenv(name);
     EXPSTR(dest, str2);
     ind = strlen(str2);
+#ifndef USE_MSVCRT    
     INDCMP(!= (int)len);
+#endif
 
     rc = getenv_s(NULL, dest, LEN, name);
-    ERR(EOK);
+    ERR_MSVC(EOK, EINVAL);
     EXPSTR(dest, str2);
 
 /*--------------------------------------------------*/
 
     rc = getenv_s(NULL, dest, LEN, "c#hewhc&wehc%erwhc$weh");
-    ERR(-1);
+    ERR_MSVC(-1, EINVAL);
+#ifndef USE_MSVCRT    
     EXPNULL(dest);
+#endif
 
     rc = getenv_s(&len, dest, LEN, "c#hewhc&wehc%erwhc$weh");
-    ERR(-1);
+    ERR_MSVC(-1, 0);
     ind = len;
     INDCMP(!= 0);
     EXPNULL(dest);

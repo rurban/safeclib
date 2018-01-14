@@ -556,13 +556,18 @@ AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
                 bcmp secure_getenv memset_s timingsafe_memcmp timingsafe_bcmp \
                 asctime_r ctime_r gmtime_r localtime_r memcpy_s \
-                asctime_s ctime_s fopen_s freopen_s \
+                asctime_s ctime_s fopen_s freopen_s getenv_s \
                 vsnwprintf_s strtok_s vsnprintf_s wcstok_s ])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
+AM_CONDITIONAL([HAVE_ASCTIME_S], [test "x$ac_cv_func_asctime_s" = "xyes"])
+AM_CONDITIONAL([HAVE_CTIME_S],   [test "x$ac_cv_func_ctime_s" = "xyes"])
+AM_CONDITIONAL([HAVE_GETENV_S],  [test "x$ac_cv_func_getenv_s" = "xyes"])
+AM_CONDITIONAL([HAVE_FOPEN_S],   [test "x$ac_cv_func_fopen_s" = "xyes"])
+AM_CONDITIONAL([HAVE_FREOPEN_S], [test "x$ac_cv_func_freopen_s" = "xyes"])
 AM_CONDITIONAL([HAVE_TIMINGSAFE_BCMP],
    [test "x$ac_cv_func_timingsafe_memcmp" = "xyes" -a "x$ac_cv_func_timingsafe_bcmp" = "xyes" ])
 
