@@ -54,6 +54,10 @@
  * @pre  dmax shall not equal zero.
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
  *
+ * @note     On mingw with \c MINGW_HAS_SECURE_API this API is forceinline'd
+ *           and the native \c wcsnlen_s with the msvcrt has a different dmax limit:
+ *           \c INT_MAX.
+ *
  * @return   The function returns the wide string length, excluding  the terminating
  *           null character.  If \c dest is NULL, then \c wcsnlen_s returns 0.
  *           Otherwise, the \c wcsnlen_s function returns the number of wide characters

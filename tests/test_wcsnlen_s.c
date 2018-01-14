@@ -41,11 +41,28 @@ int test_wcsnlen_s (void)
 
     max_len = RSIZE_MAX_WSTR+1;
     len = wcsnlen_s(L"test", max_len);
+    /* They allow more */
+#if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
+#else
+    if (max_len < INT_MAX) {
+        if (len != 4) {
+            debug_printf("%s %u   Len=%u \n",
+                         __FUNCTION__, __LINE__,  (unsigned)len);
+            errs++;
+        }
+    } else {
+        if (len != 0) {
+            debug_printf("%s %u   Len=%u \n",
+                         __FUNCTION__, __LINE__,  (unsigned)len);
+            errs++;
+        }
+    }
+#endif
 /*--------------------------------------------------*/
 
     std_len = strlen("");
