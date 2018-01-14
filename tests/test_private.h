@@ -95,6 +95,9 @@
 #if defined(__NEWLIB__) || defined(BSD_LIKE)
 # define BSD_OR_NEWLIB_LIKE
 #endif
+#if defined(__MINGW32__) || defined( BSD_OR_NEWLIB_LIKE)
+# define BSD_OR_WINDOWS_LIKE
+#endif
 #if defined(__APPLE__) || defined(__NEWLIB__) || defined(BSD_LIKE)
 # define BSD_ALL_LIKE
 #endif

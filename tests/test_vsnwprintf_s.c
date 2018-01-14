@@ -200,7 +200,7 @@ int test_vsnwprintf_s (void)
 
     /* XXX valgrind error in __vfprintf */
     rc = vtwprintf_s(str1, 10, L"%vls", str2);
-#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+#if defined(__GLIBC__) || defined(BSD_OR_WINDOWS_LIKE)
     /* they print unknown formats verbatim */
     NOERR();
 #else /* musl and darwin disallow this */
@@ -215,7 +215,7 @@ int test_vsnwprintf_s (void)
         /* not the fast stack-branch */
         wstr3 = (wchar_t*)malloc(513);
         rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
-#if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE)
+#if defined(__GLIBC__) || defined(BSD_OR_WINDOWS_LIKE)
         /* they print unknown formats verbatim */
         NOERR();
 #else /* musl and darwin disallow this */
