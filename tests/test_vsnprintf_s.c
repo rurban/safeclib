@@ -8,6 +8,10 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
+#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
+#define USE_MSVCRT
+#endif
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -17,7 +21,7 @@ int vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...
     int rc;
     va_list ap;
     va_start(ap, fmt);
-#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
+#ifdef USE_MSVCRT
     rc = vsnprintf_s(dest, dmax, 20, fmt, ap);
 #else
     rc = vsnprintf_s(dest, dmax, fmt, ap);
@@ -44,17 +48,29 @@ int test_vsnprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, LEN, NULL, NULL);
+#ifndef USE_MSVCRT
     NEGERR(ESNULLP)
+#else
+    ERR(-1)
+#endif
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
+#ifndef USE_MSVCRT
     NEGERR(ESZEROL)
+#else
+    ERR(-1)
+#endif
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
+#ifndef USE_MSVCRT
     NEGERR(ESLEMAX)
+#else
+    ERR(0)
+#endif
 
 /*--------------------------------------------------*/
 
@@ -62,7 +78,11 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
+#ifndef USE_MSVCRT
     ERR(14)
+#else
+    ERR(-1)
+#endif
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -71,7 +91,11 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
+#ifndef USE_MSVCRT
     ERR(14)
+#else
+    ERR(-1)
+#endif
 
 /*--------------------------------------------------*/
 
@@ -98,8 +122,13 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 5, "%s", str2);
+#ifndef __MINGW32__
     NOERRNULL() /* no ENOSPC */
     EXPSTR(str1, "keep")
+#else
+    ERR(-1);
+    EXPSTR(str1, "")
+#endif
 
 /*--------------------------------------------------*/
 
@@ -107,8 +136,13 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-    ERR(14)
+#ifndef __MINGW32__
+    ERR(14) /* sic! unsafe */
     EXPSTR(str1, "k")
+#else
+    ERR(-1);
+    EXPSTR(str1, "")
+#endif
 
 /*--------------------------------------------------*/
 
@@ -152,7 +186,12 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 12, "%s", str2);
+#ifndef __MINGW32__
     ERR(14) /* sic! unsafe */
+#else
+    ERR(-1);
+    EXPSTR(str1, "")
+#endif
 
 /*--------------------------------------------------*/
 
@@ -168,7 +207,12 @@ int test_vsnprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
+#ifndef __MINGW32__
     ERR(13) /* sic! unsafe */
+#else
+    ERR(-1);
+    EXPSTR(str1, "")
+#endif
 
 /*--------------------------------------------------*/
 
