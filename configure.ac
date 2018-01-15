@@ -364,6 +364,13 @@ ax_cv_check_ldflags___Wl__fatal_warnings=no
 dnl sprintf_s passing through to vsnprintf_s
 ax_cv_check_cflags__Wformat_2=no
 ax_cv_check_cflags__Wformat_nonliteral=no
+dnl windows mult. decl are not properly sorted out yet
+case $host_os in
+  mingw*|cygwin*|msys*)
+    ax_cv_check_cflags__Wredundant_decls=no
+    ax_enable_compile_warnings=yes
+    ;;
+esac
 dnl gcc 4.2 fails with -Wmissing-format-attribute
 dnl https://gcc.gnu.org/bugzilla/show_bug.cgi?id=28492
 if test "x$GCC" != "x" ; then
@@ -408,13 +415,18 @@ int mysprintf(char *dest, const char *fmt, ...) {
 fi
 AX_COMPILER_FLAGS
 case $host_os in
-     mingw*|cygwin*)
-        WARN_CFLAGS="-Wall -Wextra"
-        dnl gcc 3.4 cannot do -Wno-attributes
-        AX_CHECK_COMPILE_FLAG([-Wno-attributes],[
-          WARN_CFLAGS="$WARN_CFLAGS -Wno-attributes"
-        ],[])
-        ;;
+  mingw*|cygwin*)
+    WARN_CFLAGS="-Wall -Wextra"
+    ;;
+esac
+dnl windows mult. decl are not properly sorted out yet
+case $host_os in
+  mingw*|cygwin*|msys*)
+    dnl gcc 3.4 cannot do -Wno-attributes
+    AX_CHECK_COMPILE_FLAG([-Wno-attributes],[
+      WARN_CFLAGS="$WARN_CFLAGS -Wno-attributes"
+    ],[])
+    ;;
 esac
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
