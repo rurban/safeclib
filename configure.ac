@@ -578,8 +578,12 @@ AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
                 bcmp secure_getenv memset_s timingsafe_memcmp timingsafe_bcmp \
                 asctime_r ctime_r gmtime_r localtime_r memcpy_s \
-                asctime_s ctime_s fopen_s freopen_s getenv_s \
-                vsnwprintf_s strtok_s vsnprintf_s wcstok_s ])
+                asctime_s ctime_s fopen_s freopen_s getenv_s strncpy_s strncat_s \
+                wcsncpy_s wcsncat_s wmemmove_s memmove_s wmemcpy_s gets_s \
+                tmpnam_s wcsrtombs_s wcrtombs_s wcstomb_s wcscat_s swscanf_s \
+                strcat_s strcpy_s sprintf_s vsprintf_s sscanf_s strerror_s mbstowcs_s \
+                mbsrtowcs_s wcscpy_s \
+                vsnprintf_s vsnwprintf_s strtok_s wcstok_s ])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
