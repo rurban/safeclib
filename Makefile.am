@@ -568,7 +568,7 @@ gh-pages: docs
 	rm -rf doc/html
 	git add doc/safec-$(SAFEC_API_VERSION)
 release: docs distcheck
-	git checkout master
+	git branch |grep '^* master'
 	git tag -f v`date +%d%m%Y`
 	build-tools/autogen.sh
 	./configure
@@ -583,6 +583,7 @@ release: docs distcheck
 	$(MAKE)
 	$(MAKE) docs
 	$(MAKE) gh-pages
+	git branch |grep '^* gh-pages'
 	git commit -m"Update to v`date +%d%m%Y`"
 	git push
 	git checkout master
