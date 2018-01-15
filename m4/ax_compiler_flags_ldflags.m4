@@ -19,13 +19,14 @@
 # LICENSE
 #
 #   Copyright (c) 2014, 2015 Philip Withnall <philip@tecnocode.co.uk>
+#   Copyright (c) 2017, 2018 Reini Urban <rurban@cpan.org>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 9
+#serial 10
 
 AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
     AX_REQUIRE_DEFINED([AX_APPEND_LINK_FLAGS])
@@ -60,8 +61,13 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         AX_APPEND_LINK_FLAGS([-Wl,-z,now],
           [AM_LDFLAGS],[$ax_compiler_flags_test])
     ])
-  
-    # macOS and cygwin linker does not have --as-needed
+    AX_CHECK_LINK_FLAG([-Wl,-z,noexecstack], [
+        AX_APPEND_LINK_FLAGS([-Wl,-z,noexecstack],
+          [AM_LDFLAGS],[$ax_compiler_flags_test])
+    ])
+    # textonly, retpolineplt not yet
+
+    # macOS and cygwin linker do not have --as-needed
     AX_CHECK_LINK_FLAG([-Wl,--no-as-needed], [
         ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
     ], [
