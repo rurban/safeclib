@@ -273,7 +273,8 @@ int main()
     debug_printf("%u  p2tok = wcstok_s(NULL, &len, str2, &p2str); \n", __LINE__);
     p2tok = wcstok_s(NULL, &len, str2, &p2str);
     if (p2tok)
-        debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__, p2tok, p2str, (int)len );
+        debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
+                     p2tok, p2str, (int)len );
 
     ERRNO(EOK);
     debug_printf("\n");
@@ -296,8 +297,9 @@ int main()
         debug_printf("  p2tok = wcstok_s(p2str, &len, str2, &p2str); \n");
         p2tok = wcstok_s(p2str, &len, str2, &p2str);
         ERRNO(EOK);
-        debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
-                     p2tok, p2str, (int)len );
+        if (p2tok)
+            debug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
+                         p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 

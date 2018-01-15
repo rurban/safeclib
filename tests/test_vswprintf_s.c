@@ -231,11 +231,12 @@ int test_vswprintf_s (void)
 # if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE) || defined(__MINGW32__)
     /* they print unknown formats verbatim */
     NOERR();
+    free(wstr3);
 # else /* musl and darwin disallow this */
     ERR(-1);
     WEXPNULL(str1)
+    /* musl crashes on free() */
 # endif
-    free(wstr3);
 #endif
 
 /*--------------------------------------------------*/

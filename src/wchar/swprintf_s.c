@@ -177,6 +177,7 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     #error need wcsstr or wcschr
 #endif
 
+    errno = 0;
     va_start(ap, fmt);
     va_copy(ap2, ap);
     ret = vswprintf(dest, dmax, fmt, ap);
@@ -184,10 +185,11 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     /* check for ESNOSPC */
     if (unlikely(ret ==  -1)) {
+        if (unlikely(dmax == 1))
+            goto nospc;
+        errno = 0;
         if (likely(dmax < 512)) { /* stacksize 2k */
             static wchar_t tmp[512];
-            if (unlikely(dmax == 1))
-                goto nospc;
             va_start(ap2, fmt);
             ret = vswprintf(tmp, 512, fmt, ap2);
             va_end(ap2);
