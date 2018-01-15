@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsncat_s
  * File 'wchar/wcsncat_s.c'
- * Lines executed:97.06% of 68
+ * Lines executed:97.14% of 70
  *
  *------------------------------------------------------------------
  */
@@ -44,11 +44,22 @@ int test_wcsncat_s (void)
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"a");
+    wcscpy(str2, L"b");
+
+    rc = wcsncat_s(str1, 1, str2, 0);
+    ERR(EOK)
+    WEXPSTR(str1, L"a");
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"a");
     rc = wcsncat_s(str1, 0, str2, LEN);
     ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"a");
     rc = wcsncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, EOK);
     if (!use_msvcrt) {
@@ -59,12 +70,14 @@ int test_wcsncat_s (void)
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"a");
     rc = wcsncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, 0);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"a");
     rc = wcsncat_s(str1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL);
     WCHECK_SLACK(str1, LEN);

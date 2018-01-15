@@ -3,9 +3,10 @@
  *
  * October 2008, Bo Berry
  * October 2017, Reini Urban
+ * January 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017, 2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -72,20 +73,26 @@
  * @pre  dmax shall not equal zero
  * @pre  dmax shall not be greater than RSIZE_MAX_STR
  * @pre  dmax shall be greater than strnlen_s(src,m).
- * @pre  Copying shall not takeplace between objects that overlap
+ * @pre  Copying shall not take place between objects that overlap
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
+ *
+ * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
+ *       ESLEMAX dmax/slen>MAX not, ESOVRLP partially. When dest>src Windows
+ *       appends the result, when dest<src ERANGE or EINVAL is returned.
  *
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
  *           greater than RSIZE_MAX_STR, then strncat_s nulls dest.
- * @retval  EOK        successful operation, all the characters from src
- *                     null terminated.
- * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
- * @retval  ESUNTERM   when dest not terminated
- * @retval  ESOVRLP    when src overlaps with dest
+ * @retval  EOK        successful operation, when slen == 0 or all the characters
+ *                     are copied from src and dest is null terminated.
+ *          As special case, analog to msvcrt: when slen == 0 and dmax is big
+ *          enough for dest, also return EOK, but clear dest.
+ * @retval  ESNULLP    when dest/src is NULL pointer and slen > 0
+ * @retval  ESZEROL    when dmax = 0 and slen > 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR and slen > 0
+ * @retval  ESUNTERM   when dest not terminated and slen > 0
+ * @retval  ESOVRLP    when src overlaps with dest and slen > 0
  *
  */
 EXPORT errno_t
@@ -95,7 +102,10 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(slen == 0 && !dest && !dmax)) { /* silent ok as in the msvcrt */
+        return EOK;
+    }
+    else if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strncat_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
@@ -111,14 +121,28 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         return RCNEGATE(ESLEMAX);
     }
     else if (unlikely(src == NULL)) {
-        handle_error(dest, strlen(dest), "strncat_s: src is null",
+        /* note: strcat_s does not clear dest */
+#if 0
+        invoke_safe_str_constraint_handler("strncat_s: src is null",
+                   NULL, ESNULLP);
+#else
+        handle_error(dest, dmax, "strncat_s: slen is null",
                      ESNULLP);
+#endif
         return RCNEGATE(ESNULLP);
     }
     else if (unlikely(slen > RSIZE_MAX_STR)) {
         handle_error(dest, strlen(dest), "strncat_s: slen exceeds max",
-                     ESNULLP);
+                     ESLEMAX);
         return RCNEGATE(ESLEMAX);
+    }
+    else if (unlikely(slen == 0)) {
+        /* Special case, analog to msvcrt: when dest is big enough
+           return EOK, but clear dest. */
+        errno_t error = (strnlen_s(dest, dmax) < dmax) ? EOK : ESZEROL;
+        handle_error(dest, dmax, "strncat_s: slen is 0",
+                     error);
+        return RCNEGATE(error);
     }
 
     /* hold base of dest in case src was not copied */

@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_strncat_s
  * File 'str/strncat_s.c'
- * Lines executed:97.06% of 68
+ * Lines executed:97.30% of 74
  *
  *------------------------------------------------------------------
  */
@@ -30,8 +30,7 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "a");
-    strcpy(str2, "b");
+    strcpy(str1, "aaaaaaaaaa");
 
     if (use_msvcrt)
         printf("Using msvcrt...\n");
@@ -45,11 +44,41 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "a");
+    strcpy(str2, "bcde");
+
+    rc = strncat_s(NULL, 1, str2, 0);
+    ERR_MSVC(ESNULLP, EINVAL);
+
+    rc = strncat_s(NULL, 0, str2, 0);
+    ERR(EOK);
+
+    rc = strncat_s(str1, 0, str2, 0);
+    ERR_MSVC(ESZEROL, EINVAL);
+    EXPSTR(str1, "a");
+
+    rc = strncat_s(str1, 1, str2, 0);
+    ERR_MSVC(ESZEROL, EINVAL); 
+    EXPSTR(str1, "");
+
+    rc = strncat_s(str1, 2, str2, 0);
+    ERR(EOK);
+    EXPSTR(str1, "");
+
+    rc = strncat_s(str1, 3, str2, 0);
+    ERR(EOK);
+    EXPSTR(str1, "");
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "a");
     rc = strncat_s(str1, 0, str2, LEN);
     ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "a");
+    /* valid with the windows sec_api */
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
@@ -58,6 +87,7 @@ int test_strncat_s (void)
         EXPSTR(str1, "ab")
     }
 
+    strcpy(str1, "a");
     rc = strncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
@@ -68,16 +98,19 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "a");
     rc = strncat_s(str1, LEN, NULL, LEN);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
+    /*EXPSTR(str1, "a");*/
     CHECK_SLACK(str1, LEN);
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
     rc = strncat_s(str1, 1, str2, LEN);
-    ERR(ESUNTERM)
+    ERR_MSVC(ESUNTERM, EINVAL);
     CHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
@@ -86,7 +119,7 @@ int test_strncat_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strncat_s(str1, 2, str2, LEN);
-    ERR(ESUNTERM)
+    ERR_MSVC(ESUNTERM, EINVAL);
     CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
@@ -95,7 +128,7 @@ int test_strncat_s (void)
     strcpy(str2, "b");
 
     rc = strncat_s(str1, 2, str2, 1);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
@@ -103,14 +136,14 @@ int test_strncat_s (void)
     strcpy(str1, "abcd");
 
     rc = strncat_s(&str1[0], 8, &str1[3], 4);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 8);
 
     strcpy(str1, "abcd");
 
     rc = strncat_s(&str1[0], 4, &str1[3], 4);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 4);
 
@@ -119,7 +152,7 @@ int test_strncat_s (void)
     strcpy(str1, "abcd");
 
     rc = strncat_s(&str1[0], 3, &str1[3], 4);
-    ERR(ESUNTERM);
+    ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 3);
 
@@ -128,7 +161,7 @@ int test_strncat_s (void)
     strcpy(str1, "abcdefgh");
 
     rc = strncat_s(&str1[3], 5, &str1[0], 4);
-    ERR(ESUNTERM);
+    ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(&str1[3])
     CHECK_SLACK(&str1[3], 5);
 

@@ -72,20 +72,20 @@
  * @pre  dmax shall not equal zero
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR
  * @pre  dmax shall be greater than wcsnlen_s(src,m).
- * @pre  Copying shall not takeplace between objects that overlap
+ * @pre  Copying shall not take place between objects that overlap
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
  *           greater than RSIZE_MAX_WSTR, then wcsncat_s nulls dest.
- * @retval  EOK        successful operation, all the wide characters from src
- *                     null terminated.
- * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR
- * @retval  ESUNTERM   when dest not terminated
- * @retval  ESOVRLP    when src overlaps with dest
+ * @retval  EOK        successful operation, when slen == 0 or all the wide characters
+ *                     are copied from src and dest is null terminated.
+ * @retval  ESNULLP    when dest/src is NULL pointer and slen > 0
+ * @retval  ESZEROL    when dmax = 0 and slen > 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR and slen > 0
+ * @retval  ESUNTERM   when dest not terminated and slen > 0
+ * @retval  ESOVRLP    when src overlaps with dest and slen > 0
  *
  * @see
  *    wcscat_s(), strncat_s()
@@ -99,33 +99,32 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(slen == 0)) {
+        return EOK;
+    }
+    else if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("wcsncat_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(dmax == 0)) {
+    else if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("wcsncat_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
+    else if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("wcsncat_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-
-    if (unlikely(src == NULL)) {
-        handle_werror(dest, wcslen(dest), "wcsncat_s: src is null",
+    else if (unlikely(src == NULL)) {
+        handle_werror(dest, dmax, "wcsncat_s: src is null",
                      ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
+    else if (unlikely(slen > RSIZE_MAX_STR)) {
         handle_werror(dest, wcslen(dest), "wcsncat_s: slen exceeds max",
-                     ESNULLP);
+                     ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
