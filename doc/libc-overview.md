@@ -85,6 +85,26 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 * safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
 
+## Android FORTIFY and _STLP_USE_SAFE_STRING_FUNCTIONS
+
+Not yet tested. Hard to find as open source.  Apparently once
+implemented as part of the *stlport* library, but unused and I cannot
+find it in Bionic (orea), which is mostly an improved FreeBSD libc.
+*stlport* had a portable rewrite of the secure Windows API, written in 1999.
+Now they use just the fortified POSIX API,
+e.g. for `strncpy_s` `strncpy_chk` and `__strncpy_chk2` with known src size.
+
+See [Wikipedia: Bionic Fortify_source](https://en.wikipedia.org/wiki/Bionic_(software)#Fortify_source),
+and their blog post [FORTIFY in Android](https://android-developers.googleblog.com/2017/04/fortify-in-android.html).
+
+Basically they use a `__bos()` or `__builtin_object_size` macro which
+is a better `sizeof` and expands to the size of the compile-time
+pointer when the size of the buffer is known at compile-time. They
+also try to use the `alloc_size` extension which looks at a malloc'ed
+pointer into the previous word for its size.  So there's no secure API,
+just the normal POSIX and glibc API with compile-time `_chk` checks as
+in glibc with FORTIFY. Just a bit better than glibc.
+
 # Other caveats
 
 ## glibc
