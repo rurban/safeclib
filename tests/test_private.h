@@ -243,24 +243,24 @@
                      __FUNCTION__, __LINE__,  (int)rc); \
         errs++;                                    \
     }
-#define EXPNULL(str1)                              \
-    if ((str1)[0] != '\0') {                       \
+#define EXPNULL(s1)                                \
+    if ((s1)[0] != '\0') {                         \
         debug_printf("%s %u  Expected null, got \"%s\" \n", \
-                     __FUNCTION__, __LINE__, str1); \
+                     __FUNCTION__, __LINE__, s1);  \
         errs++;                                    \
     }
-#define EXPSTR(str1, str2)                         \
-    ind = strcmp(str1, str2);                      \
+#define EXPSTR(s1, s2)                             \
+    ind = strcmp((s1), (s2));                      \
     if (ind != 0) {                                \
         debug_printf("%s %u  Expected \"%s\", got \"%s\" \n", \
-                     __FUNCTION__, __LINE__,  str2, str1);  \
+                     __FUNCTION__, __LINE__,  (s2), s1);      \
         errs++;                                    \
     }
-#define WEXPNULL(str1)                             \
-    if ((str1)[0] != L'\0') {                      \
+#define WEXPNULL(s1)                               \
+    if ((s1)[0] != L'\0') {                        \
         debug_printf("%s %u  Expected null, got ", \
                      __FUNCTION__, __LINE__);      \
-        WPRINTLSN(str1);                           \
+        WPRINTLSN(s1);                             \
         errs++;                                    \
     }
 #define WPRINTLSN(str)                             \
