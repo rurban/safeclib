@@ -1,5 +1,6 @@
 #!/bin/sh
 autoreconf
+make=make
 
 case `uname` in
 Darwin) # macports compilers
@@ -43,8 +44,6 @@ $make clean
 ;;
 
 Linux)
-    make=make
-
 make -s clean
 CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
@@ -82,10 +81,29 @@ CC="c++ -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
     $make -s -j4 check-log || exit
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check-log || exit
-    ;;
+;;
+
+MSYS_NT*)
+# test ours
+./configure --disable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
+    make check-log || exit
+# compare to the windows sec_api
+./configure --enable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
+    make check-log || exit
+exit
+;;
+
+CYGWIN_NT*)
+./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+    make check-log || exit
+./configure --enable-debug --enable-unsafe --enable-norm-compat --host=x86_64-w64-mingw32 && \
+    make check-log || exit
+exit
+;;
+
 esac
 
-# platform independent
+# platform independent (i.e. darwin, linux, bsd's with the 3 mingw cross compilers)
 CC="cc -m32" ./configure && \
     $make -s -j4 check-log || exit
 ./configure && \
