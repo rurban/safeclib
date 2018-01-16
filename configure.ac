@@ -84,13 +84,13 @@ AM_CPPFLAGS="-I\$(top_srcdir)/include"
 
 dnl we manually export the symbols via dllexport, we only use shared
 dnl no libtool -DDLL_EXPORT support yet
-case $host_os in
-mingw*)
-        AC_MSG_NOTICE([--disable-static on mingw])
-        lt_prog_compiler_static=
-        enable_static=no
-        ;;
-esac
+dnl case $host_os in
+dnl mingw*|msys*)
+dnl         AC_MSG_NOTICE([--disable-static on mingw])
+dnl         lt_prog_compiler_static=
+dnl         enable_static=no
+dnl         ;;
+dnl esac
 
 # Configure options
 # ===============================================
@@ -292,6 +292,16 @@ if test "x$enable_norm_compat" = "xtrue" ; then
 else
 	AC_MSG_RESULT([no (default)])
 fi
+
+dnl for windows dllimport. checking pic_flag DLL_EXPORT would be better,
+dnl but this is only enabled for the shared objs, and we need it in the config
+dnl for our tests.
+if test "x$enable_shared" = "xno" ; then
+	INSERT_DISABLE_DLLIMPORT="#define DISABLE_DLLIMPORT 1"
+else
+	INSERT_DISABLE_DLLIMPORT="#undef DISABLE_DLLIMPORT"
+fi
+AC_SUBST(INSERT_DISABLE_DLLIMPORT)
 
 # Maintainer switches
 AC_ARG_ENABLE(debug-build,

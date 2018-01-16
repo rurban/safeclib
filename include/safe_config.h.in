@@ -78,6 +78,11 @@ extern "C" {
 /* Define to 1 to disable new multibyte and wchar support */
 @INSERT_DISABLE_WCHAR@
 
+/* Define to 1 to disable linking with dllimport, only relevant to windows.
+ * Defined with a static libsafec.
+ */
+@INSERT_DISABLE_DLLIMPORT@
+
 /*
  * The spec does not call out a maximum len for the strtok src
  * string (the max delims size), so one is defined here.

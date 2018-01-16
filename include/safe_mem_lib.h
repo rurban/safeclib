@@ -47,8 +47,7 @@ extern "C" {
 #include <wchar.h>
 #endif
 
-/* we disable static builds on mingw for now */
-#if defined _WIN32 /* && defined DLL_EXPORT */
+#if defined _WIN32 && !defined(DISABLE_DLLIMPORT)
 # if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
 #  define EXTERN extern __declspec(dllexport)
 # else
