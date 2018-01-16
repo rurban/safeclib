@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_WCSNCAT_S)
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   str1[LEN];

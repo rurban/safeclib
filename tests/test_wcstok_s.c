@@ -9,33 +9,17 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define LEN   ( 128 )
+#define HAVE_NATIVE defined(HAVE_WCSTOK_S)
+#include "test_msvcrt.h"
 
 #if defined(_WIN32) && defined(HAVE_WCSTOK_S)
-# define USE_MSVCRT
 # ifndef MINGW_HAS_SECURE_API
   wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context);
 # endif
 # define wcstok_s(dest, dmax, delim, ptr) wcstok_s(dest, delim, ptr)
 #endif
 
-#ifdef USE_MSVCRT
-/* msvcrt also doesn't reset errno */
-#define ERRNO_MSVC(n, winerr)                      \
-    if (errno != (winerr)) {                       \
-        debug_printf("%s %u  Error errno=%d \n",   \
-                     __FUNCTION__, __LINE__,  (int)errno); \
-        errs++;                                    \
-    }                                              \
-    errno = 0
-#else
-#define ERRNO_MSVC(n, winerr)                      \
-    if (errno != (n)) {                            \
-        debug_printf("%s %u  Error errno=%d \n",   \
-                     __FUNCTION__, __LINE__,  (int)errno); \
-        errs++;                                    \
-    }
-#endif
+#define LEN   ( 128 )
 
 int main()
 {

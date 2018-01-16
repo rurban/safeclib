@@ -199,7 +199,8 @@ SAFEC_BUILT_PERFS += p_memcpy32_s
 endif
 
 SAFEC_TEST_COMMON = \
-	test_private.h
+	test_private.h \
+	test_msvcrt.h
 
 # WARNING: tests won't build with -Werror right now. A few minor warnings
 #AM_CFLAGS   += -Werror

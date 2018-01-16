@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_STRNCAT_S)
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];

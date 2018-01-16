@@ -10,25 +10,8 @@
 #include "safe_lib.h"
 #include <stdlib.h>
 
-#if defined(_WIN32) && defined(HAVE_GETENV_S)
-# define USE_MSVCRT
-#endif
-
-#ifdef USE_MSVCRT
-#define ERR_MSVC(n, winerr)                        \
-    if (rc != (winerr)) {                          \
-        debug_printf("%s %u  Error rc=%d \n",      \
-                     __FUNCTION__, __LINE__,  (int)rc); \
-        errs++;                                    \
-    }
-#else
-#define ERR_MSVC(n, winerr)                        \
-    if (rc != (n)) {                               \
-        debug_printf("%s %u  Error rc=%d \n",      \
-                     __FUNCTION__, __LINE__,  (int)rc); \
-        errs++;                                    \
-    }
-#endif
+#define HAVE_NATIVE defined(HAVE_GETENV_S)
+#include "test_msvcrt.h"
 
 #define LEN   ( 4090 )
 

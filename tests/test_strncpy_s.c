@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_STRNCPY_S)
+#include "test_msvcrt.h"
+
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
