@@ -58,7 +58,7 @@ AC_CONFIG_AUX_DIR([build-tools])
 # really severe build strictness also place generated object files (.o)
 # into the same directory as their source files, in order to avoid
 # collisions when non-recursive make is used.
-AM_INIT_AUTOMAKE([1.10 no-define foreign subdir-objects dist-bzip2])
+AM_INIT_AUTOMAKE([1.10 no-define foreign subdir-objects dist-bzip2 dist-xz])
 
 # Check if automake supports 'pretty' builds, if so enable them by default
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -68,8 +68,8 @@ m4_pattern_allow([AM_PROG_AR])
 AM_PROG_AR
 
 # Enable LibTool as we are building a library
-#LT_PREREQ([2.2.6])    # TODO: don't really know what to put here so leave
-		       # it out for now
+#LT_PREREQ([2.2.6]) # TODO: don't really know what to put here so leave
+                    # it out for now
 LT_INIT
 
 
