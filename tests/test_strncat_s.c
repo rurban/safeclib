@@ -26,23 +26,40 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "aaaaaaaaaa");
+    strcpy(str1, "a");
+    strcpy(str2, "b");
 
-    rc = strncat_s(NULL, LEN, str2, LEN);
-    ERR(ESNULLP)
+    /* probe for msvcrt or safec.dll being active */
+    rc = strncat_s(NULL, LEN, str1, LEN);
+    if ( use_msvcrt && rc == ESNULLP ) {
+        printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    }
+    ERR_MSVC(ESNULLP, EINVAL);
+
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, 0, str2, LEN);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, EINVAL);
+
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
-    ERR(ESLEMAX)
-/*--------------------------------------------------*/
+    ERR_MSVC(ESLEMAX, 0);
+    if (!use_msvcrt) {
+        EXPSTR(str1, "a");
+    } else {
+        EXPSTR(str1, "ab")
+    }
 
     rc = strncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
-    ERR(ESLEMAX);
-    EXPSTR(str1, "");
+    ERR_MSVC(ESLEMAX, 0);
+    if (!use_msvcrt) {
+        EXPSTR(str1, "");
+    } else {
+        EXPSTR(str1, "ab")
+    }
+
 /*--------------------------------------------------*/
 
     rc = strncat_s(str1, LEN, NULL, LEN);
@@ -114,9 +131,13 @@ int test_strncat_s (void)
     strcpy(str1, "abcdefgh");
 
     rc = strncat_s(&str1[3], 12, &str1[0], 4);
-    ERR(ESOVRLP);
-    EXPNULL(&str1[3])
-    CHECK_SLACK(&str1[3], 12);
+    ERR_MSVC(ESOVRLP, EOK);
+    if (!use_msvcrt) {
+        EXPNULL(&str1[3]);
+        CHECK_SLACK(&str1[3], 12);
+    } else {
+        EXPSTR(str1, "abcdefghabcd"); /* Windows appends! */
+    }
 
 /*--------------------------------------------------*/
 
@@ -168,7 +189,7 @@ int test_strncat_s (void)
     strcpy(str1, "hello");
 
     rc = strncat_s(str1, 6, "X", 2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     CHECK_SLACK(str1, 6);
 
 /*--------------------------------------------------*/

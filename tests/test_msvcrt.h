@@ -32,46 +32,42 @@
 #ifndef __TEST_MSVCRT_H__
 #define __TEST_MSVCRT_H__
 
-#ifndef HAVE_NATIVE
-# error define HAVE_NATIVE defined(HAVE_api_S)
+/* With static linkage we can enforce our -lsafec over -lc */
+#if defined(_WIN32) && (HAVE_NATIVE) && !defined(DISABLE_DLLIMPORT)
+# define USE_MSVCRT
+bool use_msvcrt = true;
+#else
+bool use_msvcrt = false;
 #endif
 
-/* With static linkage we can enforce our -lsafec over -lc */
-#if defined(_WIN32) && HAVE_NATIVE && !defined(DISABLE_DLLIMPORT)
-# define USE_MSVCRT
-#endif
+#define ERR_MSVC(n, winerr)   _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
+#define ERRNO_MSVC(n, winerr) _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
+
+void _err_msvc(int rc, const int n, const int winerr, int *errp,
+               const char *f, const unsigned l)
+{
+    const int chk = use_msvcrt ? winerr : n;
+    if (rc != chk) {
+        debug_printf("%s %u  Error rc=%d \n", f, l, rc);
+        (*errp)++;
+    }
+}
+void _errno_msvc(const int n, const int winerr, int *errp,
+                 const char *f, const unsigned l)
+{
+    const int chk = use_msvcrt ? winerr : n;
+    if (errno != chk) {
+        debug_printf("%s %u  Error errno=%d \n", f, l, (int)errno);
+        (*errp)++;
+    }
+    if (use_msvcrt)
+        errno = 0;
+}
 
 #ifdef USE_MSVCRT
-#define ERR_MSVC(n, winerr)                        \
-    if (rc != (winerr)) {                          \
-        debug_printf("%s %u  Error rc=%d \n",      \
-                     __FUNCTION__, __LINE__,  (int)rc); \
-        errs++;                                    \
-    }
-/* msvcrt also doesn't reset errno */
-#define ERRNO_MSVC(n, winerr)                      \
-    if (errno != (winerr)) {                       \
-        debug_printf("%s %u  Error errno=%d \n",   \
-                     __FUNCTION__, __LINE__,  (int)errno); \
-        errs++;                                    \
-    }                                              \
-    errno = 0
 #undef CHECK_SLACK
-#define CHECK_SLACK(a,b) \
-    EXPSTR(a, "")
-#else
-#define ERR_MSVC(n, winerr)                        \
-    if (rc != (n)) {                               \
-        debug_printf("%s %u  Error rc=%d \n",      \
-                     __FUNCTION__, __LINE__,  (int)rc); \
-        errs++;                                    \
-    }
-#define ERRNO_MSVC(n, winerr)                      \
-    if (errno != (n)) {                            \
-        debug_printf("%s %u  Error errno=%d \n",   \
-                     __FUNCTION__, __LINE__,  (int)errno); \
-        errs++;                                    \
-    }
+#define CHECK_SLACK(a,b)  EXPSTR(a, "")
+#define CHECK_WSLACK(a,b) WEXPSTR(a, L"")
 #endif
 
 #endif /* __TEST_MSVCRT_H__ */

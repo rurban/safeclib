@@ -9,24 +9,8 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
-#if defined(_WIN32) && defined(HAVE_CTIME_S)
-static bool USE_MSVCRT = true;
-#elif defined(_WIN32) && defined(HAVE_ASCTIME_S)
-static bool USE_MSVCRT = true;
-#else
-static bool USE_MSVCRT = false;
-#endif
-
-#define ERR_MSVC(n, winerr) _err_msvc((int)rc, n, winerr, &errs)
-
-void _err_msvc(int rc, int n, int winerr, int *errp) {
-    int chk = USE_MSVCRT ? winerr : n;
-    if (rc != chk) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__,  rc);
-        (*errp)++;
-    }
-}
+#define HAVE_NATIVE defined(HAVE_CTIME_S) || defined(HAVE_ASCTIME_S)
+#include "test_msvcrt.h"
 
 #define LEN   ( 128 )
 
@@ -42,9 +26,11 @@ int test_ctime_s (void)
 
 /*--------------------------------------------------*/
 
+    /* probe for msvcrt or our being active */
     rc = ctime_s(NULL, 0, &timer);
-    if ( USE_MSVCRT && rc == ESNULLP )
-        USE_MSVCRT = false;
+    if ( use_msvcrt && rc == ESNULLP )
+        use_msvcrt = false;
+
     ERR_MSVC(ESNULLP,EINVAL);
 
     rc = ctime_s(str1, LEN, NULL);

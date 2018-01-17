@@ -29,6 +29,10 @@ int test_getenv_s (void)
 /*--------------------------------------------------*/
 
     rc = getenv_s(&len, NULL, LEN, name);
+    if ( use_msvcrt && rc == ESNULLP ) {
+        printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    }
     ERR_MSVC(ESNULLP, EINVAL);
 
     rc = getenv_s(&len, dest, LEN, NULL);
@@ -56,9 +60,9 @@ int test_getenv_s (void)
     str2 = getenv(name);
     EXPSTR(dest, str2);
     ind = strlen(str2);
-#ifndef USE_MSVCRT    
-    INDCMP(!= (int)len);
-#endif
+    if (!use_msvcrt) {
+        INDCMP(!= (int)len);
+    }
 
     rc = getenv_s(NULL, dest, LEN, name);
     ERR_MSVC(EOK, EINVAL);
@@ -68,9 +72,9 @@ int test_getenv_s (void)
 
     rc = getenv_s(NULL, dest, LEN, "c#hewhc&wehc%erwhc$weh");
     ERR_MSVC(-1, EINVAL);
-#ifndef USE_MSVCRT    
-    EXPNULL(dest);
-#endif
+    if (!use_msvcrt) {
+        EXPNULL(dest);
+    }
 
     rc = getenv_s(&len, dest, LEN, "c#hewhc&wehc%erwhc$weh");
     ERR_MSVC(-1, 0);

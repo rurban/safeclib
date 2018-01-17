@@ -30,29 +30,61 @@ int test_strncpy_s (void)
 
     nlen = 5;
     rc = strncpy_s(NULL, LEN, str2, nlen);
-    ERR(ESNULLP)
+    if ( use_msvcrt && rc == ESNULLP )
+        use_msvcrt = false;
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    strcpy(str1, "aaaaa");
+    str2[0] = '\0';
+
+    rc = strncpy_s(str1, 5, str2, 0);
+#ifdef HAVE_C11
+    ERR(EOK)
+    EXPSTR(str1, "aaaaa")
+#else
+    ERR_MSVC(ESZEROL, 0);
+    CHECK_SLACK(str1, 5);
+#endif
+
+    strcpy(str1, "aaaaa");
+    rc = strncpy_s(str1, 1, str2, 0);
+#ifdef HAVE_C11
+    ERR(EOK)
+    EXPSTR(str1, "aaaaa")
+#else
+    ERR_MSVC(ESZEROL, 0);
+    CHECK_SLACK(str1, 1);
+#endif
+
+    strcpy(str2, "a");
+    rc = strncpy_s(NULL, 0, str2, 0);
+    ERR_MSVC(ESNULLP, 0); /* this is arguably a bug on windows */
 
     nlen = 5;
     rc = strncpy_s(str1, 5, NULL, nlen);
     ERR(ESNULLP);
     CHECK_SLACK(str1, 5);
+    
+    strcpy(str1, "a");
+    rc = strncpy_s(str1, 0, str2, 0);
+    ERR_MSVC(ESZEROL, EINVAL);
+    EXPSTR(str1, "a")
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     str2[0] = '\0';
 
-    rc = strncpy_s(str1, 5, str2, 0);
-#ifdef HAVE_C11
-    ERR(EOK);
-#else
-    ERR(ESZEROL)
-    CHECK_SLACK(str1, 5);
-#endif
+    nlen = 5;
+    rc = strncpy_s(str1, 5, NULL, nlen);
+    ERR_MSVC(ESNULLP, EINVAL);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, 5);
+    } else {
+        EXPSTR(str1, "");
+    }
 
     nlen = 5;
     rc = strncpy_s(str1, 0, str2, nlen);
@@ -65,13 +97,12 @@ int test_strncpy_s (void)
 
 /*--------------------------------------------------*/
 
-#if 1
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
-    ERR(ESLEMAX)
-#endif
+    ERR_MSVC(ESLEMAX, ERANGE);
+    EXPSTR(str1, "");
 
 /*--------------------------------------------------*/
 
@@ -80,8 +111,12 @@ int test_strncpy_s (void)
     nlen = 5;
 
     rc = strncpy_s(&str1[0], LEN/2, &str2[0], nlen);
-    ERR(EOK)
-    CHECK_SLACK(str1, LEN/2);
+    ERR(EOK);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, LEN/2);
+    } else {
+        EXPSTR(str1, "");
+    }
 
 /*--------------------------------------------------*/
 
@@ -90,17 +125,24 @@ int test_strncpy_s (void)
 
     /* test overlap */
     rc = strncpy_s(str1, LEN, str1, nlen);
-    ERR(ESOVRLP)
-    CHECK_SLACK(str1, LEN);
-
+    ERR_MSVC(ESOVRLP, 0);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, LEN);
+    } else {
+        EXPSTR(str1, "aaaaa");
+    }
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     nlen = 18;
 
     rc = strncpy_s(&str1[0], LEN, &str1[5], nlen);
-    ERR(ESOVRLP)
-    CHECK_SLACK(str1, LEN);
+    ERR_MSVC(ESOVRLP, 0);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, LEN);
+    } else {
+        EXPSTR(str1, "aaaaaaaaaaaaaaaaaa");
+    }
 
 /*--------------------------------------------------*/
 
@@ -109,8 +151,12 @@ int test_strncpy_s (void)
 
     nlen = 10;
     rc = strncpy_s(str1, LEN, str2, nlen);
-    ERR(EOK)
-    CHECK_SLACK(str1, LEN);
+    ERR(EOK);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, LEN);
+    } else {
+       EXPSTR(str1, "")
+    }
 
 /*--------------------------------------------------*/
 
@@ -121,7 +167,9 @@ int test_strncpy_s (void)
     rc = strncpy_s(str1, LEN, str2, nlen);
     ERR(EOK)
     EXPSTR(str1, str2)
-    CHECK_SLACK(&str1[14], LEN-14);
+    if (!use_msvcrt) {
+        CHECK_SLACK(&str1[14], LEN-14);
+    }
 
 /*--------------------------------------------------*/
 
@@ -132,7 +180,9 @@ int test_strncpy_s (void)
     rc = strncpy_s(str1, LEN, str2, nlen);
     ERR(EOK)
     EXPSTR(str1, str2)
-    CHECK_SLACK(&str1[14], LEN-14);
+    if (!use_msvcrt) {
+        CHECK_SLACK(&str1[14], LEN-14);
+    }
 
 /*--------------------------------------------------*/
 
@@ -140,8 +190,12 @@ int test_strncpy_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strncpy_s(str1, 1, str2, nlen);
-    ERR(ESNOSPC)
-    CHECK_SLACK(str1, 1);
+    ERR_MSVC(ESNOSPC, ERANGE);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, 1);
+    } else {
+        EXPSTR(str1, "");
+    }
 
 /*--------------------------------------------------*/
 
@@ -149,7 +203,7 @@ int test_strncpy_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strncpy_s(str1, 2, str2, nlen);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     if (*str1 != '\0') {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
@@ -164,7 +218,9 @@ int test_strncpy_s (void)
     rc = strncpy_s(dest, 6, str1, 100);
     ERR(EOK)
     EXPSTR(dest, str1)
-    CHECK_SLACK(&str1[5], 1);
+    if (!use_msvcrt) {
+        CHECK_SLACK(&str1[5], 1);
+    }
 
 /*--------------------------------------------------*/
 /* TR example */
@@ -173,8 +229,10 @@ int test_strncpy_s (void)
     strcpy(str2, "goodbye");
 
     rc = strncpy_s(dest, 5, str2, 7);
-    ERR(ESNOSPC)
-    CHECK_SLACK(dest, 5);
+    ERR_MSVC(ESNOSPC, ERANGE);
+    if (!use_msvcrt) {
+        CHECK_SLACK(dest, 5);
+    }
 
 /*--------------------------------------------------*/
 /* TR example */
