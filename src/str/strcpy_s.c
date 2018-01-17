@@ -35,6 +35,11 @@
 #include "safeclib_private.h"
 #endif
 
+/* With mingw shared with sec_api and -DTEST_MSVCRT skip it */
+#if defined(TEST_MSVCRT) && defined(_WIN32) && \
+    !defined(DISABLE_DLLIMPORT) && defined(HAVE_STRCPY_S)
+#else
+
 /* not via the naive byte copy, but aligned long word copy
    via the (((X) - 0x0101010101010101) & ~(X) & 0x8080808080808080)
    check */
@@ -68,6 +73,10 @@
  * @pre Copying shall not take place between objects that overlap.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
+ *
+ * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
+ *       ESLEMAX dmax>MAX not, ESOVRLP partially. When dest>src Windows
+ *       copies the result, when dest<src ERANGE is returned.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and destmax is greater than zero and
@@ -110,15 +119,8 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
     }
 
     if (unlikely(src == NULL)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        memset(dest, 0, dmax);
-        /*while (dmax) {  *dest = '\0'; dmax--; dest++; }*/
-#else
-        *dest = '\0';
-#endif
-        invoke_safe_str_constraint_handler("strcpy_s: src is null",
-                   NULL, ESNULLP);
+        handle_error(dest, dmax, "strcpy_s: src is null",
+                     ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
@@ -193,3 +195,5 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
     return RCNEGATE(ESNOSPC);
 }
 EXPORT_SYMBOL(strcpy_s)
+
+#endif
