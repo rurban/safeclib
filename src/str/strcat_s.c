@@ -35,6 +35,11 @@
 #include "safeclib_private.h"
 #endif
 
+/* With mingw shared with sec_api and -DTEST_MSVCRT skip it */
+#if defined(TEST_MSVCRT) && defined(_WIN32) && \
+    !defined(DISABLE_DLLIMPORT) && defined(HAVE_STRCAT_S)
+#else
+
 /**
  * @brief
  *    The strcat_s function appends a copy of the string pointed
@@ -74,6 +79,10 @@
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
+ * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
+ *       ESLEMAX dmax/slen>MAX not, ESOVRLP returns EINVAL or ERANGE,
+ *       unlike strncat_s.
+ *
  * @return  If there is a runtime-constraint violation, then if dest is
  *          not a null pointer and dmax is greater than zero and not
  *          greater than RSIZE_MAX_STR, then strcat_s nulls dest.
@@ -102,23 +111,20 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strcat_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcat_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strcat_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
+    }
+    if (unlikely(src == NULL)) {
+        handle_error(dest, dmax, "strcat_s: src is null",
+                     ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     /* hold base of dest in case src was not copied */
@@ -225,3 +231,5 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
     return RCNEGATE(ESNOSPC);
 }
 EXPORT_SYMBOL(strcat_s)
+
+#endif

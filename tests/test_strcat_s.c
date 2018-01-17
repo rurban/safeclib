@@ -1,14 +1,20 @@
 /*------------------------------------------------------------------
  * test_strcat_s
  * File 'str/strcat_s.c'
- * Lines executed:96.49% of 57
- *
+ * Lines executed:95.08% of 61
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+
+#ifdef HAVE_STRCAT_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
 
 #define LEN   ( 128 )
 
@@ -26,23 +32,40 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
+
+    strcpy(str1, "");
+    strcpy(str2, "aaaa");
     rc = strcat_s(NULL, LEN, str2);
-    ERR(ESNULLP)
+    if ( use_msvcrt && rc == ESNULLP ) {
+        printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    }
+    ERR_MSVC(ESNULLP, EINVAL);
+    EXPSTR(str1, "");
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "aaaa");
     rc = strcat_s(str1, LEN, NULL);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
+    EXPSTR(str1, "");
+    CHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "aaaa");
     rc = strcat_s(str1, 0, str2);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, EINVAL);
+    EXPSTR(str1, "aaaa");
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "a");
     rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0);
+    EXPSTR(str1, use_msvcrt ? "aaaaa" : "a");
 
 /*--------------------------------------------------*/
 
@@ -50,7 +73,7 @@ int test_strcat_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strcat_s(str1, 1, str2);
-    ERR(ESUNTERM)
+    ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
 
@@ -60,7 +83,7 @@ int test_strcat_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strcat_s(str1, 2, str2);
-    ERR(ESUNTERM)
+    ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
 
@@ -69,15 +92,15 @@ int test_strcat_s (void)
     strcpy(str1, "abcd");
 
     rc = strcat_s(&str1[0], 8, &str1[3]);
-    ERR(ESOVRLP);
-    EXPNULL(str1)
+    ERR_MSVC(ESOVRLP, ERANGE);
+    EXPNULL(str1);
     CHECK_SLACK(str1, 8);
 
     strcpy(str1, "abcd");
 
     rc = strcat_s(&str1[0], 4, &str1[3]);
-    ERR(ESOVRLP);
-    EXPNULL(str1)
+    ERR_MSVC(ESOVRLP, EINVAL);
+    EXPNULL(str1);
     CHECK_SLACK(str1, 4);
 
 /*--------------------------------------------------*/
@@ -85,7 +108,7 @@ int test_strcat_s (void)
     strcpy(str1, "abcdefgh");
 
     rc = strcat_s(&str1[3], 5, &str1[0]);
-    ERR(ESUNTERM);
+    ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(&str1[3])
     CHECK_SLACK(&str1[3], 5);
 
@@ -94,8 +117,8 @@ int test_strcat_s (void)
     strcpy(str1, "abcdefgh");
 
     rc = strcat_s(&str1[3], 12, &str1[0]);
-    ERR(ESOVRLP);
-    EXPNULL(&str1[3])
+    ERR_MSVC(ESOVRLP, ERANGE);
+    EXPNULL(&str1[3]);
     CHECK_SLACK(&str1[3], 12);
 
 /*--------------------------------------------------*/
@@ -122,7 +145,7 @@ int test_strcat_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strcat_s(str1, 1, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
 
@@ -132,7 +155,7 @@ int test_strcat_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strcat_s(str1, 2, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
 
@@ -185,7 +208,7 @@ int test_strcat_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strcat_s(str1, 12, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 12);
 
@@ -205,7 +228,7 @@ int test_strcat_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = strcat_s(str1, 8, &str1[7]);
-    ERR(ESOVRLP)
+    ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 8);
 
@@ -214,7 +237,7 @@ int test_strcat_s (void)
     strcpy(str1, "123456789");
 
     rc = strcat_s(str1, 9, &str1[8]);
-    ERR(ESOVRLP)
+    ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 9);
 
@@ -223,7 +246,7 @@ int test_strcat_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = strcat_s(str1, LEN, &str1[4]);
-    ERR(ESOVRLP)
+    ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, LEN);
 
@@ -233,7 +256,7 @@ int test_strcat_s (void)
     len1 = strlen(str1);
 
     rc = strcat_s(&str1[5], LEN-5, &str1[4]);
-    ERR(ESOVRLP)
+    ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(&str1[5])
     CHECK_SLACK(&str1[5], LEN-5);
 
