@@ -207,35 +207,20 @@ STD_IO_FILES = \
 	io/tmpfile_s.c	\
 	io/vfprintf_s.c	\
 	io/vprintf_s.c	\
+	io/fopen_s.c    \
+	io/freopen_s.c  \
 	io/gets_s.c
-if !HAVE_FOPEN_S
-STD_IO_FILES += \
-	io/fopen_s.c
-endif
-if !HAVE_FREOPEN_S
-STD_IO_FILES += \
-	io/freopen_s.c
-endif
 
 STD_MISC_FILES = \
 	misc/bsearch_s.c \
 	misc/qsort_s.c
 
 STD_OS_FILES = \
-	os/gmtime_s.c	\
-	os/localtime_s.c
-if !HAVE_ASCTIME_S
-STD_OS_FILES += \
-	os/asctime_s.c
-endif
-if !HAVE_CTIME_S
-STD_OS_FILES += \
-	os/ctime_s.c
-endif
-if !HAVE_GETENV_S
-STD_OS_FILES += \
+	os/gmtime_s.c    \
+	os/localtime_s.c \
+	os/asctime_s.c   \
+	os/ctime_s.c     \
 	os/getenv_s.c
-endif
 
 ALL_SRC_FILES =
 	$(STD_MEM_FILES)    \
