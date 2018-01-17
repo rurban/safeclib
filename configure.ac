@@ -375,6 +375,7 @@ dnl sprintf_s passing through to vsnprintf_s
 ax_cv_check_cflags__Wformat_2=no
 ax_cv_check_cflags__Wformat_nonliteral=no
 dnl windows mult. decl are not properly sorted out yet
+dnl const -Wdiscarded-qualifiers is stricter on mingw
 case $host_os in
   mingw*|cygwin*|msys*)
     ax_cv_check_cflags__Wredundant_decls=no
@@ -435,6 +436,9 @@ case $host_os in
     dnl gcc 3.4 cannot do -Wno-attributes
     AX_CHECK_COMPILE_FLAG([-Wno-attributes],[
       WARN_CFLAGS="$WARN_CFLAGS -Wno-attributes"
+    ],[])
+    AX_CHECK_COMPILE_FLAG([-Wno-discarded-qualifiers],[
+      WARN_CFLAGS="$WARN_CFLAGS -Wno-discarded-qualifiers"
     ],[])
     ;;
 esac
