@@ -165,7 +165,10 @@ strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     }
 
     /* null slack space */
-    while (dmax) { *dest = '\0'; dmax--; dest++; }
-
+    if (dmax > 0x20)
+        memset(dest, 0, dmax);
+    else {
+        while (dmax) { *dest = '\0'; dmax--; dest++; }
+    }
     return (EOK);
 }

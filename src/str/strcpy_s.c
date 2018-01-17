@@ -147,8 +147,11 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                memset(dest, 0, dmax);
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax);
+                else {
+                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
@@ -173,8 +176,11 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                memset(dest, 0, dmax);
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax);
+                else {
+                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }

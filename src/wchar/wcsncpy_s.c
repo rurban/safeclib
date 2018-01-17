@@ -137,12 +137,15 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             }
 
             if (unlikely(slen == 0)) {
-                /*
-                 * Copying truncated to slen chars.  Note that the TR says to
+                /* Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #else
                 *dest = L'\0';
 #endif
@@ -153,7 +156,11 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
@@ -176,12 +183,15 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             }
 
 	    if (unlikely(slen == 0)) {
-                /*
-                 * Copying truncated to slen chars.  Note that the TR says to
+                /* Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #else
                 *dest = L'\0';
 #endif
@@ -192,7 +202,11 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }

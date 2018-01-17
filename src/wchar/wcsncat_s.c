@@ -169,8 +169,11 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
-                memset(dest, 0, dmax*sizeof(wchar_t));
-                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #else
                 *dest = L'\0';
 #endif
@@ -181,8 +184,11 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear data */
-                memset(dest, 0, dmax*sizeof(wchar_t));
-                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
@@ -227,8 +233,11 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(slen == 0)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
-                memset(dest, 0, dmax*sizeof(wchar_t));
-                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #else
                 *dest = L'\0';
 #endif
@@ -239,8 +248,11 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                memset(dest, 0, dmax*sizeof(wchar_t));
-                /*while (dmax) { *dest = L'\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
