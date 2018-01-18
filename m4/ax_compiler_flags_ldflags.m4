@@ -49,10 +49,10 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         ax_compiler_flags_test=""
     ])
 
-    AX_CHECK_LINK_FLAG([-Wl,--as-needed], [
-        AX_APPEND_LINK_FLAGS([-Wl,--as-needed],
-          [AM_LDFLAGS],[$ax_compiler_flags_test])
-    ])
+    # AX_CHECK_LINK_FLAG([-Wl,--as-needed], [
+    #     AX_APPEND_LINK_FLAGS([-Wl,--as-needed],
+    #       [AM_LDFLAGS],[$ax_compiler_flags_test])
+    # ])
     AX_CHECK_LINK_FLAG([-Wl,-z,relro], [
         AX_APPEND_LINK_FLAGS([-Wl,-z,relro],
           [AM_LDFLAGS],[$ax_compiler_flags_test])
@@ -68,11 +68,11 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
     # textonly, retpolineplt not yet
 
     # macOS and cygwin linker do not have --as-needed
-    AX_CHECK_LINK_FLAG([-Wl,--no-as-needed], [
-        ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
-    ], [
-        ax_compiler_flags_as_needed_option=""
-    ])
+    # AX_CHECK_LINK_FLAG([-Wl,--no-as-needed], [
+    #     ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
+    # ], [
+    #     ax_compiler_flags_as_needed_option=""
+    # ])
 
     # macOS linker speaks with a different accent
     ax_compiler_flags_fatal_warnings_option=""
@@ -85,8 +85,8 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
 
     # Base flags
     AX_APPEND_LINK_FLAGS([ dnl
-        $ax_compiler_flags_as_needed_option dnl
-        $3 dnl
+         $ax_compiler_flags_as_needed_option dnl
+         $3 dnl
     ],ax_warn_ldflags_variable,[$ax_compiler_flags_test])
 
     AS_IF([test "$ax_enable_compile_warnings" != "no"],[

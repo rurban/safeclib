@@ -32,7 +32,9 @@
 #ifndef __TEST_MSVCRT_H__
 #define __TEST_MSVCRT_H__
 
-/* With static linkage we can enforce our -lsafec over -lc */
+/* With static linkage we can enforce our -lsafec over -lc.
+   But not all. Some forceinline API's will still use msvcrt.
+ */
 #if defined(_WIN32) && (HAVE_NATIVE) && !defined(DISABLE_DLLIMPORT)
 # define USE_MSVCRT
 bool use_msvcrt = true;
@@ -40,8 +42,10 @@ bool use_msvcrt = true;
 bool use_msvcrt = false;
 #endif
 
-#define ERR_MSVC(n, winerr)   _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
-#define ERRNO_MSVC(n, winerr) _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
+#define ERR_MSVC(n, winerr)   \
+    _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
+#define ERRNO_MSVC(n, winerr) \
+    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
 
 void _err_msvc(int rc, const int n, const int winerr, int *errp,
                const char *f, const unsigned l)

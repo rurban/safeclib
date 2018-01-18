@@ -57,6 +57,14 @@
 
 #else
 
+/* --disable-shared: ignore the sec_api */
+#if defined(_WIN32) && defined(DISABLE_DLLIMPORT)
+/* ignore the sec_api imports. with DISABLE_DLLIMPORT we want our own */
+#  undef _SECIMP
+#  define _SECIMP
+#  undef MINGW_HAS_SECURE_API
+#endif
+
 /* for glibc use the GNU extensions: strcasestr */
 #undef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -73,6 +81,9 @@
 
 #if defined __MINGW64_VERSION_MAJOR
 #  define HAVE_MINGW64  /* mingw-w64 (either 32 or 64bit) */
+#  ifdef DISABLE_DLLIMPORT /* --disable-shared: ignore the sec_api */
+#    undef MINGW_HAS_SECURE_API
+#  endif
 #elif defined __MINGW32__
 #  define HAVE_MINGW32  /* old mingw */
 #endif

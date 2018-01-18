@@ -25,11 +25,24 @@ int test_ctime_s (void)
     timer = time(NULL);
 
 /*--------------------------------------------------*/
+    /* even static we will use the native forceinline ctime_s */
+#if defined(_WIN32) && (HAVE_NATIVE)
+    use_msvcrt = true;
+#endif
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
 
     /* probe for msvcrt or our being active */
     rc = ctime_s(NULL, 0, &timer);
-    if ( use_msvcrt && rc == ESNULLP )
+    if ( rc == ESNULLP ) {
+        if (use_msvcrt)
+            printf("safec.dll overriding msvcrt.dll\n");
         use_msvcrt = false;
+    } else {
+        if (!use_msvcrt)
+            printf("msvcrt.dll overriding safec.dll\n");
+        use_msvcrt = true;
+    }
 
     ERR_MSVC(ESNULLP,EINVAL);
 
@@ -70,11 +83,14 @@ int test_ctime_s (void)
 
     /* eg. 313360441200L */
     rc = ctime_s(str1, LEN, &timer);
+    ERR_MSVC(ESLEMAX,0);
+/*
 #ifndef __MINGW32__
     ERR(ESLEMAX);
 #else
     ERR(0);
 #endif
+*/
 
 /*--------------------------------------------------*/
 

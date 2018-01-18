@@ -30,8 +30,18 @@ int test_asctime_s (void)
     tm = gmtime(&timet);
 
 /*--------------------------------------------------*/
+    /* even static we might use the native forceinline asctime_s */
+#if defined(_WIN32) && (HAVE_NATIVE)
+    use_msvcrt = true;
+#endif
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
 
     rc = asctime_s(NULL, 0, tm);
+    if ( use_msvcrt && rc == ESNULLP ) {
+        printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    }
     ERR_MSVC(ESNULLP,EINVAL);
 
     rc = asctime_s(str1, LEN, NULL);
@@ -73,12 +83,12 @@ int test_asctime_s (void)
     TM_RANGE(hour, 0, 23);
     TM_RANGE(mday, 1, 31);
     TM_RANGE(mon,  0, 11);
-#ifndef USE_MSVCRT
+    if (!use_msvcrt) {
     TM_RANGE(year, 0, 8099);
     TM_RANGE(wday, 0, 6);
     TM_RANGE(yday, 0, 365);
     TM_RANGE(isdst,0, 1);
-#endif
+    }
 
     /* stack buffer branch */
     tm = gmtime(&timet);

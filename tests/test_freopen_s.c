@@ -23,8 +23,19 @@ int test_freopen_s (void)
     FILE *file = stdin;
 
 /*--------------------------------------------------*/
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
 
     rc = freopen_s(NULL, TMP, "r", file);
+    if ( rc == ESNULLP ) {
+        if (use_msvcrt)
+            printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    } else {
+        if (!use_msvcrt)
+            printf("msvcrt.dll overriding safec.dll\n");
+        use_msvcrt = true;
+    }
     ERR_MSVC(ESNULLP, EINVAL);
 
     rc = freopen_s(&tmp, TMP, NULL, file);

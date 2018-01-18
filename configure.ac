@@ -440,6 +440,7 @@ case $host_os in
     AX_CHECK_COMPILE_FLAG([-Wno-discarded-qualifiers],[
       WARN_CFLAGS="$WARN_CFLAGS -Wno-discarded-qualifiers"
     ],[])
+    # AM_LDFLAGS=`echo $AM_LDFLAGS|sed -e"s/-Wl,--as-needed -Wl,--no-as-needed//"`
     ;;
 esac
 

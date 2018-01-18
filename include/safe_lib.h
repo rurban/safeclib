@@ -42,11 +42,6 @@ extern "C" {
 #include "safe_lib_errno.h"
 #include "safe_types.h"
 
-#include <time.h>
-#if defined HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-
 #if defined _WIN32 && !defined(DISABLE_DLLIMPORT)
 # if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
 #  define EXTERN extern __declspec(dllexport)
@@ -54,7 +49,17 @@ extern "C" {
 #  define EXTERN extern __declspec(dllimport)
 # endif
 #else
+# if defined(_WIN32) && defined(DISABLE_DLLIMPORT)
+/* ignore the sec_api imports. with DISABLE_DLLIMPORT we want our own */
+#  undef _SECIMP
+#  define _SECIMP
+# endif
 # define EXTERN extern
+#endif
+
+#include <time.h>
+#if defined HAVE_SYS_TIME_H
+#include <sys/time.h>
 #endif
 
 #if defined __MINGW64_VERSION_MAJOR
