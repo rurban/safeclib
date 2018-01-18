@@ -23,7 +23,9 @@ int test_fopen_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = fopen_s(NULL, TMP, "r");
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
     rc = fopen_s(&tmp, NULL, "r");

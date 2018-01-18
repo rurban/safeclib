@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_WCSCPY_S)
+#include "test_msvcrt.h"
+
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
@@ -23,26 +26,35 @@ int test_wcscpy_s (void)
 
 /*--------------------------------------------------*/
 
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
     rc = wcscpy_s(NULL, LEN, str2);
-    ERR(ESNULLP)
+    if ( use_msvcrt && rc == ESNULLP ) {
+        printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    }
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     rc = wcscpy_s(str1, 5, NULL);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
     WCHECK_SLACK(str1, 5);
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"untouched");
     rc = wcscpy_s(str1, 0, str2);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, EINVAL);
+    WEXPSTR(str1, L"untouched");
 
 /*--------------------------------------------------*/
 
     rc = wcscpy_s(str1, (RSIZE_MAX_STR+1), str2);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0);
+    WEXPSTR(str1, L"untouched");
 
 /*--------------------------------------------------*/
 
@@ -65,12 +77,17 @@ int test_wcscpy_s (void)
     wcscpy(str1, L"keep it simple");
 
     rc = wcscpy_s(&str1[0], LEN, &str1[5]);
-    ERR(ESOVRLP);
-    WCHECK_SLACK(str1, LEN);
+    ERR_MSVC(ESOVRLP, 0);
+    if (!use_msvcrt) {
+        WCHECK_SLACK(str1, LEN);
+    } else { /* windows overlap with dest < src */
+        WEXPSTR(str1, L"it simple");
+    }
 
     wcscpy(str1, L"keep it simple");
     rc = wcscpy_s(&str1[5], LEN-5, &str1[0]);
-    ERR(ESOVRLP)
+    /* Windows forbids overlap with dest > src */
+    ERR_MSVC(ESOVRLP, ERANGE);
     WCHECK_SLACK(&str1[5], LEN-5);
 
 /*--------------------------------------------------*/
@@ -109,7 +126,7 @@ int test_wcscpy_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscpy_s(str1, 1, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     WCHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
@@ -118,7 +135,7 @@ int test_wcscpy_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscpy_s(str1, 2, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     WCHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/

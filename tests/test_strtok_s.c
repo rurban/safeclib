@@ -34,13 +34,13 @@ int main()
 
 /*--------------------------------------------------*/
 
-#ifdef USE_MSVCRT
+    print_msvcrt(use_msvcrt);
     strcpy(str1, "aaaaaaaa");
     strcpy(str2, "fedcba");
-#endif
     len = LEN;
 
     rc = strtok_s(NULL, &len, str2, NULL);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERRPTR(NULL);
     /* msvcrt also doesn't reset errno */
     ERRNO_MSVC(ESNULLP, EINVAL);
@@ -105,11 +105,11 @@ int main()
 
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok != NULL) {
-#ifndef USE_MSVCRT /* has no dmax arg */
-        debug_printf("%s %u token -%s-  remaining -%s- Error \n",
-                     __FUNCTION__, __LINE__,  p2tok, p2str);
-        errs++;
-#endif
+        if (!use_msvcrt) { /* has no dmax arg */
+            debug_printf("%s %u token -%s-  remaining -%s- Error \n",
+                         __FUNCTION__, __LINE__,  p2tok, p2str);
+            errs++;
+        }
     }
     ERRNO_MSVC(ESUNTERM, 0);
 
@@ -206,21 +206,20 @@ int main()
 
     strcpy(str2, ",");   /* change the tokenizer string */
 
-    debug_printf("\n");
-    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
+    xdebug_printf("\n");
+    xdebug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-
-        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        xdebug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         p2tok = strtok_s(p2str, &len, str2, &p2str);
         ERRNO(EOK);
 
-        debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+        xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 
@@ -230,42 +229,44 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    debug_printf("\n");
-    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
+    xdebug_printf("\n");
+    xdebug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
-    debug_printf("  p2tok = strtok_s(str1, &len, str2, &p2str); \n");
+    xdebug_printf("  p2tok = strtok_s(str1, &len, str2, &p2str); \n");
     p2tok = strtok_s(str1, &len, str2, &p2str);
     ERRNO(EOK);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    xdebug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+
     p2tok = strtok_s(NULL, &len, str2, &p2str);
     ERRNO(EOK);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
-    p2tok = strtok_s(NULL, &len, str2, &p2str);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
 
-    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    xdebug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    xdebug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+
+    xdebug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    p2tok = strtok_s(NULL, &len, str2, &p2str);
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
     /* len is zero at this point */
-    debug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
+    xdebug_printf("  p2tok = strtok_s(NULL, &len, str2, &p2str); \n");
     p2tok = strtok_s(NULL, &len, str2, &p2str);
-    debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+    xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
 
-    debug_printf("\n");
+    xdebug_printf("\n");
 
 /*--------------------------------------------------*/
 
@@ -275,20 +276,20 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    debug_printf("\n");
-    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
+    xdebug_printf("\n");
+    xdebug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        xdebug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         p2tok = strtok_s(p2str, &len, str2, &p2str);
         ERRNO(EOK);
 
-        debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+        xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
     }
 /*--------------------------------------------------*/
 
@@ -298,20 +299,20 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    debug_printf("\n");
-    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
+    xdebug_printf("\n");
+    xdebug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        xdebug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         p2tok = strtok_s(p2str, &len, str2, &p2str);
         if (p2tok) {
             ERRNO(EOK);
-            debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+            xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
         } else {
             ERRNO_MSVC(ESUNTERM, 0);
         }
@@ -324,21 +325,21 @@ int main()
 
     strcpy(str2, ",.;*");
 
-    debug_printf("\n");
-    debug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
-    debug_printf("String of delimiters str2 = \"%s\" \n", str2);
+    xdebug_printf("\n");
+    xdebug_printf("String to tokenize str1 = \"%s\"  len = %u\n", str1, (unsigned)len);
+    xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
     p2str = str1;
     p2tok = str1;
 
     while (p2tok && len) {
-        debug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
+        xdebug_printf("  p2tok = strtok_s(p2str, &len, str2, &p2str); \n");
 
         /* p2tok = strtok_s(p2str, &len, str2, &p2str); */
         p2tok = strtok_s(NULL, &len, str2, &p2str);
         if (p2tok) {
             ERRNO(EOK);
-            debug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
+            xdebug_printf("  token -%s-  -%s- len=%d \n", p2tok, p2str, (int)len );
         } else {
             ERRNO_MSVC(ESUNTERM, 0);
         }

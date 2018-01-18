@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_mem_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_MEMCPY_S)
+#include "test_msvcrt.h"
+
 #define LEN   ( 1024 )
 
 static uint8_t  mem1[LEN+2];
@@ -19,22 +22,28 @@ int test_memcpy_s (void)
     errno_t rc;
     uint32_t i;
     rsize_t len;
+    int ind;
     int errs = 0;
 
 /*--------------------------------------------------*/
 
+    for (i=0; i<=LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<=LEN; i++) { mem2[i] = 33; }
+    print_msvcrt(use_msvcrt);
+
     rc = memcpy_s(NULL, LEN, mem2, LEN);
-    ERR(ESNULLP)
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 0, mem2, LEN);
-    ERR(ESZEROL)
+    ERR(ESZEROL);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 

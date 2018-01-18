@@ -10,6 +10,9 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_WCSCAT_S)
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   str1[LEN];
@@ -25,23 +28,32 @@ int test_wcscat_s (void)
 
 /*--------------------------------------------------*/
 
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
     rc = wcscat_s(NULL, LEN, str2);
-    ERR(ESNULLP)
+    if ( use_msvcrt && rc == ESNULLP ) {
+        printf("safec.dll overriding msvcrt.dll\n");
+        use_msvcrt = false;
+    }
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = wcscat_s(str1, LEN, NULL);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
+    wcscpy(str1, L"untouched");
     rc = wcscat_s(str1, 0, str2);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, EINVAL);
+    WEXPSTR(str1, L"untouched");
 
 /*--------------------------------------------------*/
 
     rc = wcscat_s(str1, (RSIZE_MAX_STR+1), str2);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0);
+    WEXPSTR(str1, L"untouched");
 
 /*--------------------------------------------------*/
 
@@ -49,7 +61,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 1, str2);
-    ERR(ESUNTERM)
+    ERR_MSVC(ESUNTERM, EINVAL);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -58,7 +70,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 2, str2);
-    ERR(ESUNTERM)
+    ERR_MSVC(ESUNTERM, EINVAL);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -84,7 +96,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 1, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -93,7 +105,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 2, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -102,7 +114,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 1, str2);
-    ERR(ESUNTERM);
+    ERR_MSVC(ESUNTERM, EINVAL);
     WCHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
@@ -111,7 +123,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 2, str2);
-    ERR(ESUNTERM);
+    ERR_MSVC(ESUNTERM, EINVAL);
     WCHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
@@ -119,14 +131,14 @@ int test_wcscat_s (void)
     wcscpy(str1, L"abcd");
 
     rc = wcscat_s(&str1[0], 8, &str1[3]);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, EINVAL);
     WEXPNULL(str1)
     WCHECK_SLACK(str1, 8);
 
     wcscpy(str1, L"abcd");
 
     rc = wcscat_s(&str1[0], 4, &str1[3]);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, EINVAL);
     WEXPNULL(str1)
     WCHECK_SLACK(str1, 4);
 
@@ -135,7 +147,7 @@ int test_wcscat_s (void)
     wcscpy(str1, L"abcdefgh");
 
     rc = wcscat_s(&str1[3], 5, &str1[0]);
-    ERR(ESUNTERM);
+    ERR_MSVC(ESUNTERM, EINVAL);
     WEXPNULL(&str1[3])
     WCHECK_SLACK(&str1[3], 5);
 
@@ -144,7 +156,7 @@ int test_wcscat_s (void)
     wcscpy(str1, L"abcdefgh");
 
     rc = wcscat_s(&str1[3], 12, &str1[0]);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, EOK);
     WEXPNULL(&str1[3])
     WCHECK_SLACK(&str1[3], 12);
 
@@ -196,7 +208,7 @@ int test_wcscat_s (void)
     wcscpy(str2, L"keep it simple");
 
     rc = wcscat_s(str1, 12, str2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
     WCHECK_SLACK(str1, 12);
 
@@ -216,7 +228,7 @@ int test_wcscat_s (void)
     wcscpy(str1, L"12345678901234567890");
 
     rc = wcscat_s(str1, 8, &str1[7]);
-    ERR(ESOVRLP)
+    ERR_MSVC(ESOVRLP, EINVAL);
     WEXPNULL(str1)
     WCHECK_SLACK(str1, 8);
 
@@ -225,7 +237,7 @@ int test_wcscat_s (void)
     wcscpy(str1, L"123456789");
 
     rc = wcscat_s(str1, 9, &str1[8]);
-    ERR(ESOVRLP)
+    ERR_MSVC(ESOVRLP, EINVAL);
     WEXPNULL(str1)
     WCHECK_SLACK(str1, 9);
 

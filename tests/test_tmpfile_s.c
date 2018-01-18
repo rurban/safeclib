@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
+#define HAVE_NATIVE defined(HAVE_TMPFILE_S)
+#include "test_msvcrt.h"
+
 int test_tmpfile_s (void)
 {
     errno_t rc;
@@ -17,13 +20,16 @@ int test_tmpfile_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
+
     rc = tmpfile_s(NULL);
-    ERR(ESNULLP)
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EACCES);
 
 /*--------------------------------------------------*/
 
     rc = tmpfile_s(&tmp);
-    if (!(rc == 0 || rc == ESLEMAX)) {
+    if (!(rc == 0 || rc == EACCES || rc == ESLEMAX)) {
         debug_printf("%s %u   Error rc=%d \n",
                      __FUNCTION__, __LINE__,  rc );
         errs++;

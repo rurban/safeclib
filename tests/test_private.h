@@ -164,6 +164,20 @@
 # endif
 #endif
 
+#ifdef XDEBUG
+#  if defined(HAVE_C99)
+#    define xdebug_printf(...)  printf(__VA_ARGS__)
+#  else
+#    define xdebug_printf printf
+#  endif
+#else
+# ifdef HAVE_C99
+#   define xdebug_printf(...)
+# else
+#   define xdebug_printf printf
+# endif
+#endif
+
 #define ERR(n)                                     \
     if (rc != (n)) {                               \
         debug_printf("%s %u  Error rc=%d \n",      \

@@ -29,6 +29,8 @@ int test_strncat_s (void)
     strcpy(str1, "a");
     strcpy(str2, "b");
 
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
     /* probe for msvcrt or safec.dll being active */
     rc = strncat_s(NULL, LEN, str1, LEN);
     if ( use_msvcrt && rc == ESNULLP ) {

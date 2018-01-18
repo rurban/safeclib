@@ -29,6 +29,9 @@ int test_strncpy_s (void)
 /*--------------------------------------------------*/
 
     nlen = 5;
+
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
     rc = strncpy_s(NULL, LEN, str2, nlen);
     if ( use_msvcrt && rc == ESNULLP )
         use_msvcrt = false;

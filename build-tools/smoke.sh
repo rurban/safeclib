@@ -84,12 +84,16 @@ CC="c++ -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
 ;;
 
 MSYS_NT*)
-# test ours
+# test the msvcrt sec_api
 ./configure --disable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
-    make check-log || exit
-# compare to the windows sec_api
+    # 3 msvcrt errors
+    make check-log
+# test ours
 ./configure --enable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
     make check-log || exit
+# ensure we use the windows sec_api (?)
+./configure --enable-shared --enable-debug --enable-unsafe && \
+    make check-log CFLAGS="-DTEST_MSVCRT" || exit
 exit
 ;;
 

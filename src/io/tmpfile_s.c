@@ -72,7 +72,7 @@
  * @retval  EOK        on success
  * @retval  ESNULLP    when streamptr is a NULL pointer
  * @retval  ESLEMAX    when more than TMP_MAX_S files were opened.
- * @retval  errno()    when tmpfile() failed, typically ENOENT
+ * @retval  errno()    when tmpfile() failed, typically ENOENT or EACCES
  */
 
 EXPORT errno_t

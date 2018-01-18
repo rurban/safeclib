@@ -26,6 +26,9 @@ int test_wcsncat_s (void)
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"a");
+    wcscpy(str2, L"aaaaa");
+    if (use_msvcrt)
+        printf("Using msvcrt...\n");
 
     /* probe for msvcrt or safec.dll being active */
     rc = wcsncat_s(NULL, LEN, str2, LEN);
@@ -184,7 +187,7 @@ int test_wcsncat_s (void)
     wcscpy(str1, L"hello");
 
     rc = wcsncat_s(str1, 6, L"X", 2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
     WCHECK_SLACK(str1, 6);
 

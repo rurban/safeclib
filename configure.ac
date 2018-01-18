@@ -587,7 +587,7 @@ AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 wcsncpy_s wcsncat_s wmemmove_s memmove_s wmemcpy_s gets_s \
                 tmpnam_s wcsrtombs_s wcrtombs_s wcstomb_s wcscat_s swscanf_s \
                 strcat_s strcpy_s sprintf_s vsprintf_s sscanf_s strerror_s mbstowcs_s \
-                mbsrtowcs_s wcscpy_s \
+                mbsrtowcs_s wcscpy_s qsort_s tmpfile_s \
                 vsnprintf_s vsnwprintf_s strtok_s wcstok_s ])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])

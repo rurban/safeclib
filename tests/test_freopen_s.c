@@ -23,6 +23,7 @@ int test_freopen_s (void)
     FILE *file = stdin;
 
 /*--------------------------------------------------*/
+    /* shared */
     if (use_msvcrt)
         printf("Using msvcrt...\n");
 

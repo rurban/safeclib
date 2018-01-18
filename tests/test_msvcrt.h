@@ -34,6 +34,7 @@
 
 /* With static linkage we can enforce our -lsafec over -lc.
    But not all. Some forceinline API's will still use msvcrt.
+   With shared linkage we always get native msvcrt.
  */
 #if defined(_WIN32) && (HAVE_NATIVE) && !defined(DISABLE_DLLIMPORT)
 # define USE_MSVCRT
@@ -41,6 +42,43 @@ bool use_msvcrt = true;
 #else
 bool use_msvcrt = false;
 #endif
+
+void print_msvcrt(bool use_msvcrt) {
+#ifdef _WIN32
+    printf("Using %s, have_native=%s %s...\n",
+        use_msvcrt ? "msvcrt" : "safec",
+# if (HAVE_NATIVE)
+        "yes",
+# else
+        "no",
+# endif
+# ifdef DISABLE_DLLIMPORT
+        "static"
+# else
+        "shared"
+# endif
+        );
+#else
+    (void)use_msvcrt;
+#endif
+}
+
+void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
+#ifdef _WIN32
+    if ( is_msvcrt ) {
+        if (*msvcrtp)
+            printf("No, safec.dll overriding msvcrt.dll\n");
+        *msvcrtp = false;
+    } else {
+        if (!*msvcrtp)
+            printf("No, msvcrt.dll overriding safec.dll\n");
+        *msvcrtp = true;
+    }
+#else
+    (void)is_msvcrt;
+    (void)msvcrtp;
+#endif
+}
 
 #define ERR_MSVC(n, winerr)   \
     _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
