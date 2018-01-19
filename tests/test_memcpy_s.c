@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memcpy_s
  * File 'mem/memcpy_s.c'
- * Lines executed:100.00% of 30
+ * Lines executed:100.00% of 31
  *
  *------------------------------------------------------------------
  */
@@ -57,12 +57,8 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 10, mem2, 0);
-#ifdef HAVE_C11
     ERR(EOK);
-#else
-    ERR(ESZEROL)
-    CHECK_SLACK(mem1, 10);
-#endif
+    EXPSTR((char*)mem1, "");
 
 /*--------------------------------------------------*/
 
@@ -156,11 +152,7 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, 0);
-#ifdef HAVE_C11
     ERR(EOK)
-#else
-    ERR(ESZEROL)
-#endif
 
 /*--------------------------------------------------*/
 
