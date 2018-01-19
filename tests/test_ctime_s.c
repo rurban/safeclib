@@ -77,13 +77,18 @@ int test_ctime_s (void)
         tm->tm_year = 10000;
         timer = mktime(tm);
         debug_printf("year 10000 = %ld\n", timer);
-        timer++;
+        if (timer != -1)
+            timer++;
 #endif
     }
 
     /* eg. 313360441200L */
     rc = ctime_s(str1, LEN, &timer);
-    ERR_MSVC(ESLEMAX,0);
+    if (timer == -1) {
+        ERR_MSVC(ESLEMIN, EINVAL);
+    } else {
+        ERR_MSVC(ESLEMAX, 0);
+    }
 /*
 #ifndef __MINGW32__
     ERR(ESLEMAX);
