@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memccpy_s
  * File 'memccpy_s.c'
- * Lines executed:100.00% of 41
+ * Lines executed:100.00% of 42
  *
  *------------------------------------------------------------------
  */
@@ -26,7 +26,16 @@ int test_memccpy_s (void)
 
     nlen = 5;
     rc = memccpy_s(NULL, LEN, str2, 0, nlen);
-    ERR(ESNULLP)
+    ERR(ESNULLP);
+
+#if 0 && defined(HAVE_MEMCCPY)
+    {
+        /* SEGV */  /* __MINGW_ATTRIB_DEPRECATED_MSVC2005 */
+        char *sub = (char*)memccpy(NULL, str2, 0, nlen);
+        SUBNULL();
+    }
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -35,16 +44,26 @@ int test_memccpy_s (void)
     rc = memccpy_s(str1, 5, NULL, 0, nlen);
     ERR(ESNULLP);
     CHECK_SLACK(str1, 5);
+#if 0 && defined(HAVE_MEMCCPY)
+    {
+        /* also SEGV */
+        char *sub = (char*)memccpy(str1, NULL, 0, nlen);
+        SUBNULL();
+    }
+#endif
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     str2[0] = '\0';
 
     rc = memccpy_s(str1, 5, str2, 0, 0);
-#ifdef HAVE_C11
-    ERR(EOK)
-#else
-    ERR(ESZEROL)
-    CHECK_SLACK(str1, 5);
+    ERR(EOK);
+    EXPSTR(str1, "");
+#if defined(HAVE_MEMCCPY)
+    {
+        char *sub = (char*)memccpy(str1, str2, 0, 0);
+        EXPSTR(str1, "");
+        SUBNULL();
+    }
 #endif
 
 /*--------------------------------------------------*/
@@ -65,7 +84,7 @@ int test_memccpy_s (void)
    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
    rc = memccpy_s(str1, 5, str2, 0, (RSIZE_MAX_MEM+1));
-    ERR(ESLEMAX)
+   ERR(ESLEMAX)
 #endif
 
 /*--------------------------------------------------*/
@@ -87,6 +106,15 @@ int test_memccpy_s (void)
     rc = memccpy_s(str1, LEN, str1, 0, nlen);
     ERR(ESOVRLP)
     CHECK_SLACK(str1, nlen);
+#if defined(HAVE_MEMCCPY) && (defined(__GLIBC__) || defined(_WIN32))
+    {
+        /* with glibc/windows overlap allowed, &str[1] returned.
+         * an darwin/bsd fails the __memccpy_chk().
+         */
+        char *sub = (char*)memccpy(str1, str1, 0, nlen);
+        printf("memccpy overlap: %p <=> %p\n", sub, str1);
+    }
+#endif
 
 /*--------------------------------------------------*/
 
@@ -96,6 +124,13 @@ int test_memccpy_s (void)
     rc = memccpy_s(&str1[0], LEN, &str1[5], 0, nlen);
     ERR(ESOVRLP)
     CHECK_SLACK(str1, LEN);
+#if defined(HAVE_MEMCCPY)
+    {
+        /* overlap allowed, &str[1] returned */
+        char *sub = (char*)memccpy(&str1[0], &str1[5], 0, nlen);
+        printf("memccpy overlap: %p <=> %p\n", sub, str1);
+    }
+#endif
 
 /*--------------------------------------------------*/
 

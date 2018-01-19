@@ -582,7 +582,7 @@ AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
                 bcmp secure_getenv memset_s timingsafe_memcmp timingsafe_bcmp \
-                asctime_r ctime_r gmtime_r localtime_r memcpy_s \
+                asctime_r ctime_r gmtime_r localtime_r memccpy memcpy_s \
                 asctime_s ctime_s fopen_s freopen_s getenv_s strncpy_s strncat_s \
                 wcsncpy_s wcsncat_s wmemmove_s memmove_s wmemcpy_s gets_s \
                 tmpnam_s wcsrtombs_s wcrtombs_s wcstomb_s wcscat_s swscanf_s \
