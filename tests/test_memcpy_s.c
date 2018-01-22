@@ -31,8 +31,8 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<=LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<=LEN; i++) { mem2[i] = 33; }
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
     print_msvcrt(use_msvcrt);
 
     rc = memcpy_s(NULL, LEN, mem2, LEN);
@@ -77,6 +77,7 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memcpy_s(mem1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
