@@ -40,11 +40,13 @@ int main()
 /*--------------------------------------------------*/
 
     rc = memcpy16_s(mem1, 10, mem2, 0);
-#ifdef HAVE_C11
     ERR(EOK);
-#else
-    ERR(ESZEROL)
-#endif
+    /* verify mem1[0] was zeroed */
+    if (mem1[0] != 0) {
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
+                     __LINE__, 0, (int)mem1[0], (int)mem2[0]);
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 
@@ -105,11 +107,13 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = memcpy16_s(mem1, LEN, mem2, 0);
-#ifdef HAVE_C11
     ERR(EOK);
-#else
-    ERR(ESZEROL)
-#endif
+    /* verify mem1[0] was zeroed */
+    if (mem1[0] != 0) {
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
+                     __LINE__, 0, (int)mem1[0], (int)mem2[0]);
+        errs++;
+    }
 
 /*--------------------------------------------------*/
 

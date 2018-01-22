@@ -62,9 +62,9 @@
  * @return  If there is a runtime-constraint violation, the memcpy_s function
  *          stores zeros in the ﬁrst dmax bytes of the region pointed to
  *          by dest if dest is not a null pointer and smax is valid.
- * @retval  EOK         when operation is successful
+ * @retval  EOK         when operation is successful or smax = 0
  * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax = ZERO. Before C11 also with smax = ZERO
+ * @retval  ESZEROL     when dmax = ZERO.
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -99,14 +99,8 @@ memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
 
     if (unlikely(smax == 0)) {
         /* Since C11 smax=0 is allowed */
-#ifdef HAVE_C11
+        *dest = 0;
         return EOK;
-#else
-        mem_prim_set32(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy32_s: smax is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-#endif
     }
 
     if (unlikely(smax > dmax)) {

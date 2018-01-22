@@ -66,9 +66,9 @@
  *          stores zeros in the ﬁrst dmax characters of the region pointed to
  *          by dest if dest is not a null pointer and dmax is not greater
  *          than RSIZE_MAX_MEM.
- * @retval  EOK         when operation is successful
+ * @retval  EOK         when operation is successful or smax = 0
  * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax = ZERO. Before C11 also with smax = ZERO
+ * @retval  ESZEROL     when dmax = ZERO
  * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < smax
  *
@@ -82,7 +82,7 @@ memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
     uint32_t *dp;
     const uint32_t  *sp;
 
-    dp= dest;
+    dp = dest;
     sp = src;
 
     if (unlikely(dp == NULL)) {
@@ -108,14 +108,8 @@ memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t smax)
 
     if (unlikely(smax == 0)) {
         /* Since C11 smax=0 is allowed */
-#ifdef HAVE_C11
+        *dp = 0;
         return EOK;
-#else
-        mem_prim_set32(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memove32_s: smax is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-#endif
     }
 
     if (unlikely(smax > dmax)) {
