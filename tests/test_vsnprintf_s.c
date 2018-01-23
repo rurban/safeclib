@@ -10,6 +10,7 @@
 
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
 #define USE_MSVCRT
+int vsnprintf_s(char *dest, size_t dmax, size_t maxcount,const char *fmt, va_list arglist);
 #endif
 
 #define LEN   ( 128 )
