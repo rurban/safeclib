@@ -39,8 +39,7 @@
 #include "mem_primitives_lib.h"
 #endif
 
-#if defined HAVE_MEMSET_S && defined HAVE_C11 && defined WANT_C11
-/* use the libc function */
+#if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
 #else
 
 /**
@@ -133,4 +132,5 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
     return (RCNEGATE(err));
 }
 EXPORT_SYMBOL(memset_s)
+
 #endif
