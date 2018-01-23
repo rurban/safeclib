@@ -10,7 +10,11 @@
 #include "safe_lib.h"
 #include <stdlib.h>
 
-#define HAVE_NATIVE defined(HAVE_GETENV_S)
+#ifdef HAVE_GETENV_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
 #include "test_msvcrt.h"
 
 #define LEN   ( 4090 )

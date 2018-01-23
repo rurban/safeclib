@@ -12,7 +12,11 @@
 
 #define TMP "tmpfopen"
 
-#define HAVE_NATIVE defined(HAVE_FOPEN_S)
+#ifdef HAVE_FOPEN_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
 #include "test_msvcrt.h"
 
 int test_fopen_s (void)

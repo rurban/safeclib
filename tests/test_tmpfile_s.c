@@ -9,7 +9,11 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
-#define HAVE_NATIVE defined(HAVE_TMPFILE_S)
+#ifdef HAVE_TMPFILE_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
 #include "test_msvcrt.h"
 
 int test_tmpfile_s (void)

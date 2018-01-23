@@ -9,7 +9,11 @@
 #include "test_private.h"
 #include "safe_lib.h"
 
-#define HAVE_NATIVE defined(HAVE_CTIME_S) || defined(HAVE_ASCTIME_S)
+#if defined(HAVE_CTIME_S) || defined(HAVE_ASCTIME_S)
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
 #include "test_msvcrt.h"
 
 #define LEN   ( 128 )

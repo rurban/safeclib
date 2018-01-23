@@ -9,7 +9,11 @@
 #include "test_private.h"
 #include "safe_mem_lib.h"
 
-#define HAVE_NATIVE defined(HAVE_MEMCPY_S)
+#ifdef HAVE_MEMCPY_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
 #include "test_msvcrt.h"
 
 #define LEN   ( 1024 )
