@@ -3,12 +3,18 @@
  * File 'mem/memmove_s.c'
  * Lines executed:100.00% of 26
  *
- *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
-#include "safe_mem_lib.h"
+#include "test_expmem.h"
+
+#ifdef HAVE_MEMMOVE_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
 
 #define LEN   ( 1024 )
 
@@ -20,42 +26,40 @@ int test_memmove_s (void)
     errno_t rc;
     uint32_t i;
     uint32_t len;
+    int ind;
     int errs = 0;
 
 /*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
     rc = memmove_s(NULL, LEN, mem2, LEN);
-    ERR(ESNULLP)
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, 0, mem2, LEN);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, ERANGE);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, LEN, NULL, LEN);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, 10, mem2, 0);
-#ifdef HAVE_C11
-    ERR(EOK)
-#else
-    ERR(ESZEROL)
-    CHECK_SLACK(mem1, 10);
-#endif
+    ERR(EOK);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, ERANGE);
     CHECK_SLACK(mem1, LEN);
 
 /*--------------------------------------------------*/
@@ -67,12 +71,13 @@ int test_memmove_s (void)
     len = LEN;
     rc = memmove_s(mem1, len, mem2, LEN);
     ERR(EOK)
-
-    for (i=0; i<len; i++) {
-        if (mem1[i] != mem2[i]) {
-            debug_printf("%d m1=%d  m2=%d  \n",
-                 i, mem1[i], mem2[i]);
-            errs++;
+    else {
+        for (i=0; i<len; i++) {
+            if (mem1[i] != mem2[i]) {
+                debug_printf("%d m1=%d  m2=%d  \n",
+                             i, mem1[i], mem2[i]);
+                errs++;
+            }
         }
     }
 
@@ -84,15 +89,33 @@ int test_memmove_s (void)
     /* length error */
     len = LEN/2;
     rc = memmove_s(mem1, len, mem2, LEN);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
 
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
+    /* with safec mem1 was zeroed */
+    if (!use_msvcrt) {
+        for (i=0; i<len; i++) {
+            if (mem1[i] != 0) {
+                debug_printf("%d - %d m1=%d \n",
+                             __LINE__, i, mem1[i]);
+                errs++;
+            }
         }
+    }
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+
+    /* invalid length, untouched dest */
+    len = LEN;
+    rc = memmove_s(mem1, len, mem2, 0);
+    ERR(EOK);
+    /* verify mem1[0] was not zeroed */
+    if (mem1[0] != 33) {
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
+                     __LINE__, 0, (int)mem1[0], (int)mem2[0]);
+        errs++;
     }
 
 /*--------------------------------------------------*/
@@ -102,29 +125,17 @@ int test_memmove_s (void)
 
     /* invalid length - zero dest */
     len = LEN;
-    rc = memmove_s(mem1, len, mem2, 0);
-#ifdef HAVE_C11
-    ERR(EOK)
-#else
-    ERR(ESZEROL)
-#endif
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
-
-    /* invalid length - zero dest */
-    len = LEN;
     rc = memmove_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, ERANGE);
 
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
+    if (!use_msvcrt) {
+        /* verify mem1 was zeroed */
+        for (i=0; i<len; i++) {
+            if (mem1[i] != 0) {
+                debug_printf("%d - %d m1=%d \n",
+                             __LINE__, i, mem1[i]);
+                errs++;
+            }
         }
     }
 
@@ -146,12 +157,13 @@ int test_memmove_s (void)
     len = 20;
     rc = memmove_s(&mem1[0], len, &mem1[10], len);
     ERR(EOK)
-
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 35) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
+    else {
+        for (i=0; i<len; i++) {
+            if (mem1[i] != 35) {
+                debug_printf("%d - %d m1=%d \n",
+                             __LINE__, i, mem1[i]);
+                errs++;
+            }
         }
     }
 

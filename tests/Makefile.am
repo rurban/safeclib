@@ -238,9 +238,9 @@ endif
 
 p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON)
 
-t_memcpy_s_SOURCES            = test_memcpy_s.c $(SAFEC_TEST_COMMON)
-t_memmove_s_SOURCES           = test_memmove_s.c $(SAFEC_TEST_COMMON)
-t_memset_s_SOURCES            = test_memset_s.c $(SAFEC_TEST_COMMON)
+t_memcpy_s_SOURCES            = test_memcpy_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memmove_s_SOURCES           = test_memmove_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memset_s_SOURCES            = test_memset_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_sprintf_s_SOURCES           = test_sprintf_s.c $(SAFEC_TEST_COMMON)
 t_strcat_s_SOURCES            = test_strcat_s.c $(SAFEC_TEST_COMMON)
 t_strcpy_s_SOURCES            = test_strcpy_s.c $(SAFEC_TEST_COMMON)
@@ -284,8 +284,8 @@ t_wcscpy_s_SOURCES            = test_wcscpy_s.c $(SAFEC_TEST_COMMON)
 t_wcsncpy_s_SOURCES           = test_wcsncpy_s.c $(SAFEC_TEST_COMMON)
 t_wcscat_s_SOURCES            = test_wcscat_s.c $(SAFEC_TEST_COMMON)
 t_wcsncat_s_SOURCES           = test_wcsncat_s.c $(SAFEC_TEST_COMMON)
-t_wmemcpy_s_SOURCES           = test_wmemcpy_s.c $(SAFEC_TEST_COMMON)
-t_wmemmove_s_SOURCES          = test_wmemmove_s.c $(SAFEC_TEST_COMMON)
+t_wmemcpy_s_SOURCES           = test_wmemcpy_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_wmemmove_s_SOURCES          = test_wmemmove_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_wcrtomb_s_SOURCES           = test_wcrtomb_s.c $(SAFEC_TEST_COMMON)
 t_wctomb_s_SOURCES            = test_wctomb_s.c $(SAFEC_TEST_COMMON)
 t_wcstok_s_SOURCES            = test_wcstok_s.c $(SAFEC_TEST_COMMON)
@@ -322,18 +322,18 @@ endif
 
 if ENABLE_EXTS
 p_memcpy32_s_SOURCES          = perf_memcpy32_s.c $(SAFEC_TEST_COMMON)
-t_memcpy32_s_SOURCES          = test_memcpy32_s.c $(SAFEC_TEST_COMMON)
-t_memcpy16_s_SOURCES          = test_memcpy16_s.c $(SAFEC_TEST_COMMON)
+t_memcpy32_s_SOURCES          = test_memcpy32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memcpy16_s_SOURCES          = test_memcpy16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_memcmp_s_SOURCES            = test_memcmp_s.c $(SAFEC_TEST_COMMON)
 t_memcmp32_s_SOURCES          = test_memcmp32_s.c $(SAFEC_TEST_COMMON)
 t_memcmp16_s_SOURCES          = test_memcmp16_s.c $(SAFEC_TEST_COMMON)
-t_memmove32_s_SOURCES         = test_memmove32_s.c $(SAFEC_TEST_COMMON)
-t_memmove16_s_SOURCES         = test_memmove16_s.c $(SAFEC_TEST_COMMON)
-t_memset32_s_SOURCES          = test_memset32_s.c $(SAFEC_TEST_COMMON)
-t_memset16_s_SOURCES          = test_memset16_s.c $(SAFEC_TEST_COMMON)
-t_memzero_s_SOURCES           = test_memzero_s.c $(SAFEC_TEST_COMMON)
-t_memzero32_s_SOURCES         = test_memzero32_s.c $(SAFEC_TEST_COMMON)
-t_memzero16_s_SOURCES         = test_memzero16_s.c $(SAFEC_TEST_COMMON)
+t_memmove32_s_SOURCES         = test_memmove32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memmove16_s_SOURCES         = test_memmove16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memset32_s_SOURCES          = test_memset32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memset16_s_SOURCES          = test_memset16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memzero_s_SOURCES           = test_memzero_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memzero32_s_SOURCES         = test_memzero32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memzero16_s_SOURCES         = test_memzero16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_strcasecmp_s_SOURCES        = test_strcasecmp_s.c $(SAFEC_TEST_COMMON)
 t_strcasestr_s_SOURCES        = test_strcasestr_s.c $(SAFEC_TEST_COMMON)
 t_strcmpfld_s_SOURCES         = test_strcmpfld_s.c $(SAFEC_TEST_COMMON)
@@ -374,7 +374,7 @@ t_strnset_s_SOURCES           = test_strnset_s.c $(SAFEC_TEST_COMMON)
 t_strcoll_s_SOURCES           = test_strcoll_s.c $(SAFEC_TEST_COMMON)
 t_timingsafe_memcmp_SOURCES   = test_timingsafe_memcmp.c $(SAFEC_TEST_COMMON)
 t_timingsafe_bcmp_SOURCES     = test_timingsafe_bcmp.c $(SAFEC_TEST_COMMON)
-t_memccpy_s_SOURCES           = test_memccpy_s.c $(SAFEC_TEST_COMMON)
+t_memccpy_s_SOURCES           = test_memccpy_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 endif
 
 if ENABLE_UNSAFE

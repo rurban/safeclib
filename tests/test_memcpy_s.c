@@ -1,13 +1,13 @@
 /*------------------------------------------------------------------
  * test_memcpy_s
  * File 'mem/memcpy_s.c'
- * Lines executed:100.00% of 31
+ * Lines executed:100.00% of 30
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
-#include "safe_mem_lib.h"
+#include "test_expmem.h"
 
 #ifdef HAVE_MEMCPY_S
 # define HAVE_NATIVE 1
@@ -42,7 +42,7 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 0, mem2, LEN);
-    ERR(ESZEROL);
+    ERR_MSVC(ESZEROL, ERANGE);
 
 /*--------------------------------------------------*/
 
@@ -52,49 +52,35 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, NULL, LEN);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 10, mem2, 0);
     ERR(EOK);
-    EXPSTR((char*)mem1, "");
+    /* zeroed out earlier */
+    EXPMEM(mem1, 0, LEN, 0, 1);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX, ERANGE);
     CHECK_SLACK(mem1, LEN);
 
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, len);
-    ERR(EOK)
-    else {
-
-    for (i=0; i<len; i++) {
-        if (mem1[i] != mem2[i]) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-            errs++;
-        }
-    }
-
-    if (mem1[i] != 33) {
-        debug_printf("%d - %d m1=%d  m2=%d  \n",
-               __LINE__, (int)len, mem1[len], mem2[len]);
-        errs++;
-    }
-    }
+    ERR(EOK);
+    EXPMEM(mem1, 0, len, 44, 1);
 
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, (len+1) );
@@ -102,47 +88,29 @@ int test_memcpy_s (void)
         debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc);
         errs++;
-
     } else {
-
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
+        EXPMEM(mem1, 0, len, 0, 1);
+        if (mem1[len] != 33) {
             debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
+                         __LINE__, (int)len, mem1[len], mem2[len]);
             errs++;
         }
-    }
-
-    if (mem1[i] != 33) {
-        debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, (int)len, mem1[len], mem2[len]);
-        errs++;
-    }
     }
 
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+2; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     len = LEN/2;
     rc = memcpy_s(mem1, len, mem2, LEN);
-    ERR(ESNOSPC)
-    else {
+    ERR_MSVC(ESNOSPC, ERANGE);
 
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-            errs++;
-        }
-    }
-
+    EXPMEM(mem1, 0, len, 0, 1);
     if (mem1[len] != 33) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, (int)len, mem1[len], mem2[len]);
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
+                     __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
-    }
     }
 
 /*--------------------------------------------------*/
@@ -152,7 +120,7 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, 0);
-    ERR(EOK)
+    ERR(EOK);
 
 /*--------------------------------------------------*/
 
@@ -161,23 +129,16 @@ int test_memcpy_s (void)
 
     len = LEN;
     rc = memcpy_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
-    ERR(ESLEMAX)
-    else {
+    ERR_MSVC(ESLEMAX, ERANGE);
 
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
+    if (!use_msvcrt) {
+        /* verify mem1 was zeroed */
+        EXPMEM(mem1, 0, len, 0, 1);
+        if (mem1[len] == 0) {
             debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
+                         __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
-    }
-
-    if (mem1[len] == 0) {
-        debug_printf("%d - %d m1=%d  m2=%d  \n",
-             __LINE__, i, mem1[i], mem2[i]);
-        errs++;
-    }
     }
 
 /*--------------------------------------------------*/
@@ -186,7 +147,7 @@ int test_memcpy_s (void)
 
     /* same ptr - no move */
     rc = memcpy_s(mem1, LEN, mem1, LEN);
-    ERR(EOK)
+    ERR(EOK);
 
 /*--------------------------------------------------*/
 
@@ -196,22 +157,15 @@ int test_memcpy_s (void)
     /* overlap */
     len = 100;
     rc = memcpy_s(&mem1[0], len, &mem1[10], len);
-    ERR(ESOVRLP)
-    else {
+    ERR_MSVC(ESOVRLP, 0);
 
-      for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 0, len, 0, 1);
+        if (mem1[len] == 0) {
             debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
+                         __LINE__, i, mem1[i], mem2[i]);
             errs++;
         }
-      }
-
-      if (mem1[len] == 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-        errs++;
-      }
     }
 
 /*--------------------------------------------------*/
@@ -222,16 +176,10 @@ int test_memcpy_s (void)
     /* overlap */
     len = 100;
     rc = memcpy_s(&mem1[10], len, &mem1[0], len);
-    ERR(ESOVRLP)
-    else {
+    ERR_MSVC(ESOVRLP, 0);
 
-      for (i=10; i<len+10; i++) {
-        if (mem1[i] != 0) {
-          debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-        }
-      }
-
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 10, len+10, 0, 1);
     }
 
 /*--------------------------------------------------*/
@@ -243,14 +191,7 @@ int test_memcpy_s (void)
     rc = memcpy_s(mem1, len, mem2, len);
     ERR(EOK)
     else {
-
-      for (i=0; i<len; i++) {
-        if (mem1[i] != 55) {
-            debug_printf("%d - %d m1=%d\n",
-                 __LINE__, i, mem1[i]);
-        }
-      }
-
+        EXPMEM(mem1, 0, len, 55, 1);
     }
 
 /*--------------------------------------------------*/
@@ -261,13 +202,7 @@ int test_memcpy_s (void)
     rc = memcpy_s(mem1, LEN, mem2, LEN/2);
     ERR(EOK)
     else {
-
-      for (i=0; i<LEN/2; i++) {
-        if (mem1[i] != 55) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                 __LINE__, i, mem1[i], mem2[i]);
-        }
-      }
+        EXPMEM(mem1, 0, LEN/2, 55, 1);
     }
 
 /*--------------------------------------------------*/

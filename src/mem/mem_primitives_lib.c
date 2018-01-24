@@ -140,7 +140,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
  *    Pointers must meet system alignment requirements.
  *
  * @param[out] dest  pointer to memory that will be set to value
- * @param[in]  len   number of uint16_ts to be set
+ * @param[in]  len   number of uint16_t's to be set
  * @param[in]  value uint16_t value
  *
  */

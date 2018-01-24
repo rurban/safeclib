@@ -7,7 +7,7 @@
  */
 
 #include "test_private.h"
-#include "safe_mem_lib.h"
+#include "test_expmem.h"
 
 #define LEN   ( 128 )
 
