@@ -225,12 +225,12 @@
         errs++;                                    \
     }
 #define ERREOF(n)                                  \
-    ERR(EOF);                                      \
     if (errno != (n)) {                            \
         debug_printf("%s %u  Error errno=%d \n",  \
                      __FUNCTION__, __LINE__,  (int)errno); \
         errs++;                                    \
-    }
+    }                                              \
+    ERR(EOF);
 #define NOERR()                                    \
     if (rc < 0) {                                  \
         debug_printf("%s %u  Error rc=%d \n",     \

@@ -13,6 +13,15 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+#undef USE_PIPE
+
+#ifdef HAVE_VFWSCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   wstr1[LEN];
@@ -21,7 +30,7 @@ static char      str3[LEN];
 #define TMP   "tmpvfwscanf"
 static FILE* stream = NULL;
 
-static void stuff_stream(wchar_t *restrict dest)
+static void win_stuff_stream(wchar_t *restrict dest)
 {
     if (!stream)
         stream = fopen(TMP, "w+");
@@ -30,6 +39,17 @@ static void stuff_stream(wchar_t *restrict dest)
     fwprintf(stream, L"%ls\n", dest);
     rewind(stream);
 }
+
+#ifndef USE_PIPE
+# define stuff_stream(s) \
+    wcscpy(wstr1, s); \
+    win_stuff_stream(s);
+#else
+# define stuff_stream(s) \
+    wcscpy(wstr1, s); \
+    write(p[1], (s), sizeof(s)-1); \
+    write(p[1], L"\n", sizeof(L"\n")-1);
+#endif
 
 static int vtwscanf_s (FILE *stream, const wchar_t *restrict fmt, ...)
 {
@@ -50,48 +70,42 @@ static int test_vfwscanf_s (void)
     size_t  len3;
     int errs = 0;
     int p[2];
-    FILE *f;
 
 /*--------------------------------------------------*/
 
-#ifndef _WIN32
+    print_msvcrt(use_msvcrt);
+
+/* This pipe does not work on windows */
+#ifdef USE_PIPE
     pipe(p);
-    f = fdopen(p[0], "rb");
-    if (!f) {
+    stream = fdopen(p[0], "rb");
+    if (!stream) {
         close(p[0]);
         close(p[1]);
         return 0;
     }
-
-    write(p[1], L"a", sizeof(L"a"));
-#else
-    stuff_stream(L"a");
 #endif
+    stuff_stream(L"a");
     wstr2[0] = '\0';
     rc = vtwscanf_s(NULL, L"%ls", wstr2, LEN);
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERR(EOF);
+    ERRNO_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");
 
-    rc = vfwscanf_s(f, NULL, NULL);
-    ERREOF(ESNULLP);
+    rc = vfwscanf_s(stream, NULL, NULL);
+    ERR(EOF);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
     /* SEGV
-      rc = vfwscanf_s(f, L"%ls", NULL);
+      rc = vfwscanf_s(stream, L"%ls", NULL);
       ERREOF(ESNULLP);
     */
 
 /*--------------------------------------------------*/
-#ifndef _WIN32
-    write(p[1], L"      24", sizeof(L"      24"));
-#else
     stuff_stream(L"      24");
-#endif
-    rc = vtwscanf_s(f, L"%ls %n", wstr2, LEN, &ind);
-#ifndef _WIN32
+    rc = vtwscanf_s(stream, L"%ls %n", wstr2, LEN, &ind);
     ERREOF(EINVAL);
-#else
-    ERREOF(ESNULLP);
-#endif
 
     stuff_stream(L"      24");
     rc = vtwscanf_s(stream, L"%ls %%n", wstr2, LEN);
@@ -131,9 +145,7 @@ static int test_vfwscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    wcscpy(wstr1, L"aaaaaaaaaa");
-    len1 = wcslen(wstr1);
-    stuff_stream(wstr1);
+    stuff_stream(L"aaaaaaaaaa");
 
     rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
     ERR(1)
@@ -150,8 +162,7 @@ static int test_vfwscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    wcscpy(wstr1, L"keep it simple");
-    stuff_stream(wstr1);
+    stuff_stream(L"keep it simple");
 
     rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
     ERR(1);
@@ -159,9 +170,18 @@ static int test_vfwscanf_s (void)
 
 /*--------------------------------------------------*/
 
+    wcscpy(wstr2, L"keep it simple");
+    stuff_stream(L"qqweqq");
+
+    rc = vtwscanf_s(stream, L"%ls", wstr2);
+    NOERR()
+    WEXPSTR(wstr1, wstr2);
+
+/*--------------------------------------------------*/
+
     wstr1[0] = '\0';
     wstr2[0] = '\0';
-    stuff_stream(wstr1);
+    stuff_stream(L"");
 
     rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
     ERR(1)
@@ -171,21 +191,11 @@ static int test_vfwscanf_s (void)
 
     wstr1[0] = '\0';
     wcscpy(wstr2, L"keep it simple");
-    stuff_stream(wstr1);
+    stuff_stream(L"");
 
     rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
     ERR(1)
     WEXPSTR(wstr1, L"")
-
-/*--------------------------------------------------*/
-
-    wcscpy(wstr1, L"qqweqq");
-    wcscpy(wstr2, L"keep it simple");
-    stuff_stream(wstr1);
-
-    rc = vtwscanf_s(stream, L"%ls", wstr2);
-    NOERR()
-    WEXPSTR(wstr1, wstr2);
 
 /*--------------------------------------------------*/
 
@@ -213,7 +223,7 @@ static int test_vfwscanf_s (void)
     fclose(stream);
     close(p[1]);
 #if 0
-    rc = vtwscanf_s(f, L"%ls", wstr2, LEN);
+    rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
 
 #if defined(__GLIBC__)
     if (rc < 0) {

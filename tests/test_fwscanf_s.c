@@ -13,6 +13,19 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+/*
+#ifndef _WIN32
+#define USE_PIPE
+#endif
+*/
+
+#ifdef HAVE_FWSCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   wstr1[LEN];
@@ -21,7 +34,7 @@ static char      str3[LEN];
 #define TMP   "tmpfwscanf"
 static FILE* stream = NULL;
 
-void stuff_stream(wchar_t *restrict dest)
+void win_stuff_stream(wchar_t *restrict dest)
 {
     if (!stream)
         stream = fopen(TMP, "w+");
@@ -30,6 +43,17 @@ void stuff_stream(wchar_t *restrict dest)
     fwprintf(stream, L"%ls\n", dest);
     rewind(stream);
 }
+
+#ifndef USE_PIPE
+# define stuff_stream(s) \
+    wcscpy(wstr1, s); \
+    win_stuff_stream(s);
+#else
+# define stuff_stream(s) \
+    wcscpy(wstr1, s); \
+    write(p[1], (s), sizeof(s)-1); \
+    write(p[1], L"\n", sizeof(L"\n")-1);
+#endif
 
 int test_fwscanf_s (void)
 {
@@ -40,55 +64,50 @@ int test_fwscanf_s (void)
     size_t  len3;
     int errs = 0;
     int p[2];
-    FILE *f;
 
 /*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
 /* This pipe does not work on windows */
-#ifndef _WIN32
-    pipe(p);
-    f = fdopen(p[0], "rb");
-    if (!f) {
+#ifdef USE_PIPE
+    if (pipe(p)) {
+        printf("Failed to create pipe()\n");
+        return 1;
+    }
+    stream = fdopen(p[0], "rb");
+    if (!stream) {
+        printf("Failed to fdopen pipe[0]\n");
         close(p[0]);
         close(p[1]);
-        return 0;
+        return 1;
     }
-
-    write(p[1], L"a", sizeof(L"a"));
-#else
-    stuff_stream(L"a");
 #endif
+    stuff_stream(L"a");
     wstr2[0] = '\0';
     rc = fwscanf_s(NULL, L"%ls", wstr2);
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERR(EOF);
+    ERRNO_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");
 
-    rc = fwscanf_s(f, NULL, NULL);
+    rc = fwscanf_s(stream, NULL, NULL);
     ERREOF(ESNULLP);
 
     /* SEGV
-      rc = fwscanf_s(f, L"%ls", NULL);
+      rc = fwscanf_s(stream, L"%ls", NULL);
       ERREOF(ESNULLP);
     */
 
     /* inconsistent:
-      rc = fwscanf_s(f, L"", NULL);
+      rc = fwscanf_s(stream, L"", NULL);
       ERR(-1); or 0
     */
 
 /*--------------------------------------------------*/
 
-#ifndef _WIN32
-    write(p[1], L"      24", sizeof(L"      24"));
-#else
     stuff_stream(L"      24");
-#endif
-    rc = fwscanf_s(f, L"%ls %n", wstr2, LEN, &ind);
-#ifndef _WIN32
+    rc = fwscanf_s(stream, L"%ls %n", wstr2, LEN, &ind);
     ERREOF(EINVAL);
-#else
-    ERREOF(ESNULLP);
-#endif
 
     stuff_stream(L"      24");
     rc = fwscanf_s(stream, L"%ls %%n", wstr2);
@@ -102,12 +121,12 @@ int test_fwscanf_s (void)
     ERRNO(0);
 
     stuff_stream(L"      24");
-    rc = fwscanf_s(stream, L"%ls %%n", wstr2, 6);
+    rc = fwscanf_s(stream, L"%ls %%n", wstr2, LEN);
     ERR(1);
     ERRNO(0);
 
     stuff_stream(L"      24");
-    rc = fwscanf_s(stream, L"%s %%n", str3, 6);
+    rc = fwscanf_s(stream, L"%s %%n", str3, LEN);
     ERR(1);
     ERRNO(0);
 #ifndef _WIN32
@@ -128,9 +147,7 @@ int test_fwscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    wcscpy(wstr1, L"aaaaaaaaaa");
-    len1 = wcslen(wstr1);
-    stuff_stream(wstr1);
+    stuff_stream(L"aaaaaaaaaa");
 
     rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
     ERR(1)
@@ -147,8 +164,7 @@ int test_fwscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    wcscpy(wstr1, L"keep it simple");
-    stuff_stream(wstr1);
+    stuff_stream(L"keep it simple");
 
     rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
     ERR(1);
@@ -156,21 +172,20 @@ int test_fwscanf_s (void)
 
 /*--------------------------------------------------*/
 
-    wstr1[0] = L'\0';
-    stuff_stream(wstr1);
-
-    rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
-    ERR(1)
-    /*WEXPNULL(str2) TODO. Got "eep" */
-
-/*--------------------------------------------------*/
-
-    wcscpy(wstr1, L"qqweqq");
-    stuff_stream(wstr1);
+    stuff_stream(L"qqweqq");
 
     rc = fwscanf_s(stream, L"%ls", wstr2);
     NOERR()
     WEXPSTR(wstr2, wstr1);
+
+/*--------------------------------------------------*/
+
+    wstr1[0] = L'\0';
+    stuff_stream(L"");
+
+    rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
+    ERR(1);
+    /*WEXPNULL(str2) TODO. Got "eep" */
 
 /*--------------------------------------------------*/
 
@@ -196,13 +211,15 @@ int test_fwscanf_s (void)
        Reading from a closed stream is platform dependent.
      */
     fclose(stream);
+#ifdef USE_PIPE
     close(p[1]);
+#endif
 
 #if 0
     wcscpy(wstr1, L"qqweqq");
-    stuff_stream(wstr1);
+    stuff_stream(L"qqweqq");
 
-    rc = fwscanf_s(f, L"%ls", wstr2, LEN);
+    rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
 #if defined(__GLIBC__)
     if (rc < 0) {
         ERR(-1);
