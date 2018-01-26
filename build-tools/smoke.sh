@@ -21,6 +21,9 @@ CC="clang-mp-5.0 -std=c11" \
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse
     gmake -s -j4 check-valgrind
+# try the BSD/darwin memset_s
+CFLAGS="-g -DTEST_MSVCRT" ./configure --enable-shared --enable-debug --enable-unsafe && \
+    make check-log || exit
 CC="clang-mp-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
@@ -84,16 +87,15 @@ CC="c++ -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
 ;;
 
 MSYS_NT*)
-# test the msvcrt sec_api
+# static, usually ours
 ./configure --disable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
-    # 3 msvcrt errors
-    make check-log
-# test ours
+    make check-log || exit
+# shared, might be the msvcrt overriding ours
 ./configure --enable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
     make check-log || exit
-# ensure we use the windows sec_api (?)
-./configure --enable-shared --enable-debug --enable-unsafe && \
-    make check-log CFLAGS="-DTEST_MSVCRT" || exit
+# ensure we use the windows msvcrt sec_api
+CFLAGS="-g -DTEST_MSVCRT" ./configure --enable-shared --enable-debug --enable-unsafe && \
+    make check-log || exit
 exit
 ;;
 
