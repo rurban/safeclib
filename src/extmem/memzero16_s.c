@@ -38,7 +38,7 @@
 
 /**
  * @brief
- *    Zeros len uint16_ts starting at dest.
+ *    Zeros len uint16_t's starting at dest.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -46,7 +46,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out] dest  pointer to memory to be zeroed.
- * @param[in]  len   number of uint16_ts to be zeroed
+ * @param[in]  len   number of uint16_t's to be zeroed
 
  * @pre dest shall not be a null pointer.
  * @pre len shall not be 0 nor greater than RSIZE_MAX_MEM16.

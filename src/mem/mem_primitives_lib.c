@@ -71,7 +71,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
     }
 
     /*
-     * Then do the uint32_ts, unrolled the loop for performance
+     * Then do the uint32_t's, unrolled the loop for performance
      */
     GCC_DIAG_IGNORE(-Wcast-align)
     lp = (uint32_t *)dp;
