@@ -18,6 +18,7 @@ int main()
     uint32_t i;
     rsize_t len;
     rsize_t slen;
+    int ind;
 
     char   str1[LEN];
     char   str2[LEN];
@@ -26,42 +27,54 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strcpyfldout_s(NULL, LEN, str2, LEN);
-    ERR(ESNULLP)
+    ERR(ESNULLP);
+
+/*--------------------------------------------------*/
+    strcpy(str1, "aaaaa");
+
+    rc = strcpyfldout_s(str1, 0, str2, LEN);
+    ERR(ESZEROL); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+/*--------------------------------------------------*/
+
+    rc = strcpyfldout_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
+    ERR(ESLEMAX);  /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+/*--------------------------------------------------*/
+
+    len = 5;
+    rc = strcpyfldout_s(str1, len, str2, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+    rc = strcpyfldout_s(NULL, len, str2, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+    rc = strcpyfldout_s(str1, 0, str2, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+    rc = strcpyfldout_s(str1, len, NULL, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
 
 /*--------------------------------------------------*/
 
     len = 5;
     rc = strcpyfldout_s(str1, len, NULL, LEN);
-    ERR(ESNULLP)
+    ERR(ESNULLP); /* and cleared! */
     CHECK_SLACK(str1, len);
-
-/*--------------------------------------------------*/
-
-    rc = strcpyfldout_s(str1, 0, str2, LEN);
-    ERR(ESZEROL)
-    CHECK_SLACK(str1, len);
-
-/*--------------------------------------------------*/
-
-    rc = strcpyfldout_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
-    ERR(ESLEMAX)
-/*--------------------------------------------------*/
-
-    len = 5;
-    rc = strcpyfldout_s(str1, len, str2, 0);
-#ifdef HAVE_C11
-    ERR(EOK);
-#else
-    ERR(ESZEROL)
-    CHECK_SLACK(str1, len);
-#endif
 
 /*--------------------------------------------------*/
 
     len = 5;
     slen = 6;
     rc = strcpyfldout_s(str1, len, str2, slen);
-    ERR(ESNOSPC)
+    ERR(ESNOSPC); /* and cleared */ 
+    CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
 
@@ -122,7 +135,7 @@ int main()
     /* same string in dest and src */
     len = LEN;
     rc = strcpyfldout_s(str1, len, str1, len);
-    ERR(ESOVRLP)
+    ERR(ESOVRLP); /* and cleared */
     CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
@@ -132,7 +145,7 @@ int main()
 
     /* overlap */
     rc = strcpyfldout_s(&str1[0], len, &str1[5], len);
-    ERR(ESOVRLP)
+    ERR(ESOVRLP); /* and cleared */
     CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/

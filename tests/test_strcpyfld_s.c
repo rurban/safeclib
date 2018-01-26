@@ -18,6 +18,7 @@ int main()
     uint32_t i;
     rsize_t len;
     rsize_t slen;
+    int ind;
 
     char   str1[LEN];
     char   str2[LEN];
@@ -26,7 +27,48 @@ int main()
 /*--------------------------------------------------*/
 
     rc = strcpyfld_s(NULL, LEN, str2, LEN);
-    ERR(ESNULLP)
+    ERR(ESNULLP);
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaa");
+    slen = 5;
+    rc = strcpyfld_s(str1, 0, str2, slen);
+    ERR(ESZEROL); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+/*--------------------------------------------------*/
+
+    slen = 5;
+    rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
+    ERR(ESLEMAX);  /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+/*--------------------------------------------------*/
+
+    len = 5;
+    slen = len+1; /* ESLEMAX over ESNOSPC */
+    rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
+    ERR(ESLEMAX);  /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+/*--------------------------------------------------*/
+
+    len = 5;
+    rc = strcpyfld_s(str1, len, str2, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+    rc = strcpyfld_s(NULL, len, str2, 0);
+    ERR(EOK); /* and untouched */
+
+    rc = strcpyfld_s(str1, 0, str2, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
+
+    rc = strcpyfld_s(str1, len, NULL, 0);
+    ERR(EOK); /* and untouched */
+    EXPSTR(str1, "aaaaa");
 
 /*--------------------------------------------------*/
 
@@ -35,46 +77,15 @@ int main()
     len = 5;
     slen = 5;
     rc = strcpyfld_s(str1, len, NULL, slen);
-    ERR(ESNULLP)
+    ERR(ESNULLP); /* and cleared */
     CHECK_SLACK(str1, len);
-
-/*--------------------------------------------------*/
-
-    len = 5;
-    slen = 5;
-    rc = strcpyfld_s(str1, 0, str2, slen);
-    ERR(ESZEROL)
-/*--------------------------------------------------*/
-
-    len = 5;
-    slen = 5;
-    rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
-    ERR(ESLEMAX)
-
-/*--------------------------------------------------*/
-
-    len = 5;
-    rc = strcpyfld_s(str1, len, str2, 0);
-#ifdef HAVE_C11
-    ERR(EOK);
-#else
-    ERR(ESZEROL);
-    CHECK_SLACK(str1, len);
-#endif
 
 /*--------------------------------------------------*/
 
     len = 5;
     rc = strcpyfld_s(str1, len-1, str2, len);
-    ERR(ESNOSPC);
+    ERR(ESNOSPC); /* and cleared */
     CHECK_SLACK(str1, len-1);
-
-/*--------------------------------------------------*/
-
-    len = 5;
-    slen = len+1;
-    rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
-    ERR(ESLEMAX)
 
 /*--------------------------------------------------*/
 
@@ -131,7 +142,7 @@ int main()
     len = 10;
 
     rc = strcpyfld_s(str1, len, &str1[5], 10);
-    ERR(ESOVRLP)
+    ERR(ESOVRLP); /* and cleared */
     CHECK_SLACK(str1, len);
 
 /*--------------------------------------------------*/
@@ -140,7 +151,7 @@ int main()
     len = 10;
 
     rc = strcpyfld_s(&str1[5], len, &str1[0], 10);
-    ERR(ESOVRLP)
+    ERR(ESOVRLP); /* and cleared */
     CHECK_SLACK(&str1[5], len);
 
 /*--------------------------------------------------*/
