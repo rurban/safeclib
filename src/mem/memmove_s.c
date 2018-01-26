@@ -47,7 +47,7 @@
  *    src into the region pointed to by dest.
  * @details
  *    This copying takes place as if the count bytes from the region pointed
- *    to by src are ﬁrst copied into a temporary array of count bytes that does
+ *    to by src are first copied into a temporary array of count bytes that does
  *    not overlap the region pointed to by dest or src, and then the count
  *    bytes from the temporary array are copied into the object region to by
  *    dest.
@@ -73,7 +73,7 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
  *
  * @return  If there is a runtime-constraint violation, the memmove_s function
- *          stores zeros in the ﬁrst dmax characters of the region pointed to
+ *          stores zeros in the first dmax characters of the region pointed to
  *          by dest if dest is not a null pointer and dmax is not greater
  *          than RSIZE_MAX_MEM.
  * @retval  EOK         when operation is successful or count = 0

@@ -42,7 +42,7 @@
  *    pointed to by src into the region pointed to by dest.
  * @details
  *    This copying takes place as if the count uint16_t from the region
- *    pointed to by src are ﬁrst copied into a temporary array of
+ *    pointed to by src are first copied into a temporary array of
  *    count uint16_t that does not overlap the regions pointed to
  *    by dest or src, and then the count uint16_t from the temporary
  *    array are copied into the region pointed to by dest.
@@ -63,7 +63,7 @@
  * @pre   count shall not be greater than dmax/2.
  *
  * @return  If there is a runtime-constraint violation, the memmove_s function
- *          stores zeros in the ﬁrst dmax characters of the region pointed to
+ *          stores zeros in the first dmax characters of the region pointed to
  *          by dest if dest and dmax are valid.
  * @retval  EOK         when operation is successful or count = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER

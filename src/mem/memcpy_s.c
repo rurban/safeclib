@@ -70,7 +70,7 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
  *
  * @return  If there is a runtime-constraint violation, the memcpy_s function
- *          stores zeros in the ﬁrst dmax bytes of the region pointed to
+ *          stores zeros in the first dmax bytes of the region pointed to
  *          by dest if dest is not a null pointer and count is valid.
  * @retval  EOK         when operation is successful or count = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER

@@ -63,7 +63,7 @@
  *    If count is zero, the function does nothing.
  * @details
  *    This copying takes place as if the count wchar_t's from the region
- *    pointed to by src are ﬁrst copied into a temporary array of
+ *    pointed to by src are first copied into a temporary array of
  *    count wchar_t's that does not overlap the regions pointed to
  *    by dest or src, and then the count wchar_t's from the temporary
  *    array are copied into the region pointed to by dest.
@@ -87,7 +87,7 @@
  * @pre   count shall not be greater than dmax.
  *
  * @return  If there is a runtime-constraint violation, the memmove_s function
- *          stores zeros in the ﬁrst dmax characters of the region pointed to
+ *          stores zeros in the first dmax characters of the region pointed to
  *          by dest if dest is not a null pointer and dmax is not greater
  *          than RSIZE_MAX_MEM.
  * @retval  EOK         when operation is successful

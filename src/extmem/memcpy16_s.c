@@ -60,7 +60,7 @@
  * @pre   Copying shall not take place between regions that overlap.
  *
  * @return  If there is a runtime-constraint violation, the memcpy_s function
- *          stores zeros in the ﬁrst dmax bytes of the region pointed to
+ *          stores zeros in the first dmax bytes of the region pointed to
  *          by dest if dest and dmax are valid.
  * @retval  EOK         when operation is successful or count = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
