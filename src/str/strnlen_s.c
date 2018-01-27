@@ -94,4 +94,6 @@ strnlen_s (const char *dest, rsize_t dmax)
 
     return count;
 }
-EXPORT_SYMBOL(strnlen_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strnlen_s);
+#endif /* __KERNEL__ */

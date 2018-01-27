@@ -75,7 +75,9 @@ set_mem_constraint_handler_s (constraint_handler_t handler)
     }
     return prev_handler;
 }
-EXPORT_SYMBOL(set_mem_constraint_handler_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(set_mem_constraint_handler_s);
+#endif /* __KERNEL__ */
 
 
 /**
@@ -98,4 +100,6 @@ invoke_safe_mem_constraint_handler (const char *msg,
         sl_default_handler(msg, ptr, error);
     }
 }
-EXPORT_SYMBOL(invoke_safe_mem_constraint_handler)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(invoke_safe_mem_constraint_handler);
+#endif /* __KERNEL__ */

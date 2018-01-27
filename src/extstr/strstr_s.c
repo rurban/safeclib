@@ -158,4 +158,6 @@ strstr_s (char *dest, rsize_t dmax,
     *substring = NULL;
     return RCNEGATE(ESNOTFND);
 }
-EXPORT_SYMBOL(strstr_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strstr_s);
+#endif /* __KERNEL__ */

@@ -31,6 +31,10 @@
 obj-m     := slkm.o testslkm.o
 
 ccflags-y := -I$(src)/include
+ccflags-y += -I$(src)
+ccflags-y += -I$(src)/src
+ccflags-y += -I$(src)/src/str
+ccflags-y += -I$(src)/src/mem
 
 # Functions in the kernel that don't have a 1-to-1 name correlation
 # __HAVE_ARCH_STRLCPY
@@ -68,7 +72,7 @@ slkm-y     += src/str/strcpy_s.o
 slkm-y     += src/str/strncpy_s.o
 slkm-y     += src/str/strcat_s.o
 slkm-y     += src/str/strncat_s.o
-slkm-y     += src/str/strcmp_s.o
+slkm-y     += src/extstr/strcmp_s.o
 slkm-y     += src/str/strnlen_s.o
 slkm-y     += src/extstr/strcasecmp_s.o
 slkm-y     += src/extstr/strstr_s.o

@@ -119,4 +119,6 @@ strcmp_s (const char *dest, rsize_t dmax,
     *indicator = *dest - *src;
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strcmp_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strcmp_s);
+#endif /* __KERNEL__ */

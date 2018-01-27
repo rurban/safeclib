@@ -69,6 +69,7 @@ handle_error(char *orig_dest, rsize_t orig_dmax,
     return;
 }
 
+#ifndef SAFECLIB_DISABLE_WCHAR
 /*
  * Safe C Lib internal string routine to consolidate error handling.
  * With SAFECLIB_STR_NULL_SLACK clear the dest wide buffer to eliminate
@@ -90,5 +91,6 @@ handle_werror(wchar_t *orig_dest, rsize_t orig_dmax,
     invoke_safe_str_constraint_handler(err_msg, NULL, err_code);
     return;
 }
+#endif
 
 #endif   /* __SAFE_STR_CONSTRAINT_H__ */

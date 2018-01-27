@@ -149,4 +149,6 @@ strspn_s (const char *dest, rsize_t dmax,
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strspn_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strspn_s);
+#endif /* __KERNEL__ */

@@ -123,4 +123,6 @@ strcasecmp_s (const char *dest, rsize_t dmax,
     *indicator = (toupper(*udest) - toupper(*usrc));
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strcasecmp_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strcasecmp_s);
+#endif /* __KERNEL__ */
