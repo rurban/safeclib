@@ -123,4 +123,6 @@ wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
     free(d2);
     return rc;
 }
-EXPORT_SYMBOL(wcsicmp_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wcsicmp_s);
+#endif /* __KERNEL__ */

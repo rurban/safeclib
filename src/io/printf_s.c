@@ -100,4 +100,6 @@ printf_s(const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(printf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(printf_s);
+#endif /* __KERNEL__ */

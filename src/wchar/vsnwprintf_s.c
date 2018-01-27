@@ -213,6 +213,8 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     return ret;
 }
-EXPORT_SYMBOL(vsnwprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vsnwprintf_s);
+#endif /* __KERNEL__ */
 
 #endif /* !defined(HAVE_VSNWPRINTF_S) && defined(SAFECLIB_ENABLE_UNSAFE) */

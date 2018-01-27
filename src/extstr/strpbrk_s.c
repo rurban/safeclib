@@ -139,4 +139,6 @@ strpbrk_s (char *dest, rsize_t dmax,
 
     return RCNEGATE(ESNOTFND);
 }
-EXPORT_SYMBOL(strpbrk_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strpbrk_s);
+#endif /* __KERNEL__ */

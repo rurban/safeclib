@@ -38,6 +38,8 @@
 #define NDEBUG
 #endif
 
+#include "config.h"
+
 #ifdef __KERNEL__
 /* linux kernel environment */
 
@@ -59,8 +61,6 @@
 #endif
 
 #else  /* !__KERNEL__ */
-
-#include "config.h"
 
 #if defined(__CYGWIN__) && defined(__x86_64)
 #define HAVE_CYGWIN64

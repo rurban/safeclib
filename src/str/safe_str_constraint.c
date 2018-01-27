@@ -82,7 +82,9 @@ set_str_constraint_handler_s (constraint_handler_t handler)
     }
     return prev_handler;
 }
-EXPORT_SYMBOL(set_str_constraint_handler_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(set_str_constraint_handler_s);
+#endif /* __KERNEL__ */
 
 
 /**

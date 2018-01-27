@@ -236,6 +236,8 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
 
     return RCNEGATE(ESNOSPC);
 }
-EXPORT_SYMBOL(strcat_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strcat_s);
+#endif /* __KERNEL__ */
 
 #endif

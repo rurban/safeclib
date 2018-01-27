@@ -133,4 +133,6 @@ fscanf_s(FILE *restrict stream, const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(fscanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(fscanf_s);
+#endif /* __KERNEL__ */

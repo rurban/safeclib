@@ -145,7 +145,9 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
 
     return ret;
 }
-EXPORT_SYMBOL(vsnprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vsnprintf_s);
+#endif /* __KERNEL__ */
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 #endif /* MINGW64 */

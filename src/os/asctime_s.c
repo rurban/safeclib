@@ -210,6 +210,8 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
 
     return EOK;
 }
-EXPORT_SYMBOL(asctime_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(asctime_s);
+#endif /* __KERNEL__ */
 
 #endif /* MINGW_HAS_SECURE_API */

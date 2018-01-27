@@ -128,6 +128,8 @@ localtime_s(const time_t *restrict timer, struct tm *restrict dest)
 
     return dest;
 }
-EXPORT_SYMBOL(localtime_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(localtime_s);
+#endif /* __KERNEL__ */
 
 #endif /* HAVE_MINGW64 */

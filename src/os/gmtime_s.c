@@ -127,6 +127,8 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
 
     return dest;
 }
-EXPORT_SYMBOL(gmtime_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(gmtime_s);
+#endif /* __KERNEL__ */
 
 #endif /* HAVE_MINGW64 */

@@ -152,4 +152,6 @@ gets_s (char *restrict dest, rsize_t dmax)
 
     return ret;
 }
-EXPORT_SYMBOL(gets_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(gets_s);
+#endif /* __KERNEL__ */

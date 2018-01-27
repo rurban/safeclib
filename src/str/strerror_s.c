@@ -129,7 +129,9 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
 
     return EOK;
 }
-EXPORT_SYMBOL(strerror_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strerror_s);
+#endif /* __KERNEL__ */
 
 /**
  * @brief
@@ -163,4 +165,6 @@ strerrorlen_s(errno_t errnum)
         return buf ? strlen(buf) : 0;
     }
 }
-EXPORT_SYMBOL(strerrorlen_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strerrorlen_s);
+#endif /* __KERNEL__ */

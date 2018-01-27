@@ -126,4 +126,6 @@ vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
 
     return ret;
 }
-EXPORT_SYMBOL(vfwprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vfwprintf_s);
+#endif /* __KERNEL__ */

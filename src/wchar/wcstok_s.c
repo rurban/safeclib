@@ -340,6 +340,8 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
     *dmax = dlen;
     return (ptoken);
 }
-EXPORT_SYMBOL(wcstok_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wcstok_s);
+#endif /* __KERNEL__ */
 
 #endif

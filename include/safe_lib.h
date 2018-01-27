@@ -57,10 +57,12 @@ extern "C" {
 # define EXTERN extern
 #endif
 
+#ifndef __KERNEL__
 #include <time.h>
 #if defined HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
+#endif /* __KERNEL__ */
 
 #if defined __MINGW64_VERSION_MAJOR
 #  define HAVE_MINGW64  /* mingw-w64 (either 32 or 64bit) */
@@ -109,14 +111,17 @@ EXTERN errno_t
 tmpnam_s(char *filename_s, rsize_t maxsize);
 #endif
 
+#ifndef __KERNEL__
 EXTERN errno_t
 tmpfile_s(FILE * restrict * restrict streamptr);
+#endif /* __KERNEL__ */
 
 EXTERN char *
 gets_s(char *dest, rsize_t dmax);
 
 /* Windows sec_api does without restrict */
 #ifndef MINGW_HAS_SECURE_API
+#ifndef __KERNEL__
 EXTERN errno_t
 fopen_s(FILE *restrict *restrict streamptr,
         const char *restrict filename,
@@ -126,6 +131,7 @@ EXTERN errno_t
 freopen_s(FILE *restrict *restrict newstreamptr,
           const char *restrict filename, const char *restrict mode,
           FILE *restrict stream);
+#endif /* __KERNEL__ */
 
 EXTERN errno_t
 asctime_s(char *dest, rsize_t dmax, const struct tm *tm);

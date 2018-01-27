@@ -227,6 +227,8 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
-EXPORT_SYMBOL(wcsncpy_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wcsncpy_s);
+#endif /* __KERNEL__ */
 
 #endif /* HAVE_WCHAR_H */

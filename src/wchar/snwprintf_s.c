@@ -222,6 +222,8 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     return ret;
 }
-EXPORT_SYMBOL(snwprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(snwprintf_s);
+#endif /* __KERNEL__ */
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */

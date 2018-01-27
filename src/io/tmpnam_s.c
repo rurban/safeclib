@@ -158,4 +158,6 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
         return errno;
     }
 }
-EXPORT_SYMBOL(tmpnam_s)
+#ifdef __KERNEL
+EXPORT_SYMBOL(tmpnam_s);
+#endif /* __KERNEL__ */

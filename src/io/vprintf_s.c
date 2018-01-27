@@ -97,4 +97,6 @@ vprintf_s(const char *restrict fmt, va_list ap)
 
     return ret;
 }
-EXPORT_SYMBOL(vprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vprintf_s);
+#endif /* __KERNEL__  */

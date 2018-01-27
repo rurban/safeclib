@@ -123,4 +123,6 @@ fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(fwprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(fwprintf_s);
+#endif /* __KERNEL__ */

@@ -139,4 +139,6 @@ vswscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt,
 
     return ret;
 }
-EXPORT_SYMBOL(vswscanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vswscanf_s);
+#endif /* __KERNEL__ */

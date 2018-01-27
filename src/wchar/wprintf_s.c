@@ -121,4 +121,6 @@ wprintf_s(const wchar_t *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(wprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wprintf_s);
+#endif /* __KERNEL__ */

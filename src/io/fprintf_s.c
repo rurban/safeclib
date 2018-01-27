@@ -108,4 +108,6 @@ fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(fprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(fprintf_s);
+#endif /* __KERNEL__ */

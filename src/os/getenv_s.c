@@ -147,4 +147,6 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
 
     return EOK;
 }
-EXPORT_SYMBOL(getenv_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(getenv_s);
+#endif /* __KERNEL__ */

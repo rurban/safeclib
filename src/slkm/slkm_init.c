@@ -31,7 +31,7 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include "../safeclib/safeclib_private.h"
+#include "../safeclib_private.h"
 
 #define DRV_NAME        "slk"
 #define DRV_VERSION     "0.0"

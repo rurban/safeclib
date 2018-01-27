@@ -124,4 +124,6 @@ memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t count)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memmove32_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memmove32_s);
+#endif /* __KERNEL__ */

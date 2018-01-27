@@ -182,4 +182,6 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
 
     return EOK;
 }
-EXPORT_SYMBOL(ctime_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(ctime_s);
+#endif /* __KERNEL__ */

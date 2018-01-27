@@ -148,7 +148,9 @@ wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t count)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(wmemmove_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wmemmove_s);
+#endif /* __KERNEL__ */
 
 #endif /* TEST_MSVCRT */
 #endif /* HAVE_WCHAR_H */

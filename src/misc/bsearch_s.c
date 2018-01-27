@@ -141,4 +141,6 @@ bsearch_s(const void *key, const void *base,
     }
     return NULL;
 }
-EXPORT_SYMBOL(bsearch_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(bsearch_s);
+#endif /* __KERNEL__ */

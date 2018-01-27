@@ -142,6 +142,8 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t count)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memmove_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memmove_s);
+#endif /* __KERNEL__ */
 
 #endif

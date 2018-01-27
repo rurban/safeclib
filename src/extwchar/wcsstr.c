@@ -99,4 +99,6 @@ wcsstr (wchar_t *restrict dest, const wchar_t *restrict src)
     }
     return NULL;
 }
-EXPORT_SYMBOL(wcsstr)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wcsstr);
+#endif /* __KERNEL__ */
