@@ -42,30 +42,50 @@ int test_memcpy_s (void)
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, 0, mem2, LEN);
-    ERR_MSVC(ESZEROL, ERANGE);
+    ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
-    ERR_MSVC(ESLEMAX, 0);
+    ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
+    if (!use_msvcrt)
+        EXPMEM(mem1, 0, LEN, 33, 1);
+    else
+        EXPMEM(mem1, 0, LEN, 44, 1);
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+
+    /* check n=0 first */
+    rc = memcpy_s(mem1, 10, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
+
+    rc = memcpy_s(NULL, 10, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
+
+    rc = memcpy_s(mem1, 0, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
+
+    rc = memcpy_s(mem1, 10, NULL, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, NULL, LEN);
-    ERR_MSVC(ESNULLP, EINVAL);
-
-/*--------------------------------------------------*/
-
-    rc = memcpy_s(mem1, 10, mem2, 0);
-    ERR(EOK);
-    /* zeroed out earlier */
+    ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
 
 /*--------------------------------------------------*/
 
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR_MSVC(ESLEMAX, ERANGE);
-    CHECK_SLACK(mem1, LEN);
+    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 1);
 
 /*--------------------------------------------------*/
 
@@ -76,6 +96,16 @@ int test_memcpy_s (void)
     rc = memcpy_s(mem1, len, mem2, len);
     ERR(EOK);
     EXPMEM(mem1, 0, len, 44, 1);
+    EXPMEM(mem1, len, LEN+1, 33, 1);
+
+    for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
+
+    len = 1;
+    rc = memcpy_s(mem1, len, mem2, len);
+    ERR(EOK);
+    EXPMEM(mem1, 0, len, 44, 1);
+    EXPMEM(mem1, len, LEN+1, 33, 1);
 
 /*--------------------------------------------------*/
 
@@ -111,34 +141,6 @@ int test_memcpy_s (void)
         debug_printf("%d - %d m1=%d  m2=%d  \n",
                      __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
-    }
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN+2; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
-
-    len = LEN;
-    rc = memcpy_s(mem1, len, mem2, 0);
-    ERR(EOK);
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
-
-    len = LEN;
-    rc = memcpy_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
-    ERR_MSVC(ESLEMAX, ERANGE);
-
-    if (!use_msvcrt) {
-        /* verify mem1 was zeroed */
-        EXPMEM(mem1, 0, len, 0, 1);
-        if (mem1[len] == 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                         __LINE__, i, mem1[i], mem2[i]);
-            errs++;
-        }
     }
 
 /*--------------------------------------------------*/

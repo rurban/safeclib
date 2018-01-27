@@ -96,6 +96,12 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t count)
     dp = (uint8_t*) dest;
     sp = (uint8_t*) src;
 
+    /* Note that MSVC checks this at very first. We do also now */
+    if (unlikely(count == 0)) {
+        /* Since C11 n=0 is allowed */
+        return EOK;
+    }
+
     if (unlikely(dp == NULL)) {
         invoke_safe_mem_constraint_handler("memmove_s: dest is null",
                    NULL, ESNULLP);
@@ -108,26 +114,10 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t count)
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM || count > RSIZE_MAX_MEM)) {
-        if (dmax <= RSIZE_MAX_MEM) {
-            mem_prim_set(dp, dmax, 0);
-        }
-        invoke_safe_mem_constraint_handler("memmove_s: dmax/count exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_MEM)) {
+        invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
-    }
-
-    /* Note that MSVC checks this at very first. We check it after dest, dmax */
-    if (unlikely(count == 0)) {
-        /* Since C11 n=0 is allowed */
-        return EOK;
-    }
-
-    if (unlikely(count > dmax)) {
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove_s: count exceeds max",
-                   NULL, ESNOSPC);
-        return (RCNEGATE(ESNOSPC));
     }
 
     if (unlikely(sp == NULL)) {
@@ -137,8 +127,16 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t count)
         return (RCNEGATE(ESNULLP));
     }
 
+    if (unlikely(count > dmax)) {
+        errno_t rc = count > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
+        mem_prim_set(dp, dmax, 0);
+        invoke_safe_mem_constraint_handler("memmove_s: count exceeds max",
+                   NULL, rc);
+        return (RCNEGATE(rc));
+    }
+
     /*
-     * now perform the copy
+     * now perform the copy, with overlap allowed
      */
     mem_prim_move(dp, sp, count);
 

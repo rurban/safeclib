@@ -91,7 +91,7 @@ memcpy_s (void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t
 
     /* Note that MSVC checks this at very first. We do also now */
     if (unlikely(count == 0)) {
-        /* Since C11 count=0 is allowed. Contrary to strcpy_s we don't set dest[0]=0 */
+        /* Since C11 count=0 is allowed */
         return EOK;
     }
 
@@ -110,20 +110,10 @@ memcpy_s (void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t
         return RCNEGATE(ESZEROL);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM || count > RSIZE_MAX_MEM)) {
-        if (dmax <= RSIZE_MAX_MEM) {
-            mem_prim_set(dp, dmax, 0);
-        }
-        invoke_safe_mem_constraint_handler("memcpy_s: dmax/count exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_MEM)) {
+        invoke_safe_mem_constraint_handler("memcpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
-    }
-
-    if (unlikely(count > dmax)) {
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy_s: count exceeds dmax",
-                   NULL, ESNOSPC);
-        return RCNEGATE(ESNOSPC);
     }
 
     if (unlikely(sp == NULL)) {
@@ -133,6 +123,13 @@ memcpy_s (void * restrict dest, rsize_t dmax, const void * restrict src, rsize_t
         return RCNEGATE(ESNULLP);
     }
 
+    if (unlikely(count > dmax)) {
+        errno_t rc = count > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
+        mem_prim_set(dp, dmax, 0);
+        invoke_safe_mem_constraint_handler("memcpy_s: count exceeds max",
+                   NULL, rc);
+        return RCNEGATE(rc);
+    }
 
     /*
      * overlap is undefined behavior, do not allow

@@ -18,18 +18,21 @@
 
 #define LEN   ( 1024 )
 
-static uint8_t  mem1[LEN];
+static uint8_t  mem1[LEN+1];
 static uint8_t  mem2[LEN];
 
 int test_memmove_s (void)
 {
     errno_t rc;
     uint32_t i;
-    uint32_t len;
+    rsize_t len;
     int ind;
     int errs = 0;
 
 /*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
     print_msvcrt(use_msvcrt);
 
     rc = memmove_s(NULL, LEN, mem2, LEN);
@@ -39,67 +42,86 @@ int test_memmove_s (void)
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, 0, mem2, LEN);
-    ERR_MSVC(ESZEROL, ERANGE);
+    ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
-    ERR_MSVC(ESLEMAX, 0);
+    ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
+    if (!use_msvcrt)
+        EXPMEM(mem1, 0, LEN, 33, 1);
+    else
+        EXPMEM(mem1, 0, LEN, 44, 1);
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+
+    /* check n=0 first */
+    rc = memmove_s(mem1, 10, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
+
+    rc = memmove_s(NULL, 10, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
+
+    rc = memmove_s(mem1, 0, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
+
+    rc = memmove_s(mem1, 10, NULL, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 1);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, LEN, NULL, LEN);
-    ERR_MSVC(ESNULLP, EINVAL);
-
-/*--------------------------------------------------*/
-
-    rc = memmove_s(mem1, 10, mem2, 0);
-    ERR(EOK);
+    ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 1);
 
 /*--------------------------------------------------*/
 
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR_MSVC(ESLEMAX, ERANGE);
-    CHECK_SLACK(mem1, LEN);
+    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 1);
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
-    /* a valid move */
     len = LEN;
-    rc = memmove_s(mem1, len, mem2, LEN);
-    ERR(EOK)
-    else {
-        for (i=0; i<len; i++) {
-            if (mem1[i] != mem2[i]) {
-                debug_printf("%d m1=%d  m2=%d  \n",
-                             i, mem1[i], mem2[i]);
-                errs++;
-            }
-        }
-    }
+    rc = memmove_s(mem1, len, mem2, len);
+    ERR(EOK);
+    EXPMEM(mem1, 0, len, 44, 1);
+    EXPMEM(mem1, len, LEN+1, 33, 1);
+
+    for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
+
+    len = 1;
+    rc = memmove_s(mem1, len, mem2, len);
+    ERR(EOK);
+    EXPMEM(mem1, 0, len, 44, 1);
+    EXPMEM(mem1, len, LEN+1, 33, 1);
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     /* length error */
     len = LEN/2;
     rc = memmove_s(mem1, len, mem2, LEN);
-    ERR_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
 
-    /* with safec mem1 was zeroed */
-    if (!use_msvcrt) {
-        for (i=0; i<len; i++) {
-            if (mem1[i] != 0) {
-                debug_printf("%d - %d m1=%d \n",
-                             __LINE__, i, mem1[i]);
-                errs++;
-            }
-        }
+    EXPMEM(mem1, 0, len, 0, 1);
+    if (mem1[len] != 33) {
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
+                     __LINE__, (int)len, mem1[len], mem2[len]);
+        errs++;
     }
 
 /*--------------------------------------------------*/
