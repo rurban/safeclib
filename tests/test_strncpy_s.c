@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_strncpy_s
  * File 'str/strncpy_s.c'
- * Lines executed:100.00% of 55
+ * Lines executed:95.31% of 64
  *
  *------------------------------------------------------------------
  */
@@ -47,27 +47,17 @@ int test_strncpy_s (void)
     str2[0] = '\0';
 
     rc = strncpy_s(str1, 5, str2, 0);
-#ifdef HAVE_C11
-    ERR(EOK)
-    EXPSTR(str1, "aaaaa")
-#else
-    ERR_MSVC(ESZEROL, 0);
-    CHECK_SLACK(str1, 5);
-#endif
+    ERR(EOK);
+    EXPSTR(str1, "")
 
     strcpy(str1, "aaaaa");
     rc = strncpy_s(str1, 1, str2, 0);
-#ifdef HAVE_C11
     ERR(EOK)
-    EXPSTR(str1, "aaaaa")
-#else
-    ERR_MSVC(ESZEROL, 0);
-    CHECK_SLACK(str1, 1);
-#endif
+    EXPSTR(str1, "")
 
-    strcpy(str2, "a");
-    rc = strncpy_s(NULL, 0, str2, 0);
-    ERR_MSVC(ESNULLP, 0); /* this is arguably a bug on windows */
+/*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaa");
 
     nlen = 5;
     rc = strncpy_s(str1, 5, NULL, nlen);
@@ -81,18 +71,7 @@ int test_strncpy_s (void)
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    str2[0] = '\0';
-
-    nlen = 5;
-    rc = strncpy_s(str1, 5, NULL, nlen);
-    ERR_MSVC(ESNULLP, EINVAL);
-    if (!use_msvcrt) {
-        CHECK_SLACK(str1, 5);
-    } else {
-        EXPSTR(str1, "");
-    }
-
+    strcpy(str1, "aa");
     nlen = 5;
     rc = strncpy_s(str1, 0, str2, nlen);
     ERR(ESZEROL)

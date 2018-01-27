@@ -2,9 +2,11 @@
  * memset_s
  *
  * October 2008, Bo Berry
- * Copyright (c) 2017 Reini Urban
+ * October 2017, Reini Urban
+ * January 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,8 +39,7 @@
 #include "mem_primitives_lib.h"
 #endif
 
-#if defined HAVE_MEMSET_S && defined HAVE_C11 && defined WANT_C11
-/* use the libc function */
+#if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
 #else
 
 /**
@@ -63,34 +64,30 @@
  * @pre  dmax and n shall not be greater than RSIZE_MAX_MEM.
  * @pre  value shall not be greater than 255.
  * @pre  dmax may not be smaller than n.
- * @pre  Without C11 dmax and n shall not be 0
  *
  * @note The behavior is undefined if the size of the character
- * array pointed to by dest < count <= dmax; in other words, an
- * erroneous value of dmax does not expose the impending buffer
- * overflow.
+ *       array pointed to by dest < count <= dmax; in other words, an
+ *       erroneous value of dmax does not expose the impending buffer
+ *       overflow.
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
- * @note C11 returns 0 when n = ZERO.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
  *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
  *          reporting the runtime-constraints violation, memset_s() copies
  *          dmax bytes to the destination.
- * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dest is NULL pointer (EINVAL with C11)
- * @retval  ESZEROL     when n = ZERO (unless C11)
+ * @retval  EOK         when operation is successful or n = 0
+ * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or value > 255
  * @retval  ESNOSPC     when dmax < n
  *
  * @see
  *    memset16_s(), memset32_s()
- *
  */
 
 EXPORT errno_t
 memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
 {
-    errno_t err = EOK;
+    errno_t err;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memset_s: dest is null",
@@ -100,13 +97,7 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
 
     if (unlikely(n == 0)) {
         /* on C11 n=0 is allowed */
-#ifdef HAVE_C11
         return EOK;
-#else
-        invoke_safe_mem_constraint_handler("memset_s: n is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-#endif
     }
 
     if (unlikely(dmax > RSIZE_MAX_MEM)) {
@@ -121,6 +112,7 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
         return (RCNEGATE(ESLEMAX));
     }
 
+    err = EOK;
     if (unlikely(n > RSIZE_MAX_MEM)) {
         invoke_safe_mem_constraint_handler("memset_s: n exceeds max",
                    NULL, ESLEMAX);
@@ -140,4 +132,5 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
     return (RCNEGATE(err));
 }
 EXPORT_SYMBOL(memset_s)
+
 #endif

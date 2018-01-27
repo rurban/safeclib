@@ -3,9 +3,10 @@
  *
  * October 2008, Bo Berry
  * September 2017, Reini Urban
+ * January 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017,2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -52,10 +53,13 @@
 #error sizeof(wchar_t)?
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_WMEMCPY_S)
+#else
+
 /**
  * @brief
- *    This function copies at most smax wchar_t's from src to dest, up to
- *    dmax.
+ *    This function copies at most count wchar_t's from src to dest, up to
+ *    dmax. If count is zero, the function does nothing.
  *
  * @remark EXTENSION TO
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -68,22 +72,22 @@
  * @param[out] dest   pointer to the memory that will be replaced by src.
  * @param[in]  dmax   maximum length of the resulting dest, in wchar_t
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  smax   number of wide characters to copy
+ * @param[in]  count  number of wide characters to copy
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   Neither dmax nor smax shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM16.
- * @pre   smax shall not be greater than dmax.
+ * @pre   dmax shall not be 0.
+ * @pre   dmax shall not be greater than RSIZE_MAX_WMEM.
+ * @pre   count shall not be greater than dmax.
  * @pre   Copying shall not take place between regions that overlap.
  *
  * @return  If there is a runtime-constraint violation, the memcpy_s function
- *          stores zeros in the ﬁrst dmax bytes of the region pointed to
- *          by dest if dest is not a null pointer and smax is valid.
+ *          stores zeros in the first dmax bytes of the region pointed to
+ *          by dest if dest is not a null pointer and count is valid.
  * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM16
- * @retval  ESNOSPC     when dmax < smax
+ * @retval  ESNULLP     when dest or src is a NULL POINTER
+ * @retval  ESZEROL     when dmax = ZERO
+ * @retval  ESLEMAX     when dmax/count > RSIZE_MAX_WMEM
+ * @retval  ESNOSPC     when dmax < count
  * @retval  ESOVRLP     when src memory overlaps dst
  *
  * @see
@@ -92,8 +96,12 @@
  */
 
 EXPORT errno_t
-wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
+wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t count)
 {
+    if (unlikely(count == 0)) {
+        return (RCNEGATE(EOK));
+    }
+
     if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("wmemcpy_s: dest is NULL",
                    NULL, ESNULLP);
@@ -106,24 +114,18 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM16 || smax > RSIZE_MAX_MEM16)) {
-        invoke_safe_mem_constraint_handler("wmemcpy_s: dmax/smax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_WMEM)) {
+        invoke_safe_mem_constraint_handler("wmemcpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (unlikely(smax == 0)) {
+    if (unlikely(count > dmax)) {
+        errno_t rc = count > RSIZE_MAX_WMEM ? ESLEMAX : ESNOSPC;
         wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
-        invoke_safe_mem_constraint_handler("wmemcpy_s: smax is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
-    if (unlikely(smax > dmax)) {
-        wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
-        invoke_safe_mem_constraint_handler("wmemcpy_s: smax exceeds dmax",
-                   NULL, ESNOSPC);
-        return (RCNEGATE(ESNOSPC));
+        invoke_safe_mem_constraint_handler("wmemcpy_s: count exceeds dmax",
+                   NULL, rc);
+        return (RCNEGATE(rc));
     }
 
     if (unlikely(src == NULL)) {
@@ -136,7 +138,7 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
     /*
      * overlap is undefined behavior, do not allow
      */
-    if (unlikely( ((dest > src) && (dest < (src+smax))) ||
+    if (unlikely( ((dest > src) && (dest < (src+count))) ||
                   ((src > dest) && (src < (dest+dmax))) )) {
         wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: overlap undefined",
@@ -147,10 +149,11 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
     /*
      * now perform the copy
      */
-    wmem_move((wmem_type*)dest, (wmem_type*)src, (uint32_t)smax);
+    wmem_move((wmem_type*)dest, (wmem_type*)src, (uint32_t)count);
 
     return (RCNEGATE(EOK));
 }
 EXPORT_SYMBOL(wmemcpy_s)
 
+#endif /* TEST_MSVCRT */
 #endif /* HAVE_WCHAR_H */

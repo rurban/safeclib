@@ -76,6 +76,11 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 * older mingw versions have `wchar.h` with only 2 functions:
   `wcscmp`, `wcslen`
 
+* no `RSIZE_MAX`
+
+* `memmove_s` does not clear dest with ERANGE when count > dmax and EINVAL when
+   src is a NULL pointer.
+
 ## safeclib
 
 * safeclib does not check optional NULL parameters to the vararg

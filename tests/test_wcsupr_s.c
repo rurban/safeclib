@@ -21,24 +21,24 @@ int main()
 /*--------------------------------------------------*/
 
     rc = wcsupr_s(NULL, 5);
-    ERR(ESNULLP)
+    ERR(ESNULLP);
 
 /*--------------------------------------------------*/
 
     wcscpy(str, L"test");
     rc = wcsupr_s(str, 0);
-#ifdef HAVE_C11
-    ERR(EOK);
-#else
-    ERR(ESZEROL)
-#endif
+    ERR(EOK); /* and untouched */
+    WEXPSTR(str, L"test");
+
+    rc = wcsupr_s(NULL, 0);
+    ERR(EOK); /* and untouched */
     WEXPSTR(str, L"test");
 
 /*--------------------------------------------------*/
 
     wcscpy(str, L"test");
     rc = wcsupr_s(str, 99999);
-    ERR(ESLEMAX)
+    ERR(ESLEMAX); /* and untouched */
     WEXPSTR(str, L"test");
 
 /*--------------------------------------------------*/

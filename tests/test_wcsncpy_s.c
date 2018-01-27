@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsncpy_s
  * File 'wchar/wcsncpy_s.c'
- * Lines executed:96.36% of 55
+ * Lines executed:90.63% of 64
  *
  *------------------------------------------------------------------
  */
@@ -52,16 +52,25 @@ int test_wcsncpy_s (void)
 
 /*--------------------------------------------------*/
 
-    wcscpy(str1, L"untouched");
+    wcscpy(str1, L"aaaa");
     str2[0] = L'\0';
 
     rc = wcsncpy_s(str1, 5, str2, 0);
-#ifdef HAVE_C11
     ERR(EOK);
-#else
-    ERR(ESZEROL)
+    WEXPSTR(str1, L"");
+
+    wcscpy(str1, L"a");
+    rc = wcsncpy_s(str1, 1, str2, 0);
+    ERR(EOK);
+    WEXPSTR(str1, L"");
+
+/*--------------------------------------------------*/
+
+    wcscpy(str1, L"aaaaa");
+    nlen = 5;
+    rc = wcsncpy_s(str1, 5, NULL, nlen);
+    ERR_MSVC(ESNULLP, EINVAL);
     WCHECK_SLACK(str1, 5);
-#endif
 
 /*--------------------------------------------------*/
 

@@ -54,21 +54,20 @@
  * @param[in]   dmax  restricted maximum length of dest
  * @param[in]   src   pointer to the null terminated string that will be copied
  *                    into the character array pointed to by dest
- * @param[in]   slen  maximum length of src
+ * @param[in]   slen  number of bytes to be copied
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not equal zero.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR.
- * @pre  slen shall not equal zero before C11. Since C11 zero is allowed.
  * @pre  slen shall not exceed dmax
  * @pre  Copying shall not take place between objects that overlap.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
  *          not greater than RSIZE_MAX_STR, then strcpyfldin_s nulls dest
- * @retval  EOK        when successful operation
+ * @retval  EOK        when operation is successful or slen = 0
  * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax = 0. Before C11 also with slen = 0
+ * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dmax < slen
@@ -83,6 +82,11 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
+
+    if (unlikely(slen == 0)) {
+        /* Since C11 slen=0 is allowed */
+        return EOK;
+    }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strcpyfldin_s: dest is null",
@@ -106,17 +110,6 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         handle_error(dest, dmax, "strcpyfldin_s: src is null",
                      ESNULLP);
         return (ESNULLP);
-    }
-
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
-#ifdef HAVE_C11
-        return EOK;
-#else
-        handle_error(dest, dmax, "strcpyfldin_s: slen is 0",
-                     ESZEROL);
-        return (ESZEROL);
-#endif
     }
 
     if (unlikely(slen > dmax)) {

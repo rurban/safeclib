@@ -582,12 +582,12 @@ AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
                 bcmp secure_getenv memset_s timingsafe_memcmp timingsafe_bcmp \
-                asctime_r ctime_r gmtime_r localtime_r memcpy_s \
+                asctime_r ctime_r gmtime_r localtime_r memccpy memcpy_s \
                 asctime_s ctime_s fopen_s freopen_s getenv_s strncpy_s strncat_s \
                 wcsncpy_s wcsncat_s wmemmove_s memmove_s wmemcpy_s gets_s \
                 tmpnam_s wcsrtombs_s wcrtombs_s wcstomb_s wcscat_s swscanf_s \
                 strcat_s strcpy_s sprintf_s vsprintf_s sscanf_s strerror_s mbstowcs_s \
-                mbsrtowcs_s wcscpy_s qsort_s tmpfile_s \
+                mbsrtowcs_s wcscpy_s qsort_s tmpfile_s fwscanf_s vfwscanf_s \
                 vsnprintf_s vsnwprintf_s strtok_s wcstok_s ])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
@@ -699,8 +699,8 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # version information, refer to the libtool manual, section "Updating
 # library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([SAFEC_SO_VERSION], [3:2:0])
-AC_SUBST([SAFEC_API_VERSION], [3.2])
+AC_SUBST([SAFEC_SO_VERSION], [3:3:0])
+AC_SUBST([SAFEC_API_VERSION], [3.3])
 
 # Automake variables, these variables get automagically included at the top
 # of all automake generated make files. This is why you don't see them

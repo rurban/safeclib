@@ -2,8 +2,9 @@
  * wcsncpy_s.c
  *
  * September 2017, Reini Urban
+ * January 2018, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017, 2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -69,13 +70,12 @@
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
- * @return  If there is a runtime-constraint violation, then if dest
- *          is not a null pointer and dmax is greater than zero and
- *          not greater than RSIZE_MAX_WSTR, then wcsncpy_s nulls dest.
- * @retval  EOK        when successful operation, the wide characters in src were
- *                     copied into dest and the result is null terminated.
- * @retval  ESNULLP    when dest or src is a NULL pointer
- * @retval  ESZEROL    when dmax = 0. Before C11 also with slen = 0
+ * @return  If there is a runtime-constraint violation, then if dest and
+ *          dmax are valid, then wcsncpy_s nulls dest.
+ * @retval  EOK        successful operation, when slen == 0 or the wide characters in
+ *                     src were copied into dest and the result is null terminated.
+ * @retval  ESNULLP    when dest/src is a NULL pointer
+ * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
  * @retval  ESOVRLP    when buffers overlap
  * @retval  ESNOSPC    when dest < src
@@ -91,44 +91,33 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(slen == 0 && dest && dmax)) {
+        *dest = L'\0';
+        return EOK;
+    }
+    else if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("wcsncpy_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(dmax == 0)) {
+    else if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("wcsncpy_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
+    else if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsncpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-
-    if (unlikely(src == NULL)) {
-        handle_werror(dest, wcslen(dest), "wcsncpy_s: slen is null",
-                     ESNULLP);
+    else if (unlikely(src == NULL)) {
+        handle_werror(dest, dmax, "wcsncpy_s: slen is null",
+                      ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
-#ifdef HAVE_C11
-        return EOK;
-#else
-        handle_werror(dest, wcslen(dest), "wcsncpy_s: slen is zero",
-                     ESZEROL);
-        return RCNEGATE(ESZEROL);
-#endif
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
+    else if (unlikely(slen > RSIZE_MAX_WSTR)) {
         handle_werror(dest, wcslen(dest), "wcsncpy_s: slen exceeds max",
-                     ESLEMAX);
+                      ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
@@ -148,12 +137,15 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             }
 
             if (unlikely(slen == 0)) {
-                /*
-                 * Copying truncated to slen chars.  Note that the TR says to
+                /* Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #else
                 *dest = L'\0';
 #endif
@@ -164,7 +156,11 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
@@ -187,12 +183,15 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             }
 
 	    if (unlikely(slen == 0)) {
-                /*
-                 * Copying truncated to slen chars.  Note that the TR says to
+                /* Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #else
                 *dest = L'\0';
 #endif
@@ -203,7 +202,11 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                while (dmax) { *dest = '\0'; dmax--; dest++; }
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }

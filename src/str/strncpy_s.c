@@ -3,9 +3,10 @@
  *
  * October 2008, Bo Berry
  * October 2017, Reini Urban
+ * January 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017, 2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -71,13 +72,12 @@
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
- * @return  If there is a runtime-constraint violation, then if dest
- *          is not a null pointer and dmax greater than RSIZE_MAX_STR,
- *          then strncpy_s nulls dest.
- * @retval  EOK        successful operation, the characters in src were copied
- *                     to dest and the result is null terminated.
+ * @return  If there is a runtime-constraint violation, then if dest and
+ *          dmax are valid, then strncpy_s nulls dest.
+ * @retval  EOK        successful operation, when slen == 0 or the characters in
+ *                     src were copied to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
- * @retval  ESZEROL    when dmax = 0. Before C11 also with slen = 0
+ * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
@@ -93,48 +93,35 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(slen == 0 && dest && dmax)) {
+        *dest = '\0';
+        return EOK;
+    }
+    else if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strncpy_s: dest is null",
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(dmax == 0)) {
+    else if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
+    else if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-
-    if (unlikely(src == NULL)) {
-        handle_error(dest, strlen(dest), "strncpy_s: src is null",
+    else if (unlikely(src == NULL)) {
+        handle_error(dest, dmax, "strncpy_s: src is null",
                      ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
-#ifdef HAVE_C11
-        return EOK;
-#else
-        handle_error(dest, strlen(dest), "strncpy_s: slen is zero",
-                     ESZEROL);
-        return RCNEGATE(ESZEROL);
-#endif
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        handle_error(dest, strlen(dest), "strncpy_s: "
-                     "slen exceeds max",
+    else if (unlikely(slen > RSIZE_MAX_STR)) {
+        handle_error(dest, strlen(dest), "strncpy_s: slen exceeds max",
                      ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-
 
     /* hold base in case src was not copied */
     orig_dmax = dmax;
@@ -157,8 +144,11 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                memset(dest, 0, dmax);
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax);
+                else {
+                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                }
 #else
                 *dest = '\0';
 #endif
@@ -168,8 +158,11 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             *dest = *src;
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
-                memset(dest, 0, dmax);
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax);
+                else {
+                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
@@ -197,8 +190,11 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
-                memset(dest, 0, dmax);
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax);
+                else {
+                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                }
 #else
                 *dest = '\0';
 #endif
@@ -208,8 +204,11 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
             *dest = *src;
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
-                memset(dest, 0, dmax);
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax);
+                else {
+                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }

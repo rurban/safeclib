@@ -2,8 +2,10 @@
  * memcpy16_s
  *
  * October 2008, Bo Berry
+ * October 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -38,8 +40,8 @@
 
 /**
  * @brief
- *    This function copies at most smax uint16_ts from src to dest, up to
- *    dmax.
+ *    This function copies at most count uint16_t's from src to dest, up to
+ *    dmax bytes.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -49,31 +51,39 @@
  * @param[out] dest   pointer to the memory that will be replaced by src.
  * @param[in]  dmax   maximum length of the resulting dest, in bytes
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  smax   maximum number bytes of src that can be copied
+ * @param[in]  count  number of uint16_t's to be copied
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   Neither dmax nor smax shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM16.
- * @pre   smax shall not be greater than dmax.
+ * @pre   dmax shall not be 0.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre   count shall not be greater than dmax/2.
  * @pre   Copying shall not take place between regions that overlap.
  *
  * @return  If there is a runtime-constraint violation, the memcpy_s function
- *          stores zeros in the ﬁrst dmax bytes of the region pointed to
- *          by dest if dest is not a null pointer and smax is valid.
- * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax = ZERO. Before C11 also with smax = ZERO
- * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM16
- * @retval  ESNOSPC     when dmax < smax
- * @retval  ESOVRLP     when src memory overlaps dst
+ *          stores zeros in the first dmax bytes of the region pointed to
+ *          by dest if dest and dmax are valid.
+ * @retval  EOK         when operation is successful or count = 0
+ * @retval  ESNULLP     when dest/src is NULL POINTER
+ * @retval  ESZEROL     when dmax = ZERO
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when count > RSIZE_MAX_MEM16
+ * @retval  ESNOSPC     when count*2 > dmax
+ * @retval  ESOVRLP     when src memory overlaps dest
  *
  * @see
  *    wmemcpy_s(), memcpy_s(), memcpy32_s(), wmemmove_s(), memmove16_s()
  *
  */
 EXPORT errno_t
-memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
+memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t count)
 {
+    const uint16_t  *sp;
+
+    if (unlikely(count == 0)) {
+        /* Since C11 count=0 is allowed */
+        return EOK;
+    }
+
     if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memcpy16_s: dest is NULL",
                    NULL, ESNULLP);
@@ -86,36 +96,22 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM16 || smax > RSIZE_MAX_MEM16)) {
-        if (dmax < RSIZE_MAX_MEM16) {
-            mem_prim_set16(dest, dmax, 0);
-        }
-        invoke_safe_mem_constraint_handler("memcpy16_s: dmax/smax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_MEM)) {
+        invoke_safe_mem_constraint_handler("memcpy16_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (unlikely(smax == 0)) {
-        /* Since C11 smax=0 is allowed */
-#ifdef HAVE_C11
-        return EOK;
-#else
-        mem_prim_set16(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy16_s: smax is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-#endif
-    }
-
-    if (unlikely(smax > dmax)) {
-        mem_prim_set16(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy16_s: smax exceeds dmax",
-                   NULL, ESNOSPC);
-        return (RCNEGATE(ESNOSPC));
+    if (unlikely(count > dmax/2)) {
+        errno_t rc = count > RSIZE_MAX_MEM16 ? ESLEMAX : ESNOSPC;
+        mem_prim_set(dest, dmax, 0);
+        invoke_safe_mem_constraint_handler("memcpy16_s: count*2 exceeds dmax",
+                   NULL, rc);
+        return (RCNEGATE(rc));
     }
 
     if (unlikely(src == NULL)) {
-        mem_prim_set16(dest, dmax, 0);
+        mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy16_s: src is NULL",
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
@@ -124,18 +120,20 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t smax)
     /*
      * overlap is undefined behavior, do not allow
      */
-    if (unlikely( ((dest > src) && (dest < (src+smax))) ||
-                  ((src > dest) && (src < (dest+dmax))) )) {
-        mem_prim_set16(dest, dmax, 0);
+    if (unlikely( ((dest > src) && (dest < (src+count))) ||
+                  ((src > dest) && (src < (dest+dmax/2))) )) {
+        mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy16_s: overlap undefined",
                    NULL, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
     }
 
+    sp = src;
+
     /*
      * now perform the copy
      */
-    mem_prim_move16(dest, src, smax);
+    mem_prim_move16(dest, sp, count);
 
     return (RCNEGATE(EOK));
 }

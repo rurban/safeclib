@@ -110,8 +110,11 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
     if (unlikely(src == NULL)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
         /* null string to clear data */
-        memset(dest, 0, dmax*sizeof(wchar_t));
-        /*while (dmax) {  *dest = '\0'; dmax--; dest++; }*/
+        if (dmax > 0x20)
+            memset(dest, 0, dmax*sizeof(wchar_t));
+        else {
+            while (dmax) { *dest = L'\0'; dmax--; dest++; }
+        }
 #else
         *dest = '\0';
 #endif
@@ -143,8 +146,11 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                memset(dest, 0, dmax*sizeof(wchar_t));
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }
@@ -169,8 +175,11 @@ wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
-                memset(dest, 0, dmax*sizeof(wchar_t));
-                /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
+                if (dmax > 0x20)
+                    memset(dest, 0, dmax*sizeof(wchar_t));
+                else {
+                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                }
 #endif
                 return RCNEGATE(EOK);
             }

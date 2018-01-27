@@ -3,9 +3,10 @@
  *
  * October 2008, Bo Berry
  * September 2017, Reini Urban
+ * January 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017,2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -52,15 +53,19 @@
 #error sizeof(wchar_t)?
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_WMEMMOVE_S)
+#else
+
 /**
  * @brief
- *    The wmemmove_s function copies smax wchar_t's from the region
+ *    The wmemmove_s function copies count wchar_t's from the region
  *    pointed to by src into the region pointed to by dest.
+ *    If count is zero, the function does nothing.
  * @details
- *    This copying takes place as if the smax wchar_ts from the region
- *    pointed to by src are ﬁrst copied into a temporary array of
- *    smax wchar_ts that does not overlap the regions pointed to
- *    by dest or src, and then the smax wchar_ts from the temporary
+ *    This copying takes place as if the count wchar_t's from the region
+ *    pointed to by src are first copied into a temporary array of
+ *    count wchar_t's that does not overlap the regions pointed to
+ *    by dest or src, and then the count wchar_t's from the temporary
  *    array are copied into the region pointed to by dest.
  *
  * @remark EXTENSION TO
@@ -71,33 +76,37 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out] dest pointer to the memory that will be replaced by src.
- * @param[in]  dmax   maximum length of the resulting dest, in bytes
+ * @param[out] dest   pointer to the memory that will be replaced by src.
+ * @param[in]  dmax   maximum length of the resulting dest, in wchar_t
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  smax   maximum number bytes of src that can be copied
+ * @param[in]  count  maximum number of wide characters to copy
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   Neither dmax nor smax shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
- * @pre   smax shall not be greater than dmax.
+ * @pre   dmax shall not be 0.
+ * @pre   dmax shall not be greater than RSIZE_MAX_WMEM.
+ * @pre   count shall not be greater than dmax.
  *
  * @return  If there is a runtime-constraint violation, the memmove_s function
- *          stores zeros in the ﬁrst dmax characters of the region pointed to
+ *          stores zeros in the first dmax characters of the region pointed to
  *          by dest if dest is not a null pointer and dmax is not greater
  *          than RSIZE_MAX_MEM.
  * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
- * @retval  ESNOSPC     when dmax < smax
+ * @retval  ESNULLP     when dest or src is a NULL POINTER
+ * @retval  ESZEROL     when dmax = ZERO
+ * @retval  ESLEMAX     when dmax/count > RSIZE_MAX_WMEM
+ * @retval  ESNOSPC     when dmax < count
  *
  * @see
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
 EXPORT errno_t
-wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
+wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t count)
 {
+    if (unlikely(count == 0)) {
+        return (RCNEGATE(EOK));
+    }
+
     if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("wmemmove_s: dest is null",
                    NULL, ESNULLP);
@@ -110,24 +119,19 @@ wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM32 || smax > RSIZE_MAX_MEM32)) {
-        invoke_safe_mem_constraint_handler("wmemmove_s: dmax/smax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_WMEM)) {
+        invoke_safe_mem_constraint_handler("wmemcpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
-    if (unlikely(smax == 0)) {
+    if (unlikely(count > dmax)) {
+        errno_t rc = count > RSIZE_MAX_WMEM ? ESLEMAX : ESNOSPC;
         wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
-        invoke_safe_mem_constraint_handler("wmemmove_s: smax is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
-    if (unlikely(smax > dmax)) {
-        wmem_set((wmem_type*)dest, (uint32_t)dmax, 0);
-        invoke_safe_mem_constraint_handler("wmemmove_s: smax exceeds dmax",
-                   NULL, ESNOSPC);
-        return (RCNEGATE(ESNOSPC));
+        
+        invoke_safe_mem_constraint_handler("wmemcpy_s: count exceeds dmax",
+                   NULL, rc);
+        return (RCNEGATE(rc));
     }
 
     if (unlikely(src == NULL)) {
@@ -140,10 +144,11 @@ wmemmove_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t smax)
     /*
      * now perform the copy
      */
-    wmem_move((wmem_type*)dest, (wmem_type*)src, (uint32_t)smax);
+    wmem_move((wmem_type*)dest, (wmem_type*)src, (uint32_t)count);
 
     return (RCNEGATE(EOK));
 }
 EXPORT_SYMBOL(wmemmove_s)
 
+#endif /* TEST_MSVCRT */
 #endif /* HAVE_WCHAR_H */

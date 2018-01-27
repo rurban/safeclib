@@ -49,30 +49,21 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
         ax_compiler_flags_test=""
     ])
 
-    # AX_CHECK_LINK_FLAG([-Wl,--as-needed], [
-    #     AX_APPEND_LINK_FLAGS([-Wl,--as-needed],
-    #       [AM_LDFLAGS],[$ax_compiler_flags_test])
-    # ])
-    AX_CHECK_LINK_FLAG([-Wl,-z,relro], [
-        AX_APPEND_LINK_FLAGS([-Wl,-z,relro],
-          [AM_LDFLAGS],[$ax_compiler_flags_test])
-    ])
-    AX_CHECK_LINK_FLAG([-Wl,-z,now], [
-        AX_APPEND_LINK_FLAGS([-Wl,-z,now],
-          [AM_LDFLAGS],[$ax_compiler_flags_test])
-    ])
-    AX_CHECK_LINK_FLAG([-Wl,-z,noexecstack], [
-        AX_APPEND_LINK_FLAGS([-Wl,-z,noexecstack],
-          [AM_LDFLAGS],[$ax_compiler_flags_test])
-    ])
+    # as-needed only on elf
+    case $host_os in
+        mingw* |cygwin* | msys* | pw32 | os2* | cegcc* ) ;;
+        # darwin* | rhapsody* ) ;;
+        *)  AX_APPEND_LINK_FLAGS([-Wl,--as-needed],
+                [AM_LDFLAGS],[$ax_compiler_flags_test])
+            ;;
+    esac
+    AX_APPEND_LINK_FLAGS([-Wl,-z,relro],
+        [AM_LDFLAGS],[$ax_compiler_flags_test])
+    AX_APPEND_LINK_FLAGS([-Wl,-z,now],
+        [AM_LDFLAGS],[$ax_compiler_flags_test])
+    AX_APPEND_LINK_FLAGS([-Wl,-z,noexecstack],
+        [AM_LDFLAGS],[$ax_compiler_flags_test])
     # textonly, retpolineplt not yet
-
-    # macOS and cygwin linker do not have --as-needed
-    # AX_CHECK_LINK_FLAG([-Wl,--no-as-needed], [
-    #     ax_compiler_flags_as_needed_option="-Wl,--no-as-needed"
-    # ], [
-    #     ax_compiler_flags_as_needed_option=""
-    # ])
 
     # macOS linker speaks with a different accent
     ax_compiler_flags_fatal_warnings_option=""
@@ -85,15 +76,14 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
 
     # Base flags
     AX_APPEND_LINK_FLAGS([ dnl
-         $ax_compiler_flags_as_needed_option dnl
          $3 dnl
     ],ax_warn_ldflags_variable,[$ax_compiler_flags_test])
 
     AS_IF([test "$ax_enable_compile_warnings" != "no"],[
         # "yes" flags
         AX_APPEND_LINK_FLAGS([$4 $5 $6 $7],
-                                ax_warn_ldflags_variable,
-                                [$ax_compiler_flags_test])
+                             ax_warn_ldflags_variable,
+                             [$ax_compiler_flags_test])
     ])
     AS_IF([test "$ax_enable_compile_warnings" = "error"],[
         # "error" flags; -Werror has to be appended unconditionally because

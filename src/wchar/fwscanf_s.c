@@ -101,6 +101,7 @@ fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
     }
 #ifdef __MINGW32__
     if (unlikely(!*fmt)) {
+        errno = 0;
         return EOF;
     }
 #endif

@@ -2,8 +2,9 @@
  * memccpy_s
  *
  * September 2017, Reini Urban
+ * January 2018, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017, 2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -56,16 +57,17 @@
  * @pre  n shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
  *
- * @note from FreeBSD
+ * @note memccpy from BSD, Windows sec_api, glibc, newlib and everywhere else.
  *
  * @return  The memccpy() function returns a pointer to the next character in
  *          dest after c, or NULL if c was not found in the first n characters of
  *          src. If there is a runtime-constraint violation, the memccpy_s function
- *          stores zeros in the ﬁrst dmax bytes of the region pointed to
+ *          stores zeros in the first dmax bytes of the region pointed to
  *          by dest if dest is not a null pointer and n is valid.
- * @retval  EOK         when operation is successful
+ *          With n=0, dest[0] is set to '\0', as with \c memccpy().
+ * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
- * @retval  ESZEROL     when dmax = ZERO. Before C11 also with n = ZERO
+ * @retval  ESZEROL     when dmax = ZERO.
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
  * @retval  ESNOSPC     when dmax < n
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -104,14 +106,8 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
 
     if (unlikely(n == 0)) {
         /* Since C11 n=0 is allowed */
-#ifdef HAVE_C11
+        *dp = '\0';
         return EOK;
-#else
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memccpy_s: n is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-#endif
     }
 
     if (unlikely(n > dmax)) {

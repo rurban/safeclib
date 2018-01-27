@@ -1,122 +1,110 @@
 /*------------------------------------------------------------------
  * test_memmove16_s
  * File 'extmem/memmove16_s.c'
- * Lines executed:100.00% of 26
+ * Lines executed:100.00% of 23
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
-#include "safe_mem_lib.h"
+#include "test_expmem.h"
 
 #define LEN   ( 1024 )
+#define MAX   ( LEN * 2 )
 
 int main()
 {
     errno_t rc;
-    uint32_t i;
     uint32_t len;
+    uint32_t i;
 
     uint16_t  mem1[LEN];
     uint16_t  mem2[LEN];
+    rsize_t count = LEN;
     int errs = 0;
 
 /*--------------------------------------------------*/
 
-    rc = memmove16_s(NULL, LEN, mem2, LEN);
-    ERR(ESNULLP)
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+
+    rc = memmove16_s(NULL, MAX, mem2, count);
+    ERR(ESNULLP);
 /*--------------------------------------------------*/
 
-    rc = memmove16_s(mem1, 0, mem2, LEN);
-    ERR(ESZEROL)
+    rc = memmove16_s(mem1, 0, mem2, count);
+    ERR(ESZEROL); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 2);
 /*--------------------------------------------------*/
 
-    rc = memmove16_s(mem1, RSIZE_MAX_MEM16+1, mem2, LEN);
-    ERR(ESLEMAX)
+    rc = memmove16_s(mem1, RSIZE_MAX_MEM+1, mem2, count);
+    ERR(ESLEMAX); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 2);
 /*--------------------------------------------------*/
 
-    rc = memmove16_s(mem1, LEN, NULL, LEN);
-    ERR(ESNULLP)
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    rc = memmove16_s(mem1, MAX, NULL, count);
+    ERR(ESNULLP); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 2);
 /*--------------------------------------------------*/
 
+    for (i=0; i<10; i++) { mem1[i] = 33; }
     rc = memmove16_s(mem1, 10, mem2, 0);
-#ifdef HAVE_C11
-    ERR(EOK)
-#else
-    ERR(ESZEROL)
-#endif
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, 10, 33, 2);
+
 /*--------------------------------------------------*/
 
-    rc = memmove16_s(mem1, LEN, mem2, RSIZE_MAX_MEM16+1);
-    ERR(ESLEMAX)
+    rc = memmove16_s(mem1, MAX, mem2, RSIZE_MAX_MEM16+1);
+    ERR(ESLEMAX); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 2);
 /*--------------------------------------------------*/
 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+
+    len = 1;
+    rc = memmove16_s(mem1, MAX, mem2, len);
+    ERR(EOK); /* and copied */
+    EXPMEM(mem1, 0, len, 44, 2);
+    EXPMEM(mem1, len, LEN-len, 33, 2);
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+
+    len = 2;
+    rc = memmove16_s(mem1, MAX, mem2, len);
+    ERR(EOK); /* and copied */
+    EXPMEM(mem1, 0, len, 44, 2);
+    EXPMEM(mem1, len, LEN-len, 33, 2);
+    
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     /* a valid move */
     len = LEN;
-    rc = memmove16_s(mem1, len, mem2, len);
-    ERR(EOK)
-    for (i=0; i<len; i++) {
-        if (mem1[i] != mem2[i]) {
-            debug_printf("%d m1=%d  m2=%d  \n",
-                 i, mem1[i], mem2[i]);
-            errs++;
-        }
-    }
-
-/*--------------------------------------------------*/
+    rc = memmove16_s(mem1, MAX, mem2, len);
+    ERR(EOK); /* and copied */
+    EXPMEM(mem1, 0, len, 44, 2);
 
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    /* length error */
-    len = LEN/2;
-    rc = memmove16_s(mem1, len, mem2, LEN);
-    ERR(ESNOSPC)
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
-        }
-    }
+    /* count*2 greater than dmax */
+    rc = memmove16_s(mem1, MAX, mem2, count+1);
+    ERR(ESNOSPC); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 2);
 
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    /* invalid length - zero dest */
-    len = LEN;
-    rc = memmove16_s(mem1, len, mem2, 0);
-#ifdef HAVE_C11
-    ERR(EOK)
-#else
-    ERR(ESZEROL)
-#endif
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
-
-    /* invalid length - zero dest */
-    len = LEN;
-    rc = memmove16_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
-    ERR(ESLEMAX)
-    /* verify mem1 was zeroed */
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
-        }
-    }
+    /* empty count */
+    rc = memmove16_s(mem1, MAX, mem2, 0);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 2);
 
 /*--------------------------------------------------*/
 
@@ -124,41 +112,32 @@ int main()
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     /* same ptr - no move */
-    rc = memmove16_s(mem1, LEN, mem1, LEN);
-    ERR(EOK)
+    rc = memmove16_s(mem1, MAX, mem1, count);
+    ERR(EOK); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 2);
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 25; }
+    for (i=0; i<LEN; i++)     { mem1[i] = 25; }
     for (i=10; i<LEN-10; i++) { mem1[i] = 35; }
 
-    /* overlap move */
+    /* overlap move + */
     len = 20;
-    rc = memmove16_s(&mem1[0], len, &mem1[10], len);
-    ERR(EOK)
-    for (i=0; i<len; i++) {
-        if (mem1[i] != 35) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
-        }
-    }
+    rc = memmove16_s(&mem1[0], LEN, &mem1[10], len);
+    ERR(EOK); /* and copied */
+    EXPMEM(mem1, 0, len, 35, 2);
+    EXPMEM(mem1, len, LEN, 35, 2);
 
 /*--------------------------------------------------*/
 
-    for (i=0; i<LEN; i++) { mem1[i] = 25; }
+    for (i=0; i<LEN; i++)     { mem1[i] = 25; }
     for (i=10; i<LEN-10; i++) { mem1[i] = 35; }
 
-    /* overlap move */
+    /* overlap move - */
     len = 20;
-    rc = memmove16_s(&mem1[10], len, &mem1[0], len);
-    ERR(EOK)
-    for (i=0; i<10; i++) {
-        if (mem1[i] != 25) {
-            debug_printf("%d - %d m1=%d \n",
-                 __LINE__, i, mem1[i]);
-            errs++;
-        }
-    }
+    rc = memmove16_s(&mem1[10], (LEN-10)*2, &mem1[0], len);
+    ERR(EOK);
+    EXPMEM(mem1, 0, 10, 25, 2);
+    EXPMEM(mem1, len, LEN, 35, 2);
 
 /*--------------------------------------------------*/
 
