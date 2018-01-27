@@ -165,4 +165,6 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(sprintf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(sprintf_s);
+#endif /* __KERNEL__ */

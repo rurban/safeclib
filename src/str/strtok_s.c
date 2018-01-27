@@ -337,6 +337,8 @@ strtok_s(char *restrict dest, rsize_t *restrict dmax,
     *dmax = dlen;
     return (ptoken);
 }
-EXPORT_SYMBOL(strtok_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strtok_s);
+#endif /* __KERNEL__ */
 
 #endif

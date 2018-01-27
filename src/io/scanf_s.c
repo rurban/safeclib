@@ -127,4 +127,6 @@ scanf_s(const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(scanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(scanf_s);
+#endif /* __KERNEL__ */

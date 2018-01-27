@@ -75,4 +75,6 @@ timingsafe_memcmp (const void *b1, const void *b2, size_t len)
 
     return (res);
 }
-EXPORT_SYMBOL(timingsafe_memcmp)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(timingsafe_memcmp);
+#endif /* __KERNEL__ */

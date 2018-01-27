@@ -112,4 +112,6 @@ memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
 
     return (RCNEGATE(err));
 }
-EXPORT_SYMBOL(memset32_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memset32_s);
+#endif /* __KERNEL__ */

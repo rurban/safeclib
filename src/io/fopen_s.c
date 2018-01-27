@@ -109,6 +109,8 @@ fopen_s(FILE *restrict *restrict streamptr,
 
     return EOK;
 }
-EXPORT_SYMBOL(fopen_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(fopen_s);
+#endif /* __KERNEL__ */
 
 #endif /* MINGW_HAS_SECURE_API */

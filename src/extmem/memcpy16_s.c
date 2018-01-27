@@ -137,4 +137,6 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t count)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memcpy16_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memcpy16_s);
+#endif /* __KERNEL__ */

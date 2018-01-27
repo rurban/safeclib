@@ -161,4 +161,6 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
-EXPORT_SYMBOL(memccpy_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memccpy_s);
+#endif /* __KERNEL__ */

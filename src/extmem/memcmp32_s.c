@@ -147,4 +147,6 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memcmp32_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memcmp32_s);
+#endif /* __KERNEL__ */

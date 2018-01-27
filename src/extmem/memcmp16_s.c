@@ -155,4 +155,6 @@ memcmp16_s (const uint16_t *dest, rsize_t dmax,
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memcmp16_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memcmp16_s);
+#endif /* __KERNEL__ */

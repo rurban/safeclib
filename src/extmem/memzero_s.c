@@ -90,4 +90,6 @@ memzero_s (void *dest, rsize_t len)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memzero_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memzero_s);
+#endif /* __KERNEL__ */

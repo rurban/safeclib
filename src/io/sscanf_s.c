@@ -135,4 +135,6 @@ sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(sscanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(sscanf_s);
+#endif /* __KERNEL__ */

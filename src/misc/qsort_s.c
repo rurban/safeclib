@@ -375,6 +375,8 @@ qsort_s(void *base,
 
     return EOK;
 }
-EXPORT_SYMBOL(qsort_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(qsort_s);
+#endif /* __KERNEL__ */
 
 #endif /* MINGW_HAS_SECURE_API */

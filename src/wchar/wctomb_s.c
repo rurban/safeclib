@@ -165,6 +165,8 @@ wctomb_s(int *restrict retval,
 
     return RCNEGATE(rc);
 }
-EXPORT_SYMBOL(wctomb_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wctomb_s);
+#endif /* __KERNEL__ */
 
 #endif /* HAVE_WCHAR_H */

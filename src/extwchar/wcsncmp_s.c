@@ -123,4 +123,6 @@ wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
     *diff = *dest - *src;
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(wcsncmp_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wcsncmp_s);
+#endif /* __KERNEL__ */

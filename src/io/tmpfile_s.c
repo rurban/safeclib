@@ -106,4 +106,6 @@ tmpfile_s(FILE * restrict * restrict streamptr)
 
     return EOK;
 }
-EXPORT_SYMBOL(tmpfile_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(tmpfile_s);
+#endif /* __KERNEL__ */

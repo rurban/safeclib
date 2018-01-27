@@ -90,4 +90,6 @@ memzero16_s (uint16_t *dest, rsize_t len)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memzero16_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memzero16_s);
+#endif /* __KERNEL__ */

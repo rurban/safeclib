@@ -194,6 +194,8 @@ mbstowcs_s(size_t *restrict retval,
 
     return RCNEGATE(rc);
 }
-EXPORT_SYMBOL(mbstowcs_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(mbstowcs_s);
+#endif /* __KERNEL__ */
 
 #endif /* HAVE_WCHAR_H */

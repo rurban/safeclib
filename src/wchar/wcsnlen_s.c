@@ -101,6 +101,8 @@ wcsnlen_s (const wchar_t *dest, rsize_t dmax)
     return dmax ? (rsize_t)(dest - z) : orig_dmax;
 #endif
 }
-EXPORT_SYMBOL(wcsnlen_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wcsnlen_s);
+#endif /* __KERNEL__ */
 
 #endif /* HAVE_WCHAR_H */

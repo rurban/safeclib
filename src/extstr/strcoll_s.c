@@ -120,4 +120,6 @@ strcoll_s (const char *restrict dest, rsize_t dmax,
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strcoll_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(strcoll_s);
+#endif /* __KERNEL__ */

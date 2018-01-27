@@ -128,4 +128,6 @@ wscanf_s(const wchar_t *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(wscanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(wscanf_s);
+#endif /* __KERNEL__ */

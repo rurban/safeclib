@@ -113,4 +113,6 @@ memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
 
     return (RCNEGATE(err));
 }
-EXPORT_SYMBOL(memset16_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memset16_s);
+#endif /* __KERNEL__ */

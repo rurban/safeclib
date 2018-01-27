@@ -130,4 +130,6 @@ vwscanf_s(const wchar_t *restrict fmt, va_list ap)
 
     return ret;
 }
-EXPORT_SYMBOL(vwscanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vwscanf_s);
+#endif /* __KERNEL__ */

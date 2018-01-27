@@ -132,4 +132,6 @@ vsscanf_s(const char *restrict buffer, const char *restrict fmt, va_list ap)
 
     return ret;
 }
-EXPORT_SYMBOL(vsscanf_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(vsscanf_s);
+#endif /* __KERNEL__ */
