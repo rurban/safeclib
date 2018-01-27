@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memmove_s
  * File 'mem/memmove_s.c'
- * Lines executed:100.00% of 26
+ * Lines executed:100.00% of 25
  *
  *------------------------------------------------------------------
  */
@@ -79,14 +79,18 @@ int test_memmove_s (void)
 
     rc = memmove_s(mem1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
-    EXPMEM(mem1, 0, LEN, 0, 1);
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 0, LEN, 0, 1); /* broken with msvcrt! */
+    }
 
 /*--------------------------------------------------*/
 
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
-    EXPMEM(mem1, 0, LEN, 0, 1);
-
+    ERR_MSVC(ESLEMAX, ERANGE);  /* and cleared */
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 0, LEN, 0, 1);
+    }
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
@@ -117,7 +121,9 @@ int test_memmove_s (void)
     rc = memmove_s(mem1, len, mem2, LEN);
     ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
 
-    EXPMEM(mem1, 0, len, 0, 1);
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 0, len, 0, 1); /* broken with msvcrt */
+    }
     if (mem1[len] != 33) {
         debug_printf("%d - %d m1=%d  m2=%d  \n",
                      __LINE__, (int)len, mem1[len], mem2[len]);
