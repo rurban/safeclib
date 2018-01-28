@@ -82,8 +82,6 @@ void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
 
 #define ERR_MSVC(n, winerr)   \
     _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
-#define ERRNO_MSVC(n, winerr) \
-    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
 
 void _err_msvc(int rc, const int n, const int winerr, int *errp,
                const char *f, const unsigned l)
@@ -94,6 +92,12 @@ void _err_msvc(int rc, const int n, const int winerr, int *errp,
         (*errp)++;
     }
 }
+
+#ifdef __KERNEL__
+#define ERRNO_MSVC(n, winerr)
+#else
+#define ERRNO_MSVC(n, winerr) \
+    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
 void _errno_msvc(const int n, const int winerr, int *errp,
                  const char *f, const unsigned l)
 {
@@ -105,6 +109,7 @@ void _errno_msvc(const int n, const int winerr, int *errp,
     if (use_msvcrt)
         errno = 0;
 }
+#endif
 
 #ifdef USE_MSVCRT
 #undef CHECK_SLACK

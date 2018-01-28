@@ -26,7 +26,9 @@ int test_memcpy_s (void)
     errno_t rc;
     uint32_t i;
     rsize_t len;
+#ifndef __KERNEL__
     int ind;
+#endif
     int errs = 0;
 
 /*--------------------------------------------------*/

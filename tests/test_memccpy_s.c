@@ -58,7 +58,7 @@ int test_memccpy_s (void)
     rc = memccpy_s(str1, 5, str2, 0, 0);
     ERR(EOK);
     EXPSTR(str1, "");
-#if defined(HAVE_MEMCCPY)
+#if !defined(__KERNEL__) && defined(HAVE_MEMCCPY)
     {
         char *sub = (char*)memccpy(str1, str2, 0, 0);
         EXPSTR(str1, "");
@@ -106,7 +106,8 @@ int test_memccpy_s (void)
     rc = memccpy_s(str1, LEN, str1, 0, nlen);
     ERR(ESOVRLP)
     CHECK_SLACK(str1, nlen);
-#if defined(HAVE_MEMCCPY) && (defined(__GLIBC__) || defined(_WIN32))
+#if !defined(__KERNEL__) && defined(HAVE_MEMCCPY) && \
+    (defined(__GLIBC__) || defined(_WIN32))
     {
         /* with glibc/windows overlap allowed, &str[1] returned.
          * an darwin/bsd fails the __memccpy_chk().
@@ -124,7 +125,7 @@ int test_memccpy_s (void)
     rc = memccpy_s(&str1[0], LEN, &str1[5], 0, nlen);
     ERR(ESOVRLP)
     CHECK_SLACK(str1, LEN);
-#if defined(HAVE_MEMCCPY)
+#if !defined(__KERNEL__) && defined(HAVE_MEMCCPY)
     {
         /* overlap allowed, &str[1] returned */
         char *sub = (char*)memccpy(&str1[0], &str1[5], 0, nlen);
