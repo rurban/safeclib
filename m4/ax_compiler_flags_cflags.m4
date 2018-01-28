@@ -59,7 +59,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     ])
 
     # Check that -Wno-suggest-attribute=format is supported
-    AX_CHECK_COMPILE_FLAG([-Wno-suggest-attribute=format],[
+    AX_CHECK_COMPILE_FLAG([-Wsuggest-attribute=format],[
         ax_compiler_no_suggest_attribute_flags="-Wno-suggest-attribute=format"
     ],[
         ax_compiler_no_suggest_attribute_flags=""

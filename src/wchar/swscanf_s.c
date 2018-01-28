@@ -141,4 +141,3 @@ swscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(swscanf_s)

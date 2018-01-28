@@ -156,6 +156,5 @@ snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(snprintf_s)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */

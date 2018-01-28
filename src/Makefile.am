@@ -235,7 +235,7 @@ ALL_SRC_FILES =
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
 # wcsnorm_CFLAGS = -fbracket-depth=512
-AM_CFLAGS += -I$(top_builddir)/include -I$(srcdir)/mem -I$(srcdir)/str
+AM_CFLAGS += -I$(top_builddir)/include -I$(srcdir)
 if !HAVE_MINGW
 AM_CFLAGS += -pedantic
 endif

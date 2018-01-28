@@ -165,4 +165,4 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(sprintf_s)
+

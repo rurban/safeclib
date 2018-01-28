@@ -182,4 +182,3 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
 
     return EOK;
 }
-EXPORT_SYMBOL(ctime_s)

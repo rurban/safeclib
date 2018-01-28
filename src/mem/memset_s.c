@@ -36,7 +36,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 #if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
@@ -133,6 +133,6 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(memset_s);
-#endif /* __KERNEL__ */
+#endif
 
 #endif

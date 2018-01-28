@@ -147,4 +147,3 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
 
     return EOK;
 }
-EXPORT_SYMBOL(getenv_s)

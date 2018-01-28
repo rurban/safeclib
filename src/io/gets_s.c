@@ -152,4 +152,3 @@ gets_s (char *restrict dest, rsize_t dmax)
 
     return ret;
 }
-EXPORT_SYMBOL(gets_s)

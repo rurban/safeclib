@@ -67,4 +67,4 @@ ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(ignore_handler_s);
-#endif /* __KERNEL__ */
+#endif

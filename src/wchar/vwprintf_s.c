@@ -115,4 +115,3 @@ vwprintf_s(const wchar_t *restrict fmt, va_list ap)
     return ret;
 
 }
-EXPORT_SYMBOL(vwprintf_s)

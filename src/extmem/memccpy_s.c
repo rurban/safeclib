@@ -34,7 +34,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 /**
@@ -161,4 +161,6 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
-EXPORT_SYMBOL(memccpy_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memccpy_s);
+#endif

@@ -105,4 +105,3 @@ vfprintf_s(FILE *restrict stream, const char *restrict fmt, va_list ap)
 
     return ret;
 }
-EXPORT_SYMBOL(vfprintf_s)

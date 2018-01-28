@@ -97,4 +97,3 @@ vprintf_s(const char *restrict fmt, va_list ap)
 
     return ret;
 }
-EXPORT_SYMBOL(vprintf_s)

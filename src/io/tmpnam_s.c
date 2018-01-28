@@ -158,4 +158,3 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
         return errno;
     }
 }
-EXPORT_SYMBOL(tmpnam_s)

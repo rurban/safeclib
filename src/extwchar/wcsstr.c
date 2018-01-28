@@ -99,4 +99,3 @@ wcsstr (wchar_t *restrict dest, const wchar_t *restrict src)
     }
     return NULL;
 }
-EXPORT_SYMBOL(wcsstr)

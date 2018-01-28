@@ -136,6 +136,7 @@ void abort(void) __attribute__((noreturn));
 #define strnstr(a,b,c) strstr(a,b)
 #endif
 
+/* Only needed for the linux kernel */
 #define EXPORT_SYMBOL(sym)
 #define RCNEGATE(x)  (x)
 
@@ -191,9 +192,9 @@ void abort(void) __attribute__((noreturn));
 #endif
 
 #include "safe_str_lib.h"
-#include "safe_str_constraint.h"
+#include "str/safe_str_constraint.h"
 #include "safe_mem_lib.h"
-#include "safe_mem_constraint.h"
+#include "mem/safe_mem_constraint.h"
 #include "safe_lib.h"
 
 /* needed for -Wcast-align */

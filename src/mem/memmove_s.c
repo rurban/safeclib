@@ -35,7 +35,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 #if defined(TEST_MSVCRT) && defined(HAVE_MEMMOVE_S)
@@ -144,6 +144,6 @@ memmove_s (void *dest, rsize_t dmax, const void *src, rsize_t count)
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(memmove_s);
-#endif /* __KERNEL__ */
+#endif
 
 #endif

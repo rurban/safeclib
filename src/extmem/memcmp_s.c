@@ -33,7 +33,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "safe_mem_constraint.h"
+#include "mem/safe_mem_constraint.h"
 #endif
 
 /**
@@ -159,4 +159,4 @@ memcmp_s (const void *dest, rsize_t dmax,
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(memcmp_s);
-#endif /* __KERNEL__ */
+#endif

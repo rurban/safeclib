@@ -128,6 +128,5 @@ localtime_s(const time_t *restrict timer, struct tm *restrict dest)
 
     return dest;
 }
-EXPORT_SYMBOL(localtime_s)
 
 #endif /* HAVE_MINGW64 */

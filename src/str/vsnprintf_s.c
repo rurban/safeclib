@@ -145,7 +145,6 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
 
     return ret;
 }
-EXPORT_SYMBOL(vsnprintf_s)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 #endif /* MINGW64 */

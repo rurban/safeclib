@@ -375,6 +375,5 @@ qsort_s(void *base,
 
     return EOK;
 }
-EXPORT_SYMBOL(qsort_s)
 
 #endif /* MINGW_HAS_SECURE_API */

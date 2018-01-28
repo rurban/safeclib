@@ -29,7 +29,7 @@
  *------------------------------------------------------------------
  */
 
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 
 /*
  * mem_primitives_lib.c  provides unguarded memory routines

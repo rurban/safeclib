@@ -185,6 +185,5 @@ wcstombs_s (size_t *restrict retval,
 
     return RCNEGATE(rc);
 }
-EXPORT_SYMBOL(wcstombs_s)
 
 #endif /* HAVE_WCHAR_H */

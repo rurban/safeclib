@@ -129,7 +129,6 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
 
     return EOK;
 }
-EXPORT_SYMBOL(strerror_s)
 
 /**
  * @brief
@@ -163,4 +162,3 @@ strerrorlen_s(errno_t errnum)
         return buf ? strlen(buf) : 0;
     }
 }
-EXPORT_SYMBOL(strerrorlen_s)

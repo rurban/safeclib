@@ -108,4 +108,3 @@ fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(fprintf_s)

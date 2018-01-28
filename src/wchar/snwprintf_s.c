@@ -222,6 +222,5 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     return ret;
 }
-EXPORT_SYMBOL(snwprintf_s)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */

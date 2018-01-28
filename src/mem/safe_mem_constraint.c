@@ -30,7 +30,7 @@
  *------------------------------------------------------------------
  */
 
-#include "safe_mem_constraint.h"
+#include "mem/safe_mem_constraint.h"
 
 static constraint_handler_t mem_handler = NULL;
 
@@ -77,8 +77,7 @@ set_mem_constraint_handler_s (constraint_handler_t handler)
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(set_mem_constraint_handler_s);
-#endif /* __KERNEL__ */
-
+#endif
 
 /**
  * @brief
@@ -102,4 +101,4 @@ invoke_safe_mem_constraint_handler (const char *msg,
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(invoke_safe_mem_constraint_handler);
-#endif /* __KERNEL__ */
+#endif

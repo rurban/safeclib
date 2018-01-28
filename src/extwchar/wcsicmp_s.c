@@ -123,4 +123,3 @@ wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
     free(d2);
     return rc;
 }
-EXPORT_SYMBOL(wcsicmp_s)
