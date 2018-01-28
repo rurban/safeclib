@@ -36,7 +36,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 #ifdef HAVE_WCHAR_H
@@ -153,7 +153,6 @@ wmemcpy_s (wchar_t *dest, rsize_t dmax, const wchar_t *src, rsize_t count)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(wmemcpy_s)
 
 #endif /* TEST_MSVCRT */
 #endif /* HAVE_WCHAR_H */

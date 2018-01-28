@@ -122,4 +122,3 @@ wcscoll_s (const wchar_t *restrict dest, rsize_t dmax,
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(wcscoll_s)

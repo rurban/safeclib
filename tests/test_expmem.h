@@ -33,6 +33,13 @@
 #define __TEST_EXPMEM_H__
 
 #include "safe_mem_lib.h"
+
+#ifdef __KERNEL__
+
+#define EXPMEM(mem, from, to, what, size)
+
+#else
+
 #ifdef HAVE_STDLIB_H
 # include <stdlib.h>
 #endif
@@ -71,4 +78,5 @@ void _expmem(char* mem, int from, int to, int what, int size,
     free(mem2);
 }
 
+#endif /* __KERNEL__ */
 #endif /* __TEST_EXPMEM_H__ */

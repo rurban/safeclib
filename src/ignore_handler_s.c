@@ -65,4 +65,6 @@ ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
 		       (msg) ? msg : "Null message");
 	return;
 }
-EXPORT_SYMBOL(ignore_handler_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(ignore_handler_s);
+#endif

@@ -185,7 +185,7 @@ build the kernel module.
 
 .To build do the following:
 
-    $ ./configure
+    $ ./configure --disable-wchar
     $ make -f Makefile.kernel
 
 

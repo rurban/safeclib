@@ -165,6 +165,5 @@ wctomb_s(int *restrict retval,
 
     return RCNEGATE(rc);
 }
-EXPORT_SYMBOL(wctomb_s)
 
 #endif /* HAVE_WCHAR_H */

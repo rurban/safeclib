@@ -128,4 +128,3 @@ wscanf_s(const wchar_t *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(wscanf_s)

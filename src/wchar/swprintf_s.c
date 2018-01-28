@@ -219,4 +219,3 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     return ret;
 }
-EXPORT_SYMBOL(swprintf_s)

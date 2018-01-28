@@ -33,7 +33,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 /**
@@ -90,4 +90,6 @@ memzero_s (void *dest, rsize_t len)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memzero_s)
+#ifdef __KERNEL__
+EXPORT_SYMBOL(memzero_s);
+#endif

@@ -141,4 +141,3 @@ bsearch_s(const void *key, const void *base,
     }
     return NULL;
 }
-EXPORT_SYMBOL(bsearch_s)

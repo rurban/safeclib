@@ -34,7 +34,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 /**
@@ -112,4 +112,3 @@ memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
 
     return (RCNEGATE(err));
 }
-EXPORT_SYMBOL(memset32_s)

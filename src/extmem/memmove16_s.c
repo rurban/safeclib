@@ -33,7 +33,7 @@
 #include "safe_mem_lib.h"
 #else
 #include "safeclib_private.h"
-#include "mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 #endif
 
 /**
@@ -124,4 +124,3 @@ memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t count)
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memmove16_s)

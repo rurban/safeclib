@@ -272,6 +272,5 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
-EXPORT_SYMBOL(wcsncat_s)
 
 #endif /* HAVE_WCHAR_H */

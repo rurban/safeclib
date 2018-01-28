@@ -120,4 +120,3 @@ strcoll_s (const char *restrict dest, rsize_t dmax,
 
     return RCNEGATE(EOK);
 }
-EXPORT_SYMBOL(strcoll_s)

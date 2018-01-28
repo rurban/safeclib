@@ -100,4 +100,3 @@ printf_s(const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(printf_s)

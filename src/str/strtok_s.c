@@ -337,6 +337,5 @@ strtok_s(char *restrict dest, rsize_t *restrict dmax,
     *dmax = dlen;
     return (ptoken);
 }
-EXPORT_SYMBOL(strtok_s)
 
 #endif

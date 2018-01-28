@@ -210,6 +210,5 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
 
     return EOK;
 }
-EXPORT_SYMBOL(asctime_s)
 
 #endif /* MINGW_HAS_SECURE_API */

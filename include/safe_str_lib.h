@@ -43,10 +43,12 @@ extern "C" {
 #include "safe_types.h"
 
 #include <stdarg.h>
+#ifndef __KERNEL__
 #include <time.h>
 #if defined HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
+#endif /* __KERNEL__ */
 #ifndef SAFECLIB_DISABLE_WCHAR
 #include <wchar.h>
 #endif
@@ -160,8 +162,10 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
 EXTERN int
 sscanf_s(const char *restrict buffer, const char *restrict fmt, ...);
 
+#ifndef __KERNEL__
 EXTERN int
 fscanf_s(FILE *restrict stream, const char *restrict format, ...);
+#endif /* __KERNEL__ */
 
 EXTERN int
 scanf_s(const char *restrict format, ...);
@@ -169,9 +173,11 @@ scanf_s(const char *restrict format, ...);
 EXTERN int
 vscanf_s(const char *restrict format, va_list vlist);
 
+#ifndef __KERNEL__
 EXTERN int
 vfscanf_s(FILE *restrict stream, const char *restrict format,
           va_list vlist);
+#endif /* __KERNEL__ */
 
 EXTERN int
 vsscanf_s(const char *restrict buffer, const char *restrict format,
@@ -180,15 +186,19 @@ vsscanf_s(const char *restrict buffer, const char *restrict format,
 EXTERN int
 printf_s(const char *restrict format, ...);
 
+#ifndef __KERNEL__
 EXTERN int
 fprintf_s(FILE *restrict stream, const char *restrict format, ...);
+#endif /* __KERNEL__ */
 
 EXTERN int
 vprintf_s(const char *restrict format, va_list arg);
 
+#ifndef __KERNEL__
 EXTERN int
 vfprintf_s(FILE *restrict stream, const char *restrict format,
            va_list arg);
+#endif /* __KERNEL__ */
 
 EXTERN errno_t
 strerror_s(char *dest, rsize_t dmax, errno_t errnum);
@@ -490,12 +500,14 @@ wprintf_s( const wchar_t *restrict fmt, ...);
 EXTERN int
 vwprintf_s(const wchar_t *restrict fmt, va_list ap);
 
+#ifndef __KERNEL__
 EXTERN int
 fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
 
 EXTERN int
 vfwprintf_s(FILE * restrict stream,
             const wchar_t *restrict fmt, va_list ap);
+#endif /* __KERNEL__ */
 
 EXTERN int
 swscanf_s(const wchar_t *restrict buffer,
@@ -511,6 +523,7 @@ wscanf_s( const wchar_t *restrict fmt, ...);
 EXTERN int
 vwscanf_s(const wchar_t *restrict fmt, va_list ap);
 
+#ifndef __KERNEL__
 EXTERN int
 fwscanf_s(FILE *restrict stream,
           const wchar_t *restrict fmt, ...);
@@ -518,6 +531,7 @@ fwscanf_s(FILE *restrict stream,
 EXTERN int
 vfwscanf_s(FILE *restrict stream,
            const wchar_t *restrict fmt, va_list ap);
+#endif /* __KERNEL__ */
 
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS

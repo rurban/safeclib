@@ -204,4 +204,3 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     return ret;
 }
-EXPORT_SYMBOL(vswprintf_s)

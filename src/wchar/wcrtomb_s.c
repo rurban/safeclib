@@ -171,6 +171,5 @@ wcrtomb_s(size_t *restrict retval,
 
     return RCNEGATE(rc);
 }
-EXPORT_SYMBOL(wcrtomb_s)
 
 #endif /* HAVE_WCHAR_H */

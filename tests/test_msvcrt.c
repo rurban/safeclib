@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * test_msvcrt.h - Seperate safec from native msvcrt sec_api
+ * test_msvcrt.c - Seperate safec from native msvcrt sec_api
  *
  * 2018  Reini Urban
  *
@@ -29,51 +29,74 @@
  *------------------------------------------------------------------
  */
 
-#ifndef __TEST_MSVCRT_H__
-#define __TEST_MSVCRT_H__
+#define __TEST_MSVCRT_C__
+#include "test_msvcrt.h"
 
-#include "config.h"
-#include "safe_config.h"
-#include "test_private.h"
-#include <stdbool.h>
-
-#ifndef __KERNEL__
-#include <errno.h>
+bool use_msvcrt;
+void print_msvcrt(bool use_msvcrt) {
+#ifdef _WIN32
+    printf("Using %s, have_native=%s %s...\n",
+        use_msvcrt ? "msvcrt" : "safec",
+# if (HAVE_NATIVE)
+        "yes",
+# else
+        "no",
+# endif
+# ifdef DISABLE_DLLIMPORT
+        "static"
+# else
+        "shared"
+# endif
+        );
+#else
+    (void)use_msvcrt;
 #endif
+}
 
-/* With static linkage we can enforce our -lsafec over -lc.
-   But not all. Some forceinline API's will still use msvcrt.
-   With shared linkage we always get native msvcrt.
- */
-#if defined(_WIN32) && (HAVE_NATIVE) && !defined(DISABLE_DLLIMPORT)
-# define USE_MSVCRT
+void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
+#ifdef _WIN32
+    if ( is_msvcrt ) {
+        if (*msvcrtp)
+            printf("No, safec.dll overriding msvcrt.dll\n");
+        *msvcrtp = false;
+    } else {
+        if (!*msvcrtp)
+            printf("No, msvcrt.dll overriding safec.dll\n");
+        *msvcrtp = true;
+    }
+#else
+    (void)is_msvcrt;
+    *msvcrtp = false;
 #endif
-
-#ifndef __TEST_MSVCRT_C__
-extern bool use_msvcrt;
-#endif
-
-void init_msvcrt(bool is_msvcrt, bool *msvcrtp);
-void print_msvcrt(bool use_msvcrt);
-void _err_msvc(int rc, const int n, const int winerr, int *errp,
-               const char *f, const unsigned l);
-void _errno_msvc(const int n, const int winerr, int *errp,
-                 const char *f, const unsigned l);
+}
 
 #define ERR_MSVC(n, winerr)   \
     _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
+
+void _err_msvc(int rc, const int n, const int winerr, int *errp,
+               const char *f, const unsigned l)
+{
+    const int chk = use_msvcrt ? winerr : n;
+    if (rc != chk) {
+        debug_printf("%s %u  Error rc=%d \n", f, l, rc);
+        (*errp)++;
+    }
+}
 
 #ifdef __KERNEL__
 #define ERRNO_MSVC(n, winerr)
 #else
 #define ERRNO_MSVC(n, winerr) \
     _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
+void _errno_msvc(const int n, const int winerr, int *errp,
+                 const char *f, const unsigned l)
+{
+    const int chk = use_msvcrt ? winerr : n;
+    if (errno != chk) {
+        debug_printf("%s %u  Error errno=%d \n", f, l, (int)errno);
+        (*errp)++;
+    }
+    if (use_msvcrt)
+        errno = 0;
+}
 #endif
-
-#ifdef USE_MSVCRT
-#undef CHECK_SLACK
-#define CHECK_SLACK(a,b)  EXPSTR(a, "")
-#define CHECK_WSLACK(a,b) WEXPSTR(a, L"")
-#endif
-
-#endif /* __TEST_MSVCRT_H__ */

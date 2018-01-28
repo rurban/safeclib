@@ -30,7 +30,7 @@
 # Test module definition
 obj-m     := slkm.o testslkm.o
 
-ccflags-y := -I$(src)/include
+ccflags-y := -I$(src)/include -I$(src) -I$(src)/src
 
 # Functions in the kernel that don't have a 1-to-1 name correlation
 # __HAVE_ARCH_STRLCPY
@@ -62,13 +62,14 @@ slkm-y     += src/mem/memset_s.o
 slkm-y     += src/mem/memcpy_s.o
 slkm-y     += src/mem/memmove_s.o
 slkm-y     += src/extmem/memcmp_s.o
+slkm-y     += src/extmem/memccpy_s.o
 
 # String Routines
 slkm-y     += src/str/strcpy_s.o
 slkm-y     += src/str/strncpy_s.o
 slkm-y     += src/str/strcat_s.o
 slkm-y     += src/str/strncat_s.o
-slkm-y     += src/str/strcmp_s.o
+slkm-y     += src/extstr/strcmp_s.o
 slkm-y     += src/str/strnlen_s.o
 slkm-y     += src/extstr/strcasecmp_s.o
 slkm-y     += src/extstr/strstr_s.o
@@ -77,8 +78,10 @@ slkm-y     += src/extstr/strspn_s.o
 slkm-y     += src/extstr/strcspn_s.o
 
 testslkm-y := tests/test_slkm.o
+testslkm-y += tests/test_msvcrt.o
 testslkm-y += tests/test_memset_s.o
 testslkm-y += tests/test_memcpy_s.o
+testslkm-y += tests/test_memccpy_s.o
 testslkm-y += tests/test_memmove_s.o
 testslkm-y += tests/test_memcmp_s.o
 testslkm-y += tests/test_strcpy_s.o

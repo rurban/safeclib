@@ -147,4 +147,3 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
 
     return (RCNEGATE(EOK));
 }
-EXPORT_SYMBOL(memcmp32_s)

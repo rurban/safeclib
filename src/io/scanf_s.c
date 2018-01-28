@@ -127,4 +127,3 @@ scanf_s(const char *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(scanf_s)

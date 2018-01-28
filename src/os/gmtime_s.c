@@ -127,6 +127,5 @@ gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
 
     return dest;
 }
-EXPORT_SYMBOL(gmtime_s)
 
 #endif /* HAVE_MINGW64 */

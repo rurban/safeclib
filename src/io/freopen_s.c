@@ -115,6 +115,5 @@ freopen_s(FILE *restrict *restrict newstreamptr,
 
     return EOK;
 }
-EXPORT_SYMBOL(freopen_s)
 
 #endif /* MINGW_HAS_SECURE_API */

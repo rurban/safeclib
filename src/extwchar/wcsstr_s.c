@@ -159,4 +159,3 @@ wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
     *substring = NULL;
     return RCNEGATE(ESNOTFND);
 }
-EXPORT_SYMBOL(wcsstr_s)

@@ -5,6 +5,7 @@ Changes in v????2018 3.3.0
         - Fixed --disable-shared for Windows.
         - Optimized null-slack clearing of dest, unrolling the memset loop with
           small dest buffers.
+        - Fixed compilation of the linux kernel module (PR #43, Fabrice Fontaine)
         - Reworked C11 compatibility to closer align with the existing Windows+BSD
           sec_api's, esp. with slen=0 cases of the cpy and move functions, while still
           following the spec. (GH #39)

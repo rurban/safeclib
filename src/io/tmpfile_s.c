@@ -106,4 +106,3 @@ tmpfile_s(FILE * restrict * restrict streamptr)
 
     return EOK;
 }
-EXPORT_SYMBOL(tmpfile_s)

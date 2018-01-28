@@ -36,14 +36,6 @@
 #include "config.h"
 #include "safe_config.h"
 
-#ifdef HAVE_LIMITS_H
-# include <limits.h>
-#endif
-#include <locale.h>
-#ifdef HAVE_LANGINFO_H
-#include <langinfo.h>
-#endif
-
 #ifdef __KERNEL__
 
 #include <linux/kernel.h>
@@ -56,6 +48,14 @@
 #endif
 
 #else
+
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#endif
+#include <locale.h>
+#ifdef HAVE_LANGINFO_H
+#include <langinfo.h>
+#endif
 
 /* --disable-shared: ignore the sec_api */
 #if defined(_WIN32) && defined(DISABLE_DLLIMPORT)
@@ -441,6 +441,8 @@
 #define SKIP_APPVEYOR(str)
 #endif
 
+#ifndef __KERNEL__
+
 #if SIZEOF_WCHAR_T > 2
 #define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
 #else
@@ -453,7 +455,7 @@
         *dest++ = ((cp) & 0x3ff) + 0xdc00;      \
         (dmax)--; (dmax)--;                     \
     }
-
 #endif
+#endif /* __KERNEL__ */
 
 #endif /* __TEST_PRIVATE_H__ */

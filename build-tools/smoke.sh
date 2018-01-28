@@ -74,6 +74,9 @@ CC="clang-6.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
 $make -s clean
+./configure --disable-wchar && \
+    $make -s -j4 -f Makefile.kernel || exit
+$make -s clean
 ./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat && \
     $make -s -j4 gcov
 #    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \

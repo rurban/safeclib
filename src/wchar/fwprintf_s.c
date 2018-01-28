@@ -123,4 +123,3 @@ fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
 
     return ret;
 }
-EXPORT_SYMBOL(fwprintf_s)
