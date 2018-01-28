@@ -78,6 +78,7 @@ slkm-y     += src/extstr/strspn_s.o
 slkm-y     += src/extstr/strcspn_s.o
 
 testslkm-y := tests/test_slkm.o
+testslkm-y += tests/test_msvcrt.o
 testslkm-y += tests/test_memset_s.o
 testslkm-y += tests/test_memcpy_s.o
 testslkm-y += tests/test_memccpy_s.o
