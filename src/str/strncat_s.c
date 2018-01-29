@@ -38,6 +38,9 @@
 #include "safeclib_private.h"
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCAT_S)
+#else
+
 /**
  * @brief
  *    The strncat_s function appends a copy of the string pointed
@@ -292,3 +295,5 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
 #ifdef __KERNEL__
 EXPORT_SYMBOL(strncat_s);
 #endif /* __KERNEL__ */
+
+#endif /* TEST_MSVCRT */

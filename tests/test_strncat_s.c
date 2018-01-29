@@ -32,14 +32,10 @@ int test_strncat_s (void)
 
     strcpy(str1, "aaaaaaaaaa");
 
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
+    print_msvcrt(use_msvcrt);
     /* probe for msvcrt or safec.dll being active */
     rc = strncat_s(NULL, LEN, str1, LEN);
-    if ( use_msvcrt && rc == ESNULLP ) {
-        printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    }
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
@@ -82,18 +78,18 @@ int test_strncat_s (void)
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
-        EXPSTR(str1, "a");
+        EXPSTR(str1, "a"); /* untouched */
     } else {
-        EXPSTR(str1, "ab")
+        EXPSTR(str1, "abcde") /* valid */
     }
 
     strcpy(str1, "a");
     rc = strncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
-        EXPSTR(str1, "");
+        EXPSTR(str1, ""); /* cleared */
     } else {
-        EXPSTR(str1, "ab")
+        EXPSTR(str1, "abcde") /* valid */
     }
 
 /*--------------------------------------------------*/
@@ -102,7 +98,8 @@ int test_strncat_s (void)
     rc = strncat_s(str1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL);
     /*EXPSTR(str1, "a");*/
-    CHECK_SLACK(str1, LEN);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 
@@ -111,7 +108,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 1, str2, LEN);
     ERR_MSVC(ESUNTERM, EINVAL);
-    CHECK_SLACK(str1, 1);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
 
@@ -120,7 +118,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 2, str2, LEN);
     ERR_MSVC(ESUNTERM, EINVAL);
-    CHECK_SLACK(str1, 2);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -129,7 +128,8 @@ int test_strncat_s (void)
 
     rc = strncat_s(str1, 2, str2, 1);
     ERR_MSVC(ESNOSPC, ERANGE);
-    CHECK_SLACK(str1, 2);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -138,14 +138,16 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[0], 8, &str1[3], 4);
     ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1)
-    CHECK_SLACK(str1, 8);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 8);
 
     strcpy(str1, "abcd");
 
     rc = strncat_s(&str1[0], 4, &str1[3], 4);
     ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
-    CHECK_SLACK(str1, 4);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 4);
 
 /*--------------------------------------------------*/
 
@@ -154,7 +156,8 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[0], 3, &str1[3], 4);
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
-    CHECK_SLACK(str1, 3);
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 3);
 
 /*--------------------------------------------------*/
 
@@ -163,7 +166,8 @@ int test_strncat_s (void)
     rc = strncat_s(&str1[3], 5, &str1[0], 4);
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(&str1[3])
-    CHECK_SLACK(&str1[3], 5);
+    if (!use_msvcrt)
+        CHECK_SLACK(&str1[3], 5);
 
 /*--------------------------------------------------*/
 
@@ -186,7 +190,8 @@ int test_strncat_s (void)
     rc = strncat_s(str1, 3, str2, 1);
     ERR(EOK)
     EXPSTR(str1, "ab");
-    CHECK_SLACK(&str1[2], 3-2);
+    if (!use_msvcrt)
+        CHECK_SLACK(&str1[2], 3-2);
 
 /*--------------------------------------------------*/
 
@@ -197,7 +202,8 @@ int test_strncat_s (void)
     ERR(EOK)
     EXPSTR(str1, "aaaaaaaaaakeep it simple");
     len = strlen(str1);
-    CHECK_SLACK(&str1[len], 50-len);
+    if (!use_msvcrt)
+        CHECK_SLACK(&str1[len], 50-len);
 
 /*--------------------------------------------------*/
 /* TR example */
@@ -209,7 +215,8 @@ int test_strncat_s (void)
     ERR(EOK)
     EXPSTR(str1, "goodbye");
     len = strlen(str1);
-    CHECK_SLACK(&str1[len], 100-len);
+    if (!use_msvcrt)
+        CHECK_SLACK(&str1[len], 100-len);
 
 /*--------------------------------------------------*/
 /* TR example */
@@ -220,7 +227,8 @@ int test_strncat_s (void)
     ERR(EOK)
     EXPSTR(str1, "hello");
     len = strlen(str1);
-    CHECK_SLACK(&str1[len], 6-len);
+    if (!use_msvcrt)
+        CHECK_SLACK(&str1[len], 6-len);
 
 /*--------------------------------------------------*/
 /* TR example */
@@ -240,7 +248,8 @@ int test_strncat_s (void)
     ERR(EOK)
     EXPSTR(str1, "abcdef");
     len = strlen(str1);
-    CHECK_SLACK(&str1[len], 6-len);
+    if (!use_msvcrt)
+        CHECK_SLACK(&str1[len], 6-len);
 
 /*--------------------------------------------------*/
 

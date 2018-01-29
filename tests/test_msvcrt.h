@@ -45,7 +45,7 @@
    But not all. Some forceinline API's will still use msvcrt.
    With shared linkage we always get native msvcrt.
  */
-#if defined(_WIN32) && (HAVE_NATIVE) && !defined(DISABLE_DLLIMPORT)
+#if defined(TEST_MSVCRT) && (HAVE_NATIVE)
 # define USE_MSVCRT
 #endif
 
