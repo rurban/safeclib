@@ -34,25 +34,39 @@ int test_strncpy_s (void)
 
     nlen = 5;
 
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
+    print_msvcrt(use_msvcrt);
     rc = strncpy_s(NULL, LEN, str2, nlen);
-    if ( use_msvcrt && rc == ESNULLP )
-        use_msvcrt = false;
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaa");
-    str2[0] = '\0';
+    strcpy(str2, "b");
 
-    rc = strncpy_s(str1, 5, str2, 0);
-    ERR(EOK);
+    rc = strncpy_s(NULL, LEN, str2, 5);
+    ERR_MSVC(ESNULLP, EINVAL); /* and untouched */
+
+    rc = strncpy_s(NULL, LEN, str2, 0);
+    ERR_MSVC(ESNULLP, EINVAL); /* and untouched */
+
+    rc = strncpy_s(str1, 0, str2, 0);
+    ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
+    EXPSTR(str1, "aaaaa")
+
+    strcpy(str1, "aaaaa");
+    rc = strncpy_s(str1, LEN, str2, 0);
+    ERR(EOK); /* and cleared */
     EXPSTR(str1, "")
 
     strcpy(str1, "aaaaa");
     rc = strncpy_s(str1, 1, str2, 0);
-    ERR(EOK)
+    ERR(EOK) /* and cleared */
+    EXPSTR(str1, "")
+
+    strcpy(str1, "aaaaa");
+    rc = strncpy_s(str1, 5, NULL, 0);
+    ERR(EOK); /* and cleared */
     EXPSTR(str1, "")
 
 /*--------------------------------------------------*/
@@ -61,12 +75,13 @@ int test_strncpy_s (void)
 
     nlen = 5;
     rc = strncpy_s(str1, 5, NULL, nlen);
-    ERR(ESNULLP);
-    CHECK_SLACK(str1, 5);
+    ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
+    if (!use_msvcrt)
+        CHECK_SLACK(str1, 5);
     
     strcpy(str1, "a");
     rc = strncpy_s(str1, 0, str2, 0);
-    ERR_MSVC(ESZEROL, EINVAL);
+    ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
     EXPSTR(str1, "a")
 
 /*--------------------------------------------------*/
@@ -74,12 +89,19 @@ int test_strncpy_s (void)
     strcpy(str1, "aa");
     nlen = 5;
     rc = strncpy_s(str1, 0, str2, nlen);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
+    EXPSTR(str1, "aa")
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "aa");
     rc = strncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0); /* different MAX */
+    if (!use_msvcrt) {
+        EXPSTR(str1, "aa");
+    } else {
+        EXPSTR(str1, "b");
+    }
 
 /*--------------------------------------------------*/
 
@@ -87,7 +109,7 @@ int test_strncpy_s (void)
    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
-    ERR_MSVC(ESLEMAX, ERANGE);
+    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPSTR(str1, "");
 
 /*--------------------------------------------------*/
@@ -97,7 +119,7 @@ int test_strncpy_s (void)
     nlen = 5;
 
     rc = strncpy_s(&str1[0], LEN/2, &str2[0], nlen);
-    ERR(EOK);
+    ERR(EOK); /* and cleared */
     if (!use_msvcrt) {
         CHECK_SLACK(str1, LEN/2);
     } else {
@@ -111,7 +133,7 @@ int test_strncpy_s (void)
 
     /* test overlap */
     rc = strncpy_s(str1, LEN, str1, nlen);
-    ERR_MSVC(ESOVRLP, 0);
+    ERR_MSVC(ESOVRLP, 0); /* and cleared/mangled */
     if (!use_msvcrt) {
         CHECK_SLACK(str1, LEN);
     } else {
@@ -123,7 +145,7 @@ int test_strncpy_s (void)
     nlen = 18;
 
     rc = strncpy_s(&str1[0], LEN, &str1[5], nlen);
-    ERR_MSVC(ESOVRLP, 0);
+    ERR_MSVC(ESOVRLP, 0); /* and cleared/mangled */
     if (!use_msvcrt) {
         CHECK_SLACK(str1, LEN);
     } else {
@@ -137,7 +159,7 @@ int test_strncpy_s (void)
 
     nlen = 10;
     rc = strncpy_s(str1, LEN, str2, nlen);
-    ERR(EOK);
+    ERR(EOK); /* and cleared */
     if (!use_msvcrt) {
         CHECK_SLACK(str1, LEN);
     } else {
@@ -189,7 +211,7 @@ int test_strncpy_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strncpy_s(str1, 2, str2, nlen);
-    ERR_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
     if (*str1 != '\0') {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );

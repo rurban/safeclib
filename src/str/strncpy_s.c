@@ -38,12 +38,16 @@
 #include "safeclib_private.h"
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+#else
+
 /**
  * @brief
  *    The strncpy_s function copies not more than slen successive characters
  *    (characters that follow a null character are not copied) from the
  *    array pointed to by src to the array pointed to by dest. If no null
- *    character was copied from src, then dest[n] is set to a null character.
+ *    character was copied from src, then dest[n] is set to a null character,
+ *    thus guaranteeing null termination.
  * @details
  *    All elements following the terminating null character (if
  *    any) written by strncpy_s in the array of dmax characters
@@ -231,3 +235,5 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
 #ifdef __KERNEL__
 EXPORT_SYMBOL(strncpy_s);
 #endif /* __KERNEL__ */
+
+#endif /* TEST_MSVCRT */

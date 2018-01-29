@@ -34,7 +34,7 @@
 
 bool use_msvcrt;
 void print_msvcrt(bool use_msvcrt) {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(TEST_MSVCRT)
     printf("Using %s, have_native=%s %s...\n",
         use_msvcrt ? "msvcrt" : "safec",
 # if (HAVE_NATIVE)
