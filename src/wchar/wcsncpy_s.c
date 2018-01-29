@@ -36,7 +36,7 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef HAVE_WCHAR_H
+#if !(defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)) && defined(HAVE_WCHAR_H)
 
 /**
  * @brief
@@ -228,4 +228,4 @@ wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, 
     return RCNEGATE(ESNOSPC);
 }
 
-#endif /* HAVE_WCHAR_H */
+#endif /* HAVE_WCHAR_H or !TEST_MSVCRT */
