@@ -62,7 +62,10 @@ int test_memccpy_s (void)
     {
         char *sub = (char*)memccpy(str1, str2, 0, 0);
         EXPSTR(str1, "");
+        /* but with musl the result is a copy of str1 */
+#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) || defined(_WIN32)
         SUBNULL();
+#endif
     }
 #endif
 
