@@ -93,14 +93,23 @@ static int test_vfwscanf_s (void)
     ERRNO_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");
 
+    rc = vtwscanf_s(stream, NULL);
+    ERR(EOF);
+    ERRNO_MSVC(ESNULLP, EINVAL);
+
+#if 0
+    /* Illegal: */
     rc = vfwscanf_s(stream, NULL, NULL);
     ERR(EOF);
     ERRNO_MSVC(ESNULLP, EINVAL);
 
-    /* SEGV
-      rc = vfwscanf_s(stream, L"%ls", NULL);
-      ERREOF(ESNULLP);
-    */
+    /* SEGV: */
+    rc = vfwscanf_s(stream, L"", NULL);
+    ERR(EOF);
+    ERRNO_MSVC(ESNULLP, EINVAL);
+    rc = vfwscanf_s(stream, L"%ls", NULL);
+    ERREOF(ESNULLP);
+#endif
 
 /*--------------------------------------------------*/
     stuff_stream(L"      24");
