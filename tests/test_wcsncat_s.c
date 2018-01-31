@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsncat_s
  * File 'wchar/wcsncat_s.c'
- * Lines executed:93.59% of 78
+ * Lines executed:93.90% of 82
  *
  *------------------------------------------------------------------
  */
@@ -31,15 +31,11 @@ int test_wcsncat_s (void)
 
     wcscpy(str1, L"a");
     wcscpy(str2, L"aaaaa");
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
+    print_msvcrt(use_msvcrt);
 
     /* probe for msvcrt or safec.dll being active */
     rc = wcsncat_s(NULL, LEN, str2, LEN);
-    if ( use_msvcrt && rc == ESNULLP ) {
-        printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    }
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
@@ -48,7 +44,18 @@ int test_wcsncat_s (void)
     wcscpy(str2, L"b");
 
     rc = wcsncat_s(str1, 1, str2, 0);
-    ERR(EOK)
+    ERR_MSVC(ESZEROL, EINVAL);
+    WEXPSTR(str1, L"");
+
+    rc = wcsncat_s(NULL, 1, str2, 0);
+    ERR_MSVC(ESNULLP, EINVAL);
+
+    rc = wcsncat_s(NULL, 0, str2, 0);
+    ERR(EOK);
+
+    wcscpy(str1, L"a");
+    rc = wcsncat_s(str1, 0, str2, 0);
+    ERR_MSVC(ESZEROL, EINVAL);
     WEXPSTR(str1, L"a");
 
 /*--------------------------------------------------*/
@@ -65,7 +72,7 @@ int test_wcsncat_s (void)
     if (!use_msvcrt) {
         WEXPSTR(str1, L"a");
     } else {
-        WEXPNULL(str1);
+        WEXPSTR(str1, L"ab");
     }
 
 /*--------------------------------------------------*/
@@ -73,7 +80,11 @@ int test_wcsncat_s (void)
     wcscpy(str1, L"a");
     rc = wcsncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, 0);
-    WEXPNULL(str1)
+    if (!use_msvcrt) {
+        WEXPNULL(str1);
+    } else {
+        WEXPSTR(str1, L"ab");
+    }
 
 /*--------------------------------------------------*/
 
@@ -99,7 +110,8 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(str1, 2, str2, LEN);
     ERR_MSVC(ESUNTERM, EINVAL);
     WEXPNULL(str1)
-    WCHECK_SLACK(str1, 2);
+    if (!use_msvcrt)
+        WCHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -109,7 +121,8 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(str1, 2, str2, 1);
     ERR_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
-    WCHECK_SLACK(str1, 2);
+    if (!use_msvcrt)
+        WCHECK_SLACK(str1, 2);
 
 /*--------------------------------------------------*/
 
@@ -118,14 +131,16 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(&str1[0], 8, &str1[3], 4);
     ERR_MSVC(ESOVRLP, ERANGE);
     WEXPNULL(str1)
-    WCHECK_SLACK(str1, 8);
+    if (!use_msvcrt)
+        WCHECK_SLACK(str1, 8);
 
     wcscpy(str1, L"abcd");
 
     rc = wcsncat_s(&str1[0], 4, &str1[3], 4);
     ERR_MSVC(ESOVRLP, EINVAL);
     WEXPNULL(str1)
-    WCHECK_SLACK(str1, 4);
+    if (!use_msvcrt)
+        WCHECK_SLACK(str1, 4);
 
 /*--------------------------------------------------*/
 
@@ -134,7 +149,8 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(&str1[0], 3, &str1[3], 4);
     ERR_MSVC(ESUNTERM, EINVAL);
     WEXPNULL(str1)
-    WCHECK_SLACK(str1, 3);
+    if (!use_msvcrt)
+        WCHECK_SLACK(str1, 3);
 
 /*--------------------------------------------------*/
 
@@ -143,7 +159,8 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(&str1[3], 5, &str1[0], 4);
     ERR_MSVC(ESUNTERM, EINVAL);
     WEXPNULL(&str1[3])
-    WCHECK_SLACK(&str1[3], 5);
+    if (!use_msvcrt)
+        WCHECK_SLACK(&str1[3], 5);
 
 /*--------------------------------------------------*/
 
@@ -151,8 +168,11 @@ int test_wcsncat_s (void)
 
     rc = wcsncat_s(&str1[3], 12, &str1[0], 4);
     ERR_MSVC(ESOVRLP, EOK);
-    WEXPNULL(&str1[3])
-    WCHECK_SLACK(&str1[3], 12);
+    if (!use_msvcrt) {
+        WEXPNULL(&str1[3]);
+        WCHECK_SLACK(&str1[3], 12);
+    } else
+        WEXPSTR(str1, L"abcdefghabcd");
 
 /*--------------------------------------------------*/
 
@@ -185,7 +205,8 @@ int test_wcsncat_s (void)
     ERR(EOK)
     WEXPSTR(str1, L"goodbye");
     len = wcslen(str1);
-    WCHECK_SLACK(&str1[len], 100-len);
+    if (!use_msvcrt)
+        WCHECK_SLACK(&str1[len], 100-len);
 
 /*--------------------------------------------------*/
 /* TR example */
@@ -206,7 +227,8 @@ int test_wcsncat_s (void)
     rc = wcsncat_s(str1, 6, L"X", 2);
     ERR_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
-    WCHECK_SLACK(str1, 6);
+    if (!use_msvcrt)
+        WCHECK_SLACK(str1, 6);
 
 /*--------------------------------------------------*/
 /* TR example */

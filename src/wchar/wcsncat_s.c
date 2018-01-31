@@ -35,7 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef HAVE_WCHAR_H
+#if (defined(TEST_MSVCRT) && defined(HAVE_WCSNCAT_S)) || !defined(HAVE_WCHAR_H)
+#else
 
 /**
  * @brief
@@ -71,16 +72,22 @@
  * @pre  Neither dest nor src shall be a null pointer
  * @pre  dmax shall not equal zero
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR
- * @pre  dmax shall be greater than wcsnlen_s(src,m).
+ * @pre  dmax shall be greater than wcsnlen_s(src,slen).
  * @pre  Copying shall not take place between objects that overlap
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
+ *
+ * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
+ *       ESLEMAX dmax/slen>MAX not, ESOVRLP partially. When dest>src Windows
+ *       appends the result, when dest<src ERANGE or EINVAL is returned.
  *
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
  *           greater than RSIZE_MAX_WSTR, then wcsncat_s nulls dest.
  * @retval  EOK        successful operation, when slen == 0 or all the wide characters
  *                     are copied from src and dest is null terminated.
+ *          As special case, analog to msvcrt: when slen == 0 and dmax is big
+ *          enough for dest, also return EOK, but clear dest.
  * @retval  ESNULLP    when dest/src is NULL pointer and slen > 0
  * @retval  ESZEROL    when dmax = 0 and slen > 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR and slen > 0
@@ -99,7 +106,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
 
-    if (unlikely(slen == 0)) {
+    if (unlikely(slen == 0 && !dest && !dmax)) { /* silent ok as in the msvcrt */
         return EOK;
     }
     else if (unlikely(dest == NULL)) {
@@ -126,6 +133,14 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
         handle_werror(dest, wcslen(dest), "wcsncat_s: slen exceeds max",
                      ESLEMAX);
         return RCNEGATE(ESLEMAX);
+    }
+    else if (unlikely(slen == 0)) {
+        /* Special case, analog to msvcrt: when dest is big enough
+           return EOK, but clear dest. */
+        errno_t error = (wcsnlen_s(dest, dmax) < dmax) ? EOK : ESZEROL;
+        handle_werror(dest, dmax, "wcsncat_s: slen is 0",
+                     error);
+        return RCNEGATE(error);
     }
 
     /* hold base of dest in case src was not copied */

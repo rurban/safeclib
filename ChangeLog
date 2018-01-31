@@ -19,7 +19,7 @@ Changes in v????2018 3.3.0
           wcs{lwr,upr}_s
         - Change dmax to bytes to follow the documentation with:
           mem{cpy,move}{16,32}_s
-        - strncat_s: with slen=0 and dest=NULL and dmax=0, return EOK
+        - strncat_s, wcsncat_s: with slen=0 and dest=NULL and dmax=0, return EOK
         - fwscanf_s: on mingw reset errno when *fmt = L'\0'
         - vfwscanf_s: break early on mingw when *fmt = L'\0'
 
