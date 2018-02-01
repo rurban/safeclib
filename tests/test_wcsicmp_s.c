@@ -129,7 +129,7 @@ int test_wcsicmp_s (void)
     rc = wcsicmp_s(str1, LEN, str2, LEN, &ind);
     ERR(EOK)
     INDCMP(!= -8)
-    /* sgn with -m32 on linux */
+    /* sgn with -m32 or cross on linux */
     RELAXEDCMP()
 
 /*--------------------------------------------------*/
@@ -154,7 +154,7 @@ int test_wcsicmp_s (void)
     rc = wcsicmp_s(str1, LEN, str2, LEN, &ind);
     ERR(EOK)
     INDCMP(<= 0)
-    /* sgn with -m32 on linux */
+    /* sgn with -m32 or cross on linux */
     RELAXEDCMP()
 
 /*--------------------------------------------------*/
@@ -165,7 +165,7 @@ int test_wcsicmp_s (void)
     rc = wcsicmp_s(str1, LEN, str2, LEN, &ind);
     ERR(EOK)
     INDCMP(>= 0)
-    /* sgn with -m32 on linux */
+    /* sgn with -m32 or cross on linux */
     RELAXEDCMP()
 
 /*--------------------------------------------------*/

@@ -43,7 +43,20 @@ CC=gcc-mp-6 \
 $make clean
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
-#    make -s -j4 check-log || exit
+    #    make -s -j4 check-log || exit
+
+# port install arm-elf-gcc (with newlib, not glibc)
+if [ -e /opt/local/bin/arm-elf-gcc-4.7 ]; then
+    CC=arm-elf-gcc-4.7 ./configure --enable-unsafe --host=arm-elf --disable-shared && \
+        $make -s -j4 || exit;
+    # $make -s -j4 check-log
+    m -C tests tests
+    for t in tests/t*_s; do
+        b=$(basename $t)
+        qemu-arm -L /opt/local/arm-elf $t | tee tests/$b.log
+    done
+fi
+
 ;;
 
 Linux)
@@ -51,7 +64,7 @@ make -s clean
 CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-$make -s clean
+make -s clean
 CC="clang-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
@@ -73,20 +86,42 @@ CC="clang-5.0" \
 CC="clang-6.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-$make -s clean
+make -s clean
 ./configure --disable-wchar && \
     $make -s -j4 -f Makefile.kernel || exit
-$make -s clean
+make -s clean
 ./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat && \
     $make -s -j4 gcov
 #    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
 #    gcov2perl src/*/*.gcov src/*.gcov && \
 #    cover -no-gcov
-$make clean
+make -s clean
 CC="c++ -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
     $make -s -j4 check-log || exit
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check-log || exit
+
+# apt install gcc-arm-linux-gnueabihf gcc-7-multilib (with glibc, not newlib)
+# and either:
+#   apt-install linux-libc-dev (for asm/errno.h)
+#   cd /usr/include/i386-linux-gnu; ln -s /usr/include/x86_64-linux-gnu/asm; cd -
+# or:
+#   cd /usr/include/i386-linux-gnu; ln -s /usr/include/asm-generic asm; cd -
+if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
+    ./configure --enable-unsafe --enable-debug --host=arm-linux-gnueabihf && \
+        make -s -j4 || exit;
+    # $make -s -j4 check-log
+    if [ ! -e /usr/arm-linux-gnueabihf/lib/libsafec-3.3.so.3 ]; then
+        cd /usr/arm-linux-gnueabihf/lib/;
+        sudo ln -s $OLDPWD/src/.libs/libsafec-3.3.so.3;
+        cd -
+    fi
+    make -s -j4 -C tests tests;
+    for t in tests/.libs/t*_s; do
+        b=$(basename $t)
+        qemu-arm -L /usr/arm-linux-gnueabihf $t | tee tests/$b.log
+    done
+fi
 ;;
 
 MSYS_NT*)
@@ -123,22 +158,6 @@ CC="cc -m32" ./configure && \
     $make -s -j4 check-log || exit
 ./configure --disable-wchar && \
     $make -s -j4 check-log || exit
-
-# apt install gcc-arm-linux-gnueabihf
-if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
-    ./configure --enable-unsafe --host=arm-linux-gnueabihf && \
-        $make -s -j4 || exit;
-    # $make -s -j4 check-log
-    if [ ! -e /usr/arm-linux-gnueabihf/lib/libsafec-3.3.so.3 ]; then
-        cd /usr/arm-linux-gnueabihf/lib/;
-        sudo ln -s $OLDPWD/src/.libs/libsafec-3.3.so.3;
-        cd -
-    fi
-    m -C tests tests;
-    for t in tests/.libs/t*_s; do
-        qemu-arm -L /usr/arm-linux-gnueabihf $t
-    done
-fi
 
 # different .deps format
 git clean -dxf src tests

@@ -41,6 +41,8 @@
 #if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
 #else
 
+/* not for the kernel, as it sets errno */
+
 /**
  * @brief
  *    The \c sprintf_s function composes a string with the same content that
