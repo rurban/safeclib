@@ -13,6 +13,8 @@ Changes in v????2018 3.3.0
           where all errors simply returned 0. Later Microsoft and all others
           changed the error return value back to -1, to be consistent with other
           sprintf functions. So do we. (GH #45)
+        - sprintf_s/vsprintf_s on Windows use now the native vsnprintf_s function
+          to reject illegal format specifiers.
         - Reworked C11 compatibility to closer align with the existing Windows+BSD
           sec_api's, esp. with slen=0 cases of the cpy and move functions, while still
           following the spec. (GH #39)

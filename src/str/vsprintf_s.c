@@ -139,7 +139,12 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
     }
 
     errno = 0;
+#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
+    /* to detect illegal format specifiers */
+    ret = vsnprintf_s(dest, (size_t)dmax, (size_t)dmax, fmt, ap);
+#else
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
+#endif
 
     if (unlikely(ret >= (int)dmax)
 #ifdef __MINGW32__

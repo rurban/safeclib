@@ -150,7 +150,12 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     errno = 0;
     va_start(ap, fmt);
     /* FIXME: gcc 4.3 GCC_DIAG_IGNORE(-Wmissing-format-attribute) */
+#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
+    /* to detect illegal format specifiers */
+    ret = vsnprintf_s(dest, (size_t)dmax, (size_t)dmax, fmt, ap);
+#else
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
+#endif
     /* GCC_DIAG_RESTORE */
     va_end(ap);
 

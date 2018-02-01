@@ -250,10 +250,8 @@ int test_vsprintf_s (void)
 #if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions */
     /* they print unknown formats verbatim */
     NOERR();
-#elif defined(_WIN32) /* msvcrt sec_api doesn't detect illegal formats */
-    NOERR();
 #else
-    /* only musl correctly rejects illegal format specifiers */
+    /* only musl and msvcrt sec_api correctly rejects illegal format specifiers */
     ERR(-1);
     EXPNULL(str1)
 #endif
