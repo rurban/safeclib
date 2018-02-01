@@ -9,6 +9,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#ifdef HAVE_SPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -24,34 +31,40 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
-    ERR(0);
-    ERRNO(ESLEMAX)
-
-/*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
     rc = sprintf_s(NULL, LEN, "%s", NULL);
-    ERR(0);
-    ERRNO(ESNULLP)
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERR(-1);
+    ERRNO_MSVC(ESNULLP,EINVAL);
+
+/*--------------------------------------------------*/
+    rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
+    if (!use_msvcrt) {
+        ERR(-1);
+    } else {
+        ERR(0);
+    }
+    ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, LEN, NULL, NULL);
-    ERR(0);
-    ERRNO(ESNULLP)
+    ERR(-1);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, 0, "%s", str2);
-    ERR(0);
-    ERRNO(ESZEROL)
+    ERR(-1);
+    ERRNO_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
-    ERR(0);
-    ERRNO(EINVAL)
+    ERR(-1);
+    ERRNO(EINVAL);
 
     rc = sprintf_s(str1, LEN, "%s %%n", str2);
     ERR(3)
@@ -61,10 +74,10 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    /* TODO
+    /* TODO not yet implemented
     rc = sprintf_s(str1, LEN, "%p", NULL);
-    ERR(0);
-    ERRNO(ESNULLP)
+    ERR(-1);
+    ERRNO_MSVC(ESNULLP, EINVAL);
     */
 
 /*--------------------------------------------------*/
@@ -74,7 +87,7 @@ int test_sprintf_s (void)
 
     rc = sprintf_s(str1, 1, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -84,7 +97,7 @@ int test_sprintf_s (void)
 
     rc = sprintf_s(str1, 2, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -113,7 +126,7 @@ int test_sprintf_s (void)
 
     rc = sprintf_s(str1, 1, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -123,7 +136,7 @@ int test_sprintf_s (void)
 
     rc = sprintf_s(str1, 2, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -169,7 +182,7 @@ int test_sprintf_s (void)
 
     rc = sprintf_s(str1, 12, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
 
 /*--------------------------------------------------*/
 
@@ -186,7 +199,7 @@ int test_sprintf_s (void)
 
     rc = sprintf_s(str1, 8, "%s", &str1[7]);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/

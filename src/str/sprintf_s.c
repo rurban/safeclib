@@ -3,9 +3,10 @@
  *
  * November 2014, Charlie Lenahan
  * April 2017, Reini Urban
+ * February 2018, Reini Urban
  *
  * Copyright (c) 2014 by Charlie Lenahan
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,9 +38,12 @@
 #include "safeclib_private.h"
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
+#else
+
 /**
  * @brief
- *    The sprintf_s function composes a string with same test that
+ *    The \c sprintf_s function composes a string with the same content that
  *    would be printed if format was used on printf. Instead of being
  *    printed, the content is stored in dest.
  *
@@ -63,14 +67,12 @@
  *
  * @return  If no runtime-constraint violation occurred, the \c sprintf_s function
  *          returns the number of characters written in the array, not counting
- *          the terminating null character. If an encoding error occurred,
- *          \c sprintf_s returns a negative value. If any other runtime-
- *          constraint violation in \c vsnprintf occurred, \c sprintf_s
- *          returns zero.
+ *          the terminating null character. If an error occurred,
+ *          \c sprintf_s returns a negative value. (deviating from C11)
  * @return  If the buffer dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
  *          empty string by placing a null character at dest[0], and the
- *          invalid parameter handler is invoked. Unlike _snprintf,
+ *          invalid parameter handler is invoked. Unlike snprintf_s,
  *          sprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
@@ -80,10 +82,16 @@
  *          ESNOSPC when return value exceeds dmax
  *          EINVAL  when \c fmt contains \c %n
  *
- * @retval -1  if an encoding error occurred or the return buffer size
- *             exceeds dmax.
- * @retval 0   on some other error in \c vsnprintf().
+ * @retval -1  if an encoding error or a runtime constraint violation occured.
  *
+ * @note The C11 standard was most likely wrong with changing the return value 0 on
+ *       errors. All other functions and existing C11 implementations do
+ *       return -1, so do we.
+ *       See the http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf revision
+ *       for their rationale.
+ *
+ * @see
+ *    vsprintf_s(), snprintf_s()
  */
 
 EXPORT int
@@ -97,28 +105,28 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
         invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         errno = ESLEMAX;
-        return 0;
+        return -1;
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: dest is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
-        return 0;
+        return -1;
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: fmt is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
-        return 0;
+        return -1;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax is 0",
                    NULL, ESZEROL);
         errno = ESZEROL;
-        return 0;
+        return -1;
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -127,7 +135,7 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
             invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
                                                NULL, EINVAL);
             errno = EINVAL;
-            return 0;
+            return -1;
         }
     }
 
@@ -166,3 +174,4 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     return ret;
 }
 
+#endif /* TEST_MSVCRT */

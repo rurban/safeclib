@@ -2,8 +2,9 @@
  * vsprintf_s_s.c
  *
  * August 2017, Reini Urban
+ * February 2018, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -35,15 +36,14 @@
 #include "safeclib_private.h"
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S)
+#else
+
 /**
  * @brief
- *    The \c vsprintf_s function composes a string with same test that
+ *    The \c vsprintf_s function composes a string with the same content that
  *    would be printed if format was used on \c printf. Instead of being
  *    printed, the content is stored in dest.
- *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by vsprintf_s in the
- *    array of \c dmax characters pointed to by dest are nulled when
- *    \c vsprintf_s returns.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -65,8 +65,9 @@
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
- * @return  On success the total number of characters written is returned.
- * @return  On failure a negative number is returned.
+ * @return  On success the total number of characters without the terminating
+ *          \0 written is returned.
+ * @return  On failure a negative number is returned  (deviating from C11).
  * @return  If the buffer dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
  *          empty string by placing a null character at dest[0], and the
@@ -80,9 +81,13 @@
  *          ESNOSPC when return value exceeds dmax
  *          EINVAL  when \c fmt contains \c %n
  *
- * @retval -1  if an encoding error occurred or the return buffer size
- *             exceeds dmax.
- * @retval 0   on some other error in \c vsnprintf().
+ * @retval -1  if an encoding error or a runtime constraint violation occured.
+ *
+ * @note The C11 standard was most likely wrong with changing the return value 0 on
+ *       errors. All other functions and existing C11 implementations do
+ *       return -1, so do we.
+ *       See the http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf revision
+ *       for their rationale.
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
@@ -99,28 +104,28 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
         invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         errno = ESLEMAX;
-        return 0;
+        return -1;
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dest is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
-        return 0;
+        return -1;
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: fmt is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
-        return 0;
+        return -1;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
                    NULL, ESZEROL);
         errno = ESZEROL;
-        return 0;
+        return -1;
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -129,7 +134,7 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
             invoke_safe_str_constraint_handler("vsprintf_s: illegal %n",
                                                NULL, EINVAL);
             errno = EINVAL;
-            return 0;
+            return -1;
         }
     }
 
@@ -144,7 +149,7 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
         handle_error(dest, dmax, "vsprintf_s: len exceeds dmax",
                      ESNOSPC);
         errno = ESNOSPC;
-        return -1;
+        return -1; /* different to the standard, but like all other implementations */
     }
 
     if (unlikely(ret < 0)) {
@@ -155,3 +160,5 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
 
     return ret;
 }
+
+#endif /* TEST_MSVCRT */

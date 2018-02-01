@@ -35,13 +35,8 @@
 bool use_msvcrt;
 void print_msvcrt(bool use_msvcrt) {
 #if defined(_WIN32) || defined(TEST_MSVCRT)
-    printf("Using %s, have_native=%s %s...\n",
+    printf("Using %s, %s...\n",
         use_msvcrt ? "msvcrt" : "safec",
-# if (HAVE_NATIVE)
-        "yes",
-# else
-        "no",
-# endif
 # ifdef DISABLE_DLLIMPORT
         "static"
 # else
@@ -54,7 +49,7 @@ void print_msvcrt(bool use_msvcrt) {
 }
 
 void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(TEST_MSVCRT)
     if ( is_msvcrt ) {
         if (*msvcrtp)
             printf("No, safec.dll overriding msvcrt.dll\n");

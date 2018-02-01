@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
+#ifdef HAVE_VSPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -34,7 +41,7 @@ int test_vsprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    /* not testable
+    /* not testable, and not implemented.
       rc = vtprintf_s(str1, LEN, "%s", NULL);
       ERR(0);
       ERRNO(ESNULLP);
@@ -42,22 +49,24 @@ int test_vsprintf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = vtprintf_s(str1, LEN, NULL, NULL);
-    ERR(0);
-    ERRNO(ESNULLP)
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERR(-1);
+    ERRNO_MSVC(ESNULLP, EINVAL);
     /* Unknown error: 400 */
     /* debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */
 
     rc = vtprintf_s(NULL, LEN, "%s", str2);
-    ERR(0);
-    ERRNO(ESNULLP);
+    ERR(-1);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
-    ERR(0);
-    ERRNO(ESZEROL)
+    ERR(-1);
+    ERRNO_MSVC(ESZEROL, EINVAL);
     /* Unknown error: 401 */
     /* debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */
@@ -65,14 +74,18 @@ int test_vsprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    ERR(0);
-    ERRNO(ESLEMAX)
+    if (!use_msvcrt) {
+        ERR(-1);
+    } else {
+        ERR(0);
+    }
+    ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = vtprintf_s(str1, LEN, "%s %n", str2);
-    ERR(0);
+    ERR(-1);
     ERRNO(EINVAL)
 
     rc = vtprintf_s(str1, LEN, "%s %%n", str2);
@@ -88,7 +101,7 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, 1, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -98,7 +111,7 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, 2, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -127,7 +140,7 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, 1, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -137,7 +150,7 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, 2, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -183,7 +196,7 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, 12, "%s", str2);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
 
 /*--------------------------------------------------*/
 
@@ -200,7 +213,7 @@ int test_vsprintf_s (void)
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
     ERR(-1);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -234,8 +247,10 @@ int test_vsprintf_s (void)
     /* everybody incorrectly accepts illegal % specifiers, only musl not. */
     rc = vtprintf_s(str1, LEN, "%y");
     /* TODO: dietlibc, uClibc, minilibc */
-#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) || defined(__MINGW32__)
+#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions */
     /* they print unknown formats verbatim */
+    NOERR();
+#elif defined(_WIN32) /* msvcrt sec_api doesn't detect illegal formats */
     NOERR();
 #else
     /* only musl correctly rejects illegal format specifiers */

@@ -244,7 +244,8 @@ t_memmove_s_SOURCES           = test_memmove_s.c $(SAFEC_TEST_COMMON) \
 	                        test_msvcrt.c test_expmem.h
 t_memset_s_SOURCES            = test_memset_s.c $(SAFEC_TEST_COMMON) \
 	                        test_msvcrt.c
-t_sprintf_s_SOURCES           = test_sprintf_s.c $(SAFEC_TEST_COMMON)
+t_sprintf_s_SOURCES           = test_sprintf_s.c $(SAFEC_TEST_COMMON) \
+	                        test_msvcrt.c
 t_strcat_s_SOURCES            = test_strcat_s.c $(SAFEC_TEST_COMMON) \
 	                        test_msvcrt.c
 t_strcpy_s_SOURCES            = test_strcpy_s.c $(SAFEC_TEST_COMMON) \
@@ -257,7 +258,8 @@ t_strncpy_s_SOURCES           = test_strncpy_s.c $(SAFEC_TEST_COMMON) \
 t_strnlen_s_SOURCES           = test_strnlen_s.c $(SAFEC_TEST_COMMON)
 t_strtok_s_SOURCES            = test_strtok_s.c $(SAFEC_TEST_COMMON) \
 	                        test_msvcrt.c
-t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON)
+t_vsprintf_s_SOURCES          = test_vsprintf_s.c $(SAFEC_TEST_COMMON) \
+	                        test_msvcrt.c
 t_sscanf_s_SOURCES            = test_sscanf_s.c $(SAFEC_TEST_COMMON)
 t_scanf_s_SOURCES             = test_scanf_s.c $(SAFEC_TEST_COMMON)
 t_fscanf_s_SOURCES            = test_fscanf_s.c $(SAFEC_TEST_COMMON)
