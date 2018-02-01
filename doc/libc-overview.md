@@ -21,7 +21,7 @@ From the following tested libc implementations:
 only the last 3 implement the secure C11 extensions:
 
 * Microsoft Windows
-* Android Bionic
+* Android Bionic w/ stlport
 * Embarcadero C++ libc
 
 # General quirks
@@ -49,12 +49,24 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 # C11 Annex K/safec caveats
 
-* snprintf, vsnprintf, snwprintf, vsnwprintf, tmpnam_s:
+* `snprintf_s`, `vsnprintf_s`, `snwprintf_s`, `vsnwprintf_s`, `tmpnam_s`:
 
   They are all considered unsafe. The 4 'n' truncating printf versions
   don't guarantee null-delimited destination buffers.
 
 * `tmpnam_s` and `tmpnam` are racy.
+
+* `sprintf_s` and `vsprintf_s` retval on errors.
+
+  They were revised by the author from Microsoft in
+  [n1141](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf)
+  to return `0` on most errors (only `-1` on encoding errors), to allow
+  the often used `count += sprintf(buf + count, format_string, args);`
+  when no encoding errors could occur, ignoring `retval < 0`
+  checks. Lateron Microsoft and all other implementors
+  (e.g. Embacadero, safeclib) revised this decision to be consistent,
+  to return `-1` on all errors, just the standard still contains the
+  **n1141** revision.
 
 ## Microsoft Windows/MINGW_HAS_SECURE_API
 
@@ -79,7 +91,10 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 * no `RSIZE_MAX`
 
 * `memmove_s` does not clear dest with ERANGE when count > dmax and EINVAL when
-   src is a NULL pointer.
+  src is a NULL pointer.
+
+* `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
+  (Wrong standard)
 
 ## safeclib
 
@@ -89,6 +104,9 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 * safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
+
+* `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
+  (Wrong standard)
 
 ## Android FORTIFY and _STLP_USE_SAFE_STRING_FUNCTIONS
 
@@ -128,7 +146,7 @@ in glibc with FORTIFY. Just a bit better than glibc.
 
 ## newlib
 
-* `vswscanf` is broken with a format string containing L"%%n"
+* `vswscanf` is broken with a format string containing `L"%%n"`
 
 * The following multibyte API's are missing, and can be defined like
   this:
@@ -142,13 +160,13 @@ in glibc with FORTIFY. Just a bit better than glibc.
 
 ## FreeBSD libc
 
-* `vswscanf` is broken with a format string containing L"%%n"
+* `vswscanf` is broken with a format string containing `L"%%n"`
 
-* `mbstowcs` is broken with (NULL, '\0')
+* `mbstowcs` is broken with `(NULL, '\0')`
 
 ## musl
 
-* `wmemcmp` returns not `-1,0,1` but the full ptr diff.
+* `wmemcmp` returns not `-1`, `0` or `1` but the full ptr diff.
 
 * `mbtowc` and `wctomb` accept and convert illegal 4 byte characters
   in the ASCII locale to surrogate pairs, as it would be unicode.
@@ -157,7 +175,9 @@ in glibc with FORTIFY. Just a bit better than glibc.
 ----
 
 It's now 10 years after the secure libc extensions were designed, C11
-adopted them, and still almost nobody implements them.  This library
+adopted them, and still almost nobody implements them. Only for
+compile-time known sizes the FORTIFY `_chk` extension secures against
+overflows, but not against dynamically allocated buffers. This library
 was written 2008 under the MIT license, thanks Cisco.
 
 Reini Urban 2017
