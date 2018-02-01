@@ -124,6 +124,13 @@ CC="cc -m32" ./configure && \
 ./configure --disable-wchar && \
     $make -s -j4 check-log || exit
 
+# apt install gcc-arm-linux-gnueabihf
+if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
+    ./configure --enable-unsafe --host=arm-linux-gnueabihf && \
+        $make -s -j4 || exit;
+    $make -s -j4 check-log # needs also qemu
+fi
+
 # different .deps format
 git clean -dxf src tests
 autoreconf    

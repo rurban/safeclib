@@ -4,8 +4,8 @@ case `uname` in
 Darwin) # darwin is preferred
 
     CC=gcc-mp-6 ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe \
-      --enable-norm-compat && \
-        gmake -s -j4 gcov ;;
+                            --enable-norm-compat && \
+        gmake -s -j4 all gcov ;;
 
 Linux)
 

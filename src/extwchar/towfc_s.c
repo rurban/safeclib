@@ -346,7 +346,7 @@ _towfc_single(wchar_t *restrict dest, const uint32_t src)
 
   single:
 #if SIZEOF_WCHAR_T > 2
-    dest[0] = src < 128 ? tolower(src) : (wchar_t)_towcase(src, 1);
+    dest[0] = src < 128 ? (wchar_t)tolower(src) : (wchar_t)_towcase(src, 1);
     return (uint32_t)dest[0] == src ? -(ESNOTFND) : 1;
 #else
     {
