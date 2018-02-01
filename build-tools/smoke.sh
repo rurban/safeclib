@@ -128,7 +128,16 @@ CC="cc -m32" ./configure && \
 if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
     ./configure --enable-unsafe --host=arm-linux-gnueabihf && \
         $make -s -j4 || exit;
-    $make -s -j4 check-log # needs also qemu
+    # $make -s -j4 check-log
+    if [ ! -e /usr/arm-linux-gnueabihf/lib/libsafec-3.3.so.3 ]; then
+        cd /usr/arm-linux-gnueabihf/lib/;
+        sudo ln -s $OLDPWD/src/.libs/libsafec-3.3.so.3;
+        cd -
+    fi
+    m -C tests tests;
+    for t in tests/.libs/t*_s; do
+        qemu-arm -L /usr/arm-linux-gnueabihf $t
+    done
 fi
 
 # different .deps format
