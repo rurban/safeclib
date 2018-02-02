@@ -24,6 +24,7 @@ int test_asctime_s (void)
 {
     errno_t rc;
     int errs = 0;
+    int have_wine = 1;
     int old;
     int ind;
     int len;
@@ -38,14 +39,9 @@ int test_asctime_s (void)
 #if defined(_WIN32) && (HAVE_NATIVE)
     use_msvcrt = true;
 #endif
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
-
+    print_msvcrt(use_msvcrt);
     rc = asctime_s(NULL, 0, tm);
-    if ( use_msvcrt && rc == ESNULLP ) {
-        printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    }
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP,EINVAL);
 
     rc = asctime_s(str1, LEN, NULL);
@@ -85,7 +81,17 @@ int test_asctime_s (void)
 #endif
     TM_RANGE(min,  0, 59);
     TM_RANGE(hour, 0, 23);
+
+    if (use_msvcrt) {
+        old = tm->tm_mday;
+        tm->tm_mday = 0;
+        rc = asctime_s(str1, LEN, tm);
+        if (rc == 0)
+            have_wine = 1;
+        tm->tm_mday = old;
+    }
     TM_RANGE(mday, 1, 31);
+
     TM_RANGE(mon,  0, 11);
     if (!use_msvcrt) {
     TM_RANGE(year, 0, 8099);

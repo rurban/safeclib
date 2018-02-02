@@ -145,7 +145,7 @@ if test "x$enable_debug" = "xtrue" ; then
         else
 	   DEBUG_CFLAGS="-g -O2"
         fi
-        if test "x`uname -o`" = "xDarwin" ; then
+        if test "x`uname -o`" = "xDarwin" -a x$cross_compiling = xno; then
             enable_shared=no
             enable_shared_with_static_runtimes=no
         fi
@@ -577,28 +577,32 @@ AC_MSG_NOTICE([Check library functions])
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
-dnl the last 4 deviate in mingw from c11
+dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
 AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
                 vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
-                bcmp secure_getenv memset_s timingsafe_memcmp timingsafe_bcmp \
-                asctime_r ctime_r gmtime_r localtime_r memccpy memcpy_s \
-                asctime_s ctime_s fopen_s freopen_s getenv_s strncpy_s strncat_s \
-                wcsncpy_s wcsncat_s wmemmove_s memmove_s wmemcpy_s gets_s \
-                tmpnam_s wcsrtombs_s wcrtombs_s wcstomb_s wcscat_s swscanf_s \
-                strcat_s strcpy_s sprintf_s vsprintf_s sscanf_s strerror_s mbstowcs_s \
-                mbsrtowcs_s wcscpy_s qsort_s tmpfile_s fwscanf_s vfwscanf_s \
-                vsnprintf_s vsnwprintf_s strtok_s wcstok_s ])
+                towctrans bcmp secure_getenv timingsafe_memcmp timingsafe_bcmp \
+                asctime_r ctime_r gmtime_r localtime_r memccpy \
+                memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
+                sprintf_s strcat_s strcpy_s strncat_s strncpy_s \
+                strnlen_s strtok_s strerror_s vsprintf_s tmpnam_s snprintf_s \
+                vsnprintf_s snwprintf_s \
+                strspn_s strset_s strchr_s strrchr_s strstr_s strzero_s strnset_s \
+                mbsrtowcs_s mbstowcs_s wcsrtombs_s wcstombs_s \
+                wcrtomb_s wctomb_s wcsnlen_s wcscpy_s wcsncpy_s wcscat_s wcsncat_s \
+                wmemcpy_s wmemmove_s wcstok_s vswprintf_s swprintf_s vfwprintf_s \
+                vwprintf_s wprintf_s fwprintf_s swscanf_s vswscanf_s wscanf_s \
+                vfwscanf_s fwscanf_s vwscanf_s vsnwprintf_s wcsstr_s wmemcmp_s \
+                wcscmp_s wcsncmp_s wcsicmp_s wcsset_s wcsnset_s wcscoll_s wcslwr_s \
+                wcsupr_s towfc_s wcsfc_s sscanf_s fscanf_s scanf_s vfscanf_s \
+                vsscanf_s vscanf_s printf_s fprintf_s tmpfile_s vfprintf_s vprintf_s \
+                fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
+                asctime_s ctime_s getenv_s ])
 AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
-dnl AM_CONDITIONAL([HAVE_ASCTIME_S], [test "x$ac_cv_func_asctime_s" = "xyes"])
-dnl AM_CONDITIONAL([HAVE_CTIME_S],   [test "x$ac_cv_func_ctime_s" = "xyes"])
-dnl AM_CONDITIONAL([HAVE_GETENV_S],  [test "x$ac_cv_func_getenv_s" = "xyes"])
-dnl AM_CONDITIONAL([HAVE_FOPEN_S],   [test "x$ac_cv_func_fopen_s" = "xyes"])
-dnl AM_CONDITIONAL([HAVE_FREOPEN_S], [test "x$ac_cv_func_freopen_s" = "xyes"])
 AM_CONDITIONAL([HAVE_TIMINGSAFE_BCMP],
    [test "x$ac_cv_func_timingsafe_memcmp" = "xyes" -a "x$ac_cv_func_timingsafe_bcmp" = "xyes" ])
 

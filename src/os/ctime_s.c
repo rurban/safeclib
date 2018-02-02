@@ -36,6 +36,9 @@
 #include <time.h>
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_CTIME_S)
+#else
+
 /*
 #if defined(HAVE_CTIME_R)
 char *ctime_r(const time_t *, char *);
@@ -182,3 +185,5 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
 
     return EOK;
 }
+
+#endif /* TEST_MSVCRT */

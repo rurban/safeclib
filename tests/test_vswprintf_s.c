@@ -11,6 +11,13 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#ifdef HAVE_VSWPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   str1[LEN];
@@ -38,31 +45,35 @@ int test_vswprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    /* not testable
-      rc = vtwprintf_s(str1, LEN, L"%ls", NULL);
-      ERR(0);
-    ERRNO(ESNULLP)
-    */
+    print_msvcrt(use_msvcrt);
 
     rc = vtwprintf_s(NULL, LEN, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
+    /* not testable */
+    if (use_msvcrt) {
+        rc = vtwprintf_s(str1, LEN, L"%ls", NULL);
+        ERR(0);
+        ERRNO_MSVC(ESNULLP, EINVAL);
+    }
+    
     rc = vtwprintf_s(str1, LEN, NULL, NULL);
     ERR(0);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, 0, L"%ls", str2);
     ERR(0);
-    ERRNO(ESZEROL)
+    ERRNO_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
     ERR(0);
-    ERRNO(ESLEMAX);
+    ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
@@ -103,7 +114,7 @@ int test_vswprintf_s (void)
 
     rc = vtwprintf_s(str1, 1, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -113,7 +124,7 @@ int test_vswprintf_s (void)
 
     rc = vtwprintf_s(str1, 2, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -159,14 +170,14 @@ int test_vswprintf_s (void)
 
     rc = vtwprintf_s(str1, 12, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
     wcscpy(str1, L"1234");
 
     rc = vtwprintf_s(str1, 5, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -244,11 +255,7 @@ int test_vswprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_vswprintf_s());
 }
-#endif

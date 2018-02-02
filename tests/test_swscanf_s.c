@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
+#ifdef HAVE_SWSCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   wstr1[LEN];
@@ -30,20 +37,24 @@ int test_swscanf_s (void)
 #ifdef __MINGW32__
     wcscpy(wstr1, L" ");
 #endif
+    print_msvcrt(use_msvcrt);
     rc = swscanf_s(wstr1, NULL, NULL);
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERREOF_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     wstr2[0] = '\0';
     rc = swscanf_s(NULL, L"%ls", wstr2);
-    ERREOF(ESNULLP);
+    ERREOF_MSVC(ESNULLP, EINVAL);
+    WEXPSTR(wstr2, L"");
 
 /*--------------------------------------------------*/
 
     wcscpy(wstr1, L"      24");
     rc = swscanf_s(wstr1, L"%ls %n", wstr2, LEN, &ind);
     ERREOF(EINVAL);
+    WEXPSTR(wstr2, L"");
 
     rc = swscanf_s(wstr1, L"%%n");
 #ifdef BSD_OR_NEWLIB_LIKE
@@ -64,10 +75,12 @@ int test_swscanf_s (void)
 #endif
     ERR(1);
     ERRNO(0);
+    WEXPSTR(wstr2, L"24");
 
     rc = swscanf_s(wstr1, L"%ls %%n", wstr2, 6);
     ERR(1);
     ERRNO(0);
+    WEXPSTR(wstr2, L"24");
 
     rc = swscanf_s(wstr1, L"%s %%n", str3, 6);
     ERR(1);
@@ -169,11 +182,7 @@ int test_swscanf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_swscanf_s());
 }
-#endif

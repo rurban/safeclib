@@ -171,7 +171,6 @@ autoreconf
           b=$(basename $t); wine $t | tee tests/$b.log; done
         rm *.dll
     fi
-    $make clean
 git clean -dxf src tests
 autoreconf
 ./configure --enable-unsafe --host=i686-w64-mingw32 && \
@@ -179,9 +178,18 @@ autoreconf
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
         for t in tests/.libs/t_*.exe; do
-          b=$(basename $t); wine $t | tee tests/$b.log; done
+            b=$(basename $t); wine $t | tee tests/$b.log;
+        done
         rm *.dll
     fi
+    $make clean
+CFLAGS="-g -DTEST_MSVCRT" \
+    ./configure --enable-unsafe --enable-debug --host=i686-w64-mingw32 && \
+    $make -s -j4  && $make -s -j4 -C tests tests && \
+    cp src/.libs/*.dll tests/.libs/ && \
+    for t in tests/.libs/t_*.exe; do
+        b=$(basename $t); wine $t | tee tests/$b.log;
+    done
     $make clean
 git clean -dxf src tests
 autoreconf    

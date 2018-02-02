@@ -36,7 +36,8 @@
 #include <stdlib.h>
 #endif
 
-/* not in mingw sec_api */
+#if defined(TEST_MSVCRT) && defined(HAVE_BSEARCH_S)
+#else
 
 /**
  * @brief
@@ -141,3 +142,5 @@ bsearch_s(const void *key, const void *base,
     }
     return NULL;
 }
+
+#endif /* TEST_MSVCRT */

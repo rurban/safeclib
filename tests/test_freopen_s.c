@@ -27,20 +27,10 @@ int test_freopen_s (void)
     FILE *file = stdin;
 
 /*--------------------------------------------------*/
-    /* shared */
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
+    print_msvcrt(use_msvcrt);
 
     rc = freopen_s(NULL, TMP, "r", file);
-    if ( rc == ESNULLP ) {
-        if (use_msvcrt)
-            printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    } else {
-        if (!use_msvcrt)
-            printf("msvcrt.dll overriding safec.dll\n");
-        use_msvcrt = true;
-    }
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
     rc = freopen_s(&tmp, TMP, NULL, file);
@@ -93,11 +83,7 @@ int test_freopen_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_freopen_s());
 }
-#endif

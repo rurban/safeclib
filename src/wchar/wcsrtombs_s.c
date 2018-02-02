@@ -35,7 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef HAVE_WCHAR_H
+#if (defined(TEST_MSVCRT) && defined(HAVE_WCSTOK_S)) || !defined(HAVE_WCHAR_H)
+#else
 
 /**
  * @brief
@@ -104,6 +105,8 @@
  *          not greater than RSIZE_MAX_STR, then \c wcsrtombs_s nulls \c dest.
  *          Then the number of bytes excluding terminating zero that were,
  *          or would be written to \c dest, is stored in \c *retval.
+ * @note    Under the Windows sec_api the *retval result is +1.
+ *
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retval, ps, src or *src are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
@@ -139,7 +142,8 @@ wcsrtombs_s (size_t *restrict retval,
         return RCNEGATE(ESNULLP);
     }
 
-    /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine. */
+    /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine. 
+       wine returns 0 early. */
     if (unlikely((dmax == 0) && dest)) {
         invoke_safe_str_constraint_handler("wcsrtombs_s: dmax is 0",
                    NULL, ESZEROL);
@@ -196,4 +200,4 @@ wcsrtombs_s (size_t *restrict retval,
     return RCNEGATE(rc);
 }
 
-#endif /* HAVE_WCHAR_H */
+#endif /* HAVE_WCHAR_H or !TEST_MSVCRT */

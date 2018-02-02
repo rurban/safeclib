@@ -24,6 +24,7 @@ int test_ctime_s (void)
 {
     errno_t rc;
     int errs = 0;
+    int have_wine = 0;
     time_t timer;
 
     timer = time(NULL);
@@ -33,21 +34,9 @@ int test_ctime_s (void)
 #if defined(_WIN32) && (HAVE_NATIVE)
     use_msvcrt = true;
 #endif
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
-
-    /* probe for msvcrt or our being active */
+    print_msvcrt(use_msvcrt);
     rc = ctime_s(NULL, 0, &timer);
-    if ( rc == ESNULLP ) {
-        if (use_msvcrt)
-            printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    } else {
-        if (!use_msvcrt)
-            printf("msvcrt.dll overriding safec.dll\n");
-        use_msvcrt = true;
-    }
-
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP,EINVAL);
 
     rc = ctime_s(str1, LEN, NULL);
@@ -65,7 +54,11 @@ int test_ctime_s (void)
 
     timer = 0;
     rc = ctime_s(str1, LEN, &timer);
-    ERR(EOK);
+    if (use_msvcrt && rc == EINVAL)
+        have_wine = 1;
+    else {
+        ERR(EOK);
+    }
 
     timer = -1;
     rc = ctime_s(str1, LEN, &timer);
@@ -73,6 +66,10 @@ int test_ctime_s (void)
 
     {
         struct tm *tm = gmtime(&timer);
+        if (!tm) {
+            printf("gmtime() failed\n");
+            return errs+1;
+        }
         memset(tm, 0, sizeof(struct tm));
 #if SIZEOF_TIME_T < 8
         /* year 10000, ie 313392063599L would overflow on 32bit */

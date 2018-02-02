@@ -35,6 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
+#if !(defined(TEST_MSVCRT) && defined(HAVE_WSCANF_S))
+
 /* TODO:
 any of the arguments corresponding to %s is a null pointer.
 */
@@ -128,3 +130,5 @@ wscanf_s(const wchar_t *restrict fmt, ...)
 
     return ret;
 }
+
+#endif /* TEST_MSVCRT */

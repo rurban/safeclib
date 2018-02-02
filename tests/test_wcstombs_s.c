@@ -9,6 +9,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#ifdef HAVE_WCSTOMBS_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
@@ -25,37 +32,46 @@ static wchar_t   src[LEN];
 int test_wcstombs_s (void)
 {
     errno_t rc;
-    size_t ind;
+    size_t ind = 0;
     const wchar_t *cs;
     const char* lang;
     const char* lc_cat;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
     cs = L"a";
+    print_msvcrt(use_msvcrt);
     rc = wcstombs_s(NULL, NULL, LEN, cs, 0);
-    ERR(ESNULLP);
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     rc = wcstombs_s(&ind, dest, 0, cs, 0);
-    ERR(ESZEROL);
+    if (use_msvcrt && rc == 0 && ind == 0) {
+        printf("Using wine\n");
+        have_wine = 1;
+    }
+    ERR_MSVC(ESZEROL, have_wine?0:EINVAL);
 
     rc = wcstombs_s(&ind, NULL, 0, cs, 0);
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC,ERANGE);
 
     rc = wcstombs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
     ERR(ESLEMAX);
 
     cs = L"abcdef";
     rc = wcstombs_s(&ind, (char*)cs, LEN, cs, 3);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
 
-    dest[0] = 'a';
+    dest[0] = 'a'; dest[1] = '\0';
     rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 1);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
+    EXPSTR(dest, "a");
+    /* no CHECK_SLACK(dest, LEN); */
 
     rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
     CHECK_SLACK(dest, LEN);
 
 /*--------------------------------------------------*/

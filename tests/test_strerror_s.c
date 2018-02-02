@@ -9,6 +9,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#ifdef HAVE_STRERROR_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #ifndef ELAST
 #define ELAST 100
 #endif
@@ -25,24 +32,26 @@ int test_strerror_s (void)
     int errs = 0;
 
 /*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
     rc = strerror_s(NULL, LEN, 0);
-    ERR(ESNULLP)
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = strerror_s(str1, 0, 0);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = strerror_s(str1, (RSIZE_MAX_STR+1), 0);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = strerror_s(str1, 3, 1);
-    ERR(ESLEMIN);
+    ERR_MSVC(ESLEMIN, 0);
 
 /*--------------------------------------------------*/
 
@@ -102,11 +111,7 @@ int test_strerror_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_strerror_s());
 }
-#endif

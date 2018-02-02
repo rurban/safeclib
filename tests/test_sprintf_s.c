@@ -31,9 +31,11 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
+    str2[0] = '\0';
     print_msvcrt(use_msvcrt);
 
-    rc = sprintf_s(NULL, LEN, "%s", NULL);
+    /* older windows sprintf_s segv here */
+    rc = sprintf_s(NULL, LEN, "%s", str2);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERR(-1);
     ERRNO_MSVC(ESNULLP,EINVAL);
@@ -61,7 +63,6 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    str2[0] = '\0';
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
     ERR(-1);
     ERRNO(EINVAL);

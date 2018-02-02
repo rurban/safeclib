@@ -3,6 +3,8 @@
  * File 'wchar/wcsncat_s.c'
  * Lines executed:93.90% of 82
  *
+ * wine tested with wine-2.0.4
+ * msvcrt.dll 7.0.9200.16384 (win8 64bit default)
  *------------------------------------------------------------------
  */
 
@@ -26,6 +28,7 @@ int test_wcsncat_s (void)
     errno_t rc;
     size_t len;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
@@ -44,14 +47,20 @@ int test_wcsncat_s (void)
     wcscpy(str2, L"b");
 
     rc = wcsncat_s(str1, 1, str2, 0);
-    ERR_MSVC(ESZEROL, EINVAL);
-    WEXPSTR(str1, L"");
+    if (use_msvcrt && rc == 0)
+        have_wine = 1;
+    ERR_MSVC(ESZEROL, have_wine?0:EINVAL);
+    WEXPSTR(str1, have_wine ? L"a" : L"");
 
     rc = wcsncat_s(NULL, 1, str2, 0);
     ERR_MSVC(ESNULLP, EINVAL);
 
     rc = wcsncat_s(NULL, 0, str2, 0);
-    ERR(EOK);
+    if (have_wine) {
+        ERR(EINVAL);
+    } else {
+        ERR(EOK);
+    }
 
     wcscpy(str1, L"a");
     rc = wcsncat_s(str1, 0, str2, 0);
@@ -91,7 +100,8 @@ int test_wcsncat_s (void)
     wcscpy(str1, L"a");
     rc = wcsncat_s(str1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL);
-    WCHECK_SLACK(str1, LEN);
+    if (!have_wine)
+        WCHECK_SLACK(str1, LEN);
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaa");
@@ -99,8 +109,10 @@ int test_wcsncat_s (void)
 
     rc = wcsncat_s(str1, 1, str2, LEN);
     ERR_MSVC(ESUNTERM, EINVAL);
-    WEXPNULL(str1)
-    WCHECK_SLACK(str1, 1);
+    if (!have_wine) {
+        WEXPNULL(str1);
+        WCHECK_SLACK(str1, 1);
+    }
 
 /*--------------------------------------------------*/
 
@@ -109,9 +121,11 @@ int test_wcsncat_s (void)
 
     rc = wcsncat_s(str1, 2, str2, LEN);
     ERR_MSVC(ESUNTERM, EINVAL);
-    WEXPNULL(str1)
-    if (!use_msvcrt)
-        WCHECK_SLACK(str1, 2);
+    if (!have_wine) {
+        WEXPNULL(str1);
+        if (!use_msvcrt)
+            WCHECK_SLACK(str1, 2);
+    }
 
 /*--------------------------------------------------*/
 
@@ -129,18 +143,22 @@ int test_wcsncat_s (void)
     wcscpy(str1, L"abcd");
 
     rc = wcsncat_s(&str1[0], 8, &str1[3], 4);
-    ERR_MSVC(ESOVRLP, ERANGE);
-    WEXPNULL(str1)
-    if (!use_msvcrt)
-        WCHECK_SLACK(str1, 8);
+    if (!have_wine) {
+        ERR_MSVC(ESOVRLP, ERANGE);
+        WEXPNULL(str1);
+        if (!use_msvcrt)
+            WCHECK_SLACK(str1, 8);
+    }
 
     wcscpy(str1, L"abcd");
 
     rc = wcsncat_s(&str1[0], 4, &str1[3], 4);
     ERR_MSVC(ESOVRLP, EINVAL);
-    WEXPNULL(str1)
-    if (!use_msvcrt)
-        WCHECK_SLACK(str1, 4);
+    if (!have_wine) {
+        WEXPNULL(str1);
+        if (!use_msvcrt)
+            WCHECK_SLACK(str1, 4);
+    }
 
 /*--------------------------------------------------*/
 
@@ -148,9 +166,11 @@ int test_wcsncat_s (void)
 
     rc = wcsncat_s(&str1[0], 3, &str1[3], 4);
     ERR_MSVC(ESUNTERM, EINVAL);
-    WEXPNULL(str1)
-    if (!use_msvcrt)
-        WCHECK_SLACK(str1, 3);
+    if (!have_wine) {
+        WEXPNULL(str1);
+        if (!use_msvcrt)
+            WCHECK_SLACK(str1, 3);
+    }
 
 /*--------------------------------------------------*/
 
@@ -158,9 +178,11 @@ int test_wcsncat_s (void)
 
     rc = wcsncat_s(&str1[3], 5, &str1[0], 4);
     ERR_MSVC(ESUNTERM, EINVAL);
-    WEXPNULL(&str1[3])
-    if (!use_msvcrt)
-        WCHECK_SLACK(&str1[3], 5);
+    if (!have_wine) {
+        WEXPNULL(&str1[3]);
+        if (!use_msvcrt)
+            WCHECK_SLACK(&str1[3], 5);
+    }
 
 /*--------------------------------------------------*/
 

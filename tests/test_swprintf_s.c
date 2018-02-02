@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
+#ifdef HAVE_SWPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   str1[LEN];
@@ -24,28 +31,30 @@ int test_swprintf_s (void)
     int errs = 0;
 
 /*--------------------------------------------------*/
-
-    rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
-    ERR(0);
-    ERRNO(ESLEMAX);
-
-/*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
     rc = swprintf_s(str1, LEN, NULL, NULL);
     ERR(0);
-    ERRNO(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERRNO_MSVC(ESNULLP, EINVAL);
+
+/*--------------------------------------------------*/
+
+    rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
+    ERR(0);
+    ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(NULL, 0, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNULLP);
+    ERRNO_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = swprintf_s(str1, 0, L"%ls", str2);
     ERR(0);
-    ERRNO(ESZEROL)
+    ERRNO_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
@@ -94,7 +103,7 @@ int test_swprintf_s (void)
 
     rc = swprintf_s(str1, 1, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -104,7 +113,7 @@ int test_swprintf_s (void)
 
     rc = swprintf_s(str1, 2, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -150,7 +159,7 @@ int test_swprintf_s (void)
 
     rc = swprintf_s(str1, 12, L"%ls", str2);
     ERR(0);
-    ERRNO(ESNOSPC)
+    ERRNO_MSVC(ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -172,7 +181,7 @@ int test_swprintf_s (void)
         /* darwin throws errno 84 EOVERFLOW */
         WEXPSTR(str1, L"8901234");
     } else {
-        ERRNO(ESNOSPC);
+        ERRNO_MSVC(ESNOSPC, ERANGE);
         WEXPNULL(str1);
     }
 
@@ -207,11 +216,7 @@ int test_swprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_swprintf_s());
 }
-#endif

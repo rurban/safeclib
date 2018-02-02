@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
+#ifdef HAVE_VFPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define TMP   "tmpvfp"
 #define LEN   ( 128 )
 
@@ -36,11 +43,13 @@ int test_vfprintf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = vtfprintf_s(out, NULL);
-    NEGERR(ESNULLP)
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    NEGERR_MSVC(ESNULLP, EOF);
 
     rc = vtfprintf_s(NULL, "");
-    NEGERR(ESNULLP)
+    NEGERR_MSVC(ESNULLP, EOF);
 
     rc = vtfprintf_s(out, "", NULL);
     NEGERR(EOK)
@@ -54,7 +63,7 @@ int test_vfprintf_s (void)
 
     str1[0] = '\0';
     rc = vtfprintf_s(out, "%s%n\n", str1, &ind);
-    NEGERR(EINVAL)
+    NEGERR_MSVC(EINVAL, EOF);
 
 /*--------------------------------------------------*/
 
@@ -127,11 +136,7 @@ int test_vfprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_vfprintf_s());
 }
-#endif

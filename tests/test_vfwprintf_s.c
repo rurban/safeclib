@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
+#ifdef HAVE_VFWPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define TMP   "tmpvfwp"
 #define LEN   ( 128 )
 
@@ -36,12 +43,14 @@ int test_vfwprintf_s (void)
     out = fopen(TMP, "w");
 
 /*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
     rc = vtwprintf_s(out, NULL);
-    NEGERR(ESNULLP)
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    NEGERR_MSVC(ESNULLP, EOF);
 
     rc = vtwprintf_s(NULL, L"");
-    NEGERR(ESNULLP)
+    NEGERR_MSVC(ESNULLP, EOF);
 
     rc = vtwprintf_s(out, L"");
     NEGERR(EOK)
@@ -86,11 +95,7 @@ int test_vfwprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_vfwprintf_s());
 }
-#endif

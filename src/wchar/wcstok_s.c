@@ -37,7 +37,8 @@
 #include "safeclib_private.h"
 #endif
 
-#if defined(_WIN32) && defined(HAVE_WCSTOK_S)
+/* conflicting API, sec_api has no restrict */
+#if (defined(TEST_MSVCRT) || defined(MINGW_HAS_SECURE_API)) && defined(HAVE_WCSTOK_S)
 #else
 
 /**
@@ -341,4 +342,4 @@ wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
     return (ptoken);
 }
 
-#endif
+#endif /* TEST_MSVCRT */

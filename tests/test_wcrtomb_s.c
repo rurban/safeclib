@@ -9,6 +9,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#ifdef HAVE_WCRTOMB_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
@@ -33,29 +40,38 @@ int test_wcrtomb_s (void)
     const char* lc_cat;
     mbstate_t ps;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
     memset(dest, '-', LEN);
     wc = L'a';
+    print_msvcrt(use_msvcrt);
     rc = wcrtomb_s(NULL, NULL, LEN, wc, &ps);
-    ERR(ESNULLP);
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
+    CLRPS;
+
+    ind = 0;
+    rc = wcrtomb_s(&ind, dest, 0, wc, &ps);
+    if (use_msvcrt && rc == 0 && ind == 0) {
+        printf("wine: Unimplemented function msvcrt.dll.wcrtomb_s\n");
+        have_wine = 1;
+        return errs;
+    }
+    ERR_MSVC(ESZEROL, have_wine?EINVAL:0);
     CLRPS;
 
     rc = wcrtomb_s(&ind, NULL, LEN, wc, NULL);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     rc = wcrtomb_s(&ind, dest, LEN, L'\0', &ps);
     ERR(EOK);
     INDCMP(!= 1);
     CLRPS;
 
-    rc = wcrtomb_s(&ind, dest, 0, wc, &ps);
-    ERR(ESZEROL);
-    CLRPS;
-
     rc = wcrtomb_s(&ind, dest, RSIZE_MAX_STR+1, wc, &ps);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX,0);
     CLRPS;
 
 /*--------------------------------------------------*/
@@ -64,7 +80,9 @@ int test_wcrtomb_s (void)
     rc = wcrtomb_s(&ind, dest, LEN, L'\a', &ps);
     ERR(EOK);
     INDCMP(!= 1);
-    CHECK_SLACK(&dest[1], LEN-1);
+    if (!use_msvcrt) {
+        CHECK_SLACK(&dest[1], LEN-1);
+    }
     CLRPS;
 
     SETLOCALE_C;
@@ -82,11 +100,13 @@ int test_wcrtomb_s (void)
                __FUNCTION__, __LINE__, (int)ind, rc, dest[0]);
         errs++;
       }
-      CHECK_SLACK(&dest[1], LEN-1);
-      if (dest[1] != L'\0') {
-        printf("%s %u  Error  ind=%d rc=%d %d\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
-        errs++;
+      if (!use_msvcrt) {
+          CHECK_SLACK(&dest[1], LEN-1);
+          if (dest[1] != L'\0') {
+              printf("%s %u  Error  ind=%d rc=%d %d\n",
+                     __FUNCTION__, __LINE__, (int)ind, rc, dest[1]);
+              errs++;
+          }
       }
     } else {
       ERR(EILSEQ); /* or illegal */
@@ -103,7 +123,9 @@ int test_wcrtomb_s (void)
     rc = wcrtomb_s(&ind, dest, LEN, L'\x78', &ps);
     ERR(EOK);
     INDCMP(!= 1);
-    CHECK_SLACK(&dest[1], LEN-1);
+    if (!use_msvcrt) {
+        CHECK_SLACK(&dest[1], LEN-1);
+    }
     CLRPS;
 
     /* surrogates */
@@ -115,7 +137,9 @@ int test_wcrtomb_s (void)
     } else {
       ERR(EILSEQ);
       INDCMP(!= -1);
-      CHECK_SLACK(dest, LEN);
+      if (!use_msvcrt) {
+          CHECK_SLACK(dest, LEN);
+      }
     }
     CLRPS;
 
@@ -125,12 +149,12 @@ int test_wcrtomb_s (void)
 
     /* overlarge utf-8 sequence */
     rc = wcrtomb_s(&ind, dest, 2, L'\x2219', &ps);
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC, ERANGE);
     CHECK_SLACK(dest, 2);
     CLRPS;
 
     rc = wcrtomb_s(&ind, dest, 3, L'\x2219', &ps);
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC, ERANGE);
     CHECK_SLACK(dest, 3);
     CLRPS;
 
@@ -176,9 +200,6 @@ int test_wcrtomb_s (void)
 
 #endif
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
 #ifdef HAVE_WCHAR_H
@@ -187,4 +208,3 @@ int main (void)
     return 0;
 #endif
 }
-#endif

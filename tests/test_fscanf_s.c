@@ -12,6 +12,13 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+#ifdef HAVE_FSCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -40,18 +47,20 @@ int test_fscanf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = fscanf_s(NULL, "");
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 
     stuff_stream("1");
     rc = fscanf_s(stream, NULL);
-    ERREOF(ESNULLP);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 
     /* TODO: should error */
 #if 0
     stuff_stream("1");
     rc = fscanf_s(stream, "%s", NULL);
-    ERREOF(ESNULLP);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 #endif
 
 /*--------------------------------------------------*/
@@ -175,11 +184,7 @@ int test_fscanf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_fscanf_s());
 }
-#endif

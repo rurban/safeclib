@@ -9,6 +9,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#ifdef HAVE_WCTOMB_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
@@ -34,8 +41,10 @@ int test_wctomb_s (void)
 /*--------------------------------------------------*/
 
     src = L'a';
+    print_msvcrt(use_msvcrt);
     rc = wctomb_s(NULL, NULL, LEN, src);
-    ERR(ESNULLP);
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, 0);
 
     rc = wctomb_s(&ind, dest, LEN, L'\0');
     ERR(EOK);
@@ -43,10 +52,10 @@ int test_wctomb_s (void)
     CHECK_SLACK(&dest[1], LEN-1);
 
     rc = wctomb_s(&ind, dest, 0, src);
-    ERR(ESZEROL);
+    ERR_MSVC(ESZEROL, ERANGE);
 
     rc = wctomb_s(&ind, dest, RSIZE_MAX_STR+1, src);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
@@ -106,10 +115,11 @@ int test_wctomb_s (void)
 
     /* overlarge utf-8 sequence */
     rc = wctomb_s(&ind, dest, 2, L'\x2219');
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC, EILSEQ);
     CHECK_SLACK(&dest[0], 2);
+
     rc = wctomb_s(&ind, dest, 3, L'\x2219');
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC, EILSEQ);
     CHECK_SLACK(&dest[0], 3);
 
     rc = wctomb_s(&ind, dest, 4, L'\x2219');

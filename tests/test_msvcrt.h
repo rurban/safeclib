@@ -62,12 +62,18 @@ void _errno_msvc(const int n, const int winerr, int *errp,
 
 #define ERR_MSVC(n, winerr)   \
     _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
+#define NEGERR_MSVC(n, winerr)   \
+    _err_msvc((int)rc, -(n), (winerr==EOF)?EOF:-(winerr), &errs, __FUNCTION__, __LINE__)
 
 #ifdef __KERNEL__
 #define ERRNO_MSVC(n, winerr)
+#define ERREOF_MSVC(n, winerr)
 #else
 #define ERRNO_MSVC(n, winerr) \
     _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
+#define ERREOF_MSVC(n, winerr) \
+    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__); \
+    ERR(EOF)
 #endif
 
 #ifdef USE_MSVCRT

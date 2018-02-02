@@ -96,6 +96,9 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 * `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
   (Wrong standard)
 
+* With `wcsrtombs` (used by `wcsrtomb_s`) the `*retval` result includes the terminating
+  zero, i.e. the result is `+1` from the spec.
+
 ## safeclib
 
 * safeclib does not check optional NULL parameters to the vararg
@@ -171,6 +174,17 @@ in glibc with FORTIFY. Just a bit better than glibc.
 * `mbtowc` and `wctomb` accept and convert illegal 4 byte characters
   in the ASCII locale to surrogate pairs, as it would be unicode.
   e.g. it converts `\xa0` to `\xdfa0`.
+
+## wine
+
+As of wine-2.0.4 its libc has several more errors than the msvcrt sec_api:
+
+* `asctime_s` with `tm->mday=0` returns not `EINVAL` but `0`.
+* `wcsncat_s(dest, dmax, src, 0)` returns not `EINVAL` but `0`.
+* `wcsncat_s(NULL, 0, src, 0);` returns not `0` but `EINVAL`.
+* more `wcsncat_s`: ESUNTERM and ESOVRLP do not clear dest
+* `wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps)`  returns not `EINVAL` but `0`,
+  with `ind` kept at `0`.
 
 ----
 

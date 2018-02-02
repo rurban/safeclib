@@ -35,6 +35,9 @@
 #include "safeclib_private.h"
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S)
+#else
+
 /**
  * @brief
  *    The fprintf_s function composes a string via the format string
@@ -108,3 +111,5 @@ fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
 
     return ret;
 }
+
+#endif /* TEST_MSVCRT */

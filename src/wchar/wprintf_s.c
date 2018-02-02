@@ -35,6 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
+#if !(defined(TEST_MSVCRT) && defined(HAVE_VWPRINTF_S))
+
 /* TODO:
 Any of the arguments corresponding to %s is a null pointer
 */
@@ -121,3 +123,5 @@ wprintf_s(const wchar_t *restrict fmt, ...)
 
     return ret;
 }
+
+#endif /* TEST_MSVCRT */

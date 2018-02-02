@@ -35,13 +35,13 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef HAVE_WCHAR_H
+#if (defined(TEST_MSVCRT) && defined(HAVE_WCSTOMBS_S)) || !defined(HAVE_WCHAR_H)
+#else
 
 #if defined(__CYGWIN__) && defined(__x86_64)
 #define wcstombs(dest, src, len) \
     wcsrtombs((dest), (const wchar_t ** restrict)&(src), (len), &st)
 #endif
-
 
 /**
  * @brief
@@ -145,7 +145,7 @@ wcstombs_s (size_t *restrict retval,
         return RCNEGATE(ESLEMAX);
     }
 
-    if (unlikely(dest == (char*)src)) {
+    if (unlikely(dest == (char*)src)) { /* not clearing dest */
         return RCNEGATE(ESOVRLP);
     }
 
@@ -186,4 +186,4 @@ wcstombs_s (size_t *restrict retval,
     return RCNEGATE(rc);
 }
 
-#endif /* HAVE_WCHAR_H */
+#endif /* HAVE_WCHAR_H or !TEST_MSVCRT */

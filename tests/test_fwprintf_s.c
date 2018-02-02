@@ -63,7 +63,7 @@ int test_fwprintf_s (void)
     strcpy(str, "34");
 
     rc = fwprintf_s(out, L"%ls%s", wstr, str);
-    ERRWCHAR(4)
+    ERRWCHAR(4); /* returns -1 under wine */
 
 /*--------------------------------------------------*/
     fclose(out);

@@ -10,6 +10,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
+#ifdef HAVE_MBSTOWCS_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   dest[LEN];
@@ -34,11 +41,13 @@ int test_mbstowcs_s (void)
 /*--------------------------------------------------*/
 
     cs = "a";
+    print_msvcrt(use_msvcrt);
     rc = mbstowcs_s(NULL, NULL, LEN, cs, 0);
-    ERR(ESNULLP);
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     rc = mbstowcs_s(&ind, dest, LEN, NULL, 0);
-    ERR(ESNULLP);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     src[0] = '\0';
     rc = mbstowcs_s(&ind, NULL, 0, (const char*)src, 0);
@@ -52,18 +61,18 @@ int test_mbstowcs_s (void)
 #endif
 
     rc = mbstowcs_s(&ind, dest, 0, cs, 0);
-    ERR(ESZEROL);
+    ERR_MSVC(ESZEROL, EINVAL);
 
     rc = mbstowcs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX, 0);
 
     cs = "abcdef";
     rc = mbstowcs_s(&ind, (wchar_t*)cs, LEN, cs, 3);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, ERANGE);
 
     dest[0] = L'a';
     rc = mbstowcs_s(&ind, dest, LEN, (const char*)dest, 1);
-    ERR(ESOVRLP);
+    ERR_MSVC(ESOVRLP, ERANGE);
 
 /*--------------------------------------------------*/
 
@@ -204,7 +213,7 @@ int test_mbstowcs_s (void)
     /* check enough space for src and conversion errors */
 
     rc = mbstowcs_s(&ind, dest, 6, (cs="abcdef",cs), 6);
-    ERR(ESNOSPC);
+    ERR_MSVC(ESNOSPC, ERANGE);
     WCHECK_SLACK(dest, 6);
 
     rc = mbstowcs_s(&ind, dest, 3, (cs="\xf0\x8f\xbf\xbd",cs), 4);
@@ -229,9 +238,6 @@ int test_mbstowcs_s (void)
 
 #endif
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
 #ifdef HAVE_WCHAR_H
@@ -240,4 +246,3 @@ int main (void)
     return 0;
 #endif
 }
-#endif

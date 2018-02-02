@@ -36,7 +36,8 @@
 #include "safeclib_private.h"
 #endif
 
-#if !(defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)) && defined(HAVE_WCHAR_H)
+#if (defined(TEST_MSVCRT) && defined(HAVE_WCSNCPY_S)) || !defined(HAVE_WCHAR_H)
+#else
 
 /**
  * @brief

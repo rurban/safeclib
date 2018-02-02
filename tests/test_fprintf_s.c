@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
+#ifdef HAVE_FPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define TMP   "tmpfp"
 #define LEN   ( 128 )
 
@@ -25,20 +32,22 @@ int test_fprintf_s (void)
     out = fopen(TMP, "w");
 
 /*--------------------------------------------------*/
+    print_msvcrt(use_msvcrt);
 
     rc = fprintf_s(NULL, "%s", NULL);
-    NEGERR(ESNULLP)
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    NEGERR_MSVC(ESNULLP, EOF);
 
 /*--------------------------------------------------*/
 
     rc = fprintf_s(out, NULL, NULL);
-    NEGERR(ESNULLP)
+    NEGERR_MSVC(ESNULLP, EOF);
 
 /*--------------------------------------------------*/
 
     str[0] = '\0';
     rc = fprintf_s(out, "%s %n", str, &ind);
-    NEGERR(EINVAL)
+    NEGERR_MSVC(EINVAL, EOF);
 
     if (!out) {
         printf("Failed to open file %s for write: %s\n",
@@ -113,11 +122,7 @@ int test_fprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_fprintf_s());
 }
-#endif

@@ -35,6 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
+#if !(defined(TEST_MSVCRT) && defined(HAVE_TMPNAM_S))
+
 /**
  * @brief
  *    Creates a unique valid file name (no longer than L_tmpnam in
@@ -158,3 +160,5 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
         return errno;
     }
 }
+
+#endif /* TEST_MSVCRT */

@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
+#ifdef HAVE_WPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   wstr[LEN];
@@ -23,8 +30,10 @@ int test_wprintf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = wprintf_s(NULL, NULL);
-    NEGERR(ESNULLP)
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    NEGERR_MSVC(ESNULLP, EOF);
 
 /*--------------------------------------------------*/
 
@@ -49,7 +58,7 @@ int test_wprintf_s (void)
 
     /* TODO
     rc = wprintf_s(L"%s", NULL);
-    ERR(-ESNULLP)
+    NEGERR_MSVC(ESNULLP, EOF);
     */
 
 /*--------------------------------------------------*/
@@ -65,11 +74,7 @@ int test_wprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_wprintf_s());
 }
-#endif

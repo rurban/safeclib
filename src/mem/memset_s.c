@@ -135,4 +135,4 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
 EXPORT_SYMBOL(memset_s);
 #endif
 
-#endif
+#endif /* TEST_MSVCRT */

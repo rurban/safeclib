@@ -10,6 +10,13 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
+#ifdef HAVE_SSCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -27,14 +34,16 @@ int test_sscanf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = sscanf_s(str1, NULL, NULL);
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = sscanf_s(NULL, "%s", str2);
-    ERREOF(ESNULLP);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
 
@@ -154,11 +163,7 @@ int test_sscanf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_sscanf_s());
 }
-#endif

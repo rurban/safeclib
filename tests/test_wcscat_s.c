@@ -32,13 +32,9 @@ int test_wcscat_s (void)
 
 /*--------------------------------------------------*/
 
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
+    print_msvcrt(use_msvcrt);
     rc = wcscat_s(NULL, LEN, str2);
-    if ( use_msvcrt && rc == ESNULLP ) {
-        printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    }
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/

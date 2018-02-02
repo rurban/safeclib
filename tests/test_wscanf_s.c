@@ -12,6 +12,13 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+#ifdef HAVE_WSCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static wchar_t   wstr1[LEN];
@@ -39,20 +46,24 @@ int test_wscanf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = wscanf_s(NULL, NULL);
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERREOF_MSVC(ESNULLP, EINVAL);
 
     /* TODO: should error */
 #if 0
     rc = wscanf_s(L"%ls", NULL);
-    ERREOF(ESNULLP);
+    ERREOF_MSVC(ESNULLP, EINVAL);
 #endif
 
 /*--------------------------------------------------*/
 
+    wstr2[0] = '\0';
     stuff_stdin(L"      24");
     rc = wscanf_s(L"%ls %n", wstr2, LEN, &ind);
     ERREOF(EINVAL);
+    WEXPSTR(wstr2, L"");
 
     stuff_stdin(L"      24");
     rc = wscanf_s(L"%ls %%n", wstr2);
@@ -69,6 +80,7 @@ int test_wscanf_s (void)
     rc = wscanf_s(L"%ls %%n", wstr2, 6);
     ERR(1);
     ERRNO(0);
+    WEXPSTR(wstr2, L"24");
 
     stuff_stdin(L"      24");
     rc = wscanf_s(L"%s %%n", str3, 6);
@@ -193,11 +205,7 @@ int test_wscanf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_wscanf_s());
 }
-#endif

@@ -32,16 +32,12 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
-    if (use_msvcrt)
-        printf("Using msvcrt...\n");
-
     strcpy(str1, "");
     strcpy(str2, "aaaa");
+    print_msvcrt(use_msvcrt);
+
     rc = strcat_s(NULL, LEN, str2);
-    if ( use_msvcrt && rc == ESNULLP ) {
-        printf("safec.dll overriding msvcrt.dll\n");
-        use_msvcrt = false;
-    }
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     EXPSTR(str1, "");
 

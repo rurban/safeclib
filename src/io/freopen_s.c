@@ -36,7 +36,8 @@
 #endif
 
 /* conflicting API */
-#ifndef MINGW_HAS_SECURE_API
+#if (defined(TEST_MSVCRT) && defined(HAVE_FREOPEN_S)) || defined(MINGW_HAS_SECURE_API)
+#else
 
 /**
  * @brief

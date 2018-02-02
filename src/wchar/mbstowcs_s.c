@@ -35,11 +35,13 @@
 #include "safeclib_private.h"
 #endif
 
-#if defined(HAVE_WCHAR_H) && defined(HAVE_MBSTOWCS)
+#if (defined(TEST_MSVCRT) && defined(HAVE_MBSRTOWC_S)) || !defined(HAVE_WCHAR_H) \
+    || !defined(HAVE_MBSTOWCS)
+#else
+
 /* newlib, cygwin64 has no STDC_HEADERS!
    more importantly it has but does not declare mbstowcs.
  */
-
 #ifdef HAVE_CYGWIN64
 #define mbstowcs(dest, src, len) \
     mbsrtowcs((dest), (const char ** restrict)&(src), (len), &st)
@@ -195,4 +197,4 @@ mbstowcs_s(size_t *restrict retval,
     return RCNEGATE(rc);
 }
 
-#endif /* HAVE_WCHAR_H */
+#endif /* HAVE_WCHAR_H && !TEST_MSVCRT ... */

@@ -12,6 +12,13 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+#ifdef HAVE_SCANF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
+
 #define LEN   ( 128 )
 
 static char   str1[LEN];
@@ -38,13 +45,15 @@ int test_scanf_s (void)
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = scanf_s(NULL, NULL);
-    ERREOF(ESNULLP);
+    init_msvcrt(errno == ESNULLP, &use_msvcrt);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 
-    /* TODO: should error */
+    /* TODO: should error, but just hangs in both */
 #if 0
     rc = scanf_s("%s", NULL);
-    ERREOF(ESNULLP);
+    ERREOF_MSVC(ESNULLP,EINVAL);
 #endif
 
 /*--------------------------------------------------*/

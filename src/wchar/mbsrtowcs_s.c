@@ -35,7 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef HAVE_WCHAR_H
+#if (defined(TEST_MSVCRT) && defined(HAVE_MBSRTOWC_S)) || !defined(HAVE_WCHAR_H)
+#else
 
 /**
  * @brief
@@ -208,4 +209,4 @@ mbsrtowcs_s (size_t *restrict retval,
     return RCNEGATE(rc);
 }
 
-#endif /* HAVE_WCHAR_H */
+#endif /* HAVE_WCHAR_H or !TEST_MSVCRT */

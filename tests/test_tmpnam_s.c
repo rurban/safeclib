@@ -1,12 +1,20 @@
 /*------------------------------------------------------------------
  * test_tmpnam_s
- *
+ * File 'io/tmpnam_s.c'
+ * Lines executed:100.00% of 19
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
 #include "safe_lib.h"
+
+#ifdef HAVE_TMPNAM_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
 
 #define MAX   ( 128 )
 #define LEN   ( 128 )
@@ -16,28 +24,30 @@ static char   str1[LEN];
 int test_tmpnam_s (void)
 {
     errno_t rc;
-    int len;
+    int len, ind;
     int errs = 0;
 
 /*--------------------------------------------------*/
 
+    print_msvcrt(use_msvcrt);
     rc = tmpnam_s(NULL, LEN);
-    ERR(ESNULLP)
+    init_msvcrt(rc == ESNULLP, &use_msvcrt);
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = tmpnam_s(NULL, 5);
-    ERR(ESNULLP)
+    ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = tmpnam_s(str1, 0);
-    ERR(ESZEROL)
+    ERR_MSVC(ESZEROL, ERANGE);
 
 /*--------------------------------------------------*/
 
     rc = tmpnam_s(str1, RSIZE_MAX_STR+1);
-    ERR(ESLEMAX)
+    ERR_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
@@ -53,7 +63,7 @@ int test_tmpnam_s (void)
     strcpy(str1, "qqweqeqeqeq");
 
     rc = tmpnam_s(str1, 2);
-    ERR(ESNOSPC)
+    ERR_MSVC(ESNOSPC, ERANGE);
     if (*str1 != '\0') {
         debug_printf("%s %u \"%s\"  Error rc=%d \n",
                      __FUNCTION__, __LINE__,  str1, rc );
