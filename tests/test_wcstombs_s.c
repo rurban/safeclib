@@ -55,20 +55,20 @@ int test_wcstombs_s (void)
     ERR_MSVC(ESZEROL, have_wine?0:EINVAL);
 
     rc = wcstombs_s(&ind, NULL, 0, cs, 0);
-    ERR_MSVC(ESNOSPC,ERANGE);
+    ERR_MSVC(ESNOSPC, 0);
 
     rc = wcstombs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
-    ERR(ESLEMAX);
+    ERR_MSVC(ESLEMAX, 0);
 
-    cs = L"abcdef";
-    rc = wcstombs_s(&ind, (char*)cs, LEN, cs, 3);
-    ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
+    strcpy(dest, "abcdef");
+    rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 3);
+    ERR_MSVC(ESOVRLP, EILSEQ);
 
     dest[0] = 'a'; dest[1] = '\0';
     rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 1);
-    ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
-    EXPSTR(dest, "a");
-    /* no CHECK_SLACK(dest, LEN); */
+    ERR_MSVC(ESOVRLP, 0);
+    EXPSTR(dest, "");
+    CHECK_SLACK(dest, LEN);
 
     rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
     ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
@@ -79,18 +79,30 @@ int test_wcstombs_s (void)
     memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"abcdef",cs), 3);
     ERR(EOK);
-    INDCMP(!= 3);
+    if (!use_msvcrt) {
+        INDCMP(!= 3);
+    } else {
+        INDCMP(!= 4); /* !!! */
+    }
     CHECK_SLACK(&dest[3], LEN-3);
 
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"abcdef",cs), 6);
     ERR(EOK);
-    INDCMP(!= 6);
+    if (!use_msvcrt) {
+        INDCMP(!= 6);
+    } else {
+        INDCMP(!= 7);
+    }
     CHECK_SLACK(&dest[6], LEN-6);
 
     memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, NULL, LEN, (cs=L"abcdef",cs), 2);
-    ERR(EOK);
-    INDCMP(!= 6);
+    ERR_MSVC(EOK, EINVAL);
+    if (!use_msvcrt) {
+        INDCMP(!= 6);
+    } else if (use_msvcrt) {
+        INDCMP(!= 0);
+    }
 
     SETLOCALE_C;
     SETLANG("C");
@@ -99,7 +111,11 @@ int test_wcstombs_s (void)
     memset(dest, 'x', LEN);
     rc = wcstombs_s(&ind, dest, LEN, (cs=L"\x78",cs), 1);
     ERR(EOK);
-    INDCMP(!= 1);
+    if (!use_msvcrt) {
+        INDCMP(!= 1);
+    } else {
+        INDCMP(!= 2);
+    }
     CHECK_SLACK(&dest[1], LEN-1);
 
     src[0] = 0xdf81;
@@ -112,7 +128,11 @@ int test_wcstombs_s (void)
       CHECK_SLACK(&dest[1], LEN-1);
     } else {
       ERR(EILSEQ);
-      INDCMP(!= -1);
+      if (!use_msvcrt) {
+          INDCMP(!= -1);
+      } else {
+          INDCMP(!= 0);
+      }
       CHECK_SLACK(&dest[0], LEN);
     }
 

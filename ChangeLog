@@ -31,6 +31,7 @@ Changes in v????2018 3.3.0
         - strncat_s, wcsncat_s: with slen=0 and dest=NULL and dmax=0, return EOK
         - fwscanf_s: on mingw reset errno when *fmt = L'\0'
         - vfwscanf_s: break early on mingw when *fmt = L'\0'
+        - wcstombs_s: clear dest when dest==src (as with msvcrt)
 
 Changes in v15012018 3.2.0
         - Fixed 32bit Windows wchar conversion functions, by changing wint_t to uint32_t

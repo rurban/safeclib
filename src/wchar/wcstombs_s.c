@@ -145,7 +145,10 @@ wcstombs_s (size_t *restrict retval,
         return RCNEGATE(ESLEMAX);
     }
 
-    if (unlikely(dest == (char*)src)) { /* not clearing dest */
+    if (unlikely(dest == (char*)src)) {
+        if (dest) {
+            handle_error(dest, dmax, "wcstombs_s: src is dest", ESOVRLP);
+        }
         return RCNEGATE(ESOVRLP);
     }
 
