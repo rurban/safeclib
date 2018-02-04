@@ -544,10 +544,17 @@ gcov: check
 	build-tools/gcov-upd.pl src/gcov.log
 endif
 
+if HAVE_WINE
+check-wine:
+	$(MAKE) -C tests
+	for t in tests/t_*.exe; do b="`basename $$t .exe`"; \
+	    $(WINE) $$t | tee tests/$$b.log; done
+endif
+
 # Additional make rules
 # ===============================================
 
-.PHONY: gcov docs man perf gh-pages release check-log
+.PHONY: gcov docs man perf gh-pages release check-log check-wine
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:

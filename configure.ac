@@ -453,8 +453,10 @@ AM_CONDITIONAL([HAVE_MINGW_CROSS],
         [test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"])
 if test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"; then
    AC_CHECK_PROGS([WINE], [wine])
-   if test -z "$wine";
-      then AC_MSG_WARN([wine not found - cannot check cross-compiled executables])
+   if test -z "$WINE"; then
+      AC_MSG_WARN([wine not found - cannot check cross-compiled executables])
+   else
+      AC_MSG_RESULT([    wine found - test with make check-wine])
    fi
 fi
 
@@ -744,6 +746,7 @@ AC_CONFIG_FILES([safec-${SAFEC_API_VERSION}.pc:safec.pc.in
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_CONDITIONAL([HAVE_POD2MAN], [test -n "POD2MAN"])
+AM_CONDITIONAL([HAVE_WINE], [test -n "$WINE"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([Doxyfile])])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/footer])])
 
