@@ -1,7 +1,9 @@
 
                 ChangeLog file for safeclib
 
-Changes in v????2018 3.3.0
+Changes in v??022018 3.3.0
+        - Fully tested against other secure libc extensions, the native msvcrt 7.0 (Win8)
+          and the msvcrt under wine-2.0.4.
         - Fixed --disable-shared for Windows.
         - Optimized null-slack clearing of dest, unrolling the memset loop with
           small dest buffers.
@@ -18,7 +20,7 @@ Changes in v????2018 3.3.0
         - Reworked C11 compatibility to closer align with the existing Windows+BSD
           sec_api's, esp. with slen=0 cases of the cpy and move functions, while still
           following the spec. (GH #39)
-          There's no seperate logic if the library was compiled with C11 compiler
+          There's no seperate logic if the library was compiled with a C11 compiler
           anymore. See the testcases for the remaining discrepances.
         In detail:
         - Return EOK and set dest[0] = 0 on n/slen = 0 with:
