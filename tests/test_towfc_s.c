@@ -48,6 +48,8 @@ int test_towfc_s (void)
             ? printf(" done\n") : printf(" failed\n");
         f = fopen(CFOLD, "r");
     }
+    if (!f)
+        return 1;
     while (!feof(f)) {
         int l;
         char *p = fgets(s, sizeof(s), f);

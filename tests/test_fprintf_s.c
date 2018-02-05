@@ -40,8 +40,11 @@ int test_fprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = fprintf_s(out, NULL, NULL);
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S))
+    rc = fprintf_s(out, NULL);
     NEGERR_MSVC(ESNULLP, EOF);
+#endif
 
 /*--------------------------------------------------*/
 

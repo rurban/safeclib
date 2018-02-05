@@ -36,19 +36,32 @@ int test_vwprintf_s (void)
     errno_t rc;
     int32_t ind;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S))
     rc = vtwprintf_s(NULL, NULL);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+#else
+    printf("Using wine\n");
+    rc = EOF;
+    have_wine = 1;
+    use_msvcrt = 1;
+#endif
     NEGERR_MSVC(ESNULLP, EOF);
 
 /*--------------------------------------------------*/
 
     wstr[0] = L'\0';
+    /* wine msvcrt doesn't check for %n neither */
     rc = vtwprintf_s(L"%s%n\n", wstr, &ind);
-    NEGERR(EINVAL)
+    if (!have_wine)
+        NEGERR_MSVC(EINVAL, EOF);
+    else
+        ERR(1);
 
 /*--------------------------------------------------*/
 
@@ -76,7 +89,11 @@ int test_vwprintf_s (void)
     strcpy(str, "34");
 
     rc = vtwprintf_s(L"%ls%s", wstr, str);
-    ERRWCHAR(4)
+    if (!have_wine) {
+        ERRWCHAR(4);
+    } else {
+        ERR(-1);
+    }
 
 /*--------------------------------------------------*/
 

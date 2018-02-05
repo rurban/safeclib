@@ -432,7 +432,8 @@ t_tmpnam_s_SOURCES            = test_tmpnam_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 if ENABLE_WCHAR
 t_snprintf_s_SOURCES          = test_snprintf_s.c $(SAFEC_TEST_COMMON)
-t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON)
+t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON) \
+	                        $(SAFEC_TEST_MSVCRT)
 t_snwprintf_s_SOURCES         = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnwprintf_s_SOURCES        = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
 endif

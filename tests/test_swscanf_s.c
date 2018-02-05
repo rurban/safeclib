@@ -31,6 +31,7 @@ int test_swscanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
@@ -38,23 +39,40 @@ int test_swscanf_s (void)
     wcscpy(wstr1, L" ");
 #endif
     print_msvcrt(use_msvcrt);
+
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
     rc = swscanf_s(wstr1, NULL, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
+#else
+    printf("Using wine\n");
+    use_msvcrt = 1;
+    have_wine = 1;
+#endif
 
 /*--------------------------------------------------*/
 
     wstr2[0] = '\0';
+    /* msvcrt doesn't check src==NULL neither */
+#if !(defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
     rc = swscanf_s(NULL, L"%ls", wstr2);
     ERREOF_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");
+#endif
 
 /*--------------------------------------------------*/
 
     wcscpy(wstr1, L"      24");
+    /* msvcrt doesn't check for %n neither */
     rc = swscanf_s(wstr1, L"%ls %n", wstr2, LEN, &ind);
-    ERREOF(EINVAL);
-    WEXPSTR(wstr2, L"");
+    if (!use_msvcrt) {
+        ERREOF(EINVAL);
+        WEXPSTR(wstr2, L"");
+    } else { /* msvcrt is pretty broken */
+        ERR(1); ERRNO(0);
+        WEXPSTR(wstr2, L"24");
+    }
 
     rc = swscanf_s(wstr1, L"%%n");
 #ifdef BSD_OR_NEWLIB_LIKE
@@ -139,8 +157,8 @@ int test_swscanf_s (void)
     wstr2[0] = '\0';
 
     rc = swscanf_s(wstr1, L"%ls", wstr2, LEN);
-    ERR(-1)
-    WEXPNULL(wstr1)
+    ERR_MSVC(-1, have_wine?-1:0);
+    WEXPNULL(wstr1);
 
 /*--------------------------------------------------*/
 
@@ -148,8 +166,8 @@ int test_swscanf_s (void)
     wcscpy(wstr2, L"keep it simple");
 
     rc = swscanf_s(wstr1, L"%ls", wstr2, LEN);
-    ERR(-1)
-    WEXPSTR(wstr1, L"")
+    ERR_MSVC(-1, have_wine?-1:0);
+    WEXPSTR(wstr1, L"");
 
 /*--------------------------------------------------*/
 

@@ -457,6 +457,7 @@ if test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"; then
       AC_MSG_WARN([wine not found - cannot check cross-compiled executables])
    else
       AC_MSG_RESULT([    wine found - test with make check-wine])
+      AM_CFLAGS="$AM_CFLAGS -D_WINE_MSVCRT"
    fi
 fi
 

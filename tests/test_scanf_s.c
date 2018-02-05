@@ -183,9 +183,9 @@ int test_scanf_s (void)
     if (rc == -1) { /* flapping test */
         ERR(-1);
         EXPNULL(str2);
-    } else {
+    } else if (!use_msvcrt) {
         ERR(1);
-    }
+    } /* else wine returns 0 */
 
 /*--------------------------------------------------*/
 

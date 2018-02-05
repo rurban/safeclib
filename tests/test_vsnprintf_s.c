@@ -1,5 +1,7 @@
 /*------------------------------------------------------------------
  * test_vsnprintf_s
+ * File 'wchar/vsnprintf_s.c'
+ * Lines executed:100.00% of 23
  *
  *------------------------------------------------------------------
  */
@@ -7,6 +9,13 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 #include <stdarg.h>
+
+#ifdef HAVE_VSNPRINTF_S
+# define HAVE_NATIVE 1
+#else
+# define HAVE_NATIVE 0
+#endif
+#include "test_msvcrt.h"
 
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
 #define USE_MSVCRT
@@ -38,6 +47,7 @@ int test_vsnprintf_s (void)
     int32_t  len2;
     int32_t  len3;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
@@ -48,30 +58,26 @@ int test_vsnprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = vtprintf_s(str1, LEN, NULL, NULL);
-#ifndef USE_MSVCRT
-    NEGERR(ESNULLP)
-#else
-    ERR(-1)
-#endif
+    print_msvcrt(use_msvcrt);
+    rc = vtprintf_s(str1, 0, "%s", str2);
+    init_msvcrt(rc == -ESZEROL, &use_msvcrt);
+    NEGERR_MSVC(ESZEROL, EOF);
 
 /*--------------------------------------------------*/
 
-    rc = vtprintf_s(str1, 0, "%s", str2);
-#ifndef USE_MSVCRT
-    NEGERR(ESZEROL)
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSNPRINTF_S))
+    rc = vtprintf_s(str1, LEN, NULL, NULL);
+    NEGERR_MSVC(ESNULLP, EOF);
 #else
-    ERR(-1)
+    printf("Using wine\n");
+    have_wine = 1;    
 #endif
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-#ifndef USE_MSVCRT
-    NEGERR(ESLEMAX)
-#else
-    ERR(0)
-#endif
+    NEGERR_MSVC(ESLEMAX, have_wine?EOF:0);
 
 /*--------------------------------------------------*/
 
@@ -79,11 +85,11 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-#ifndef USE_MSVCRT
-    ERR(14)
-#else
-    ERR(-1)
-#endif
+    if (!use_msvcrt) {
+        ERR(14);
+    } else {
+        ERR(-1);
+    }
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -92,11 +98,11 @@ int test_vsnprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-#ifndef USE_MSVCRT
-    ERR(14)
-#else
-    ERR(-1)
-#endif
+    if (!use_msvcrt) {
+        ERR(14);
+    } else {
+        ERR(-1);
+    }
 
 /*--------------------------------------------------*/
 

@@ -43,13 +43,21 @@ int test_wscanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
+    int have_wine = 0;
 
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
-    rc = wscanf_s(NULL, NULL);
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S))
+    rc = wscanf_s(NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
+#else
+    printf("Using wine\n");
+    have_wine = 1;
+    use_msvcrt = 1;
+#endif
 
     /* TODO: should error */
 #if 0
@@ -61,9 +69,12 @@ int test_wscanf_s (void)
 
     wstr2[0] = '\0';
     stuff_stdin(L"      24");
+    /* msvcrt doesn't check for %n neither */
     rc = wscanf_s(L"%ls %n", wstr2, LEN, &ind);
-    ERREOF(EINVAL);
-    WEXPSTR(wstr2, L"");
+    if (!use_msvcrt) {
+        ERREOF(EINVAL);
+        WEXPSTR(wstr2, L"");
+    }
 
     stuff_stdin(L"      24");
     rc = wscanf_s(L"%ls %%n", wstr2);
@@ -74,18 +85,18 @@ int test_wscanf_s (void)
     } else
 #endif
     ERR(1);
-    ERRNO(0);
+    ERRNO_MSVC(0, have_wine?0:EINVAL);
 
     stuff_stdin(L"      24");
     rc = wscanf_s(L"%ls %%n", wstr2, 6);
     ERR(1);
-    ERRNO(0);
+    ERRNO_MSVC(0, have_wine?0:EINVAL);
     WEXPSTR(wstr2, L"24");
 
     stuff_stdin(L"      24");
     rc = wscanf_s(L"%s %%n", str3, 6);
     ERR(1);
-    ERRNO(0);
+    ERRNO_MSVC(0, have_wine?0:EINVAL);
 #ifndef __MINGW32__
     EXPSTR(str3, "24");
 #else
@@ -95,7 +106,7 @@ int test_wscanf_s (void)
     stuff_stdin(L"      24");
     rc = wscanf_s(L" %d", &len1);
     ERR(1);
-    ERRNO(0);
+    ERRNO_MSVC(0, have_wine?0:EINVAL);
     if ((int)len1 != 24) {
         debug_printf("%s %u wrong arg: %d\n",
                      __FUNCTION__, __LINE__, (int)len1);

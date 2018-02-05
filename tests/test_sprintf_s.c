@@ -51,9 +51,12 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = sprintf_s(str1, LEN, NULL, NULL);
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S))
+    rc = sprintf_s(str1, LEN, NULL);
     ERR(-1);
     ERRNO_MSVC(ESNULLP, EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

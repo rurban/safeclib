@@ -22,13 +22,19 @@ int test_fwprintf_s (void)
     errno_t rc;
     int32_t ind;
     int errs = 0;
+    int have_wine = 0;
 
     out = fopen(TMP, "w");
 
 /*--------------------------------------------------*/
 
-    rc = fwprintf_s(out, NULL, NULL);
-    NEGERR(ESNULLP)
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FWPRINTF_S))
+    rc = fwprintf_s(out, NULL);
+    NEGERR(ESNULLP);
+#else
+    have_wine = 1;
+#endif
 
 /*--------------------------------------------------*/
 
@@ -63,7 +69,11 @@ int test_fwprintf_s (void)
     strcpy(str, "34");
 
     rc = fwprintf_s(out, L"%ls%s", wstr, str);
-    ERRWCHAR(4); /* returns -1 under wine */
+    if (!have_wine) {
+        ERRWCHAR(4);
+    } else {
+        ERR(-1);
+    }
 
 /*--------------------------------------------------*/
     fclose(out);

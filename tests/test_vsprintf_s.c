@@ -50,10 +50,15 @@ int test_vsprintf_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
-    rc = vtprintf_s(str1, LEN, NULL, NULL);
+    /* wine msvcrt doesn't check fmt==NULL */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S))
+    rc = vtprintf_s(str1, LEN, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERR(-1);
     ERRNO_MSVC(ESNULLP, EINVAL);
+#else
+    use_msvcrt = 1;
+#endif    
     /* Unknown error: 400 */
     /* debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */
@@ -84,9 +89,12 @@ int test_vsprintf_s (void)
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
+    /* wine msvcrt doesn't check %n neither */
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S))
     rc = vtprintf_s(str1, LEN, "%s %n", str2);
-    ERR(-1);
-    ERRNO(EINVAL)
+    ERR(-1);;
+    ERRNO(EINVAL);
+#endif
 
     rc = vtprintf_s(str1, LEN, "%s %%n", str2);
     ERR(3)
