@@ -97,6 +97,9 @@
  * @retval  ESUNTERM   when dest not terminated and slen > 0
  * @retval  ESOVRLP    when src overlaps with dest and slen > 0
  *
+ * @see
+ *    strcat_s(), strncpy_s(), wcsncat_s()
+ *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  */
 EXPORT errno_t
 strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)

@@ -62,6 +62,7 @@
  *
  * @see
  *    strnterminate_s()
+ *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  *
  */
 EXPORT rsize_t

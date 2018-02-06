@@ -88,6 +88,7 @@
  *
  * @see
  *    strcat_s(), strncat_s(), strcpy_s(), wcsncpy_s()
+ *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  *
  */
 EXPORT errno_t
