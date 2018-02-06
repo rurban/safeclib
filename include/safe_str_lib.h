@@ -96,33 +96,6 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 EXTERN constraint_handler_t
 set_str_constraint_handler_s(constraint_handler_t handler);
 
-#define BOS_UNKNOWN ((size_t)-1)
-#ifdef HAVE___BUILTIN_OBJECT_SIZE
-# if defined(_FORTIFY_SOURCE) && _FORTIFY_SOURCE == 2
-#  define BOS(dest)  __builtin_object_size((dest),1)
-#  define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
-# else
-#  define BOS(dmax) __builtin_object_size((dmax),0)
-#  define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
-# endif
-#else
-# define BOS(dmax) BOS_UNKNOWN
-# define BOSW(dmax) BOS_UNKNOWN
-#endif
-
-#ifndef __has_attribute
-#define __has_attribute(x) 0
-#endif    
-#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
-# define BOS_CHK(dest)                                                  \
-    __attribute__((diagnose_if(BOS(dest) != BOS_UNKNOWN && (size_t)dmax != BOS(dest), "wrong dmax", "warning")))
-# define BOSW_CHK(dest)                                                  \
-    __attribute__((diagnose_if(BOS(dest) != BOS_UNKNOWN && (size_t)dmax != BOSW(dest), "wrong dmax", "warning")))
-#else
-# define BOS_CHK(dest)
-# define BOSW_CHK(dest)
-#endif
-  
 /* string concatenate */
 EXTERN errno_t
 strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src) BOS_CHK(dest);

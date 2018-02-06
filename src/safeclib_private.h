@@ -191,6 +191,10 @@ void abort(void) __attribute__((noreturn));
 #define EXPORT
 #endif
 
+#include "safe_config.h"
+#include "safe_lib_errno.h"
+#include "safe_types.h"
+
 #include "safe_str_lib.h"
 #include "str/safe_str_constraint.h"
 #include "safe_mem_lib.h"

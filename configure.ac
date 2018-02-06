@@ -441,12 +441,15 @@ case $host_os in
 esac
 AX_GCC_BUILTIN(__builtin_object_size)
 dnl against -Werror,-Wgcc-compat fortify errors, only on clang
+INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
 if test x$ax_cv_have___builtin_object_size = xyes; then
     AX_CHECK_COMPILE_FLAG([-Wgcc-compat],
       [WARN_CFLAGS="$WARN_CFLAGS -Wno-gcc-compat"],[])
     AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
       [WARN_CFLAGS="$WARN_CFLAGS -Wno-error=user-defined-warnings"],[])
+    INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
 fi
+AC_SUBST(INSERT_OBJECT_SIZE)
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],

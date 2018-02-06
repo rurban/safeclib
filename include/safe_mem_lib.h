@@ -69,18 +69,18 @@ set_mem_constraint_handler_s(constraint_handler_t handler);
 /* copy memory */
 EXTERN errno_t
 memcpy_s(void *restrict dest, rsize_t dmax,
-         const void *restrict src, rsize_t slen);
+         const void *restrict src, rsize_t slen) BOS_CHK(dest);
 
 /* move memory, including overlapping memory */
 EXTERN errno_t
 memmove_s(void *dest, rsize_t  dmax,
-          const void *src, rsize_t slen);
+          const void *src, rsize_t slen) BOS_CHK(dest);
 
 
 /* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
 EXTERN errno_t
-memset_s(void *dest, rsize_t dmax, int value, rsize_t n);
+memset_s(void *dest, rsize_t dmax, int value, rsize_t n) BOS_CHK(dest);
 #endif
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
@@ -88,57 +88,57 @@ memset_s(void *dest, rsize_t dmax, int value, rsize_t n);
 /* compare memory */
 EXTERN errno_t
 memcmp_s(const void *dest, rsize_t dmax,
-         const void *src, rsize_t slen, int *diff);
+         const void *src, rsize_t slen, int *diff) BOS_CHK(dest);
 
 /* compare uint16_t memory */
 EXTERN errno_t
 memcmp16_s(const uint16_t *dest, rsize_t dmax,
-           const uint16_t *src, rsize_t slen, int *diff);
+           const uint16_t *src, rsize_t slen, int *diff) BOS_CHK(dest);
 
 /* compare uint32_t memory */
 EXTERN errno_t
 memcmp32_s(const uint32_t *dest, rsize_t dmax,
-           const uint32_t *src, rsize_t slen, int *diff);
+           const uint32_t *src, rsize_t slen, int *diff) BOS_CHK(dest);
 
 /* copy uint16_t memory */
 EXTERN errno_t
 memcpy16_s(uint16_t *dest, rsize_t dmax,
-           const uint16_t *src, rsize_t slen);
+           const uint16_t *src, rsize_t slen) BOS_CHK(dest);
 
 /* copy uint32_t memory */
 EXTERN errno_t
 memcpy32_s(uint32_t *dest, rsize_t dmax,
-           const uint32_t *src, rsize_t slen);
+           const uint32_t *src, rsize_t slen) BOS_CHK(dest);
 
 /* uint16_t move memory, including overlapping memory */
 EXTERN errno_t
 memmove16_s(uint16_t *dest, rsize_t dmax,
-            const uint16_t *src, rsize_t slen);
+            const uint16_t *src, rsize_t slen) BOS_CHK(dest);
 
 /* uint32_t move memory, including overlapping memory */
 EXTERN errno_t
 memmove32_s(uint32_t *dest, rsize_t dmax,
-            const uint32_t *src, rsize_t slen);
+            const uint32_t *src, rsize_t slen) BOS_CHK(dest);
 
 /* set uint16_t */
 EXTERN errno_t
-memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n);
+memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n) BOS_CHK(dest);
 
 /* set uint32_t */
 EXTERN errno_t
-memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n);
+memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n) BOS_CHK(dest);
 
 /* byte zero */
 EXTERN errno_t
-memzero_s(void *dest, rsize_t dmax);
+memzero_s(void *dest, rsize_t dmax) BOS_CHK(dest);
 
 /* uint16_t zero */
 EXTERN errno_t
-memzero16_s(uint16_t *dest, rsize_t dmax);
+memzero16_s(uint16_t *dest, rsize_t dmax) BOS_CHK(dest);
 
 /* uint32_t zero */
 EXTERN errno_t
-memzero32_s(uint32_t *dest, rsize_t dmax);
+memzero32_s(uint32_t *dest, rsize_t dmax) BOS_CHK(dest);
 
 /* find a byte */
 EXTERN errno_t
@@ -161,7 +161,7 @@ timingsafe_memcmp(const void *b1, const void *b2, size_t len);
 
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
-memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n);
+memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n) BOS_CHK(dest);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
@@ -172,7 +172,7 @@ memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n);
 
 EXTERN errno_t
 wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t smax);
+          const wchar_t *restrict src, rsize_t smax) BOSW_CHK(dest);
 
 EXTERN errno_t
 wmemmove_s(wchar_t *dest, rsize_t dmax,
@@ -182,7 +182,7 @@ wmemmove_s(wchar_t *dest, rsize_t dmax,
 
 EXTERN errno_t
 wmemcmp_s(const wchar_t *dest, rsize_t dmax,
-          const wchar_t *src, rsize_t slen, int *diff);
+          const wchar_t *src, rsize_t slen, int *diff) BOSW_CHK(dest);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

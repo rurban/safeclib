@@ -83,6 +83,14 @@ extern "C" {
  */
 @INSERT_DISABLE_DLLIMPORT@
 
+/* Defined by your compiler when __builtin_object_size() is available
+   for compile-time dmax checks. Override when you use a different compiler.
+   E.g. clang-7 and gcc-7 have it.
+ */
+#ifndef HAVE___BUILTIN_OBJECT_SIZE
+@INSERT_OBJECT_SIZE@
+#endif
+
 /*
  * The spec does not call out a maximum len for the strtok src
  * string (the max delims size), so one is defined here.
