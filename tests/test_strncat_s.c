@@ -18,11 +18,11 @@
 
 #define LEN   ( 128 )
 
-static char   str1[LEN];
-static char   str2[LEN];
-
 int test_strncat_s (void)
 {
+    static char   str1[LEN];
+    static char   str2[LEN];
+
     errno_t rc;
     int32_t ind;
     int len;
@@ -75,6 +75,7 @@ int test_strncat_s (void)
 
     strcpy(str1, "a");
     /* valid with the windows sec_api */
+#ifndef HAVE_CT_BOS_CHK
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
@@ -91,6 +92,19 @@ int test_strncat_s (void)
     } else {
         EXPSTR(str1, "abcde") /* valid */
     }
+
+# if defined(HAVE_WARN_DMAX)
+    if (BOS(str1) > 0) {
+        rc = strncat_s(str1, LEN+1, str2, LEN);
+        ERR_MSVC(ESLEMAX, 0);
+
+        rc = strncat_s(str1, LEN-1, str2, LEN);
+        ERR(0);
+    } else {
+        printf("warning unknown str1 size\n");
+    }
+# endif
+#endif
 
 /*--------------------------------------------------*/
 

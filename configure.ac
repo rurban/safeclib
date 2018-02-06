@@ -159,9 +159,6 @@ else
 	   DEBUG_CFLAGS="-O2"
            if test x$GCC = xyes; then
 	      DEBUG_CFLAGS="-O2 -D_FORTIFY_SOURCE=2"
-              #if test x$host_os != xcygwin; then
-              #    AM_LDFLAGS="-Wl,--as-needed -Wl,-z,relro -Wl,-z,now"
-              #fi
            fi
         fi
         AC_MSG_RESULT([no CFLAGS = $DEBUG_CFLAGS])
@@ -289,6 +286,23 @@ if test "x$enable_norm_compat" = "xtrue" ; then
 	AC_DEFINE([HAVE_NORM_COMPAT], [ 1 ],
 	 	  [Define to 1 to enable the compat normalization modes for wcsnorm_s
                   NFKC and NFKD])
+else
+	AC_MSG_RESULT([no (default)])
+fi
+
+AC_ARG_ENABLE(warn-dmax,
+	AS_HELP_STRING([--enable-warn-dmax],
+		       [Enable compile-time dmax checks against __builtin_object_size(dest). @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_warn_dmax=true ;;
+	no)  enable_warn_dmax=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-warn-dmax]) ;;
+	esac], [enable_warn_dmax=false ])
+AC_MSG_CHECKING([for --enable-warn-dmax])
+if test "x$enable_warn_dmax" = "xtrue" ; then
+	AC_MSG_RESULT([yes])
+	AC_DEFINE([HAVE_WARN_DMAX], [ 1 ],
+            [Define to 1 to enable compile-time dmax checks against __builtin_object_size(dest)])
 else
 	AC_MSG_RESULT([no (default)])
 fi
@@ -448,6 +462,11 @@ if test x$ax_cv_have___builtin_object_size = xyes; then
     AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
       [WARN_CFLAGS="$WARN_CFLAGS -Wno-error=user-defined-warnings"],[])
     INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
+else
+    if test "x$enable_warn_dmax" = "xtrue" ; then
+        AC_DEFINE([HAVE_WARN_DMAX], [ 0 ])
+        AC_MSG_RESULT([disable-warn-dmax])
+    fi
 fi
 AC_SUBST(INSERT_OBJECT_SIZE)
 

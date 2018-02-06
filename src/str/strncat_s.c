@@ -113,20 +113,37 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     }
     else if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strncat_s: dest is null",
-                   NULL, ESNULLP);
+                   dest, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
     else if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax is 0",
-                   NULL, ESZEROL);
+                   dest, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
     else if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncat_s: dmax exceeds max",
-                   NULL, ESLEMAX);
+                   dest, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-    else if (unlikely(src == NULL)) {
+#ifdef HAVE_WARN_DMAX
+    else if (_BOS_OVR(dest,dmax)) {
+        handle_error(dest, strlen(dest), "strncat_s: dmax exceeds dest",
+                     ESLEMAX);
+        return RCNEGATE(ESLEMAX);
+    }
+    else if (_BOS_OVR(src,slen)) {
+        handle_error(dest, strlen(dest), "strncat_s: slen exceeds src",
+                     ESLEMAX);
+        return RCNEGATE(ESLEMAX);
+    }
+    else if (_BOS_CHK(dest,dmax)) {
+        char msg[128];
+        sprintf(msg, "strncat_s: wrong dmax %ld, dest has size %ld", dmax, BOS(dest));
+        invoke_safe_str_constraint_handler(msg, dest, ESLEMAX);
+    }
+#endif
+    if (unlikely(src == NULL)) {
         /* note: strcat_s does not clear dest */
 #if 0
         invoke_safe_str_constraint_handler("strncat_s: src is null",

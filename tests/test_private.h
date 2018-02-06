@@ -122,6 +122,16 @@
 #  define HAVE_ASAN 1
 # endif
 #endif
+#ifndef __has_attribute
+#define __has_attribute(x) 0
+#endif
+
+/* so far clang-7 only */
+#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+# define HAVE_CT_BOS_CHK
+#elif defined(HAVE_WARN_DMAX)
+# define HAVE_RT_BOS_CHK
+#endif
 
 /* mingw 3.4 */
 #ifndef EOVERFLOW

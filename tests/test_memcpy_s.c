@@ -49,12 +49,14 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_CHK
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (!use_msvcrt)
         EXPMEM(mem1, 0, LEN, 33, 1);
     else
         EXPMEM(mem1, 0, LEN, 44, 1);
+#endif
 
 /*--------------------------------------------------*/
 

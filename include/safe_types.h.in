@@ -78,14 +78,19 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
 # if defined(_FORTIFY_SOURCE) && _FORTIFY_SOURCE > 1
 #  define BOS(dest)  __builtin_object_size((dest),1)
-#  define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
 # else
-#  define BOS(dmax) __builtin_object_size((dmax),0)
-#  define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
+#  define BOS(dest) __builtin_object_size((dest),0)
 # endif
+# define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
+# define _BOS_CHK(dest,dmax)  (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) != BOS(dest))
+# define _BOS_OVR(dest,dmax)  (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) > BOS(dest))
+# define _BOSW_CHK(dest,dmax) (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) != BOSW(dest))
+# define _BOSW_OVR(dest,dmax) (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) > BOSW(dest))
 #else
-# define BOS(dmax) BOS_UNKNOWN
-# define BOSW(dmax) BOS_UNKNOWN
+# define BOS(dest)  BOS_UNKNOWN
+# define BOSW(dest) BOS_UNKNOWN
+# define _BOS_CHK(dest)  0
+# define _BOSW_CHK(dest) 0
 #endif
 
 #ifndef __has_attribute
@@ -93,10 +98,12 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #endif
 /* so far clang-7 only */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
-# define BOS_CHK(dest)                                                  \
-    __attribute__((diagnose_if(BOS(dest) != BOS_UNKNOWN && (size_t)dmax != BOS(dest), "wrong dmax", "warning")))
-# define BOSW_CHK(dest)                                                  \
-    __attribute__((diagnose_if(BOS(dest) != BOS_UNKNOWN && (size_t)dmax != BOSW(dest), "wrong dmax", "warning")))
+# define BOS_CHK(dest) \
+    __attribute__((diagnose_if(_BOS_CHK(dest,dmax), "wrong dmax", "warning"))) \
+    __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error")))
+# define BOSW_CHK(dest) \
+    __attribute__((diagnose_if(_BOSW_CHK(dest,dmax), "wrong dmax", "warning"))) \
+    __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error")))
 #else
 # define BOS_CHK(dest)
 # define BOSW_CHK(dest)

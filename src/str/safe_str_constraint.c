@@ -92,7 +92,7 @@ EXPORT_SYMBOL(set_str_constraint_handler_s);
  *
  * @param *msg    Pointer to the message describing the error
  * @param *ptr    Pointer to aassociated data. Can be NULL.
- * @param error  The error code encountered.
+ * @param error   The error code encountered.
  *
  */
 EXPORT void
