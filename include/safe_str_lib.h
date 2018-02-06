@@ -96,25 +96,50 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 EXTERN constraint_handler_t
 set_str_constraint_handler_s(constraint_handler_t handler);
 
+#define BOS_UNKNOWN ((size_t)-1)
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+# if defined(_FORTIFY_SOURCE) && _FORTIFY_SOURCE == 2
+#  define BOS(dest)  __builtin_object_size((dest),1)
+#  define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
+# else
+#  define BOS(dmax) __builtin_object_size((dmax),0)
+#  define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
+# endif
+#else
+# define BOS(dmax) BOS_UNKNOWN
+# define BOSW(dmax) BOS_UNKNOWN
+#endif
 
+#ifndef __has_attribute
+#define __has_attribute(x) 0
+#endif    
+#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+# define BOS_CHK(dest)                                                  \
+    __attribute__((diagnose_if(BOS(dest) != BOS_UNKNOWN && (size_t)dmax != BOS(dest), "wrong dmax", "warning")))
+# define BOSW_CHK(dest)                                                  \
+    __attribute__((diagnose_if(BOS(dest) != BOS_UNKNOWN && (size_t)dmax != BOSW(dest), "wrong dmax", "warning")))
+#else
+# define BOS_CHK(dest)
+# define BOSW_CHK(dest)
+#endif
+  
 /* string concatenate */
 EXTERN errno_t
-strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
-
+strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src) BOS_CHK(dest);
 
 /* string copy */
 EXTERN errno_t
-strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src) BOS_CHK(dest);
 
 /* fitted string concatenate */
 EXTERN errno_t
-strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen);
+strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen) BOS_CHK(dest);
 
 
 /* fitted string copy */
 EXTERN errno_t
 strncpy_s(char * restrict dest, rsize_t dmax,
-          const char * restrict src, rsize_t slen);
+          const char * restrict src, rsize_t slen) BOS_CHK(dest);
 
 
 /* string length */
@@ -135,10 +160,10 @@ strtok_s(char *restrict s1, rsize_t *restrict s1max,
 /* safe sprintf_s */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 EXTERN int
-sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...);
+sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...) BOS_CHK(dest);
 
 EXTERN int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap) BOS_CHK(dest);
 
 /* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
    Rather use the 2 non-truncating (without 'n') functions above. */
@@ -146,7 +171,7 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
 
 /* unsafe! use sprintf_s instead */
 EXTERN int
-snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...) BOS_CHK(dest);
 
 /* unsafe! use vsprintf_s instead */
 #if !(defined(_WIN32) && defined(HAVE_VSNPRINTF_S))
@@ -154,7 +179,7 @@ snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...);
 int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
                 const char *_Format, va_list _ArgList); */
 EXTERN int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap);
+vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap) BOS_CHK(dest);
 #endif
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
@@ -201,7 +226,7 @@ vfprintf_s(FILE *restrict stream, const char *restrict format,
 #endif /* __KERNEL__ */
 
 EXTERN errno_t
-strerror_s(char *dest, rsize_t dmax, errno_t errnum);
+strerror_s(char *dest, rsize_t dmax, errno_t errnum) BOS_CHK(dest);
 
 EXTERN size_t
 strerrorlen_s(errno_t errnum);
@@ -215,55 +240,55 @@ strerrorlen_s(errno_t errnum);
 /* string compare */
 EXTERN errno_t
 strcmp_s(const char *dest, rsize_t dmax,
-         const char *src, int *indicator);
+         const char *src, int *indicator) BOS_CHK(dest);
 
 /* string compare */
 EXTERN errno_t
 strcasecmp_s(const char *dest, rsize_t dmax,
-             const char *src, int *indicator);
+             const char *src, int *indicator) BOS_CHK(dest);
 
 
 /* find a substring _ case insensitive */
 EXTERN errno_t
 strcasestr_s(char *dest, rsize_t dmax,
-             const char *src, rsize_t slen, char **substring);
+             const char *src, rsize_t slen, char **substring) BOS_CHK(dest);
 
 
 /* fixed field string compare */
 EXTERN errno_t
 strcmpfld_s(const char *dest, rsize_t dmax,
-            const char *src, int *indicator);
+            const char *src, int *indicator) BOS_CHK(dest);
 
 /* fixed char array copy */
 EXTERN errno_t
-strcpyfld_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
+strcpyfld_s(char *dest, rsize_t dmax, const char *src, rsize_t slen) BOS_CHK(dest);
 
 
 /* copy from a null terminated string to fixed char array */
 EXTERN errno_t
-strcpyfldin_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
+strcpyfldin_s(char *dest, rsize_t dmax, const char *src, rsize_t slen) BOS_CHK(dest);
 
 
 /* copy from a char array to null terminated string */
 EXTERN errno_t
-strcpyfldout_s(char *dest, rsize_t dmax, const char *src, rsize_t slen);
+strcpyfldout_s(char *dest, rsize_t dmax, const char *src, rsize_t slen) BOS_CHK(dest);
 
 
 /* computes excluded prefix length */
 EXTERN errno_t
 strcspn_s(const char *dest, rsize_t dmax,
-          const char *src,  rsize_t slen, rsize_t *count);
+          const char *src,  rsize_t slen, rsize_t *count) BOS_CHK(dest);
 
 
 /* returns a pointer to the first occurrence of c in dest */
 EXTERN errno_t
-strfirstchar_s(char *dest, rsize_t dmax, char c, char **first);
+strfirstchar_s(char *dest, rsize_t dmax, char c, char **first) BOS_CHK(dest);
 
 
 /* returns index of first difference */
 EXTERN errno_t
 strfirstdiff_s(const char *dest, rsize_t dmax,
-               const char *src, rsize_t *idx);
+               const char *src, rsize_t *idx) BOS_CHK(dest);
 
 
 /* validate alphanumeric string */
@@ -314,12 +339,12 @@ strlastchar_s(char *str, rsize_t smax, char c, char **first);
 /* returns index of last difference */
 EXTERN errno_t
 strlastdiff_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *idx);
+              const char *src, rsize_t *idx) BOS_CHK(dest);
 
 
 /* left justify */
 EXTERN errno_t
-strljustify_s(char *dest, rsize_t dmax);
+strljustify_s(char *dest, rsize_t dmax) BOS_CHK(dest);
 
 
 /* string terminate */
@@ -330,47 +355,47 @@ strnterminate_s (char *s, rsize_t smax);
 /* get pointer to first occurrence from set of char */
 EXTERN errno_t
 strpbrk_s(char *dest, rsize_t dmax,
-          char *src,  rsize_t slen, char **first);
+          char *src,  rsize_t slen, char **first) BOS_CHK(dest);
 
 
 EXTERN errno_t
 strfirstsame_s(const char *dest, rsize_t dmax,
-               const char *src,  rsize_t *idx);
+               const char *src,  rsize_t *idx) BOS_CHK(dest);
 
 EXTERN errno_t
 strlastsame_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *idx);
+              const char *src, rsize_t *idx) BOS_CHK(dest);
 
 
 /* searches for a prefix */
 EXTERN errno_t
-strprefix_s(const char *dest, rsize_t dmax, const char *src);
+strprefix_s(const char *dest, rsize_t dmax, const char *src) BOS_CHK(dest);
 
 
 /* removes leading and trailing white space */
 EXTERN errno_t
-strremovews_s(char *dest, rsize_t dmax);
+strremovews_s(char *dest, rsize_t dmax) BOS_CHK(dest);
 
 
 /* computes inclusive prefix length */
 EXTERN errno_t
 strspn_s(const char *dest, rsize_t dmax,
-         const char *src,  rsize_t slen, rsize_t *count);
+         const char *src,  rsize_t slen, rsize_t *count) BOS_CHK(dest);
 
 
 /* find a substring */
 EXTERN errno_t
 strstr_s(char *dest, rsize_t dmax,
-         const char *src, rsize_t slen, char **substring);
+         const char *src, rsize_t slen, char **substring) BOS_CHK(dest);
 
 /* find a character */
 EXTERN errno_t
 strchr_s(const char *restrict dest, rsize_t dmax,
-         const int ch, char **result);
+         const int ch, char **result) BOS_CHK(dest);
 
 EXTERN errno_t
 strrchr_s(const char *restrict dest, rsize_t dmax,
-         const int ch, char **result);
+         const int ch, char **result) BOS_CHK(dest);
 
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */
@@ -388,20 +413,20 @@ strtouppercase_s(char *str, rsize_t slen);
 /* zero an entire string with nulls.
    mingw string_s.h has: _strset_s */
 EXTERN errno_t
-strzero_s(char *dest, rsize_t dmax);
+strzero_s(char *dest, rsize_t dmax) BOS_CHK(dest);
 
 EXTERN errno_t
 strcoll_s(const char *restrict dest, rsize_t dmax,
-          const char *restrict src, int *indicator);
+          const char *restrict src, int *indicator) BOS_CHK(dest);
 
 /* Derived from windows extensions sec_api/string_s.h
    defined(MINGW_HAS_SECURE_API) */
 
 EXTERN errno_t
-strset_s(char *restrict dest, rsize_t dmax, int value);
+strset_s(char *restrict dest, rsize_t dmax, int value) BOS_CHK(dest);
 
 EXTERN errno_t
-strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n);
+strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n) BOS_CHK(dest);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
@@ -418,79 +443,79 @@ wcsstr(wchar_t *restrict dest, const wchar_t *restrict src);
 EXTERN errno_t
 mbstowcs_s(size_t *restrict retval,
            wchar_t *restrict dest, rsize_t dmax,
-           const char *restrict src, rsize_t len);
+           const char *restrict src, rsize_t len) BOSW_CHK(dest);
 
 EXTERN errno_t
 mbsrtowcs_s(size_t *restrict retval,
             wchar_t *restrict dest, rsize_t dmax,
             const char **restrict src, rsize_t len,
-            mbstate_t *restrict ps);
+            mbstate_t *restrict ps) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcsrtombs_s(size_t *restrict retval,
             char *restrict dest, rsize_t dmax,
             const wchar_t **restrict src, rsize_t len,
-            mbstate_t *restrict ps);
+            mbstate_t *restrict ps) BOS_CHK(dest);
 
 EXTERN errno_t
 wcstombs_s(size_t *restrict retval,
            char *restrict dest, rsize_t dmax,
-           const wchar_t *restrict src, rsize_t len);
+           const wchar_t *restrict src, rsize_t len) BOS_CHK(dest);
 
 EXTERN errno_t
 wcrtomb_s(size_t *restrict retval, char *restrict dest, rsize_t dmax,
-          wchar_t wc, mbstate_t *restrict ps);
+          wchar_t wc, mbstate_t *restrict ps) BOS_CHK(dest);
 
 EXTERN errno_t
 wctomb_s(int *restrict retval, char *restrict dest, rsize_t dmax,
-         wchar_t wc);
+         wchar_t wc) BOS_CHK(dest);
 
 EXTERN size_t
-wcsnlen_s(const wchar_t *dest, size_t dmax);
+wcsnlen_s(const wchar_t *dest, size_t dmax) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src);
+         const wchar_t *restrict src) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcsncpy_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t slen);
+          const wchar_t *restrict src, rsize_t slen) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcscat_s(wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src);
+         const wchar_t *restrict src) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t slen);
+          const wchar_t *restrict src, rsize_t slen) BOSW_CHK(dest);
 
 #if !(defined(_WIN32) && defined(HAVE_WCSTOK_S))
 /* they use a buggy:
 wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
 EXTERN wchar_t *
 wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
-         const wchar_t *restrict delim, wchar_t **restrict ptr);
+         const wchar_t *restrict delim, wchar_t **restrict ptr) BOSW_CHK(dest);
 #endif
 
 EXTERN int
 swprintf_s(wchar_t *restrict dest, rsize_t dmax,
-           const wchar_t* restrict fmt, ...);
+           const wchar_t* restrict fmt, ...) BOSW_CHK(dest);
 
 EXTERN int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
-            const wchar_t *restrict fmt, va_list ap);
+            const wchar_t *restrict fmt, va_list ap) BOSW_CHK(dest);
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use vswprintf_s instead */
 EXTERN int
 snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
-            const wchar_t * restrict fmt, ...);
+            const wchar_t * restrict fmt, ...) BOSW_CHK(dest);
 
 /* unsafe! use vswprintf_s instead */
 EXTERN int
 vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
-             const wchar_t *restrict fmt, va_list ap);
+             const wchar_t *restrict fmt, va_list ap) BOSW_CHK(dest);
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
@@ -540,34 +565,34 @@ vfwscanf_s(FILE *restrict stream,
 EXTERN errno_t
 wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t slen,
-         wchar_t **restrict substring);
+         wchar_t **restrict substring) BOSW_CHK(dest);
 
 /* compare */
 EXTERN errno_t
 wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t smax,
-         int *diff);
+         int *diff) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax,
-          rsize_t count, int *diff);
+          rsize_t count, int *diff) BOSW_CHK(dest);
 
 /* compare case-folded */
 EXTERN errno_t
 wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax,
-          int *diff);
+          int *diff) BOSW_CHK(dest);
 
 EXTERN errno_t
-wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value);
+wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value) BOSW_CHK(dest);
 
 EXTERN errno_t
-wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, size_t n);
+wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, size_t n) BOSW_CHK(dest);
 
 EXTERN errno_t
 wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src,  rsize_t smax, int *indicator);
+          const wchar_t *restrict src,  rsize_t smax, int *indicator) BOSW_CHK(dest);
 
 /* simple char-wise folding */
 EXTERN errno_t
@@ -583,27 +608,27 @@ iswfc(uint32_t wc);
 
 /* full foldcase a single upper char to mult. lower chars */
 EXTERN int
-towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src);
+towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src) BOSW_CHK(dest);
 
 /* full foldcase + NFD normalization */
 EXTERN errno_t
 wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
-        wchar_t *restrict src, rsize_t *restrict lenp);
+        wchar_t *restrict src, rsize_t *restrict lenp) BOSW_CHK(dest);
 
 /* Normalize to FCD/pre-NFKD */
 EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
                     wchar_t *restrict src, rsize_t *restrict lenp,
-                    bool iscompat);
+                    bool iscompat) BOSW_CHK(dest);
 /* Normalize to NCD/NFKD */
 EXTERN errno_t
 wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax,
-                  wchar_t *restrict src, rsize_t len);
+                  wchar_t *restrict src, rsize_t len) BOSW_CHK(dest);
 /* Normalize to NFC/NFKC */
 EXTERN errno_t
 wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax,
                   wchar_t *restrict src, rsize_t *restrict lenp,
-                  bool iscontig);
+                  bool iscontig) BOSW_CHK(dest);
 
 enum wcsnorm_mode {
     WCSNORM_NFD  = 0,
@@ -619,7 +644,7 @@ typedef enum wcsnorm_mode wcsnorm_mode_t;
    experim. nfc>1: FCD, FCC */
 EXTERN errno_t
 wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
-          wcsnorm_mode_t mode, rsize_t *restrict lenp);
+          wcsnorm_mode_t mode, rsize_t *restrict lenp) BOSW_CHK(dest);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

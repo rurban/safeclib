@@ -63,7 +63,7 @@
  *                        if dmax allows. The wide string is null terminated.
  *                        If the resulting concatenated wide string is less
  *                        than dmax, the remaining slack space is nulled.
- * @param[in]   dmax      restricted maximum length of the resulting dest,
+ * @param[in]   dmax      restricted maximum wchar_t length of the resulting dest,
  *                        including the null
  * @param[in]   src       pointer to the wide string that will be concatenaed
  *                        to string dest

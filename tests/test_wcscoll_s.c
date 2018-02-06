@@ -64,6 +64,7 @@ int test_wcscoll_s (void)
     INDZERO()
 
     rc = wcscoll_s(str1, LEN, NULL, LEN, &ind);
+    /* printf("bos: %ld <=> LEN: %d\n", BOSW(str1), LEN); */
     ERR(ESNULLP)
     INDZERO()
 

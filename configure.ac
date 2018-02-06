@@ -434,15 +434,19 @@ dnl windows mult. decl are not properly sorted out yet
 case $host_os in
   mingw*|cygwin*|msys*)
     dnl gcc 3.4 cannot do -Wno-attributes
-    AX_CHECK_COMPILE_FLAG([-Wno-attributes],[
-      WARN_CFLAGS="$WARN_CFLAGS -Wno-attributes"
-    ],[])
-    AX_CHECK_COMPILE_FLAG([-Wno-discarded-qualifiers],[
-      WARN_CFLAGS="$WARN_CFLAGS -Wno-discarded-qualifiers"
-    ],[])
-    # AM_LDFLAGS=`echo $AM_LDFLAGS|sed -e"s/-Wl,--as-needed -Wl,--no-as-needed//"`
+    AX_APPEND_COMPILE_FLAGS([-Wno-attributes -Wno-discarded-qualifiers],
+                            [WARN_CFLAGS])
+    dnl AM_LDFLAGS=`echo $AM_LDFLAGS|sed -e"s/-Wl,--as-needed -Wl,--no-as-needed//"`
     ;;
 esac
+AX_GCC_BUILTIN(__builtin_object_size)
+dnl against -Werror,-Wgcc-compat fortify errors, only on clang
+if test x$ax_cv_have___builtin_object_size = xyes; then
+    AX_CHECK_COMPILE_FLAG([-Wgcc-compat],
+      [WARN_CFLAGS="$WARN_CFLAGS -Wno-gcc-compat"],[])
+    AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
+      [WARN_CFLAGS="$WARN_CFLAGS -Wno-error=user-defined-warnings"],[])
+fi
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
@@ -574,6 +578,7 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      [#include <time.h>])
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
+AX_GCC_BUILTIN(__builtin_ctz)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
@@ -601,7 +606,6 @@ AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
                 vsscanf_s vscanf_s printf_s fprintf_s tmpfile_s vfprintf_s vprintf_s \
                 fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
                 asctime_s ctime_s getenv_s ])
-AX_GCC_BUILTIN(__builtin_ctz)
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
@@ -723,6 +727,7 @@ if test "x$enable_debug_build" = "xtrue"; then
 	AC_MSG_RESULT([AM_CFLAGS = $AM_CFLAGS])
 	AC_MSG_RESULT([AM_LDFLAGS = $AM_LDFLAGS])
 	AC_MSG_RESULT([CFLAGS = $CFLAGS])
+	AC_MSG_RESULT([WARN_CFLAGS = $WARN_CFLAGS])
 fi
 
 # Output files
