@@ -44,12 +44,14 @@ int main()
     EXPMEM(mem1, 0, LEN, 33, sizeof(wchar_t));
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
     rc = wmemcpy_s(mem1, RSIZE_MAX_WMEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and untouched */
     if (!use_msvcrt)
         EXPMEM(mem1, 0, LEN, 33, sizeof(wchar_t));
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }

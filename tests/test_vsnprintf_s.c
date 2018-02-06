@@ -27,7 +27,9 @@ int vsnprintf_s(char *dest, size_t dmax, size_t maxcount,const char *fmt, va_lis
 static char   str1[LEN];
 static char   str2[LEN];
 
-int vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...) {
+static inline int
+vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...) BOS_CHK(dest)
+{
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -76,9 +78,10 @@ int test_vsnprintf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
     NEGERR_MSVC(ESLEMAX, have_wine?EOF:0);
-
+#endif
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");

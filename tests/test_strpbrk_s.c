@@ -60,6 +60,7 @@ int test_strpbrk_s (void)
     }
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strpbrk_s(str1, RSIZE_MAX_STR+1, str2, LEN, &first);
     ERR(ESLEMAX)
     if (first) {
@@ -67,7 +68,6 @@ int test_strpbrk_s (void)
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
     rc = strpbrk_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &first);
     ERR(ESLEMAX)
@@ -76,6 +76,7 @@ int test_strpbrk_s (void)
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

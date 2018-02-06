@@ -39,10 +39,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcpyfldin_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR(ESLEMAX);  /* and untouched */
     EXPSTR(str1, "aaaaa");
-
+#endif
 /*--------------------------------------------------*/
 
     rc = strcpyfldin_s(str1, len, str2, 0);

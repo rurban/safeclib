@@ -84,10 +84,11 @@ int test_strcoll_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcoll_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
     INDZERO()
-
+#endif
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

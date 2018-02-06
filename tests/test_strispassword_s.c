@@ -32,8 +32,10 @@ int main()
     ERR(false)
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strispassword_s("Test4You&", 999);
     ERR(false)
+#endif
 /*--------------------------------------------------*/
 
     rc = strispassword_s("", 9);

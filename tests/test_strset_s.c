@@ -32,12 +32,13 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strset_s(str1, RSIZE_MAX_STR+1, 0);
     ERR(ESLEMAX);
 
     rc = strset_s(str1, RSIZE_MAX_STR+1, 256);
     ERR(ESLEMAX);
-
+#endif
 /*--------------------------------------------------*/
 
     strcpy(str1, "abc");

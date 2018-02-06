@@ -44,9 +44,10 @@ int main()
     ERR(ESZEROL)
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcmpfld_s(str1, (RSIZE_MAX_STR+1), str2, &ind);
     ERR(ESLEMAX)
-/*--------------------------------------------------*/
+#endif
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");

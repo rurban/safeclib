@@ -45,8 +45,10 @@ int test_strerror_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strerror_s(str1, (RSIZE_MAX_STR+1), 0);
     ERR_MSVC(ESLEMAX, EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

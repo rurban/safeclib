@@ -54,10 +54,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcasestr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     ERR(ESLEMAX)
     SUBNULL()
-
+#endif
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, 0, &sub);

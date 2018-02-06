@@ -67,15 +67,16 @@ int test_strcspn_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcspn_s(str1, RSIZE_MAX_STR+1, str2, LEN, &count);
     ERR(ESLEMAX)
     COUNT(0)
-
 /*--------------------------------------------------*/
 
     rc = strcspn_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &count);
     ERR(ESLEMAX)
     COUNT(0)
+#endif
 
 /*--------------------------------------------------*/
 

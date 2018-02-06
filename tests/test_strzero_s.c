@@ -31,9 +31,10 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strzero_s(str1, RSIZE_MAX_STR+1);
     ERR(ESLEMAX)
-
+#endif
 /*--------------------------------------------------*/
 
     strcpy(str1, "abc");

@@ -88,6 +88,7 @@ int test_wcsrtombs_s (void)
     CHECK_SLACK(dest, 2);
     CLRPS;
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
     if (!have_wine)
         ERR_MSVC(ESLEMAX, 0); /* under wine it returns 42, EILSEQ */
@@ -96,6 +97,7 @@ int test_wcsrtombs_s (void)
     rc = wcsrtombs_s(&ind, (char*)&cs, LEN, &cs, 3, &ps);
     ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
     CLRPS;
+#endif
 
     dest[0] = 'a';
     if (!use_msvcrt) { /* crashes with msvcrt in wctob/wcsrtombs */

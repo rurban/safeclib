@@ -36,9 +36,12 @@ int main()
     EXPMEM(mem1, 0, LEN, 33, 2);
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memmove16_s(mem1, RSIZE_MAX_MEM+1, mem2, count);
     ERR(ESLEMAX); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 2);
+#endif
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }

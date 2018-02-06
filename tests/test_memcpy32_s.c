@@ -36,9 +36,12 @@ int main()
     EXPMEM(mem1, 0, LEN, 33, 4);
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memcpy32_s(mem1, RSIZE_MAX_MEM+1, mem2, count);
     ERR(ESLEMAX); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 4);
+#endif
+
 /*--------------------------------------------------*/
 
     rc = memcpy32_s(mem1, MAX, NULL, count);

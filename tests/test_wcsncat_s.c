@@ -75,6 +75,7 @@ int test_wcsncat_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     wcscpy(str1, L"a");
     rc = wcsncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, EOK);
@@ -94,6 +95,7 @@ int test_wcsncat_s (void)
     } else {
         WEXPSTR(str1, L"ab");
     }
+#endif
 
 /*--------------------------------------------------*/
 

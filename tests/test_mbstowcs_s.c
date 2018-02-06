@@ -63,8 +63,10 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, 0, cs, 0);
     ERR_MSVC(ESZEROL, EINVAL);
 
+#ifndef HAVE_CT_BOS_OVR
     rc = mbstowcs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
     ERR_MSVC(ESLEMAX, 0);
+#endif
 
     cs = "abcdef";
     rc = mbstowcs_s(&ind, (wchar_t*)cs, LEN, cs, 3);

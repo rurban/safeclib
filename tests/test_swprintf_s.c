@@ -40,9 +40,11 @@ int test_swprintf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
     ERR(0);
     ERRNO_MSVC(ESLEMAX, 0);
+#endif
 
 /*--------------------------------------------------*/
 

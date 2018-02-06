@@ -39,13 +39,14 @@ int test_strnlen_s (void)
     }
 /*--------------------------------------------------*/
 
-    max_len = RSIZE_MAX_STR+1;
-    len = strnlen_s("test", max_len);
+#ifndef HAVE_CT_BOS_OVR
+    len = strnlen_s("test", RSIZE_MAX_STR+1);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     std_len = strlen("");

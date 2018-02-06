@@ -74,8 +74,9 @@ int test_strncat_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
+    /* with clang-7 compile-time checks this errors */
+#ifndef HAVE_CT_BOS_OVR
     /* valid with the windows sec_api */
-#ifndef HAVE_CT_BOS_CHK
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {

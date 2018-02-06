@@ -128,7 +128,7 @@
 
 /* so far clang-7 only */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
-# define HAVE_CT_BOS_CHK
+# define HAVE_CT_BOS_OVR
 #elif defined(HAVE_WARN_DMAX)
 # define HAVE_RT_BOS_CHK
 #endif

@@ -52,11 +52,13 @@ int test_strcpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
 
     rc = strcpy_s(str1, (size_t)-1L, str2);
     ERR_MSVC(ESLEMAX, 0);
+#endif
 
 /*--------------------------------------------------*/
 

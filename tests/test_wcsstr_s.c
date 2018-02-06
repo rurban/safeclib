@@ -51,10 +51,11 @@ int test_wcsstr_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsstr_s(wstr1, RSIZE_MAX_STR+1, wstr2, LEN, &sub);
     ERR(ESLEMAX)
     WSUBNULL();
-
+#endif
 /*--------------------------------------------------*/
 
     rc = wcsstr_s(wstr1, LEN, wstr2, 0, &sub);
@@ -172,7 +173,7 @@ int test_wcsstr_s (void)
     wcscpy(wstr1, L"keep it all together");
     wcscpy(wstr2, L"it all");
 
-    rc = wcsstr_s(wstr1, 333, wstr2, LEN, &sub);
+    rc = wcsstr_s(wstr1, LEN, wstr2, LEN, &sub);
     ERR(EOK)
 /*--------------------------------------------------*/
 

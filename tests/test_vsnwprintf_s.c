@@ -16,8 +16,10 @@
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
 
-int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
-                const wchar_t *restrict fmt, ...) {
+static inline int
+vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
+             const wchar_t *restrict fmt, ...) BOSW_CHK(dest)
+{
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -53,9 +55,10 @@ int test_vsnwprintf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
     NEGERR(ESLEMAX);
-
+#endif
 /*--------------------------------------------------*/
 
     str2[0] = '\0';

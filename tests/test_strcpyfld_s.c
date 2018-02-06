@@ -39,6 +39,7 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     slen = 5;
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
     ERR(ESLEMAX);  /* and untouched */
@@ -51,7 +52,7 @@ int main()
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, slen);
     ERR(ESLEMAX);  /* and untouched */
     EXPSTR(str1, "aaaaa");
-
+#endif
 /*--------------------------------------------------*/
 
     len = 5;

@@ -53,9 +53,11 @@ int test_wcscpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcscpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     WEXPSTR(str1, L"untouched");
+#endif
 
 /*--------------------------------------------------*/
 

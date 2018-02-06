@@ -66,9 +66,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsnorm_s(str, 99999, L"test", WCSNORM_NFD, NULL);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
+#endif
 
 #if SIZEOF_WCHAR_T >= 4
 # define OVMAX_WC L"\x11ffff"

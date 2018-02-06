@@ -70,9 +70,11 @@ int test_wcrtomb_s (void)
     INDCMP(!= 1);
     CLRPS;
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcrtomb_s(&ind, dest, RSIZE_MAX_STR+1, wc, &ps);
     ERR_MSVC(ESLEMAX,0);
     CLRPS;
+#endif
 
 /*--------------------------------------------------*/
 

@@ -32,8 +32,10 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsnset_s(str1, RSIZE_MAX_WSTR+1, 0, 5);
     ERR(ESLEMAX);
+#endif
 
     rc = wcsnset_s(str1, LEN-1, L' ', LEN);
     ERR(ESNOSPC);

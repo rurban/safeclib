@@ -59,9 +59,11 @@ int test_strcat_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
+#ifndef HAVE_CT_BOS_OVR
     rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     EXPSTR(str1, use_msvcrt ? "aaaaa" : "a");
+#endif
 
 /*--------------------------------------------------*/
 

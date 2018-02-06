@@ -57,8 +57,10 @@ int test_wcstombs_s (void)
     rc = wcstombs_s(&ind, NULL, 0, cs, 0);
     ERR_MSVC(ESNOSPC, 0);
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcstombs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
     ERR_MSVC(ESLEMAX, 0);
+#endif
 
     strcpy(dest, "abcdef");
     rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 3);

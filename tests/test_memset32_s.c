@@ -53,10 +53,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memset32_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
     ERR(ESLEMAX); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 4);
-
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }

@@ -38,10 +38,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcpyfldout_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR(ESLEMAX);  /* and untouched */
     EXPSTR(str1, "aaaaa");
-
+#endif
 /*--------------------------------------------------*/
 
     len = 5;

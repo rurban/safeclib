@@ -49,7 +49,8 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_CHK
+    /* with clang-7 compile-time checks this errors */
+#ifndef HAVE_CT_BOS_OVR
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (!use_msvcrt)

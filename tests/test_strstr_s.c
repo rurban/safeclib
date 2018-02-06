@@ -60,6 +60,7 @@ int test_strstr_s (void)
     }
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strstr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     ERR(ESLEMAX)
     if (sub) {
@@ -67,6 +68,7 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     rc = strstr_s(str1, LEN, str2, 0, &sub);
@@ -78,6 +80,7 @@ int test_strstr_s (void)
     }
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
     ERR(ESLEMAX)
     if (sub) {
@@ -85,6 +88,7 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     *str1 = '\0';
@@ -190,8 +194,9 @@ int test_strstr_s (void)
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
-    rc = strstr_s(str1, 333, str2, LEN, &sub);
+    rc = strstr_s(str1, 45, str2, LEN, &sub);
     ERR(EOK)
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");

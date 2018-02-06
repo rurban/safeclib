@@ -36,8 +36,10 @@ int main()
     ERR(ESZEROL)
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strprefix_s(str1, RSIZE_MAX_STR+1, str2);
     ERR(ESLEMAX)
+#endif
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

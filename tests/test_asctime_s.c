@@ -52,8 +52,10 @@ int test_asctime_s (void)
     rc = asctime_s(str1, 25, tm);
     ERR_MSVC(ESLEMIN,EINVAL);
 
+#ifndef HAVE_CT_BOS_OVR
     rc = asctime_s(str1, RSIZE_MAX_STR+1, tm);
     ERR_MSVC(ESLEMAX,0);
+#endif
 
 /*--------------------------------------------------*/
 

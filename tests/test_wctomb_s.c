@@ -54,8 +54,10 @@ int test_wctomb_s (void)
     rc = wctomb_s(&ind, dest, 0, src);
     ERR_MSVC(ESZEROL, ERANGE);
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wctomb_s(&ind, dest, RSIZE_MAX_STR+1, src);
     ERR_MSVC(ESLEMAX, 0);
+#endif
 
 /*--------------------------------------------------*/
 

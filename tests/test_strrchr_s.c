@@ -43,10 +43,11 @@ int test_strrchr_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strrchr_s(str, RSIZE_MAX_STR+1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
-
+#endif
     rc = strrchr_s(str, LEN, 256, &sub);
     ERR(ESLEMAX)
     SUBNULL();

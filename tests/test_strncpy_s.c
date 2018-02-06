@@ -94,6 +94,7 @@ int test_strncpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "aa");
     rc = strncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
@@ -111,6 +112,7 @@ int test_strncpy_s (void)
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPSTR(str1, "");
+#endif
 
 /*--------------------------------------------------*/
 

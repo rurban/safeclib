@@ -30,8 +30,10 @@ int main()
     ERR(ESZEROL)
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsset_s(str1, RSIZE_MAX_WSTR+1, 0);
     ERR(ESLEMAX);
+#endif
 
 /*--------------------------------------------------*/
 

@@ -28,9 +28,10 @@ int test_snwprintf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = snwprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
     NEGERR(ESLEMAX)
-
+#endif
 /*--------------------------------------------------*/
 
     rc = snwprintf_s(str1, LEN, NULL, NULL);

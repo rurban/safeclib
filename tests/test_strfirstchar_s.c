@@ -58,6 +58,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strfirstchar_s(str1, RSIZE_MAX_STR+1, 'a', &first);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
@@ -69,6 +70,7 @@ int main()
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

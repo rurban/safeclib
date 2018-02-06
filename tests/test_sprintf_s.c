@@ -41,6 +41,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
+#ifndef HAVE_CT_BOS_OVR
     rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
     if (!use_msvcrt) {
         ERR(-1);
@@ -48,6 +49,7 @@ int test_sprintf_s (void)
         ERR(0);
     }
     ERRNO_MSVC(ESLEMAX, 0);
+#endif
 
 /*--------------------------------------------------*/
 

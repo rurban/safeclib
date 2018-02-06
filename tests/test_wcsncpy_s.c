@@ -94,6 +94,7 @@ int test_wcsncpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
     if (use_msvcrt) {
@@ -101,6 +102,7 @@ int test_wcsncpy_s (void)
     } else {
         WEXPSTR(str1, L"untouched");
     }
+#endif
 
 /*--------------------------------------------------*/
 

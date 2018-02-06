@@ -32,9 +32,10 @@ int main()
     ERR(ESZEROL)
 /*--------------------------------------------------*/
 
-    len = 99999;
-    rc = strljustify_s("test", len);
-    ERR(ESLEMAX)
+#ifndef HAVE_CT_BOS_OVR
+    rc = strljustify_s("test", 99999);
+    ERR(ESLEMAX);
+#endif
 /*--------------------------------------------------*/
 
     /* empty string */

@@ -81,12 +81,13 @@ int test_memset_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memset_s(mem1, MAX+1, value, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (use_msvcrt)
         EXPMEM(mem1, 0, LEN, value, 1);
-
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }

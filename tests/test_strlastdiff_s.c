@@ -55,6 +55,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strlastdiff_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
     if (ind != 0) {
@@ -62,6 +63,7 @@ int main()
                      __FUNCTION__, __LINE__, (int)ind, rc);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

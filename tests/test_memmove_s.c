@@ -49,12 +49,15 @@ int test_memmove_s (void)
 
 /*--------------------------------------------------*/
 
+    /* with clang-7 compile-time checks this errors */
+#ifndef HAVE_CT_BOS_OVR
     rc = memmove_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (!use_msvcrt)
         EXPMEM(mem1, 0, LEN, 33, 1);
     else
         EXPMEM(mem1, 0, LEN, 44, 1);
+#endif
 
 /*--------------------------------------------------*/
 
