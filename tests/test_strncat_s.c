@@ -18,11 +18,11 @@
 
 #define LEN   ( 128 )
 
+static char   str1[LEN];
+static char   str2[LEN];
+
 int test_strncat_s (void)
 {
-    static char   str1[LEN];
-    static char   str2[LEN];
-
     errno_t rc;
     int32_t ind;
     int len;
@@ -84,8 +84,14 @@ int test_strncat_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
-    /* with clang-7 compile-time checks this errors */
+    /* with clang-7 compile-time already checks these errors */
 #ifndef HAVE_CT_BOS_OVR
+    if (_BOS_KNOWN(str1)) {
+        rc = strncat_s(str1, LEN+1, str2, LEN);
+        ERR(ESLEMAX);
+        EXPSTR(str1, ""); /* cleared */
+    }
+
     /* valid with the windows sec_api */
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
@@ -122,9 +128,9 @@ int test_strncat_s (void)
     strcpy(str1, "a");
     rc = strncat_s(str1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL);
-    /*EXPSTR(str1, "a");*/
+    /*EXPSTR(str1, ""); */
     if (!use_msvcrt)
-        CHECK_SLACK(str1, LEN);
+        CHECK_SLACK(str1, 1);
 
 /*--------------------------------------------------*/
 

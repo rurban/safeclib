@@ -93,13 +93,11 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
                    NULL, ESNULLP);
         return ESNULLP;
     }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strerror_s: dmax is 0",
                    NULL, ESZEROL);
         return ESZEROL;
     }
-
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strerror_s: dmax exceeds max",
                    NULL, ESLEMAX);
@@ -109,7 +107,7 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
     len = strerrorlen_s(errnum);
     if (likely(len < dmax)) {
         if (errnum >= ESNULLP && errnum <= ESLAST) {
-            const char *tmpbuf = errmsgs_s[errnum-ESNULLP];
+            const char *tmpbuf = errmsgs_s[errnum - ESNULLP];
             strcpy_s(dest, dmax, tmpbuf);
         } else {
             const char *tmpbuf = strerror(errnum);
@@ -117,7 +115,7 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
         }
     } else if (dmax > 3) { /* truncate */
         const char *tmpbuf = (errnum >= ESNULLP && errnum <= ESLAST)
-            ? errmsgs_s[errnum-ESNULLP]
+            ? errmsgs_s[errnum - ESNULLP]
             : strerror(errnum);
         strncpy_s(dest, dmax, tmpbuf, dmax-4);
         strcat_s(dest, dmax, "...");

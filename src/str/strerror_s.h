@@ -40,6 +40,7 @@ static const char* errmsgs_s[] = {
     "unterminated string",    /* ESUNTERM */
     "no difference",          /* ESNODIFF */
     "not found",              /* ESNOTFND */
+    "wrong length",           /* ESLEWRNG */
 };
 
 static const int len_errmsgs_s[] = {
@@ -53,4 +54,5 @@ static const int len_errmsgs_s[] = {
     sizeof "unterminated string",    /* ESUNTERM */
     sizeof "no difference",          /* ESNODIFF */
     sizeof "not found",              /* ESNOTFND */
+    sizeof "wrong length",           /* ESLEWRNG */
 };

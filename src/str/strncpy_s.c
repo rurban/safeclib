@@ -69,7 +69,10 @@
  * @param[in]   slen  the maximum number of characters to copy from src
  *
  * @pre  dmax shall not be zero.
- * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
+ * @pre  With --enable-warn-dmax dmax should be the exact object size of dest.
+ * @pre  dmax and slen should not be greater than RSIZE_MAX_STR.
+ * @pre  dmax and slen should not be greater than the object sizes of dest and src.
+ * @pre  dmax shall not equal zero
  * @pre  If slen is either greater than or equal to dmax, then dmax should
  *       be more than strnlen_s(src,dmax) to avoid truncation.
  * @pre  Copying shall not take place between objects that overlap.
@@ -82,9 +85,17 @@
  *                     src were copied to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax > dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
+ *
+ * @details
+ *    If dmax != sizeof(dest): With --enable-warn-dmax ESLEWRNG will be passed to the
+ *    constraint handler.
+ *    With --enable-error-dmax this error will be fatal, but dest will not be cleared.
+ *    With clang-7 and/or diagnose_if and __builtin_object_size() support wrong dmax
+ *    values will be caught at compile-time.
  *
  * @see
  *    strcat_s(), strncat_s(), strcpy_s(), wcsncpy_s()
@@ -107,7 +118,30 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-    else if (unlikely(dmax == 0)) {
+    /* known dest size */
+    else if (_BOS_KNOWN(dest)) {
+        if (unlikely(_BOS_OVR_N(dest,dmax))) {
+            size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */
+            if (len > dmax)
+                len = dmax;
+            if (len > RSIZE_MAX_STR)
+                len = RSIZE_MAX_STR;
+            handle_error(dest, len, "strncpy_s: dmax exceeds dest",
+                         ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+#ifdef HAVE_WARN_DMAX
+        else if (_BOS_CHK_N(dest,dmax)) {
+            char msg[128];
+            sprintf(msg, "strncpy_s: wrong dmax %ld, dest has size %ld", dmax, BOS(dest));
+            invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
+# ifdef HAVE_ERROR_DMAX
+            return RCNEGATE(ESLEWRNG);
+# endif
+        }
+#endif
+    }
+    if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax is 0",
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
@@ -115,6 +149,12 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     else if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strncpy_s: dmax exceeds max",
                    NULL, ESLEMAX);
+        return RCNEGATE(ESLEMAX);
+    }
+    /* compile-time known src size */
+    else if (unlikely(_BOS_OVR(src,slen))) {
+        handle_error(dest, strnlen_s(dest, dmax), "strncat_s: slen exceeds src",
+                     ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     else if (unlikely(src == NULL)) {

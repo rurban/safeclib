@@ -90,8 +90,12 @@ extern "C" {
 #define ESNOTFND        ( 409 )       /* not found                   */
 #endif
 
+#ifndef ESLEWRNG
+#define ESLEWRNG        ( 410 )       /* wrong length                */
+#endif
+
 #ifndef ESLAST
-#define ESLAST ESNOTFND
+#define ESLAST ESLEWRNG
 #endif
 
 /* EOK may or may not be defined in errno.h */
