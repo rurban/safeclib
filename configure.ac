@@ -447,9 +447,11 @@ esac
 dnl windows mult. decl are not properly sorted out yet
 case $host_os in
   mingw*|cygwin*|msys*)
+    AX_CHECK_COMPILE_FLAG([-Werror=unknown-warning-option],
+        [ax_ccf_err="-Werror=unknown-warning-option"],[ax_ccf_err=""])
     dnl gcc 3.4 cannot do -Wno-attributes
     AX_APPEND_COMPILE_FLAGS([-Wno-attributes -Wno-discarded-qualifiers],
-                            [WARN_CFLAGS])
+                            [WARN_CFLAGS],[$ax_ccf_err])
     dnl AM_LDFLAGS=`echo $AM_LDFLAGS|sed -e"s/-Wl,--as-needed -Wl,--no-as-needed//"`
     ;;
 esac
@@ -457,10 +459,10 @@ AX_GCC_BUILTIN(__builtin_object_size)
 dnl against -Werror,-Wgcc-compat fortify errors, only on clang
 INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
 if test x$ax_cv_have___builtin_object_size = xyes; then
-    AX_CHECK_COMPILE_FLAG([-Wgcc-compat],
-      [WARN_CFLAGS="$WARN_CFLAGS -Wno-gcc-compat"],[])
-    AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
-      [WARN_CFLAGS="$WARN_CFLAGS -Wno-error=user-defined-warnings"],[])
+    AX_CHECK_COMPILE_FLAG([-Werror=unknown-warning-option],
+        [ax_ccf_err="-Werror=unknown-warning-option"],[ax_ccf_err=""])
+    AX_APPEND_COMPILE_FLAGS([-Wno-gcc-compat -Wno-error=user-defined-warnings],
+        [WARN_CFLAGS],[$ax_ccf_err])
     INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
 else
     if test "x$enable_warn_dmax" = "xtrue" ; then
