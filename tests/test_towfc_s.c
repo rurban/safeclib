@@ -66,7 +66,8 @@ int test_towfc_s (void)
             memcpy(mapping, &p[5], l);
             mapping[l] = 0;
             strcpy(name, &p1[4]);
-            name[strlen(name)-1] = 0;
+            if (strlen(name))
+                name[strlen(name)-1] = 0;
 
             c = sscanf(code, "%X", &wc);
             if (c) {
