@@ -111,6 +111,29 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
                    NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
+    /* known dest size */
+    else if (_BOS_KNOWN(dest)) {
+        if (unlikely(_BOS_OVR_N(dest,dmax))) {
+            size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */
+            if (len > dmax)
+                len = dmax;
+            if (len > RSIZE_MAX_STR)
+                len = RSIZE_MAX_STR;
+            handle_error(dest, len, "strcat_s" ": dmax exceeds dest", ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+#ifdef HAVE_WARN_DMAX
+        else if (_BOS_CHK_N(dest,dmax)) {
+            char msg[128];
+            sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
+                    "strcat_s", (unsigned long)dmax, (unsigned long)BOS(dest));
+            invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
+# ifdef HAVE_ERROR_DMAX
+            return RCNEGATE(ESLEWRNG);
+# endif
+        }
+#endif
+    }
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strcat_s: dmax is 0",
                    NULL, ESZEROL);

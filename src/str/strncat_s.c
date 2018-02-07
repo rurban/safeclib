@@ -141,7 +141,8 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
 #ifdef HAVE_WARN_DMAX
         else if (_BOS_CHK_N(dest,dmax)) {
             char msg[128];
-            sprintf(msg, "strncat_s: wrong dmax %ld, dest has size %ld", dmax, BOS(dest));
+            sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
+                    "strncat_s", (unsigned long)dmax, (unsigned long)BOS(dest));
             invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
 # ifdef HAVE_ERROR_DMAX
             return RCNEGATE(ESLEWRNG);
