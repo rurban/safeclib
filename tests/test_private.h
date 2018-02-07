@@ -126,11 +126,31 @@
 #define __has_attribute(x) 0
 #endif
 
+#if defined(__clang__) || defined(__clang) || \
+       (defined( __GNUC__) && ((__GNUC__ * 100) + __GNUC_MINOR__) >= 406)
+#  define GCC_DIAG_PRAGMA(x) _Pragma (#x)
+/* clang has "clang diagnostic" pragmas, but also understands gcc. */
+#  define GCC_DIAG_IGNORE(x) _Pragma("GCC diagnostic push") \
+                             GCC_DIAG_PRAGMA(GCC diagnostic ignored #x)
+#  define GCC_DIAG_RESTORE   _Pragma("GCC diagnostic pop")
+#else
+#  define GCC_DIAG_IGNORE(w)
+#  define GCC_DIAG_RESTORE
+#endif
+
 /* so far clang-7 only */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 # define HAVE_CT_BOS_OVR
+# ifdef HAVE_USER_DEFINED_WARNINGS
+#  define GCC_DIAG_NOUSERWARN GCC_DIAG_IGNORE(-Wuser-defined-warnings)
+# else
+#  define GCC_DIAG_NOUSERWARN
+# endif
 #elif defined(HAVE_WARN_DMAX)
 # define HAVE_RT_BOS_CHK
+# define GCC_DIAG_NOUSERWARN
+#else
+# define GCC_DIAG_NOUSERWARN
 #endif
 
 /* mingw 3.4 */

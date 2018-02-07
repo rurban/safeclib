@@ -461,8 +461,17 @@ INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
 if test x$ax_cv_have___builtin_object_size = xyes; then
     AX_CHECK_COMPILE_FLAG([-Werror=unknown-warning-option],
         [ax_ccf_err="-Werror=unknown-warning-option"],[ax_ccf_err=""])
-    AX_APPEND_COMPILE_FLAGS([-Wno-gcc-compat -Wno-error=user-defined-warnings],
-        [WARN_CFLAGS],[$ax_ccf_err])
+    AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
+        [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
+    AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wgcc-compat],
+        [WARN_CFLAGS="$WARN_CFLAGS -Wno-gcc-compat"],[])
+    if test $have_user_defined_warnings = yes; then
+        AX_APPEND_COMPILE_FLAGS([-Wno-error=user-defined-warnings],
+            [WARN_CFLAGS],[$ax_ccf_err])
+        AC_DEFINE([HAVE_USER_DEFINED_WARNINGS], [1], [Uses -Wuser-defined-warnings])
+    else
+        AC_DEFINE([HAVE_USER_DEFINED_WARNINGS], [0], [Uses -Wuser-defined-warnings])
+    fi
     INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
 else
     if test "x$enable_warn_dmax" = "xtrue" ; then

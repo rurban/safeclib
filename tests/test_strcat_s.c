@@ -52,7 +52,9 @@ int test_strcat_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaa");
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 0, str2);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESZEROL, EINVAL);
     EXPSTR(str1, "aaaa");
 
@@ -70,7 +72,9 @@ int test_strcat_s (void)
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 1, str2);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
@@ -80,7 +84,9 @@ int test_strcat_s (void)
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 2, str2);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
@@ -89,14 +95,18 @@ int test_strcat_s (void)
 
     strcpy(str1, "abcd");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(&str1[0], 8, &str1[3]);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1);
     CHECK_SLACK(str1, 8);
 
     strcpy(str1, "abcd");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(&str1[0], 4, &str1[3]);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1);
     CHECK_SLACK(str1, 4);
@@ -105,7 +115,9 @@ int test_strcat_s (void)
 
     strcpy(str1, "abcdefgh");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(&str1[3], 5, &str1[0]);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(&str1[3])
     CHECK_SLACK(&str1[3], 5);
@@ -114,7 +126,9 @@ int test_strcat_s (void)
 
     strcpy(str1, "abcdefgh");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(&str1[3], 12, &str1[0]);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(&str1[3]);
     CHECK_SLACK(&str1[3], 12);
@@ -127,7 +141,7 @@ int test_strcat_s (void)
     len1 = strlen(str1);
     len2 = strlen(str2);
 
-    rc = strcat_s(str1, 50, str2);
+    rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     len3 = strlen(str1);
     if (len3 != (len1+len2)) {
@@ -135,14 +149,16 @@ int test_strcat_s (void)
                      __FUNCTION__, __LINE__, len1, len2, len3);
         errs++;
     }
-    CHECK_SLACK(&str1[len3], 50-len3);
+    CHECK_SLACK(&str1[len3], LEN-len3);
 
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 1, str2);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
@@ -152,7 +168,9 @@ int test_strcat_s (void)
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 2, str2);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
@@ -162,11 +180,11 @@ int test_strcat_s (void)
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, 20, str2);
+    rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     EXPSTR(str1, str2)
     len1 = strlen(str1);
-    CHECK_SLACK(&str1[len1], 20-len1);
+    CHECK_SLACK(&str1[len1], LEN-len1);
 
 /*--------------------------------------------------*/
 
@@ -205,7 +223,9 @@ int test_strcat_s (void)
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 12, str2);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESNOSPC, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 12);
@@ -215,7 +235,7 @@ int test_strcat_s (void)
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
 
-    rc = strcat_s(str1, 52, str2);
+    rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     EXPSTR(str1, "1234keep it simple")
     len1 = strlen(str1);
@@ -225,7 +245,9 @@ int test_strcat_s (void)
 
     strcpy(str1, "12345678901234567890");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 8, &str1[7]);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 8);
@@ -234,7 +256,9 @@ int test_strcat_s (void)
 
     strcpy(str1, "123456789");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str1, 9, &str1[8]);
+    GCC_DIAG_RESTORE
     ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
     CHECK_SLACK(str1, 9);
@@ -263,18 +287,20 @@ int test_strcat_s (void)
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
 
-    rc = strcat_s(str2, 31, &str1[0]);
+    rc = strcat_s(str2, LEN, &str1[0]);
     ERR(EOK)
     EXPSTR(str2, "123keep it simple")
     len2 = strlen(str2);
-    CHECK_SLACK(&str2[len2], 31-len2);
+    CHECK_SLACK(&str2[len2], LEN-len2);
 
 /*--------------------------------------------------*/
 
     strcpy(str2, "1234");
     strcpy(str1, "56789");
 
+    GCC_DIAG_NOUSERWARN
     rc = strcat_s(str2, 10, str1);
+    GCC_DIAG_RESTORE
     ERR(EOK)
     EXPSTR(str2, "123456789")
     len2 = strlen(str2);
