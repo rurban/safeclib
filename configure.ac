@@ -292,7 +292,7 @@ fi
 
 AC_ARG_ENABLE(warn-dmax,
 	AS_HELP_STRING([--enable-warn-dmax],
-		       [Enable compile-time dmax checks against __builtin_object_size(dest). @<:@default=no@:>@]),
+		       [Enable dmax checks against __builtin_object_size(dest). @<:@default=no@:>@]),
 	[case "${enableval}" in
 	yes) enable_warn_dmax=true ;;
 	no)  enable_warn_dmax=false ;;
@@ -302,7 +302,28 @@ AC_MSG_CHECKING([for --enable-warn-dmax])
 if test "x$enable_warn_dmax" = "xtrue" ; then
 	AC_MSG_RESULT([yes])
 	AC_DEFINE([HAVE_WARN_DMAX], [ 1 ],
-            [Define to 1 to enable compile-time dmax checks against __builtin_object_size(dest)])
+            [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
+else
+	AC_MSG_RESULT([no (default)])
+fi
+
+AC_ARG_ENABLE(error-dmax,
+	AS_HELP_STRING([--enable-error-dmax],
+		       [Make --enable-warn-dmax fatal. @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_error_dmax=true ;;
+	no)  enable_error_dmax=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-error-dmax]) ;;
+	esac], [enable_error_dmax=false ])
+AC_MSG_CHECKING([for --enable-error-dmax])
+if test "x$enable_error_dmax" = "xtrue" ; then
+	AC_MSG_RESULT([yes])
+        if test "x$enable_warn_dmax" = "xfalse" ; then
+            AC_DEFINE([HAVE_WARN_DMAX], [ 1 ],
+                [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
+        fi
+	AC_DEFINE([HAVE_ERROR_DMAX], [ 1 ],
+            [Define to 1 to make HAVE_WARN_DMAX fatal])
 else
 	AC_MSG_RESULT([no (default)])
 fi

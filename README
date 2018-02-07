@@ -5,11 +5,13 @@ Safe C Library - README
 
 Copying
 -------
+
 This project's licensing restrictions are documented in the file 'COPYING'
 under the root directory of this release. Basically it's MIT licensed.
 
 Overview
 --------
+
 This library implements the secure C11 Annex K functions on top of most libc
 implementations, which are missing from them.
 
@@ -53,15 +55,17 @@ and the following can be added...
 - provide a library of functions that are efficient
 
 The C11 Standard adopted many of these points, and added some secure
-_s variants in the Annex K.  The Microsoft Windows/MINGW secure API did the
-same, but deviated in some functions from the standard. Besides
-Windows only Android's Bionic and Embarcadero implemented this C11
-secure Annex K API so far.
-They are still missing from glibc, musl, FreeBSD, darwin and DragonFly
-libc, OpenBSD libc, newlib, dietlibc, uClibc, minilibc.
+`_s` variants in the Annex K.  The Microsoft Windows/MINGW secure API
+did the same, but deviated in some functions from the standard.
+Besides Windows (with its msvcrt, ucrt, reactos msvcrt and wine msvcrt
+variants) only the unused stlport, Android's Bionic and Embarcadero
+implemented this C11 secure Annex K API so far.  They are still
+missing from glibc, musl, FreeBSD, darwin and DragonFly libc, OpenBSD
+libc, newlib, dietlibc, uClibc, minilibc.
 
 Design Considerations
 ---------------------
+
 This library implements since 3.0 all functions defined in the
 specifications.  Included in the library are extensions to the specification
 to provide a complementary set of functions with like behavior.
@@ -86,10 +90,18 @@ http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670
 * Use of errno
 
 The TR24731 specification says an implementation may set errno for the
-functions deﬁned in the technical report, but is not required to.  This
-library does not set errno.  The library does use errno return codes as
-required by functional APIs.  Specific Safe C String and Safe C Memory errno
-codes are defined in the safe_errno.h file.
+functions deﬁned in the technical report, but is not required to.
+This library does not set `errno` in most functions, only in
+bsearch_s, fscanf_s, fwscanf_s, gets_s, gmtime_s, localtime_s,
+scanf_s, sprintf_s, sscanf_s, swprintf_s, swscanf_s, strtok_s, vfscanf_s,
+vfwscanf_s, vsscanf_s vsprintf_s, vswprintf_s, vswscanf_s, wcstok_s,
+wscanf_s.
+
+In most cases the safeclib extended ES* errors do not set errno, only
+when the underlying insecure system call fails, errno is set.  The
+library does use `errno` return codes as required by functional APIs.
+Specific Safe C String and Safe C Memory errno codes are defined in
+the `safe_errno.h` file.
 
 * Runtime-constraints
 
@@ -101,9 +113,12 @@ Per the spec, multiple runtime-constraint violations in the same call to a
 library function result in only one call to the runtime-constraint handler.
 The first violation encountered invokes the runtime-constraint handler.
 
-The runtime-constraint handler might not return. If the handler does return,
-the library function whose runtime-constraint was violated returns an
-indication of failure as given by the function’s return.
+The runtime-constraint handler might not return. If the handler does
+return, the library function whose runtime-constraint was violated
+returns an indication of failure as given by the function’s return.
+With valid dest and dmax values, dest is cleared. With the optional
+--disable-null-slack only the first value of dest is cleared,
+otherwise the whole dest buffer.
 
 rsize_t::
 	The specification defines a new type.  This type, rsize_t, is
@@ -117,38 +132,50 @@ RSIZE_MAX::
 	range limit for the safe string functions.  RSIZE_MAX_MEM defines the
 	range limit for the safe memory functions.  The point is that string
 	limits can and should be different from memory limits.
-        There also exist RSIZE_MAX_WSTR, RSIZE_MAX_MEM16, RSIZE_MAX_MEM32.
+    There also exist RSIZE_MAX_WSTR, RSIZE_MAX_MEM16, RSIZE_MAX_MEM32.
 
+* Compile-time constraints
+
+With supporting compilers the dmax overflow checks are performed at
+compile-time.  Currently only since clang-5 with `diagnose_if`
+support. This checks similar to `_FORTIFY_SOURCE=2` if the
+`__builtin_object_size` of the dest buffer is the same size as dmax,
+and errors if dmax is too big. With the optional --enable-warn-dmax it
+prints a warning if the sizes are different, which is esp. practical
+as compile-time warning. It can be promoted via the optional
+--enable-error-dmax to be fatal. On unsupported compilers, the
+overflow check and optional equality warn-dmax check is deferred to
+run-time. This check is only possible with `__builtin_object_size` and
+`-O2` when the dest buffer size is known at compile-time, otherwise
+only the simplier `dmax == 0` and `dmax > RSIZE_MAX` checks are performed.
 
 * Header Files
 
 The specification states the various functions would be added to existing
 Standard C header files: stdio.h, string.h, etc.  This implementation
-separates the memory related functions into the safe_mem_lib.h header, the
-string related functions into the safe_str_lib.h header, and the rest into
-the safe_lib.h header.
+separates the memory related functions into the `safe_mem_lib.h` header, the
+string related functions into the `safe_str_lib.h` header, and the rest into
+the `safe_lib.h` header.
 
-The make file builds a single library libsafec-VERSION.a and .so in the
-src/.libs directory.
+The make file builds a single library `libsafec-VERSION.a` and `.so` in the
+`src/.libs` directory.
 Built but not installed are also libmemprims, libsafeccore and libstdunsafe.
 
-It is possible to split the make such that a separate safe_mem_lib.so and
-safe_str_lib.so are built.  It is also possible to integrate the prototypes
+It is possible to split the make such that a separate `safe_mem_lib.so` and
+`safe_str_lib.so` are built.  It is also possible to integrate the prototypes
 into the Standard C header files, but that may require changes to your
 development tool chain.
 
 
 Userspace Library
 -----------------
+
 The build system for the userspace library is the well known *GNU build
 system*, a.k.a. Autotools. This system is well understood and supported
 by many different platforms and distributions which should allow this
 library to be built on a wide variety of platforms. See the
 xref:tested-platforms[``Tested Platforms''] section for details on what
 platforms this library was tested on during its development.
-
-Note that the library will behave differently if built with a C11 compiler
-or not. With C11 mem{cpy,move,set}_s smax/n=0 is allowed, before not.
 
 * Building
 
@@ -162,8 +189,8 @@ need additional information see the 'INSTALL' file in the same directory.
     $ ./configure
     $ make
 
-'autogen.sh' only needs to be run if you are building from the git
-repository. Optionally, you can do ``make check'' if you want to run the unit
+`autogen.sh` only needs to be run if you are building from the git
+repository. Optionally, you can do `make check` if you want to run the unit
 tests.
 
 
@@ -224,6 +251,7 @@ Tested Platforms
 - arm-linux-gnueabihf cross-compiled and tested under qemu (under darwin and debian)
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
+with most available compilers. See `build-tools/smoke.sh`.
 
 Known Issues
 ------------

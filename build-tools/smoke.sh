@@ -21,6 +21,13 @@ CC="clang-mp-5.0 -std=c11" \
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse
     gmake -s -j4 check-valgrind
+CC="clang-mp-devel" \
+    ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
+    gmake -s -j4 check-log || exit
+$make -s clean
+# must error
+CC="clang-mp-devel" ./configure --enable-error-dmax && \
+    $make -s -j4 check-log && exit
 # try the BSD/darwin memset_s
 CFLAGS="-g -DTEST_MSVCRT" ./configure --enable-shared --enable-debug --enable-unsafe && \
     make check-log || exit
@@ -88,10 +95,16 @@ CC="clang-5.0" \
 CC="clang-6.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-# retpoline
+# retpoline and diagnose_if
 CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure && \
     make -s -j4 check-log
 make -s clean
+CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
+    make -s -j4 check-log
+make -s clean
+# must error
+CC="clang-7" ./configure --enable-error-dmax && \
+    $make -s -j4 check-log && exit
 ./configure --disable-wchar && \
     $make -s -j4 -f Makefile.kernel || exit
 make -s clean
@@ -163,6 +176,10 @@ CC="cc -m32" ./configure && \
     $make -s -j4 check-log || exit
 ./configure --disable-wchar && \
     $make -s -j4 check-log || exit
+./configure --enable-warn-dmax && \
+    $make -s -j4 check-log || exit
+./configure --enable-error-dmax && \
+    $make -s -j4 check-log && exit
 
 # different .deps format
 git clean -dxf src tests

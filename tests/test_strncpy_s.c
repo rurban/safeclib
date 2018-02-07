@@ -96,6 +96,20 @@ int test_strncpy_s (void)
 
 #ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "aa");
+
+# ifndef HAVE_ASAN /* With asan no BOS */
+    if (_BOS_KNOWN(str1)) {
+        rc = strncpy_s(str1, LEN+1, str2, nlen);
+        if (!rc) {
+            printf("Todo BOS overflow check\n");
+        } else {
+            ERR(ESLEMAX);     /* dmax exceeds dest */
+            EXPSTR(str1, ""); /* cleared */
+        }
+    }
+# endif
+
+    strcpy(str1, "aa");
     rc = strncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
     if (!use_msvcrt) {

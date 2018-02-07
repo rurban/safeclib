@@ -104,12 +104,24 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #endif
 /* so far clang-7 only */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
-# define BOS_CHK(dest) \
-    __attribute__((diagnose_if(_BOS_CHK(dest,dmax), "wrong dmax", "warning"))) \
+# ifdef HAVE_WARN_DMAX
+#  ifdef HAVE_ERROR_DMAX
+#   define bos_chk_sev "error"
+#  else
+#   define bos_chk_sev "warning"
+#  endif
+#  define BOS_CHK(dest) \
+    __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_CHK(dest,dmax), "wrong dmax", bos_chk_sev)))
+#  define BOSW_CHK(dest) \
+    __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error"))) \
+    __attribute__((diagnose_if(_BOSW_CHK(dest,dmax), "wrong dmax", bos_chk_sev)))
+# else /* !HAVE_WARN_DMAX */
+#  define BOS_CHK(dest) \
     __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error")))
-# define BOSW_CHK(dest) \
-    __attribute__((diagnose_if(_BOSW_CHK(dest,dmax), "wrong dmax", "warning"))) \
+#  define BOSW_CHK(dest) \
     __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error")))
+# endif
 #else
 # define BOS_CHK(dest)
 # define BOSW_CHK(dest)
