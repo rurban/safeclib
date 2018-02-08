@@ -236,12 +236,12 @@ void abort(void) __attribute__((noreturn));
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                   \
     if (unlikely(src == NULL)) {                                        \
-        handle_error(dest, strnlen_s(dest, dmax), func ": src is null", ESNULLP); \
+        handle_error(dest, dmax, func ": src is null", ESNULLP); \
         return RCNEGATE(ESNULLP); \
     }
 #define CHK_SRCW_NULL_CLEAR(func, src)                                  \
     if (unlikely(src == NULL)) {                                        \
-        handle_werror(dest, wcsnlen_s(dest, dmax), func ": src is null", ESNULLP); \
+        handle_werror(dest, dmax, func ": src is null", ESNULLP); \
         return RCNEGATE(ESNULLP); \
     }
 #define CHK_SLEN_MAX_CLEAR(func, max)                                   \
