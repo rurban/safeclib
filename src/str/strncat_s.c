@@ -121,13 +121,9 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     if (unlikely(slen == 0 && !dest && !dmax)) { /* silent ok as in the msvcrt */
         return EOK;
     }
-    else if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strncat_s: dest is null",
-                   dest, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
+    CHK_DEST_NULL("strncat_s")
     /* known dest size */
-    else if (_BOS_KNOWN(dest)) {
+    if (_BOS_KNOWN(dest)) {
         if (unlikely(_BOS_OVR_N(dest,dmax))) {
             size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */
             if (len > dmax)
@@ -150,33 +146,16 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         }
 #endif
     }
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strncat_s: dmax is 0",
-                                           dest, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-    else if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strncat_s: dmax exceeds max",
-                                           dest, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
+    CHK_DMAX_ZERO("strncat_s")
+    CHK_DMAX_MAX("strncat_s", RSIZE_MAX_STR)
     /* compile-time known src size */
     else if (unlikely(_BOS_OVR(src,slen))) {
         handle_error(dest, strnlen_s(dest, dmax), "strncat_s: slen exceeds src",
                      ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-    else if (unlikely(src == NULL)) {
-        /* note: strcat_s does not clear dest */
-        handle_error(dest, strnlen_s(dest, dmax), "strncat_s: slen is null",
-                     ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    else if (unlikely(slen > RSIZE_MAX_STR)) {
-        handle_error(dest, strnlen_s(dest, dmax), "strncat_s: slen exceeds max",
-                     ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
+    CHK_SRC_NULL_CLEAR("strncat_s", src)
+    CHK_SLEN_MAX_CLEAR("strncat_s", RSIZE_MAX_STR)
     else if (unlikely(slen == 0)) {
         /* Special case, analog to msvcrt: when dest is big enough
            return EOK, but clear dest. */

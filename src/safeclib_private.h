@@ -214,6 +214,42 @@ void abort(void) __attribute__((noreturn));
 #  define GCC_DIAG_RESTORE
 #endif
 
+#define CHK_DEST_NULL(func)                                             \
+    if (unlikely(dest == NULL)) {                                       \
+        invoke_safe_str_constraint_handler(func ": dest is null", dest, ESNULLP); \
+        return RCNEGATE(ESNULLP);                                       \
+    }
+#define CHK_DMAX_ZERO(func)                                             \
+    if (unlikely(dmax == 0)) {                                          \
+        invoke_safe_str_constraint_handler(func ": dmax is 0", dest, ESZEROL); \
+        return RCNEGATE(ESZEROL);                                       \
+    }
+#define CHK_DMAX_MAX(func, max)                                         \
+    if (unlikely(dmax > (max))) {                                       \
+        invoke_safe_str_constraint_handler(func ": dmax exceeds max", dest, ESLEMAX); \
+        return RCNEGATE(ESLEMAX);                                       \
+    }
+#define CHK_SRC_NULL(func, src)                                         \
+    if (unlikely(src == NULL)) {                                        \
+        invoke_safe_str_constraint_handler(func ": src is null", (char*)src, ESNULLP); \
+        return RCNEGATE(ESNULLP);                                       \
+    }
+#define CHK_SRC_NULL_CLEAR(func, src)                                   \
+    if (unlikely(src == NULL)) {                                        \
+        handle_error(dest, strnlen_s(dest, dmax), func ": src is null", ESNULLP); \
+        return RCNEGATE(ESNULLP); \
+    }
+#define CHK_SRCW_NULL_CLEAR(func, src)                                   \
+    if (unlikely(src == NULL)) {                                        \
+        handle_werror(dest, wcsnlen_s(dest, dmax), func ": src is null", ESNULLP); \
+        return RCNEGATE(ESNULLP); \
+    }
+#define CHK_SLEN_MAX_CLEAR(func, max)                                   \
+    if (unlikely(slen > RSIZE_MAX_STR)) {                               \
+        handle_error(dest, strnlen_s(dest, dmax), func ": slen exceeds max", ESLEMAX); \
+        return RCNEGATE(ESLEMAX);                                       \
+    }
+
 /* platform quirks */
 #ifndef SAFECLIB_DISABLE_WCHAR
 

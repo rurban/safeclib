@@ -106,11 +106,7 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcat_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
+    CHK_DEST_NULL("strcat_s")
     /* known dest size */
     else if (_BOS_KNOWN(dest)) {
         if (unlikely(_BOS_OVR_N(dest,dmax))) {
@@ -134,21 +130,9 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
         }
 #endif
     }
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcat_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcat_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-    if (unlikely(src == NULL)) {
-        handle_error(dest, dmax, "strcat_s: src is null",
-                     ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
+    CHK_DMAX_ZERO("strcat_s")
+    CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
+    CHK_SRC_NULL_CLEAR("strcat_s", src)
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
