@@ -47,4 +47,12 @@ invoke_safe_mem_constraint_handler(const char *msg,
                                    void *ptr,
                                    errno_t error);
 
+static inline void
+handle_mem_error(void *restrict dest, rsize_t dmax,
+             const char *err_msg, errno_t err_code)
+{
+    memset(dest, 0, dmax);
+    invoke_safe_mem_constraint_handler(err_msg, dest, err_code);
+    return;
+}
 #endif /* __SAFE_MEM_CONSTRAINT_H__ */

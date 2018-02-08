@@ -239,15 +239,26 @@ void abort(void) __attribute__((noreturn));
         handle_error(dest, strnlen_s(dest, dmax), func ": src is null", ESNULLP); \
         return RCNEGATE(ESNULLP); \
     }
-#define CHK_SRCW_NULL_CLEAR(func, src)                                   \
+#define CHK_SRCW_NULL_CLEAR(func, src)                                  \
     if (unlikely(src == NULL)) {                                        \
         handle_werror(dest, wcsnlen_s(dest, dmax), func ": src is null", ESNULLP); \
         return RCNEGATE(ESNULLP); \
     }
 #define CHK_SLEN_MAX_CLEAR(func, max)                                   \
-    if (unlikely(slen > RSIZE_MAX_STR)) {                               \
+    if (unlikely(slen > max)) {                                         \
         handle_error(dest, strnlen_s(dest, dmax), func ": slen exceeds max", ESLEMAX); \
         return RCNEGATE(ESLEMAX);                                       \
+    }
+#define CHK_SRC_NULL_MEM_CLEAR(func, src)                               \
+    if (unlikely(src == NULL)) {                                        \
+        handle_mem_error(dest, dmax, func ": src is null", ESNULLP);    \
+        return RCNEGATE(ESNULLP);                                       \
+    }
+#define CHK_SLEN_MAX_MEM_NOSPC_CLEAR(func, slen, max)                   \
+    if (unlikely(slen > dmax)) {                                        \
+        errno_t error = n > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;          \
+        handle_mem_error(dest, dmax, func ": slen exceeds max", error); \
+        return RCNEGATE(error);                                         \
     }
 
 /* platform quirks */

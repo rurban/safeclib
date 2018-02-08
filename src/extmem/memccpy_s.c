@@ -52,8 +52,8 @@
  * @param[in]  n     maximum number bytes of src that can be copied
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre  dmax shall be sizeof(dest)
+ * @pre  dmax shall not be 0, not be greater than RSIZE_MAX_MEM.
  * @pre  n shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
  *
@@ -68,7 +68,7 @@
  * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO.
- * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or > sizeof(dest)
  * @retval  ESNOSPC     when dmax < n
  * @retval  ESOVRLP     when src memory overlaps dst
  *
@@ -86,43 +86,15 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
     dp = (uint8_t*) dest;
     sp = (uint8_t*) src;
 
-    if (unlikely(dp == NULL)) {
-        invoke_safe_mem_constraint_handler("memccpy_s: dest is NULL",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memccpy_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_MEM || n > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memccpy_s: dmax/n exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    if (unlikely(n == 0)) {
-        /* Since C11 n=0 is allowed */
+    CHK_DEST_NULL("memccpy_s")
+    CHK_DMAX_ZERO("memccpy_s")
+    CHK_DMAX_MAX("memccpy_s", RSIZE_MAX_MEM)
+    if (unlikely(n == 0)) { /* Since C11 n=0 is allowed */
         *dp = '\0';
         return EOK;
     }
-
-    if (unlikely(n > dmax)) {
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memccpy_s: n exceeds dmax",
-                   NULL, ESNOSPC);
-        return RCNEGATE(ESNOSPC);
-    }
-
-    if (unlikely(sp == NULL)) {
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memccpy_s: src is NULL",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
+    CHK_SRC_NULL_MEM_CLEAR("memccpy_s", src)
+    CHK_SLEN_MAX_MEM_NOSPC_CLEAR("memccpy_s", n, RSIZE_MAX_MEM)
 
     /*
      * overlap is an error
