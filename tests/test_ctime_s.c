@@ -35,9 +35,11 @@ int test_ctime_s (void)
     use_msvcrt = true;
 #endif
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
     rc = ctime_s(NULL, 0, &timer);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP,EINVAL);
+#endif
 
     rc = ctime_s(str1, LEN, NULL);
     ERR_MSVC(ESNULLP,EINVAL);

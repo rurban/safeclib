@@ -60,10 +60,12 @@ int test_bsearch_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
     vitem = bsearch_s(NULL, array, LEN, 0, comp, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERRNO_MSVC(ESNULLP, EINVAL);
     PTRNULL(vitem);
+#endif
 
     vitem = bsearch_s(&key, NULL, LEN, sizeof(array[0]), comp, NULL);
     if (use_msvcrt && errno == EOF) {
@@ -95,11 +97,12 @@ int test_bsearch_s (void)
 /*--------------------------------------------------*/
 
     /* allow empty array? msvcrt disallows it */
+#ifndef HAVE_CT_BOS_OVR
     key.iv = 0;
     vitem = bsearch_s(&key, NULL, 0, 0, comp, NULL);
     PTRNULL(vitem);
     ERRNO_MSVC(0, EINVAL);
-
+#endif
 /*--------------------------------------------------*/
 
     /* find em */

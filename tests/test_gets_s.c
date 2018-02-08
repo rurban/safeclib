@@ -38,6 +38,7 @@ int test_gets_s (void)
 /*--------------------------------------------------*/
 
     /* tests reading from stdin */
+#ifndef HAVE_CT_BOS_OVR
     sub = gets_s(NULL, 0);
     SUBNULL();
     ERRNO(ESNULLP);
@@ -46,7 +47,6 @@ int test_gets_s (void)
     SUBNULL();
     ERRNO(ESZEROL);
 
-#ifndef HAVE_CT_BOS_OVR
     sub = gets_s(dest, RSIZE_MAX_STR+1);
     SUBNULL();
     ERRNO(ESLEMAX);

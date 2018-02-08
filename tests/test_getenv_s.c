@@ -44,8 +44,10 @@ int test_getenv_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = getenv_s(&len, dest, 0, name);
     ERR_MSVC(ESZEROL, EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

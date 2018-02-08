@@ -47,6 +47,7 @@ int test_mbsrtowcs_s (void)
 /*--------------------------------------------------*/
 
     cs = "a";
+#ifndef HAVE_CT_BOS_OVR
     print_msvcrt(use_msvcrt);
     rc = mbsrtowcs_s(NULL, NULL, LEN, &cs, 0, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
@@ -69,7 +70,6 @@ int test_mbsrtowcs_s (void)
     ERR_MSVC(ESZEROL, EINVAL);
     CLRPS;
 
-#ifndef HAVE_CT_BOS_OVR
     rc = mbsrtowcs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
     ERR_MSVC(ESLEMAX, 0);
     CLRPS;
