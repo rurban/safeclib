@@ -56,9 +56,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memmove32_s(mem1, MAX, mem2, RSIZE_MAX_MEM32+1);
     ERR(ESLEMAX); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 2);
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }

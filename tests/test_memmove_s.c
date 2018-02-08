@@ -90,12 +90,14 @@ int test_memmove_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE);  /* and cleared */
     if (!use_msvcrt) {
         EXPMEM(mem1, 0, LEN, 0, 1);
     }
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
@@ -157,6 +159,7 @@ int test_memmove_s (void)
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     /* invalid length - zero dest */
+#ifndef HAVE_CT_BOS_OVR
     len = LEN;
     rc = memmove_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE);
@@ -171,6 +174,7 @@ int test_memmove_s (void)
             }
         }
     }
+#endif
 
 /*--------------------------------------------------*/
 

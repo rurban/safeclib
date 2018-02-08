@@ -45,11 +45,11 @@ int test_memchr_s (void)
     rc = memchr_s(mem, RSIZE_MAX_STR+1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
-#endif
 
     rc = memchr_s(mem, LEN, 256, &sub);
     ERR(ESLEMAX)
     SUBNULL();
+#endif
 
 /*--------------------------------------------------*/
 

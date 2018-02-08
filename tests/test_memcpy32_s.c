@@ -58,10 +58,12 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memcpy32_s(mem1, MAX, mem2, RSIZE_MAX_MEM32+1);
     ERR(ESLEMAX); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 4);
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }

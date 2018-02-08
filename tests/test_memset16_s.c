@@ -56,13 +56,12 @@ int main()
     rc = memset16_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
     ERR(ESLEMAX); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 2);
-#endif
-/*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memset16_s(mem1, LEN, value, RSIZE_MAX_MEM16+1);
     ERR(ESLEMAX); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 2);
+#endif
 
 /*--------------------------------------------------*/
 

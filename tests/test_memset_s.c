@@ -74,7 +74,7 @@ int test_memset_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = memset_s(mem1, LEN, 256, LEN);
+    rc = memset_s(mem1, LEN, 256, LEN); /* XXX This should be caught at compile-time */
     ERR_MSVC(ESLEMAX, 0); /* no native overflow check on darwin! */
     if (use_msvcrt)
         EXPMEM(mem1, 0, LEN, 0, 1);
@@ -91,13 +91,13 @@ int test_memset_s (void)
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    rc = memset_s(mem1, LEN, value, MAX+1);
+    rc = memset_s(mem1, LEN, value, MAX+1); /* TODO This should be caught at compile-time! */
     ERR_MSVC(ESLEMAX, EOVERFLOW); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 1);
 
 /*--------------------------------------------------*/
 
-    rc = memset_s(mem1, LEN, value, LEN+1);
+    rc = memset_s(mem1, LEN, value, LEN+1); /* TODO This should be caught at compile-time! */
     ERR_MSVC(ESNOSPC, EOVERFLOW); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 1);
 

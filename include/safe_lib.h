@@ -117,7 +117,8 @@ tmpfile_s(FILE * restrict * restrict streamptr);
 #endif /* __KERNEL__ */
 
 EXTERN char *
-gets_s(char *dest, rsize_t dmax) BOS_CHK(dest);
+gets_s(char *dest, rsize_t dmax)
+    BOS_CHK(dest);
 
 /* Windows sec_api does without restrict */
 #ifndef MINGW_HAS_SECURE_API
@@ -134,10 +135,12 @@ freopen_s(FILE *restrict *restrict newstreamptr,
 #endif /* __KERNEL__ */
 
 EXTERN errno_t
-asctime_s(char *dest, rsize_t dmax, const struct tm *tm) BOS_CHK(dest);
+asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
+    BOS_CHK(dest);
 
 EXTERN errno_t
-ctime_s(char *dest, rsize_t dmax, const time_t *timer) BOS_CHK(dest);
+ctime_s(char *dest, rsize_t dmax, const time_t *timer)
+    BOS_CHK(dest);
 
 /* Beware: This return errno_t on the MINGW64 windows sec_api,
    and switched its args:
@@ -159,19 +162,22 @@ localtime_s(const time_t *restrict timer, struct tm *restrict dest);
 EXTERN errno_t
 getenv_s(size_t *restrict len,
          char *restrict dest, rsize_t dmax,
-         const char *restrict name) BOS_CHK(dest);
+         const char *restrict name)
+    BOS_CHK(dest);
 
 EXTERN void *
 bsearch_s(const void *key, const void *base,
           rsize_t nmemb, rsize_t size,
           int (*compar)(const void *k, const void *y, void *context),
-          void *context);
+          void *context)
+    BOS_CHK2(base, nmemb*size);
 
 #ifndef MINGW_HAS_SECURE_API
 EXTERN errno_t
 qsort_s(void *base, rsize_t nmemb, rsize_t size,
         int (*compar)(const void *x, const void *y, void *context),
-        void *context);
+        void *context)
+    BOS_CHK2(base, nmemb*size);
 #endif
 
 #ifdef __cplusplus

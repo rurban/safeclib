@@ -78,13 +78,14 @@ int main()
 #endif
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wmemcmp_s(mem1, LEN, mem2, RSIZE_MAX_WMEM+1, &ind);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
                      __FUNCTION__, __LINE__, ind, rc );
         errs++;
     }
-
+#endif
 /*--------------------------------------------------*/
 
     rc = wmemcmp_s(mem1, LEN-2, mem2, LEN, &ind);

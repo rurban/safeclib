@@ -36,10 +36,12 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     wcscpy(str, L"test");
     rc = wcsupr_s(str, 99999);
     ERR(ESLEMAX); /* and untouched */
     WEXPSTR(str, L"test");
+#endif
 
 /*--------------------------------------------------*/
 

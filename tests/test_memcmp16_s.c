@@ -48,10 +48,10 @@ int main()
 #ifndef HAVE_CT_BOS_OVR
     rc = memcmp16_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN, &ind);
     ERR(ESLEMAX);
-#endif
 
     rc = memcmp16_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
     ERR(ESLEMAX);
+#endif
 
 /*--------------------------------------------------*/
 

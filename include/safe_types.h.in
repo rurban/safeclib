@@ -110,21 +110,51 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #  else
 #   define bos_chk_sev "warning"
 #  endif
-#  define BOS_CHK(dest) \
+#  define BOS_CHK(dest)                                                 \
     __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error"))) \
     __attribute__((diagnose_if(_BOS_CHK(dest,dmax), "wrong dmax", bos_chk_sev)))
-#  define BOSW_CHK(dest) \
+#  define BOSW_CHK(dest)                                                \
     __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error"))) \
     __attribute__((diagnose_if(_BOSW_CHK(dest,dmax), "wrong dmax", bos_chk_sev)))
+#  define BOS_CHK2(buf,bufsize)                                         \
+    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_CHK(buf,bufsize), "wrong bufsize", bos_chk_sev)))
+#  define BOSW_CHK2(buf,bufsize)                                        \
+    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOSW_CHK(buf,bufsize), "wrong bufsize", bos_chk_sev)))
 # else /* !HAVE_WARN_DMAX */
-#  define BOS_CHK(dest) \
+#  define BOS_CHK(dest)                                                 \
     __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error")))
-#  define BOSW_CHK(dest) \
+#  define BOSW_CHK(dest)                                                \
     __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error")))
+#  define BOS_CHK2(buf,bufsize)                                         \
+    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error")))
+#  define BOSW_CHK2(buf,bufsize)                                                \
+    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error")))
 # endif
+
+/* independent on WARN_DMAX, pure overflow checks */
+# define BOS_OVR2(buf,bufsize)                                          \
+    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error")))
+# define BOSW_OVR2(buf,bufsize)                                         \
+    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error")))
+# define VAL_OVR2(value,vmax)                                           \
+    __attribute__((diagnose_if((value) > (vmax), "value overflow", "error")))
+
 #else
 # define BOS_CHK(dest)
 # define BOSW_CHK(dest)
+# define BOS_CHK2(buf,bufsize)
+# define BOSW_CHK2(buf,bufsize)
+# define BOS_OVR2(buf,bufsize)
+# define BOSW_OVR2(buf,bufsize)
+# if __has_attribute(diagnose_if)
+/* independent on BOS, pure overflow checks */
+#  define VAL_OVR2(value,vmax)                                          \
+    __attribute__((diagnose_if((value) > (vmax), "value overflow", "error")))
+# else
+#  define VAL_OVR2(value, vmax)
+# endif
 #endif
 
 #ifdef __cplusplus

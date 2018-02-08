@@ -80,11 +80,7 @@ int test_memccpy_s (void)
 #ifndef HAVE_CT_BOS_OVR
     rc = memccpy_s(str1, (RSIZE_MAX_MEM+1), str2, 0, nlen);
     ERR(ESLEMAX)
-#endif
 
-/*--------------------------------------------------*/
-
-#if 1
    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 

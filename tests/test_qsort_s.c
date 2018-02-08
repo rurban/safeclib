@@ -80,11 +80,13 @@ int test_qsort_s (void)
 /*--------------------------------------------------*/
 
     if (!use_msvcrt) {
+#ifndef HAVE_CT_BOS_OVR
         rc = qsort_s(array, RSIZE_MAX_MEM+1, sizeof(array[0]), comp, NULL);
         ERR(ESLEMAX);
 
         rc = qsort_s(array, LEN, RSIZE_MAX_MEM+1, comp, NULL);
         ERR(ESLEMAX);
+#endif
     }
 
 /*--------------------------------------------------*/

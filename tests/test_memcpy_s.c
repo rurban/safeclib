@@ -89,9 +89,11 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
+#endif
 
 /*--------------------------------------------------*/
 

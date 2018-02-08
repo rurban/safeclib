@@ -87,11 +87,11 @@ int test_wcsncmp_s (void)
     rc = wcsncmp_s(str1, RSIZE_MAX_STR+1, str2, LEN, 12, &ind);
     ERR(ESLEMAX)
     INDZERO()
-#endif
 
     rc = wcsncmp_s(str1, LEN, str2, RSIZE_MAX_STR+1, 12, &ind);
     ERR(ESLEMAX)
     INDZERO()
+#endif
 
 /*--------------------------------------------------*/
 

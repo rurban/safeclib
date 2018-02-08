@@ -58,17 +58,15 @@ int main()
     rc = strcasestr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     ERR(ESLEMAX)
     SUBNULL()
+
+    rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
+    ERR(ESLEMAX)
+    SUBNULL()
 #endif
 /*--------------------------------------------------*/
 
     rc = strcasestr_s(str1, LEN, str2, 0, &sub);
     ERR(ESZEROL)
-    SUBNULL()
-
-/*--------------------------------------------------*/
-
-    rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
-    ERR(ESLEMAX)
     SUBNULL()
 
 /*--------------------------------------------------*/

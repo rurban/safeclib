@@ -189,6 +189,7 @@ int test_wcsrtombs_s (void)
     }
     CLRPS;
 
+#ifndef HAVE_CT_BOS_OVR
     src[0] = 0xdf81;
     src[1] = 0;
     cs = src;
@@ -206,6 +207,7 @@ int test_wcsrtombs_s (void)
       CHECK_SLACK(&dest[0], LEN);
     }
     CLRPS;
+#endif
 
     SETLOCALE_UTF8;
     SETLANG("default");

@@ -80,6 +80,7 @@ int test_bsearch_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     vitem = bsearch_s(&key, array, RSIZE_MAX_MEM+1, sizeof(array[0]), comp, NULL);
     ERRNO_MSVC(ESLEMAX, EOF);
     if (!use_msvcrt)
@@ -89,6 +90,7 @@ int test_bsearch_s (void)
     ERRNO_MSVC(ESLEMAX, EOF);
     if (!use_msvcrt)
         PTRNULL(vitem);
+#endif
 
 /*--------------------------------------------------*/
 

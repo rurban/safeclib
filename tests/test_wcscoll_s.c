@@ -87,11 +87,11 @@ int test_wcscoll_s (void)
     rc = wcscoll_s(str1, RSIZE_MAX_STR+1, str2, LEN, &ind);
     ERR(ESLEMAX)
     INDZERO()
-#endif
 
     rc = wcscoll_s(str1, LEN, str2, RSIZE_MAX_STR+1, &ind);
     ERR(ESLEMAX)
     INDZERO()
+#endif
 
 /*--------------------------------------------------*/
 

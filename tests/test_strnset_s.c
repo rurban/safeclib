@@ -34,10 +34,10 @@ int main()
 #ifndef HAVE_CT_BOS_OVR
     rc = strnset_s(str1, RSIZE_MAX_STR+1, 0, 5);
     ERR(ESLEMAX);
-#endif
+
     rc = strnset_s(str1, LEN, 256, 5);
     ERR(ESLEMAX);
-
+#endif
 /*--------------------------------------------------*/
 
     strcpy(str1, "abc");

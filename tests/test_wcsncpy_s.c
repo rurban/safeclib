@@ -106,16 +106,17 @@ int test_wcsncpy_s (void)
 
 /*--------------------------------------------------*/
 
-   wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-   wcscpy(str2, L"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+    wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    wcscpy(str2, L"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
+#ifndef HAVE_CT_BOS_OVR
     rc = wcsncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, ERANGE); /* not cleared with msvcrt */
     if (!use_msvcrt) {
         WEXPSTR(str1, L"");
         WCHECK_SLACK(str1, 5);
     }
-
+#endif
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");

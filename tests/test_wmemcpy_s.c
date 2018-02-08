@@ -60,10 +60,12 @@ int main()
     EXPMEM(mem1, 0, LEN, 0, sizeof(wchar_t));
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = wmemcpy_s(mem1, LEN, mem2, RSIZE_MAX_WMEM+1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, sizeof(wchar_t));
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
@@ -118,13 +120,14 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
     rc = wmemcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM16+1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, sizeof(wchar_t));
-
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 55; }

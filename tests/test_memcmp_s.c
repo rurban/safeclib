@@ -43,10 +43,10 @@ int test_memcmp_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memcmp_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
     ERR(ESLEMAX);
 
-#ifndef HAVE_CT_BOS_OVR
     rc = memcmp_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN, &ind);
     ERR(ESLEMAX);
 #endif
