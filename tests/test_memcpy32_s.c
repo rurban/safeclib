@@ -86,7 +86,7 @@ int main()
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    /* slen greater than dmax */
+    /* count*4 greater than dmax */
     rc = memcpy32_s(mem1, MAX, mem2, count+1);
     ERR(ESNOSPC); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 4);

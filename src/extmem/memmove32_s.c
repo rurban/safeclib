@@ -103,7 +103,7 @@ memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t count)
     }
 
     if (unlikely(count > dmax/4)) {
-        errno_t rc = count > RSIZE_MAX_MEM16 ? ESLEMAX : ESNOSPC;
+        errno_t rc = count > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
         mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove32_s: count*4 exceeds dmax",
                    NULL, rc);

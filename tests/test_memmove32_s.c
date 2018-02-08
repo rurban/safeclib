@@ -54,7 +54,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = memmove32_s(mem1, MAX, mem2, RSIZE_MAX_MEM16+1);
+    rc = memmove32_s(mem1, MAX, mem2, RSIZE_MAX_MEM32+1);
     ERR(ESLEMAX); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 2);
 /*--------------------------------------------------*/
@@ -91,7 +91,7 @@ int main()
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
 
-    /* count*2 greater than dmax */
+    /* count*4 greater than dmax */
     rc = memmove32_s(mem1, MAX, mem2, count+1);
     ERR(ESNOSPC); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 4);
