@@ -21,6 +21,7 @@ CC="clang-mp-5.0 -std=c11" \
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse
     gmake -s -j4 check-valgrind
+# clang 7 with diagnose_if
 CC="clang-mp-devel" \
     ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
@@ -92,7 +93,7 @@ CC="gcc-7" ./configure && \
 CC="clang-5.0" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-CC="clang-6.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
+CC="clang-7 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
 # retpoline and diagnose_if

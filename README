@@ -137,7 +137,7 @@ RSIZE_MAX::
 * Compile-time constraints
 
 With supporting compilers the dmax overflow checks are performed at
-compile-time.  Currently only since clang-5 with `diagnose_if`
+compile-time.  Currently only since clang-7 with `diagnose_if`
 support. This checks similar to `_FORTIFY_SOURCE=2` if the
 `__builtin_object_size` of the dest buffer is the same size as dmax,
 and errors if dmax is too big. With the optional --enable-warn-dmax it
