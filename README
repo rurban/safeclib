@@ -211,14 +211,17 @@ Tested Platforms
 ----------------
 
 .The library has been tested on the following systems:
-- Mac OS X 10.6-11 w/ Apple developer tools and macports (gcc + clang)
-- Linux Debian 10 amd64/i386 glibc 2.24 + 2.25
+- Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc's + clang's)
+- Linux Debian 9-11 amd64/i386 glibc 2.24 + 2.25 (all gcc's + clang's)
+- Linux centos 7 amd64
 - Linux Void amd64 musl-1.1.16
-- x86_64-w64-mingw32, i686-w64-mingw32 cross-compiled and tested under wine
-- i386-mingw32 cross-compiled and tested under wine
+- x86_64-w64-mingw32 native and cross-compiled
+- i686-w64-mingw32 native, and cross-compiled and tested under wine
+- i386-mingw32 cross-compiled
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
 - freebsd 10.3 amd64
+- arm-linux-gnueabihf cross-compiled and tested under qemu (under darwin and debian)
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
 

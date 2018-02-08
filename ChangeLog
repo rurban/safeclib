@@ -4,7 +4,7 @@
 Changes in v??022018 3.3.0
         - Fixed wrong count max check in memmove32_s
         - Fully tested against other secure libc extensions, the native msvcrt 7.0 (Win8)
-          and the msvcrt under wine-2.0.4.
+          and the msvcrt under wine-2.0.4 and wine-3.0.
         - Fixed --disable-shared for Windows.
         - Optimized null-slack clearing of dest, unrolling the memset loop with
           small dest buffers.
