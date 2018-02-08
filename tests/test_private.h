@@ -142,15 +142,19 @@
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 # define HAVE_CT_BOS_OVR
 # ifdef HAVE_USER_DEFINED_WARNINGS
-#  define GCC_DIAG_NOUSERWARN GCC_DIAG_IGNORE(-Wuser-defined-warnings)
+#  define GCC_PUSH_WARN_DMAX GCC_DIAG_IGNORE(-Wuser-defined-warnings)
+#  define GCC_POP_WARN_DMAX  GCC_DIAG_RESTORE
 # else
-#  define GCC_DIAG_NOUSERWARN
+#  define GCC_PUSH_WARN_DMAX
+#  define GCC_POP_WARN_DMAX
 # endif
 #elif defined(HAVE_WARN_DMAX)
 # define HAVE_RT_BOS_CHK
-# define GCC_DIAG_NOUSERWARN
+# define GCC_PUSH_WARN_DMAX
+# define GCC_POP_WARN_DMAX
 #else
-# define GCC_DIAG_NOUSERWARN
+# define GCC_PUSH_WARN_DMAX
+# define GCC_POP_WARN_DMAX
 #endif
 
 /* mingw 3.4 */

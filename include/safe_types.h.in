@@ -91,6 +91,7 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 # define BOSW(dest) BOS_UNKNOWN
 # define _BOS_CHK(dest)  0
 # define _BOSW_CHK(dest) 0
+# define _BOS_OVR_N(dest,dmax) 0
 #endif
 
 #ifndef __has_attribute

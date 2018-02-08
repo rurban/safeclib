@@ -49,36 +49,36 @@ int test_strncat_s (void)
     rc = strncat_s(NULL, 0, str2, 0);
     ERR(EOK);
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 0, str2, 0);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESZEROL, EINVAL);
     EXPSTR(str1, "a");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 1, str2, 0);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESZEROL, EINVAL); 
     EXPSTR(str1, "");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 2, str2, 0);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR(EOK);
     EXPSTR(str1, "");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 3, str2, 0);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR(EOK);
     EXPSTR(str1, "");
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 0, str2, LEN);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
@@ -131,9 +131,9 @@ int test_strncat_s (void)
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 1, str2, LEN);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESUNTERM, EINVAL);
     if (!use_msvcrt)
         CHECK_SLACK(str1, 1);
@@ -143,9 +143,9 @@ int test_strncat_s (void)
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 2, str2, LEN);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESUNTERM, EINVAL);
     if (!use_msvcrt)
         CHECK_SLACK(str1, 2);
@@ -155,9 +155,9 @@ int test_strncat_s (void)
     strcpy(str1, "a");
     strcpy(str2, "b");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 2, str2, 1);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESNOSPC, ERANGE);
     if (!use_msvcrt)
         CHECK_SLACK(str1, 2);
@@ -166,9 +166,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "abcd");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(&str1[0], 8, &str1[3], 4);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1)
     if (!use_msvcrt)
@@ -176,9 +176,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "abcd");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(&str1[0], 4, &str1[3], 4);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESOVRLP, EINVAL);
     EXPNULL(str1)
     if (!use_msvcrt)
@@ -188,9 +188,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "abcd");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(&str1[0], 3, &str1[3], 4);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(str1)
     if (!use_msvcrt)
@@ -200,9 +200,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "abcdefgh");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(&str1[3], 5, &str1[0], 4);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESUNTERM, EINVAL);
     EXPNULL(&str1[3])
     if (!use_msvcrt)
@@ -212,9 +212,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "abcdefgh");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(&str1[3], 12, &str1[0], 4);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESOVRLP, EOK);
     if (!use_msvcrt) {
         EXPNULL(&str1[3]);
@@ -228,9 +228,9 @@ int test_strncat_s (void)
     strcpy(str1, "a");
     strcpy(str2, "b");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 3, str2, 1);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR(EOK)
     EXPSTR(str1, "ab");
     if (!use_msvcrt)
@@ -241,9 +241,9 @@ int test_strncat_s (void)
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 50, str2, LEN);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR(EOK)
     EXPSTR(str1, "aaaaaaaaaakeep it simple");
     len = strlen(str1);
@@ -268,9 +268,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "hello");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 6, "", 1);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR(EOK)
     EXPSTR(str1, "hello");
     len = strlen(str1);
@@ -282,9 +282,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "hello");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 6, "X", 2);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR_MSVC(ESNOSPC, ERANGE);
     CHECK_SLACK(str1, 6);
 
@@ -293,9 +293,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "abc");
 
-    GCC_DIAG_NOUSERWARN
+    GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 7, "defghijklmn", 3);
-    GCC_DIAG_RESTORE
+    GCC_POP_WARN_DMAX
     ERR(EOK)
     EXPSTR(str1, "abcdef");
     len = strlen(str1);
