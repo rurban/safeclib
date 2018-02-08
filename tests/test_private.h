@@ -140,7 +140,11 @@
 
 /* so far clang-7 only */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
-# define HAVE_CT_BOS_OVR
+# ifndef TEST_BOS
+#  define HAVE_CT_BOS_OVR
+# else
+#  define HAVE_RT_BOS_CHK
+# endif
 # ifdef HAVE_USER_DEFINED_WARNINGS
 #  define GCC_PUSH_WARN_DMAX GCC_DIAG_IGNORE(-Wuser-defined-warnings)
 #  define GCC_POP_WARN_DMAX  GCC_DIAG_RESTORE

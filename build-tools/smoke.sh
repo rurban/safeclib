@@ -15,13 +15,19 @@ CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 $make -s clean
-CC="clang-mp-5.0 -std=c11" \
+CC="clang-mp-5.0 -std=c11 -DTEST_BOS" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse
     gmake -s -j4 check-valgrind
 # clang 7 with diagnose_if
+# relax compile-time errors to warnings
+CC="clang-mp-devel -DTEST_BOS" \
+    ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
+    gmake -s -j4 check-log || exit
+$make -s clean
+# skip the compile-time errors
 CC="clang-mp-devel" \
     ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
@@ -90,21 +96,23 @@ CC="gcc-6" ./configure && \
     make -s -j4 check-log || exit
 CC="gcc-7" ./configure && \
     make -s -j4 check-log || exit
-CC="clang-5.0" \
+# relax compile-time errors to warnings
+CC="clang-5.0 -DTEST_BOS" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-CC="clang-7 -fsanitize=address,undefined -fno-omit-frame-pointer" \
+CC="clang-7 -DTEST_BOS -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-# retpoline and diagnose_if
+# retpoline and diagnose_if, skip compile-time errors
 CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure && \
     make -s -j4 check-log
 make -s clean
-CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
+# warn on compile-time errors and checks
+CC="clang-7 -DTEST_BOS" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
     make -s -j4 check-log
 make -s clean
 # must error
-CC="clang-7" ./configure --enable-error-dmax && \
+CC="clang-7 -DTEST_BOS" ./configure --enable-error-dmax && \
     $make -s -j4 check-log && exit
 ./configure --disable-wchar && \
     $make -s -j4 -f Makefile.kernel || exit

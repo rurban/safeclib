@@ -51,6 +51,7 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "aaaa");
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(str1, 0, str2);
@@ -61,7 +62,6 @@ int test_strcat_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
-#ifndef HAVE_CT_BOS_OVR
     rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     EXPSTR(str1, use_msvcrt ? "aaaaa" : "a");

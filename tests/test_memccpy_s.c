@@ -55,29 +55,30 @@ int test_memccpy_s (void)
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     str2[0] = '\0';
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memccpy_s(str1, 5, str2, 0, 0);
     ERR(EOK);
     EXPSTR(str1, "");
-#if !defined(__KERNEL__) && defined(HAVE_MEMCCPY)
+# if !defined(__KERNEL__) && defined(HAVE_MEMCCPY)
     {
         char *sub = (char*)memccpy(str1, str2, 0, 0);
         EXPSTR(str1, "");
         /* but with musl the result is a copy of str1 */
-#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) || defined(_WIN32)
+# if defined(__GLIBC__) || defined(BSD_ALL_LIKE) || defined(_WIN32)
         SUBNULL();
-#endif
+# endif
     }
+# endif
 #endif
-
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     nlen = 5;
     rc = memccpy_s(str1, 0, str2, 0, nlen);
     ERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     rc = memccpy_s(str1, (RSIZE_MAX_MEM+1), str2, 0, nlen);
     ERR(ESLEMAX)
 
@@ -86,9 +87,14 @@ int test_memccpy_s (void)
 
     rc = memccpy_s(str1, 5, str2, 0, 6);
     ERR(ESNOSPC)
+    CHECK_SLACK(str1, 5);
+
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
     rc = memccpy_s(str1, 5, str2, 0, (RSIZE_MAX_MEM+1));
     ERR(ESLEMAX)
+    CHECK_SLACK(str1, 5);
 #endif
 
 /*--------------------------------------------------*/
