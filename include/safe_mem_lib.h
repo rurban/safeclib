@@ -180,7 +180,7 @@ timingsafe_memcmp(const void *b1, const void *b2, size_t len)
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
 memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n)
-    BOS_CHK(dest) BOS_OVR2(src, n) VAL_OVR2(c, 255);
+    BOS_CHK(dest) BOS_OVR2(src, n) VAL_OVR2(c, 255) VAL_OVR2(n, dmax);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

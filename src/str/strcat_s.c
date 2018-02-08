@@ -72,6 +72,7 @@
  *                        to string dest
  *
  * @pre  Neither dest nor src shall be a null pointer
+ * @pre  dmax shall be sizeof(dest)
  * @pre  dmax shall not equal zero
  * @pre  dmax shall not be greater than RSIZE_MAX_STR
  * @pre  dmax shall be greater than strnlen_s(src,m).
@@ -90,7 +91,7 @@
  *                     were appended to dest and the result in dest is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > sizeof(dest)
  * @retval  ESUNTERM   when dest not terminated in the first dmax bytes
  * @retval  ESOVRLP    when src overlaps with dest
  *
@@ -107,7 +108,8 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
     const char *overlap_bumper;
 
     CHK_DEST_NULL("strcat_s")
-    /* known dest size */
+    /* for known dest size, we should have already errored at compile-time before.
+       anyway, for known dest size check overflows in detail. */
     else if (_BOS_KNOWN(dest)) {
         if (unlikely(_BOS_OVR_N(dest,dmax))) {
             size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */

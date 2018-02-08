@@ -85,6 +85,7 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 # define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
 # define _BOS_CHK(dest,dmax)    (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) != BOS(dest))
 # define _BOS_OVR(dest,dmax)    (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) > BOS(dest))
+# define _BOS_ZERO(dest,dmax)   ((BOS(dest) != BOS_UNKNOWN && BOSW(dest) == 0) || (dmax) == 0)
 # define _BOSW_CHK(dest,dmax)   (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) != BOSW(dest))
 # define _BOSW_OVR(dest,dmax)   (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) > BOSW(dest))
 # define _BOS_CHK_N(dest,dmax)  ((size_t)(dmax) != BOS(dest))
@@ -96,13 +97,14 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 # define BOSW(dest) BOS_UNKNOWN
 # define _BOS_CHK(dest)  0
 # define _BOSW_CHK(dest) 0
+# define _BOS_ZERO(dest) 0
 # define _BOS_OVR_N(dest,dmax) 0
 #endif
 
 #ifndef __has_attribute
 #define __has_attribute(x) 0
 #endif
-/* so far clang-7 only */
+/* since clang-5, gcc not yet */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 # ifdef HAVE_WARN_DMAX
 #  ifdef HAVE_ERROR_DMAX
@@ -112,32 +114,42 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #  endif
 #  define BOS_CHK(dest)                                                 \
     __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(dest,dmax), "empty dest or dmax", "error"))) \
     __attribute__((diagnose_if(_BOS_CHK(dest,dmax), "wrong dmax", bos_chk_sev)))
 #  define BOSW_CHK(dest)                                                \
     __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(dest,dmax), "empty dest or dmax", "error"))) \
     __attribute__((diagnose_if(_BOSW_CHK(dest,dmax), "wrong dmax", bos_chk_sev)))
 #  define BOS_CHK2(buf,bufsize)                                         \
     __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(buf,bufsize), "empty buf or bufsize", "error"))) \
     __attribute__((diagnose_if(_BOS_CHK(buf,bufsize), "wrong bufsize", bos_chk_sev)))
 #  define BOSW_CHK2(buf,bufsize)                                        \
     __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(buf,bufsize), "empty buf or bufsize", "error"))) \
     __attribute__((diagnose_if(_BOSW_CHK(buf,bufsize), "wrong bufsize", bos_chk_sev)))
 # else /* !HAVE_WARN_DMAX */
 #  define BOS_CHK(dest)                                                 \
-    __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error")))
+    __attribute__((diagnose_if(_BOS_OVR(dest,dmax), "dmax overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(dest,dmax), "empty dest or dmax", "error")))
 #  define BOSW_CHK(dest)                                                \
-    __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error")))
+    __attribute__((diagnose_if(_BOSW_OVR(dest,dmax), "dmax overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(dest,dmax), "empty dest or dmax", "error")))
 #  define BOS_CHK2(buf,bufsize)                                         \
-    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error")))
+    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(buf,bufsize), "empty buf or bufsize", "error")))
 #  define BOSW_CHK2(buf,bufsize)                                                \
-    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error")))
+    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(buf,bufsize), "empty buf or bufsize", "error")))
 # endif
 
-/* independent on WARN_DMAX, pure overflow checks */
+/* independent on WARN_DMAX, pure zero/overflow checks */
 # define BOS_OVR2(buf,bufsize)                                          \
-    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error")))
+    __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(buf,bufsize), "empty buf or bufsize", "error")))
 # define BOSW_OVR2(buf,bufsize)                                         \
-    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error")))
+    __attribute__((diagnose_if(_BOSW_OVR(buf,bufsize), "buf overflow", "error"))) \
+    __attribute__((diagnose_if(_BOS_ZERO(buf,bufsize), "empty buf or bufsize", "error")))
 # define VAL_OVR2(value,vmax)                                           \
     __attribute__((diagnose_if((value) > (vmax), "value overflow", "error")))
 
