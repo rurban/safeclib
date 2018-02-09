@@ -22,12 +22,15 @@ int test_strnlen_s (void)
 /*--------------------------------------------------*/
 
     max_len = 3;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty buf")
     len = strnlen_s(NULL, max_len);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     max_len = 0;

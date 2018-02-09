@@ -6,7 +6,7 @@
  * Modified September 2017, Reini Urban
  *
  * Copyright (c) 2008-2012 by Cisco Systems, Inc.
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017-2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -42,6 +42,7 @@ extern "C" {
 #include "safe_config.h"
 #include "safe_lib_errno.h"
 #include "safe_types.h"
+#include "safe_compile.h"
 
 #ifndef SAFECLIB_DISABLE_WCHAR
 #include <wchar.h>
@@ -65,18 +66,17 @@ extern "C" {
 EXTERN constraint_handler_t
 set_mem_constraint_handler_s(constraint_handler_t handler);
 
-
 /* copy memory */
 EXTERN errno_t
 memcpy_s(void *restrict dest, rsize_t dmax,
          const void *restrict src, rsize_t slen)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
 
 /* move memory, including overlapping memory */
 EXTERN errno_t
 memmove_s(void *dest, rsize_t  dmax,
           const void *src, rsize_t slen)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
 
 /* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
@@ -109,25 +109,25 @@ memcmp32_s(const uint32_t *dest, rsize_t dmax,
 EXTERN errno_t
 memcpy16_s(uint16_t *dest, rsize_t dmax,
            const uint16_t *src, rsize_t slen)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
 
 /* copy uint32_t memory */
 EXTERN errno_t
 memcpy32_s(uint32_t *dest, rsize_t dmax,
            const uint32_t *src, rsize_t slen)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
 
 /* uint16_t move memory, including overlapping memory */
 EXTERN errno_t
 memmove16_s(uint16_t *dest, rsize_t dmax,
             const uint16_t *src, rsize_t slen)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
 
 /* uint32_t move memory, including overlapping memory */
 EXTERN errno_t
 memmove32_s(uint32_t *dest, rsize_t dmax,
             const uint32_t *src, rsize_t slen)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
 
 /* set uint16_t */
 EXTERN errno_t
@@ -192,12 +192,12 @@ memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n)
 EXTERN errno_t
 wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t smax)
-    BOSW_CHK(dest) BOSW_OVR2(src, smax);
+    BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
 
 EXTERN errno_t
 wmemmove_s(wchar_t *dest, rsize_t dmax,
            const wchar_t *src, rsize_t smax)
-    BOSW_CHK(dest) BOSW_OVR2(src, smax);
+    BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

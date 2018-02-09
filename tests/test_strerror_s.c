@@ -34,18 +34,20 @@ int test_strerror_s (void)
 /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strerror_s(NULL, LEN, 0);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strerror_s(str1, 0, 0);
     ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     rc = strerror_s(str1, (RSIZE_MAX_STR+1), 0);
     ERR_MSVC(ESLEMAX, EINVAL);
 #endif

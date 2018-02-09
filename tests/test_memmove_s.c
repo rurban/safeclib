@@ -37,6 +37,8 @@ int test_memmove_s (void)
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
     print_msvcrt(use_msvcrt);
 
+    /* with clang-5 compile-time checks these errors */
+#ifndef HAVE_CT_BOS_OVR
     rc = memmove_s(NULL, LEN, mem2, LEN);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -49,8 +51,6 @@ int test_memmove_s (void)
 
 /*--------------------------------------------------*/
 
-    /* with clang-7 compile-time checks this errors */
-#ifndef HAVE_CT_BOS_OVR
     rc = memmove_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (!use_msvcrt)
@@ -82,15 +82,14 @@ int test_memmove_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = memmove_s(mem1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     if (!use_msvcrt) {
         EXPMEM(mem1, 0, LEN, 0, 1); /* broken with msvcrt! */
     }
 
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE);  /* and cleared */

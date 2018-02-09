@@ -36,10 +36,12 @@ int test_strcat_s (void)
     strcpy(str2, "aaaa");
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
     rc = strcat_s(NULL, LEN, str2);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     EXPSTR(str1, "");
+#endif
 
 /*--------------------------------------------------*/
 

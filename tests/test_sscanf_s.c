@@ -35,6 +35,8 @@ int test_sscanf_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = sscanf_s(str1, NULL, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP,EINVAL);
@@ -42,8 +44,10 @@ int test_sscanf_s (void)
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
+    EXPECT_BOS("empty buf")
     rc = sscanf_s(NULL, "%s", str2);
     ERREOF_MSVC(ESNULLP,EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

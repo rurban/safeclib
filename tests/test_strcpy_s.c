@@ -33,6 +33,8 @@ int test_strcpy_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strcpy_s(NULL, LEN, str2);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -41,21 +43,24 @@ int test_strcpy_s (void)
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
+    EXPECT_BOS("empty buf")
     rc = strcpy_s(str1, 5, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
     CHECK_SLACK(str1, 5);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strcpy_s(str1, 0, str2);
     ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dmax overflow")
     rc = strcpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
 
+    EXPECT_BOS("dmax overflow")
     rc = strcpy_s(str1, (size_t)-1L, str2);
     ERR_MSVC(ESLEMAX, 0);
 #endif

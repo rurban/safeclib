@@ -38,6 +38,7 @@ SUBDIRS = src tests
 
 # Library header files
 pkginclude_HEADERS    = \
+	include/safe_compile.h  \
 	include/safe_lib.h     \
 	include/safe_mem_lib.h \
 	include/safe_str_lib.h

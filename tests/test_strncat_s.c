@@ -90,7 +90,7 @@ int test_strncat_s (void)
     if (_BOS_KNOWN(str1)) { /* should be caught in strncat_s */
         rc = strncat_s(str1, LEN+1, str2, LEN);
         if (!rc) {
-            printf("Todo BOS overflow check\n");
+            printf("%s %u Todo BOS overflow check\n", __FUNCTION__, __LINE__);
         } else {
             ERR(ESLEMAX);
             EXPSTR(str1, ""); /* cleared */
@@ -109,7 +109,7 @@ int test_strncat_s (void)
     }
 
     strcpy(str1, "a");
-    rc = strncat_s(str1, (RSIZE_MAX_STR), str2, (RSIZE_MAX_STR+1));
+    rc = strncat_s(str1, LEN, str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
         EXPSTR(str1, ""); /* cleared */
@@ -128,7 +128,6 @@ int test_strncat_s (void)
         printf("warning unknown str1 size\n");
     }
 # endif
-#endif
 
 /*--------------------------------------------------*/
 
@@ -138,6 +137,7 @@ int test_strncat_s (void)
     /*EXPSTR(str1, ""); */
     if (!use_msvcrt)
         CHECK_SLACK(str1, 1);
+#endif
 
 /*--------------------------------------------------*/
 

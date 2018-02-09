@@ -1,11 +1,11 @@
 /*------------------------------------------------------------------
  * safe_lib.h -- Safe C Library
  *
- * September 2017, Reini Urban
  * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * September 2017, Reini Urban
  *
  * Copyright (c) 2008-2013 by Cisco Systems, Inc
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017-2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -41,6 +41,7 @@ extern "C" {
 #include "safe_config.h"
 #include "safe_lib_errno.h"
 #include "safe_types.h"
+#include "safe_compile.h"
 
 #if defined _WIN32 && !defined(DISABLE_DLLIMPORT)
 # if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)

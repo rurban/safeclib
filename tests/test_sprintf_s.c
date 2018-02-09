@@ -34,6 +34,7 @@ int test_sprintf_s (void)
     str2[0] = '\0';
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
     /* older windows sprintf_s segv here */
     rc = sprintf_s(NULL, LEN, "%s", str2);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
@@ -41,7 +42,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
-#ifndef HAVE_CT_BOS_OVR
+
     rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
     if (!use_msvcrt) {
         ERR(-1);
@@ -62,10 +63,11 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = sprintf_s(str1, 0, "%s", str2);
     ERR(-1);
     ERRNO_MSVC(ESZEROL, EINVAL);
-
+#endif
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);

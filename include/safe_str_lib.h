@@ -5,7 +5,7 @@
  * September 2017, Reini Urban
  *
  * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc.
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017-2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -41,6 +41,7 @@ extern "C" {
 #include "safe_config.h"
 #include "safe_lib_errno.h"
 #include "safe_types.h"
+#include "safe_compile.h"
 
 #include <stdarg.h>
 #ifndef __KERNEL__
@@ -99,12 +100,12 @@ set_str_constraint_handler_s(constraint_handler_t handler);
 /* string concatenate */
 EXTERN errno_t
 strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_NULL(src);
 
 /* string copy */
 EXTERN errno_t
 strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_NULL(src);
 
 /* fitted string concatenate */
 EXTERN errno_t
@@ -116,7 +117,6 @@ EXTERN errno_t
 strncpy_s(char * restrict dest, rsize_t dmax,
           const char * restrict src, rsize_t slen)
     BOS_CHK(dest) BOS_OVR2(src, slen);
-
 
 /* string length */
 EXTERN rsize_t
@@ -130,7 +130,7 @@ char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 EXTERN char *
 strtok_s(char *restrict s1, rsize_t *restrict s1max,
          const char *restrict src, char **restrict ptr)
-    BOS_CHK2(s1, s1max);
+    BOS_OVR2_BUTNULL(s1, s1max) BOS_NULL(src);
 #endif
 
 /* secure stdio */
@@ -139,11 +139,11 @@ strtok_s(char *restrict s1, rsize_t *restrict s1max,
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 EXTERN int
 sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_FMT(fmt);
 
 EXTERN int
 vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_FMT(fmt);
 
 /* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
    Rather use the 2 non-truncating (without 'n') functions above. */
@@ -152,7 +152,7 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
 /* unsafe! use sprintf_s instead */
 EXTERN int
 snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_FMT(fmt);
 
 /* unsafe! use vsprintf_s instead */
 #if !(defined(_WIN32) && defined(HAVE_VSNPRINTF_S))
@@ -161,50 +161,60 @@ int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
                 const char *_Format, va_list _ArgList); */
 EXTERN int
 vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_FMT(fmt);
 #endif
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
 EXTERN int
-sscanf_s(const char *restrict buffer, const char *restrict fmt, ...);
+sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
+    BOS_NULL(buffer) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
-fscanf_s(FILE *restrict stream, const char *restrict format, ...);
+fscanf_s(FILE *restrict stream, const char *restrict format, ...)
+    BOS_NULL(stream) BOS_FMT(format);
 #endif /* __KERNEL__ */
 
 EXTERN int
-scanf_s(const char *restrict format, ...);
+scanf_s(const char *restrict format, ...)
+    BOS_FMT(format);
 
 EXTERN int
-vscanf_s(const char *restrict format, va_list vlist);
+vscanf_s(const char *restrict format, va_list vlist)
+    BOS_FMT(format);
 
 #ifndef __KERNEL__
 EXTERN int
 vfscanf_s(FILE *restrict stream, const char *restrict format,
-          va_list vlist);
+          va_list vlist)
+    BOS_NULL(stream) BOS_FMT(format);
 #endif /* __KERNEL__ */
 
 EXTERN int
 vsscanf_s(const char *restrict buffer, const char *restrict format,
-          va_list vlist);
+          va_list vlist)
+    BOS_NULL(buffer) BOS_FMT(format);
 
 EXTERN int
-printf_s(const char *restrict format, ...);
+printf_s(const char *restrict format, ...)
+    BOS_FMT(format);
 
 #ifndef __KERNEL__
 EXTERN int
-fprintf_s(FILE *restrict stream, const char *restrict format, ...);
+fprintf_s(FILE *restrict stream, const char *restrict format, ...)
+    BOS_FMT(format);
 #endif /* __KERNEL__ */
 
 EXTERN int
-vprintf_s(const char *restrict format, va_list arg);
+vprintf_s(const char *restrict format, va_list arg)
+    BOS_FMT(format);
 
 #ifndef __KERNEL__
 EXTERN int
 vfprintf_s(FILE *restrict stream, const char *restrict format,
-           va_list arg);
+           va_list arg)
+    BOS_FMT(format);
 #endif /* __KERNEL__ */
 
 EXTERN errno_t
@@ -501,18 +511,18 @@ wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
 EXTERN wchar_t *
 wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
          const wchar_t *restrict delim, wchar_t **restrict ptr)
-    BOSW_CHK(dest);
+    BOSW_OVR2_BUTNULL(dest, dmax) BOS_NULL(delim);
 #endif
 
 EXTERN int
 swprintf_s(wchar_t *restrict dest, rsize_t dmax,
            const wchar_t* restrict fmt, ...)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_FMT(fmt);
 
 EXTERN int
 vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, va_list ap)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_FMT(fmt);
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
@@ -520,53 +530,63 @@ vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
 EXTERN int
 snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
             const wchar_t * restrict fmt, ...)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_FMT(fmt);
 
 /* unsafe! use vswprintf_s instead */
 EXTERN int
 vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
              const wchar_t *restrict fmt, va_list ap)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_FMT(fmt);
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
 EXTERN int
-wprintf_s( const wchar_t *restrict fmt, ...);
+wprintf_s( const wchar_t *restrict fmt, ...)
+     BOS_FMT(fmt);
 
 EXTERN int
-vwprintf_s(const wchar_t *restrict fmt, va_list ap);
+vwprintf_s(const wchar_t *restrict fmt, va_list ap)
+     BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
-fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
+fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
+    BOS_NULL(stream) BOS_FMT(fmt);
 
 EXTERN int
 vfwprintf_s(FILE * restrict stream,
-            const wchar_t *restrict fmt, va_list ap);
+            const wchar_t *restrict fmt, va_list ap)
+    BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 EXTERN int
 swscanf_s(const wchar_t *restrict buffer,
-          const wchar_t *restrict fmt, ...);
+          const wchar_t *restrict fmt, ...)
+    BOS_NULL(buffer) BOS_FMT(fmt);
 
 EXTERN int
 vswscanf_s(const wchar_t *restrict buffer,
-           const wchar_t *restrict fmt, va_list ap);
+           const wchar_t *restrict fmt, va_list ap)
+    BOS_NULL(buffer) BOS_FMT(fmt);
 
 EXTERN int
-wscanf_s( const wchar_t *restrict fmt, ...);
+wscanf_s( const wchar_t *restrict fmt, ...)
+    BOS_FMT(fmt);
 
 EXTERN int
-vwscanf_s(const wchar_t *restrict fmt, va_list ap);
+vwscanf_s(const wchar_t *restrict fmt, va_list ap)
+    BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
 fwscanf_s(FILE *restrict stream,
-          const wchar_t *restrict fmt, ...);
+          const wchar_t *restrict fmt, ...)
+    BOS_NULL(stream) BOS_FMT(fmt);
 
 EXTERN int
 vfwscanf_s(FILE *restrict stream,
-           const wchar_t *restrict fmt, va_list ap);
+           const wchar_t *restrict fmt, va_list ap)
+    BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 
@@ -576,7 +596,8 @@ vfwscanf_s(FILE *restrict stream,
 EXTERN errno_t
 wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
          const wchar_t *restrict src, rsize_t slen,
-         wchar_t **restrict substring) BOSW_CHK(dest);
+         wchar_t **restrict substring)
+    BOSW_CHK(dest) BOSW_OVR2(src, slen);
 
 /* compare */
 EXTERN errno_t
@@ -641,18 +662,20 @@ EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
                     wchar_t *restrict src, rsize_t *restrict lenp,
                     bool iscompat)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_NULL(src);
+
 /* Normalize to NCD/NFKD */
 EXTERN errno_t
 wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax,
                   wchar_t *restrict src, rsize_t len)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest)  BOSW_OVR2(src, len);
+
 /* Normalize to NFC/NFKC */
 EXTERN errno_t
 wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax,
                   wchar_t *restrict src, rsize_t *restrict lenp,
                   bool iscontig)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_NULL(src);
 
 enum wcsnorm_mode {
     WCSNORM_NFD  = 0,
@@ -669,7 +692,7 @@ typedef enum wcsnorm_mode wcsnorm_mode_t;
 EXTERN errno_t
 wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
           wcsnorm_mode_t mode, rsize_t *restrict lenp)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_NULL(src);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
