@@ -26,25 +26,40 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow or empty")
     rc = strcpyfldin_s(NULL, LEN, str2, LEN);
     ERR(ESNULLP);
 
-/*--------------------------------------------------*/
-
     strcpy(str1, "aaaaa");
-
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = strcpyfldin_s(str1, 0, str2, LEN);
     ERR(ESZEROL); /* and untouched */
     EXPSTR(str1, "aaaaa");
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow or empty")
     rc = strcpyfldin_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR(ESLEMAX);  /* and untouched */
     EXPSTR(str1, "aaaaa");
+
+    EXPECT_BOS("src overflow or empty")
+    rc = strcpyfldin_s(str1, LEN, NULL, LEN);
+    ERR(ESNULLP); /* and cleared */
+    CHECK_SLACK(str1, LEN);
+
+    strcpy(str1, "aaaaaaaaaaaaaaaaa");
+    strcpy(str2, "01234567890123456789");
+
+    EXPECT_BOS("slen overflow >dmax")
+    rc = strcpyfldin_s(str1, LEN-1, str2, LEN);
+    ERR(ESNOSPC); /* and cleared */
+    CHECK_SLACK(str1, LEN-1);
 #endif
+
 /*--------------------------------------------------*/
+
+    strcpy(str1, "aaaaa");
+    strcpy(str2, "01234567890123456789");
 
     rc = strcpyfldin_s(str1, len, str2, 0);
     ERR(EOK); /* and untouched */
@@ -61,22 +76,6 @@ int main()
     rc = strcpyfldin_s(str1, len, NULL, 0);
     ERR(EOK); /* and untouched */
     EXPSTR(str1, "aaaaa");
-
-/*--------------------------------------------------*/
-
-    len = 5;
-    rc = strcpyfldin_s(str1, len, NULL, LEN);
-    ERR(ESNULLP); /* and cleared */
-    CHECK_SLACK(str1, len);
-
-/*--------------------------------------------------*/
-
-    strcpy(str1, "aaaaaaaaaaaaaaaaa");
-    strcpy(str2, "01234567890123456789");
-
-    rc = strcpyfldin_s(str1, 10, str2, 11);
-    ERR(ESNOSPC); /* and cleared */
-    CHECK_SLACK(str1, 10);
 
 /*--------------------------------------------------*/
 

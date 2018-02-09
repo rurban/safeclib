@@ -3,7 +3,6 @@
  * File 'extwchar/wcsstr_s.c'
  * Lines executed:100.00% of 43
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -28,34 +27,39 @@ int test_wcsstr_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wcsstr_s(NULL, LEN, wstr2, LEN, &sub);
     ERR(ESNULLP)
     WSUBNULL();
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src")
     rc = wcsstr_s(wstr1, LEN, NULL, LEN, &sub);
     ERR(ESNULLP)
     WSUBNULL();
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty substring")
     rc = wcsstr_s(wstr1, LEN, wstr2, LEN, NULL);
     ERR(ESNULLP)
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = wcsstr_s(wstr1, 0, wstr2, LEN, &sub);
     ERR(ESZEROL)
     WSUBNULL();
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wcsstr_s(wstr1, RSIZE_MAX_STR+1, wstr2, LEN, &sub);
     ERR(ESLEMAX)
     WSUBNULL();
-#endif
+
 /*--------------------------------------------------*/
 
     rc = wcsstr_s(wstr1, LEN, wstr2, 0, &sub);
@@ -64,10 +68,11 @@ int test_wcsstr_s (void)
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("src overflow")
     rc = wcsstr_s(wstr1, LEN, wstr2, RSIZE_MAX_STR+1, &sub);
     ERR(ESLEMAX)
     WSUBNULL();
-
+#endif
 /*--------------------------------------------------*/
 
     *wstr1 = '\0';

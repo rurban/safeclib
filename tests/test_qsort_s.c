@@ -66,12 +66,15 @@ int test_qsort_s (void)
 
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty buf or bufsize")
     rc = qsort_s(NULL, LEN, sizeof(array[0]), comp, NULL);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     if (!use_msvcrt) {
         ERR(ESNULLP);
     } /* msvcrt returns void */
 
+    EXPECT_BOS("empty compar")
     rc = qsort_s(array, LEN, sizeof(array[0]), NULL, NULL);
     if (!use_msvcrt) {
         ERR(ESNULLP);
@@ -80,14 +83,15 @@ int test_qsort_s (void)
 /*--------------------------------------------------*/
 
     if (!use_msvcrt) {
-#ifndef HAVE_CT_BOS_OVR
+        EXPECT_BOS("base overflow")
         rc = qsort_s(array, RSIZE_MAX_MEM+1, sizeof(array[0]), comp, NULL);
         ERR(ESLEMAX);
 
+        EXPECT_BOS("base overflow")
         rc = qsort_s(array, LEN, RSIZE_MAX_MEM+1, comp, NULL);
         ERR(ESLEMAX);
-#endif
     }
+#endif
 
 /*--------------------------------------------------*/
 

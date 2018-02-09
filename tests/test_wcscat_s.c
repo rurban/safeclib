@@ -33,25 +33,23 @@ int test_wcscat_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wcscat_s(NULL, LEN, str2);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty src")
     rc = wcscat_s(str1, LEN, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
     wcscpy(str1, L"untouched");
+    EXPECT_BOS("empty dest or dmax")
     rc = wcscat_s(str1, 0, str2);
     ERR_MSVC(ESZEROL, EINVAL);
     WEXPSTR(str1, L"untouched");
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wcscat_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     WEXPSTR(str1, L"untouched");

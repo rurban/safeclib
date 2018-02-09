@@ -39,12 +39,15 @@ int test_wprintf_s (void)
     use_msvcrt = 1;
     have_wine = 1;
 #elif !(defined(TEST_MSVCRT) && defined(HAVE_WPRINTF_S))
+# ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = wprintf_s(NULL);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    NEGERR_MSVC(ESNULLP, 0);
+# endif    
 #else
     use_msvcrt = 1;
 #endif
-    NEGERR_MSVC(ESNULLP, 0);
 
 /*--------------------------------------------------*/
 

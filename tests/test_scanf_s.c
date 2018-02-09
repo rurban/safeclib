@@ -46,9 +46,12 @@ int test_scanf_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = scanf_s(NULL, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP,EINVAL);
+#endif
 
     /* TODO: should error, but just hangs in both */
 #if 0

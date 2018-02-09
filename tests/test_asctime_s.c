@@ -41,20 +41,26 @@ int test_asctime_s (void)
 #endif
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    rc = asctime_s(NULL, 0, tm);
+    EXPECT_BOS("empty dest")
+    rc = asctime_s(NULL, LEN, tm);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP,EINVAL);
-#endif
 
+    EXPECT_BOS("empty tm")
     rc = asctime_s(str1, LEN, NULL);
     ERR_MSVC(ESNULLP,EINVAL);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("dmax underflow")
+    rc = asctime_s(str1, 0, tm);
+    ERR_MSVC(ESLEMIN,EINVAL);
+
+    EXPECT_BOS("dmax underflow")
     rc = asctime_s(str1, 25, tm);
     ERR_MSVC(ESLEMIN,EINVAL);
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = asctime_s(str1, RSIZE_MAX_STR+1, tm);
     ERR_MSVC(ESLEMAX,0);
 #endif

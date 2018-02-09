@@ -22,15 +22,19 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wcsset_s(NULL, 5, value);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = wcsset_s(str1, 0, 0);
     ERR(ESZEROL)
+
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wcsset_s(str1, RSIZE_MAX_WSTR+1, 0);
     ERR(ESLEMAX);
 #endif

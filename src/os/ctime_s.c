@@ -103,30 +103,19 @@ ctime_s(char *dest, rsize_t dmax, const time_t *timer)
     const char* buf;
     size_t len;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("ctime_s: dest is null",
-                   NULL, ESNULLP);
-        return ESNULLP;
+    CHK_DEST_NULL("ctime_s")
+    if (unlikely(dmax < 26)) {
+        invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
+                   NULL, ESLEMIN);
+        return ESLEMIN;
     }
+    CHK_DMAX_MAX("ctime_s", RSIZE_MAX_STR)
 
     if (unlikely(timer == NULL)) {
         invoke_safe_str_constraint_handler("ctime_s: timer is null",
                    NULL, ESNULLP);
         return ESNULLP;
     }
-
-    if (unlikely(dmax < 26)) {
-        invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
-                   NULL, ESLEMIN);
-        return ESLEMIN;
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("ctime_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return ESLEMAX;
-    }
-
     if (unlikely(*timer < 0)) {
         invoke_safe_str_constraint_handler("ctime_s: timer is <0",
                    NULL, ESLEMIN);

@@ -44,7 +44,7 @@ int test_sscanf_s (void)
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
-    EXPECT_BOS("empty buf")
+    EXPECT_BOS("empty buffer")
     rc = sscanf_s(NULL, "%s", str2);
     ERREOF_MSVC(ESNULLP,EINVAL);
 #endif

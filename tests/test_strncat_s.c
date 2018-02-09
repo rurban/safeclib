@@ -33,7 +33,8 @@ int test_strncat_s (void)
     strcpy(str1, "aaaaaaaaaa");
 
     print_msvcrt(use_msvcrt);
-    /* probe for msvcrt or safec.dll being active */
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest or dmax")
     rc = strncat_s(NULL, LEN, str1, LEN);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -43,17 +44,19 @@ int test_strncat_s (void)
     strcpy(str1, "a");
     strcpy(str2, "bcde");
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strncat_s(NULL, 1, str2, 0);
     ERR_MSVC(ESNULLP, EINVAL);
 
-    rc = strncat_s(NULL, 0, str2, 0);
-    ERR(EOK);
-
-    GCC_PUSH_WARN_DMAX
+    EXPECT_BOS("empty dest or dmax")
     rc = strncat_s(str1, 0, str2, 0);
-    GCC_POP_WARN_DMAX
     ERR_MSVC(ESZEROL, EINVAL);
     EXPSTR(str1, "a");
+#endif
+
+    /*EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")*/
+    rc = strncat_s(NULL, 0, str2, 0);
+    ERR(EOK);
 
     GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 1, str2, 0);
@@ -75,19 +78,19 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "a");
-    GCC_PUSH_WARN_DMAX
+    EXPECT_BOS("empty dest or dmax")
     rc = strncat_s(str1, 0, str2, LEN);
-    GCC_POP_WARN_DMAX
     ERR_MSVC(ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
     /* with clang-7 compile-time already checks these errors */
-#ifndef HAVE_CT_BOS_OVR
 # ifndef HAVE_ASAN /* With asan no BOS */
     if (_BOS_KNOWN(str1)) { /* should be caught in strncat_s */
+        EXPECT_BOS("dest overflow")
         rc = strncat_s(str1, LEN+1, str2, LEN);
         if (!rc) {
             printf("%s %u Todo BOS overflow check\n", __FUNCTION__, __LINE__);
@@ -100,6 +103,7 @@ int test_strncat_s (void)
 
     strcpy(str1, "a");
     /* valid with the windows sec_api */
+    EXPECT_BOS("dest overflow")
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
@@ -109,6 +113,7 @@ int test_strncat_s (void)
     }
 
     strcpy(str1, "a");
+    EXPECT_BOS("src overflow or empty")
     rc = strncat_s(str1, LEN, str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
@@ -119,6 +124,7 @@ int test_strncat_s (void)
 
 # if defined(HAVE_WARN_DMAX)
     if (BOS(str1) > 0) {
+        EXPECT_BOS("buf overflow")
         rc = strncat_s(str1, LEN+1, str2, LEN);
         ERR_MSVC(ESLEMAX, 0);
 
@@ -132,6 +138,7 @@ int test_strncat_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
+    EXPECT_BOS("src overflow or empty")
     rc = strncat_s(str1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL);
     /*EXPSTR(str1, ""); */

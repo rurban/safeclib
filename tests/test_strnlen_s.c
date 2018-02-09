@@ -23,7 +23,7 @@ int test_strnlen_s (void)
 
     max_len = 3;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty buf")
+    EXPECT_BOS("empty s")
     len = strnlen_s(NULL, max_len);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",

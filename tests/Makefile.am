@@ -214,7 +214,22 @@ TESTS = $(SAFEC_BUILT_TESTS)
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
 noinst_PROGRAMS = $(SAFEC_BUILT_PERFS)
 
+if HAVE_ATTRIBUTE_DIAGNOSE_IF
+# TODO via EXTRA_TESTS. use a specific .bos extension for those test binaries
+tests: tests-bos $(TESTS)
+
+tests-bos:
+	-rm test_*_s.o* 2>/dev/null
+	+$(MAKE) -j1 $(TESTS) DEFS="$(DEFS) -DTEST_BOS" 2>&1 | tee tests-bos.log | grep warning:
+	perl tests-bos.pl tests-bos.log | tee tests-bos.err
+	-rm test_*_s.o* 2>/dev/null
+
+#.c.obos:
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+#	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $<
+else
 tests: $(TESTS)
+endif
 
 .c.i:
 	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -447,7 +462,11 @@ endif
 check-syntax:
 	test -n "$(CHK_SOURCES)" && \
 	  $(COMPILE) -o /dev/null -S $(CHK_SOURCES)
+if HAVE_ATTRIBUTE_DIAGNOSE_IF
+.PHONY: check-syntax tests-bos
+else
 .PHONY: check-syntax
+endif
 
 if HAVE_DSYMUTIL
 clean-local:
@@ -457,4 +476,7 @@ CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe test-fc.pl test-upr.pl
 CLEANFILES  += *.gcno *.gcda DerivedGeneralCategory.txt CaseFolding.txt
 if ENABLE_GCOV
 CLEANFILES  += *.gcov gcov.log
+endif
+if HAVE_ATTRIBUTE_DIAGNOSE_IF
+CLEANFILES  += tests-bos.log tests-bos.err
 endif

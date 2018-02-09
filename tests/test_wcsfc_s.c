@@ -46,21 +46,25 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = wcsfc_s(NULL, LEN, L"test", NULL);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") 
+    rc = wcsfc_s(NULL, LEN, L"test", &ind);
     ERR(ESNULLP);
 
-    rc = wcsfc_s(str, LEN, NULL, NULL);
+    EXPECT_BOS("empty src")
+    rc = wcsfc_s(str, LEN, NULL, &ind);
     ERR(ESNULLP);
 
 /*--------------------------------------------------*/
 
-    rc = wcsfc_s(str, 0, L"test", NULL);
+    EXPECT_BOS("empty dest or dmax") 
+    rc = wcsfc_s(str, 0, L"test", &ind);
     ERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
-    rc = wcsfc_s(str, 99999, L"test", NULL);
+    EXPECT_BOS("dest overflow")
+    rc = wcsfc_s(str, 99999, L"test", &ind);
     ERR(ESLEMAX)
 #endif
 

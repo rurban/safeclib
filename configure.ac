@@ -502,6 +502,43 @@ else
 fi
 AC_SUBST(INSERT_OBJECT_SIZE)
 
+AC_MSG_CHECKING([for diagnose_if attribute])
+old_cflags="$CFLAGS"
+CFLAGS="-Werror"
+AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([[
+#include <stdio.h>
+
+int myfunc(char *ptr)
+    __attribute__((diagnose_if(!ptr, "empty ptr", "error")));
+
+int myfunc(char *ptr) {
+    return ptr ? 1 : 0;
+}
+    ]],[[
+      char dest[12];
+      return myfunc(dest);
+      ]]
+    )],
+    [ AC_MSG_RESULT([yes])
+      have_attribute_diagnose_if=yes
+      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], [1],
+                [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
+    ],
+    [ AC_MSG_RESULT([no])
+      have_attribute_diagnose_if=no
+      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], [0],
+                [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
+    ],
+    [ AC_MSG_RESULT([no (cross)])
+      have_attribute_diagnose_if=no
+      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], [0],
+                [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
+    ])
+CFLAGS="$old_cflags"
+AM_CONDITIONAL([HAVE_ATTRIBUTE_DIAGNOSE_IF], [test "x$have_attribute_diagnose_if" = "xyes"])
+
+
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
 dnl    [AM_CFLAGS="$AM_CFLAGS -fbracket-depth=512"], [], [], [])

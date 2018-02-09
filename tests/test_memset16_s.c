@@ -26,16 +26,40 @@ int main()
 
     value = 34;
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") EXPECT_BOS("dest overflow or empty")
     rc = memset16_s(NULL, MAX, value, LEN);
     ERR(ESNULLP);
 
-/*--------------------------------------------------*/
+    /* first check dest, then n */
+    EXPECT_BOS("empty dest")
+    rc = memset16_s(NULL, MAX, value, 0);
+    ERR(ESNULLP);
+    
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     value = 34;
 
-    /* first check dest, then n */
-    rc = memset16_s(NULL, MAX, value, 0);
-    ERR(ESNULLP);
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("dest overflow >n*2")
+    rc = memset16_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
+    ERR(ESLEMAX); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 2);
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("dest overflow >n*2")
+    rc = memset16_s(mem1, LEN, value, RSIZE_MAX_MEM16+1);
+    ERR(ESLEMAX); /* and set all */
+    EXPMEM(mem1, 0, LEN, value, 2);
+
+    EXPECT_BOS("dest overflow >n*2")
+    rc = memset16_s(mem1, MAX, value, LEN+1);
+    ERR(ESNOSPC) /* and set all */
+    EXPMEM(mem1, 0, LEN, value, 2);
+#endif
+
+    /*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    value = 34;
 
     /* check n first, then args 2-3 */
     rc = memset16_s(mem1, MAX, value, 0);
@@ -49,25 +73,6 @@ int main()
     rc = memset16_s(mem1, MAX, 256, 0);
     ERR(EOK); /* still untouched */
     EXPMEM(mem1, 0, LEN, 33, 2);
-
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = memset16_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
-    ERR(ESLEMAX); /* and untouched */
-    EXPMEM(mem1, 0, LEN, 33, 2);
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    rc = memset16_s(mem1, LEN, value, RSIZE_MAX_MEM16+1);
-    ERR(ESLEMAX); /* and set all */
-    EXPMEM(mem1, 0, LEN, value, 2);
-#endif
-
-/*--------------------------------------------------*/
-
-    rc = memset16_s(mem1, MAX, value, LEN+1);
-    ERR(ESNOSPC) /* and set all */
-    EXPMEM(mem1, 0, LEN, value, 2);
 
 /*--------------------------------------------------*/
 

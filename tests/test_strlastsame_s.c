@@ -24,6 +24,8 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strlastsame_s(NULL, LEN, str2, &ind);
     ERR(ESNULLP)
     if (ind != 0) {
@@ -33,6 +35,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src")
     rc = strlastsame_s(str1, LEN, NULL, &ind);
     ERR(ESNULLP)
     if (ind != 0) {
@@ -42,10 +45,12 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty idx")
     rc = strlastsame_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strlastsame_s(str1, 0, str2, &ind);
     ERR(ESZEROL)
     if (ind != 0) {
@@ -55,7 +60,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strlastsame_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
     if (ind != 0) {

@@ -22,8 +22,11 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strishex_s(NULL, len);
     ERR(false)
+#endif
 /*--------------------------------------------------*/
 
     str[0] = '\0';

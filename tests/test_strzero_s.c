@@ -21,17 +21,16 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strzero_s(NULL, 5);
     ERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strzero_s(str1, 0);
     ERR(ESZEROL)
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strzero_s(str1, RSIZE_MAX_STR+1);
     ERR(ESLEMAX)
 #endif

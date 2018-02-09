@@ -33,19 +33,50 @@ int test_wcsncpy_s (void)
 
     nlen = 5;
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wcsncpy_s(NULL, LEN, str2, nlen);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     nlen = 5;
+    EXPECT_BOS("empty src")
     rc = wcsncpy_s(str1, 5, NULL, nlen);
     ERR_MSVC(ESNULLP, EINVAL);
     if (!use_msvcrt)
         WCHECK_SLACK(str1, 5);
+
+    wcscpy(str1, L"untouched");
+    wcscpy(str2, L"b");
+    nlen = 5;
+
+    EXPECT_BOS("empty dest or dmax") 
+    rc = wcsncpy_s(str1, 0, str2, nlen);
+    ERR_MSVC(ESZEROL, EINVAL);
+    WEXPSTR(str1, L"untouched");
+
+    EXPECT_BOS("dest overflow") 
+    rc = wcsncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
+    ERR_MSVC(ESLEMAX, 0); /* different MAX */
+    if (use_msvcrt) {
+        WEXPSTR(str1, L"b");
+    } else {
+        WEXPSTR(str1, L"untouched");
+    }
+
+    wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    wcscpy(str2, L"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
+    EXPECT_BOS("src overflow") 
+    rc = wcsncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
+    ERR_MSVC(ESLEMAX, ERANGE); /* not cleared with msvcrt */
+    if (!use_msvcrt) {
+        WEXPSTR(str1, L"");
+        WCHECK_SLACK(str1, 5);
+    }
+#endif
 
 /*--------------------------------------------------*/
 
@@ -73,50 +104,6 @@ int test_wcsncpy_s (void)
     ERR(EOK);
     WEXPSTR(str1, L"");
 
-/*--------------------------------------------------*/
-
-    wcscpy(str1, L"aaaaa");
-    nlen = 5;
-    rc = wcsncpy_s(str1, 5, NULL, nlen);
-    ERR_MSVC(ESNULLP, EINVAL);
-    if (!use_msvcrt)
-        WCHECK_SLACK(str1, 5);
-
-/*--------------------------------------------------*/
-
-    wcscpy(str1, L"untouched");
-    wcscpy(str2, L"b");
-    nlen = 5;
-
-    rc = wcsncpy_s(str1, 0, str2, nlen);
-    ERR_MSVC(ESZEROL, EINVAL);
-    WEXPSTR(str1, L"untouched");
-
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = wcsncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
-    ERR_MSVC(ESLEMAX, 0); /* different MAX */
-    if (use_msvcrt) {
-        WEXPSTR(str1, L"b");
-    } else {
-        WEXPSTR(str1, L"untouched");
-    }
-#endif
-
-/*--------------------------------------------------*/
-
-    wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    wcscpy(str2, L"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = wcsncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
-    ERR_MSVC(ESLEMAX, ERANGE); /* not cleared with msvcrt */
-    if (!use_msvcrt) {
-        WEXPSTR(str1, L"");
-        WCHECK_SLACK(str1, 5);
-    }
-#endif
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");

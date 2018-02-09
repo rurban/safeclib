@@ -43,14 +43,17 @@ int test_mbstowcs_s (void)
     cs = "a";
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty retval") EXPECT_BOS("empty src or len") 
     rc = mbstowcs_s(NULL, NULL, LEN, cs, 0);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
+    EXPECT_BOS("empty src") EXPECT_BOS("empty src or len")
     rc = mbstowcs_s(&ind, dest, LEN, NULL, 0);
     ERR_MSVC(ESNULLP, EINVAL);
 
     src[0] = '\0';
+    EXPECT_BOS("empty src or len")
     rc = mbstowcs_s(&ind, NULL, 0, (const char*)src, 0);
 #ifdef BSD_LIKE
     if (rc != 2) { /* BSD's return 2 */
@@ -61,19 +64,22 @@ int test_mbstowcs_s (void)
     ERR(0);
 #endif
 
-    rc = mbstowcs_s(&ind, dest, 0, cs, 0);
+    EXPECT_BOS("empty dmax")
+    rc = mbstowcs_s(&ind, dest, 0, cs, 3);
     ERR_MSVC(ESZEROL, EINVAL);
 
-    rc = mbstowcs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
+    EXPECT_BOS("dest overflow")
+    rc = mbstowcs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 3);
     ERR_MSVC(ESLEMAX, 0);
+    
+    dest[0] = L'a';
+    EXPECT_BOS("dest overlap")
+    rc = mbstowcs_s(&ind, dest, LEN, (const char*)dest, 1);
+    ERR_MSVC(ESOVRLP, ERANGE);
 #endif
 
     cs = "abcdef";
     rc = mbstowcs_s(&ind, (wchar_t*)cs, LEN, cs, 3);
-    ERR_MSVC(ESOVRLP, ERANGE);
-
-    dest[0] = L'a';
-    rc = mbstowcs_s(&ind, dest, LEN, (const char*)dest, 1);
     ERR_MSVC(ESOVRLP, ERANGE);
 
 /*--------------------------------------------------*/

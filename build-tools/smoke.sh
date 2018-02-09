@@ -15,22 +15,22 @@ CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 $make -s clean
-CC="clang-mp-5.0 -std=c11 -DTEST_BOS" \
+# since clang 5 with diagnose_if BOS compile-time checks
+CC="clang-mp-5.0 -std=c11" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    gmake -s -j4 check-log || exit
+    gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse
     gmake -s -j4 check-valgrind
-# clang 7 with diagnose_if
 # relax compile-time errors to warnings
 CC="clang-mp-devel -DTEST_BOS" \
     ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 $make -s clean
-# skip the compile-time errors
+# also check against BOS compile-time errors
 CC="clang-mp-devel" \
-    ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
-    gmake -s -j4 check-log || exit
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+    gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
 $make -s clean
 # must error
 CC="clang-mp-devel" ./configure --enable-error-dmax && \
@@ -96,11 +96,11 @@ CC="gcc-6" ./configure && \
     make -s -j4 check-log || exit
 CC="gcc-7" ./configure && \
     make -s -j4 check-log || exit
-# relax compile-time errors to warnings
-CC="clang-5.0 -DTEST_BOS" \
+# since clang 5 with diagnose_if BOS compile-time checks
+CC="clang-5.0" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log || exit
-CC="clang-7 -DTEST_BOS -fsanitize=address,undefined -fno-omit-frame-pointer" \
+    make -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
+CC="clang-7 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
 # retpoline and diagnose_if, skip compile-time errors
@@ -108,8 +108,8 @@ CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure && \
     make -s -j4 check-log
 make -s clean
 # warn on compile-time errors and checks
-CC="clang-7 -DTEST_BOS" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
-    make -s -j4 check-log
+CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
+    make -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
 make -s clean
 # must error
 CC="clang-7 -DTEST_BOS" ./configure --enable-error-dmax && \

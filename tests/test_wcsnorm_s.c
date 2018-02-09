@@ -49,24 +49,24 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wcsnorm_s(NULL, LEN, L"test", WCSNORM_NFD, NULL);
     ERR(ESNULLP);
 
     wcscpy(str, L"A" L"\x1fb3");
+    EXPECT_BOS("empty src")
     rc = wcsnorm_s(str, LEN, NULL, WCSNORM_NFD, NULL);
     ERR(ESNULLP);
     WEXPSTR(str, L"\0");
-
-/*--------------------------------------------------*/
-
+     
+    EXPECT_BOS("empty dest or dmax") 
     rc = wcsnorm_s(str, 0, L"test", WCSNORM_NFD, &ind);
     ERR(ESZEROL)
     INDZERO();
     WEXPSTR(str, L"\0");
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow") 
     rc = wcsnorm_s(str, 99999, L"test", WCSNORM_NFD, NULL);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");

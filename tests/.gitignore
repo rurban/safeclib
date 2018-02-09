@@ -6,3 +6,5 @@
 #
 p_*
 t_*
+tests-bos.log
+tests-bos.err

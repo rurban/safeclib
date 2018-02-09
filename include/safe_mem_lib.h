@@ -70,74 +70,97 @@ set_mem_constraint_handler_s(constraint_handler_t handler);
 EXTERN errno_t
 memcpy_s(void *restrict dest, rsize_t dmax,
          const void *restrict src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax);
 
 /* move memory, including overlapping memory */
 EXTERN errno_t
 memmove_s(void *dest, rsize_t  dmax,
           const void *src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax);
 
 /* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 #if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
 EXTERN errno_t
 memset_s(void *dest, rsize_t dmax, int value, rsize_t n)
-    BOS_CHK(dest) BOS_OVR2(dest, n) VAL_OVR2(value, 255) VAL_OVR2(n, dmax);
+    BOS_NULL(dest)
+    BOS_CHK_BUTZERO(dest, n)
+    BOS_ATTR(n && (_BOS_OVR(dest, n)||dmax>n), "dest overflow >n")
+    VAL_OVR2(value, 255);
 #endif
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
+
+/* set uint16_t */
+EXTERN errno_t
+memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
+    BOS_NULL(dest)
+    BOS_CHK_BUTZERO(dest, n)
+    BOS_ATTR(n && (_BOS_OVR(dest, n*2)||dmax>n*2), "dest overflow >n*2");
+
+/* set uint32_t */
+EXTERN errno_t
+memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
+    BOS_NULL(dest)
+    BOS_CHK_BUTZERO(dest, n)
+    BOS_ATTR(n && (_BOS_OVR(dest, n*4)||dmax>n*4), "dest overflow >n*4");
 
 /* compare memory */
 EXTERN errno_t
 memcmp_s(const void *dest, rsize_t dmax,
          const void *src, rsize_t slen, int *diff)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(diff)
+    BOS_ATTR(!slen, "empty slen")
+    VAL_OVR2_BUTZERO(slen, dmax);
 
 /* compare uint16_t memory */
 EXTERN errno_t
 memcmp16_s(const uint16_t *dest, rsize_t dmax,
            const uint16_t *src, rsize_t slen, int *diff)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(diff)
+    BOS_ATTR(!slen, "empty slen")
+    VAL_OVR2_BUTZERO(slen, dmax);
 
 /* compare uint32_t memory */
 EXTERN errno_t
 memcmp32_s(const uint32_t *dest, rsize_t dmax,
            const uint32_t *src, rsize_t slen, int *diff)
-    BOS_CHK(dest) BOS_OVR2(src, slen);
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(diff)
+    BOS_ATTR(!slen, "empty slen")
+    VAL_OVR2_BUTZERO(slen, dmax);
 
 /* copy uint16_t memory */
 EXTERN errno_t
 memcpy16_s(uint16_t *dest, rsize_t dmax,
            const uint16_t *src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
+    BOS_CHK_BUTZERO(dest, slen)
+    BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax/2);
 
 /* copy uint32_t memory */
 EXTERN errno_t
 memcpy32_s(uint32_t *dest, rsize_t dmax,
            const uint32_t *src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
+    BOS_CHK_BUTZERO(dest, slen)
+    BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax/4);
 
 /* uint16_t move memory, including overlapping memory */
 EXTERN errno_t
 memmove16_s(uint16_t *dest, rsize_t dmax,
             const uint16_t *src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
+    BOS_CHK_BUTZERO(dest, slen)
+    BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax/2);
 
 /* uint32_t move memory, including overlapping memory */
 EXTERN errno_t
 memmove32_s(uint32_t *dest, rsize_t dmax,
             const uint32_t *src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen);
-
-/* set uint16_t */
-EXTERN errno_t
-memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
-    BOS_CHK(dest) BOS_OVR2(dest, n/2) VAL_OVR2(n, dmax/2);
-
-/* set uint32_t */
-EXTERN errno_t
-memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
-    BOS_CHK(dest) BOS_OVR2(dest, n/4) VAL_OVR2(n, dmax/4);
+    BOS_CHK_BUTZERO(dest, slen)
+    BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax/4);
 
 /* byte zero */
 EXTERN errno_t
@@ -158,12 +181,15 @@ memzero32_s(uint32_t *dest, rsize_t dmax)
 EXTERN errno_t
 memchr_s(const void *restrict dest, rsize_t dlen,
          const int ch, void **result)
-    BOS_CHK2(dest, dlen) VAL_OVR2(ch, 255);
+    BOS_CHK2(dest, dlen)
+    VAL_OVR2(ch, 255)
+    BOS_NULL(result);
 
 EXTERN errno_t
 memrchr_s(const void *restrict dest, rsize_t dlen,
           const int ch, void **result)
-    BOS_CHK2(dest, dlen) VAL_OVR2(ch, 255);
+    BOS_CHK2(dest, dlen) VAL_OVR2(ch, 255)
+    BOS_NULL(result);
 
 /* timing-safe byte sequence comparisons
    (already in OpenBSD, cygwin, newlib) */
@@ -180,7 +206,8 @@ timingsafe_memcmp(const void *b1, const void *b2, size_t len)
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
 memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n)
-    BOS_CHK(dest) BOS_OVR2(src, n) VAL_OVR2(c, 255) VAL_OVR2(n, dmax);
+    BOS_CHK(dest) BOS_OVR2(src, n) VAL_OVR2(c, 255)
+    VAL_OVR2_BUTZERO(n, dmax);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
@@ -204,7 +231,7 @@ wmemmove_s(wchar_t *dest, rsize_t dmax,
 EXTERN errno_t
 wmemcmp_s(const wchar_t *dest, rsize_t dmax,
           const wchar_t *src, rsize_t slen, int *diff)
-    BOSW_CHK(dest) BOSW_OVR2(src, slen);
+    BOSW_CHK(dest) BOSW_CHK2(src, slen) BOS_NULL(diff);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

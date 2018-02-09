@@ -24,6 +24,8 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strfirstchar_s(NULL, LEN, 'a', &first);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
@@ -37,6 +39,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty first")
     rc = strfirstchar_s(str1, LEN, 'a', NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
@@ -45,6 +48,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strfirstchar_s(str1, 0, 'a', &first);
     if (rc != ESZEROL) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",
@@ -56,9 +60,8 @@ int main()
                      __FUNCTION__, __LINE__,  str1, first, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strfirstchar_s(str1, RSIZE_MAX_STR+1, 'a', &first);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",

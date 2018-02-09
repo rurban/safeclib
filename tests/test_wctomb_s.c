@@ -42,23 +42,28 @@ int test_wctomb_s (void)
 
     src = L'a';
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty retval")
     rc = wctomb_s(NULL, NULL, LEN, src);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, 0);
+
+    EXPECT_BOS("empty dest or dmax")
+    rc = wctomb_s(&ind, dest, 0, src);
+    ERR_MSVC(ESZEROL, ERANGE);
+
+    EXPECT_BOS("dest overflow")
+    rc = wctomb_s(&ind, dest, RSIZE_MAX_STR+1, src);
+    ERR_MSVC(ESLEMAX, 0);
+#endif
+
+/*--------------------------------------------------*/
 
     rc = wctomb_s(&ind, dest, LEN, L'\0');
     ERR(EOK);
     INDCMP(!= 1);
     CHECK_SLACK(&dest[1], LEN-1);
-
-    rc = wctomb_s(&ind, dest, 0, src);
-    ERR_MSVC(ESZEROL, ERANGE);
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = wctomb_s(&ind, dest, RSIZE_MAX_STR+1, src);
-    ERR_MSVC(ESLEMAX, 0);
-#endif
-
+    
 /*--------------------------------------------------*/
 
     rc = wctomb_s(&ind, dest, LEN, L'\a');

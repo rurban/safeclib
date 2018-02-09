@@ -24,15 +24,16 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = memzero32_s(NULL, LEN);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = memzero32_s(mem1, 0);
     ERR(ESZEROL)
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = memzero32_s(mem1, RSIZE_MAX_MEM32+1);
     ERR(ESLEMAX);
 #endif

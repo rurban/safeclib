@@ -48,13 +48,17 @@ int test_fscanf_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty stream")
     rc = fscanf_s(NULL, "");
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP,EINVAL);
 
     stuff_stream("1");
+    EXPECT_BOS("empty fmt")
     rc = fscanf_s(stream, NULL);
     ERREOF_MSVC(ESNULLP,EINVAL);
+#endif
 
     /* TODO: should error */
 #if 0

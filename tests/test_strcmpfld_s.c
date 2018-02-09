@@ -26,25 +26,26 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strcmpfld_s(NULL, LEN, str2, &ind);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
     len = 5;
+    EXPECT_BOS("empty src")
     rc = strcmpfld_s(str1, len, NULL, &ind);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
     len = 5;
+    EXPECT_BOS("empty indicator")
     rc = strcmpfld_s(str1, len, str2, NULL);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strcmpfld_s(str1, 0, str2, &ind);
     ERR(ESZEROL)
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strcmpfld_s(str1, (RSIZE_MAX_STR+1), str2, &ind);
     ERR(ESLEMAX)
 #endif

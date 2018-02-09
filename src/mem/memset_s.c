@@ -95,8 +95,7 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
         return (RCNEGATE(ESNULLP));
     }
 
-    if (unlikely(n == 0)) {
-        /* on C11 n=0 is allowed */
+    if (unlikely(n == 0)) { /* since C11 n=0 is allowed */
         return EOK;
     }
 

@@ -26,30 +26,31 @@ int test_strchr_s (void)
 /*--------------------------------------------------*/
 
     ch = 0;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strchr_s(NULL, LEN, ch, &sub);
     ERR(ESNULLP);
     SUBNULL();
 
+    EXPECT_BOS("empty result")
     rc = strchr_s(str, LEN, ch, NULL);
     ERR(ESNULLP);
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strchr_s(str, 0, ch, &sub);
     ERR(ESZEROL)
     SUBNULL();
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strchr_s(str, RSIZE_MAX_STR+1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
-#endif
 
+    EXPECT_BOS("ch overflow >255")
     rc = strchr_s(str, LEN, 256, &sub);
     ERR(ESLEMAX)
     SUBNULL();
+#endif
 
 /*--------------------------------------------------*/
 

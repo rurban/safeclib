@@ -38,42 +38,37 @@ int test_strcspn_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strcspn_s(NULL, LEN, str2, LEN, &count);
     ERR(ESNULLP)
     COUNT(0)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty src")
     rc = strcspn_s(str1, LEN, NULL, LEN, &count);
     ERR(ESNULLP)
     COUNT(0)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty count")
     rc = strcspn_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strcspn_s(str1, 0, str2, LEN, &count);
     ERR(ESZEROL)
     COUNT(0)
-
-/*--------------------------------------------------*/
 
     rc = strcspn_s(str1, LEN, str2, 0, &count);
     ERR(ESZEROL)
     COUNT(0)
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strcspn_s(str1, RSIZE_MAX_STR+1, str2, LEN, &count);
     ERR(ESLEMAX)
     COUNT(0)
-/*--------------------------------------------------*/
 
-    rc = strcspn_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &count);
+    EXPECT_BOS("src overflow")
+    rc = strcspn_s(str1, LEN, str2, RSIZE_MAX_STR+1, &count);
     ERR(ESLEMAX)
     COUNT(0)
 #endif

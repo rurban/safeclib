@@ -40,14 +40,11 @@ int test_strerror_s (void)
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
     EXPECT_BOS("empty dest or dmax")
     rc = strerror_s(str1, 0, 0);
     ERR_MSVC(ESZEROL, EINVAL);
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("dest overflow")
     rc = strerror_s(str1, (RSIZE_MAX_STR+1), 0);
     ERR_MSVC(ESLEMAX, EINVAL);
 #endif

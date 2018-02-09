@@ -50,9 +50,12 @@ int test_wscanf_s (void)
     print_msvcrt(use_msvcrt);
     /* wine msvcrt doesn't check fmt==NULL */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S))
+# ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = wscanf_s(NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
+# endif    
 #else
     printf("Using wine\n");
     have_wine = 1;

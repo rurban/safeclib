@@ -25,27 +25,32 @@ int test_memchr_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     ch = 0;
+    EXPECT_BOS("empty dest")
     rc = memchr_s(NULL, LEN, ch, &sub);
     ERR(ESNULLP);
     SUBNULL();
 
+    EXPECT_BOS("empty result")
     rc = memchr_s(mem, LEN, ch, NULL);
     ERR(ESNULLP);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = memchr_s(mem, 0, ch, &sub);
     ERR(ESZEROL)
     SUBNULL();
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = memchr_s(mem, RSIZE_MAX_STR+1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
 
+    EXPECT_BOS("ch overflow >255")
     rc = memchr_s(mem, LEN, 256, &sub);
     ERR(ESLEMAX)
     SUBNULL();

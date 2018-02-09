@@ -26,18 +26,40 @@ int main()
 
     value = 34;
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") EXPECT_BOS("dest overflow or empty")
     rc = memset32_s(NULL, MAX, value, LEN);
     ERR(ESNULLP);
-
-/*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     value = 34;
 
     /* first check dest, then n */
+    EXPECT_BOS("empty dest")
     rc = memset32_s(NULL, MAX, value, 0);
     ERR(ESNULLP);
 
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("dest overflow >n*4")
+    rc = memset32_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
+    ERR(ESLEMAX); /* and untouched */
+    EXPMEM(mem1, 0, LEN, 33, 4);
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("dest overflow >n*4")
+    rc = memset32_s(mem1, LEN, value, RSIZE_MAX_MEM32+1);
+    ERR(ESLEMAX); /* and set all */
+    EXPMEM(mem1, 0, LEN, value, 4);
+
+    EXPECT_BOS("dest overflow >n*4")
+    rc = memset32_s(mem1, MAX, value, LEN+1);
+    ERR(ESNOSPC) /* and set all */
+    EXPMEM(mem1, 0, LEN, value, 4);
+#endif
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    
     /* check n first, then args 2-3 */
     rc = memset32_s(mem1, MAX, value, 0);
     ERR(EOK); /* and untouched */
@@ -50,25 +72,6 @@ int main()
     rc = memset32_s(mem1, MAX, 256, 0);
     ERR(EOK); /* still untouched */
     EXPMEM(mem1, 0, LEN, 33, 4);
-
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = memset32_s(mem1, RSIZE_MAX_MEM+1, value, LEN);
-    ERR(ESLEMAX); /* and untouched */
-    EXPMEM(mem1, 0, LEN, 33, 4);
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    rc = memset32_s(mem1, LEN, value, RSIZE_MAX_MEM32+1);
-    ERR(ESLEMAX); /* and set all */
-    EXPMEM(mem1, 0, LEN, value, 4);
-#endif
-
-/*--------------------------------------------------*/
-
-    rc = memset32_s(mem1, MAX, value, LEN+1);
-    ERR(ESNOSPC) /* and set all */
-    EXPMEM(mem1, 0, LEN, value, 4);
 
 /*--------------------------------------------------*/
 

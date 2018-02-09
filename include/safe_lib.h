@@ -137,23 +137,25 @@ freopen_s(FILE *restrict *restrict newstreamptr,
 
 EXTERN errno_t
 asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_ATTR(dmax<26, "dmax underflow") BOS_NULL(tm);
 
 EXTERN errno_t
 ctime_s(char *dest, rsize_t dmax, const time_t *timer)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_ATTR(dmax<26, "dmax underflow") BOS_NULL(timer);
 
-/* Beware: This return errno_t on the MINGW64 windows sec_api,
+/* Beware: These return errno_t on the MINGW64 windows sec_api,
    and switched its args:
 
    errno_t gmtime_s(struct tm *_Tm, const time_t *_Time);
    errno_t localtime_s(struct tm *_Tm,const time_t *_Time); */
 #ifndef HAVE_MINGW64
 EXTERN struct tm *
-gmtime_s(const time_t *restrict timer, struct tm *restrict dest);
+gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
+    BOS_NULL(timer) BOS_NULL(dest);
 
 EXTERN struct tm *
-localtime_s(const time_t *restrict timer, struct tm *restrict dest);
+localtime_s(const time_t *restrict timer, struct tm *restrict dest)
+    BOS_NULL(timer) BOS_NULL(dest);
 #endif
 
 #endif /* MINGW_HAS_SECURE_API */
@@ -164,21 +166,26 @@ EXTERN errno_t
 getenv_s(size_t *restrict len,
          char *restrict dest, rsize_t dmax,
          const char *restrict name)
-    BOS_CHK(dest);
+    BOS_CHK(dest) BOS_ATTR(_BOS_NULL(name), "empty name");
 
 EXTERN void *
 bsearch_s(const void *key, const void *base,
           rsize_t nmemb, rsize_t size,
           int (*compar)(const void *k, const void *y, void *context),
           void *context)
-    BOS_CHK2(base, nmemb*size);
+    BOS_ATTR(nmemb && (_BOS_NULL(key) || _BOS_NULL(base) || _BOS_ZERO(base,nmemb*size)),
+             "empty buf or bufsize")
+    BOS_OVR2_BUTNULL(base, nmemb*size)
+    BOS_ATTR(nmemb && !compar, "empty compar");
 
 #ifndef MINGW_HAS_SECURE_API
 EXTERN errno_t
 qsort_s(void *base, rsize_t nmemb, rsize_t size,
         int (*compar)(const void *x, const void *y, void *context),
         void *context)
-    BOS_CHK2(base, nmemb*size);
+    BOS_ATTR(nmemb && (_BOS_NULL(base) || _BOS_ZERO(base,nmemb*size)), "empty buf or bufsize")
+    BOS_OVR2_BUTNULL(base, nmemb*size)
+    BOS_ATTR(nmemb && !compar, "empty compar");
 #endif
 
 #ifdef __cplusplus

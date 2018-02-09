@@ -37,15 +37,16 @@ int test_strcat_s (void)
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strcat_s(NULL, LEN, str2);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     EXPSTR(str1, "");
-#endif
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaa");
+    EXPECT_BOS("empty src")
     rc = strcat_s(str1, LEN, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
     EXPSTR(str1, "");
@@ -53,17 +54,16 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "aaaa");
-    GCC_PUSH_WARN_DMAX
+    EXPECT_BOS("empty dest or dmax")
     rc = strcat_s(str1, 0, str2);
-    GCC_POP_WARN_DMAX
     ERR_MSVC(ESZEROL, EINVAL);
     EXPSTR(str1, "aaaa");
 
 /*--------------------------------------------------*/
 
     strcpy(str1, "a");
+    EXPECT_BOS("dest overflow")
     rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     EXPSTR(str1, use_msvcrt ? "aaaaa" : "a");

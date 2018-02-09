@@ -84,15 +84,18 @@ int test_fwscanf_s (void)
 #endif
     stuff_stream(L"a");
     wstr2[0] = '\0';
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty stream")
     rc = fwscanf_s(NULL, L"%ls", wstr2);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERR(EOF);
     ERRNO_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");
 
+    EXPECT_BOS("empty fmt")
     rc = fwscanf_s(stream, NULL, NULL);
     ERREOF(ESNULLP);
-
+#endif
     /* SEGV
       rc = fwscanf_s(stream, L"%ls", NULL);
       ERREOF(ESNULLP);

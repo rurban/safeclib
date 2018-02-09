@@ -31,9 +31,12 @@ int test_printf_s (void)
 /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = printf_s(NULL);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     NEGERR_MSVC(ESNULLP, EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

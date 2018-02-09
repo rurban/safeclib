@@ -22,8 +22,11 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strislowercase_s(NULL, len);
     ERR(false)
+#endif
 /*--------------------------------------------------*/
 
     len = 99999;

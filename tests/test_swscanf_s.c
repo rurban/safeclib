@@ -42,9 +42,12 @@ int test_swscanf_s (void)
 
     /* wine msvcrt doesn't check fmt==NULL */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
+# ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = swscanf_s(wstr1, NULL, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
+# endif
 #else
     printf("Using wine\n");
     use_msvcrt = 1;
@@ -56,9 +59,12 @@ int test_swscanf_s (void)
     wstr2[0] = '\0';
     /* msvcrt doesn't check src==NULL neither */
 #if !(defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
+# ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty buffer")
     rc = swscanf_s(NULL, L"%ls", wstr2);
     ERREOF_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");
+# endif    
 #endif
 
 /*--------------------------------------------------*/

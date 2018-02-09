@@ -39,18 +39,21 @@ int test_memcpy_s (void)
 
     /* with clang-5 compile-time checks these errors */
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow or empty")
     rc = memcpy_s(NULL, LEN, mem2, LEN);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memcpy_s(mem1, 0, mem2, LEN);
     ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow or empty")
     rc = memcpy_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (!use_msvcrt)
@@ -84,10 +87,12 @@ int test_memcpy_s (void)
 
 #ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("src overflow or empty")
     rc = memcpy_s(mem1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
 
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
@@ -139,6 +144,7 @@ int test_memcpy_s (void)
     for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     len = LEN/2;
+    /*EXPECT_BOS("size exceeds max") TODO */
     rc = memcpy_s(mem1, len, mem2, LEN);
     ERR_MSVC(ESNOSPC, ERANGE);
 

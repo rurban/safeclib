@@ -25,6 +25,8 @@ int test_memccpy_s (void)
 /*--------------------------------------------------*/
 
     nlen = 5;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = memccpy_s(NULL, LEN, str2, 0, nlen);
     ERR(ESNULLP);
 
@@ -41,6 +43,7 @@ int test_memccpy_s (void)
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     nlen = 5;
+    EXPECT_BOS("empty src")
     rc = memccpy_s(str1, 5, NULL, 0, nlen);
     ERR(ESNULLP);
     CHECK_SLACK(str1, 5);
@@ -55,7 +58,6 @@ int test_memccpy_s (void)
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     str2[0] = '\0';
 
-#ifndef HAVE_CT_BOS_OVR
     rc = memccpy_s(str1, 5, str2, 0, 0);
     ERR(EOK);
     EXPSTR(str1, "");
@@ -74,17 +76,20 @@ int test_memccpy_s (void)
 
 #ifndef HAVE_CT_BOS_OVR
     nlen = 5;
+    EXPECT_BOS("empty dest or dmax")
     rc = memccpy_s(str1, 0, str2, 0, nlen);
     ERR(ESZEROL)
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow")
     rc = memccpy_s(str1, (RSIZE_MAX_MEM+1), str2, 0, nlen);
     ERR(ESLEMAX)
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
+    EXPECT_BOS("n overflow >dmax")
     rc = memccpy_s(str1, 5, str2, 0, 6);
     ERR(ESNOSPC)
     CHECK_SLACK(str1, 5);
@@ -92,6 +97,7 @@ int test_memccpy_s (void)
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
+    EXPECT_BOS("src overflow") EXPECT_BOS("n overflow >dmax")
     rc = memccpy_s(str1, 5, str2, 0, (RSIZE_MAX_MEM+1));
     ERR(ESLEMAX)
     CHECK_SLACK(str1, 5);

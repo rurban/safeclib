@@ -24,12 +24,15 @@ int main()
 
     strcpy(dest,"");
     max_len = 3;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty s")
     len = strnterminate_s(NULL, max_len);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     strcpy(dest,"test");

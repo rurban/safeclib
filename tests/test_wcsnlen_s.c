@@ -3,7 +3,6 @@
  * File 'wchar/wcsnlen_s.c'
  * Lines executed:100.00% of 12
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -22,6 +21,8 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     max_len = 3;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     len = wcsnlen_s(NULL, max_len);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
@@ -31,7 +32,8 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     max_len = 0;
-    len = wcsnlen_s(L"test", max_len);
+    EXPECT_BOS("empty dest or dmax") 
+    len = wcsnlen_s(L"test", 0);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
@@ -40,15 +42,16 @@ int test_wcsnlen_s (void)
 /*--------------------------------------------------*/
 
     max_len = RSIZE_MAX_WSTR+1;
-    len = wcsnlen_s(L"test", max_len);
+    /*EXPECT_BOS("dest overflow") TODO? */
+    len = wcsnlen_s(L"test", RSIZE_MAX_WSTR+1);
     /* They allow more */
-#if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
+# if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
-#else
+# else
     if (max_len < INT_MAX) {
         if (len != 4) {
             debug_printf("%s %u   Len=%u \n",
@@ -62,6 +65,7 @@ int test_wcsnlen_s (void)
             errs++;
         }
     }
+# endif
 #endif
 /*--------------------------------------------------*/
 

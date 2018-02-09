@@ -22,30 +22,26 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
-    debug_printf("debug - 01\n");
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strtouppercase_s(NULL, len);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
-    len = 0;
-    debug_printf("debug - 02\n");
-    rc = strtouppercase_s("test", len);
+    EXPECT_BOS("empty str or slen")
+    rc = strtouppercase_s("test", 0);
     ERR(ESZEROL)
+
+    EXPECT_BOS("str overflow")
+    rc = strtouppercase_s("test", 99999);
+    ERR(ESLEMAX)
+#endif
 /*--------------------------------------------------*/
 
     /* empty string */
     len = 5;
-    debug_printf("debug - 03\n");
     rc = strtouppercase_s("", len);
     ERR(EOK)
-/*--------------------------------------------------*/
 
-/* FIXME: known bug: this test causes a bus error if the string max size is
-   not restricted via RSIZE_MAX_STR */
-    len = 99999;
-        printf("debug - 04\n");
-    rc = strtouppercase_s("test", len);
-    ERR(ESLEMAX)
 /*--------------------------------------------------*/
 
     strcpy (str, "n");

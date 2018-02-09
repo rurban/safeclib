@@ -39,18 +39,21 @@ int test_memmove_s (void)
 
     /* with clang-5 compile-time checks these errors */
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow or empty")
     rc = memmove_s(NULL, LEN, mem2, LEN);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memmove_s(mem1, 0, mem2, LEN);
     ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow or empty")
     rc = memmove_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
     if (!use_msvcrt)
@@ -83,6 +86,7 @@ int test_memmove_s (void)
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("src overflow or empty")
     rc = memmove_s(mem1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     if (!use_msvcrt) {
@@ -91,6 +95,7 @@ int test_memmove_s (void)
 
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE);  /* and cleared */
     if (!use_msvcrt) {
@@ -160,6 +165,7 @@ int test_memmove_s (void)
     /* invalid length - zero dest */
 #ifndef HAVE_CT_BOS_OVR
     len = LEN;
+    EXPECT_BOS("src overflow or empty")
     rc = memmove_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE);
 

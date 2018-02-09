@@ -23,14 +23,17 @@ int test_localtime_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     tmptr = localtime_s(&timer, NULL);
     ERRNO(ESNULLP);
     PTRNULL(tmptr);
 
+    EXPECT_BOS("empty timer")
     tmptr = localtime_s(NULL, &tm);
     ERRNO(ESNULLP);
     PTRNULL(tmptr);
-
+#endif
 /*--------------------------------------------------*/
 
     timer = 0;

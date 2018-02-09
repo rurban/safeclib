@@ -38,6 +38,8 @@ int test_memset_s (void)
     use_msvcrt = false;
 #endif
     value = 34;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = memset_s(NULL, LEN, value, LEN);
     if ( rc == ESNULLP ) {
         if (use_msvcrt)
@@ -50,14 +52,43 @@ int test_memset_s (void)
     }
     ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     value = 34;
 
     /* first check dest, then n */
+    EXPECT_BOS("empty dest")
     rc = memset_s(NULL, LEN, value, 0);
     ERR_MSVC(ESNULLP, EINVAL);
+
+    EXPECT_BOS("value overflow >256")
+    rc = memset_s(mem1, LEN, 256, LEN); /* This should be caught at compile-time */
+    ERR_MSVC(ESLEMAX, 0); /* no native overflow check on darwin! */
+    if (use_msvcrt)
+        EXPMEM(mem1, 0, LEN, 0, 1);
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("dest overflow or empty")
+    rc = memset_s(mem1, MAX+1, value, LEN);
+    ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
+    if (use_msvcrt)
+        EXPMEM(mem1, 0, LEN, value, 1);
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("n overflow >dmax")
+    rc = memset_s(mem1, LEN, value, MAX+1); /* This should be caught at compile-time! */
+    ERR_MSVC(ESLEMAX, EOVERFLOW); /* and set all */
+    EXPMEM(mem1, 0, LEN, value, 1);
+
+    EXPECT_BOS("n overflow >dmax")
+    rc = memset_s(mem1, LEN, value, LEN+1); /* This should be caught at compile-time! */
+    ERR_MSVC(ESNOSPC, EOVERFLOW); /* and set all */
+    EXPMEM(mem1, 0, LEN, value, 1);
+#endif
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    value = 34;
 
     /* check n first, then args 2-3 */
     rc = memset_s(mem1, LEN, value, 0);
@@ -71,36 +102,6 @@ int test_memset_s (void)
     rc = memset_s(mem1, LEN, 256, 0);
     ERR(EOK); /* still untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
-
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = memset_s(mem1, LEN, 256, LEN); /* This should be caught at compile-time */
-    ERR_MSVC(ESLEMAX, 0); /* no native overflow check on darwin! */
-    if (use_msvcrt)
-        EXPMEM(mem1, 0, LEN, 0, 1);
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    rc = memset_s(mem1, MAX+1, value, LEN);
-    ERR_MSVC(ESLEMAX, 0); /* and implementation defined */
-    if (use_msvcrt)
-        EXPMEM(mem1, 0, LEN, value, 1);
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    rc = memset_s(mem1, LEN, value, MAX+1); /* This should be caught at compile-time! */
-    ERR_MSVC(ESLEMAX, EOVERFLOW); /* and set all */
-    EXPMEM(mem1, 0, LEN, value, 1);
-
-/*--------------------------------------------------*/
-
-    rc = memset_s(mem1, LEN, value, LEN+1); /* This should be caught at compile-time! */
-    ERR_MSVC(ESNOSPC, EOVERFLOW); /* and set all */
-    EXPMEM(mem1, 0, LEN, value, 1);
-#endif
 
 /*--------------------------------------------------*/
 

@@ -83,8 +83,7 @@ memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
         return (RCNEGATE(ESNULLP));
     }
 
-    if (unlikely(n == 0)) {
-        /* Since C11 n=0 is allowed */
+    if (unlikely(n == 0)) { /* Since C11 n=0 is allowed */
         return EOK;
     }
 

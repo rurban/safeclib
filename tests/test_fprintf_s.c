@@ -42,8 +42,11 @@ int test_fprintf_s (void)
 
     /* wine msvcrt doesn't check fmt==NULL */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S))
+# ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = fprintf_s(out, NULL);
     NEGERR_MSVC(ESNULLP, EOF);
+# endif
 #endif
 
 /*--------------------------------------------------*/

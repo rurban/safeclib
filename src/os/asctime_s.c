@@ -104,28 +104,18 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
     const char* buf;
     size_t len;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("asctime_s: dest is null",
-                   NULL, ESNULLP);
-        return ESNULLP;
-    }
-
-    if (unlikely(tm == NULL)) {
-        invoke_safe_str_constraint_handler("asctime_s: tm is null",
-                   NULL, ESNULLP);
-        return ESNULLP;
-    }
-
+    CHK_DEST_NULL("asctime_s")
     if (unlikely(dmax < 26)) {
         invoke_safe_str_constraint_handler("asctime_s: dmax is too small",
                    NULL, ESLEMIN);
         return ESLEMIN;
     }
+    CHK_DMAX_MAX("asctime_s", RSIZE_MAX_STR)
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("asctime_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return ESLEMAX;
+    if (unlikely(tm == NULL)) {
+        invoke_safe_str_constraint_handler("asctime_s: tm is null",
+                   NULL, ESNULLP);
+        return ESNULLP;
     }
 
     if (tm->tm_year < 0 ||

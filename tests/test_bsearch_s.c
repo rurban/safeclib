@@ -61,12 +61,13 @@ int test_bsearch_s (void)
 
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty buf or bufsize")
     vitem = bsearch_s(NULL, array, LEN, 0, comp, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERRNO_MSVC(ESNULLP, EINVAL);
     PTRNULL(vitem);
-#endif
 
+    EXPECT_BOS("empty buf or bufsize")
     vitem = bsearch_s(&key, NULL, LEN, sizeof(array[0]), comp, NULL);
     if (use_msvcrt && errno == EOF) {
         printf("Using wine\n");
@@ -76,18 +77,20 @@ int test_bsearch_s (void)
     if (!have_wine)
         PTRNULL(vitem);
 
+    EXPECT_BOS("empty compar")
     vitem = bsearch_s(&key, (const void *)array, LEN, sizeof(array[0]), NULL, NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
     PTRNULL(vitem);
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("base overflow")
     vitem = bsearch_s(&key, array, RSIZE_MAX_MEM+1, sizeof(array[0]), comp, NULL);
     ERRNO_MSVC(ESLEMAX, EOF);
     if (!use_msvcrt)
         PTRNULL(vitem);
 
+    EXPECT_BOS("base overflow")
     vitem = bsearch_s(&key, array, LEN, RSIZE_MAX_MEM+1, comp, NULL);
     ERRNO_MSVC(ESLEMAX, EOF);
     if (!use_msvcrt)
@@ -97,12 +100,11 @@ int test_bsearch_s (void)
 /*--------------------------------------------------*/
 
     /* allow empty array? msvcrt disallows it */
-#ifndef HAVE_CT_BOS_OVR
     key.iv = 0;
     vitem = bsearch_s(&key, NULL, 0, 0, comp, NULL);
     PTRNULL(vitem);
     ERRNO_MSVC(0, EINVAL);
-#endif
+
 /*--------------------------------------------------*/
 
     /* find em */

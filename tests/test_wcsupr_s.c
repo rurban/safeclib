@@ -20,8 +20,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("src overflow or empty")
     rc = wcsupr_s(NULL, 5);
     ERR(ESNULLP);
+#endif
 
 /*--------------------------------------------------*/
 
@@ -38,6 +41,7 @@ int main()
 
 #ifndef HAVE_CT_BOS_OVR
     wcscpy(str, L"test");
+    EXPECT_BOS("src overflow or empty")
     rc = wcsupr_s(str, 99999);
     ERR(ESLEMAX); /* and untouched */
     WEXPSTR(str, L"test");

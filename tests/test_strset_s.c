@@ -23,20 +23,21 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strset_s(NULL, 5, value);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strset_s(str1, 0, 0);
     ERR(ESZEROL)
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strset_s(str1, RSIZE_MAX_STR+1, 0);
     ERR(ESLEMAX);
 
-    rc = strset_s(str1, RSIZE_MAX_STR+1, 256);
+    EXPECT_BOS("value overflow >255")
+    rc = strset_s(str1, LEN, 256);
     ERR(ESLEMAX);
 #endif
 /*--------------------------------------------------*/

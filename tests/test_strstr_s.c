@@ -28,6 +28,8 @@ int test_strstr_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strstr_s(NULL, LEN, str2, LEN, &sub);
     ERR(ESNULLP)
 
@@ -36,8 +38,8 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src")
     rc = strstr_s(str1, LEN, NULL, LEN, &sub);
     ERR(ESNULLP)
     if (sub) {
@@ -45,12 +47,12 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty substring")
     rc = strstr_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strstr_s(str1, 0, str2, LEN, &sub);
     ERR(ESZEROL)
     if (sub) {
@@ -58,9 +60,8 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strstr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     ERR(ESLEMAX)
     if (sub) {
@@ -68,9 +69,8 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
-#endif
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src or slen")
     rc = strstr_s(str1, LEN, str2, 0, &sub);
     ERR(ESZEROL)
     if (sub) {
@@ -78,9 +78,8 @@ int test_strstr_s (void)
                      __FUNCTION__, __LINE__, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("src overflow")
     rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
     ERR(ESLEMAX)
     if (sub) {

@@ -23,17 +23,18 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strljustify_s(NULL, len);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
     len = 0;
-    rc = strljustify_s("test", len);
+    EXPECT_BOS("empty dest or dmax")
+    rc = strljustify_s("test", 0);
     ERR(ESZEROL)
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
-    rc = strljustify_s("test", 99999);
+    EXPECT_BOS("dest overflow")
+    rc = strljustify_s("test", RSIZE_MAX_STR+1);
     ERR(ESLEMAX);
 #endif
 /*--------------------------------------------------*/

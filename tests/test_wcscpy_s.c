@@ -32,6 +32,8 @@ int test_wcscpy_s (void)
 
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") 
     rc = wcscpy_s(NULL, LEN, str2);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -40,6 +42,7 @@ int test_wcscpy_s (void)
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
+    EXPECT_BOS("empty src") 
     rc = wcscpy_s(str1, 5, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
     WCHECK_SLACK(str1, 5);
@@ -47,13 +50,14 @@ int test_wcscpy_s (void)
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"untouched");
+    EXPECT_BOS("empty dest or dmax") 
     rc = wcscpy_s(str1, 0, str2);
     ERR_MSVC(ESZEROL, EINVAL);
     WEXPSTR(str1, L"untouched");
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow") 
     rc = wcscpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     WEXPSTR(str1, L"untouched");

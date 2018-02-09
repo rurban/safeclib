@@ -20,8 +20,11 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strismixedcase_s(NULL, len);
     ERR(false)
+#endif
 /*--------------------------------------------------*/
 
     len = 0;

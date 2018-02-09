@@ -43,22 +43,26 @@ int test_wcstombs_s (void)
 
     cs = L"a";
     print_msvcrt(use_msvcrt);
-    rc = wcstombs_s(NULL, NULL, LEN, cs, 0);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty retval") EXPECT_BOS("empty dest")
+    rc = wcstombs_s(NULL, NULL, LEN, cs, 1);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
-    rc = wcstombs_s(&ind, dest, 0, cs, 0);
+    EXPECT_BOS("empty dest or dmax")
+    rc = wcstombs_s(&ind, dest, 0, cs, 1);
     if (use_msvcrt && rc == 0 && ind == 0) {
         printf("Using wine\n");
         have_wine = 1;
     }
     ERR_MSVC(ESZEROL, have_wine?0:EINVAL);
 
-    rc = wcstombs_s(&ind, NULL, 0, cs, 0);
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    rc = wcstombs_s(&ind, NULL, 0, cs, 1);
     ERR_MSVC(ESNOSPC, 0);
 
-#ifndef HAVE_CT_BOS_OVR
-    rc = wcstombs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 0);
+    EXPECT_BOS("dest overflow")
+    rc = wcstombs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 1);
     ERR_MSVC(ESLEMAX, 0);
 #endif
 
@@ -72,9 +76,12 @@ int test_wcstombs_s (void)
     EXPSTR(dest, "");
     CHECK_SLACK(dest, LEN);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty src") EXPECT_BOS("empty src or len")
     rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
     ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
     CHECK_SLACK(dest, LEN);
+#endif
 
 /*--------------------------------------------------*/
 

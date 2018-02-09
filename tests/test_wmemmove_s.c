@@ -31,7 +31,9 @@ int main()
 /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("dest overflow or empty")
     rc = wmemmove_s(NULL, LEN, mem2, LEN);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL); /* and untouched */
@@ -39,25 +41,28 @@ int main()
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("dest overflow or empty")
     rc = wmemmove_s(mem1, 0, mem2, LEN);
     ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, sizeof(wchar_t));
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    EXPECT_BOS("dest overflow or empty")
     rc = wmemmove_s(mem1, RSIZE_MAX_WMEM+1, mem2, LEN);
     ERR_MSVC(ESLEMAX, 0); /* and untouched */
     if (!use_msvcrt)
         EXPMEM(mem1, 0, LEN, 33, sizeof(wchar_t));
-#endif
+
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("src overflow or empty")
     rc = wmemmove_s(mem1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, sizeof(wchar_t));
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
@@ -68,6 +73,7 @@ int main()
 
 #ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("src overflow or empty")
     rc = wmemmove_s(mem1, LEN, mem2, RSIZE_MAX_WMEM+1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, sizeof(wchar_t));
@@ -113,6 +119,7 @@ int main()
     /* invalid length - zero dest */
 #ifndef HAVE_CT_BOS_OVR
     len = LEN;
+    EXPECT_BOS("src overflow or empty")
     rc = wmemmove_s(mem1, len, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, len, 0, sizeof(wchar_t));

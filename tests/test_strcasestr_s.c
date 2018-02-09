@@ -31,44 +31,41 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strcasestr_s(NULL, LEN, str2, LEN, &sub);
     ERR(ESNULLP)
     SUBNULL()
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty src")
     rc = strcasestr_s(str1, LEN, NULL, LEN, &sub);
     ERR(ESNULLP)
     SUBNULL()
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty substring")
     rc = strcasestr_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strcasestr_s(str1, 0, str2, LEN, &sub);
     ERR(ESZEROL)
     SUBNULL()
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strcasestr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     ERR(ESLEMAX)
     SUBNULL()
 
+    EXPECT_BOS("src overflow")
     rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
     ERR(ESLEMAX)
     SUBNULL()
-#endif
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src or slen")
     rc = strcasestr_s(str1, LEN, str2, 0, &sub);
     ERR(ESZEROL)
     SUBNULL()
-
+#endif
 /*--------------------------------------------------*/
 
     *str1 = '\0';

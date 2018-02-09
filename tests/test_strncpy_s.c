@@ -35,6 +35,8 @@ int test_strncpy_s (void)
     nlen = 5;
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strncpy_s(NULL, LEN, str2, nlen);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -44,16 +46,26 @@ int test_strncpy_s (void)
     strcpy(str1, "aaaaa");
     strcpy(str2, "b");
 
+    EXPECT_BOS("empty dest")
     rc = strncpy_s(NULL, LEN, str2, 5);
     ERR_MSVC(ESNULLP, EINVAL); /* and untouched */
 
+    EXPECT_BOS("empty dest")
     rc = strncpy_s(NULL, LEN, str2, 0);
     ERR_MSVC(ESNULLP, EINVAL); /* and untouched */
 
+    EXPECT_BOS("empty dest or dmax")
     rc = strncpy_s(str1, 0, str2, 0);
     ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
     EXPSTR(str1, "aaaaa")
+#endif
 
+    strcpy(str1, "aaaaa");
+    rc = strncpy_s(str1, 5, NULL, 0);
+    ERR(EOK); /* and cleared */
+    EXPSTR(str1, "")
+
+/*--------------------------------------------------*/
     strcpy(str1, "aaaaa");
     rc = strncpy_s(str1, LEN, str2, 0);
     ERR(EOK); /* and cleared */
@@ -65,21 +77,17 @@ int test_strncpy_s (void)
     EXPSTR(str1, "")
 
     strcpy(str1, "aaaaa");
-    rc = strncpy_s(str1, 5, NULL, 0);
-    ERR(EOK); /* and cleared */
-    EXPSTR(str1, "")
 
-/*--------------------------------------------------*/
-
-    strcpy(str1, "aaaaa");
-
+#ifndef HAVE_CT_BOS_OVR
     nlen = 5;
+    /*EXPECT_BOS("empty buf")*/
     rc = strncpy_s(str1, 5, NULL, nlen);
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     if (!use_msvcrt)
         CHECK_SLACK(str1, 5);
-    
+
     strcpy(str1, "a");
+    EXPECT_BOS("empty dest or dmax")
     rc = strncpy_s(str1, 0, str2, 0);
     ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
     EXPSTR(str1, "a")
@@ -88,17 +96,18 @@ int test_strncpy_s (void)
 
     strcpy(str1, "aa");
     nlen = 5;
+    EXPECT_BOS("empty dest or dmax")
     rc = strncpy_s(str1, 0, str2, nlen);
     ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
     EXPSTR(str1, "aa")
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "aa");
 
 # ifndef HAVE_ASAN /* With asan no BOS */
     if (_BOS_KNOWN(str1)) {
+        EXPECT_BOS("dest overflow")
         rc = strncpy_s(str1, LEN+1, str2, nlen);
         if (!rc) {
             printf("Todo BOS overflow check\n");
@@ -110,6 +119,7 @@ int test_strncpy_s (void)
 # endif
 
     strcpy(str1, "aa");
+    EXPECT_BOS("dest overflow")
     rc = strncpy_s(str1, (RSIZE_MAX_STR+1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
     if (!use_msvcrt) {
@@ -120,9 +130,10 @@ int test_strncpy_s (void)
 
 /*--------------------------------------------------*/
 
-   strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-   strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
+    EXPECT_BOS("src overflow or empty")
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPSTR(str1, "");

@@ -20,8 +20,11 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strispassword_s(NULL, LEN);
     ERR(false)
+#endif
 /*--------------------------------------------------*/
 
     rc = strispassword_s("", LEN);

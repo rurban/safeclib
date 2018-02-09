@@ -47,12 +47,15 @@ int test_wcrtomb_s (void)
     memset(dest, '-', LEN);
     wc = L'a';
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty retval")  EXPECT_BOS("empty dest")
     rc = wcrtomb_s(NULL, NULL, LEN, wc, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     CLRPS;
 
     ind = 0;
+    EXPECT_BOS("empty dest or dmax")
     rc = wcrtomb_s(&ind, dest, 0, wc, &ps);
     if (use_msvcrt && rc == 0 && ind == 0) {
         printf("wine: Unimplemented function msvcrt.dll.wcrtomb_s\n");
@@ -62,21 +65,22 @@ int test_wcrtomb_s (void)
     ERR_MSVC(ESZEROL, have_wine?EINVAL:0);
     CLRPS;
 
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty ps")
     rc = wcrtomb_s(&ind, NULL, LEN, wc, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
 
-    rc = wcrtomb_s(&ind, dest, LEN, L'\0', &ps);
-    ERR(EOK);
-    INDCMP(!= 1);
-    CLRPS;
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wcrtomb_s(&ind, dest, RSIZE_MAX_STR+1, wc, &ps);
     ERR_MSVC(ESLEMAX,0);
     CLRPS;
 #endif
 
 /*--------------------------------------------------*/
+
+    rc = wcrtomb_s(&ind, dest, LEN, L'\0', &ps);
+    ERR(EOK);
+    INDCMP(!= 1);
+    CLRPS;
 
     memset(dest, ' ', LEN);
     rc = wcrtomb_s(&ind, dest, LEN, L'\a', &ps);

@@ -44,15 +44,15 @@ int main()
     len = LEN;
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty buf")
+    EXPECT_BOS("empty ptr")
     rc = strtok_s(NULL, &len, str2, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERRPTR(NULL);
     /* msvcrt also doesn't reset errno */
     ERRNO_MSVC(ESNULLP, EINVAL);
 
-    EXPECT_BOS("empty buf or bufsize")
-    rc = strtok_s(str1, NULL, str2,  &p2str);
+    EXPECT_BOS("empty s1max")
+    rc = strtok_s(str1, NULL, str2, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, 0);
 #endif
@@ -75,22 +75,23 @@ int main()
 
 #ifndef HAVE_CT_BOS_OVR
     len = LEN;
-    EXPECT_BOS("empty buf")
+    EXPECT_BOS("empty src")
     rc = strtok_s(str1, &len, NULL,  &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
 
     len = 0;
-    EXPECT_BOS("empty buf")
+    EXPECT_BOS("empty src")
     rc = strtok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESZEROL, EINVAL);
-#endif
 
     len = LEN;
+    EXPECT_BOS("empty ptr")
     rc = strtok_s(str1, &len, str2, NULL);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

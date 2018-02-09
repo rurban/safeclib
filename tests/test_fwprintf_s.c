@@ -30,8 +30,11 @@ int test_fwprintf_s (void)
 
     /* wine msvcrt doesn't check fmt==NULL */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_FWPRINTF_S))
+# ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = fwprintf_s(out, NULL);
     NEGERR(ESNULLP);
+# endif
 #else
     have_wine = 1;
 #endif

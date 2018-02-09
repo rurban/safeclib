@@ -23,6 +23,8 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strlastchar_s(NULL, LEN, 'a', &last);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
@@ -36,6 +38,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty first")
     rc = strlastchar_s(str1, LEN, 'a', NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
@@ -44,6 +47,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty str or smax")
     rc = strlastchar_s(str1, 0, 'a', &last);
     if (rc != ESZEROL) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
@@ -57,7 +61,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("str overflow")
     rc = strlastchar_s(str1, RSIZE_MAX_STR+1, 'a', &last);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",

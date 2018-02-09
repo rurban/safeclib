@@ -36,6 +36,7 @@ int test_sprintf_s (void)
 
 #ifndef HAVE_CT_BOS_OVR
     /* older windows sprintf_s segv here */
+    EXPECT_BOS("empty dest")
     rc = sprintf_s(NULL, LEN, "%s", str2);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERR(-1);
@@ -43,6 +44,7 @@ int test_sprintf_s (void)
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow")
     rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
     if (!use_msvcrt) {
         ERR(-1);
@@ -50,20 +52,20 @@ int test_sprintf_s (void)
         ERR(0);
     }
     ERRNO_MSVC(ESLEMAX, 0);
-#endif
 
 /*--------------------------------------------------*/
 
     /* wine msvcrt doesn't check fmt==NULL */
-#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S))
+# if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S))
+    EXPECT_BOS("empty fmt")
     rc = sprintf_s(str1, LEN, NULL);
     ERR(-1);
     ERRNO_MSVC(ESNULLP, EINVAL);
-#endif
+# endif
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest or dmax")
     rc = sprintf_s(str1, 0, "%s", str2);
     ERR(-1);
     ERRNO_MSVC(ESZEROL, EINVAL);

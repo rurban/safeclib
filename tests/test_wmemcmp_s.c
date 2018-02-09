@@ -28,6 +28,8 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wmemcmp_s(NULL, LEN, mem2, LEN, &ind);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
@@ -36,6 +38,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src")
     rc = wmemcmp_s(mem1, LEN, NULL, LEN, &ind);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
@@ -44,6 +47,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty diff")
     rc = wmemcmp_s(mem1, LEN, mem2, LEN, NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
@@ -52,6 +56,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = wmemcmp_s(mem1, 0, mem2, LEN, &ind);
     if (rc != ESZEROL) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
@@ -60,6 +65,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src or slen")
     rc = wmemcmp_s(mem1, LEN, mem2, 0, &ind);
     if (rc != ESZEROL) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
@@ -68,17 +74,17 @@ int main()
     }
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wmemcmp_s(mem1, RSIZE_MAX_WMEM+1, mem2, LEN, &ind);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",
                      __FUNCTION__, __LINE__, ind, rc );
         errs++;
     }
-#endif
+
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("src overflow")
     rc = wmemcmp_s(mem1, LEN, mem2, RSIZE_MAX_WMEM+1, &ind);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Ind=%d  Error rc=%u \n",

@@ -61,34 +61,32 @@ int test_strcoll_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strcoll_s(NULL, LEN, str2, &ind);
     ERR(ESNULLP)
     INDZERO()
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty src")
     rc = strcoll_s(str1, LEN, NULL, &ind);
     ERR(ESNULLP)
     INDZERO()
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty indicator")
     rc = strcoll_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strcoll_s(str1, 0, str2, &ind);
     ERR(ESZEROL)
     INDZERO()
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strcoll_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
     INDZERO()
 #endif
+
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

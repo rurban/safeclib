@@ -47,24 +47,31 @@ int test_wcsrtombs_s (void)
     int have_wine = 0;
 
 /*--------------------------------------------------*/
+    cs = L"a";
     print_msvcrt(use_msvcrt);
 
-    cs = L"a";
-    rc = wcsrtombs_s(NULL, NULL, LEN, &cs, 0, &ps);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty retval")
+    rc = wcsrtombs_s(NULL, dest, LEN, &cs, 1, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     CLRPS;
 
-    rc = wcsrtombs_s(&ind, NULL, LEN, &cs, 0, NULL);
+    EXPECT_BOS("empty src")
+    rc = wcsrtombs_s(&ind, dest, LEN, NULL, 1, &ps);
     ERR_MSVC(ESNULLP, EINVAL);
+    CHECK_SLACK(dest, LEN);
+    CLRPS;
 
-    rc = wcsrtombs_s(&ind, dest, LEN, NULL, 0, &ps);
+    EXPECT_BOS("empty ps")
+    rc = wcsrtombs_s(&ind, dest, LEN, &cs, 1, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
     CHECK_SLACK(dest, LEN);
     CLRPS;
 
     ind = 0;
-    rc = wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps);
+    EXPECT_BOS("empty dest or dmax")
+    rc = wcsrtombs_s(&ind, dest, 0, &cs, 1, &ps);
     if (use_msvcrt && rc == 0 && ind == 0) { /* under wine it returns 0 */
         printf("Using wine\n");
         have_wine = 1;
@@ -73,29 +80,48 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     src[0] = L'\0';
+    EXPECT_BOS("empty src or len")
     rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&src, 0, &ps);
     ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
     CHECK_SLACK(dest, LEN);
     CLRPS;
 
-    /*rc = wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps);
+    /*
+    EXPECT_BOS("empty buf or bufsize")
+    rc = wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps);
     ERR_MSVC(ESNOSPC,ERANGE);
     CLRPS;*/
 
-    cs = L"abcdef";
-    rc = wcsrtombs_s(&ind, dest, 2, &cs, 3, &ps);
-    ERR_MSVC(ESNOSPC,ERANGE);
-    CHECK_SLACK(dest, 2);
-    CLRPS;
+    if (_BOS_KNOWN(dest)) {
+        EXPECT_BOS("dest overflow")
+        rc = wcsrtombs_s(&ind, dest, LEN+1, &cs, 3, &ps);
+        if (!use_msvcrt) {
+            if (!rc)
+                printf("Todo _BOS_OVR(dest, dmax) ESNOSPC\n");
+            else
+                ERR(ESNOSPC);
+        } else {
+            ERR(0); /* potential overflow */
+        }
+        CLRPS;
+    }
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
     if (!have_wine)
         ERR_MSVC(ESLEMAX, 0); /* under wine it returns 42, EILSEQ */
     CLRPS;
 
+    EXPECT_BOS("src overflow") EXPECT_BOS("dest overflow")
     rc = wcsrtombs_s(&ind, (char*)&cs, LEN, &cs, 3, &ps);
     ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
+    CLRPS;
+
+    cs = L"abcdef";
+    EXPECT_BOS("src overflow") EXPECT_BOS("len overflow >dmax")
+    rc = wcsrtombs_s(&ind, dest, 2, &cs, 3, &ps);
+    ERR_MSVC(ESNOSPC,ERANGE);
+    CHECK_SLACK(dest, 2);
     CLRPS;
 #endif
 
@@ -193,6 +219,7 @@ int test_wcsrtombs_s (void)
     src[0] = 0xdf81;
     src[1] = 0;
     cs = src;
+    EXPECT_BOS("src overflow")
     rc = wcsrtombs_s(&ind, dest, LEN, &cs, LEN, &ps);
     if (rc == 0) { /* well, musl on ASCII allows this */
       INDCMP(!= 1);

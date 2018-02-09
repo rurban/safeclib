@@ -3,8 +3,6 @@
  * File 'extmem/memzero_s.c'
  * Lines executed:100.00% of 12
  *
- *
- *=
  *------------------------------------------------------------------
  */
 
@@ -24,15 +22,18 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = memzero_s(NULL, LEN);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax")
     rc = memzero_s(mem1, 0);
     ERR(ESZEROL)
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = memzero_s(mem1, RSIZE_MAX_MEM+1);
     ERR(ESLEMAX);
 #endif

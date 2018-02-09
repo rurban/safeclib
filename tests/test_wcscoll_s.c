@@ -59,35 +59,38 @@ int test_wcscoll_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = wcscoll_s(NULL, LEN, str2, LEN, &ind);
     ERR(ESNULLP)
     INDZERO()
 
+    EXPECT_BOS("empty src")
     rc = wcscoll_s(str1, LEN, NULL, LEN, &ind);
     /* printf("bos: %ld <=> LEN: %d\n", BOSW(str1), LEN); */
     ERR(ESNULLP)
     INDZERO()
 
+    EXPECT_BOS("empty indicator")
     rc = wcscoll_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = wcscoll_s(str1, 0, str2, LEN, &ind);
     ERR(ESZEROL)
     INDZERO()
 
+    EXPECT_BOS("empty src or smax")
     rc = wcscoll_s(str1, LEN, str2, 0, &ind);
     ERR(ESZEROL)
     INDZERO()
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = wcscoll_s(str1, RSIZE_MAX_STR+1, str2, LEN, &ind);
     ERR(ESLEMAX)
     INDZERO()
 
+    EXPECT_BOS("src overflow")
     rc = wcscoll_s(str1, LEN, str2, RSIZE_MAX_STR+1, &ind);
     ERR(ESLEMAX)
     INDZERO()

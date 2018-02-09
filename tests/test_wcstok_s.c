@@ -48,40 +48,48 @@ int main()
     /* msvcrt also doesn't reset errno */
     ERRNO_MSVC(ESNULLP, EINVAL);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dmax")
     rc = wcstok_s(str1, NULL, str2, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, 0);
+#endif
 
 /*--------------------------------------------------*/
 
-    len = 0;
-    rc = wcstok_s(str1, &len, str2, &p2str);
+    /* EXPECT_BOS("empty dmax") */
+    rc = wcstok_s(str1, (len=0, &len), str2, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESZEROL, 0);
 
 /*--------------------------------------------------*/
 
-    len = RSIZE_MAX_STR + 1;
-    rc = wcstok_s(str1, &len, str2, &p2str);
+    /* EXPECT_BOS("buf overflow") */
+    rc = wcstok_s(str1, (len=RSIZE_MAX_WSTR+1, &len), str2, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESLEMAX, 0);
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     len = LEN;
+    EXPECT_BOS("empty delim")
     rc = wcstok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
 
     len = 0;
+    EXPECT_BOS("empty delim")
     rc = wcstok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESZEROL, EINVAL);
 
     len = LEN;
+    EXPECT_BOS("empty ptr")
     rc = wcstok_s(str1, &len, str2, NULL);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
+#endif
 
 /*--------------------------------------------------*/
 

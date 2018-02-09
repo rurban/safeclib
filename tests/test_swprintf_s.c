@@ -33,31 +33,28 @@ int test_swprintf_s (void)
 /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty fmt")
     rc = swprintf_s(str1, LEN, NULL, NULL);
     ERR(0);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERRNO_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
     ERR(0);
     ERRNO_MSVC(ESLEMAX, 0);
-#endif
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(NULL, 0, L"%ls", str2);
     ERR(0);
     ERRNO_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(str1, 0, L"%ls", str2);
     ERR(0);
     ERRNO_MSVC(ESZEROL, EINVAL);
-
+#endif
 /*--------------------------------------------------*/
 
     str2[0] = '\0';

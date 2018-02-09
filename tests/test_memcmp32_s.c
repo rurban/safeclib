@@ -24,36 +24,46 @@ int main()
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") 
     rc = memcmp32_s(NULL, LEN, mem2, LEN, &ind);
     ERR(ESNULLP);
 
+    EXPECT_BOS("empty src")
     rc = memcmp32_s(mem1, LEN, NULL, LEN, &ind);
     ERR(ESNULLP);
 
+    EXPECT_BOS("empty diff")
     rc = memcmp32_s(mem1, LEN, mem2, LEN, NULL);
     ERR(ESNULLP);
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("slen overflow >dmax")
     rc = memcmp32_s(mem1, 0, mem2, LEN, &ind);
     ERR(ESZEROL);
 
+    EXPECT_BOS("empty slen")
     rc = memcmp32_s(mem1, LEN, mem2, 0, &ind);
     ERR(ESZEROL);
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = memcmp32_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN, &ind);
     ERR(ESLEMAX);
+
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dmax")
     rc = memcmp32_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
     ERR(ESLEMAX);
-#endif
 
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("slen overflow >dmax")
     rc = memcmp32_s(mem1, LEN-1, mem2, LEN, &ind);
     ERR(ESNOSPC);
+
+#endif
 
 /*--------------------------------------------------*/
 

@@ -23,14 +23,17 @@ int test_gmtime_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     tmptr = gmtime_s(&timer, NULL);
     ERRNO(ESNULLP);
     PTRNULL(tmptr);
 
+    EXPECT_BOS("empty timer")
     tmptr = gmtime_s(NULL, &tm);
     ERRNO(ESNULLP);
     PTRNULL(tmptr);
-
+#endif
 /*--------------------------------------------------*/
 
     timer = 0;

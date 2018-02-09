@@ -39,14 +39,17 @@ int test_gets_s (void)
 
     /* tests reading from stdin */
 #ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
     sub = gets_s(NULL, 0);
     SUBNULL();
     ERRNO(ESNULLP);
 
+    EXPECT_BOS("empty dest or dmax")
     sub = gets_s(dest, 0);
     SUBNULL();
     ERRNO(ESZEROL);
 
+    EXPECT_BOS("dest overflow")
     sub = gets_s(dest, RSIZE_MAX_STR+1);
     SUBNULL();
     ERRNO(ESLEMAX);

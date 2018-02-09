@@ -21,18 +21,20 @@ int main()
 /*--------------------------------------------------*/
 
     len = 5;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty str")
     rc = strtolowercase_s(NULL, len);
     ERR(ESNULLP)
-/*--------------------------------------------------*/
 
-    len = 0;
-    rc = strtolowercase_s("test", len);
+    EXPECT_BOS("empty str or slen")
+    rc = strtolowercase_s("test", 0);
     ERR(ESZEROL)
-/*--------------------------------------------------*/
 
-    len = 99999;
-    rc = strtolowercase_s("test", len);
+    EXPECT_BOS("str overflow")
+    rc = strtolowercase_s("test", RSIZE_MAX_STR+1);
     ERR(ESLEMAX)
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy(str, "N");

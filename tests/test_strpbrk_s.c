@@ -25,10 +25,8 @@ int test_strpbrk_s (void)
 
 /*--------------------------------------------------*/
 
-    rc = strpbrk_s(str1, LEN, str2, LEN, NULL);
-    ERR(ESNULLP)
-/*--------------------------------------------------*/
-
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strpbrk_s(NULL, LEN, str2, LEN, &first);
     ERR(ESNULLP)
     if (first) {
@@ -36,8 +34,12 @@ int test_strpbrk_s (void)
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("empty first")
+    rc = strpbrk_s(str1, LEN, str2, LEN, NULL);
+    ERR(ESNULLP)
+
+    EXPECT_BOS("empty src")
     rc = strpbrk_s(str1, LEN, NULL, LEN, &first);
     ERR(ESNULLP)
     if (first) {
@@ -45,12 +47,8 @@ int test_strpbrk_s (void)
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
-    rc = strpbrk_s(str1, LEN, str2, LEN, NULL);
-    ERR(ESNULLP)
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strpbrk_s(str1, 0, str2, LEN, &first);
     ERR(ESZEROL)
     if (first) {
@@ -58,9 +56,8 @@ int test_strpbrk_s (void)
                      __FUNCTION__, __LINE__, first, rc);
         errs++;
     }
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strpbrk_s(str1, RSIZE_MAX_STR+1, str2, LEN, &first);
     ERR(ESLEMAX)
     if (first) {
@@ -69,7 +66,8 @@ int test_strpbrk_s (void)
         errs++;
     }
 
-    rc = strpbrk_s(str1, RSIZE_MAX_STR, str2, RSIZE_MAX_STR+1, &first);
+    EXPECT_BOS("src overflow")
+    rc = strpbrk_s(str1, LEN, str2, RSIZE_MAX_STR+1, &first);
     ERR(ESLEMAX)
     if (first) {
         debug_printf("%s %u  Error  first=%p  rc=%d \n",

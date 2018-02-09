@@ -28,37 +28,36 @@ int test_strrchr_s (void)
 /*--------------------------------------------------*/
 
     ch = 0;
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = strrchr_s(NULL, LEN, ch, &sub);
     ERR(ESNULLP);
     SUBNULL();
 
+    EXPECT_BOS("empty result")
     rc = strrchr_s(str, LEN, ch, NULL);
     ERR(ESNULLP);
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strrchr_s(str, 0, ch, &sub);
     ERR(ESZEROL)
     SUBNULL();
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strrchr_s(str, RSIZE_MAX_STR+1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
-#endif
+
+    EXPECT_BOS("ch overflow >255")
     rc = strrchr_s(str, LEN, 256, &sub);
     ERR(ESLEMAX)
     SUBNULL();
-
-/*--------------------------------------------------*/
+#endif
 
     memset(str, 0, LEN);
     rc = strrchr_s(str, LEN, 0, &sub);
     ERR(ESZEROL);
     SUBNULL();
-
 /*--------------------------------------------------*/
 
     strcpy(str, "keep it all together");

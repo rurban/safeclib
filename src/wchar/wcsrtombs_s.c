@@ -86,7 +86,7 @@
  * @param[out]  dest  pointer to character array where the result will be stored
  * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   src   pointer to the wide string that will be copied to \c dest
- * @param[in]   len   number of bytes available in \c dest
+ * @param[in]   len   maximum number of bytes to be written to \c dest
  * @param[in]   ps    pointer to the conversion state object
  *
  * @pre retval, ps, src, or *src shall not be a null pointer.
@@ -149,10 +149,15 @@ wcsrtombs_s (size_t *restrict retval,
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
+    if (unlikely(_BOS_OVR(dest, dmax))) {
+        handle_error(dest, BOS(dest), "wcsrtombs_s: dmax exceeds max", ESNOSPC);
+        return RCNEGATE(ESNOSPC);
+    }
     if (unlikely((dmax > RSIZE_MAX_STR) && dest)) {
+        if (unlikely(_BOS_KNOWN(dest)))
+            memset(dest, 0, BOS(dest));
         invoke_safe_str_constraint_handler("wcsrtombs_s: dmax exceeds max",
-                   NULL, ESLEMAX);
+                                           NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
