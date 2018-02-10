@@ -104,10 +104,12 @@ int test_memset_s (void)
     ERR(EOK); /* still untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
 
-    rc = memset_s(mem1, LEN, 256, 0);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("value overflow >255")
+    rc = memset_s(mem1, LEN, 256, 0); /* should error! */
     ERR(EOK); /* still untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
-
+#endif
 /*--------------------------------------------------*/
 
     for (i=0; i<LEN; i++) { mem1[i] = 99; }
