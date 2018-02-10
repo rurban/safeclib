@@ -154,28 +154,33 @@ wcsrtombs_s (size_t *restrict retval,
         return RCNEGATE(ESNOSPC);
     }
     if (unlikely((dmax > RSIZE_MAX_STR) && dest)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
         if (unlikely(_BOS_KNOWN(dest)))
             memset(dest, 0, BOS(dest));
+#else
+        dest[0] = '\0';
+#endif
         invoke_safe_str_constraint_handler("wcsrtombs_s: dmax exceeds max",
                                            NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 
     if (unlikely(dest == (char*)src)) {
+        invoke_safe_str_constraint_handler("wcsrtombs_s: dest overlapping objects",
+                   dest, ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 
-    if (unlikely(src == NULL)) {
+    if (unlikely(src == NULL || *src == NULL)) {
         if (dest) {
-            handle_error(dest, dmax, "wcsrtombs_s: src is null", ESNULLP);
+#ifdef SAFECLIB_STR_NULL_SLACK
+            memset(dest, 0, dmax);
+#else
+            dest[0] = '\0';
+#endif
         }
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(*src == NULL)) {
-        if (dest) {
-            handle_error(dest, dmax, "wcsrtombs_s: *src is null", ESNULLP);
-        }
+        invoke_safe_str_constraint_handler("wcsrtombs_s: src/*src is null",
+                   dest, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 

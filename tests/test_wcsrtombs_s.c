@@ -70,7 +70,7 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     ind = 0;
-    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("empty dmax")
     rc = wcsrtombs_s(&ind, dest, 0, &cs, 1, &ps);
     if (use_msvcrt && rc == 0 && ind == 0) { /* under wine it returns 0 */
         printf("Using wine\n");
@@ -80,7 +80,7 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     src[0] = L'\0';
-    EXPECT_BOS("empty src or len")
+    EXPECT_BOS("empty *src or len")
     rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&src, 0, &ps);
     ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
     CHECK_SLACK(dest, LEN);
@@ -92,6 +92,7 @@ int test_wcsrtombs_s (void)
     ERR_MSVC(ESNOSPC,ERANGE);
     CLRPS;*/
 
+#if 0
     if (_BOS_KNOWN(dest)) {
         EXPECT_BOS("dest overflow")
         rc = wcsrtombs_s(&ind, dest, LEN+1, &cs, 3, &ps);
@@ -105,6 +106,7 @@ int test_wcsrtombs_s (void)
         }
         CLRPS;
     }
+#endif
 
     EXPECT_BOS("dest overflow")
     rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
@@ -112,27 +114,29 @@ int test_wcsrtombs_s (void)
         ERR_MSVC(ESLEMAX, 0); /* under wine it returns 42, EILSEQ */
     CLRPS;
 
-    EXPECT_BOS("src overflow") EXPECT_BOS("dest overflow")
+    EXPECT_BOS("dest overflow") EXPECT_BOS("dest overlap")
     rc = wcsrtombs_s(&ind, (char*)&cs, LEN, &cs, 3, &ps);
     ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
     CLRPS;
 
     cs = L"abcdef";
-    EXPECT_BOS("src overflow") EXPECT_BOS("len overflow >dmax")
+    EXPECT_BOS("len overflow >dmax")
     rc = wcsrtombs_s(&ind, dest, 2, &cs, 3, &ps);
     ERR_MSVC(ESNOSPC,ERANGE);
     CHECK_SLACK(dest, 2);
     CLRPS;
-#endif
 
     dest[0] = 'a';
     if (!use_msvcrt) { /* crashes with msvcrt in wctob/wcsrtombs */
+        EXPECT_BOS("dest overlap")
         rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&dest[0], 1, &ps);
         ERR(ESOVRLP);
         CLRPS;
     }
+#endif
 
 /*--------------------------------------------------*/
+    CLRPS;
 
     rc = wcsrtombs_s(&ind, dest, LEN, (cs=L"abcdef",&cs), 3, &ps);
     ERR(EOK);
@@ -215,11 +219,9 @@ int test_wcsrtombs_s (void)
     }
     CLRPS;
 
-#ifndef HAVE_CT_BOS_OVR
     src[0] = 0xdf81;
     src[1] = 0;
     cs = src;
-    EXPECT_BOS("src overflow")
     rc = wcsrtombs_s(&ind, dest, LEN, &cs, LEN, &ps);
     if (rc == 0) { /* well, musl on ASCII allows this */
       INDCMP(!= 1);
@@ -234,7 +236,6 @@ int test_wcsrtombs_s (void)
       CHECK_SLACK(&dest[0], LEN);
     }
     CLRPS;
-#endif
 
     SETLOCALE_UTF8;
     SETLANG("default");

@@ -485,11 +485,13 @@ wcsrtombs_s(size_t *restrict retval,
             char *restrict dest, rsize_t dmax,
             const wchar_t **restrict src, rsize_t len,
             mbstate_t *restrict ps)
-    BOS_NULL(retval)
-    BOS_OVR_BUTNULL(dest)
-    BOSW_CHK2(src, len)
-    BOS_ATTR(dmax && len > dmax, "len overflow >dmax")
-    BOS_NULL(ps);
+    BOS_NULL(retval) BOS_NULL(ps)
+    BOS_ATTR(!_BOS_NULL(dest) && !dmax, "empty dmax")
+    BOS_ATTR(!_BOS_NULL(dest) && _BOS_OVR(dest,dmax), "dest overflow")
+    BOS_ATTR(!_BOS_NULL(dest) && (void*)dest == (void*)src, "dest overlap")
+    BOS_NULL(src)
+    BOSW_CHK2(*src, len)
+    BOS_ATTR(dmax && len > dmax, "len overflow >dmax");
 
 EXTERN errno_t
 wcstombs_s(size_t *restrict retval,
@@ -501,13 +503,15 @@ wcstombs_s(size_t *restrict retval,
 EXTERN errno_t
 wcrtomb_s(size_t *restrict retval, char *restrict dest, rsize_t dmax,
           wchar_t wc, mbstate_t *restrict ps)
-    BOS_NULL(retval) BOS_CHK(dest) BOS_NULL(ps);
+    BOS_NULL(retval) BOS_CHK(dest) BOS_NULL(ps)
+    VAL_OVR2(wc, 0x10ffff);
 
 EXTERN errno_t
 wctomb_s(int *restrict retval, char *restrict dest, rsize_t dmax, wchar_t wc)
     BOS_NULL(retval)
-    BOS_ATTR(!_BOS_NULL(dest) && dmax > 0 && dmax < RSIZE_MAX_STR && _BOS_OVR(dest,dmax),
-             "dest overflow or empty");
+    BOS_ATTR(!_BOS_NULL(dest) && (!dmax || dmax > RSIZE_MAX_STR || _BOS_OVR(dest,dmax)),
+             "dest overflow or empty")
+    VAL_OVR2(wc, 0x10ffff);
 
 EXTERN size_t
 wcsnlen_s(const wchar_t *dest, size_t dmax)
@@ -531,7 +535,10 @@ wcscat_s(wchar_t *restrict dest, rsize_t dmax,
 EXTERN errno_t
 wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen)
-    BOSW_CHK(dest) BOSW_OVR2(src,slen);
+    BOS_ATTR(slen && (_BOS_NULL(dest) || _BOS_ZERO(dest,dmax) || !dmax), "empty dest or dmax")
+    BOS_ATTR(slen && _BOSW_OVR(dest,dmax), "dest overflow")
+    BOS_ATTR(!slen && !_BOS_NULL(dest), "empty slen")
+    BOS_ATTR(slen && (_BOSW_OVR(src,slen) || _BOS_NULL(src)), "src overflow or empty");
 
 #if !(defined(_WIN32) && defined(HAVE_WCSTOK_S))
 /* they use a buggy:

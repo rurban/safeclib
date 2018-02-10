@@ -37,7 +37,7 @@ int test_wcsncat_s (void)
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty dest")
+    EXPECT_BOS("empty dest or dmax")
     rc = wcsncat_s(NULL, LEN, str2, LEN);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -47,19 +47,19 @@ int test_wcsncat_s (void)
     wcscpy(str1, L"a");
     wcscpy(str2, L"b");
 
-    EXPECT_BOS("empty src or smax")
+    EXPECT_BOS("empty slen")
     rc = wcsncat_s(str1, 1, str2, 0);
     if (use_msvcrt && rc == 0)
         have_wine = 1;
     ERR_MSVC(ESZEROL, have_wine?0:EINVAL);
     WEXPSTR(str1, have_wine ? L"a" : L"");
 
-    EXPECT_BOS("empty dest")
-    rc = wcsncat_s(NULL, 1, str2, 0);
+    EXPECT_BOS("empty dest or dmax")
+    rc = wcsncat_s(NULL, 1, str2, 1);
     ERR_MSVC(ESNULLP, EINVAL);
 
     /* silent ok as in the msvcrt, but with clang compile-time error */
-    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    /*EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")*/
     rc = wcsncat_s(NULL, 0, str2, 0);
     if (have_wine) {
         ERR(EINVAL);
@@ -68,7 +68,7 @@ int test_wcsncat_s (void)
     }
 
     wcscpy(str1, L"a");
-    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("empty slen")
     rc = wcsncat_s(str1, 0, str2, 0);
     ERR_MSVC(ESZEROL, EINVAL);
     WEXPSTR(str1, L"a");
@@ -89,7 +89,7 @@ int test_wcsncat_s (void)
     }
 
     wcscpy(str1, L"a");
-    EXPECT_BOS("src overflow")
+    EXPECT_BOS("src overflow or empty")
     rc = wcsncat_s(str1, LEN, str2, (RSIZE_MAX_WSTR+1));
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
@@ -99,7 +99,7 @@ int test_wcsncat_s (void)
     }
 
     wcscpy(str1, L"a");
-    EXPECT_BOS("empty src")
+    EXPECT_BOS("src overflow or empty")
     rc = wcsncat_s(str1, LEN, NULL, LEN);
     ERR_MSVC(ESNULLP, EINVAL);
     if (!have_wine)

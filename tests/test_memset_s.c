@@ -32,7 +32,12 @@ int test_memset_s (void)
 
 /*--------------------------------------------------*/
 
-#if defined HAVE_MEMSET_S && defined HAVE_C11 && defined WANT_C11
+#if defined HAVE_MEMSET_S
+# if defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1)
+    /* no compile-time checks for memset_s, since it's overridden from libc */
+#  undef EXPECT_BOS
+#  define EXPECT_BOS(s)
+# endif
     use_msvcrt = true;
 #else
     use_msvcrt = false;

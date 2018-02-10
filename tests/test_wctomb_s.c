@@ -48,11 +48,11 @@ int test_wctomb_s (void)
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, 0);
 
-    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("dest overflow or empty")
     rc = wctomb_s(&ind, dest, 0, src);
     ERR_MSVC(ESZEROL, ERANGE);
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS("dest overflow or empty")
     rc = wctomb_s(&ind, dest, RSIZE_MAX_STR+1, src);
     ERR_MSVC(ESLEMAX, 0);
 #endif

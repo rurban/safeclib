@@ -80,8 +80,8 @@ memmove_s(void *dest, rsize_t  dmax,
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
     VAL_OVR2_BUTZERO(slen, dmax);
 
-/* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-#if !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+/* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 apple/freebsd string.h compatible */
+#if !defined(HAVE_MEMSET_S) || !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
 EXTERN errno_t
 memset_s(void *dest, rsize_t dmax, int value, rsize_t n)
     BOS_NULL(dest)
