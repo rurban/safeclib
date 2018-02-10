@@ -45,7 +45,7 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
  */
 
 #define BOS_UNKNOWN ((size_t)-1)
-#define _BOS_KNOWN(dest)  (BOS(dest) != BOS_UNKNOWN)
+#define _BOS_KNOWN(dest)  ((size_t)BOS(dest) != BOS_UNKNOWN)
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
 # if defined(_FORTIFY_SOURCE) && _FORTIFY_SOURCE > 1
 #  define BOS(dest)  __builtin_object_size((dest),1)
@@ -53,12 +53,12 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #  define BOS(dest) __builtin_object_size((dest),0)
 # endif
 # define BOSW(dest) (BOS(dest)/sizeof(wchar_t))
-# define _BOS_CHK(dest,dmax)    (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) != BOS(dest))
-# define _BOS_OVR(dest,dmax)    (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) > BOS(dest))
-# define _BOS_ZERO(dest,dmax)   ((BOS(dest) != BOS_UNKNOWN && BOS(dest) == 0) || (dmax) == 0)
-# define _BOS_NULL(dest)        ((BOS(dest) != BOS_UNKNOWN && BOS(dest) == 0) || !(dest))
-# define _BOSW_CHK(dest,dmax)   (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) != BOSW(dest))
-# define _BOSW_OVR(dest,dmax)   (BOS(dest) != BOS_UNKNOWN && (size_t)(dmax) > BOSW(dest))
+# define _BOS_CHK(dest,dmax)    (_BOS_KNOWN(dest) && (size_t)(dmax) != BOS(dest))
+# define _BOS_OVR(dest,dmax)    (_BOS_KNOWN(dest) && (size_t)(dmax) > BOS(dest))
+# define _BOS_ZERO(dest,dmax)   ((_BOS_KNOWN(dest) && BOS(dest) == 0) || (dmax) == 0)
+# define _BOS_NULL(dest)        ((_BOS_KNOWN(dest) && BOS(dest) == 0) || !(dest))
+# define _BOSW_CHK(dest,dmax)   (_BOS_KNOWN(dest) && (size_t)(dmax) != BOSW(dest))
+# define _BOSW_OVR(dest,dmax)   (_BOS_KNOWN(dest) && (size_t)(dmax) > BOSW(dest))
 # define _BOS_CHK_N(dest,dmax)  ((size_t)(dmax) != BOS(dest))
 # define _BOS_OVR_N(dest,dmax)  ((size_t)(dmax) > BOS(dest))
 # define _BOSW_CHK_N(dest,dmax) ((size_t)(dmax) != BOSW(dest))

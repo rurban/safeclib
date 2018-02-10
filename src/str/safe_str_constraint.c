@@ -110,3 +110,23 @@ invoke_safe_str_constraint_handler (const char *msg,
 EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
 #endif
 
+int
+handle_str_bos_overload(const char *restrict msg, char *restrict dest, rsize_t dmax)
+{
+    size_t len = strlen(dest); /* clear the min of strlen, dmax and RSIZE_MAX_STR */
+    if (len > dmax)
+        len = dmax;
+    if (len > RSIZE_MAX_STR)
+        len = RSIZE_MAX_STR;
+    handle_error(dest, len, msg, ESLEMAX);
+    return RCNEGATE(ESLEMAX);
+}
+
+void
+handle_str_bos_chk_warn(const char *restrict func, char *restrict dest, rsize_t dmax)
+{
+    char msg[128];
+    sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
+            func, (unsigned long)dmax, (unsigned long)BOS(dest));
+    invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
+}

@@ -122,40 +122,12 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         return EOK;
     }
     CHK_DEST_NULL("strncat_s")
-    /* known dest size */
-    if (_BOS_KNOWN(dest)) {
-        if (unlikely(_BOS_OVR_N(dest,dmax))) {
-            size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */
-            if (len > dmax)
-                len = dmax;
-            if (len > RSIZE_MAX_STR)
-                len = RSIZE_MAX_STR;
-            handle_error(dest, len, "strncat_s: dmax exceeds dest",
-                         ESLEMAX);
-            return RCNEGATE(ESLEMAX);
-        }
-#ifdef HAVE_WARN_DMAX
-        else if (_BOS_CHK_N(dest,dmax)) {
-            char msg[128];
-            sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
-                    "strncat_s", (unsigned long)dmax, (unsigned long)BOS(dest));
-            invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
-# ifdef HAVE_ERROR_DMAX
-            return RCNEGATE(ESLEWRNG);
-# endif
-        }
-#endif
-    }
+    CHK_DEST_OVR("strncat_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strncat_s")
     CHK_DMAX_MAX("strncat_s", RSIZE_MAX_STR)
-    /* compile-time known src size */
-    else if (unlikely(_BOS_OVR(src,slen))) {
-        handle_error(dest, strnlen_s(dest, dmax), "strncat_s: slen exceeds src",
-                     ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
     CHK_SRC_NULL_CLEAR("strncat_s", src)
-    CHK_SLEN_MAX_CLEAR("strncat_s", RSIZE_MAX_STR)
+    CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
+    CHK_SLEN_MAX_CLEAR("strncat_s", slen, RSIZE_MAX_STR)
     else if (unlikely(slen == 0)) {
         /* Special case, analog to msvcrt: when dest is big enough
            return EOK, but clear dest. */

@@ -224,6 +224,37 @@ void abort(void) __attribute__((noreturn));
         invoke_safe_str_constraint_handler(func ": dmax is 0", dest, ESZEROL); \
         return RCNEGATE(ESZEROL);                                       \
     }
+/* for known dest size, we should have already errored at compile-time before.
+   anyway, for known dest size check overflows in detail. */
+#if defined(HAVE_WARN_DMAX) && defined(HAVE_ERROR_DMAX)
+# define CHK_DEST_OVR(func, MAX)               \
+    if (_BOS_KNOWN(dest)) {                    \
+        if (unlikely(_BOS_OVR_N(dest,dmax))) { \
+            return handle_str_bos_overload(func": dmax exceeds dest",dest,dmax); \
+        }                                      \
+        else if (_BOS_CHK_N(dest,dmax)) {      \
+            handle_str_bos_chk_warn(func,dest,dmax); \
+            return RCNEGATE(ESLEWRNG);         \
+        }                                      \
+    }
+#elif defined(HAVE_WARN_DMAX)
+# define CHK_DEST_OVR(func, MAX)               \
+    if (_BOS_KNOWN(dest)) {                    \
+        if (unlikely(_BOS_OVR_N(dest,dmax))) { \
+            return handle_str_bos_overload(func": dmax exceeds dest",dest,dmax); \
+        }                                      \
+        else if (_BOS_CHK_N(dest,dmax)) {      \
+            handle_str_bos_chk_warn(func,dest,dmax); \
+        } \
+    }
+#else
+# define CHK_DEST_OVR(func, MAX)               \
+    if (_BOS_KNOWN(dest)) {                    \
+        if (unlikely(_BOS_OVR_N(dest,dmax))) { \
+            return handle_str_bos_overload(func": dmax exceeds dest",dest,dmax); \
+        }                                      \
+    }
+#endif
 #define CHK_DMAX_MAX(func, max)                                         \
     if (unlikely(dmax > (max))) {                                       \
         invoke_safe_str_constraint_handler(func ": dmax exceeds max", dest, ESLEMAX); \
@@ -231,33 +262,68 @@ void abort(void) __attribute__((noreturn));
     }
 #define CHK_SRC_NULL(func, src)                                         \
     if (unlikely(src == NULL)) {                                        \
-        invoke_safe_str_constraint_handler(func ": src is null", (char*)src, ESNULLP); \
+        invoke_safe_str_constraint_handler(func ": " _XSTR(src) " is null", (char*)src, ESNULLP); \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                   \
     if (unlikely(src == NULL)) {                                        \
-        handle_error(dest, dmax, func ": src is null", ESNULLP); \
+        handle_error(dest, dmax, func ": " _XSTR(src) " is null", ESNULLP); \
         return RCNEGATE(ESNULLP); \
     }
 #define CHK_SRCW_NULL_CLEAR(func, src)                                  \
     if (unlikely(src == NULL)) {                                        \
-        handle_werror(dest, dmax, func ": src is null", ESNULLP); \
+        handle_werror(dest, dmax, func ": " _XSTR(src) " is null", ESNULLP); \
         return RCNEGATE(ESNULLP); \
     }
-#define CHK_SLEN_MAX_CLEAR(func, max)                                   \
-    if (unlikely(slen > max)) {                                         \
-        handle_error(dest, strnlen_s(dest, dmax), func ": slen exceeds max", ESLEMAX); \
+#if defined(HAVE_WARN_DMAX) && defined(HAVE_ERROR_DMAX)
+# define CHK_SRC_OVR_CLEAR(func, src, slen, MAX) \
+    if (_BOS_KNOWN(src)) {                    \
+        if (unlikely(_BOS_OVR_N(src,slen))) { \
+            return handle_str_bos_overload(func,(char *restrict)src,slen); \
+        }                                      \
+        else if (_BOS_CHK_N(src,slen)) {      \
+            handle_str_bos_chk_warn(func,(char *restrict)src,slen); \
+            return RCNEGATE(ESLEWRNG);         \
+        }                                      \
+    }
+#elif defined(HAVE_WARN_DMAX)
+# define CHK_SRC_OVR_CLEAR(func, src, slen, MAX) \
+    if (_BOS_KNOWN(src)) {                    \
+        if (unlikely(_BOS_OVR_N(src,slen))) { \
+            return handle_str_bos_overload(func,(char *restrict)src,slen); \
+        }                                      \
+        else if (_BOS_CHK_N(src,slen)) {      \
+            handle_str_bos_chk_warn(func,(char *restrict)src,slen); \
+        } \
+    }
+#else
+# define CHK_SRC_OVR_CLEAR(func, src, slen, MAX) \
+    if (_BOS_KNOWN(src)) {                    \
+        if (unlikely(_BOS_OVR_N(src,slen))) { \
+            return handle_str_bos_overload(func,(char *restrict)src,slen); \
+        }                                      \
+    }
+#endif
+#define CHK_SLEN_MAX_CLEAR(func, slen, max)                             \
+    if (unlikely(slen > (max))) {                                       \
+        handle_error(dest, strnlen_s(dest, dmax), func ": " _XSTR(slen) " exceeds max", ESLEMAX); \
         return RCNEGATE(ESLEMAX);                                       \
+    }
+#define CHK_SLEN_MAX_NOSPC_CLEAR(func, slen, max)                       \
+    if (unlikely(slen > dmax)) {                                        \
+        errno_t error = slen > max ? ESLEMAX : ESNOSPC;                 \
+        handle_error(dest, strnlen_s(dest, dmax), func ": " _XSTR(slen) " exceeds max", ESLEMAX); \
+        return RCNEGATE(error);                                         \
     }
 #define CHK_SRC_NULL_MEM_CLEAR(func, src)                               \
     if (unlikely(src == NULL)) {                                        \
-        handle_mem_error(dest, dmax, func ": src is null", ESNULLP);    \
+        handle_mem_error(dest, dmax, func ": " _XSTR(src) " is null", ESNULLP);    \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_SLEN_MAX_MEM_NOSPC_CLEAR(func, slen, max)                   \
     if (unlikely(slen > dmax)) {                                        \
-        errno_t error = n > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;          \
-        handle_mem_error(dest, dmax, func ": slen exceeds max", error); \
+        errno_t error = slen > max ? ESLEMAX : ESNOSPC;                 \
+        handle_mem_error(dest, dmax, func ": " _XSTR(slen) " exceeds max", error); \
         return RCNEGATE(error);                                         \
     }
 

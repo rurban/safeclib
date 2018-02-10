@@ -94,8 +94,8 @@
  *    If dmax != sizeof(dest): With --enable-warn-dmax ESLEWRNG will be passed to the
  *    constraint handler.
  *    With --enable-error-dmax this error will be fatal, but dest will not be cleared.
- *    With clang-7 and/or diagnose_if and __builtin_object_size() support wrong dmax
- *    values will be caught at compile-time.
+ *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    will be caught at compile-time.
  *
  * @see
  *    strcat_s(), strncat_s(), strcpy_s(), wcsncpy_s()
@@ -113,60 +113,13 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
         *dest = '\0';
         return EOK;
     }
-    else if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strncpy_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    /* known dest size */
-    else if (_BOS_KNOWN(dest)) {
-        if (unlikely(_BOS_OVR_N(dest,dmax))) {
-            size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */
-            if (len > dmax)
-                len = dmax;
-            if (len > RSIZE_MAX_STR)
-                len = RSIZE_MAX_STR;
-            handle_error(dest, len, "strncpy_s: dmax exceeds dest",
-                         ESLEMAX);
-            return RCNEGATE(ESLEMAX);
-        }
-#ifdef HAVE_WARN_DMAX
-        else if (_BOS_CHK_N(dest,dmax)) {
-            char msg[128];
-            sprintf(msg, "strncpy_s: wrong dmax %ld, dest has size %ld", dmax, BOS(dest));
-            invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
-# ifdef HAVE_ERROR_DMAX
-            return RCNEGATE(ESLEWRNG);
-# endif
-        }
-#endif
-    }
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strncpy_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-    else if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strncpy_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-    /* compile-time known src size */
-    else if (unlikely(_BOS_OVR(src,slen))) {
-        handle_error(dest, strnlen_s(dest, dmax), "strncat_s: slen exceeds src",
-                     ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-    else if (unlikely(src == NULL)) {
-        handle_error(dest, dmax, "strncpy_s: src is null",
-                     ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    else if (unlikely(slen > RSIZE_MAX_STR)) {
-        handle_error(dest, strlen(dest), "strncpy_s: slen exceeds max",
-                     ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
+    CHK_DEST_NULL("strncpy_s")
+    CHK_DEST_OVR("strncpy_s", RSIZE_MAX_STR)
+    CHK_DMAX_ZERO("strncpy_s")
+    CHK_DMAX_MAX("strncpy_s", RSIZE_MAX_STR)
+    CHK_SRC_NULL_CLEAR("strncpy_s", src)
+    CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
+    CHK_SLEN_MAX_CLEAR("strncpy_s", slen, RSIZE_MAX_STR)
 
     /* hold base in case src was not copied */
     orig_dmax = dmax;

@@ -93,4 +93,18 @@ handle_werror(wchar_t *orig_dest, rsize_t orig_dmax,
 }
 #endif
 
+/*
+ * Safe C Lib internal string handlers to handle overflows with compile-time known dest
+ * and dmax sizes.
+ */
+int
+handle_str_bos_overload(const char *restrict msg, char *restrict dest, rsize_t dmax);
+
+/*
+ * Safe C Lib internal string handler to handle deviating compile-time known dest
+ * and dmax sizes, when dest != sizeof(dest).
+ */
+void
+handle_str_bos_chk_warn(const char *restrict func, char *restrict dest, rsize_t dmax);
+
 #endif   /* __SAFE_STR_CONSTRAINT_H__ */

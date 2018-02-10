@@ -110,28 +110,7 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
     CHK_DEST_NULL("strcat_s")
     /* for known dest size, we should have already errored at compile-time before.
        anyway, for known dest size check overflows in detail. */
-    else if (_BOS_KNOWN(dest)) {
-        if (unlikely(_BOS_OVR_N(dest,dmax))) {
-            size_t len = strlen(dest); /* clear the min of strlen, dmax and MAX */
-            if (len > dmax)
-                len = dmax;
-            if (len > RSIZE_MAX_STR)
-                len = RSIZE_MAX_STR;
-            handle_error(dest, len, "strcat_s" ": dmax exceeds dest", ESLEMAX);
-            return RCNEGATE(ESLEMAX);
-        }
-#ifdef HAVE_WARN_DMAX
-        else if (_BOS_CHK_N(dest,dmax)) {
-            char msg[128];
-            sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
-                    "strcat_s", (unsigned long)dmax, (unsigned long)BOS(dest));
-            invoke_safe_str_constraint_handler(msg, dest, ESLEWRNG);
-# ifdef HAVE_ERROR_DMAX
-            return RCNEGATE(ESLEWRNG);
-# endif
-        }
-#endif
-    }
+    CHK_DEST_OVR("strcat_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strcat_s")
     CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
     CHK_SRC_NULL_CLEAR("strcat_s", src)

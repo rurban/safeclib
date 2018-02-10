@@ -100,29 +100,11 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcpy_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    if (unlikely(src == NULL)) {
-        handle_error(dest, dmax, "strcpy_s: src is null",
-                     ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
+    CHK_DEST_NULL("strcpy_s")
+    CHK_DEST_OVR("strcpy_s", RSIZE_MAX_STR)
+    CHK_DMAX_ZERO("strcpy_s")
+    CHK_DMAX_MAX("strcpy_s", RSIZE_MAX_STR)
+    CHK_SRC_NULL_CLEAR("strcpy_s", src)
 
     if (unlikely(dest == src)) {
         return RCNEGATE(EOK);
