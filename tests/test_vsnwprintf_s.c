@@ -18,7 +18,8 @@ static wchar_t   str2[LEN];
 
 static inline int
 vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
-             const wchar_t *restrict fmt, ...) BOSW_CHK(dest)
+             const wchar_t *restrict fmt, ...)
+    BOSW_CHK(dest) BOS_NULL(fmt)
 {
     int rc;
     va_list ap;
@@ -42,21 +43,21 @@ int test_vsnwprintf_s (void)
       NEGERR(ESNULLP)
     */
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest")
     rc = vtwprintf_s(NULL, LEN, L"%ls", str2);
     NEGERR(ESNULLP);
 
-    rc = vtwprintf_s(str1, LEN, NULL, NULL);
+    EXPECT_BOS("empty fmt")
+    rc = vtwprintf_s(str1, LEN, NULL);
     NEGERR(ESNULLP);
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = vtwprintf_s(str1, 0, L"%ls", str2);
     NEGERR(ESZEROL)
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
-    rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
+    EXPECT_BOS("dest overflow")
+    rc = vtwprintf_s(str1, (RSIZE_MAX_WSTR+1), L"%ls", str2);
     NEGERR(ESLEMAX);
 #endif
 /*--------------------------------------------------*/

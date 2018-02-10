@@ -28,7 +28,8 @@ static char   str1[LEN];
 static char   str2[LEN];
 
 static inline int
-vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...) BOS_CHK(dest)
+vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
+    BOS_CHK(dest) BOS_NULL(fmt)
 {
     int rc;
     va_list ap;
@@ -61,27 +62,27 @@ int test_vsnprintf_s (void)
 /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest or dmax")
     rc = vtprintf_s(str1, 0, "%s", str2);
     init_msvcrt(rc == -ESZEROL, &use_msvcrt);
     NEGERR_MSVC(ESZEROL, EOF);
 
-/*--------------------------------------------------*/
-
     /* wine msvcrt doesn't check fmt==NULL */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSNPRINTF_S))
-    rc = vtprintf_s(str1, LEN, NULL, NULL);
+    EXPECT_BOS("empty fmt")
+    rc = vtprintf_s(str1, LEN, NULL);
     NEGERR_MSVC(ESNULLP, EOF);
 #else
     printf("Using wine\n");
     have_wine = 1;    
 #endif
 
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
     NEGERR_MSVC(ESLEMAX, have_wine?EOF:0);
 #endif
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");

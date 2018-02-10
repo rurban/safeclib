@@ -29,23 +29,22 @@ int test_snwprintf_s (void)
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    rc = snwprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
+    EXPECT_BOS("dest overflow")
+    rc = snwprintf_s(str1, RSIZE_MAX_WSTR+1, L"%ls", str2);
     NEGERR(ESLEMAX)
-#endif
-/*--------------------------------------------------*/
 
-    rc = snwprintf_s(str1, LEN, NULL, NULL);
+    EXPECT_BOS("empty fmt")
+    rc = snwprintf_s(str1, LEN, NULL);
     NEGERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
     rc = snwprintf_s(NULL, 0, L"%ls", str2);
     NEGERR(ESNULLP)
 
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = snwprintf_s(str1, 0, L"%ls", str2);
     NEGERR(ESZEROL)
+#endif
 
 /*--------------------------------------------------*/
 
