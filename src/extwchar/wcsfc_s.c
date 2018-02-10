@@ -132,7 +132,7 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         return (ESZEROL);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsfc_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);

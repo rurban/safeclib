@@ -119,7 +119,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
                    NULL, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-    else if (unlikely(dmax > RSIZE_MAX_STR)) {
+    else if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsncat_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -129,7 +129,7 @@ wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
                      ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-    else if (unlikely(slen > RSIZE_MAX_STR)) {
+    else if (unlikely(slen > RSIZE_MAX_WSTR)) {
         handle_werror(dest, wcslen(dest), "wcsncat_s: slen exceeds max",
                      ESLEMAX);
         return RCNEGATE(ESLEMAX);

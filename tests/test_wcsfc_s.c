@@ -55,16 +55,12 @@ int main()
     rc = wcsfc_s(str, LEN, NULL, &ind);
     ERR(ESNULLP);
 
-/*--------------------------------------------------*/
-
     EXPECT_BOS("empty dest or dmax") 
     rc = wcsfc_s(str, 0, L"test", &ind);
     ERR(ESZEROL)
 
-/*--------------------------------------------------*/
-
     EXPECT_BOS("dest overflow")
-    rc = wcsfc_s(str, 99999, L"test", &ind);
+    rc = wcsfc_s(str, RSIZE_MAX_WSTR+1, L"test", &ind);
     ERR(ESLEMAX)
 #endif
 

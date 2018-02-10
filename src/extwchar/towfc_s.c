@@ -417,7 +417,7 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
         return -(ESLEMIN);
     }
     dest[0] = L'\0';
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("_towfc_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);

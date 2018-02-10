@@ -29,6 +29,7 @@ int test_towfc_s (void)
     int ind;
     int errs = 0;
     int c;
+    wchar_t result[MAX_LEN];
     char s[128];
     char code[8];
     char status[2];
@@ -37,6 +38,28 @@ int test_towfc_s (void)
     FILE *f;
 
     uint32_t wc;
+
+/*--------------------------------------------------*/
+
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty dest") 
+    rc = towfc_s(NULL, MAX_LEN, 1);
+    NEGERR(ESNULLP);
+
+    EXPECT_BOS("dmax underflow <4") 
+    rc = towfc_s(result, 3, 1);
+    NEGERR(ESLEMIN);
+
+    EXPECT_BOS("dest overflow")
+    rc = towfc_s(result, RSIZE_MAX_WSTR+1, 1);
+    NEGERR(ESLEMAX);
+
+    /*if (_BOS_KNOWN(result)) {
+        EXPECT_BOS("dest overflow") 
+        rc = towfc_s(result, MAX_LEN+1, 1);
+        ERR(ESLEMAX);
+    }*/
+#endif
 
 /*--------------------------------------------------*/
 

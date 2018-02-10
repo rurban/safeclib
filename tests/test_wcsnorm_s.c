@@ -67,7 +67,7 @@ int main()
     WEXPSTR(str, L"\0");
 
     EXPECT_BOS("dest overflow") 
-    rc = wcsnorm_s(str, 99999, L"test", WCSNORM_NFD, NULL);
+    rc = wcsnorm_s(str, RSIZE_MAX_WSTR+1, L"test", WCSNORM_NFD, NULL);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
 #endif

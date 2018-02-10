@@ -680,7 +680,7 @@ iswfc(uint32_t wc)
 /* full foldcase a single upper char to mult. lower chars */
 EXTERN int
 towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
-    BOSW_CHK(dest);
+    BOSW_CHK(dest) BOS_ATTR(dmax < 4, "dmax underflow <4");
 
 /* full foldcase + NFD normalization */
 EXTERN errno_t

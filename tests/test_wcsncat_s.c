@@ -47,7 +47,7 @@ int test_wcsncat_s (void)
     wcscpy(str1, L"a");
     wcscpy(str2, L"b");
 
-    EXPECT_BOS("empty src or smax") /* TODO */
+    EXPECT_BOS("empty src or smax")
     rc = wcsncat_s(str1, 1, str2, 0);
     if (use_msvcrt && rc == 0)
         have_wine = 1;
@@ -80,7 +80,7 @@ int test_wcsncat_s (void)
 
     wcscpy(str1, L"a");
     EXPECT_BOS("dest overflow")
-    rc = wcsncat_s(str1, (RSIZE_MAX_WSTR+1), str2, LEN);
+    rc = wcsncat_s(str1, (RSIZE_MAX_WSTR+1), str2, 1);
     ERR_MSVC(ESLEMAX, EOK);
     if (!use_msvcrt) {
         WEXPSTR(str1, L"a");

@@ -533,7 +533,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
         return RCNEGATE(ESLEMIN);
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax exceeds max",
                    NULL, ESLEMAX);
