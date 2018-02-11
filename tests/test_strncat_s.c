@@ -86,18 +86,23 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "a");
-    /* with clang-7 compile-time already checks these errors */
+    /* with clang-5 compile-time already checks these errors */
 # ifndef HAVE_ASAN /* With asan no BOS */
-    if (_BOS_KNOWN(str1)) { /* should be caught in strncat_s */
+    strcpy(str1, "ab");
+    if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strncat_s(str1, LEN+1, str2, LEN);
         if (!rc) {
-            printf("%s %u Todo BOS overflow check\n", __FUNCTION__, __LINE__);
+            printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
         } else {
             ERR(ESLEMAX);
             EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, 2);
         }
+    } else {
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
+# endif
     }
 # endif
 
@@ -123,15 +128,24 @@ int test_strncat_s (void)
     }
 
 # if defined(HAVE_WARN_DMAX)
-    if (BOS(str1) > 0) {
+    strcpy(str1, "ab");
+    if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("buf overflow")
         rc = strncat_s(str1, LEN+1, str2, LEN);
-        ERR_MSVC(ESLEMAX, 0);
+        if (!rc) {
+            debug_printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
+        } else {
+            ERR(ESLEMAX);
+            EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, 2);
+        }
 
         rc = strncat_s(str1, LEN-1, str2, LEN);
         ERR(0);
     } else {
-        printf("warning unknown str1 size\n");
+#  ifdef HAVE___BUILTIN_OBJECT_SIZE
+        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
+#  endif
     }
 # endif
 

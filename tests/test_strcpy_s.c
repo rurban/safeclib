@@ -42,13 +42,7 @@ int test_strcpy_s (void)
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-    EXPECT_BOS("empty src")
-    rc = strcpy_s(str1, 5, NULL);
-    ERR_MSVC(ESNULLP, EINVAL);
-    CHECK_SLACK(str1, 5);
-
-/*--------------------------------------------------*/
+    len = strlen(str1);
 
     EXPECT_BOS("empty dest or dmax")
     rc = strcpy_s(str1, 0, str2);
@@ -56,6 +50,24 @@ int test_strcpy_s (void)
 
 /*--------------------------------------------------*/
 
+# ifndef HAVE_ASAN /* With asan no BOS */
+    if (_BOS_KNOWN(str1)) {
+        EXPECT_BOS("dest overflow")
+        rc = strcpy_s(str1, LEN+1, str2);
+        if (!rc) {
+            printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
+        } else {
+            ERR(ESLEMAX);     /* dmax exceeds dest */
+            EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, len);
+        }
+    } else {
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
+# endif
+    }
+# endif
+    
     EXPECT_BOS("dest overflow")
     rc = strcpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
@@ -63,8 +75,16 @@ int test_strcpy_s (void)
     EXPECT_BOS("dest overflow")
     rc = strcpy_s(str1, (size_t)-1L, str2);
     ERR_MSVC(ESLEMAX, 0);
-#endif
 
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    len = strlen(str1);
+
+    EXPECT_BOS("empty src")
+    rc = strcpy_s(str1, 5, NULL);
+    ERR_MSVC(ESNULLP, EINVAL);
+    CHECK_SLACK(str1, 5);
+#endif
+    
 /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");

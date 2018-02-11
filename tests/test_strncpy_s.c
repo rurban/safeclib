@@ -103,18 +103,22 @@ int test_strncpy_s (void)
 
 /*--------------------------------------------------*/
 
-    strcpy(str1, "aa");
-
 # ifndef HAVE_ASAN /* With asan no BOS */
+    strcpy(str1, "aa");
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strncpy_s(str1, LEN+1, str2, nlen);
         if (!rc) {
-            printf("Todo BOS overflow check\n");
+            printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
         } else {
             ERR(ESLEMAX);     /* dmax exceeds dest */
             EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, 2);
         }
+    } else {
+#  ifdef HAVE___BUILTIN_OBJECT_SIZE
+        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
+#  endif
     }
 # endif
 
