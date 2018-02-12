@@ -32,26 +32,20 @@ int test_sprintf_s (void)
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
-    print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
+    print_msvcrt(use_msvcrt);
     /* older windows sprintf_s segv here */
     EXPECT_BOS("empty dest")
     rc = sprintf_s(NULL, LEN, "%s", str2);
-    init_msvcrt(errno == ESNULLP, &use_msvcrt);
-    ERR(-1);
-    ERRNO_MSVC(ESNULLP,EINVAL);
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    ERR_MSVC(-ESNULLP,-1); /* EINVAL */
 
 /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
     rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
-    if (!use_msvcrt) {
-        ERR(-1);
-    } else {
-        ERR(0);
-    }
-    ERRNO_MSVC(ESLEMAX, 0);
+    ERR_MSVC(-ESLEMAX,0);
 
 /*--------------------------------------------------*/
 
@@ -59,22 +53,20 @@ int test_sprintf_s (void)
 # if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S))
     EXPECT_BOS("empty fmt")
     rc = sprintf_s(str1, LEN, NULL);
-    ERR(-1);
-    ERRNO_MSVC(ESNULLP, EINVAL);
+    ERR_MSVC(-ESNULLP,-1); /* EINVAL */
 # endif
 
 /*--------------------------------------------------*/
 
     EXPECT_BOS("empty dest or dmax")
     rc = sprintf_s(str1, 0, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESZEROL, EINVAL);
+    ERR_MSVC(-ESZEROL,-1); /* EINVAL */
 #endif
 /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
-    ERR(-1);
-    ERRNO(EINVAL);
+    ERR(-1); /* EINVAL */
+    errno = 0;
 
     rc = sprintf_s(str1, LEN, "%s %%n", str2);
     ERR(3)
@@ -96,8 +88,12 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 1, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+#ifdef HAVE_CT_BOS_OVR
+    print_msvcrt(use_msvcrt);
+    init_msvcrt(rc == -ESNOSPC, &use_msvcrt);
+#endif
+    ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
+    ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -106,8 +102,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 2, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -135,8 +130,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 1, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -145,8 +139,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 2, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -191,8 +184,7 @@ int test_sprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = sprintf_s(str1, 12, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
 
 /*--------------------------------------------------*/
 
@@ -208,8 +200,7 @@ int test_sprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = sprintf_s(str1, 8, "%s", &str1[7]);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
     EXPNULL(str1)
 
 /*--------------------------------------------------*/

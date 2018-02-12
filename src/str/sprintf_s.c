@@ -41,9 +41,8 @@
 #if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
 #else
 
-/* not for the kernel, as it sets errno */
-
 /**
+ * @def sprintf_s(dest,dmax,fmt,...)
  * @brief
  *    The \c sprintf_s function composes a string with the same content that
  *    would be printed if format was used on printf. Instead of being
@@ -78,13 +77,11 @@
  *          sprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
- * errno:   ESNULLP when \c dest/fmt is NULL pointer
- *          ESZEROL when \c dmax = 0
- *          ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- *          ESNOSPC when return value exceeds dmax
- *          EINVAL  when \c fmt contains \c %n
- *
- * @retval -1  if an encoding error or a runtime constraint violation occured.
+ * @retval -ESNULLP when \c dest/fmt is NULL pointer
+ *         -ESZEROL when \c dmax = 0
+ *         -ESLEMAX when \c dmax > \c RSIZE_MAX_STR or dmax > sizeof(dest)
+ *         -ESNOSPC when return value exceeds dmax
+ *         -EINVAL  when \c fmt contains \c %n
  *
  * @note The C11 standard was most likely wrong with changing the return value 0 on
  *       errors. All other functions and existing C11 implementations do
@@ -97,47 +94,50 @@
  */
 
 EXPORT int
-sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
+_sprintf_s_chk(char * restrict dest, rsize_t dmax, size_t destbos,
+               const char * restrict fmt, ...)
 {
-    va_list ap;
     int ret = -1;
+    va_list ap;
     const char *p;
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        errno = ESLEMAX;
-        return -1;
-    }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: dest is null",
                    NULL, ESNULLP);
-        errno = ESNULLP;
-        return -1;
+        return -ESNULLP;
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: fmt is null",
                    NULL, ESNULLP);
-        errno = ESNULLP;
-        return -1;
+        return -ESNULLP;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        errno = ESZEROL;
-        return -1;
+        return -ESZEROL;
+    }
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
+                                               NULL, ESLEMAX);
+            return -ESLEMAX;
+        }
+    } else {
+        if (unlikely(dmax > destbos)) {
+            return -(handle_str_bos_overload("sprintf_s: dmax exceeds dest",
+                                             dest, destbos));
+        }
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
-                                               NULL, EINVAL);
-            errno = EINVAL;
-            return -1;
+                                               (char *restrict)fmt, EINVAL);
+            return -1; /* EINVAL */
         }
     }
 
@@ -149,12 +149,14 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
     va_end(ap2);
     */
 
-    errno = 0;
     va_start(ap, fmt);
     /* FIXME: gcc 4.3 GCC_DIAG_IGNORE(-Wmissing-format-attribute) */
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
     /* to detect illegal format specifiers */
     ret = vsnprintf_s(dest, (size_t)dmax, (size_t)dmax, fmt, ap);
+/*#elif defined(HAVE___VSNPRINTF_CHK) */
+    /* glibc allows %n from readonly strings, freebsd/darwin ignores flag. */
+    /*ret = __vsnprintf_chk(dest, (size_t)dmax, 2, (size_t)dmax, fmt, ap);*/
 #else
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 #endif
@@ -168,8 +170,11 @@ sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
         ) {
         handle_error(dest, dmax, "sprintf_s: len exceeds dmax",
                      ESNOSPC);
-        errno = ESNOSPC;
-        return -1;
+#ifdef __MINGW32__
+        errno = 0;
+#endif
+        return -ESNOSPC; /* different to the standard (=0),
+                            but like all other implementations */
     }
 
     if (unlikely(ret <= 0)) {

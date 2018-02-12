@@ -671,6 +671,7 @@ AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
 
 AX_GCC_BUILTIN(__builtin_ctz)
+AX_GCC_BUILTIN(__builtin_constant_p)
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf
               vfprintf vfwprintf vsprintf vsnprintf"
@@ -718,9 +719,12 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         towctrans bcmp secure_getenv timingsafe_memcmp timingsafe_bcmp \
         asctime_r ctime_r gmtime_r localtime_r memccpy ])
 dnl bos enabled chk functions
-for b in $builtins_chk; do
-    AC_CHECK_FUNCS([__${b}_chk])
-done
+#for b in $builtins_chk; do
+AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
+        __strcpy_chk __strncpy_chk __strcat_chk __strncat_chk \
+        __printf_chk __sprintf_chk __snprintf_chk __swprintf_chk \
+        __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk ])
+#done
 dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
 AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
