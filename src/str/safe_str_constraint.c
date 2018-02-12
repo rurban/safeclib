@@ -96,8 +96,8 @@ EXPORT_SYMBOL(set_str_constraint_handler_s);
  *
  */
 EXPORT void
-invoke_safe_str_constraint_handler (const char *msg,
-                                    void *ptr,
+invoke_safe_str_constraint_handler (const char *restrict msg,
+                                    void *restrict ptr,
                                     errno_t error)
 {
     if (NULL != str_handler) {

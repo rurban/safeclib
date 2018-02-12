@@ -101,17 +101,17 @@
  */
 
 EXPORT errno_t
-strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
+_real_strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
 {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
 
     CHK_DEST_NULL("strcat_s")
-    printf("** bos(dest) %ld [%s:%u]\n", BOS(dest), __FUNCTION__, __LINE__);
-    CHK_DEST_OVR("strcat_s", RSIZE_MAX_STR)
+    /*printf("** bos(dest) %ld dmax %ld [%s:%u]\n", BOS(dest), dmax,
+             "_real_strcat_s", __LINE__);*/
     CHK_DMAX_ZERO("strcat_s")
-    CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
+    CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR) /* not needed when already checked BOS_OVR */
     CHK_SRC_NULL_CLEAR("strcat_s", src)
 
     /* hold base of dest in case src was not copied */
@@ -223,6 +223,21 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
 
     return RCNEGATE(ESNOSPC);
 }
+
+#if 0
+EXPORT inline errno_t
+strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
+{
+    if (_BOS_KNOWN(dest)) {
+        printf("** known bos(dest) %ld dmax %ld [%s:%u]\n", BOS(dest), dmax,
+               __FUNCTION__, __LINE__);
+        CHK_DEST_OVR("strcat_s", RSIZE_STR_MAX)
+        return _real_strcat_s(dest, BOS(dest), src);
+    } else
+        return _real_strcat_s(dest, dmax, src);
+}
+#endif
+
 #ifdef __KERNEL__
 EXPORT_SYMBOL(strcat_s);
 #endif /* __KERNEL__ */

@@ -97,10 +97,40 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 EXTERN constraint_handler_t
 set_str_constraint_handler_s(constraint_handler_t handler);
 
+#ifndef __SAFE_STR_CONSTRAINT_H__
+EXTERN void
+invoke_safe_str_constraint_handler(const char *restrict msg, void *restrict ptr,
+                                   errno_t error);
+#endif
+
 /* string concatenate */
 EXTERN errno_t
+_real_strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+
+inline errno_t
 strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src)
-    BOS_CHK(dest) BOS_NULL(src);
+    BOS_CHK(dest) BOS_NULL(src)
+{
+    if (_BOS_KNOWN(dest)) {
+        /*printf("** known bos(dest) %ld dmax %ld [%s:%u]\n", BOS(dest), dmax,
+                 "strcat_s", __LINE__);*/
+        /*CHK_DMAX_OVR("strcat_s", RSIZE_MAX_STR)*/
+        if (_BOS_OVR_N(dest,dmax)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+            memset(dest, 0, BOS(dest));
+#else            
+            *dest = '\0';
+#endif
+            invoke_safe_str_constraint_handler("strcat_s: dmax exceeds dest",
+                                               dest, ESLEMAX);
+            return ESLEMAX;
+        }
+        return _real_strcat_s(dest, BOS(dest), src);
+    } else {
+        /*CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)*/
+        return _real_strcat_s(dest, dmax, src);
+    }
+}
 
 /* string copy */
 EXTERN errno_t
