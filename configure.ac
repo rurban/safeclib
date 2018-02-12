@@ -669,34 +669,75 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      [#include <time.h>])
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
+
 AX_GCC_BUILTIN(__builtin_ctz)
+builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
+              printf sprintf snprintf swprintf
+              vfprintf vfwprintf vsprintf vsnprintf"
+#AX_GCC_BUILTIN(__builtin___memcpy_chk)
+#AX_GCC_BUILTIN(__builtin___memmove_chk)
+#AX_GCC_BUILTIN(__builtin___memset_chk)
+#AX_GCC_BUILTIN(__builtin___strcpy_chk)
+#AX_GCC_BUILTIN(__builtin___strncpy_chk)
+#AX_GCC_BUILTIN(__builtin___strcat_chk)
+#AX_GCC_BUILTIN(__builtin___strncat_chk)
+#AX_GCC_BUILTIN(__builtin___printf_chk)
+#AX_GCC_BUILTIN(__builtin___sprintf_chk)
+#AX_GCC_BUILTIN(__builtin___snprintf_chk)
+#AX_GCC_BUILTIN(__builtin___swprintf_chk)
+#AX_GCC_BUILTIN(__builtin___vfprintf_chk)
+#AX_GCC_BUILTIN(__builtin___vfwprintf_chk)
+#AX_GCC_BUILTIN(__builtin___vsprintf_chk)
+#AX_GCC_BUILTIN(__builtin___vsnprintf_chk)
+
+builtins_bounds="narrow_ptr_bounds copy_ptr_bounds init_ptr_bounds
+        set_ptr_bounds null_ptr_bounds
+        chk_ptr_lbounds chk_ptr_ubounds chk_ptr_bounds get_ptr_lbound get_ptr_ubound"
+#for b in $builtins_bounds; do
+#    AX_GCC_BUILTIN([__builtin___bnd_$b])
+#done
+#AX_GCC_BUILTIN(__builtin___bnd_narrow_ptr_bounds)
+#AX_GCC_BUILTIN(__builtin___bnd_init_ptr_bounds)
+#AX_GCC_BUILTIN(__builtin___bnd_copy_ptr_bounds)
+AX_GCC_BUILTIN(__builtin___bnd_set_ptr_bounds)
+AX_GCC_BUILTIN(__builtin___bnd_null_ptr_bounds)
+AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_lbounds)
+AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_ubounds)
+AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
+AX_GCC_BUILTIN(__builtin___bnd_get_ptr_lbound)
+AX_GCC_BUILTIN(__builtin___bnd_get_ptr_ubound)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
+AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
+        strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
+        vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
+        towctrans bcmp secure_getenv timingsafe_memcmp timingsafe_bcmp \
+        asctime_r ctime_r gmtime_r localtime_r memccpy ])
+dnl bos enabled chk functions
+for b in $builtins_chk; do
+    AC_CHECK_FUNCS([__${b}_chk])
+done
+dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
-AC_CHECK_FUNCS([memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
-                strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
-                vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
-                towctrans bcmp secure_getenv timingsafe_memcmp timingsafe_bcmp \
-                asctime_r ctime_r gmtime_r localtime_r memccpy \
-                memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
-                sprintf_s strcat_s strcpy_s strncat_s strncpy_s \
-                strnlen_s strtok_s strerror_s vsprintf_s tmpnam_s snprintf_s \
-                vsnprintf_s snwprintf_s \
-                strspn_s strset_s strchr_s strrchr_s strstr_s strzero_s strnset_s \
-                mbsrtowcs_s mbstowcs_s wcsrtombs_s wcstombs_s \
-                wcrtomb_s wctomb_s wcsnlen_s wcscpy_s wcsncpy_s wcscat_s wcsncat_s \
-                wmemcpy_s wmemmove_s wcstok_s vswprintf_s swprintf_s vfwprintf_s \
-                vwprintf_s wprintf_s fwprintf_s swscanf_s vswscanf_s wscanf_s \
-                vfwscanf_s fwscanf_s vwscanf_s vsnwprintf_s wcsstr_s wmemcmp_s \
-                wcscmp_s wcsncmp_s wcsicmp_s wcsset_s wcsnset_s wcscoll_s wcslwr_s \
-                wcsupr_s towfc_s wcsfc_s sscanf_s fscanf_s scanf_s vfscanf_s \
-                vsscanf_s vscanf_s printf_s fprintf_s tmpfile_s vfprintf_s vprintf_s \
-                fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
-                asctime_s ctime_s getenv_s ])
+AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
+        sprintf_s strcat_s strcpy_s strncat_s strncpy_s \
+        strnlen_s strtok_s strerror_s vsprintf_s tmpnam_s snprintf_s \
+        vsnprintf_s snwprintf_s \
+        strspn_s strset_s strchr_s strrchr_s strstr_s strzero_s strnset_s \
+        mbsrtowcs_s mbstowcs_s wcsrtombs_s wcstombs_s \
+        wcrtomb_s wctomb_s wcsnlen_s wcscpy_s wcsncpy_s wcscat_s wcsncat_s \
+        wmemcpy_s wmemmove_s wcstok_s vswprintf_s swprintf_s vfwprintf_s \
+        vwprintf_s wprintf_s fwprintf_s swscanf_s vswscanf_s wscanf_s \
+        vfwscanf_s fwscanf_s vwscanf_s vsnwprintf_s wcsstr_s wmemcmp_s \
+        wcscmp_s wcsncmp_s wcsicmp_s wcsset_s wcsnset_s wcscoll_s wcslwr_s \
+        wcsupr_s towfc_s wcsfc_s sscanf_s fscanf_s scanf_s vfscanf_s \
+        vsscanf_s vscanf_s printf_s fprintf_s tmpfile_s vfprintf_s vprintf_s \
+        fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
+        asctime_s ctime_s getenv_s ])
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])

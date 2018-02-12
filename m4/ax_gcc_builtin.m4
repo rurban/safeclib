@@ -85,13 +85,14 @@
 # LICENSE
 #
 #   Copyright (c) 2013 Gabriele Svelto <gabriele.svelto@gmail.com>
+#   Copyright (c) 2018 Reini Urban <rurban@cpan.org>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 6
+#serial 7
 
 AC_DEFUN([AX_GCC_BUILTIN], [
     AS_VAR_PUSHDEF([ac_var], [ax_cv_have_$1])
@@ -99,6 +100,56 @@ AC_DEFUN([AX_GCC_BUILTIN], [
     AC_CACHE_CHECK([for $1], [ac_var], [
         AC_LINK_IFELSE([AC_LANG_PROGRAM([], [
             m4_case([$1],
+                [__builtin___mbsnrtowcs_chk], [$1("", "", 0, 0, "", 0)],
+                [__builtin___mbsrtowcs_chk], [$1("", "", 0, "", 0)],
+                [__builtin___mbstowcs_chk], [$1("", "", 0, 0)],
+                [__builtin___memcpy_chk], [$1("", "", 0, 0)],
+                [__builtin___memmove_chk], [$1("", "", 0, 0)],
+                [__builtin___mempcpy_chk], [$1("", "", 0, 0)],
+                [__builtin___memset_chk], [$1("", 0, 0, 0)],
+                [__builtin___strcpy_chk], [$1("", "", 0)],
+                [__builtin___stpcpy_chk], [$1("", "", 0)],
+                [__builtin___stpncpy_chk], [$1("", "", 0, 0)],
+                [__builtin___strncpy_chk], [$1("", "", 0, 0)],
+                [__builtin___strcat_chk], [$1("", "", 0)],
+                [__builtin___strncat_chk], [$1("", "", 0, 0)],
+                [__builtin___printf_chk], [$1(0, "")],
+                [__builtin___read_chk], [$1(0, "", 0, 0)],
+                [__builtin___sprintf_chk], [$1("", 0, 0, "")],
+                [__builtin___snprintf_chk], [$1("", 0, 0, 0, "")],
+                [__builtin___swprintf_chk], [$1("", 0, 0, 0, "")],
+                [__builtin___vfprintf_chk], [$1("", 0, "", 0)],
+                [__builtin___vfwprintf_chk], [$1("", 0, "", 0)],
+                [__builtin___vprintf_chk], [$1(0, "", 0)],
+                [__builtin___vsnprintf_chk], [$1("", 0, 0, 0, "", 0)],
+                [__builtin___vsprintf_chk], [$1("", 0, 0, "", 0)],
+                [__builtin___vswprintf_chk], [$1("", 0, 0, 0, "", 0)],
+                [__builtin___vwprintf_chk], [$1(0, "", 0)],
+                [__builtin___wcrtomb_chk], [$1("", "", "", 0)],
+                [__builtin___wcscat_chk], [$1("", "", 0)],
+                [__builtin___wcscpy_chk], [$1("", "", 0)],
+                [__builtin___wcsncat_chk], [$1("", "", 0, 0)],
+                [__builtin___wcsncpy_chk], [$1("", "", 0, 0)],
+                [__builtin___wcsnrtombs_chk], [$1("", "", 0, 0, "", 0)],
+                [__builtin___wcsrtombs_chk], [$1("", "", 0, "", 0)],
+                [__builtin___wcstombs_chk], [$1("", "", 0, 0)],
+                [__builtin___wctomb_chk], [$1("", 0, 0)],
+                [__builtin___wmemcpy_chk], [$1("", "", 0, 0)],
+                [__builtin___wmemmove_chk], [$1("", "", 0, 0)],
+                [__builtin___wmempcpy_chk], [$1("", "", 0, 0)],
+                [__builtin___wmemset_chk], [$1("", "", 0, 0)],
+                [__builtin___wprintf_chk], [$1(0, "")],
+                [__builtin___bnd_set_ptr_bounds], [$1("", 0)],
+                [__builtin___bnd_narrow_ptr_bounds], [$1("", "", 0)],
+                [__builtin___bnd_copy_ptr_bounds], [$1("", "")],
+                [__builtin___bnd_init_ptr_bounds], [$1("")],
+                [__builtin___bnd_null_ptr_bounds], [$1("")],
+                [__builtin___bnd_store_ptr_bounds], [$1("", "")],
+                [__builtin___bnd_chk_ptr_lbounds], [$1("")],
+                [__builtin___bnd_chk_ptr_ubounds], [$1("")],
+                [__builtin___bnd_chk_ptr_bounds], [$1("", 0)],
+                [__builtin___bnd_get_ptr_lbound], [$1("")],
+                [__builtin___bnd_get_ptr_ubound], [$1("")],
                 [__builtin_assume_aligned], [$1("", 0)],
                 [__builtin_bswap16], [$1(0)],
                 [__builtin_bswap32], [$1(0)],
