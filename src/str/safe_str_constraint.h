@@ -42,11 +42,9 @@
  * Function used by the libraries to invoke the registered
  * runtime-constraint handler. Always needed.
  */
-#ifndef __SAFE_STR_LIB_H__
 EXTERN void
 invoke_safe_str_constraint_handler(const char *restrict msg, void *restrict ptr,
                                    errno_t error);
-#endif
 
 /*
  * Safe C Lib internal string routine to consolidate error handling.

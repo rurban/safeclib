@@ -62,34 +62,29 @@ int test_strcat_s (void)
 
 /*--------------------------------------------------*/
 
-# ifndef HAVE_ASAN /* With asan no BOS */
     strcpy(str1, "ab");
-    printf("** bos(str1) %ld [%s:%u]\n", BOS(str1), __FUNCTION__, __LINE__);
+    /*printf("** bos(str1) %ld [%s:%u]\n", BOS(str1), __FUNCTION__, __LINE__);*/
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strcat_s(str1, LEN+1, str2);
-        if (!rc) {
-            printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
-        } else {
-            ERR(ESLEMAX);
-            EXPSTR(str1, ""); /* cleared */
-            CHECK_SLACK(str1, 2);
-        }
+        ERR(ESLEMAX);
+        EXPSTR(str1, ""); /* cleared */
+        CHECK_SLACK(str1, 2);
 
         rc = strcat_s(str1, LEN, str2);
         ERR(0);
     } else {
 #  ifdef HAVE___BUILTIN_OBJECT_SIZE
-        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
+        debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
+        errs++;
 #  endif
     }
-# endif
 
     strcpy(str1, "a");
     EXPECT_BOS("dest overflow")
     rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
-    EXPSTR(str1, use_msvcrt ? "aaaaa" : "a");
+    EXPSTR(str1, use_msvcrt ? "aaaaa" : "");
 #endif
 
 /*--------------------------------------------------*/

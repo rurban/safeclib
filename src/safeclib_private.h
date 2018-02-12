@@ -238,45 +238,43 @@ void abort(void) __attribute__((noreturn));
         invoke_safe_str_constraint_handler(func ": dmax is 0", dest, ESZEROL); \
         return RCNEGATE(ESZEROL);                                       \
     }
-/* for known dest size, we should have already errored at compile-time before.
-   anyway, for known dest size check overflows in detail. */
-#if defined(HAVE_WARN_DMAX) && defined(HAVE_ERROR_DMAX)
-# define CHK_DEST_OVR(func, MAX)               \
-    if (_BOS_KNOWN(dest)) {                    \
-        if (unlikely(_BOS_OVR_N(dest,dmax))) { \
-            return handle_str_bos_overload(func": dmax exceeds dest",dest,dmax); \
-        }                                      \
-        else if (_BOS_CHK_N(dest,dmax)) {      \
-            handle_str_bos_chk_warn(func,dest,dmax); \
-            return RCNEGATE(ESLEWRNG);         \
-        }                                      \
-    }
-#elif defined(HAVE_WARN_DMAX)
-# define CHK_DEST_OVR(func, MAX)               \
-    if (_BOS_KNOWN(dest)) {                    \
-        if (unlikely(_BOS_OVR_N(dest,dmax))) { \
-            return handle_str_bos_overload(func": dmax exceeds dest",dest,dmax); \
-        }                                      \
-        else if (_BOS_CHK_N(dest,dmax)) {      \
-            handle_str_bos_chk_warn(func,dest,dmax); \
-        } \
-    }
-#else
-# define CHK_DEST_OVR(func, MAX)               \
-    if (_BOS_KNOWN(dest)) {                    \
-        if (unlikely(_BOS_OVR_N(dest,dmax))) { \
-            return handle_str_bos_overload(func": dmax exceeds dest",dest,dmax); \
-        }                                      \
-    }
-#endif
 #define CHK_DMAX_MAX(func, max)                                         \
     if (unlikely(dmax > (max))) {                                       \
         invoke_safe_str_constraint_handler(func ": dmax exceeds max", dest, ESLEMAX); \
         return RCNEGATE(ESLEMAX);                                       \
     }
+/* for known dest size, we should have already errored at compile-time before.
+   anyway, for known dest size check overflows in detail. */
+#if defined(HAVE_WARN_DMAX) && defined(HAVE_ERROR_DMAX)
+# define CHK_DEST_OVR(func, destbos)                                    \
+    if (unlikely(dmax != destbos)) {                                    \
+        if (unlikely(dmax > destbos)) {                                 \
+            return handle_str_bos_overload(func": dmax exceeds dest",   \
+                                           dest,destbos);               \
+        }                                                               \
+        handle_str_bos_chk_warn(func,dest,destbos);                     \
+        return RCNEGATE(ESLEWRNG);                                      \
+    }
+#elif defined(HAVE_WARN_DMAX)
+# define CHK_DEST_OVR(func, destbos)                                    \
+    if (unlikely(dmax != destbos)) {                                    \
+        if (unlikely(dmax > destbos)) {                                 \
+            return handle_str_bos_overload(func": dmax exceeds dest",   \
+                                           dest,destbos);               \
+        }                                                               \
+        handle_str_bos_chk_warn(func,dest,destbos);                     \
+    }
+#else
+# define CHK_DEST_OVR(func, destbos)                                    \
+    if (unlikely(dmax > destbos)) {                                     \
+        return handle_str_bos_overload(func": dmax exceeds dest",       \
+                                       dest,destbos);                   \
+    }
+#endif
 #define CHK_SRC_NULL(func, src)                                         \
     if (unlikely(src == NULL)) {                                        \
-        invoke_safe_str_constraint_handler(func ": " _XSTR(src) " is null", (char*)src, ESNULLP); \
+        invoke_safe_str_constraint_handler(func ": " _XSTR(src) " is null", \
+                                           (char*)src, ESNULLP);        \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                   \

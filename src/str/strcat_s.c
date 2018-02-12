@@ -41,18 +41,21 @@
 #else
 
 /**
+ * @def strcat_s(dest,dmax,src)
  * @brief
- *    The strcat_s function appends a copy of the string pointed
+ *    The \b strcat_s function appends a copy of the string pointed
  *    to by src (including the terminating null character) to the
  *    end of the string pointed to by dest. The initial character
- *    from src overwrites the null character at the end ofdest.
+ *    from src overwrites the null character at the end of dest.
  * @details
  *    All elements following the terminating null character (if
  *    any) written by strcat_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strcat_s
  *    returns.
- *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
- *    NULL bytes.
+ *    With SAFECLIB_STR_NULL_SLACK defined the rest of dest is
+ *    cleared with NULL bytes.
+ *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -82,7 +85,7 @@
  *
  * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
  *       ESLEMAX dmax/slen>MAX not, ESOVRLP returns EINVAL or ERANGE,
- *       unlike strncat_s.
+ *       unlike \c strncat_s.
  *
  * @return  If there is a runtime-constraint violation, then if dest is
  *          not a null pointer and dmax is greater than zero and not
@@ -91,7 +94,7 @@
  *                     were appended to dest and the result in dest is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > sizeof(dest)
+ * @retval  ESLEMAX    when dmax > sizeof(dest) or > RSIZE_MAX_STR
  * @retval  ESUNTERM   when dest not terminated in the first dmax bytes
  * @retval  ESOVRLP    when src overlaps with dest
  *
@@ -99,19 +102,24 @@
  *    strncat_s(), strcpy_s(), strncpy_s()
  *
  */
-
 EXPORT errno_t
-_real_strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
+_strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src, size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
 
     CHK_DEST_NULL("strcat_s")
-    /*printf("** bos(dest) %ld dmax %ld [%s:%u]\n", BOS(dest), dmax,
-             "_real_strcat_s", __LINE__);*/
+    /*debug_printf("** bos(dest) %ld dmax %ld [%s:%u]\n", destbos, dmax,
+          "_strcat_s_chk", __LINE__);*/
     CHK_DMAX_ZERO("strcat_s")
-    CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR) /* not needed when already checked BOS_OVR */
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
+    } else {
+        CHK_DEST_OVR("strcat_s", destbos)
+        if (dmax > destbos)
+            dmax = destbos;
+    }
     CHK_SRC_NULL_CLEAR("strcat_s", src)
 
     /* hold base of dest in case src was not copied */
@@ -223,20 +231,6 @@ _real_strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
 
     return RCNEGATE(ESNOSPC);
 }
-
-#if 0
-EXPORT inline errno_t
-strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
-{
-    if (_BOS_KNOWN(dest)) {
-        printf("** known bos(dest) %ld dmax %ld [%s:%u]\n", BOS(dest), dmax,
-               __FUNCTION__, __LINE__);
-        CHK_DEST_OVR("strcat_s", RSIZE_STR_MAX)
-        return _real_strcat_s(dest, BOS(dest), src);
-    } else
-        return _real_strcat_s(dest, dmax, src);
-}
-#endif
 
 #ifdef __KERNEL__
 EXPORT_SYMBOL(strcat_s);
