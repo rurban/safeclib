@@ -91,7 +91,7 @@ extern "C" {
 #endif
 
 #ifndef ESLEWRNG
-#define ESLEWRNG        ( 410 )       /* wrong length                */
+#define ESLEWRNG        ( 410 )       /* wrong size                */
 #endif
 
 #ifndef ESLAST
