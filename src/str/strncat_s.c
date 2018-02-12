@@ -42,6 +42,7 @@
 #else
 
 /**
+ * @def strncat_s(dest,dmax,src,slen)
  * @brief
  *    The strncat_s function appends a copy of the string pointed
  *    to by src (including the terminating null character) to the
@@ -53,6 +54,8 @@
  *    pointed to by dest take unspeciﬁed values when strncat_s returns.
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
  *    NULL bytes.
+ *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -104,7 +107,7 @@
  *    If dmax != sizeof(dest): With --enable-warn-dmax ESLEWRNG will be passed to the
  *    constraint handler.
  *    With --enable-error-dmax this error will be fatal, but dest will not be cleared.
- *    With clang-7 and/or diagnose_if and __builtin_object_size() support wrong dmax
+ *    With clang-5 and/or diagnose_if and __builtin_object_size() support wrong dmax
  *    values will be caught at compile-time.
  *
  * @see
@@ -112,7 +115,8 @@
  *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  */
 EXPORT errno_t
-strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
+_strncat_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
+                rsize_t slen, size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -124,7 +128,11 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     CHK_DEST_NULL("strncat_s")
     CHK_DEST_OVR("strncat_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strncat_s")
-    CHK_DMAX_MAX("strncat_s", RSIZE_MAX_STR)
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strncat_s", RSIZE_MAX_STR)
+    } else {
+        CHK_DEST_OVR("strncat_s", destbos)
+    }
     CHK_SRC_NULL_CLEAR("strncat_s", src)
     CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
     CHK_SLEN_MAX_CLEAR("strncat_s", slen, RSIZE_MAX_STR)
@@ -282,7 +290,7 @@ strncat_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     return RCNEGATE(ESNOSPC);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strncat_s);
+EXPORT_SYMBOL(_strncat_s_chk);
 #endif /* __KERNEL__ */
 
 #endif /* TEST_MSVCRT */

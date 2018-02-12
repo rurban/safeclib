@@ -104,6 +104,11 @@ handle_str_bos_overload(const char *restrict msg, char *restrict dest, rsize_t d
  * and dmax sizes, when dest != sizeof(dest).
  */
 void
-handle_str_bos_chk_warn(const char *restrict func, char *restrict dest, rsize_t dmax);
+handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
+                        const rsize_t dmax, const size_t destbos);
 
+void
+handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
+                            const rsize_t smax, const size_t srcbos,
+                            const char* srcname, const char* smaxname);
 #endif   /* __SAFE_STR_CONSTRAINT_H__ */

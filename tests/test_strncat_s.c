@@ -112,7 +112,7 @@ int test_strncat_s (void)
     rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
-        EXPSTR(str1, "a"); /* untouched */
+        EXPSTR(str1, "");     /* cleared, because BOS is known */
     } else {
         EXPSTR(str1, "abcde") /* valid */
     }
@@ -127,27 +127,22 @@ int test_strncat_s (void)
         EXPSTR(str1, "abcde") /* valid */
     }
 
-# if defined(HAVE_WARN_DMAX)
-    strcpy(str1, "ab");
+    strcpy(str1, "abc");
     if (_BOS_KNOWN(str1)) {
-        EXPECT_BOS("buf overflow")
+        EXPECT_BOS("dest overflow")
         rc = strncat_s(str1, LEN+1, str2, LEN);
-        if (!rc) {
-            debug_printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
-        } else {
-            ERR(ESLEMAX);
-            EXPSTR(str1, ""); /* cleared */
-            CHECK_SLACK(str1, 2);
-        }
+        ERR(ESLEMAX);     /* dmax exceeds dest */
+        EXPSTR(str1, ""); /* cleared */
+        CHECK_SLACK(str1, 4);
 
         rc = strncat_s(str1, LEN-1, str2, LEN);
         ERR(0);
     } else {
-#  ifdef HAVE___BUILTIN_OBJECT_SIZE
-        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
-#  endif
-    }
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+        debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
+        errs++;
 # endif
+    }
 
 /*--------------------------------------------------*/
 

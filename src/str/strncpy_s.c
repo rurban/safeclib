@@ -42,8 +42,9 @@
 #else
 
 /**
+ * @def strncpy_s(dest,dmax,src,slen)
  * @brief
- *    The strncpy_s function copies not more than slen successive characters
+ *    The \b strncpy_s function copies not more than slen successive characters
  *    (characters that follow a null character are not copied) from the
  *    array pointed to by src to the array pointed to by dest. If no null
  *    character was copied from src, then dest[n] is set to a null character,
@@ -54,6 +55,8 @@
  *    pointed to by dest take unspeciﬁed values when strncpy_s returns.
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
  *    NULL bytes.
+ *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -85,7 +88,7 @@
  *                     src were copied to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax > dest
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or sizeof(dest)
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
@@ -94,8 +97,6 @@
  *    If dmax != sizeof(dest): With --enable-warn-dmax ESLEWRNG will be passed to the
  *    constraint handler.
  *    With --enable-error-dmax this error will be fatal, but dest will not be cleared.
- *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
- *    will be caught at compile-time.
  *
  * @see
  *    strcat_s(), strncat_s(), strcpy_s(), wcsncpy_s()
@@ -103,7 +104,8 @@
  *
  */
 EXPORT errno_t
-strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
+_strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
+                rsize_t slen, size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -116,7 +118,11 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     CHK_DEST_NULL("strncpy_s")
     CHK_DEST_OVR("strncpy_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strncpy_s")
-    CHK_DMAX_MAX("strncpy_s", RSIZE_MAX_STR)
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strncpy_s", RSIZE_MAX_STR)
+    } else {
+        CHK_DEST_OVR("strncpy_s", destbos)
+    }
     CHK_SRC_NULL_CLEAR("strncpy_s", src)
     CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
     CHK_SLEN_MAX_CLEAR("strncpy_s", slen, RSIZE_MAX_STR)
@@ -227,7 +233,7 @@ strncpy_s (char * restrict dest, rsize_t dmax, const char * restrict src, rsize_
     return RCNEGATE(ESNOSPC);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strncpy_s);
+EXPORT_SYMBOL(_strncpy_s_chk);
 #endif /* __KERNEL__ */
 
 #endif /* TEST_MSVCRT */

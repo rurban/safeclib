@@ -38,8 +38,9 @@
 #endif
 
 /**
+ * @def strncpyfld_s(dest,dmax,src,slen)
  * @brief
- *    The \c strcpyfld_s function copies \c slen characters from the character
+ *    The \b strcpyfld_s function copies \c slen characters from the character
  *    array pointed to by \c src into the character array pointed to by \c dest.
  *    The copy operation does not stop on the null character as the
  *    function copies \c slen characters.
@@ -74,7 +75,7 @@
  *
  */
 EXPORT errno_t
-strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
+_strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen, size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -84,37 +85,16 @@ strcpyfld_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
         /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcpyfld_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strcpyfld_s")
+    CHK_DEST_OVR("strcpyfld_s", RSIZE_MAX_STR)
+    CHK_DMAX_ZERO("strcpyfld_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcpyfld_s", RSIZE_MAX_STR)
+    } else {
+        CHK_DEST_OVR("strcpyfld_s", destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcpyfld_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcpyfld_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
-    if (unlikely(src == NULL)) {
-        handle_error(dest, dmax, "strcpyfld_s: src is null",
-                     ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(slen > dmax)) {
-        handle_error(dest, dmax, "strcpyfld_s: src exceeds max",
-                     ESNOSPC);
-        return (ESNOSPC);
-    }
-
+    CHK_SRC_NULL_CLEAR("strcpyfld_s", src)
+    CHK_SLEN_MAX_NOSPC_CLEAR("strcpyfld_s", slen, RSIZE_MAX_STR)
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;

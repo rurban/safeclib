@@ -45,6 +45,7 @@
    check */
 
 /**
+ * @def strcpy_s(dest,dmax,src)
  * @brief
  *    The strcpy_s function copies the string pointed to by src
  *    (including the terminating null character) into the array
@@ -53,6 +54,8 @@
  *    terminating null character (if any) written by strcpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
  *    strcpy_s returns.
+ *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -79,13 +82,15 @@
  *       copies the result, when dest<src ERANGE is returned.
  *
  * @return  If there is a runtime-constraint violation, then if dest
- *          is not a null pointer and destmax is greater than zero and
- *          not greater than RSIZE_MAX_STR, then strcpy_s nulls dest.
+ *          is not a null pointer and dmax is greater than zero and
+ *          not greater than RSIZE_MAX_STR or sizeof(dest),
+ *          then strcpy_s nulls dest.
  * @retval  EOK        when successful operation, the characters in src were
  *                     copied into dest and the result is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or sizeof(dest)
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
  *
@@ -94,7 +99,7 @@
  *
  */
 EXPORT errno_t
-strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
+_strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src, size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -103,7 +108,11 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
     CHK_DEST_NULL("strcpy_s")
     CHK_DEST_OVR("strcpy_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strcpy_s")
-    CHK_DMAX_MAX("strcpy_s", RSIZE_MAX_STR)
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcpy_s", RSIZE_MAX_STR)
+    } else {
+        CHK_DEST_OVR("strcpy_s", destbos)
+    }
     CHK_SRC_NULL_CLEAR("strcpy_s", src)
 
     if (unlikely(dest == src)) {
@@ -183,7 +192,7 @@ strcpy_s (char * restrict dest, rsize_t dmax, const char * restrict src)
     return RCNEGATE(ESNOSPC);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strcpy_s);
+EXPORT_SYMBOL(_strcpy_s_chk);
 #endif /* __KERNEL__ */
 
 #endif

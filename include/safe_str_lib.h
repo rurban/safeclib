@@ -100,32 +100,39 @@ set_str_constraint_handler_s(constraint_handler_t handler);
 
 /* string concatenate */
 EXTERN errno_t
-_strcat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t destbos)
+_strcat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
+              size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 #define strcat_s(dest,dmax,src) _strcat_s_chk(dest,dmax,src,BOS(dest))
 
 /* string copy */
 EXTERN errno_t
-strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src)
+_strcpy_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
+              size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
+#define strcpy_s(dest,dmax,src) _strcpy_s_chk(dest,dmax,src,BOS(dest))
 
 /* fitted string concatenate */
 EXTERN errno_t
-strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen)
+_strncat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen,
+               size_t destbos)
     BOS_ATTR((slen || dest || dmax) && ( _BOS_NULL(dest) || _BOS_ZERO(dest,dmax)), "empty dest or dmax")
     BOS_ATTR((slen || dest || dmax) && _BOS_OVR(dest,dmax), "dest overflow")
     BOS_OVR2_BUTZERO(src, slen);
+#define strncat_s(dest,dmax,src,slen) _strncat_s_chk(dest,dmax,src,slen,BOS(dest))
 
 /* fitted string copy */
 EXTERN errno_t
-strncpy_s(char * restrict dest, rsize_t dmax,
-          const char * restrict src, rsize_t slen)
+_strncpy_s_chk(char * restrict dest, rsize_t dmax,
+               const char * restrict src, rsize_t slen,
+               size_t destbos)
     BOS_CHK(dest) BOS_OVR2_BUTZERO(src, slen);
+#define strncpy_s(dest,dmax,src,slen) _strncpy_s_chk(dest,dmax,src,slen,BOS(dest))
 
 /* string length */
 EXTERN rsize_t
-strnlen_s (const char*s, rsize_t smax)
-    BOS_CHK2(s, smax);
+strnlen_s (const char* str, rsize_t smax)
+    BOS_CHK2(str, smax);
 
 /* string tokenizer */
 #if !(defined(_WIN32) && defined(HAVE_STRTOK_S))
@@ -264,9 +271,10 @@ strcmpfld_s(const char *dest, rsize_t dmax,
 
 /* fixed char array copy */
 EXTERN errno_t
-strcpyfld_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
+_strcpyfld_s_chk(char *dest, rsize_t dmax, const char *src, rsize_t slen, size_t destbos)
     BOS_CHK_BUTZERO(dest,slen) BOS_OVR2_BUTZERO(src,slen)
     VAL_OVR2(slen, dmax);
+#define strcpyfld_s(dest,dmax,src,slen) _strcpyfld_s_chk(dest,dmax,src,slen,BOS(dest))
 
 /* copy from a null terminated string to fixed char array */
 EXTERN errno_t

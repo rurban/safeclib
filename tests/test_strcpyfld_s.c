@@ -12,7 +12,7 @@
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
-int main()
+int test_strcpyfld_s(void)
 {
     errno_t rc;
     uint32_t i;
@@ -25,13 +25,15 @@ int main()
     int errs = 0;
 
 /*--------------------------------------------------*/
+    strcpy(str1, "aaaaa");
+    strcpy(str2, "bbb");
+    len = 5;
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("dest overflow or empty")
     rc = strcpyfld_s(NULL, LEN, str2, LEN);
     ERR(ESNULLP);
 
-    strcpy(str1, "aaaaa");
     EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = strcpyfld_s(str1, 0, str2, 5);
     ERR(ESZEROL); /* and untouched */
@@ -39,30 +41,37 @@ int main()
 
     EXPECT_BOS("dest overflow or empty")
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, 5);
-    ERR(ESLEMAX);  /* and untouched */
-    EXPSTR(str1, "aaaaa");
+    ERR(ESLEMAX);  /* and cleared */
+    EXPSTR(str1, "");
+    CHECK_SLACK(str1, 5);
 
+    strcpy(str1, "aaaaa");
     slen = len+1; /* ESLEMAX over ESNOSPC */
     EXPECT_BOS("dest overflow or empty")
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR+1), str2, 6);
-    ERR(ESLEMAX);  /* and untouched */
-    EXPSTR(str1, "aaaaa");
+    ERR(ESLEMAX);  /* and cleared */
+    EXPSTR(str1, "");
+    CHECK_SLACK(str1, 5);
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     EXPECT_BOS("src overflow or empty")
     rc = strcpyfld_s(str1, 5, NULL, 5);
     ERR(ESNULLP); /* and cleared */
-    CHECK_SLACK(str1, len);
+    CHECK_SLACK(str1, 5);
 
+    strcpy(str1, "aaaaa");
     EXPECT_BOS("slen overflow >dmax")
     rc = strcpyfld_s(str1, LEN-1, str2, LEN);
     ERR(ESNOSPC); /* and cleared */
-    CHECK_SLACK(str1, LEN-1);
+    CHECK_SLACK(str1, 5);
 #endif
 
 /*--------------------------------------------------*/
 
+    strcpy(str1, "aaaaa");
+    strcpy(str2, "bbb");
     len = 5;
+
     rc = strcpyfld_s(str1, len-1, str2, len);
     ERR(ESNOSPC); /* and cleared */
     CHECK_SLACK(str1, len-1);
@@ -215,4 +224,9 @@ int main()
 /*--------------------------------------------------*/
 
     return (errs);
+}
+
+int main (void)
+{
+    return (test_strcpyfld_s());
 }

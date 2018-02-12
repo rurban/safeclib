@@ -117,8 +117,6 @@ _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src, size
         CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
     } else {
         CHK_DEST_OVR("strcat_s", destbos)
-        if (dmax > destbos)
-            dmax = destbos;
     }
     CHK_SRC_NULL_CLEAR("strcat_s", src)
 
@@ -233,7 +231,7 @@ _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src, size
 }
 
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strcat_s);
+EXPORT_SYMBOL(_strcat_s_chk);
 #endif /* __KERNEL__ */
 
 #endif
