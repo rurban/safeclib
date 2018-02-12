@@ -64,6 +64,7 @@ int test_strcat_s (void)
 
 # ifndef HAVE_ASAN /* With asan no BOS */
     strcpy(str1, "ab");
+    printf("** bos(str1) %ld [%s:%u]\n", BOS(str1), __FUNCTION__, __LINE__);
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strcat_s(str1, LEN+1, str2);

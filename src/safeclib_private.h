@@ -214,6 +214,20 @@ void abort(void) __attribute__((noreturn));
 #  define GCC_DIAG_RESTORE
 #endif
 
+#ifdef DEBUG
+#  if defined(HAVE_C99) && defined(__KERNEL__)
+#    define debug_printf(...)  printk(KERN_DEBUG __VA_ARGS__)
+#  else
+#    define debug_printf printf
+#  endif
+#else
+# ifdef HAVE_C99
+#   define debug_printf(...)
+# else
+#   define debug_printf printf
+# endif
+#endif
+
 #define CHK_DEST_NULL(func)                                             \
     if (unlikely(dest == NULL)) {                                       \
         invoke_safe_str_constraint_handler(func ": dest is null", dest, ESNULLP); \

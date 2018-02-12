@@ -108,8 +108,7 @@ strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
     const char *overlap_bumper;
 
     CHK_DEST_NULL("strcat_s")
-    /* for known dest size, we should have already errored at compile-time before.
-       anyway, for known dest size check overflows in detail. */
+    printf("** bos(dest) %ld [%s:%u]\n", BOS(dest), __FUNCTION__, __LINE__);
     CHK_DEST_OVR("strcat_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strcat_s")
     CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
