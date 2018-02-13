@@ -32,7 +32,7 @@ EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
 #define TESTPL  "test-norm.pl"
 
-int main()
+int test_wcsnorm_s(void)
 {
     errno_t rc;
     wchar_t str[LEN];
@@ -490,4 +490,9 @@ int main()
 /*--------------------------------------------------*/
 
     return (errs);
+}
+
+int main (void)
+{
+    return test_wcsnorm_s();
 }

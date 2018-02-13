@@ -27,7 +27,7 @@
 #endif
 #define TESTPL  "test-fc.pl"
 
-int main()
+int test_wcsfc_s(void)
 {
     errno_t rc;
     wchar_t str[LEN];
@@ -437,4 +437,9 @@ int main()
 /*--------------------------------------------------*/
 
     return (errs);
+}
+
+int main (void)
+{
+    return test_wcsfc_s();
 }
