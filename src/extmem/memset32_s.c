@@ -38,8 +38,10 @@
 #endif
 
 /**
+ * @def memset32_s(dest,dmax,value,n)
  * @brief
- *    Sets len uint32_t starting at dest to the specified value.
+ *    Sets n uint32_t values starting at dest to the specified value,
+ *    but maximal dmax bytes.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -53,7 +55,7 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM.
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
  * @pre  n shall not be greater than RSIZE_MAX_MEM32.
  * @pre  dmax*4 may not be smaller than n.
  *
@@ -63,7 +65,7 @@
  *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest is NULL POINTER
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
  * @retval  ESLEMAX     when n > RSIZE_MAX_MEM32
  * @retval  ESNOSPC     when dmax/4 < n
  *
@@ -72,7 +74,8 @@
  *
  */
 EXPORT errno_t
-memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
+_memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
+                const size_t destbos)
 {
     errno_t err;
 
@@ -82,29 +85,39 @@ memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
         return (RCNEGATE(ESNULLP));
     }
 
-    if (unlikely(n == 0)) {
-        /* Since C11 n=0 is allowed */
+    if (unlikely(n == 0)) { /* Since C11 n=0 is allowed */
         return EOK;
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memset32_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memset32_s: dmax exceeds max",
+                                               dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memset16_s: dmax exceeds dest",
+                                               dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memset32_s", dest, dmax, destbos);
+# ifdef HAVE_ERROR_DMAX
+            return (RCNEGATE(ESLEWRNG));
+# endif
+        }
+#endif
+        dmax = destbos;
     }
 
     err = EOK;
-    if (unlikely(n > RSIZE_MAX_MEM32)) {
-        invoke_safe_mem_constraint_handler("memset32_s: n exceeds max",
-                   NULL, ESLEMAX);
-        err = ESLEMAX;
-        n = dmax/4;
-    }
 
     if (unlikely(n > dmax/4)) {
+        err = n > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
         invoke_safe_mem_constraint_handler("memset32_s: n exceeds dmax/4",
-                   NULL, ESNOSPC);
-        err = ESNOSPC;
+                   dest, err);
         n = dmax/4;
     }
 

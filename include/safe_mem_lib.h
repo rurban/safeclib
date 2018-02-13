@@ -95,17 +95,21 @@ _memset_s_chk(void *dest, rsize_t dmax, int value, rsize_t n, const size_t destb
 
 /* set uint16_t */
 EXTERN errno_t
-memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
+_memset16_s_chk(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n,
+                const size_t destbos)
     BOS_NULL(dest)
     BOS_CHK_BUTZERO(dest, n)
     BOS_ATTR(n && (_BOS_OVR(dest, n*2)||dmax>n*2), "dest overflow >n*2");
+#define memset16_s(dest,dmax,value,n) _memset16_s_chk(dest,dmax,value,n,BOS(dest))
 
 /* set uint32_t */
 EXTERN errno_t
-memset32_s(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n)
+_memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
+                const size_t destbos)
     BOS_NULL(dest)
     BOS_CHK_BUTZERO(dest, n)
     BOS_ATTR(n && (_BOS_OVR(dest, n*4)||dmax>n*4), "dest overflow >n*4");
+#define memset32_s(dest,dmax,value,n) _memset32_s_chk(dest,dmax,value,n,BOS(dest))
 
 /* compare memory */
 EXTERN errno_t
