@@ -111,7 +111,8 @@ EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
 #endif
 
 int
-handle_str_bos_overload(const char *restrict msg, char *restrict dest, rsize_t dmax)
+handle_str_bos_overload(const char *restrict msg, char *restrict dest,
+                        const rsize_t dmax)
 {
     size_t len = strlen(dest); /* clear the min of strlen and dmax(=destbos) */
     if (len > dmax)

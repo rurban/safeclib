@@ -52,19 +52,19 @@ invoke_safe_str_constraint_handler(const char *restrict msg, void *restrict ptr,
  * partial copy.
  */
 static inline void
-handle_error(char *orig_dest, rsize_t orig_dmax,
-             const char *err_msg, errno_t err_code)
+handle_error(char *restrict dest, const rsize_t dmax,
+             const char *restrict err_msg, errno_t err_code)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
-    memset(orig_dest, 0, orig_dmax);
-    /*while (orig_dmax) { *orig_dest = '\0'; orig_dmax--; orig_dest++; }*/
+    memset((void*)dest, 0, dmax);
+    /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #else
-    (void)orig_dmax;
-    *orig_dest = '\0';
+    (void)dmax;
+    *dest = '\0';
 #endif
 
-    invoke_safe_str_constraint_handler(err_msg, NULL, err_code);
+    invoke_safe_str_constraint_handler(err_msg, (void*)dest, err_code);
     return;
 }
 
@@ -75,19 +75,19 @@ handle_error(char *orig_dest, rsize_t orig_dmax,
  * partial copy.
  */
 static inline void
-handle_werror(wchar_t *orig_dest, rsize_t orig_dmax,
+handle_werror(wchar_t *restrict dest, const rsize_t dmax,
               const char *err_msg, errno_t err_code)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
-    memset(orig_dest, 0, orig_dmax*sizeof(wchar_t));
-    /*while (orig_dmax) { *orig_dest = '\0'; orig_dmax--; orig_dest++; }*/
+    memset((void*)dest, 0, dmax*sizeof(wchar_t));
+    /*while (dmax) { *dest = '\0'; dmax--; dest++; }*/
 #else
-    (void)orig_dmax;
-    *orig_dest = '\0';
+    (void)dmax;
+    *dest = L'\0';
 #endif
 
-    invoke_safe_str_constraint_handler(err_msg, NULL, err_code);
+    invoke_safe_str_constraint_handler(err_msg, (void*)dest, err_code);
     return;
 }
 #endif
@@ -97,7 +97,8 @@ handle_werror(wchar_t *orig_dest, rsize_t orig_dmax,
  * and dmax sizes.
  */
 int
-handle_str_bos_overload(const char *restrict msg, char *restrict dest, rsize_t dmax);
+handle_str_bos_overload(const char *restrict msg, char *restrict dest,
+                        const rsize_t dmax);
 
 /*
  * Safe C Lib internal string handler to handle deviating compile-time known dest

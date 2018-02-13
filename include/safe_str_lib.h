@@ -101,21 +101,21 @@ set_str_constraint_handler_s(constraint_handler_t handler);
 /* string concatenate */
 EXTERN errno_t
 _strcat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
-              size_t destbos)
+              const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 #define strcat_s(dest,dmax,src) _strcat_s_chk(dest,dmax,src,BOS(dest))
 
 /* string copy */
 EXTERN errno_t
 _strcpy_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
-              size_t destbos)
+              const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 #define strcpy_s(dest,dmax,src) _strcpy_s_chk(dest,dmax,src,BOS(dest))
 
 /* fitted string concatenate */
 EXTERN errno_t
 _strncat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen,
-               size_t destbos)
+               const size_t destbos)
     BOS_ATTR((slen || dest || dmax) && ( _BOS_NULL(dest) || _BOS_ZERO(dest,dmax)), "empty dest or dmax")
     BOS_ATTR((slen || dest || dmax) && _BOS_OVR(dest,dmax), "dest overflow")
     BOS_OVR2_BUTZERO(src, slen);
@@ -125,7 +125,7 @@ _strncat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src, rs
 EXTERN errno_t
 _strncpy_s_chk(char * restrict dest, rsize_t dmax,
                const char * restrict src, rsize_t slen,
-               size_t destbos)
+               const size_t destbos)
     BOS_CHK(dest) BOS_OVR2_BUTZERO(src, slen);
 #define strncpy_s(dest,dmax,src,slen) _strncpy_s_chk(dest,dmax,src,slen,BOS(dest))
 
@@ -153,7 +153,7 @@ strtok_s(char *restrict s1, rsize_t *restrict s1max,
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 #ifdef HAVE_C99
 EXTERN int
-_sprintf_s_chk(const char *restrict dest, const rsize_t dmax, const size_t destbos,
+_sprintf_s_chk(char *restrict dest, const rsize_t dmax, const size_t destbos,
                const char *restrict fmt, ...)
     BOS_CHK(dest) BOS_FMT(fmt);
 #define sprintf_s(dest,dmax,...) _sprintf_s_chk(dest,dmax,BOS(dest),__VA_ARGS__)
@@ -282,7 +282,8 @@ strcmpfld_s(const char *dest, rsize_t dmax,
 
 /* fixed char array copy */
 EXTERN errno_t
-_strcpyfld_s_chk(char *dest, rsize_t dmax, const char *src, rsize_t slen, size_t destbos)
+_strcpyfld_s_chk(char *dest, const rsize_t dmax, const char *src, rsize_t slen,
+                 const size_t destbos)
     BOS_CHK_BUTZERO(dest,slen) BOS_OVR2_BUTZERO(src,slen)
     VAL_OVR2(slen, dmax);
 #define strcpyfld_s(dest,dmax,src,slen) _strcpyfld_s_chk(dest,dmax,src,slen,BOS(dest))

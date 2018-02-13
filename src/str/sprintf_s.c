@@ -99,7 +99,7 @@
 
 #ifdef HAVE_C99    
 EXPORT int
-_sprintf_s_chk(const char * restrict dest, const rsize_t dmax,
+_sprintf_s_chk(char * restrict dest, const rsize_t dmax,
                const size_t destbos,
                const char * restrict fmt, ...)
 #else
@@ -172,7 +172,7 @@ sprintf_s     (char * restrict dest, rsize_t dmax,
     /* glibc allows %n from readonly strings, freebsd/darwin ignores flag. */
     /*ret = __vsnprintf_chk(dest, (size_t)dmax, 2, (size_t)dmax, fmt, ap);*/
 #else
-    ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
+    ret = vsnprintf((char*)dest, (size_t)dmax, fmt, ap);
 #endif
     /* GCC_DIAG_RESTORE */
     va_end(ap);
