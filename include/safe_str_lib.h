@@ -158,8 +158,11 @@ _sprintf_s_chk(char *restrict dest, rsize_t dmax, size_t destbos,
 #define sprintf_s(dest,dmax,...) _sprintf_s_chk(dest,dmax,BOS(dest),__VA_ARGS__)
 
 EXTERN int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
+_vsprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
+                const char *restrict fmt, va_list ap)
     BOS_CHK(dest) BOS_FMT(fmt);
+#define vsprintf_s(dest,dmax,fmt,ap) _vsprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
+
 
 /* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
    Rather use the 2 non-truncating (without 'n') functions above. */

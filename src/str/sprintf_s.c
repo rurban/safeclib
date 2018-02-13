@@ -44,7 +44,7 @@
 /**
  * @def sprintf_s(dest,dmax,fmt,...)
  * @brief
- *    The \c sprintf_s function composes a string with the same content that
+ *    The \b sprintf_s function composes a string with the same content that
  *    would be printed if format was used on printf. Instead of being
  *    printed, the content is stored in dest.
  *
@@ -59,7 +59,7 @@
  * @param[in]  ...   optional arguments
  *
  * @pre Neither dest nor fmt shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR or the sizeof(dest).
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than strnlen_s(dest, dmax).
  * @pre fmt  shall not contain the conversion specifier %n.
@@ -83,11 +83,15 @@
  *         -ESNOSPC when return value exceeds dmax
  *         -EINVAL  when \c fmt contains \c %n
  *
+ * @retval -1  if an encoding error or a runtime constraint violation in the
+ *             libc function \c vsnprintf occured.
+ *
  * @note The C11 standard was most likely wrong with changing the return value 0 on
  *       errors. All other functions and existing C11 implementations do
- *       return -1, so do we.
+ *       return -1, so we return negative error codes.
  *       See the http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf revision
  *       for their rationale.
+ *       sprintf_s does not set \c errno.
  *
  * @see
  *    vsprintf_s(), snprintf_s()

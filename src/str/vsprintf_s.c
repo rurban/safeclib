@@ -40,8 +40,9 @@
 #else
 
 /**
+ * @def vsprintf_s(dest,dmax,fmt,va_args)
  * @brief
- *    The \c vsprintf_s function composes a string with the same content that
+ *    The \b vsprintf_s function composes a string with the same content that
  *    would be printed if format was used on \c printf. Instead of being
  *    printed, the content is stored in dest.
  *
@@ -56,7 +57,7 @@
  * @param[in]   ap    optional arguments
  *
  * @pre Neither dest nor fmt shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR or the sizeof(dest).
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than strnlen_s(dest, dmax).
  * @pre fmt  shall not contain the conversion specifier %n
@@ -75,57 +76,63 @@
  *          vsprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
- * errno:   ESNULLP when \c dest/fmt is NULL pointer
- *          ESZEROL when \c dmax = 0
- *          ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- *          ESNOSPC when return value exceeds dmax
- *          EINVAL  when \c fmt contains \c %n
+ * @retval  -ESNULLP when \c dest/fmt is NULL pointer
+ *          -ESZEROL when \c dmax = 0
+ *          -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ *          -ESNOSPC when return value exceeds dmax
+ *          -EINVAL  when \c fmt contains \c %n
  *
- * @retval -1  if an encoding error or a runtime constraint violation occured.
+ * @retval -1  if an encoding error or a runtime constraint violation in the
+ *             libc function \c vsnprintf occured.
  *
  * @note The C11 standard was most likely wrong with changing the return value 0 on
  *       errors. All other functions and existing C11 implementations do
- *       return -1, so do we.
+ *       return -1, so we return negative error codes.
  *       See the http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf revision
  *       for their rationale.
+ *       vsprintf_s does not set \c errno.
  *
  * @see
  *    sprintf_s(), vsnprintf_s()
  */
 
 EXPORT int
-vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
+_vsprintf_s_chk(char *restrict dest, const rsize_t dmax, const size_t destbos,
+                const char *restrict fmt, va_list ap)
 {
 
     int ret = -1;
     const char *p;
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        errno = ESLEMAX;
-        return -1;
-    }
-
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dest is null",
                    NULL, ESNULLP);
-        errno = ESNULLP;
-        return -1;
+        return -ESNULLP;
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: fmt is null",
                    NULL, ESNULLP);
-        errno = ESNULLP;
-        return -1;
+        return -ESNULLP;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
                    NULL, ESZEROL);
-        errno = ESZEROL;
-        return -1;
+        return -ESZEROL;
+    }
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
+                                               NULL, ESLEMAX);
+            return -ESLEMAX;
+        }
+    } else {
+        if (unlikely(dmax > destbos)) {
+            return -(handle_str_bos_overload("vsprintf_s: dmax exceeds dest",
+                                             dest, destbos));
+        }
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
@@ -133,15 +140,16 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("vsprintf_s: illegal %n",
                                                NULL, EINVAL);
-            errno = EINVAL;
-            return -1;
+            return -1; /* EINVAL */
         }
     }
 
-    errno = 0;
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
     /* to detect illegal format specifiers */
     ret = vsnprintf_s(dest, (size_t)dmax, (size_t)dmax, fmt, ap);
+/*#elif defined(HAVE___VSNPRINTF_CHK) */
+    /* glibc allows %n from readonly strings, freebsd/darwin ignores flag. */
+    /*ret = __vsnprintf_chk(dest, (size_t)dmax, 2, (size_t)dmax, fmt, ap);*/
 #else
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 #endif
@@ -153,8 +161,11 @@ vsprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list 
         ) {
         handle_error(dest, dmax, "vsprintf_s: len exceeds dmax",
                      ESNOSPC);
-        errno = ESNOSPC;
-        return -1; /* different to the standard, but like all other implementations */
+#ifdef __MINGW32__
+        errno = 0;
+#endif
+        return -ESNOSPC; /* different to the standard (=0),
+                            but like all other implementations */
     }
 
     if (unlikely(ret < 0)) {

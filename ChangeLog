@@ -16,6 +16,7 @@ Changes in v??022018 3.3.0
           where all errors simply returned 0. Later Microsoft and all others
           changed the error return value back to -1, to be consistent with other
           sprintf functions. So do we. (GH #45)
+        - Removed errno of sprintf_s/vsprintf_s, return the negative ES error code.
         - sprintf_s/vsprintf_s on Windows use now the native vsnprintf_s function
           to reject illegal format specifiers.
         - More hardening with gcc-7.3/clang-7: Probe for -Wl,-z,textonly and

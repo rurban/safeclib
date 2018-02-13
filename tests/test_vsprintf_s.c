@@ -22,7 +22,9 @@
 static char   str1[LEN];
 static char   str2[LEN];
 
-int vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...) {
+static inline int
+vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
+{
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -53,9 +55,9 @@ int test_vsprintf_s (void)
     /* wine msvcrt doesn't check fmt==NULL */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S))
     rc = vtprintf_s(str1, LEN, NULL);
-    init_msvcrt(errno == ESNULLP, &use_msvcrt);
-    ERR(-1);
-    ERRNO_MSVC(ESNULLP, EINVAL);
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    ERR_MSVC(-ESNULLP, -1);
+    ERRNO_MSVC(0, EINVAL);
 #else
     use_msvcrt = 1;
 #endif    
@@ -64,14 +66,14 @@ int test_vsprintf_s (void)
        strerror(errno)); */
 
     rc = vtprintf_s(NULL, LEN, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNULLP, EINVAL);
+    ERR_MSVC(-ESNULLP, -1);
+    ERRNO_MSVC(0, EINVAL);
 
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESZEROL, EINVAL);
+    ERR_MSVC(-ESZEROL, -1);
+    ERRNO_MSVC(0, EINVAL);
     /* Unknown error: 401 */
     /* debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */
@@ -79,12 +81,8 @@ int test_vsprintf_s (void)
 /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    if (!use_msvcrt) {
-        ERR(-1);
-    } else {
-        ERR(0);
-    }
-    ERRNO_MSVC(ESLEMAX, 0);
+    ERR_MSVC(-ESLEMAX, 0);
+    ERRNO(0);
 
 /*--------------------------------------------------*/
 
@@ -92,8 +90,8 @@ int test_vsprintf_s (void)
     /* wine msvcrt doesn't check %n neither */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S))
     rc = vtprintf_s(str1, LEN, "%s %n", str2);
-    ERR(-1);;
-    ERRNO(EINVAL);
+    ERR(-1);
+    ERRNO_MSVC(0, EINVAL);
 #endif
 
     rc = vtprintf_s(str1, LEN, "%s %%n", str2);
@@ -108,8 +106,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -118,8 +116,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -147,8 +145,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -157,8 +155,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -203,8 +201,8 @@ int test_vsprintf_s (void)
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 12, "%s", str2);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
 
 /*--------------------------------------------------*/
 
@@ -220,8 +218,8 @@ int test_vsprintf_s (void)
     strcpy(str1, "12345678901234567890");
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
-    ERR(-1);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
 /*--------------------------------------------------*/
