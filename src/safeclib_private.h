@@ -330,7 +330,7 @@ void abort(void) __attribute__((noreturn));
 #define CHK_SLEN_MAX_NOSPC_CLEAR(func, slen, max)                       \
     if (unlikely(slen > dmax)) {                                        \
         errno_t error = slen > max ? ESLEMAX : ESNOSPC;                 \
-        handle_error(dest, strnlen_s(dest, dmax),                       \
+        handle_error(dest, _BOS_KNOWN(dest)?BOS(dest):strnlen_s(dest, dmax), \
                      func ": " _XSTR(slen) " exceeds max", error);      \
         return RCNEGATE(error);                                         \
     }

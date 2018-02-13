@@ -43,6 +43,7 @@
 #else
 
 /**
+ * @def memset_s(dest,dmax,value,n)
  * @brief
  *    Sets the first n bytes starting at dest to the specified value,
  *    but maximal dmax bytes.
@@ -61,7 +62,7 @@
  * @param[in]   n      number of bytes to be set
  *
  * @pre  dest shall not be a null pointer.
- * @pre  dmax and n shall not be greater than RSIZE_MAX_MEM.
+ * @pre  dmax and n shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
  * @pre  value shall not be greater than 255.
  * @pre  dmax may not be smaller than n.
  *
@@ -72,12 +73,13 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
- *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
+ *          pointer, and if dmax is not too large, then, before
  *          reporting the runtime-constraints violation, memset_s() copies
  *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest is NULL pointer
- * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or value > 255
+ * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or > sizeof(dest) or value > 255
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < n
  *
  * @see
@@ -85,7 +87,8 @@
  */
 
 EXPORT errno_t
-memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
+_memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
+               const size_t destbos)
 {
     errno_t err;
 
@@ -99,30 +102,41 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
         return EOK;
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memset_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memset_s: dmax exceeds max",
+                                               dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memset_s: dmax exceeds dest",
+                                               dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memset_s", dest, dmax, destbos);
+# ifdef HAVE_ERROR_DMAX
+            return (RCNEGATE(ESLEWRNG));
+# endif
+        }
+#endif
+        dmax = destbos;
     }
 
     if (unlikely(value > 255)) {
         invoke_safe_mem_constraint_handler("memset_s: value exceeds max",
-                   NULL, ESLEMAX);
+                   dest, ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
     err = EOK;
-    if (unlikely(n > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memset_s: n exceeds max",
-                   NULL, ESLEMAX);
-        err = ESLEMAX;
-        n = dmax;
-    }
 
     if (unlikely(n > dmax)) {
+        err = n > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
         invoke_safe_mem_constraint_handler("memset_s: n exceeds dmax",
-                   NULL, ESNOSPC);
-        err = ESNOSPC;
+                                           dest, err);
         n = dmax;
     }
 
@@ -131,7 +145,7 @@ memset_s (void *dest, rsize_t dmax, int value, rsize_t n)
     return (RCNEGATE(err));
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(memset_s);
+EXPORT_SYMBOL(_memset_s_chk);
 #endif
 
 #endif /* TEST_MSVCRT */

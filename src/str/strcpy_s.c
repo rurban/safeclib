@@ -70,7 +70,7 @@
  * @param[in]   src   pointer to the string that will be copied to dest
  *
  * @pre Neither dest nor src shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR or sizeof(dest).
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than strnlen_s(src, dmax).
  * @pre Copying shall not take place between objects that overlap.
@@ -99,7 +99,8 @@
  *
  */
 EXPORT errno_t
-_strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src, size_t destbos)
+_strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
+               const size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;

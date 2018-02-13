@@ -82,13 +82,14 @@ memmove_s(void *dest, rsize_t  dmax,
 
 /* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 apple/freebsd string.h compatible */
 #if !defined(HAVE_MEMSET_S) || !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))
+#define memset_s(dest,dmax,value,n) _memset_s_chk(dest,dmax,value,n,BOS(dest))
+#endif
 EXTERN errno_t
-memset_s(void *dest, rsize_t dmax, int value, rsize_t n)
+_memset_s_chk(void *dest, rsize_t dmax, int value, rsize_t n, const size_t destbos)
     BOS_NULL(dest)
     BOS_CHK_BUTZERO(dest, n)
-    BOS_ATTR(n && (_BOS_OVR(dest, n)||dmax>n), "dest overflow >n")
+    BOS_ATTR(n && (_BOS_OVR(dest, n)||dmax>n), "n overflow >dest")
     VAL_OVR2(value, 255);
-#endif
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

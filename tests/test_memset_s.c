@@ -65,7 +65,7 @@ int test_memset_s (void)
     rc = memset_s(NULL, LEN, value, 0);
     ERR_MSVC(ESNULLP, EINVAL);
 
-    EXPECT_BOS("value overflow >256")
+    EXPECT_BOS("value overflow >255")
     rc = memset_s(mem1, LEN, 256, LEN); /* This should be caught at compile-time */
     ERR_MSVC(ESLEMAX, 0); /* no native overflow check on darwin! */
     if (use_msvcrt)
@@ -79,15 +79,17 @@ int test_memset_s (void)
         EXPMEM(mem1, 0, LEN, value, 1);
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("n overflow >dmax")
-    rc = memset_s(mem1, LEN, value, MAX+1); /* This should be caught at compile-time! */
+    EXPECT_BOS("n overflow >dest")
+    rc = memset_s(mem1, LEN, value, MAX+1);
     ERR_MSVC(ESLEMAX, EOVERFLOW); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 1);
 
-    EXPECT_BOS("n overflow >dmax")
-    rc = memset_s(mem1, LEN, value, LEN+1); /* This should be caught at compile-time! */
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("n overflow >dest")
+    rc = memset_s(mem1, LEN, value, LEN+1);
     ERR_MSVC(ESNOSPC, EOVERFLOW); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 1);
+# endif
 #endif
 
 /*--------------------------------------------------*/

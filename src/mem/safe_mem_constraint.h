@@ -55,4 +55,9 @@ handle_mem_error(void *restrict dest, rsize_t dmax,
     invoke_safe_mem_constraint_handler(err_msg, dest, err_code);
     return;
 }
+
+void
+handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
+                        const rsize_t dmax, const size_t destbos);
+
 #endif /* __SAFE_MEM_CONSTRAINT_H__ */
