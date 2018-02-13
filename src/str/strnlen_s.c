@@ -36,29 +36,30 @@
 #endif
 
 /**
+ * @def strnlen_s(str,smax)
  * @brief
- *    The strnlen_s function computes the length of the string pointed
- *    to by dest.
+ *    The \b strnlen_s function computes the length of the string pointed
+ *    to by \c str, refusing to read past smax.
  *
  * @remark SPECIFIED IN
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param  dest  pointer to string
- * @param  dmax  maximum length of string
+ * @param  str  pointer to string
+ * @param  smax maximum length of string
  *
- * @pre  dest shall not be a null pointer.
- * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  str  shall not be a null pointer.
+ * @pre  smax shall not equal zero.
+ * @pre  smax shall not be greater than RSIZE_MAX_STR nor sizeof(str).
  *
- * @return   The function returns the string length, excluding  the terminating
- *           null character.  If dest is NULL, then strnlen_s returns 0.
- *           Otherwise, the strnlen_s function returns the number of characters
- *           that precede the terminating null character. If there is no null
- *           character in the first dmax characters of dest then strnlen_s returns
- *           dmax. At most the first dmax characters of dest are accessed
- *           by strnlen_s.
+ * @return   The function returns the string length, excluding the terminating
+ *           null character.  If \c str is NULL, then \c strnlen_s returns \c
+ *           0.  Otherwise, the \c strnlen_s function returns the number of
+ *           characters that precede the terminating null character. If there
+ *           is no null character in the first \c smax characters of \c str
+ *           then \c strnlen_s returns smax. At most the first \c smax or \c
+ *           sizeof(str) characters of str are accessed by \c strnlen_s.
  *
  * @see
  *    strnterminate_s()
@@ -66,35 +67,53 @@
  *
  */
 EXPORT rsize_t
-strnlen_s (const char *dest, rsize_t dmax)
+_strnlen_s_chk (const char *str, rsize_t smax, const size_t strbos)
 {
     rsize_t count;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(str == NULL)) {
+        invoke_safe_str_constraint_handler("strnlen_s: str is null",
+                   NULL, ESNULLP);
         return 0;
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strnlen_s: dmax is 0",
-                   NULL, ESZEROL);
+    if (unlikely(smax == 0)) {
+        invoke_safe_str_constraint_handler("strnlen_s: smax is 0",
+                   (void*)str, ESZEROL);
         return 0;
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strnlen_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return 0;
+    if (strbos == BOS_UNKNOWN) {
+        if (unlikely(smax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("strnlen_s: smax exceeds max",
+                       (void*)str, ESLEMAX);
+            return 0;
+        }
+    } else {
+        if (unlikely(smax != strbos)) {
+            if (unlikely(smax > strbos)) {
+                invoke_safe_str_constraint_handler("strnlen_s: smax exceeds str",
+                           (void*)str, ESLEMAX);
+                return 0;
+            }
+#ifdef HAVE_WARN_DMAX
+            handle_str_src_bos_chk_warn("strnlen_s", (char*)str,
+                                        smax, strbos, "str", "smax");
+# ifdef HAVE_ERROR_DMAX
+            return 0;
+# endif
+#endif
+        }
     }
 
     count = 0;
-    while (*dest && dmax) {
+    while (*str && smax) {
         count++;
-        dmax--;
-        dest++;
+        smax--;
+        str++;
     }
 
     return count;
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strnlen_s);
+EXPORT_SYMBOL(_strnlen_s_chk);
 #endif /* __KERNEL__ */
