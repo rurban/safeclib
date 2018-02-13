@@ -9,6 +9,7 @@ Changes in v??022018 3.3.0
         - Optimized null-slack clearing of dest, unrolling the memset loop with
           small dest buffers.
         - Fixed compilation of the linux kernel module (PR #43, Fabrice Fontaine)
+        - Fixed c++ strictness when !c99 (e.g. g++ 4.3)
         - Changed retval of sprintf_s/vsprintf_s on all errors from 0 to -1,
           deviating from the standard. The original -1 retval was changed with
           http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf by Microsoft

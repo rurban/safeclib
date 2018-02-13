@@ -303,7 +303,8 @@ qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp, void *ctx)
     high = head + size - width;
 
     /* Precompute Leonardo numbers, scaled by element width */
-    for (lp[0]=lp[1]=width, i=2; (lp[i]=lp[i-2]+lp[i-1]+width) < size; i++);
+    for (lp[0]=lp[1]=width, i=2; (lp[i]=lp[i-2]+lp[i-1]+width) < size; i++)
+        ;
 
     while (head < high) {
         if ((p[0] & 3) == 3) {

@@ -118,20 +118,24 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
         return ESLEMAX;
     }
 
-#ifdef __clang
-#pragma clang diagnostic push
-#pragma clang diagnostic warning "-Wdeprecated-declarations"
-#elif defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic warning "-Wdeprecated-declarations"
-#endif
+#if !defined HAVE_C99 && defined HAVE_CXX
+    result = tmpnam(filename_s);
+#else
+# ifdef __clang
+#  pragma clang diagnostic push
+#  pragma clang diagnostic warning "-Wdeprecated-declarations"
+# elif defined(__GNUC__)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic warning "-Wdeprecated-declarations"
+# endif
 
     result = tmpnam(filename_s);
 
-#ifdef __clang
-#pragma clang diagnostic pop
-#elif defined(__GNUC__)
-#pragma GCC diagnostic pop
+# ifdef __clang
+#  pragma clang diagnostic pop
+# elif defined(__GNUC__)
+#  pragma GCC diagnostic pop
+# endif
 #endif
 
     if (result) {

@@ -385,15 +385,17 @@ fi
 AC_SUBST(HAVE_C11)
 
 dnl c++ needs less warnings
-dnl AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
-dnl   [#ifndef __cplusplus
-dnl    #error "no C++"
-dnl    #endif]])],
-dnl   [ax_compiler_cxx=yes;],
-dnl   [ax_compiler_cxx=no;])
-dnl if test "$ax_compiler_cxx" = "yes" ; then
-dnl   AC_DEFINE([HAVE_CXX], [1],
-dnl         [Defined to 1 when the compiler is C++])
+if test -z $ax_compiler_cxx; then
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+    [#ifndef __cplusplus
+     #error "no C++"
+     #endif]])],
+    [ax_compiler_cxx=yes;],
+    [ax_compiler_cxx=no;])
+fi
+if test "$ax_compiler_cxx" = "yes" ; then
+  AC_DEFINE([HAVE_CXX], [1],
+        [Defined to 1 when the compiler is C++])
 dnl   ax_cv_check_cflags__Wnested_externs=no
 dnl   ax_cv_check_cflags__Wmissing_prototypes=no
 dnl   ax_cv_check_cflags__Wstrict_prototypes=no
@@ -401,7 +403,7 @@ dnl   ax_cv_check_cflags__Wimplicit_function_declaration=no
 dnl   ax_cv_check_cflags__Wdeclaration_after_statement=no
 dnl   ax_cv_check_cflags__Wold_style_definition=no
 dnl   ax_cv_check_cflags__Wjump_misses_init=no
-dnl fi
+fi
 
 dnl we still have some empty src files
 ax_cv_check_ldflags___Wl___fatal_warnings=no
@@ -465,6 +467,10 @@ case $host_os in
     WARN_CFLAGS="-Wall -Wextra"
     ;;
 esac
+dnl older non-c99 g++ complain about __VA_ARGS__, for();
+if test "x$ac_cv_prog_cc_c99" = "xno" -a x$ax_compiler_cxx = xyes; then
+    WARN_CFLAGS=`echo $WARN_CFLAGS | sed -e"s,-Werror ,,"`
+fi
 dnl windows mult. decl are not properly sorted out yet
 case $host_os in
   mingw*|cygwin*|msys*)
@@ -486,10 +492,6 @@ if test x$ax_cv_have___builtin_object_size = xyes; then
         [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
     AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wgcc-compat],
         [WARN_CFLAGS="$WARN_CFLAGS -Wno-gcc-compat"],[])
-    if test $ax_compiler_cxx = yes; then
-      AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wvariadic-macros],
-        [WARN_CFLAGS="$WARN_CFLAGS -Wno-error=variadic-macros"],[])
-    fi
     if test $have_user_defined_warnings = yes; then
         AX_APPEND_COMPILE_FLAGS([-Wno-error=user-defined-warnings],
             [WARN_CFLAGS],[$ax_ccf_err])

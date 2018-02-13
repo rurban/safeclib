@@ -97,7 +97,8 @@ wcsnlen_s (const wchar_t *dest, rsize_t dmax)
     if (z) dmax = z - dest;
     return dmax;
 #else
-    for (z = dest; dmax && *dest != 0; dmax--, dest++);
+    for (z = dest; dmax && *dest != 0; dmax--, dest++)
+        ;
     return dmax ? (rsize_t)(dest - z) : orig_dmax;
 #endif
 }
