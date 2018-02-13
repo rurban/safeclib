@@ -151,11 +151,17 @@ strtok_s(char *restrict s1, rsize_t *restrict s1max,
 
 /* safe sprintf_s */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
+#ifdef HAVE_C99
 EXTERN int
-_sprintf_s_chk(char *restrict dest, rsize_t dmax, size_t destbos,
+_sprintf_s_chk(const char *restrict dest, const rsize_t dmax, const size_t destbos,
                const char *restrict fmt, ...)
     BOS_CHK(dest) BOS_FMT(fmt);
 #define sprintf_s(dest,dmax,...) _sprintf_s_chk(dest,dmax,BOS(dest),__VA_ARGS__)
+#else
+EXTERN int
+sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
+    BOS_CHK(dest) BOS_FMT(fmt);
+#endif
 
 EXTERN int
 _vsprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,

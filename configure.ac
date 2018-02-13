@@ -486,6 +486,10 @@ if test x$ax_cv_have___builtin_object_size = xyes; then
         [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
     AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wgcc-compat],
         [WARN_CFLAGS="$WARN_CFLAGS -Wno-gcc-compat"],[])
+    if test $ax_compiler_cxx = yes; then
+      AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wvariadic-macros],
+        [WARN_CFLAGS="$WARN_CFLAGS -Wno-error=variadic-macros"],[])
+    fi
     if test $have_user_defined_warnings = yes; then
         AX_APPEND_COMPILE_FLAGS([-Wno-error=user-defined-warnings],
             [WARN_CFLAGS],[$ax_ccf_err])
