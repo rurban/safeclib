@@ -149,10 +149,12 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax, const void * restrict src,
                    dest, rc);
         return RCNEGATE(rc);
     }
+#ifdef  HAVE___BND_CHK_PTR_BOUNDS
+    __bnd_chk_ptr_bounds(dest, slen);
+    __bnd_chk_ptr_bounds(src, slen);
+#endif
 
-    /*
-     * overlap is undefined behavior, do not allow
-     */
+    /* overlap is disallowed */
     if (unlikely( ((dp > sp) && (dp < (sp+slen))) ||
                   ((sp > dp) && (sp < (dp+dmax))) )) {
         mem_prim_set(dp, dmax, 0);

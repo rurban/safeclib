@@ -706,13 +706,13 @@ builtins_bounds="narrow_ptr_bounds copy_ptr_bounds init_ptr_bounds
 #AX_GCC_BUILTIN(__builtin___bnd_narrow_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_init_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_copy_ptr_bounds)
-AX_GCC_BUILTIN(__builtin___bnd_set_ptr_bounds)
-AX_GCC_BUILTIN(__builtin___bnd_null_ptr_bounds)
-AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_lbounds)
-AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_ubounds)
+#AX_GCC_BUILTIN(__builtin___bnd_set_ptr_bounds)
+#AX_GCC_BUILTIN(__builtin___bnd_null_ptr_bounds)
+#AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_lbounds)
+#AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_ubounds)
 AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
-AX_GCC_BUILTIN(__builtin___bnd_get_ptr_lbound)
-AX_GCC_BUILTIN(__builtin___bnd_get_ptr_ubound)
+#AX_GCC_BUILTIN(__builtin___bnd_get_ptr_lbound)
+#AX_GCC_BUILTIN(__builtin___bnd_get_ptr_ubound)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
@@ -731,6 +731,7 @@ AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
         __printf_chk __sprintf_chk __snprintf_chk __swprintf_chk \
         __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk ])
 #done
+AC_CHECK_FUNCS([__bnd_chk_ptr_bounds])
 dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
 AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \

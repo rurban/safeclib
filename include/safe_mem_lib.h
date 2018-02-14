@@ -71,7 +71,11 @@ EXTERN errno_t
 _memcpy_s_chk(void *restrict dest, rsize_t dmax,
               const void *restrict src, rsize_t slen, const size_t destbos)
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
-    VAL_OVR2_BUTZERO(slen, dmax);
+    VAL_OVR2_BUTZERO(slen, dmax)
+    BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
+             ((dest > src && (char*)dest < (char*)src + slen) ||
+              (src > dest && (char*)src < (char*)dest + dmax)),
+             "dest overlaps with src");
 #define memcpy_s(dest,dmax,src,slen) _memcpy_s_chk(dest,dmax,src,slen,BOS(dest))
 
 /* move memory, including overlapping memory */

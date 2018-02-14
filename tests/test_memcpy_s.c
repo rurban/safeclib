@@ -72,6 +72,79 @@ int test_memcpy_s (void)
     else
         EXPMEM(mem1, 0, LEN, 44, 1);
 # endif
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    EXPECT_BOS("src overflow or empty")
+    rc = memcpy_s(mem1, LEN, NULL, LEN);
+    ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 1);
+
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
+    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
+    EXPMEM(mem1, 0, LEN, 0, 1);
+
+/*--------------------------------------------------*/
+
+    for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
+
+    len = LEN;
+    /* BOS(mem1) == LEN+2 */
+    EXPECT_BOS("slen overflow >dmax")
+    rc = memcpy_s(mem1, LEN, mem2, (LEN+1) );
+    ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
+    EXPMEM(mem1, 0, len+1, 0, 1);
+
+    for (i=0; i<LEN+2; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
+
+    len = LEN/2;
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = memcpy_s(mem1, LEN/2, mem2, LEN+3);
+    ERR_MSVC(ESNOSPC, ERANGE);
+
+    EXPMEM(mem1, 0, len, 0, 1);
+    if (mem1[len] != 33) {
+        debug_printf("%d - %d m1=%d  m2=%d  \n",
+                     __LINE__, (int)len, mem1[len], mem2[len]);
+        errs++;
+    }
+#endif
+
+#ifndef HAVE_CT_BOS_OVR
+    for (i=0; i<LEN; i++) { mem1[i] = 55; }
+    for (i=0; i<LEN; i++) { mem2[i] = 65; }
+
+    /* overlap */
+    len = 100;
+    EXPECT_BOS("dest overlaps with src")
+    rc = memcpy_s(&mem1[0], 100, &mem1[10], len);
+    ERR_MSVC(ESOVRLP, 0);
+
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 0, len, 0, 1);
+        if (mem1[len] == 0) {
+            debug_printf("%d - %d m1=%d  m2=%d  \n",
+                         __LINE__, i, mem1[i], mem2[i]);
+            errs++;
+        }
+    }
+
+    for (i=0; i<LEN; i++) { mem1[i] = 55; }
+    for (i=0; i<LEN; i++) { mem2[i] = 65; }
+
+    /* overlap */
+    len = 100;
+    EXPECT_BOS("dest overlaps with src")
+    rc = memcpy_s(&mem1[10], 100, &mem1[0], 100);
+    ERR_MSVC(ESOVRLP, 0);
+
+    if (!use_msvcrt) {
+        EXPMEM(mem1, 10, len+10, 0, 1);
+    }
 #endif
 
 /*--------------------------------------------------*/
@@ -97,21 +170,6 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    EXPECT_BOS("src overflow or empty")
-    rc = memcpy_s(mem1, LEN, NULL, LEN);
-    ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
-    EXPMEM(mem1, 0, LEN, 0, 1);
-
-    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
-    rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
-    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
-    EXPMEM(mem1, 0, LEN, 0, 1);
-#endif
-
-/*--------------------------------------------------*/
-
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
@@ -132,76 +190,11 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
-    for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
-
-    len = LEN;
-    /* BOS(mem1) == LEN+2 */
-    EXPECT_BOS("slen overflow >dmax")
-    rc = memcpy_s(mem1, LEN, mem2, (LEN+1) );
-    ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
-    EXPMEM(mem1, 0, len+1, 0, 1);
-    EXPMEM(mem1, len+1, LEN+1, 33, 1);
-
-    for (i=0; i<LEN+2; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++)   { mem2[i] = 44; }
-
-    len = LEN/2;
-    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
-    rc = memcpy_s(mem1, LEN/2, mem2, LEN+3);
-    ERR_MSVC(ESNOSPC, ERANGE);
-
-    EXPMEM(mem1, 0, len, 0, 1);
-    if (mem1[len] != 33) {
-        debug_printf("%d - %d m1=%d  m2=%d  \n",
-                     __LINE__, (int)len, mem1[len], mem2[len]);
-        errs++;
-    }
-#endif
-
-/*--------------------------------------------------*/
-
     for (i=0; i<LEN; i++) { mem1[i] = 55; }
 
     /* same ptr - no move */
     rc = memcpy_s(mem1, LEN, mem1, LEN);
     ERR(EOK);
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 55; }
-    for (i=0; i<LEN; i++) { mem2[i] = 65; }
-
-    /* overlap */
-    len = 100;
-    /* TODO compile-time detection */
-    rc = memcpy_s(&mem1[0], 100, &mem1[10], 100);
-    ERR_MSVC(ESOVRLP, 0);
-
-    if (!use_msvcrt) {
-        EXPMEM(mem1, 0, len, 0, 1);
-        if (mem1[len] == 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                         __LINE__, i, mem1[i], mem2[i]);
-            errs++;
-        }
-    }
-
-/*--------------------------------------------------*/
-
-    for (i=0; i<LEN; i++) { mem1[i] = 55; }
-    for (i=0; i<LEN; i++) { mem2[i] = 65; }
-
-    /* overlap */
-    len = 100;
-    /* TODO compile-time detection */
-    rc = memcpy_s(&mem1[10], 100, &mem1[0], 100);
-    ERR_MSVC(ESOVRLP, 0);
-
-    if (!use_msvcrt) {
-        EXPMEM(mem1, 10, len+10, 0, 1);
-    }
 
 /*--------------------------------------------------*/
 
