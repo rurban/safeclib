@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm -rf src/*/.deps src/.deps tests/.deps
+
 case `uname` in
 Darwin) # darwin is preferred
 

@@ -2,19 +2,21 @@
 autoreconf
 make=make
 
+rm -rf src/*/.deps src/.deps tests/.deps
+
 case `uname` in
 Darwin) # macports compilers
     make=gmake
 
-$make -s clean
+gmake -s clean
 CC="clang-mp-5.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-$make -s clean
+gmake -s clean
 CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-$make -s clean
+gmake -s clean
 # since clang 5 with diagnose_if BOS compile-time checks
 CC="clang-mp-5.0 -std=c11" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
@@ -26,12 +28,12 @@ CC="clang-mp-5.0 -std=c11" \
 CC="clang-mp-devel -DTEST_BOS" \
     ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-$make -s clean
+gmake -s clean
 # also check against BOS compile-time errors
 CC="clang-mp-devel" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
-$make -s clean
+gmake -s clean
 # must error
 CC="clang-mp-devel" ./configure --enable-error-dmax && \
     $make -s -j4 check-log && exit
@@ -51,12 +53,12 @@ CC="gcc-mp-6" ./configure && \
 CC="gcc-mp-7" ./configure --enable-unsafe && \
     gmake -s -j4 check-log || exit
 CC="g++-mp-6 -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
-    $make -s -j4 check-log || exit
+    gmake -s -j4 check-log || exit
 CC=gcc-mp-6 \
     ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe \
                 --enable-norm-compat && \
-    $make -s -j4 gcov
-$make clean
+    gmake -s -j4 gcov
+gmake clean
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
     #    make -s -j4 check-log || exit
@@ -64,7 +66,7 @@ $make clean
 # port install arm-elf-gcc (with newlib, not glibc)
 if [ -e /opt/local/bin/arm-elf-gcc-4.7 ]; then
     CC=arm-elf-gcc-4.7 ./configure --enable-unsafe --host=arm-elf --disable-shared && \
-        $make -s -j4 || exit;
+        gmake -s -j4 || exit;
     # $make -s -j4 check-log
     m -C tests tests
     for t in tests/t*_s; do
@@ -113,9 +115,10 @@ CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
 make -s clean
 # must error
 CC="clang-7 -DTEST_BOS" ./configure --enable-error-dmax && \
-    $make -s -j4 check-log && exit
+    make -s -j4 check-log && exit
+make -s clean
 ./configure --disable-wchar && \
-    $make -s -j4 -f Makefile.kernel || exit
+    make -s -j4 -f Makefile.kernel || exit
 make -s clean
 ./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat && \
     $make -s -j4 gcov
