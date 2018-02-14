@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memcpy_s
  * File 'mem/memcpy_s.c'
- * Lines executed:100.00% of 29
+ * Lines executed:90.91% of 33
  *
  *------------------------------------------------------------------
  */
@@ -60,6 +60,18 @@ int test_memcpy_s (void)
         EXPMEM(mem1, 0, LEN, 33, 1);
     else
         EXPMEM(mem1, 0, LEN, 44, 1);
+
+    for (i=0; i<LEN; i++) { mem1[i] = 33; }
+    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow or empty")
+    rc = memcpy_s(mem1, LEN+3, mem2, LEN);
+    ERR_MSVC(ESLEMAX, 0); /* limited to destbos */
+    if (!use_msvcrt)
+        EXPMEM(mem1, 0, LEN, 33, 1);
+    else
+        EXPMEM(mem1, 0, LEN, 44, 1);
+# endif
 #endif
 
 /*--------------------------------------------------*/
@@ -120,32 +132,24 @@ int test_memcpy_s (void)
 
 /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     for (i=0; i<LEN+1; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     len = LEN;
-    rc = memcpy_s(mem1, len, mem2, (len+1) );
-    if (rc == EOK) {
-        debug_printf("%s %u   Error rc=%u \n",
-                     __FUNCTION__, __LINE__,  rc);
-        errs++;
-    } else {
-        EXPMEM(mem1, 0, len, 0, 1);
-        if (mem1[len] != 33) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n",
-                         __LINE__, (int)len, mem1[len], mem2[len]);
-            errs++;
-        }
-    }
-
-/*--------------------------------------------------*/
+    /* BOS(mem1) == LEN+2 */
+    EXPECT_BOS("slen overflow >dmax")
+    rc = memcpy_s(mem1, LEN, mem2, (LEN+1) );
+    ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
+    EXPMEM(mem1, 0, len+1, 0, 1);
+    EXPMEM(mem1, len+1, LEN+1, 33, 1);
 
     for (i=0; i<LEN+2; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++)   { mem2[i] = 44; }
 
     len = LEN/2;
-    /*EXPECT_BOS("size exceeds max") TODO */
-    rc = memcpy_s(mem1, len, mem2, LEN);
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = memcpy_s(mem1, LEN/2, mem2, LEN+3);
     ERR_MSVC(ESNOSPC, ERANGE);
 
     EXPMEM(mem1, 0, len, 0, 1);
@@ -154,6 +158,7 @@ int test_memcpy_s (void)
                      __LINE__, (int)len, mem1[len], mem2[len]);
         errs++;
     }
+#endif
 
 /*--------------------------------------------------*/
 
@@ -170,7 +175,8 @@ int test_memcpy_s (void)
 
     /* overlap */
     len = 100;
-    rc = memcpy_s(&mem1[0], len, &mem1[10], len);
+    /* TODO compile-time detection */
+    rc = memcpy_s(&mem1[0], 100, &mem1[10], 100);
     ERR_MSVC(ESOVRLP, 0);
 
     if (!use_msvcrt) {
@@ -189,7 +195,8 @@ int test_memcpy_s (void)
 
     /* overlap */
     len = 100;
-    rc = memcpy_s(&mem1[10], len, &mem1[0], len);
+    /* TODO compile-time detection */
+    rc = memcpy_s(&mem1[10], 100, &mem1[0], 100);
     ERR_MSVC(ESOVRLP, 0);
 
     if (!use_msvcrt) {
