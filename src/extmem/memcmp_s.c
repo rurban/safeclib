@@ -2,8 +2,10 @@
  * memcmp_s.c - Compares memory
  *
  * October 2008, Bo Berry
+ * February 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017-2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,6 +39,7 @@
 #endif
 
 /**
+ * @def memcmp_s(dest,dmax,src,slen,diff)
  * @brief
  *    Compares memory until they differ, and their difference sign
  *    \c (-1,0,1) is returned in \c diff.  If the block of memory is the same,
@@ -59,13 +62,14 @@
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   Neither dmax nor smax shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
- * @pre   smax shall not be greater than dmax.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest)
+ * @pre   smax shall not be greater than dmax or sizeof(src)
  *
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM or > sizeof(dest/src)
+ * @retval  ESLEWRNG    when dmax/smax != sizeof(dest/src) and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < smax
  *
  * @see
@@ -74,8 +78,9 @@
  */
 
 EXPORT errno_t
-memcmp_s (const void *dest, rsize_t dmax,
-          const void *src,  rsize_t smax, int *diff)
+_memcmp_s_chk (const void *dest, rsize_t dmax,
+               const void *src,  rsize_t smax, int *diff,
+               const size_t destbos, const size_t srcbos)
 {
     const uint8_t *dp;
     const uint8_t *sp;
@@ -83,9 +88,7 @@ memcmp_s (const void *dest, rsize_t dmax,
     dp = (uint8_t*) dest;
     sp = (uint8_t*) src;
 
-    /*
-     * must be able to return the diff
-     */
+    /* must be able to return the diff */
     if (unlikely(diff == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp_s: diff is null",
                    NULL, ESNULLP);
@@ -101,20 +104,36 @@ memcmp_s (const void *dest, rsize_t dmax,
 
     if (unlikely(sp == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp_s: src is null",
-                   NULL, ESNULLP);
+                   (void*)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_mem_constraint_handler("memcmp_s: dmax is 0",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM || smax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memcmp_s: dmax/smax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds max",
+                       (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds dest",
+                       (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memcmp_s", (void*)dest, dmax, destbos);
+# ifdef HAVE_ERROR_DMAX
+            return (RCNEGATE(ESLEWRNG));
+# endif
+        }
+#endif
     }
 
     if (unlikely(smax == 0)) {
@@ -124,22 +143,41 @@ memcmp_s (const void *dest, rsize_t dmax,
     }
 
     if (unlikely(smax > dmax)) {
+        errno_t error = smax > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
         invoke_safe_mem_constraint_handler("memcmp_s: smax exceeds dmax",
-                   NULL, ESNOSPC);
-        return (RCNEGATE(ESNOSPC));
+                       (void*)dest, error);
+        return (RCNEGATE(error));
     }
 
-    /*
-     * no need to compare the same memory
-     */
+    if (srcbos == BOS_UNKNOWN) {
+        if (unlikely(smax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memcmp_s: smax exceeds max",
+                       (void*)src, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+    } else {
+        if (unlikely(smax > srcbos)) {
+            invoke_safe_mem_constraint_handler("memcmp_s: smax exceeds src",
+                       (void*)src, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(smax != srcbos)) {
+            handle_mem_bos_chk_warn("memcmp_s", (void*)src, smax, srcbos);
+# ifdef HAVE_ERROR_DMAX
+            return (RCNEGATE(ESLEWRNG));
+# endif
+        }
+#endif
+    }
+
+    /* no need to compare the same memory */
     if (unlikely(dp == sp)) {
         *diff = 0;
         return (RCNEGATE(EOK));
     }
 
-    /*
-     * now compare sp to dp
-     */
+    /* now compare sp to dp */
     *diff = 0;
     while (dmax > 0 && smax > 0) {
         if (*dp != *sp) {
@@ -158,5 +196,5 @@ memcmp_s (const void *dest, rsize_t dmax,
     return (RCNEGATE(EOK));
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(memcmp_s);
+EXPORT_SYMBOL(_memcmp_s_chk);
 #endif

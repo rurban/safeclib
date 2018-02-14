@@ -119,11 +119,14 @@ _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
 
 /* compare memory */
 EXTERN errno_t
-memcmp_s(const void *dest, rsize_t dmax,
-         const void *src, rsize_t slen, int *diff)
+_memcmp_s_chk(const void *dest, rsize_t dmax,
+              const void *src, rsize_t slen, int *diff,
+              const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(diff)
     BOS_ATTR(!slen, "empty slen")
     VAL_OVR2_BUTZERO(slen, dmax);
+#define memcmp_s(dest,dmax,src,slen,diff) \
+    _memcmp_s_chk(dest,dmax,src,slen,diff,BOS(dest),BOS(src))
 
 /* compare uint16_t memory */
 EXTERN errno_t
