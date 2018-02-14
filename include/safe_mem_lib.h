@@ -69,14 +69,14 @@ set_mem_constraint_handler_s(constraint_handler_t handler);
 /* copy memory */
 EXTERN errno_t
 _memcpy_s_chk(void *restrict dest, rsize_t dmax,
-              const void *restrict src, rsize_t slen, const size_t destbos)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
-    VAL_OVR2_BUTZERO(slen, dmax)
+              const void *restrict src, rsize_t count, const size_t destbos)
+    BOS_CHK_BUTZERO(dest, count) BOS_OVR2_BUTZERO(src, count)
+    VAL_OVR2_BUTZERO(count, dmax)
     BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
-             ((dest > src && (char*)dest < (char*)src + slen) ||
+             ((dest > src && (char*)dest < (char*)src + count) ||
               (src > dest && (char*)src < (char*)dest + dmax)),
              "dest overlaps with src");
-#define memcpy_s(dest,dmax,src,slen) _memcpy_s_chk(dest,dmax,src,slen,BOS(dest))
+#define memcpy_s(dest,dmax,src,count) _memcpy_s_chk(dest,dmax,src,count,BOS(dest))
 
 /* move memory, including overlapping memory */
 EXTERN errno_t
