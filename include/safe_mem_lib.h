@@ -80,10 +80,11 @@ _memcpy_s_chk(void *restrict dest, rsize_t dmax,
 
 /* move memory, including overlapping memory */
 EXTERN errno_t
-memmove_s(void *dest, rsize_t  dmax,
-          const void *src, rsize_t slen)
-    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
-    VAL_OVR2_BUTZERO(slen, dmax);
+_memmove_s_chk(void *dest, rsize_t  dmax,
+               const void *src, rsize_t count, const size_t destbos)
+    BOS_CHK_BUTZERO(dest, count) BOS_OVR2_BUTZERO(src, count)
+    VAL_OVR2_BUTZERO(count, dmax);
+#define memmove_s(dest,dmax,src,count) _memmove_s_chk(dest,dmax,src,count,BOS(dest))
 
 /* set bytes. now __STDC_WANT_LIB_EXT1__ >= 1 apple/freebsd string.h compatible */
 #if !defined(HAVE_MEMSET_S) || !(defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1))

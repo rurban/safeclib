@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memmove_s
  * File 'mem/memmove_s.c'
- * Lines executed:100.00% of 25
+ * Lines executed:89.66% of 29
  *
  *------------------------------------------------------------------
  */
@@ -46,7 +46,7 @@ int test_memmove_s (void)
 
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("count overflow >dmax")
     rc = memmove_s(mem1, 0, mem2, LEN);
     ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
@@ -93,9 +93,8 @@ int test_memmove_s (void)
         EXPMEM(mem1, 0, LEN, 0, 1); /* broken with msvcrt! */
     }
 
-
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("count overflow >dmax")
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1);
     ERR_MSVC(ESLEMAX, ERANGE);  /* and cleared */
     if (!use_msvcrt) {
