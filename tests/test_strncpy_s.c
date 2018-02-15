@@ -8,6 +8,12 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+#undef HAVE_CT_BOS_OVR
+#undef strncpy_s
+EXTERN errno_t strncpy_s(char * restrict dest, rsize_t dmax,
+                         const char * restrict src, rsize_t slen);
+#endif
 
 #ifdef HAVE_STRNCPY_S
 # define HAVE_NATIVE 1
@@ -34,6 +40,9 @@ int test_strncpy_s (void)
 
     nlen = 5;
 
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+    use_msvcrt = true;
+#endif
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
@@ -107,11 +116,13 @@ int test_strncpy_s (void)
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strncpy_s(str1, LEN+1, str2, nlen);
-        ERR(ESLEMAX);     /* dmax exceeds dest */
-        EXPSTR(str1, ""); /* cleared */
-        CHECK_SLACK(str1, 4);
-    } else {
+        ERR_MSVC(ESLEMAX, 0); /* dmax exceeds dest */
+        if (!use_msvcrt) {
+            EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, 4);
+        }
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
+    } else {
         debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
         errs++;
 # endif

@@ -20,6 +20,10 @@
 # error Not supported in Linux kernel space
 #endif
 
+#if defined(TEST_MSVCRT) && defined(HAVE_MEMCPY_S)
+#undef memcpy_s
+#endif
+
 #define LEN   ( 1024 * 10 )
 
 uint8_t  mem1[LEN];

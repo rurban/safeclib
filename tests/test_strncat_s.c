@@ -15,6 +15,12 @@
 # define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCAT_S)
+#undef HAVE_CT_BOS_OVR
+#undef strncat_s
+EXTERN errno_t strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src,
+                         rsize_t slen);
+#endif
 
 #define LEN   ( 128 )
 
@@ -32,6 +38,9 @@ int test_strncat_s (void)
 
     strcpy(str1, "aaaaaaaaaa");
 
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCAT_S)
+    use_msvcrt = true;
+#endif
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest or dmax")
@@ -86,25 +95,21 @@ int test_strncat_s (void)
 
 /*--------------------------------------------------*/
 
-    /* with clang-5 compile-time already checks these errors */
-# ifndef HAVE_ASAN /* With asan no BOS */
     strcpy(str1, "ab");
-    if (_BOS_KNOWN(str1)) {
-        EXPECT_BOS("dest overflow")
-        rc = strncat_s(str1, LEN+1, str2, LEN);
-        if (!rc) {
-            printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
-        } else {
+    if (!use_msvcrt) {
+        /* with clang-5 compile-time already checks these errors */
+        if (_BOS_KNOWN(str1)) {
+            EXPECT_BOS("dest overflow")
+                rc = strncat_s(str1, LEN+1, str2, LEN);
             ERR(ESLEMAX);
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 2);
-        }
-    } else {
+        } else {
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
-        debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
+            debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
 # endif
+        }
     }
-# endif
 
     strcpy(str1, "a");
     /* valid with the windows sec_api */
@@ -128,20 +133,22 @@ int test_strncat_s (void)
     }
 
     strcpy(str1, "abc");
-    if (_BOS_KNOWN(str1)) {
-        EXPECT_BOS("dest overflow")
-        rc = strncat_s(str1, LEN+1, str2, LEN);
-        ERR(ESLEMAX);     /* dmax exceeds dest */
-        EXPSTR(str1, ""); /* cleared */
-        CHECK_SLACK(str1, 4);
+    if (!use_msvcrt) {
+        if (_BOS_KNOWN(str1)) {
+            EXPECT_BOS("dest overflow")
+            rc = strncat_s(str1, LEN+1, str2, LEN);
+            ERR(ESLEMAX);     /* dmax exceeds dest */
+            EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, 4);
 
-        rc = strncat_s(str1, LEN-1, str2, LEN);
-        ERR(0);
-    } else {
+            rc = strncat_s(str1, LEN-1, str2, LEN);
+            ERR(0);
+        } else {
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
-        debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
-        errs++;
+            debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
+            errs++;
 # endif
+        }
     }
 
 /*--------------------------------------------------*/

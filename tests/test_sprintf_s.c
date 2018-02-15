@@ -8,6 +8,12 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
+#ifdef HAVE_C99
+#undef sprintf_s
+EXTERN int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+#endif
+#endif
 
 #ifdef HAVE_SPRINTF_S
 # define HAVE_NATIVE 1

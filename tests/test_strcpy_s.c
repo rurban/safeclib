@@ -9,6 +9,10 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_STRCPY_S)
+#undef strcpy_s
+EXTERN errno_t strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+#endif
 
 #ifdef HAVE_STRCPY_S
 # define HAVE_NATIVE 1
@@ -32,6 +36,9 @@ int test_strcpy_s (void)
 
 /*--------------------------------------------------*/
 
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+    use_msvcrt = true;
+#endif
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")

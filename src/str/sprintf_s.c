@@ -97,7 +97,7 @@
  *    vsprintf_s(), snprintf_s()
  */
 
-#ifdef HAVE_C99    
+#ifdef HAVE_C99
 EXPORT int
 _sprintf_s_chk(char * restrict dest, const rsize_t dmax,
                const size_t destbos,

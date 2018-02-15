@@ -8,6 +8,10 @@
 
 #include "test_private.h"
 #include "test_expmem.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_MEMMOVE_S)
+#undef memmove_s
+EXTERN errno_t memmove_s(void *dest, rsize_t dmax, const void *src, rsize_t count);
+#endif
 
 #ifdef HAVE_MEMMOVE_S
 # define HAVE_NATIVE 1

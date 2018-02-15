@@ -8,6 +8,9 @@
 
 #include "test_private.h"
 #include "test_expmem.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
+#undef memset_s
+#endif
 
 #ifdef HAVE_MEMSET_S
 # define HAVE_NATIVE 1

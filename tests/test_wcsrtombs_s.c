@@ -10,6 +10,9 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_WCSRTOMBS_S)
+#undef HAVE_CT_BOS_OVR
+#endif
 
 #ifdef HAVE_WCSRTOMBS_S
 # define HAVE_NATIVE 1
@@ -48,13 +51,16 @@ int test_wcsrtombs_s (void)
 
 /*--------------------------------------------------*/
     cs = L"a";
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+    use_msvcrt = true;
+#endif
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty retval")
     rc = wcsrtombs_s(NULL, dest, LEN, &cs, 1, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
-    ERR_MSVC(ESNULLP, EINVAL);
+    ERR_MSVC(ESNULLP, 0);
     CLRPS;
 
     EXPECT_BOS("empty src")
@@ -65,7 +71,7 @@ int test_wcsrtombs_s (void)
 
     EXPECT_BOS("empty ps")
     rc = wcsrtombs_s(&ind, dest, LEN, &cs, 1, NULL);
-    ERR_MSVC(ESNULLP, EINVAL);
+    ERR_MSVC(ESNULLP, 0);
     CHECK_SLACK(dest, LEN);
     CLRPS;
 
@@ -92,32 +98,28 @@ int test_wcsrtombs_s (void)
     ERR_MSVC(ESNOSPC,ERANGE);
     CLRPS;*/
 
-#if 0
-    if (_BOS_KNOWN(dest)) {
+#ifndef HAVE_ASAN
+    if (_BOS_KNOWN(dest) && !use_msvcrt) {
         EXPECT_BOS("dest overflow")
         rc = wcsrtombs_s(&ind, dest, LEN+1, &cs, 3, &ps);
-        if (!use_msvcrt) {
-            if (!rc)
-                printf("Todo _BOS_OVR(dest, dmax) ESNOSPC\n");
-            else
-                ERR(ESNOSPC);
-        } else {
-            ERR(0); /* potential overflow */
-        }
+        ERR(0); /* TODO overflow */
         CLRPS;
     }
 #endif
+    if (!use_msvcrt) { /* segfaults */
+        EXPECT_BOS("dest overflow")
+        rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
+        if (!have_wine)
+            ERR_MSVC(ESLEMAX, 0); /* under wine it returns 42, EILSEQ */
+        CLRPS;
+    }
 
-    EXPECT_BOS("dest overflow")
-    rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
-    if (!have_wine)
-        ERR_MSVC(ESLEMAX, 0); /* under wine it returns 42, EILSEQ */
-    CLRPS;
-
-    EXPECT_BOS("dest overflow") EXPECT_BOS("dest overlap")
-    rc = wcsrtombs_s(&ind, (char*)&cs, LEN, &cs, 3, &ps);
-    ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
-    CLRPS;
+    if (!use_msvcrt) { /* segfaults */
+        EXPECT_BOS("dest overflow") EXPECT_BOS("dest overlap")
+        rc = wcsrtombs_s(&ind, (char*)&cs, LEN, &cs, 3, &ps);
+        ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
+        CLRPS;
+    }
 
     cs = L"abcdef";
     EXPECT_BOS("len overflow >dmax")

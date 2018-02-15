@@ -9,6 +9,9 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNLEN_S)
+#undef strnlen_s
+#endif
 
 #define LEN   ( 128 )
 static char   str1[LEN];

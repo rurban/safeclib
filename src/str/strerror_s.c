@@ -117,7 +117,11 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
         const char *tmpbuf = (errnum >= ESNULLP && errnum <= ESLAST)
             ? errmsgs_s[errnum - ESNULLP]
             : strerror(errnum);
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+        strncpy(dest, tmpbuf, dmax-4);
+#else
         strncpy_s(dest, dmax, tmpbuf, dmax-4);
+#endif
         strcat_s(dest, dmax, "...");
     } else {
         invoke_safe_str_constraint_handler("strerror_s: dmax is too small",

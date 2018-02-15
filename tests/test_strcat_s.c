@@ -8,6 +8,12 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#if defined(TEST_MSVCRT) && defined(HAVE_STRCAT_S)
+#undef HAVE_CT_BOS_OVR
+#undef strcat_s
+EXTERN errno_t
+strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+#endif
 
 #ifdef HAVE_STRCAT_S
 # define HAVE_NATIVE 1
@@ -34,6 +40,9 @@ int test_strcat_s (void)
 
     strcpy(str1, "");
     strcpy(str2, "aaaa");
+#if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
+    use_msvcrt = true;
+#endif
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
@@ -67,9 +76,11 @@ int test_strcat_s (void)
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strcat_s(str1, LEN+1, str2);
-        ERR(ESLEMAX);     /* dmax exceeds dest */
-        EXPSTR(str1, ""); /* cleared */
-        CHECK_SLACK(str1, 4);
+        ERR_MSVC(ESLEMAX, 0);     /* dmax exceeds dest */
+        if (!use_msvcrt) {
+            EXPSTR(str1, ""); /* cleared */
+            CHECK_SLACK(str1, 4);
+        }
 
         rc = strcat_s(str1, LEN, str2);
         ERR(0);

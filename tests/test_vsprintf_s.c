@@ -9,6 +9,11 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 #include <stdarg.h>
+#if defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S)
+#undef vsprintf_s
+EXTERN int vsprintf_s(char * restrict dest, rsize_t dmax,
+                      const char * restrict fmt, va_list ap);
+#endif
 
 #ifdef HAVE_VSPRINTF_S
 # define HAVE_NATIVE 1
