@@ -118,9 +118,7 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
             handle_mem_bos_chk_warn("memset_s", dest, dmax, destbos);
-# ifdef HAVE_ERROR_DMAX
-            return (RCNEGATE(ESLEWRNG));
-# endif
+            RETURN_ESLEWRNG;
         }
 #endif
         dmax = destbos;

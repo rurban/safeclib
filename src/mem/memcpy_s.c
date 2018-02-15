@@ -128,10 +128,7 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax, const void * restrict src,
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
             handle_mem_bos_chk_warn("memcpy_s", dest, dmax, destbos);
-# ifdef HAVE_ERROR_DMAX
-            return (RCNEGATE(ESLEWRNG));
-# endif
-        }
+            RETURN_ESLEWRNG;
 #endif
         /* Note: unlike to memset_s, we don't set dmax to destbos */
     }

@@ -108,9 +108,7 @@ _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
             handle_mem_bos_chk_warn("memset32_s", dest, dmax, destbos);
-# ifdef HAVE_ERROR_DMAX
-            return (RCNEGATE(ESLEWRNG));
-# endif
+            RETURN_ESLEWRNG;
         }
 #endif
         dmax = destbos;

@@ -237,6 +237,12 @@ void abort(void) __attribute__((noreturn));
 #else
 # define BND_CHK_PTR_BOUNDS(dest,count)
 #endif
+#ifdef HAVE_ERROR_DMAX
+# define RETURN_ESLEWRNG return (RCNEGATE(ESLEWRNG))
+#else
+# define RETURN_ESLEWRNG
+#endif
+
 
 #ifdef HAVE_ERROR_DMAX
 # define RETURN_ESLEWRNG return (RCNEGATE(ESLEWRNG))
@@ -262,7 +268,7 @@ void abort(void) __attribute__((noreturn));
     }
 /* for known dest size, we should have already errored at compile-time before.
    anyway, for known dest size check overflows in detail. */
-#if defined(HAVE_WARN_DMAX) && defined(HAVE_ERROR_DMAX)
+#if defined(HAVE_WARN_DMAX)
 # define CHK_DEST_OVR(func, destbos)                                    \
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
@@ -270,16 +276,7 @@ void abort(void) __attribute__((noreturn));
                                            dest,destbos);               \
         }                                                               \
         handle_str_bos_chk_warn(func,dest,dmax,destbos);                \
-        return RCNEGATE(ESLEWRNG);                                      \
-    }
-#elif defined(HAVE_WARN_DMAX)
-# define CHK_DEST_OVR(func, destbos)                                    \
-    if (unlikely(dmax != destbos)) {                                    \
-        if (unlikely(dmax > destbos)) {                                 \
-            return handle_str_bos_overload(func": dmax exceeds dest",   \
-                                           dest,destbos);               \
-        }                                                               \
-        handle_str_bos_chk_warn(func,dest,dmax,destbos);                \
+        RETURN_ESLEWRNG;                                                \
     }
 #else
 # define CHK_DEST_OVR(func, destbos)                                    \
