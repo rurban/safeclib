@@ -716,6 +716,20 @@ AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
+# dynamic checks if registered via malloc (e.g. mpx)
+AC_CHECK_FUNCS([__bnd_chk_ptr_bounds])
+dnl bos enabled chk functions (but not yet usable)
+#for b in $builtins_chk; do
+AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
+        __strcpy_chk __strncpy_chk __strcat_chk __strncat_chk \
+        __printf_chk __sprintf_chk __snprintf_chk __swprintf_chk \
+        __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk ])
+#done
+dnl native safec shadowing functions (should be none)
+AC_CHECK_FUNCS([_memcpy_s_chk _memmove_s_chk _memset_s_chk _memcmp_s_chk \
+        _strcpy_s_chk _strncpy_s_chk _strcat_s_chk _strncat_s_chk _strnlen_s_chk \
+        _printf_s_chk _sprintf_s_chk _snprintf_s_chk _swprintf_s_chk \
+        _vfprintf_s_chk _vfwprintf_s_chk _vsprintf_s_chk _vsnprintf_s_chk ])
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
@@ -724,14 +738,6 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs towlower towupper \
         towctrans bcmp secure_getenv timingsafe_memcmp timingsafe_bcmp \
         asctime_r ctime_r gmtime_r localtime_r memccpy ])
-dnl bos enabled chk functions
-#for b in $builtins_chk; do
-AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
-        __strcpy_chk __strncpy_chk __strcat_chk __strncat_chk \
-        __printf_chk __sprintf_chk __snprintf_chk __swprintf_chk \
-        __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk ])
-#done
-AC_CHECK_FUNCS([__bnd_chk_ptr_bounds])
 dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
 AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
