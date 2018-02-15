@@ -120,12 +120,14 @@ _strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
     CHK_DMAX_ZERO("strncpy_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strncpy_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         CHK_DEST_OVR("strncpy_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("strncpy_s", src)
     CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
     CHK_SLEN_MAX_CLEAR("strncpy_s", slen, RSIZE_MAX_STR)
+    BND_CHK_PTR_BOUNDS(src, slen);
 
     /* hold base in case src was not copied */
     orig_dmax = dmax;

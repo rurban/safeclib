@@ -125,6 +125,8 @@ memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t count)
                    NULL, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
     }
+    BND_CHK_PTR_BOUNDS(dest, count);
+    BND_CHK_PTR_BOUNDS(src, count);
 
     /*
      * now perform the copy

@@ -120,6 +120,7 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
                        (void*)dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
+        BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds dest",
@@ -155,6 +156,7 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
                        (void*)src, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
+        BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
             invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds src",

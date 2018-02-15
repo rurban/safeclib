@@ -130,6 +130,7 @@ _strncat_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
     CHK_DMAX_ZERO("strncat_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strncat_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         CHK_DEST_OVR("strncat_s", destbos)
     }
@@ -144,6 +145,7 @@ _strncat_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
                      error);
         return RCNEGATE(error);
     }
+    BND_CHK_PTR_BOUNDS(src, slen);
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;

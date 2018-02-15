@@ -88,6 +88,7 @@ _strnlen_s_chk (const char *str, rsize_t smax, const size_t strbos)
                        (void*)str, ESLEMAX);
             return 0;
         }
+        BND_CHK_PTR_BOUNDS(str, smax);
     } else {
         if (unlikely(smax != strbos)) {
             if (unlikely(smax > strbos)) {

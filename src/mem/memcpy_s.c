@@ -118,6 +118,7 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax, const void * restrict src,
                        dest, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
+        BND_CHK_PTR_BOUNDS(dest, count);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_mem_constraint_handler("memcpy_s: dmax exceeds dest",
@@ -149,10 +150,7 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax, const void * restrict src,
                    dest, rc);
         return RCNEGATE(rc);
     }
-#ifdef  HAVE___BND_CHK_PTR_BOUNDS
-    __bnd_chk_ptr_bounds(dest, count);
-    __bnd_chk_ptr_bounds(src, count);
-#endif
+    BND_CHK_PTR_BOUNDS(src, count);
 
     /* overlap is disallowed */
     if (unlikely( ((dp > sp) && (dp < (sp+count))) ||

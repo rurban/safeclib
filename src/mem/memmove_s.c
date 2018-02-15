@@ -122,6 +122,7 @@ _memmove_s_chk (void *dest, rsize_t dmax, const void *src, rsize_t count,
                                                dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
+        BND_CHK_PTR_BOUNDS(dest, count);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds dest",
@@ -153,10 +154,7 @@ _memmove_s_chk (void *dest, rsize_t dmax, const void *src, rsize_t count,
                    dest, rc);
         return (RCNEGATE(rc));
     }
-#ifdef  HAVE___BND_CHK_PTR_BOUNDS
-    __bnd_chk_ptr_bounds(dest, count);
-    __bnd_chk_ptr_bounds(src, count);
-#endif
+    BND_CHK_PTR_BOUNDS(src, count);
 
     /* now perform the copy, with overlap allowed */
     mem_prim_move(dp, sp, count);

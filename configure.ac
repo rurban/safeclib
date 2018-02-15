@@ -463,11 +463,30 @@ dnl older non-c99 g++ complain about __VA_ARGS__, for();
 if test "x$ac_cv_prog_cc_c99" = "xno" -a x$ax_compiler_cxx = xyes; then
     WARN_CFLAGS=`echo $WARN_CFLAGS | sed -e"s,-Werror ,,"`
 fi
+
+AX_CHECK_COMPILE_FLAG([-Werror=unknown-warning-option],
+   [ax_ccf_err="-Werror=unknown-warning-option"],[ax_ccf_err=""])
+# Try Intel's libmpx dynamic pointer bounds checker,
+# available for gcc-5+ and icc-15.0+, but disabled on gcc by default. --enable-libmpx
+# https://gcc.gnu.org/wiki/Intel%20MPX%20support%20in%20the%20GCC%20compiler
+# and https://intel-mpx.github.io/design/
+# See also https://github.com/google/sanitizers/wiki/AddressSanitizerIntelMemoryProtectionExtensions
+dnl gcc: slows down the optimizer with gcc-5.0. 5.3 should be better.
+dnl AX_CHECK_COMPILE_FLAG([-fcheck-pointer-bounds -mmpx],
+dnl    [CFLAGS="$CFLAGS -fcheck-pointer-bounds -mmpx" LDFLAGS="$LDFLAGS -lmpx -lmpxwrappers"],
+dnl    [],[$ax_ccf_err])
+#AX_APPEND_COMPILE_FLAGS(["-fcheck-pointer-bounds -mmpx"],
+#   [CFLAGS],[$ax_ccf_err])
+dnl icc:
+AX_CHECK_COMPILE_FLAG([-check-pointers-mpx=rw],
+   [CFLAGS="$CFLAGS -check-pointers-mpx=rw" LIBS="$LIBS -lmpx -lchkp"],
+   [],[$ax_ccf_err])
+#AX_APPEND_COMPILE_FLAGS(["-check-pointers-mpx=rw"],
+#   [CFLAGS],[$ax_ccf_err])
+
 dnl windows mult. decl are not properly sorted out yet
 case $host_os in
   mingw*|cygwin*|msys*)
-    AX_CHECK_COMPILE_FLAG([-Werror=unknown-warning-option],
-        [ax_ccf_err="-Werror=unknown-warning-option"],[ax_ccf_err=""])
     dnl gcc 3.4 cannot do -Wno-attributes
     AX_APPEND_COMPILE_FLAGS([-Wno-attributes -Wno-discarded-qualifiers],
                             [WARN_CFLAGS],[$ax_ccf_err])
@@ -478,8 +497,6 @@ AX_GCC_BUILTIN(__builtin_object_size)
 dnl against -Werror,-Wgcc-compat fortify errors, only on clang
 INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
 if test x$ax_cv_have___builtin_object_size = xyes; then
-    AX_CHECK_COMPILE_FLAG([-Werror=unknown-warning-option],
-        [ax_ccf_err="-Werror=unknown-warning-option"],[ax_ccf_err=""])
     AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
         [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
     AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wgcc-compat],
@@ -703,8 +720,8 @@ builtins_bounds="narrow_ptr_bounds copy_ptr_bounds init_ptr_bounds
 #AX_GCC_BUILTIN(__builtin___bnd_narrow_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_init_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_copy_ptr_bounds)
-#AX_GCC_BUILTIN(__builtin___bnd_set_ptr_bounds)
-#AX_GCC_BUILTIN(__builtin___bnd_null_ptr_bounds)
+AX_GCC_BUILTIN(__builtin___bnd_set_ptr_bounds)
+AX_GCC_BUILTIN(__builtin___bnd_null_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_lbounds)
 #AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_ubounds)
 AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
@@ -713,8 +730,8 @@ AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
 
 AC_MSG_NOTICE([Check library functions])
 # ===============================================
-# dynamic checks if registered via malloc (e.g. mpx)
-AC_CHECK_FUNCS([__bnd_chk_ptr_bounds])
+# dynamic checks if registered via malloc (e.g. libmpx)
+AC_CHECK_FUNCS([__bnd_chk_ptr_bounds __bnd_set_ptr_bounds __bnd_null_ptr_bounds])
 dnl bos enabled chk functions (but not yet usable)
 #for b in $builtins_chk; do
 AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \

@@ -127,6 +127,8 @@ memcpy16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t count)
                    NULL, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
     }
+    BND_CHK_PTR_BOUNDS(dest, count);
+    BND_CHK_PTR_BOUNDS(src, count);
 
     sp = src;
 

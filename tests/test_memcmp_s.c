@@ -65,6 +65,19 @@ int test_memcmp_s (void)
 
 #endif
 /*--------------------------------------------------*/
+    /* intel's mpx dynamic pointer bounds checker.
+     * requires -fcheck-pointer-bounds -mmpx
+     */
+#ifdef HAVE_BND_CHK_MALLOC
+    {
+        void* memd = bnd_chk_malloc(LEN-1);
+        rc = memcmp_s(memd, LEN, mem2, LEN, &ind);
+        /* ERR(ESLEMAX); run-time error here */
+        rc = memcmp_s(mem1, LEN, memd, LEN, &ind);
+        /* ERR(ESLEMAX); run-time error here */
+    }
+#endif
+/*--------------------------------------------------*/
 
     /* short cut */
     rc = memcmp_s(mem1, LEN, mem1, LEN, &ind);

@@ -228,6 +228,23 @@ void abort(void) __attribute__((noreturn));
 # endif
 #endif
 
+/* TODO: do we need the builtin's? rather just use __bnd... which is defined on CHKP and MPX.
+   requires -fcheck-pointer-bounds -mmpx */
+#if defined(HAVE___BUILTIN___BND_CHK_PTR_BOUNDS) && defined(__CHKP__) && defined(__MPX__)
+# define BND_CHK_PTR_BOUNDS(dest,count) __builtin___bnd_chk_ptr_bounds(dest, count)
+#elif defined(HAVE___BND_CHK_PTR_BOUNDS) && defined(__CHKP__) && defined(__MPX__)
+# define BND_CHK_PTR_BOUNDS(dest,count) __bnd_chk_ptr_bounds(dest, count)
+#else
+# define BND_CHK_PTR_BOUNDS(dest,count)
+#endif
+
+#ifdef HAVE_ERROR_DMAX
+# define RETURN_ESLEWRNG return (RCNEGATE(ESLEWRNG))
+#else
+# define RETURN_ESLEWRNG
+#endif
+
+
 #define CHK_DEST_NULL(func)                                             \
     if (unlikely(dest == NULL)) {                                       \
         invoke_safe_str_constraint_handler(func ": dest is null", dest, ESNULLP); \

@@ -67,6 +67,7 @@
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
  * @retval  ESLEMAX     when n > RSIZE_MAX_MEM32
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when dmax/4 < n
  *
  * @see
@@ -95,6 +96,9 @@ _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
                                                dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
+#ifdef  HAVE___BND_CHK_PTR_BOUNDS
+        __bnd_chk_ptr_bounds(dest, n);
+#endif
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_mem_constraint_handler("memset16_s: dmax exceeds dest",

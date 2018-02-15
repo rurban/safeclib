@@ -108,6 +108,7 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
                                                dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
+        BND_CHK_PTR_BOUNDS(dest, n);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_mem_constraint_handler("memset_s: dmax exceeds dest",
@@ -139,9 +140,6 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
                                            dest, err);
         n = dmax;
     }
-#ifdef  HAVE___BND_CHK_PTR_BOUNDS
-    __bnd_chk_ptr_bounds(dest, n);
-#endif
 
     mem_prim_set(dest, n, (uint8_t)value);
 

@@ -71,6 +71,12 @@
 #include <stdio.h>
 #include <string.h>
 
+/* for malloc/free */
+#if defined(HAVE_STDLIB_H) &&                                           \
+    (defined(HAVE___BND_CHK_PTR_BOUNDS) || defined(HAVE___BUILTIN___BND_SET_PTR_BOUNDS))
+# include <stdlib.h>
+#endif
+
 #endif
 
 #ifdef _WIN32
@@ -218,6 +224,27 @@
 # else
 #   define xdebug_printf printf
 # endif
+#endif
+
+/* requires -fcheck-pointer-bounds -mmpx */
+#if defined(HAVE___BUILTIN___BND_SET_PTR_BOUNDS) && defined(__CHKP__) && defined(__MPX__)
+#define HAVE_BND_CHK_MALLOC
+static inline
+void *bnd_chk_malloc (size_t n)
+{
+  void *p = (void *)malloc(n);
+  if (!p) return __builtin___bnd_null_ptr_bounds(p);
+  return __builtin___bnd_set_ptr_bounds(p, n);
+}
+#elif defined(HAVE___BND_SET_PTR_BOUNDS) && defined(__CHKP__) && defined(__MPX__)
+#define HAVE_BND_CHK_MALLOC
+static inline
+void *bnd_chk_malloc (size_t n)
+{
+  void *p = (void *)malloc(n);
+  if (!p) return __bnd_null_ptr_bounds(p);
+  return __bnd_set_ptr_bounds(p, n);
+}
 #endif
 
 #define ERR(n)                                     \

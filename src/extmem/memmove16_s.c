@@ -116,6 +116,8 @@ memmove16_s (uint16_t *dest, rsize_t dmax, const uint16_t *src, rsize_t count)
                    NULL, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
+    BND_CHK_PTR_BOUNDS(dest, count);
+    BND_CHK_PTR_BOUNDS(src, count);
 
     /*
      * now perform the copy
