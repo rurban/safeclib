@@ -504,62 +504,55 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
+                   "dest is null", NULL, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "src is null",
-                   NULL, ESNULLP);
+                   "src is null", dest, ESNULLP);
         *dest = 0;
         return RCNEGATE(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
+                   "dmax is 0", dest, ESZEROL);
         *dest = 0;
         return RCNEGATE(ESZEROL);
     }
 
     if (unlikely(dmax < 5)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dmax < 5",
-                   NULL, ESLEMIN);
+                   "dmax < 5", dest, ESLEMIN);
         *dest = 0;
         return RCNEGATE(ESLEMIN);
     }
 
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
+                   "dmax exceeds max", dest, ESLEMAX);
         *dest = 0;
         return RCNEGATE(ESLEMAX);
     }
 
     if (unlikely(dest == src)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "overlapping objects",
-                   NULL, ESOVRLP);
+                   "overlapping objects", dest, ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 #ifndef HAVE_NORM_COMPAT
     if (iscompat) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                       "not configured with --enable-norm-compat",
-                      NULL, EOF);
+                      dest, EOF);
         *dest = 0;
         return RCNEGATE(EOF);
     }
 #else
     if (unlikely(iscompat && dmax < 19)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
-                      "dmax is < 19",
-                      NULL, ESLEMIN);
+                      "dmax is < 19", dest, ESLEMIN);
         *dest = 0;
         return RCNEGATE(ESLEMIN);
     }
@@ -586,7 +579,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                               "cp is too high",
                               ESLEMAX);
-                return ESLEMAX;
+                return RCNEGATE(ESLEMAX);
             }
 #endif
             if (!cp)
@@ -634,7 +627,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
                 handle_werror(orig_dest, orig_dmax, "wcsnorm_decompose_s: "
                               "cp is too high",
                               ESLEMAX);
-                return ESLEMAX;
+                return RCNEGATE(ESLEMAX);
             }
 #endif
             if (!cp)
