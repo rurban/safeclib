@@ -194,7 +194,7 @@ else
 	AC_MSG_RESULT([no (default)])
 	INSERT_EXTS="#undef SAFECLIB_DISABLE_EXTENSIONS"
 fi
-#	AC_DEFINE([SAFECLIB_DISABLE_EXTENSIONS], [ 1 ],
+#	AC_DEFINE([SAFECLIB_DISABLE_EXTENSIONS], 1,
 #		  [Define to 1 to disable additional functions not defined
 #		   in the C11 appendix K specification])
 AC_SUBST(INSERT_EXTS)
@@ -243,7 +243,7 @@ AC_MSG_CHECKING([for --disable-nullslack])
 if test "x$enable_nullslack" = "xtrue" ; then
 	AC_MSG_RESULT([no (default)])
 	INSERT_NULLSLACK="#define SAFECLIB_STR_NULL_SLACK 1"
-	# AC_DEFINE([SAFECLIB_STR_NULL_SLACK], [ 1 ],
+	# AC_DEFINE([SAFECLIB_STR_NULL_SLACK], 1,
 	# 	  [Define to 1 to null out the remaining part of a string
 	# 	   buffer if it is not completely used])
 else
@@ -283,7 +283,7 @@ AC_ARG_ENABLE(norm-compat,
 AC_MSG_CHECKING([for --enable-norm-compat])
 if test "x$enable_norm_compat" = "xtrue" ; then
 	AC_MSG_RESULT([yes])
-	AC_DEFINE([HAVE_NORM_COMPAT], [ 1 ],
+	AC_DEFINE([HAVE_NORM_COMPAT], 1,
 	 	  [Define to 1 to enable the compat normalization modes for wcsnorm_s
                   NFKC and NFKD])
 else
@@ -301,8 +301,6 @@ AC_ARG_ENABLE(warn-dmax,
 AC_MSG_CHECKING([for --enable-warn-dmax])
 if test "x$enable_warn_dmax" = "xtrue" ; then
 	AC_MSG_RESULT([yes])
-	AC_DEFINE([HAVE_WARN_DMAX], [ 1 ],
-            [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
 else
 	AC_MSG_RESULT([no (default)])
 fi
@@ -318,12 +316,6 @@ AC_ARG_ENABLE(error-dmax,
 AC_MSG_CHECKING([for --enable-error-dmax])
 if test "x$enable_error_dmax" = "xtrue" ; then
 	AC_MSG_RESULT([yes])
-        if test "x$enable_warn_dmax" = "xfalse" ; then
-            AC_DEFINE([HAVE_WARN_DMAX], [ 1 ],
-                [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
-        fi
-	AC_DEFINE([HAVE_ERROR_DMAX], [ 1 ],
-            [Define to 1 to make HAVE_WARN_DMAX fatal])
 else
 	AC_MSG_RESULT([no (default)])
 fi
@@ -364,7 +356,7 @@ if test "x$ac_cv_prog_cc_c99" = "xno"; then
    dnl we really should ERROR, lets see how far can come without
    AC_MSG_WARN([This compiler ${CC} has no c99 support])
 else
-   AC_DEFINE([HAVE_C99], [1],
+   AC_DEFINE([HAVE_C99], 1,
         [Defined to 1 when the compiler supports c99, mostly (...) macros])
    if test "x$ac_cv_prog_cc_c99" != "x"; then
       AC_MSG_RESULT([added $ac_cv_prog_cc_c99 to CFLAGS])
@@ -375,7 +367,7 @@ dnl AM_CONDITIONAL([HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
 AC_SUBST(HAVE_C99)
 
 if test "x$ac_cv_prog_cc_c11" != "xno"; then
-   AC_DEFINE([HAVE_C11], [1],
+   AC_DEFINE([HAVE_C11], 1,
         [Defined to 1 when the compiler supports c11])
    if test "x$ac_cv_prog_cc_c11" != "x"; then
       AC_MSG_RESULT([added $ac_cv_prog_cc_c11 to CFLAGS])
@@ -394,7 +386,7 @@ if test -z $ax_compiler_cxx; then
     [ax_compiler_cxx=no;])
 fi
 if test "$ax_compiler_cxx" = "yes" ; then
-  AC_DEFINE([HAVE_CXX], [1],
+  AC_DEFINE([HAVE_CXX], 1,
         [Defined to 1 when the compiler is C++])
 dnl   ax_cv_check_cflags__Wnested_externs=no
 dnl   ax_cv_check_cflags__Wmissing_prototypes=no
@@ -495,17 +487,26 @@ if test x$ax_cv_have___builtin_object_size = xyes; then
     if test $have_user_defined_warnings = yes; then
         AX_APPEND_COMPILE_FLAGS([-Wno-error=user-defined-warnings],
             [WARN_CFLAGS],[$ax_ccf_err])
-        AC_DEFINE([HAVE_USER_DEFINED_WARNINGS], [1], [Uses -Wuser-defined-warnings])
-    else
-        AC_DEFINE([HAVE_USER_DEFINED_WARNINGS], [0], [Uses -Wuser-defined-warnings])
+        AC_DEFINE([HAVE_USER_DEFINED_WARNINGS], 1, [Uses -Wuser-defined-warnings])
     fi
     INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
+    if test "x$enable_warn_dmax" = "xtrue" ; then
+        AC_DEFINE([HAVE_WARN_DMAX], 1,
+                [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
+    fi
+    if test "x$enable_error_dmax" = "xtrue" ; then
+        AC_DEFINE([HAVE_WARN_DMAX], 1,
+                [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
+	AC_DEFINE([HAVE_ERROR_DMAX], 1,
+            [Define to 1 to make HAVE_WARN_DMAX fatal])
+    fi
 else
     if test "x$enable_warn_dmax" = "xtrue" ; then
-        AC_DEFINE([HAVE_WARN_DMAX], [ 0 ])
-        AC_MSG_RESULT([disable-warn-dmax])
+      AC_MSG_RESULT([warn-dmax ignored, no __builtin_object_size])
     fi
 fi
+
+
 AC_SUBST(INSERT_OBJECT_SIZE)
 
 AC_MSG_CHECKING([for diagnose_if attribute])
@@ -528,18 +529,14 @@ int myfunc(char *ptr) {
     )],
     [ AC_MSG_RESULT([yes])
       have_attribute_diagnose_if=yes
-      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], [1],
+      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], 1,
                 [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
     ],
     [ AC_MSG_RESULT([no])
       have_attribute_diagnose_if=no
-      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], [0],
-                [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
     ],
     [ AC_MSG_RESULT([no (cross)])
       have_attribute_diagnose_if=no
-      AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], [0],
-                [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
     ])
 CFLAGS="$old_cflags"
 AM_CONDITIONAL([HAVE_ATTRIBUTE_DIAGNOSE_IF], [test "x$have_attribute_diagnose_if" = "xyes"])
