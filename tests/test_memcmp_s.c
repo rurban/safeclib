@@ -64,6 +64,15 @@ int test_memcmp_s (void)
     ERR(ESNOSPC);
 
 #endif
+
+/*--------------------------------------------------*/
+
+    /* undetected at compile-time */
+
+    len = RSIZE_MAX_MEM+1;
+    rc = memcmp_s(mem1, LEN, mem2, len, &ind);
+    ERR(ESLEMAX);
+
 /*--------------------------------------------------*/
     /* intel's mpx dynamic pointer bounds checker.
      * requires -fcheck-pointer-bounds -mmpx

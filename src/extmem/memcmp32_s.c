@@ -2,8 +2,10 @@
  * memcmp32_s.c - Compares memory
  *
  * October 2008, Bo Berry
+ * February 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017-2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -36,9 +38,11 @@
 #endif
 
 /**
+ * @def memcmp32_s(dest,dlen,src,slen,diff)
  * @brief
- *    Compares memory until they differ, and their difference is
- *    returned in diff.  If the block of memory is the same, diff=0.
+ *    Compares memory in uint32_t slices until they differ, and their
+ *    difference is returned in diff.  If the whole block of memory is
+ *    the same, diff=0.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -46,9 +50,9 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param  dest   pointer to memory to compare against
+ * @param  dlen   maximum length of dest, in uint32_t's
  * @param  src    pointer to the source memory to compare with dest
- * @param  dmax   maximum length of dest, in bytess
- * @param  smax   length of the source memory block
+ * @param  slen   number of uint32_t's from source to be compared
  * @param  *diff  pointer to the diff which is an integer greater
  *                than, equal to or less than zero according to
  *                whether the object pointed to by dest is
@@ -56,30 +60,33 @@
  *                pointed to by src.
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   Neither dmax nor smax shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
- * @pre   smax shall not be greater than dmax.
+ * @pre   Neither dlen nor slen shall be 0.
+ * @pre   dlen shall not be greater than RSIZE_MAX_MEM and sizeof(dest).
+ * @pre   slen shall not be greater than dlen/4.
  *
  * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dst/src is NULL POINTER
- * @retval  ESZEROL     when dmax/smax = ZERO
- * @retval  ESLEMAX     when dmax/smax > RSIZE_MAX_MEM
- * @retval  ESNOSPC     when dmax < smax
+ * @retval  ESNULLP     when dest/src is NULL POINTER
+ * @retval  ESZEROL     when dlen/slen = ZERO
+ * @retval  ESLEMAX     when dlen/slen > RSIZE_MAX_MEM32 or > sizeof(dest/src)/4
+ * @retval  ESLEWRNG    when dlen/slen != sizeof(dest/src)/4 and --enable-error-dmax
+ * @retval  ESNOSPC     when dlen < slen
  *
  * @see
  *    memcmp_s(), memcmp16_s()
  *
  */
 EXPORT errno_t
-memcmp32_s (const uint32_t *dest, rsize_t dmax,
-            const uint32_t *src,  rsize_t smax, int *diff)
+_memcmp32_s_chk (const uint32_t *dest, rsize_t dlen,
+                 const uint32_t *src,  rsize_t slen, int *diff,
+                 const size_t destbos, const size_t srcbos)
 {
-    /*
-     * must be able to return the diff
-     */
+    uint32_t smax; /* in bytes */
+    uint32_t dmax; /* in bytes */
+
+    /* must be able to return the diff */
     if (unlikely(diff == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp32_s: diff is null",
-                   NULL, ESNULLP);
+                   (void*)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
     *diff = -1;  /* default diff */
@@ -92,31 +99,65 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
 
     if (unlikely(src == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp32_s: src is null",
-                   NULL, ESNULLP);
+                   (void*)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memcmp32_s: dmax is 0",
-                   NULL, ESZEROL);
+    if (unlikely(dlen == 0)) {
+        invoke_safe_mem_constraint_handler("memcmp32_s: dlen is 0",
+                   (void*)dest, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM32 || smax > RSIZE_MAX_MEM32)) {
-        invoke_safe_mem_constraint_handler("memcmp32_s: dmax/smax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    smax = slen*4;
+    dmax = dlen*4;
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dlen > RSIZE_MAX_MEM32 )) {
+            invoke_safe_mem_constraint_handler("memcmp32_s: dlen exceeds max",
+                   (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, smax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memcmp32_s: dlen exceeds dest",
+                   (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memcmp32_s", (void*)dest, dmax, destbos);
+            RETURN_ESLEWRNG;
+        }
+#endif
     }
 
-    if (unlikely(smax == 0)) {
-        invoke_safe_mem_constraint_handler("memcmp32_s: smax is 0",
-                   NULL, ESZEROL);
+    if (unlikely(slen == 0)) {
+        invoke_safe_mem_constraint_handler("memcmp32_s: slen is 0",
+                   (void*)dest, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(smax > dmax)) {
-       invoke_safe_mem_constraint_handler("memcmp32_s: smax exceeds dmax",
-                  NULL, ESNOSPC);
+    if (srcbos == BOS_UNKNOWN) {
+        if (unlikely(slen > RSIZE_MAX_MEM32)) {
+            invoke_safe_mem_constraint_handler("memcmp32_s: slen exceeds max",
+                       (void*)src, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+        BND_CHK_PTR_BOUNDS(src, smax);
+    } else {
+        if (unlikely(smax > srcbos)) {
+            invoke_safe_mem_constraint_handler("memcmp32_s: slen exceeds src",
+                       (void*)src, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+    }
+
+    if (unlikely(slen > dlen)) {
+       invoke_safe_mem_constraint_handler("memcmp32_s: slen exceeds dlen",
+                  (void*)dest, ESNOSPC);
        return (RCNEGATE(ESNOSPC));
     }
 
@@ -132,14 +173,14 @@ memcmp32_s (const uint32_t *dest, rsize_t dmax,
      * now compare src to dest
      */
     *diff = 0;
-    while (dmax != 0 && smax != 0) {
+    while (dlen != 0 && slen != 0) {
         if (*dest != *src) {
-            *diff = *dest - *src;
+            *diff = *dest - *src; /* in units of int32 */
             break;
         }
 
-        dmax--;
-        smax--;
+        dlen--;
+        slen--;
 
         dest++;
         src++;

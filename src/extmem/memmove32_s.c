@@ -37,14 +37,15 @@
 #endif
 
 /**
+ * @def memmove32_s(dest,dmax,src,slen)
  * @brief
- *    The memmove32_s function copies count uint32_t's from the region
+ *    The memmove32_s function copies slen uint32_t's from the region
  *    pointed to by src into the region pointed to by dest.
  * @details
- *    This copying takes place as if the count uint32_t's from the region
+ *    This copying takes place as if the slen uint32_t's from the region
  *    pointed to by src are first copied into a temporary array of
- *    count uint32_t's that does not overlap the regions pointed to
- *    by dest or src, and then the count uint32_t's from the temporary
+ *    slen uint32_t's that does not overlap the regions pointed to
+ *    by dest or src, and then the slen uint32_t's from the temporary
  *    array are copied into the region pointed to by dest.
  *
  * @remark EXTENSION TO
@@ -55,74 +56,102 @@
  * @param[out] dest   pointer to the memory that will be replaced by src.
  * @param[in]  dmax   maximum length of the resulting dest, in bytes
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  count  number of uint32_t's to be copied
+ * @param[in]  slen  number of uint32_t's to be copied
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   dmax shall not be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
- * @pre   count shall not be greater than dmax/4.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest).
+ * @pre   slen shall not be greater than dmax/4.
  *
- * @return  If there is a runtime-constraint violation, the memmove_s function
- *          stores zeros in the first dmax characters of the region pointed to
- *          by dest if dest is not a null pointer and dmax is not greater
- *          than RSIZE_MAX_MEM.
- * @retval  EOK         when operation is successful or count = 0
+ * @return  If there is a runtime-constraint violation, memmove32_s
+ *          stores zeros in the first dmax bytes of the region pointed to
+ *          by dest if dest and dmax are valid.
+ * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO
- * @retval  ESLEMAX     when dmax/count > RSIZE_MAX_MEM
- * @retval  ESNOSPC     when dmax < count*4
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32 or > sizeof(src)/4
+ * @retval  ESNOSPC     when dmax < slen*4
  *
  * @see
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
 EXPORT errno_t
-memmove32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t count)
+_memmove32_s_chk (uint32_t *dest, rsize_t dmax,
+                  const uint32_t *src, rsize_t slen,
+                  const size_t destbos, const size_t srcbos)
 {
-    if (unlikely(count == 0)) {
-        /* Since C11 count=0 is allowed */
+    size_t smax; /* in bytes */
+
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_mem_constraint_handler("memmove32_s: dest is null",
-                   NULL, ESNULLP);
+                   NULL, ESZEROL);
         return (RCNEGATE(ESNULLP));
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_mem_constraint_handler("memmove32_s: dest is zero",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memmove32_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    smax = slen*4;
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memmove32_s: dmax exceeds max",
+                   (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, smax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memmove32_s: dmax exceeds dest",
+                   (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memmove32_s", dest, dmax, destbos);
+            RETURN_ESLEWRNG;
+        }
+#endif
+        dmax = destbos;
     }
 
-    if (unlikely(count > dmax/4)) {
-        errno_t rc = count > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
+    if (unlikely(smax > dmax)) {
+        errno_t rc = slen > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
         mem_prim_set(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove32_s: count*4 exceeds dmax",
-                   NULL, rc);
+        invoke_safe_mem_constraint_handler("memmove32_s: slen exceeds dmax/4",
+                   (void*)dest, rc);
         return (RCNEGATE(rc));
     }
 
     if (unlikely(src == NULL)) {
         mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memmove32_s: src is null",
-                   NULL, ESNULLP);
+                   (void*)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
-    BND_CHK_PTR_BOUNDS(dest, count);
-    BND_CHK_PTR_BOUNDS(src, count);
+
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, smax);
+    } else if (unlikely(smax > srcbos)) {
+        invoke_safe_mem_constraint_handler("memmove32_s: slen exceeds src",
+                       (void*)src, ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
+    }
 
     /*
      * now perform the copy
      */
-    mem_prim_move32(dest, src, count);
+    mem_prim_move32(dest, src, slen);
 
     return (RCNEGATE(EOK));
 }

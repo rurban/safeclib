@@ -161,12 +161,6 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
                        (void*)src, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(slen != srcbos)) {
-            handle_mem_bos_chk_warn("memcmp_s",  (void*)src, slen, srcbos);
-            RETURN_ESLEWRNG;
-        }
-#endif
     }
 
     /* no need to compare the same memory */

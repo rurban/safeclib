@@ -42,15 +42,15 @@
 #else
 
 /**
- * @def memmove_s(dest,dmax,src,count)
+ * @def memmove_s(dest,dmax,src,slen)
  * @brief
- *    The \b memmove_s function copies \c count bytes from the region pointed to by
+ *    The \b memmove_s function copies \c slen bytes from the region pointed to by
  *    \c src into the region pointed to by \c dest.
- *    If count is zero, the function does nothing.
+ *    If slen is zero, the function does nothing.
  * @details
- *    This copying takes place as if the count bytes from the region pointed
- *    to by src are first copied into a temporary array of count bytes that does
- *    not overlap the region pointed to by dest or src, and then the count
+ *    This copying takes place as if the slen bytes from the region pointed
+ *    to by src are first copied into a temporary array of slen bytes that does
+ *    not overlap the region pointed to by dest or src, and then the slen
  *    bytes from the temporary array are copied into the object region to by
  *    dest.
  *
@@ -65,24 +65,24 @@
  * @param[out] dest  pointer to the memory that will be replaced by src.
  * @param[in]  dmax  maximum length of the resulting dest, in bytes
  * @param[in]  src   pointer to the memory that will be copied to dest
- * @param[in]  count maximum number bytes of src that can be copied
+ * @param[in]  slen maximum number bytes of src that can be copied
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
- * @pre  count shall not be greater than dmax.
+ * @pre  slen shall not be greater than dmax.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
  *
  * @return  If there is a runtime-constraint violation, the memmove_s function
  *          stores zeros in the first dmax characters of the region pointed to
  *          by dest if dest is not a null pointer and dmax is valid.
- * @retval  EOK         when operation is successful or count = 0
+ * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax/count > RSIZE_MAX_MEM or sizeof(dest)
+ * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM or sizeof(dest)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESNOSPC     when dmax < count
+ * @retval  ESNOSPC     when dmax < slen
  *
  * @see
  *    memmove16_s(), memmove32_s(), memcpy_s(), memcpy16_s() memcpy32_s()
@@ -90,8 +90,9 @@
  */
 
 EXPORT errno_t
-_memmove_s_chk (void *dest, rsize_t dmax, const void *src, rsize_t count,
-                const size_t destbos)
+_memmove_s_chk (void *dest, rsize_t dmax,
+               const void *src, rsize_t slen,
+               const size_t destbos, const size_t srcbos)
 {
     uint8_t *dp;
     const uint8_t  *sp;
@@ -100,7 +101,7 @@ _memmove_s_chk (void *dest, rsize_t dmax, const void *src, rsize_t count,
     sp = (uint8_t*) src;
 
     /* Note that MSVC checks this at very first. We do also now */
-    if (unlikely(count == 0)) { /* Since C11 n=0 is allowed */
+    if (unlikely(slen == 0)) { /* Since C11 n=0 is allowed */
         return EOK;
     }
 
@@ -122,7 +123,8 @@ _memmove_s_chk (void *dest, rsize_t dmax, const void *src, rsize_t count,
                                                dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
-        BND_CHK_PTR_BOUNDS(dest, count);
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds dest",
@@ -145,17 +147,24 @@ _memmove_s_chk (void *dest, rsize_t dmax, const void *src, rsize_t count,
         return (RCNEGATE(ESNULLP));
     }
 
-    if (unlikely(count > dmax)) {
-        errno_t rc = count > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
+    if (unlikely(slen > dmax)) {
+        errno_t rc = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
         mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove_s: count exceeds max",
+        invoke_safe_mem_constraint_handler("memmove_s: slen exceeds max",
                    dest, rc);
         return (RCNEGATE(rc));
     }
-    BND_CHK_PTR_BOUNDS(src, count);
+
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else if (unlikely(slen > srcbos)) {
+        invoke_safe_mem_constraint_handler("memmove_s: slen exceeds src",
+                   (void*)src, ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
+    }
 
     /* now perform the copy, with overlap allowed */
-    mem_prim_move(dp, sp, count);
+    mem_prim_move(dp, sp, slen);
 
     return (RCNEGATE(EOK));
 }

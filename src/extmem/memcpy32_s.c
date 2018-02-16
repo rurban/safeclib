@@ -5,7 +5,7 @@
  * October 2017, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017,2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -39,8 +39,9 @@
 #endif
 
 /**
+ * @def memcpy32_s(dest,dmax,src,slen)
  * @brief
- *    This function copies at most count uint32_t's from src to dest, up to
+ *    This function copies at most slen uint32_t's from src to dest, up to
  *    dmax.
  *
  * @remark EXTENSION TO
@@ -51,23 +52,24 @@
  * @param[out] dest   pointer to the memory that will be replaced by src.
  * @param[in]  dmax   maximum length of the resulting dest, in bytes
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  count  number of uint32_t's to be copied
+ * @param[in]  slen  number of uint32_t's to be copied
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   dmax shall not be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM.
- * @pre   count shall not be greater than dmax/4.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest)
+ * @pre   slen shall not be greater than dmax/4.
  * @pre   Copying shall not take place between regions that overlap.
  *
- * @return  If there is a runtime-constraint violation, the memcpy_s function
+ * @return  If there is a runtime-constraint violation, memcpy32_s
  *          stores zeros in the first dmax bytes of the region pointed to
  *          by dest if dest and dmax are valid.
- * @retval  EOK         when operation is successful or count = 0
+ * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
- * @retval  ESLEMAX     when count > RSIZE_MAX_MEM32
- * @retval  ESNOSPC     when count*4 > dmax
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32 or > sizeof(dest)/4
+ * @retval  ESNOSPC     when slen*4 > dmax
  * @retval  ESOVRLP     when src memory overlaps dest
  *
  * @see
@@ -75,10 +77,12 @@
  *
  */
 EXPORT errno_t
-memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t count)
+_memcpy32_s_chk (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t slen,
+                 const size_t destbos, const size_t srcbos)
 {
-    if (unlikely(count == 0)) {
-        /* Since C11 count=0 is allowed */
+    size_t smax; /* in bytes */
+
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
 
@@ -90,48 +94,72 @@ memcpy32_s (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t count)
 
     if (unlikely(dmax == 0)) {
         invoke_safe_mem_constraint_handler("memcpy32_s: dmax is 0",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(dmax > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memcpy32_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    smax = slen*4;
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memcpy32_s: dmax exceeds max",
+                   (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, smax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memcpy32_s: dmax exceeds dest",
+                   (void*)dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memcpy32_s", dest, dmax, destbos);
+            RETURN_ESLEWRNG;
+        }
+#endif
+        dmax = destbos;
     }
 
-    if (unlikely(count > dmax/4)) {
-        errno_t rc = count > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
+    if (unlikely(smax > dmax)) {
+        errno_t rc = slen > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
         mem_prim_set(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy32_s: count exceeds dmax",
-                   NULL, rc);
+        invoke_safe_mem_constraint_handler("memcpy32_s: slen exceeds dmax/4",
+                   (void*)dest, rc);
         return (RCNEGATE(rc));
     }
 
     if (unlikely(src == NULL)) {
         mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: src is NULL",
-                   NULL, ESNULLP);
+                   (void*)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
+    }
+
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, smax);
+    } else if (unlikely(smax > srcbos)) {
+        invoke_safe_mem_constraint_handler("memcmp32_s: slen exceeds src",
+                       (void*)src, ESLEMAX);
+        return (RCNEGATE(ESLEMAX));
     }
 
     /*
      * overlap is undefined behavior, do not allow
      */
-    if (unlikely( ((dest > src) && (dest < (src+count))) ||
+    if (unlikely( ((dest > src) && (dest < (src+slen))) ||
                   ((src > dest) && (src < (dest+dmax/4))) )) {
         mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: overlap undefined",
-                   NULL, ESOVRLP);
+                   (void*)dest, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
     }
-    BND_CHK_PTR_BOUNDS(dest, count);
-    BND_CHK_PTR_BOUNDS(src, count);
 
     /*
      * now perform the copy
      */
-    mem_prim_move32(dest, src, count);
+    mem_prim_move32(dest, src, slen);
 
     return (RCNEGATE(EOK));
 }

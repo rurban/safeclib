@@ -41,11 +41,11 @@ int main()
 
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("empty dest or dlen*2") EXPECT_BOS("slen overflow >dlen")
     rc = memcmp16_s(mem1, 0, mem2, LEN, &ind);
     ERR(ESZEROL);
 
-    EXPECT_BOS("empty slen")
+    EXPECT_BOS("empty src or slen*2")
     rc = memcmp16_s(mem1, LEN, mem2, 0, &ind);
     ERR(ESZEROL);
 
@@ -55,18 +55,29 @@ int main()
     rc = memcmp16_s(mem1, RSIZE_MAX_MEM+1, mem2, LEN, &ind);
     ERR(ESLEMAX);
 
-    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dmax")
-    rc = memcmp16_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
+    rc = memcmp16_s(mem1, LEN, mem2, RSIZE_MAX_MEM16+1, &ind);
+    ERR(ESLEMAX);
+
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
+    rc = memcmp16_s(mem1, LEN, mem2, LEN+1, &ind);
     ERR(ESLEMAX);
 
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("slen overflow >dlen")
     rc = memcmp16_s(mem1, LEN-1, mem2, LEN, &ind);
     ERR(ESNOSPC);
 
 #endif
 
+/*--------------------------------------------------*/
+    /* undetected at compile-time */
+
+    len = RSIZE_MAX_MEM16+1;
+    rc = memcmp16_s(mem1, LEN, mem2, len, &ind);
+    ERR(ESLEMAX);
+    
 /*--------------------------------------------------*/
 
     /* short cut */
