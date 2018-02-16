@@ -98,7 +98,7 @@
  *          enough for dest, also return EOK, but clear dest.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax > dest
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax/slen > dest/src
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESUNTERM   when dest not terminated
  * @retval  ESOVRLP    when src overlaps with dest
@@ -116,7 +116,7 @@
  */
 EXPORT errno_t
 _strncat_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
-                rsize_t slen, size_t destbos)
+                rsize_t slen, size_t destbos, const size_t srcbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -145,7 +145,13 @@ _strncat_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
                      error);
         return RCNEGATE(error);
     }
-    BND_CHK_PTR_BOUNDS(src, slen);
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else {
+        if (unlikely(slen > srcbos)) {
+            return handle_str_bos_overload("strncat_s",dest,destbos);
+        }
+    }
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;

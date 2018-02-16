@@ -115,11 +115,11 @@ _strcpy_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
 /* fitted string concatenate */
 EXTERN errno_t
 _strncat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src, rsize_t slen,
-               const size_t destbos)
+               const size_t destbos, const size_t srcbos)
     BOS_ATTR((slen || dest || dmax) && ( _BOS_NULL(dest) || _BOS_ZERO(dest,dmax)), "empty dest or dmax")
     BOS_ATTR((slen || dest || dmax) && _BOS_OVR(dest,dmax), "dest overflow")
     BOS_OVR2_BUTZERO(src, slen);
-#define strncat_s(dest,dmax,src,slen) _strncat_s_chk(dest,dmax,src,slen,BOS(dest))
+#define strncat_s(dest,dmax,src,slen) _strncat_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 
 /* fitted string copy */
 EXTERN errno_t

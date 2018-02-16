@@ -88,7 +88,7 @@
  *                     src were copied to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or sizeof(dest)
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax/slen > dest/src
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
@@ -105,7 +105,7 @@
  */
 EXPORT errno_t
 _strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
-                rsize_t slen, size_t destbos)
+                rsize_t slen, const size_t destbos, const size_t srcbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -127,7 +127,13 @@ _strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
     CHK_SRC_NULL_CLEAR("strncpy_s", src)
     CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
     CHK_SLEN_MAX_CLEAR("strncpy_s", slen, RSIZE_MAX_STR)
-    BND_CHK_PTR_BOUNDS(src, slen);
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else {
+        if (unlikely(slen > srcbos)) {
+            return handle_str_bos_overload("strncpy_s",dest,destbos);
+        }
+    }
 
     /* hold base in case src was not copied */
     orig_dmax = dmax;
