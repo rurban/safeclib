@@ -136,9 +136,10 @@ sprintf_s     (char * restrict dest, rsize_t dmax,
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
-                                               NULL, ESLEMAX);
+                                               dest, ESLEMAX);
             return -ESLEMAX;
         }
+        BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             return -(handle_str_bos_overload("sprintf_s: dmax exceeds dest",

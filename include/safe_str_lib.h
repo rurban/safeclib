@@ -125,9 +125,9 @@ _strncat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src, rs
 EXTERN errno_t
 _strncpy_s_chk(char * restrict dest, rsize_t dmax,
                const char * restrict src, rsize_t slen,
-               const size_t destbos)
+               const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_OVR2_BUTZERO(src, slen);
-#define strncpy_s(dest,dmax,src,slen) _strncpy_s_chk(dest,dmax,src,slen,BOS(dest))
+#define strncpy_s(dest,dmax,src,slen) _strncpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 
 /* string length */
 EXTERN rsize_t
@@ -178,18 +178,29 @@ _vsprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use sprintf_s instead */
+#ifdef HAVE_C99
 EXTERN int
-snprintf_s(char *restrict dest, rsize_t dmax, const char * restrict fmt, ...)
+_snprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
+                const char * restrict fmt, ...)
     BOS_CHK(dest) BOS_FMT(fmt);
+#define snprintf_s(dest,dmax,...) _snprintf_s_chk(dest,dmax,BOS(dest),__VA_ARGS__)
+#else
+EXTERN int
+snprintf_s(char *restrict dest, rsize_t dmax,
+           const char * restrict fmt, ...)
+    BOS_CHK(dest) BOS_FMT(fmt);
+#endif
 
 /* unsafe! use vsprintf_s instead */
+EXTERN int
+_vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
+                 const char *restrict fmt, va_list ap)
+    BOS_CHK(dest) BOS_FMT(fmt);
 #if !(defined(_WIN32) && defined(HAVE_VSNPRINTF_S))
 /* they use:
 int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
                 const char *_Format, va_list _ArgList); */
-EXTERN int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
-    BOS_CHK(dest) BOS_FMT(fmt);
+#define vsnprintf_s(dest,dmax,fmt,ap) _vsnprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
 #endif
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */

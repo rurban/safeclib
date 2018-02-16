@@ -42,6 +42,7 @@ any of the arguments corresponding to %s is a null pointer
 */
 
 /**
+ * @def snprintf_s(dest,dmax,...)
  * @brief
  *    The truncating \c snprintf_s function composes a string with
  *    same test that would be printed if format was used on \c
@@ -98,18 +99,22 @@ any of the arguments corresponding to %s is a null pointer
  *
  */
 
+#ifdef HAVE_C99
 EXPORT int
-snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
+_snprintf_s_chk(char * restrict dest, rsize_t dmax, const size_t destbos,
+                const char * restrict fmt, ...)
+#else
+EXPORT int
+snprintf_s     (char * restrict dest, rsize_t dmax,
+               const char * restrict fmt, ...)
+#endif
 {
     va_list ap;
     const char *p;
     int ret = -1;
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return -(ESLEMAX);
-    }
+#ifndef HAVE_C99
+    const size_t destbos = BOS_UNKNOWN;
+#endif
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("snprintf_s: dest is null",
@@ -119,21 +124,35 @@ snprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...)
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("snprintf_s: fmt is null",
-                   NULL, ESNULLP);
+                   dest, ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("snprintf_s: dmax is 0",
-                   NULL, ESZEROL);
+                   dest, ESZEROL);
         return -(ESZEROL);
+    }
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
+                       dest, ESLEMAX);
+            return -ESLEMAX;
+        }
+        BND_CHK_PTR_BOUNDS(dest,dmax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            return -(handle_str_bos_overload("snprintf_s: dmax exceeds dest",
+                               dest, destbos));
+        }
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("snprintf_s: illegal %n",
-                                               NULL, EINVAL);
+                       dest, EINVAL);
             return -(EINVAL);
         }
     }

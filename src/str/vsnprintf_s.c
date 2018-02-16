@@ -95,17 +95,12 @@
  */
 
 EXPORT int
-vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list ap)
+_vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
+                 const char *restrict fmt, va_list ap)
 {
 
     int ret = -1;
     const char *p;
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return -(ESLEMAX);
-    }
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dest is null",
@@ -115,21 +110,35 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: fmt is null",
-                   NULL, ESNULLP);
+                   dest, ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dmax is 0",
-                   NULL, ESZEROL);
+                   dest, ESZEROL);
         return -(ESZEROL);
+    }
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
+                       dest, ESLEMAX);
+            return -ESLEMAX;
+        }
+        BND_CHK_PTR_BOUNDS(dest,dmax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            return -(handle_str_bos_overload("vsnprintf_s: dmax exceeds dest",
+                                             dest, destbos));
+        }
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("vsnprintf_s: illegal %n",
-                                               NULL, EINVAL);
+                       dest, EINVAL);
             return -(EINVAL);
         }
     }
@@ -140,7 +149,7 @@ vsnprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, va_list
     if (unlikely(ret < 0)) {
         char errstr[128] = "vsnprintf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+        invoke_safe_str_constraint_handler(errstr, dest, -ret);
     }
 
     return ret;

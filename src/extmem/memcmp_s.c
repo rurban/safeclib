@@ -120,6 +120,7 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
                        (void*)dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
         BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         if (unlikely(dmax > destbos)) {

@@ -227,6 +227,7 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
             errno = ESLEMAX;
             return (NULL);
         }
+        BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_str_constraint_handler("strtok_s: *dmaxp exceeds dest",

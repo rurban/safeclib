@@ -351,6 +351,7 @@ void abort(void) __attribute__((noreturn));
                        BOS(src),_XSTR(src),_XSTR(slen)); \
             return RCNEGATE(ESLEWRNG);         \
         }                                      \
+        BND_CHK_PTR_BOUNDS(src, slen);         \
     }
 #elif defined(HAVE_WARN_DMAX)
 # define CHK_SRC_OVR_CLEAR(func, src, slen, MAX) \
@@ -362,7 +363,8 @@ void abort(void) __attribute__((noreturn));
         else if (_BOS_CHK_N(src,slen)) {      \
             handle_str_src_bos_chk_warn(func,(char *)dest,slen, \
                        BOS(src),_XSTR(src),_XSTR(slen)); \
-        } \
+        }                                     \
+        BND_CHK_PTR_BOUNDS(src, slen);        \
     }
 #else
 # define CHK_SRC_OVR_CLEAR(func, src, slen, MAX) \
@@ -371,6 +373,7 @@ void abort(void) __attribute__((noreturn));
             return handle_str_bos_overload(func,(char *)dest, \
                        _BOS_KNOWN(dest)?BOS(dest):dmax);      \
         }                                     \
+        BND_CHK_PTR_BOUNDS(src, slen);        \
     }
 #endif
 #define CHK_SLEN_MAX_CLEAR(func, slen, max)                             \

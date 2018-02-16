@@ -118,16 +118,17 @@ _vsprintf_s_chk(char *restrict dest, const rsize_t dmax, const size_t destbos,
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
-                   NULL, ESZEROL);
+                   dest, ESZEROL);
         return -ESZEROL;
     }
 
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
-                                               NULL, ESLEMAX);
+                       dest, ESLEMAX);
             return -ESLEMAX;
         }
+        BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             return -(handle_str_bos_overload("vsprintf_s: dmax exceeds dest",
