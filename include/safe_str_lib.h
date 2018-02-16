@@ -136,16 +136,18 @@ _strnlen_s_chk (const char* str, rsize_t smax, const size_t strbos)
 #define strnlen_s(str,smax) _strnlen_s_chk(str,smax,BOS(str))
 
 /* string tokenizer */
+EXTERN char *
+_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
+              const char *restrict delim, char **restrict ptr,
+              const size_t destbos)
+    BOS_OVR2_BUTNULL(dest, *dmaxp)
+    BOS_ATTR(dest && _BOS_NULL(dmaxp), "empty dmax")
+    BOS_NULL(delim)
+    BOS_NULL(ptr);
 #if !(defined(_WIN32) && defined(HAVE_STRTOK_S))
 /* they use:
 char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
-EXTERN char *
-strtok_s(char *restrict s1, rsize_t *restrict s1max,
-         const char *restrict src, char **restrict ptr)
-    BOS_OVR2_BUTNULL(s1, *s1max)
-    BOS_ATTR(s1 && _BOS_NULL(s1max), "empty s1max")
-    BOS_NULL(src)
-    BOS_NULL(ptr);
+#define strtok_s(dest,dmaxp,delim,ptr) _strtok_s_chk(dest,dmaxp,delim,ptr,BOS(dest))
 #endif
 
 /* secure stdio */

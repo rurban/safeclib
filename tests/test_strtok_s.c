@@ -51,7 +51,7 @@ int main()
     /* msvcrt also doesn't reset errno */
     ERRNO_MSVC(ESNULLP, EINVAL);
 
-    EXPECT_BOS("empty s1max")
+    EXPECT_BOS("empty dmax")
     rc = strtok_s(str1, NULL, str2, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, 0);
@@ -66,8 +66,7 @@ int main()
 
 /*--------------------------------------------------*/
 
-    len = RSIZE_MAX_STR + 1;
-    rc = strtok_s(str1, &len, str2,  &p2str);
+    rc = strtok_s(str1, (len=RSIZE_MAX_STR+1,&len), str2,  &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESLEMAX, 0);
 
@@ -75,13 +74,13 @@ int main()
 
 #ifndef HAVE_CT_BOS_OVR
     len = LEN;
-    EXPECT_BOS("empty src")
+    EXPECT_BOS("empty delim")
     rc = strtok_s(str1, &len, NULL,  &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
 
     len = 0;
-    EXPECT_BOS("empty src")
+    EXPECT_BOS("empty delim")
     rc = strtok_s(str1, &len, NULL, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESZEROL, EINVAL);
@@ -205,7 +204,7 @@ int main()
     p2tok = strtok_s(NULL, &len, str2, &p2str);
     ERRNO(EOK);
 
-    if (strcmp(p2tok, "??b") ) {
+    if (p2tok && strcmp(p2tok, "??b") ) {
         debug_printf("%s %u token -%s-  -%s- len=%d error \n",
                __FUNCTION__, __LINE__, p2tok, p2str, (int)len );
         errs++;
