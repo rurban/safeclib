@@ -273,14 +273,20 @@ _memccpy_s_chk(void *dest, rsize_t dmax, const void *src, int c, rsize_t n,
  */
 
 EXTERN errno_t
-wmemcpy_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t smax)
+_wmemcpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t smax,
+               const size_t destbos, const size_t srcbos)
     BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
+#define wmemcpy_s(dest,dmax,src,smax)                           \
+    _wmemcpy_s_chk(dest,dmax,src,smax,BOS(dest),BOS(src))
 
 EXTERN errno_t
-wmemmove_s(wchar_t *dest, rsize_t dmax,
-           const wchar_t *src, rsize_t smax)
+_wmemmove_s_chk(wchar_t *dest, rsize_t dmax,
+                const wchar_t *src, rsize_t smax,
+                const size_t destbos, const size_t srcbos)
     BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
+#define wmemmove_s(dest,dmax,src,smax)                          \
+    _wmemmove_s_chk(dest,dmax,src,smax,BOS(dest),BOS(src))
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
