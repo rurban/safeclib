@@ -29,7 +29,7 @@ int main()
     rc = memzero32_s(NULL, LEN);
     ERR(ESNULLP)
 
-    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("empty dest or len*4")
     rc = memzero32_s(mem1, 0);
     ERR(ESZEROL)
 

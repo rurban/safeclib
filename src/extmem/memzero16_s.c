@@ -37,6 +37,7 @@
 #endif
 
 /**
+ * @def memzero16_s(dest,len)
  * @brief
  *    Zeros len uint16_t's starting at dest.
  *
@@ -49,37 +50,31 @@
  * @param[in]  len   number of uint16_t's to be zeroed
 
  * @pre dest shall not be a null pointer.
- * @pre len shall not be 0 nor greater than RSIZE_MAX_MEM16.
+ * @pre len shall not be 0 nor greater than RSIZE_MAX_MEM16 and sizeof(dest)/2.
  *
  * @return  If there is a runtime constraint, the operation is not performed.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when len = ZERO
- * @retval  ESLEMAX     when len > RSIZE_MAX_MEM16
+ * @retval  ESLEMAX     when len > RSIZE_MAX_MEM16 or > sizeof(dest)/2
+ * @retval  ESLEWRNG    when len != sizeof(dest)/2 and --enable-error-dmax
  *
  * @see
  *    memzero_s(), memzero32_s()
  *
  */
 EXPORT errno_t
-memzero16_s (uint16_t *dest, rsize_t len)
+_memzero16_s_chk (uint16_t *dest, rsize_t len, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_mem_constraint_handler("memzero16_s: dest is null",
-                   NULL, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
+    rsize_t dmax = len*2;
+    CHK_DEST_MEM_NULL("memzero16_s")
+    CHK_DMAX_MEM_ZERO("memzero16_s")
 
-    if (unlikely(len == 0)) {
-        invoke_safe_mem_constraint_handler("memzero16_s: len is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
-    if (unlikely(len > RSIZE_MAX_MEM16)) {
-        invoke_safe_mem_constraint_handler("memzero16_s: len exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MEM_MAX("memzero16_s", RSIZE_MAX_MEM)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_MEM_OVR("memzero16_s", destbos);
     }
 
     /*

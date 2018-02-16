@@ -88,34 +88,21 @@ _memccpy_s_chk(void *restrict dest, rsize_t dmax, const void *restrict src,
     dp = (uint8_t*) dest;
     sp = (uint8_t*) src;
 
-    CHK_DEST_NULL("memccpy_s")
-    CHK_DMAX_ZERO("memccpy_s")
+    CHK_DEST_MEM_NULL("memccpy_s")
+    CHK_DMAX_MEM_ZERO("memccpy_s")
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("memccpy_s: dmax exceeds max",
-                       dest, ESLEMAX);
-            return RCNEGATE(ESLEMAX);
-        }
+        CHK_DMAX_MEM_MAX("memccpy_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, dmax);
         BND_CHK_PTR_BOUNDS(dest, n);
     } else {
-        if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memccpy_s: dmax exceeds dest",
-                       dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memcpy_s", dest, dmax, destbos);
-            RETURN_ESLEWRNG;
-#endif
+        CHK_DEST_MEM_OVR("memccpy_s", destbos)
     }
     if (unlikely(n == 0)) { /* Since C11 n=0 is allowed */
         *dp = '\0';
         return EOK;
     }
-    CHK_SRC_NULL_MEM_CLEAR("memccpy_s", src)
-    CHK_SLEN_MAX_MEM_NOSPC_CLEAR("memccpy_s", n, RSIZE_MAX_MEM)
+    CHK_SRC_MEM_NULL_CLEAR("memccpy_s", src)
+    CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memccpy_s", n, RSIZE_MAX_MEM)
 
     /*
      * overlap is an error

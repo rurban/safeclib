@@ -105,48 +105,20 @@ _memmove_s_chk (void *dest, rsize_t dmax,
         return EOK;
     }
 
-    if (unlikely(dp == NULL)) {
-        invoke_safe_mem_constraint_handler("memmove_s: dest is null",
-                   NULL, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memmove_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
+    CHK_DEST_MEM_NULL("memmove_s")
+    CHK_DMAX_MEM_ZERO("memmove_s")
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds max",
-                                               dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
+        CHK_DMAX_MEM_MAX("memmove_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, dmax);
         BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
-        if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memmove_s: dmax exceeds dest",
-                       dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memmove_s", dest, dmax, destbos);
-            RETURN_ESLEWRNG;
-        }
-#endif
+        CHK_DEST_MEM_OVR("memmove_s", destbos)
         /* Note: unlike to memset_s, we don't set dmax to destbos */
     }
 
-    if (unlikely(sp == NULL)) {
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove_s: src is null",
-                   dest, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
-
+    CHK_SRC_MEM_NULL_CLEAR("memmove_s", src)
+    CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memmove_s", slen, RSIZE_MAX_MEM)
+/*
     if (unlikely(slen > dmax)) {
         errno_t rc = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
         mem_prim_set(dp, dmax, 0);
@@ -154,7 +126,7 @@ _memmove_s_chk (void *dest, rsize_t dmax,
                    dest, rc);
         return (RCNEGATE(rc));
     }
-
+*/
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {

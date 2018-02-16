@@ -200,49 +200,66 @@ _memmove32_s_chk(uint32_t *dest, rsize_t dmax,
 
 /* byte zero */
 EXTERN errno_t
-memzero_s(void *dest, rsize_t dmax)
+_memzero_s_chk(void *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
+#define memzero_s(dest,len)                     \
+    _memzero_s_chk(dest,len,BOS(dest))
 
 /* uint16_t zero */
 EXTERN errno_t
-memzero16_s(uint16_t *dest, rsize_t dmax)
-    BOS_CHK(dest);
+_memzero16_s_chk(uint16_t *dest, rsize_t len, const size_t destbos)
+    BOS_CHK2(dest, len*2);
+#define memzero16_s(dest,len)                   \
+    _memzero16_s_chk(dest,len,BOS(dest))
 
 /* uint32_t zero */
 EXTERN errno_t
-memzero32_s(uint32_t *dest, rsize_t dmax)
-    BOS_CHK(dest);
+_memzero32_s_chk(uint32_t *dest, rsize_t len, const size_t destbos)
+    BOS_CHK2(dest, len*4);
+#define memzero32_s(dest,len)                     \
+    _memzero32_s_chk(dest,len,BOS(dest))
 
 /* find a byte */
 EXTERN errno_t
-memchr_s(const void *restrict dest, rsize_t dlen,
-         const int ch, void **result)
+_memchr_s_chk(const void *restrict dest, rsize_t dlen,
+         const int ch, void **result, const size_t destbos)
     BOS_CHK2(dest, dlen)
     VAL_OVR2(ch, 255)
     BOS_NULL(result);
+#define memchr_s(dest,dlen,ch,result)          \
+    _memchr_s_chk(dest,dlen,ch,result,BOS(dest))
 
 EXTERN errno_t
-memrchr_s(const void *restrict dest, rsize_t dlen,
-          const int ch, void **result)
+_memrchr_s_chk(const void *restrict dest, rsize_t dlen,
+          const int ch, void **result, const size_t destbos)
     BOS_CHK2(dest, dlen) VAL_OVR2(ch, 255)
     BOS_NULL(result);
+#define memrchr_s(dest,dlen,ch,result)          \
+    _memrchr_s_chk(dest,dlen,ch,result,BOS(dest))
 
 /* timing-safe byte sequence comparisons
    (already in OpenBSD, cygwin, newlib) */
 #if !(defined(__NEWLIB__) || defined(__OpenBSD__))
 EXTERN int
-timingsafe_bcmp(const void *b1, const void *b2, size_t n)
+_timingsafe_bcmp_chk(const void *b1, const void *b2, size_t n,
+                     const size_t destbos, const size_t srcbos)
     BOS_OVR2(b1, n) BOS_OVR2(b2, n);
+#define timingsafe_bcmp(b1,b2,len) \
+    _timingsafe_bcmp_chk(b1,b2,len,BOS(b1),BOS(b2))
 
 EXTERN int
-timingsafe_memcmp(const void *b1, const void *b2, size_t len)
+_timingsafe_memcmp_chk(const void *b1, const void *b2, size_t len,
+                       const size_t destbos, const size_t srcbos)
     BOS_OVR2(b1, len) BOS_OVR2(b2, len);
+#define timingsafe_memcmp(b1,b2,len) \
+    _timingsafe_memcmp_chk(b1,b2,len,BOS(b1),BOS(b2))
+
 #endif
 
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
 _memccpy_s_chk(void *dest, rsize_t dmax, const void *src, int c, rsize_t n,
-                 const size_t destbos, const size_t srcbos)
+               const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_OVR2(src, n) VAL_OVR2(c, 255)
     VAL_OVR2_BUTZERO(n, dmax);
 #define memccpy_s(dest,dmax,src,c,n)                            \

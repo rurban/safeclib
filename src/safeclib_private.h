@@ -261,21 +261,51 @@ void abort(void) __attribute__((noreturn));
         invoke_safe_str_constraint_handler(func ": dmax is 0", dest, ESZEROL); \
         return RCNEGATE(ESZEROL);                                       \
     }
+#define CHK_DEST_MEM_NULL(func)                                         \
+    if (unlikely(dest == NULL)) {                                       \
+        invoke_safe_mem_constraint_handler(func ": dest is null",       \
+                                           (void*)dest, ESNULLP);       \
+        return RCNEGATE(ESNULLP);                                       \
+    }
+#define CHK_DMAX_MEM_ZERO(func)                                         \
+    if (unlikely(dmax == 0)) {                                          \
+        invoke_safe_mem_constraint_handler(func ": dmax is 0",          \
+                                           (void*)dest, ESZEROL);       \
+        return RCNEGATE(ESZEROL);                                       \
+    }
 #define CHK_DMAX_MAX(func, max)                                         \
     if (unlikely(dmax > (max))) {                                       \
-        invoke_safe_str_constraint_handler(func ": dmax exceeds max", dest, ESLEMAX); \
+        invoke_safe_str_constraint_handler(func ": dmax exceeds max",   \
+                                           dest, ESLEMAX);              \
+        return RCNEGATE(ESLEMAX);                                       \
+    }
+#define CHK_DMAX_MEM_MAX(func, max)                                     \
+    if (unlikely(dmax > (max))) {                                       \
+        invoke_safe_mem_constraint_handler(func ": dmax exceeds max",   \
+                                           (void*)dest, ESLEMAX);       \
         return RCNEGATE(ESLEMAX);                                       \
     }
 /* for known dest size, we should have already errored at compile-time before.
-   anyway, for known dest size check overflows in detail. */
+   anyway, for known dest size check overflows in detail. does CLEAR */
 #if defined(HAVE_WARN_DMAX)
 # define CHK_DEST_OVR(func, destbos)                                    \
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
             return handle_str_bos_overload(func": dmax exceeds dest",   \
-                                           dest,destbos);               \
+                         dest,destbos);                                 \
         }                                                               \
         handle_str_bos_chk_warn(func,dest,dmax,destbos);                \
+        RETURN_ESLEWRNG;                                                \
+    }
+/* does no clear */
+# define CHK_DEST_MEM_OVR(func, destbos)                                \
+    if (unlikely(dmax != destbos)) {                                    \
+        if (unlikely(dmax > destbos)) {                                 \
+            invoke_safe_mem_constraint_handler(func": dmax exceeds max",\
+                                               (void*)dest, ESLEMAX);   \
+            return RCNEGATE(ESLEMAX);                                   \
+        }                                                               \
+        handle_mem_bos_chk_warn(func,(void*)dest,dmax,destbos);         \
         RETURN_ESLEWRNG;                                                \
     }
 #else
@@ -283,6 +313,14 @@ void abort(void) __attribute__((noreturn));
     if (unlikely(dmax > destbos)) {                                     \
         return handle_str_bos_overload(func": dmax exceeds dest",       \
                                        dest,destbos);                   \
+    }
+# define CHK_DEST_MEM_OVR(func, destbos)                                \
+    if (unlikely(dmax != destbos)) {                                    \
+        if (unlikely(dmax > destbos)) {                                 \
+            invoke_safe_mem_constraint_handler(func": dmax exceeds max",\
+                                               (void*)dest, ESLEMAX);   \
+            return RCNEGATE(ESLEMAX);                                   \
+        }                                                               \
     }
 #endif
 #define CHK_SRC_NULL(func, src)                                         \
@@ -348,15 +386,15 @@ void abort(void) __attribute__((noreturn));
                      func ": " _XSTR(slen) " exceeds max", error);      \
         return RCNEGATE(error);                                         \
     }
-#define CHK_SRC_NULL_MEM_CLEAR(func, src)                               \
+#define CHK_SRC_MEM_NULL_CLEAR(func, src)                               \
     if (unlikely(src == NULL)) {                                        \
         handle_mem_error(dest, dmax, func ": " _XSTR(src) " is null", ESNULLP);    \
         return RCNEGATE(ESNULLP);                                       \
     }
-#define CHK_SLEN_MAX_MEM_NOSPC_CLEAR(func, slen, max)                   \
+#define CHK_SLEN_MEM_MAX_NOSPC_CLEAR(func, slen, max)                   \
     if (unlikely(slen > dmax)) {                                        \
         errno_t error = slen > max ? ESLEMAX : ESNOSPC;                 \
-        handle_mem_error(dest, dmax, func ": " _XSTR(slen) " exceeds max", error); \
+        handle_mem_error((void*)dest, dmax, func ": " _XSTR(slen) " exceeds max", error); \
         return RCNEGATE(error);                                         \
     }
 

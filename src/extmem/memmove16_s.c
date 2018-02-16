@@ -89,62 +89,25 @@ _memmove16_s_chk (uint16_t *dest, rsize_t dmax,
         return EOK;
     }
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_mem_constraint_handler("memmove16_s: dest is null",
-                   NULL, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memmove16_s: dmax is 0",
-                   (void*)dest, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
+    CHK_DEST_MEM_NULL("memmove16_s")
+    CHK_DMAX_MEM_ZERO("memmove16_s")
     smax = slen*2;
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("memmove16_s: dmax exceeds max",
-                   (void*)dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
+        CHK_DMAX_MEM_MAX("memmove16_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, dmax);
         BND_CHK_PTR_BOUNDS(dest, smax);
     } else {
-        if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memmove16_s: dmax exceeds dest",
-                   (void*)dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memmove16_s", dest, dmax, destbos);
-            RETURN_ESLEWRNG;
-        }
-#endif
+        CHK_DEST_MEM_OVR("memmove16_s", destbos)
         dmax = destbos;
     }
-
-    if (unlikely(smax > dmax)) {
-        errno_t rc = slen > RSIZE_MAX_MEM16 ? ESLEMAX : ESNOSPC;
-        mem_prim_set(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove16_s: slen exceeds dmax/2",
-                   (void*)dest, rc);
-        return (RCNEGATE(rc));
-    }
-
-    if (unlikely(src == NULL)) {
-        mem_prim_set(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove16_s: src is null",
-                   (void*)dest, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
+    CHK_SRC_MEM_NULL_CLEAR("memmove16_s", src)
+    CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memmove16_s", smax, RSIZE_MAX_MEM)
 
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, smax);
     } else {
         if (unlikely(smax > srcbos)) {
-            invoke_safe_mem_constraint_handler("memcmp16_s: slen exceeds src",
+            invoke_safe_mem_constraint_handler("memmove16_s: slen exceeds src",
                        (void*)src, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }

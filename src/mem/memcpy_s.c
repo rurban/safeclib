@@ -101,54 +101,19 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax,
     dp = (uint8_t*) dest;
     sp = (uint8_t*) src;
 
-    if (unlikely(dp == NULL)) {
-        invoke_safe_mem_constraint_handler("memcpy_s: dest is NULL",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memcpy_s: dmax is 0",
-                   dest, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
+    CHK_DEST_MEM_NULL("memcpy_s")
+    CHK_DMAX_MEM_ZERO("memcpy_s")
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("memcpy_s: dmax exceeds max",
-                       dest, ESLEMAX);
-            return RCNEGATE(ESLEMAX);
-        }
+        CHK_DMAX_MEM_MAX("memcpy_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, dmax);
         BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
-        if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memcpy_s: dmax exceeds dest",
-                       dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memcpy_s", dest, dmax, destbos);
-            RETURN_ESLEWRNG;
-#endif
+        CHK_DEST_MEM_OVR("memcpy_s", destbos)
         /* Note: unlike to memset_s, we don't set dmax to destbos */
     }
 
-    if (unlikely(sp == NULL)) {
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy_s: src is NULL",
-                   dest, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(slen > dmax)) {
-        errno_t rc = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy_s: slen exceeds max",
-                   dest, rc);
-        return RCNEGATE(rc);
-    }
+    CHK_SRC_MEM_NULL_CLEAR("memcpy_s", src)
+    CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memcpy_s", slen, RSIZE_MAX_MEM)
 
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);

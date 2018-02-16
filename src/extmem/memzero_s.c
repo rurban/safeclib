@@ -37,6 +37,7 @@
 #endif
 
 /**
+ * @def memzero_s(dest,len)
  * @brief
  *    Zeros len bytes starting at dest.
  *
@@ -49,37 +50,31 @@
  * @param[in]  len   number of bytes to be zeroed
  *
  * @pre   dest shall not be a null pointer.
- * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM.
+ * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM and sizeof(dest)
  *
  * @return  If there is a runtime constraint, the operation is not performed.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when len = ZERO
- * @retval  ESLEMAX     when len > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when len > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEWRNG    when len != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    memzero16_s(), memzero32_s()
  *
  */
 EXPORT errno_t
-memzero_s (void *dest, rsize_t len)
+_memzero_s_chk (void *dest, rsize_t len, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_mem_constraint_handler("memzero_s: dest is null",
-                   NULL, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
+    rsize_t dmax = len;
+    CHK_DEST_MEM_NULL("memzero_s")
+    CHK_DMAX_MEM_ZERO("memzero_s")
 
-    if (unlikely(len == 0)) {
-        invoke_safe_mem_constraint_handler("memzero_s: len is 0",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
-    if (unlikely(len > RSIZE_MAX_MEM)) {
-        invoke_safe_mem_constraint_handler("memzero_s: len exceeds max",
-                   NULL, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MEM_MAX("memzero_s", RSIZE_MAX_MEM)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_MEM_OVR("memzero_s", destbos);
     }
 
     /*
@@ -91,5 +86,5 @@ memzero_s (void *dest, rsize_t len)
     return (RCNEGATE(EOK));
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(memzero_s);
+EXPORT_SYMBOL(_memzero_s_chk);
 #endif

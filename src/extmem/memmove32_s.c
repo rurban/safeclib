@@ -2,8 +2,10 @@
  * memmove32_s.c
  *
  * October 2008, Bo Berry
+ * February 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2017,2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -88,57 +90,19 @@ _memmove32_s_chk (uint32_t *dest, rsize_t dmax,
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
-    if (unlikely(dest == NULL)) {
-        invoke_safe_mem_constraint_handler("memmove32_s: dest is null",
-                   NULL, ESZEROL);
-        return (RCNEGATE(ESNULLP));
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memmove32_s: dest is zero",
-                   (void*)dest, ESZEROL);
-        return (RCNEGATE(ESZEROL));
-    }
-
+    CHK_DEST_MEM_NULL("memmove32_s")
+    CHK_DMAX_MEM_ZERO("memmove32_s")
     smax = slen*4;
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("memmove32_s: dmax exceeds max",
-                   (void*)dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
+        CHK_DMAX_MEM_MAX("memmove32_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, dmax);
         BND_CHK_PTR_BOUNDS(dest, smax);
     } else {
-        if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memmove32_s: dmax exceeds dest",
-                   (void*)dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memmove32_s", dest, dmax, destbos);
-            RETURN_ESLEWRNG;
-        }
-#endif
+        CHK_DEST_MEM_OVR("memmove32_s", destbos)
         dmax = destbos;
     }
-
-    if (unlikely(smax > dmax)) {
-        errno_t rc = slen > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
-        mem_prim_set(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove32_s: slen exceeds dmax/4",
-                   (void*)dest, rc);
-        return (RCNEGATE(rc));
-    }
-
-    if (unlikely(src == NULL)) {
-        mem_prim_set(dest, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove32_s: src is null",
-                   (void*)dest, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
+    CHK_SRC_MEM_NULL_CLEAR("memmove32_s", src)
+    CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memmove32_s", smax, RSIZE_MAX_MEM)
 
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, smax);

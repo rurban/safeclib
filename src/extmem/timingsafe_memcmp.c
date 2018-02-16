@@ -25,6 +25,7 @@
 #endif
 
 /**
+ * @def timingsafe_memcmp(b1,b2,len)
  * @brief
  *    Compare all memory bytes. Return their difference sign
  *    \c (-1,0,1).
@@ -43,18 +44,43 @@
  * @pre    Neither b1 nor b2 shall be a null pointer.
  *
  * @retval  -1, 0, or 1
+ * @retval  -ESLEMAX  if len > RSIZE_MAX_MEM or > sizeof(b1) or > sizeof(b2)
  *
  * @see
  *    memcmp_s(), timingsafe_bcmp()
- *
  */
 
 EXPORT int
-timingsafe_memcmp (const void *b1, const void *b2, size_t len)
+_timingsafe_memcmp_chk (const void *b1, const void *b2, size_t len,
+                        const size_t destbos, const size_t srcbos)
 {
     const unsigned char *p1 = (const unsigned char *)b1, *p2 = (const unsigned char *)b2;
     size_t i;
     int res = 0, done = 0;
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(len > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("timingsafe_memcmp" ": n exceeds max",
+                                               (void*)b1, ESLEMAX);
+            return -ESLEMAX;
+        }
+        BND_CHK_PTR_BOUNDS(b1, len);
+    } else {
+        if (unlikely(len > destbos)) {
+            invoke_safe_mem_constraint_handler("timingsafe_memcmp" ": n exceeds b1",
+                                               (void*)b1, ESLEMAX);
+            return -ESLEMAX;
+        }
+    }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(b2, len);
+    } else {
+        if (unlikely(len > srcbos)) {
+            invoke_safe_mem_constraint_handler("timingsafe_memcmp" ": n exceeds b2",
+                                               (void*)b2, ESLEMAX);
+            return -ESLEMAX;
+        }
+    }
 
     for (i = 0; i < len; i++) {
         /* lt is -1 if p1[i] < p2[i]; else 0. */
@@ -76,5 +102,5 @@ timingsafe_memcmp (const void *b1, const void *b2, size_t len)
     return (res);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(timingsafe_memcmp);
+EXPORT_SYMBOL(_timingsafe_memcmp_chk);
 #endif

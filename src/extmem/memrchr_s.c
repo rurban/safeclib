@@ -42,6 +42,7 @@ extern void* memrchr(const void *, int, size_t);
 #endif
 
 /**
+ * @def memrchr_s(dest,dmax,ch,result)
  * @brief
  *    Finds the last occurrence of ch (after conversion to char as if by
  *    (char)ch) in the null-terminated byte string pointed to by dest (each
@@ -51,20 +52,20 @@ extern void* memrchr(const void *, int, size_t);
  *
  * @remark IMPLEMENTED IN
  *
- * @param[in]  dest    pointer to string to compare against
- * @param[in]  dlen    restricted maximum length of dest
+ * @param[in]  dest    pointer to string buffer to compare against
+ * @param[in]  dmax    restricted maximum length of dest
  * @param[in]  ch      character to search for
  * @param[out] result  pointer to char* in dest
  *
  * @pre  Neither dest nor result shall be a null pointer.
- * @pre  dlen shall not be 0.
- * @pre  dlen shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be 0.
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest)
  * @pre  ch shall not be greater than 255
  *
  * @retval  EOK        when successfully character found.
  * @retval  ESNULLP    when dest/result is a NULL pointer
- * @retval  ESZEROL    when dlen = 0
- * @retval  ESLEMAX    when dlen > RSIZE_MAX_STR
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_MEM or > sizeof(dest)
  * @retval  ESLEMAX    when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *
@@ -73,8 +74,8 @@ extern void* memrchr(const void *, int, size_t);
  *
  */
 EXPORT errno_t
-memrchr_s (const void *restrict dest, rsize_t dlen,
-           const int ch, void **result)
+_memrchr_s_chk (const void *restrict dest, rsize_t dmax,
+                const int ch, void **result, const size_t destbos)
 {
     if (unlikely(result == NULL)) {
         invoke_safe_str_constraint_handler("memrchr_s: result is null",
@@ -83,24 +84,14 @@ memrchr_s (const void *restrict dest, rsize_t dlen,
     }
     *result = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("memrchr_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_MEM_NULL("memrchr_s")
+    CHK_DMAX_MEM_ZERO("memrchr_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MEM_MAX("memrchr_s", RSIZE_MAX_MEM)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_MEM_OVR("memrchr_s", destbos)
     }
-
-    if (unlikely(dlen == 0)) {
-        invoke_safe_str_constraint_handler("memrchr_s: dlen is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dlen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("memrchr_s: dlen exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
     if (unlikely(ch > 255)) {
         invoke_safe_str_constraint_handler("memrchr_s: ch exceeds max",
                    NULL, ESLEMAX);
@@ -109,7 +100,7 @@ memrchr_s (const void *restrict dest, rsize_t dlen,
 
 #ifdef HAVE_MEMRCHR
     /* compares wordwise */
-    *result = (void*)memrchr((const void *)dest, ch, (size_t)dlen);
+    *result = (void*)memrchr((const void *)dest, ch, (size_t)dmax);
 
     if (!*result)
         return (ESNOTFND);
@@ -118,9 +109,9 @@ memrchr_s (const void *restrict dest, rsize_t dlen,
     {
         const uint8_t *s = (uint8_t *)dest;
         uint8_t u8 = (uint8_t)ch;
-        while (dlen--) {
-            if (s[dlen] == u8) {
-                *result = (void*)&s[dlen];
+        while (dmax--) {
+            if (s[dmax] == u8) {
+                *result = (void*)&s[dmax];
                 return (EOK);
             }
         }

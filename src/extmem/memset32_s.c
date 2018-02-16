@@ -80,35 +80,16 @@ _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
 {
     errno_t err;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_mem_constraint_handler("memset32_s: dest is null",
-                   NULL, ESNULLP);
-        return (RCNEGATE(ESNULLP));
-    }
-
+    CHK_DEST_MEM_NULL("memset32_s")
     if (unlikely(n == 0)) { /* Since C11 n=0 is allowed */
         return EOK;
     }
 
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("memset32_s: dmax exceeds max",
-                                               dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
+        CHK_DMAX_MEM_MAX("memset32_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, n);
     } else {
-        if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memset16_s: dmax exceeds dest",
-                                               dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
-        }
-#ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memset32_s", dest, dmax, destbos);
-            RETURN_ESLEWRNG;
-        }
-#endif
+        CHK_DEST_MEM_OVR("memset32_s", destbos)
         dmax = destbos;
     }
 

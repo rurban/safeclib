@@ -30,7 +30,7 @@ int main()
     ERR(ESNULLP)
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("empty dest or len*2")
     rc = memzero16_s(mem1, 0);
     ERR(ESZEROL)
 /*--------------------------------------------------*/
