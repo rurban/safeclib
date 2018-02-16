@@ -291,9 +291,12 @@ _wmemmove_s_chk(wchar_t *dest, rsize_t dmax,
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
 EXTERN errno_t
-wmemcmp_s(const wchar_t *dest, rsize_t dmax,
-          const wchar_t *src, rsize_t slen, int *diff)
+_wmemcmp_s_chk(const wchar_t *dest, rsize_t dmax,
+               const wchar_t *src, rsize_t slen, int *diff,
+               const size_t destbos, const size_t srcbos)
     BOSW_CHK(dest) BOSW_CHK2(src, slen) BOS_NULL(diff);
+#define wmemcmp_s(dest,dlen,src,slen,diff)                      \
+    _wmemcmp_s_chk(dest,dlen,src,slen,diff,BOS(dest),BOS(src))
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
