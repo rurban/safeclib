@@ -38,6 +38,7 @@
 #endif
 
 /**
+ * @def memccpy_s(dest,dmax,src,c,n)
  * @brief
  *    \c memccpy_s copies no more than n bytes from memory area src to memory
  *    area dest, stopping when the character c is found. Throws error if the
@@ -53,7 +54,7 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall be sizeof(dest)
- * @pre  dmax shall not be 0, not be greater than RSIZE_MAX_MEM.
+ * @pre  dmax shall not be 0, not be greater than RSIZE_MAX_MEM and sizeof(dest)
  * @pre  n shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
  *
@@ -76,8 +77,9 @@
  *    memcpy_s(), strncpy_s()
  */
 EXPORT errno_t
-memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
-           int c, rsize_t n)
+_memccpy_s_chk(void *restrict dest, rsize_t dmax, const void *restrict src,
+               int c, rsize_t n,
+               const size_t destbos, const size_t srcbos)
 {
     uint8_t *dp;
     const uint8_t  *sp;
@@ -88,7 +90,26 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
 
     CHK_DEST_NULL("memccpy_s")
     CHK_DMAX_ZERO("memccpy_s")
-    CHK_DMAX_MAX("memccpy_s", RSIZE_MAX_MEM)
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("memccpy_s: dmax exceeds max",
+                       dest, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, n);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_mem_constraint_handler("memccpy_s: dmax exceeds dest",
+                       dest, ESLEMAX);
+            return (RCNEGATE(ESLEMAX));
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(dmax != destbos)) {
+            handle_mem_bos_chk_warn("memcpy_s", dest, dmax, destbos);
+            RETURN_ESLEWRNG;
+#endif
+    }
     if (unlikely(n == 0)) { /* Since C11 n=0 is allowed */
         *dp = '\0';
         return EOK;
@@ -134,5 +155,5 @@ memccpy_s (void *restrict dest, rsize_t dmax, const void *restrict src,
     return RCNEGATE(ESNOSPC);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(memccpy_s);
+EXPORT_SYMBOL(_memccpy_s_chk);
 #endif

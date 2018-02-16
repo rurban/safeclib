@@ -241,9 +241,12 @@ timingsafe_memcmp(const void *b1, const void *b2, size_t len)
 
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
-memccpy_s(void *dest, rsize_t dmax, const void *src, int c, rsize_t n)
+_memccpy_s_chk(void *dest, rsize_t dmax, const void *src, int c, rsize_t n,
+                 const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_OVR2(src, n) VAL_OVR2(c, 255)
     VAL_OVR2_BUTZERO(n, dmax);
+#define memccpy_s(dest,dmax,src,c,n)                            \
+    _memccpy_s_chk(dest,dmax,src,c,n,BOS(dest),BOS(src))
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
