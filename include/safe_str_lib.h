@@ -286,12 +286,14 @@ _strcasecmp_s_chk(const char *dest, rsize_t dmax,
     BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
 #define strcasecmp_s(dest,dmax,src,resultp) _strcasecmp_s_chk(dest,dmax,src,resultp,BOS(dest))
 
-
 /* find a substring - case insensitive */
 EXTERN errno_t
-strcasestr_s(char *dest, rsize_t dmax,
-             const char *src, rsize_t slen, char **substring)
+_strcasestr_s_chk(char *dest, rsize_t dmax,
+                  const char *src, rsize_t slen, char **substring,
+                  const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(substring);
+#define strcasestr_s(dest,dmax,src,slen,substring) \
+    _strcasestr_s_chk(dest,dmax,src,slen,substring,BOS(dest),BOS(src))
 
 /* fixed field string compare */
 EXTERN errno_t

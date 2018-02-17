@@ -130,7 +130,7 @@ _strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
-            return handle_str_bos_overload("strncpy_s",dest,destbos);
+            return handle_str_bos_overload("strncpy_s",(char*)src,srcbos);
         }
     }
 

@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strcasestr_s(dest,dmax,src,slen,substring)
  * @brief
  *    The strcasestr_s() function locates the first occurrence of
  *    the substring pointed to by src which would be located in
@@ -49,18 +50,19 @@
  *
  * @param[in]  dest       pointer to string to be searched for the substring
  * @param[in]  dmax       restricted maximum length of dest string
- * @param[in]  src        pointer to the sub string
+ * @param[in]  src        pointer to the substring
  * @param[in]  slen       maximum length of src string
  * @param[out] substring  returned pointer to the substring
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  Neither dmax nor slen shall equal zero.
- * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR.
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src
  *
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dst/src/substring is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOTFND   when substring not found
  *
  * @see
@@ -68,54 +70,47 @@
  *
  */
 EXPORT errno_t
-strcasestr_s (char *dest, rsize_t dmax,
-              const char *src, rsize_t slen, char **substring)
+_strcasestr_s_chk (char *dest, rsize_t dmax,
+                   const char *src, rsize_t slen, char **substring,
+                   const size_t destbos, const size_t srcbos)
 {
     rsize_t len;
     rsize_t dlen;
     int i;
 
-    if (unlikely(substring == NULL)) {
-        invoke_safe_str_constraint_handler("strcasestr_s: substring is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
+    CHK_SRC_NULL("strcasestr_s", substring)
     *substring = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcasestr_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strcasestr_s")
+    CHK_SRC_NULL("strcasestr_s", src)
+    CHK_DMAX_ZERO("strcasestr_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcasestr_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, slen);
+    } else {
+        CHK_DEST_OVR("strcasestr_s", destbos)
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcasestr_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
+    if (unlikely(slen > dmax)) {
+        errno_t rc = slen > RSIZE_MAX_STR ? ESLEMAX : ESNOTFND;
+        invoke_safe_str_constraint_handler("strcasestr_s: slen exceeds dmax",
+                                           (void*)dest, rc);
+        return RCNEGATE(rc);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcasestr_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else {
+        if (unlikely(slen > srcbos)) {
+            invoke_safe_str_constraint_handler("strcasestr_s: slen exceeds src",
+                                               (void*)src, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strcasestr_s: src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
     if (unlikely(slen == 0)) {
         invoke_safe_str_constraint_handler("strcasestr_s: slen is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcasestr_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+                                           (void*)dest, ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     /*
@@ -157,5 +152,5 @@ strcasestr_s (char *dest, rsize_t dmax,
      * substring was not found, return NULL
      */
     *substring = NULL;
-    return (ESNOTFND);
+    return RCNEGATE(ESNOTFND);
 }
