@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memzero32_s
  * File 'extmem/memzero32_s.c'
- * Lines executed:100.00% of 12
+ * Lines executed:88.89% of 9
  *
  *
  *=
