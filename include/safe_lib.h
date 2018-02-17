@@ -120,8 +120,9 @@ tmpfile_s(FILE * restrict * restrict streamptr);
 #endif /* __KERNEL__ */
 
 EXTERN char *
-gets_s(char *dest, rsize_t dmax)
+_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
+#define gets_s(dest,dmax) _gets_s_chk(dest,dmax,BOS(dest))
 
 /* Windows sec_api does without restrict */
 #ifndef MINGW_HAS_SECURE_API

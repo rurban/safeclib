@@ -41,6 +41,7 @@
 #endif
 
 /**
+ * @def gets_s(dest,dmax)
  * @brief
  *    The \c gets_s function reads characters from stdin until a newline is
  *    found or end-of-file occurs. Writes only at most dmax characters into
@@ -75,7 +76,7 @@
  *
  * @pre  dest shall not be a null pointer
  * @pre  dmax shall not equal zero
- * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
@@ -86,7 +87,7 @@
  *                     were appended to dest and the result in dest is null terminated.
  * @retval  0 + errno=ESNULLP    when dest is a NULL pointer
  * @retval  0 + errno=ESZEROL    when dmax = 0
- * @retval  0 + errno=ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  0 + errno=ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest
  * @retval  0 + errno=ESUNTERM   endline or eof not encountered after storing
  *                               dmax-1 characters to dest.
  *
@@ -95,7 +96,7 @@
  */
 
 EXPORT char *
-gets_s (char *restrict dest, rsize_t dmax)
+_gets_s_chk (char *restrict dest, rsize_t dmax, const size_t destbos)
 {
     char *ret;
 
@@ -105,19 +106,27 @@ gets_s (char *restrict dest, rsize_t dmax)
         errno = ESNULLP;
         return NULL;
     }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("gets_s: dmax is 0",
                    NULL, ESZEROL);
         errno = ESZEROL;
         return NULL;
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("gets_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        errno = ESLEMAX;
-        return NULL;
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("gets_s: dmax exceeds max",
+                       dest, ESLEMAX);
+            errno = ESLEMAX;
+            return NULL;
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_str_constraint_handler("get_s: dmax exceeds dest",
+                       dest, ESLEMAX);
+            errno = ESLEMAX;
+            return NULL;
+        }
     }
 
     errno = 0;
