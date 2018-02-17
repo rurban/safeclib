@@ -82,8 +82,10 @@ EXPORT int
 scanf_s(const char *restrict fmt, ...)
 {
     va_list ap;
-    char *p;
     int ret;
+#if defined(HAVE_STRSTR)
+    char *p;
+#endif
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("scanf_s: fmt is null",

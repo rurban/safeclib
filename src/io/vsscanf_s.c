@@ -82,7 +82,9 @@ any of the arguments corresponding to %s is a null pointer.
 EXPORT int
 vsscanf_s(const char *restrict buffer, const char *restrict fmt, va_list ap)
 {
+#if defined(HAVE_STRSTR)
     char *p;
+#endif
     int ret;
 
     if (unlikely(buffer == NULL)) {

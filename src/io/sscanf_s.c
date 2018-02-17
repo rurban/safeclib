@@ -83,8 +83,10 @@ EXPORT int
 sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
 {
     va_list ap;
-    char *p;
     int ret;
+#if defined(HAVE_STRSTR)
+    char *p;
+#endif
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("sscanf_s: buffer is null",

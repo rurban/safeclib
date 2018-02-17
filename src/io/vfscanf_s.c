@@ -80,7 +80,9 @@ any of the arguments corresponding to %s is a null pointer.
 EXPORT int
 vfscanf_s(FILE *restrict stream, const char *restrict fmt, va_list ap)
 {
+#if defined(HAVE_STRSTR)
     char *p;
+#endif
     int ret;
 
     if (unlikely(stream == NULL)) {

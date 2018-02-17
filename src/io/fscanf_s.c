@@ -81,8 +81,10 @@ EXPORT int
 fscanf_s(FILE *restrict stream, const char *restrict fmt, ...)
 {
     va_list ap;
-    char *p;
     int ret;
+#if defined(HAVE_STRSTR)
+    char *p;
+#endif
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fscanf_s: stream is null",
