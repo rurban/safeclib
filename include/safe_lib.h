@@ -105,11 +105,13 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
 
 /* not str/mem/wchar: io, os, misc */
 
-/* This functions is defined in the C11 standard Annex K, but unsafe
+/* tmpnam_s is defined in the C11 standard Annex K, but unsafe
    and excluded by default. In most libc's it is deprecated. */
 #ifdef SAFECLIB_ENABLE_UNSAFE
 EXTERN errno_t
-tmpnam_s(char *filename_s, rsize_t maxsize);
+_tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
+    BOS_OVR2Z(dest, dmax);
+#define tmpnam_s(dest,dmax) _tmpnam_s_chk(dest,dmax,BOS(dest))
 #endif
 
 #ifndef __KERNEL__

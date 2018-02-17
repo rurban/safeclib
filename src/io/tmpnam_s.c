@@ -38,6 +38,7 @@
 #if !(defined(TEST_MSVCRT) && defined(HAVE_TMPNAM_S))
 
 /**
+ * @def tmpnam_s(dest,dmax)
  * @brief
  *    Creates a unique valid file name (no longer than L_tmpnam in
  *    length) and stores it in character string pointed to by
@@ -51,25 +52,25 @@
  *    http://en.cppreference.com/w/c/io/tmpnam
  *    * Deprecated in favor of mkstemp
  *
- * @param[out] filename_s pointer to the character array capable of holding at
- *                        least L_tmpnam_s bytes, to be used as a result buffer.
- * @param[in]  maxsize    maximum number of characters the function is allowed
- *                        to write (typically the size of the filename_s array).
+ * @param[out] dest    pointer to the string capable of holding at
+ *                     least L_tmpnam_s bytes, to be used as a result buffer.
+ * @param[in]  dmax    maximum number of characters the function is allowed
+ *                     to write (typically the size of the dest buffer).
  *
  * @pre No more than TMP_MAX_S files may be opened
- * @pre filename_s is a null pointer
- * @pre maxsize is greater than RSIZE_MAX_STR
- * @pre maxsize is less than the generated file name string
+ * @pre dest shall not be a null pointer
+ * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest
+ * @pre dmax shall not be smaller than the generated file name string,
+ *      which is at least strlen(dest) + 3.
  *
- * @return Returns zero and writes the file name to filename_s on
+ * @return Returns zero and writes the file name to dest on
  * success. On error, returns non-zero and writes the null character
- * to filename_s[0] (only if filename_s is not null and maxsize is not
- * zero and is not greater than RSIZE_MAX_STR).
+ * to dest[0] (only if dest is not null and dmax is valid).
  *
  * @retval  EOK        on success
- * @retval  ESNULLP    when filename_s is a NULL pointer
- * @retval  ESZEROL    when maxsize = 0
- * @retval  ESLEMAX    when maxsize > RSIZE_MAX_STR or
+ * @retval  ESNULLP    when dest is a NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or
  *                     more than TMP_MAX_S files were opened.
  * @retval  errno()   when tmpnam() failed, typically -ENOENT
  *
@@ -88,38 +89,53 @@
  */
 
 EXPORT errno_t
-tmpnam_s(char *filename_s, rsize_t maxsize)
+_tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
 {
     static int count = 0;
     char* result = NULL;
 
-    if (unlikely(filename_s == NULL)) {
-        invoke_safe_str_constraint_handler("tmpnam_s: filename_s is null",
+    if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("tmpnam_s: dest is null",
                    NULL, ESNULLP);
         return ESNULLP;
     }
 
-    if (unlikely(maxsize == 0)) {
-        invoke_safe_str_constraint_handler("tmpnam_s: maxsize is 0",
-                   NULL, ESZEROL);
+    if (unlikely(dmax == 0)) {
+        invoke_safe_str_constraint_handler("tmpnam_s: dmax is 0",
+                   dest, ESZEROL);
         return ESZEROL;
     }
-
-    if (unlikely(maxsize > RSIZE_MAX_STR || maxsize > L_tmpnam_s)) {
-        invoke_safe_str_constraint_handler("tmpnam_s: maxsize exceeds max",
-                   NULL, ESLEMAX);
+#if 0
+    if (unlikely(dmax < strnlen_s(dest, dmax) + 3)) {
+        invoke_safe_str_constraint_handler("tmpnam_s: dmax underflow < dest+3",
+                   dest, ESLEMAX);
+        return ESLEMIN;
+    }
+#endif
+    if (destbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_str_constraint_handler("tmpnam_s: dmax exceeds dest",
+                       dest, ESLEMAX);
+            return ESLEMAX;
+        }
+    }
+    if (unlikely(dmax > RSIZE_MAX_STR || dmax > L_tmpnam_s)) {
+        invoke_safe_str_constraint_handler("tmpnam_s: dmax exceeds max",
+                                           dest, ESLEMAX);
         return ESLEMAX;
     }
 
     ++count;
     if (unlikely(count > TMP_MAX_S)) {
-        invoke_safe_str_constraint_handler("tmpnam_s: exceeds TMP_MAX_S",
+        invoke_safe_str_constraint_handler("tmpnam_s: count exceeds TMP_MAX_S",
                    NULL, ESLEMAX);
         return ESLEMAX;
     }
 
 #if !defined HAVE_C99 && defined HAVE_CXX
-    result = tmpnam(filename_s);
+    result = tmpnam(dest);
 #else
 # ifdef __clang
 #  pragma clang diagnostic push
@@ -129,7 +145,7 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
 #  pragma GCC diagnostic warning "-Wdeprecated-declarations"
 # endif
 
-    result = tmpnam(filename_s);
+    result = tmpnam(dest);
 
 # ifdef __clang
 #  pragma clang diagnostic pop
@@ -141,26 +157,27 @@ tmpnam_s(char *filename_s, rsize_t maxsize)
     if (result) {
         size_t len = strlen(result);
 
-        if (unlikely(len > maxsize)) {
-            *result = '\0';
+        if (unlikely(len > dmax)) {
+            *dest = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds size",
-                                               NULL, ESNOSPC);
+                                               dest, ESNOSPC);
             return ESNOSPC;
         }
 
         if (unlikely(len > L_tmpnam_s)) {
-            *result = '\0';
+            *dest = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds L_tmpnam_s",
-                                               NULL, ESLEMAX);
+                                               dest, ESLEMAX);
             return ESLEMAX;
         }
+        strncpy_s(dest, dmax, result, len);
 #ifdef SAFECLIB_STR_NULL_SLACK
-        memset_s(&result[len], maxsize, 0, maxsize-len);
+        memset_s(&dest[len], dmax, 0, dmax-len);
 #endif
         return EOK;
     } else {
         invoke_safe_str_constraint_handler("tmpnam_s: tmpnam() failed",
-                   NULL, ESNOTFND);
+                   dest, ESNOTFND);
         return errno;
     }
 }
