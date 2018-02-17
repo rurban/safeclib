@@ -822,7 +822,8 @@ AC_ARG_ENABLE(wchar,
 	yes) enable_wchar=true ;;
 	no)  enable_wchar=false ;;
         dnl early mingw32 have only crippled wchar support: only wcscmp, wcslen
-	*)   if test x$ac_cv_type_wchar_t = xyes -a x$ac_cv_func_vswprintf = xyes
+	*)   if test x$ac_cv_type_wchar_t = xyes -a x$ac_cv_func_vswprintf = xyes \
+                  -a x$ac_cv_header_wchar_h = xyes
              then
                enable_wchar=true
              else
@@ -832,7 +833,10 @@ AC_ARG_ENABLE(wchar,
 	esac], [enable_wchar=true])
 AC_MSG_CHECKING([for --disable-wchar or broken wchar usability])
 dnl catch mingw32 1.0 with crippled wchar
-if test x$enable_wchar = xtrue -a x$ac_cv_func_vswprintf = xyes \
+
+
+if test x$ac_cv_header_wchar_h = xyes -a x$enable_wchar = xtrue \
+   -a x$ac_cv_func_vswprintf = xyes \
    -a x$ac_cv_func_mbsrtowcs = xyes -a x$ac_cv_func_vswscanf = xyes
 then
   enable_wchar=true
