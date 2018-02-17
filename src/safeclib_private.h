@@ -253,12 +253,14 @@ void abort(void) __attribute__((noreturn));
 
 #define CHK_DEST_NULL(func)                                             \
     if (unlikely(dest == NULL)) {                                       \
-        invoke_safe_str_constraint_handler(func ": dest is null", dest, ESNULLP); \
+        invoke_safe_str_constraint_handler(func ": dest is null",       \
+                                           (void*)dest, ESNULLP);       \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_DMAX_ZERO(func)                                             \
     if (unlikely(dmax == 0)) {                                          \
-        invoke_safe_str_constraint_handler(func ": dmax is 0", dest, ESZEROL); \
+        invoke_safe_str_constraint_handler(func ": dmax is 0",          \
+                                           (void*)dest, ESZEROL);       \
         return RCNEGATE(ESZEROL);                                       \
     }
 #define CHK_DEST_MEM_NULL(func)                                         \
@@ -276,7 +278,7 @@ void abort(void) __attribute__((noreturn));
 #define CHK_DMAX_MAX(func, max)                                         \
     if (unlikely(dmax > (max))) {                                       \
         invoke_safe_str_constraint_handler(func ": dmax exceeds max",   \
-                                           dest, ESLEMAX);              \
+                                           (void*)dest, ESLEMAX);       \
         return RCNEGATE(ESLEMAX);                                       \
     }
 #define CHK_DMAX_MEM_MAX(func, max)                                     \
@@ -292,9 +294,9 @@ void abort(void) __attribute__((noreturn));
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
             return handle_str_bos_overload(func": dmax exceeds dest",   \
-                         dest,destbos);                                 \
+                                           (char*)dest,destbos);        \
         }                                                               \
-        handle_str_bos_chk_warn(func,dest,dmax,destbos);                \
+        handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
         RETURN_ESLEWRNG;                                                \
     }
 /* does no clear */
@@ -312,7 +314,7 @@ void abort(void) __attribute__((noreturn));
 # define CHK_DEST_OVR(func, destbos)                                    \
     if (unlikely(dmax > destbos)) {                                     \
         return handle_str_bos_overload(func": dmax exceeds dest",       \
-                                       dest,destbos);                   \
+                                       (char*)dest,destbos);            \
     }
 # define CHK_DEST_MEM_OVR(func, destbos)                                \
     if (unlikely(dmax != destbos)) {                                    \
@@ -326,7 +328,7 @@ void abort(void) __attribute__((noreturn));
 #define CHK_SRC_NULL(func, src)                                         \
     if (unlikely(src == NULL)) {                                        \
         invoke_safe_str_constraint_handler(func ": " _XSTR(src) " is null", \
-                                           (char*)src, ESNULLP);        \
+                                           (void*)src, ESNULLP);        \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                   \

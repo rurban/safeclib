@@ -73,7 +73,7 @@ int test_strcmp_s (void)
     ERR(ESNULLP)
     INDZERO()
 
-    EXPECT_BOS("empty indicator")
+    EXPECT_BOS("empty resultp")
     rc = strcmp_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 
@@ -86,6 +86,13 @@ int test_strcmp_s (void)
     rc = strcmp_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
     INDZERO()
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strcmp_s(str1, LEN+1, str2, &ind);
+    ERR(ESLEMAX)
+    INDZERO()
+# endif
 #endif
 /*--------------------------------------------------*/
 

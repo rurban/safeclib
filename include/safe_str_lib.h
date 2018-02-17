@@ -272,9 +272,11 @@ strerrorlen_s(errno_t errnum);
 
 /* string compare */
 EXTERN errno_t
-strcmp_s(const char *dest, rsize_t dmax,
-         const char *src, int *indicator)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(indicator);
+_strcmp_s_chk(const char *dest, rsize_t dmax,
+              const char *src, int *resultp,
+              const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strcmp_s(dest,dmax,src,resultp) _strcmp_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 /* string compare */
 EXTERN errno_t
