@@ -737,7 +737,9 @@ dnl bos enabled chk functions (but not yet usable)
 AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
         __strcpy_chk __strncpy_chk __strcat_chk __strncat_chk \
         __printf_chk __sprintf_chk __snprintf_chk __swprintf_chk \
-        __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk ])
+        __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk \
+        __vsscanf_chk __vswscanf_chk
+        ])
 #done
 dnl native safec shadowing functions (should be none)
 AC_CHECK_FUNCS([_memcpy_s_chk _memmove_s_chk _memset_s_chk _memcmp_s_chk \

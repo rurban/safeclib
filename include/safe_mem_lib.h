@@ -221,21 +221,21 @@ _memzero32_s_chk(uint32_t *dest, rsize_t len, const size_t destbos)
 
 /* find a byte */
 EXTERN errno_t
-_memchr_s_chk(const void *restrict dest, rsize_t dlen,
+_memchr_s_chk(const void *restrict dest, rsize_t dmax,
          const int ch, void **result, const size_t destbos)
-    BOS_CHK2(dest, dlen)
+    BOS_CHK(dest)
     VAL_OVR2(ch, 255)
     BOS_NULL(result);
-#define memchr_s(dest,dlen,ch,result)          \
-    _memchr_s_chk(dest,dlen,ch,result,BOS(dest))
+#define memchr_s(dest,dmax,ch,result)          \
+    _memchr_s_chk(dest,dmax,ch,result,BOS(dest))
 
 EXTERN errno_t
-_memrchr_s_chk(const void *restrict dest, rsize_t dlen,
+_memrchr_s_chk(const void *restrict dest, rsize_t dmax,
           const int ch, void **result, const size_t destbos)
-    BOS_CHK2(dest, dlen) VAL_OVR2(ch, 255)
+    BOS_CHK(dest) VAL_OVR2(ch, 255)
     BOS_NULL(result);
-#define memrchr_s(dest,dlen,ch,result)          \
-    _memrchr_s_chk(dest,dlen,ch,result,BOS(dest))
+#define memrchr_s(dest,dmax,ch,result)          \
+    _memrchr_s_chk(dest,dmax,ch,result,BOS(dest))
 
 /* timing-safe byte sequence comparisons
    (already in OpenBSD, cygwin, newlib) */
@@ -244,8 +244,8 @@ EXTERN int
 _timingsafe_bcmp_chk(const void *b1, const void *b2, size_t n,
                      const size_t destbos, const size_t srcbos)
     BOS_OVR2(b1, n) BOS_OVR2(b2, n);
-#define timingsafe_bcmp(b1,b2,len) \
-    _timingsafe_bcmp_chk(b1,b2,len,BOS(b1),BOS(b2))
+#define timingsafe_bcmp(b1,b2,n) \
+    _timingsafe_bcmp_chk(b1,b2,n,BOS(b1),BOS(b2))
 
 EXTERN int
 _timingsafe_memcmp_chk(const void *b1, const void *b2, size_t len,
@@ -277,16 +277,16 @@ _wmemcpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
                const wchar_t *restrict src, rsize_t smax,
                const size_t destbos, const size_t srcbos)
     BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
-#define wmemcpy_s(dest,dmax,src,smax)                           \
-    _wmemcpy_s_chk(dest,dmax,src,smax,BOS(dest),BOS(src))
+#define wmemcpy_s(dest,dlen,src,count)                          \
+    _wmemcpy_s_chk(dest,dlen,src,count,BOS(dest),BOS(src))
 
 EXTERN errno_t
 _wmemmove_s_chk(wchar_t *dest, rsize_t dmax,
                 const wchar_t *src, rsize_t smax,
                 const size_t destbos, const size_t srcbos)
     BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
-#define wmemmove_s(dest,dmax,src,smax)                          \
-    _wmemmove_s_chk(dest,dmax,src,smax,BOS(dest),BOS(src))
+#define wmemmove_s(dest,dlen,src,count)                         \
+    _wmemmove_s_chk(dest,dlen,src,count,BOS(dest),BOS(src))
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

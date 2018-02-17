@@ -68,7 +68,7 @@
  */
 EXPORT errno_t
 _memchr_s_chk (const void *restrict dest, rsize_t dmax,
-          const int ch, void **result, const size_t destbos)
+               const int ch, void **result, const size_t destbos)
 {
     if (unlikely(result == NULL)) {
         invoke_safe_mem_constraint_handler("memchr_s: result is null",

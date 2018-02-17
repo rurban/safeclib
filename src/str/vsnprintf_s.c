@@ -40,6 +40,7 @@
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /**
+ * @def vsnprintf_s(dest,dmax,fmt,ap)
  * @brief
  *    The truncating \c vsnprintf_s function composes a string with
  *    same test that would be printed if format was used on \c

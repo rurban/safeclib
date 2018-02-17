@@ -205,56 +205,56 @@ int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 
+/* Note: there is no __vsscanf_chk yet. Unchecked */
 EXTERN int
 sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
     BOS_NULL(buffer) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
-fscanf_s(FILE *restrict stream, const char *restrict format, ...)
-    BOS_NULL(stream) BOS_FMT(format);
+fscanf_s(FILE *restrict stream, const char *restrict fmt, ...)
+    BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 EXTERN int
-scanf_s(const char *restrict format, ...)
-    BOS_FMT(format);
+scanf_s(const char *restrict fmt, ...)
+    BOS_FMT(fmt);
 
 EXTERN int
-vscanf_s(const char *restrict format, va_list vlist)
-    BOS_FMT(format);
+vscanf_s(const char *restrict fmt, va_list ap)
+    BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
-vfscanf_s(FILE *restrict stream, const char *restrict format,
-          va_list vlist)
-    BOS_NULL(stream) BOS_FMT(format);
+vfscanf_s(FILE *restrict stream, const char *restrict fmt, va_list ap)
+    BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 EXTERN int
-vsscanf_s(const char *restrict buffer, const char *restrict format,
-          va_list vlist)
-    BOS_NULL(buffer) BOS_FMT(format);
+vsscanf_s(const char *restrict dest, const char *restrict fmt, va_list ap)
+    BOS_NULL(dest) BOS_FMT(fmt);
 
 EXTERN int
-printf_s(const char *restrict format, ...)
-    BOS_FMT(format);
+printf_s(const char *restrict fmt, ...)
+    BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
-fprintf_s(FILE *restrict stream, const char *restrict format, ...)
-    BOS_FMT(format);
+fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
+    BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 EXTERN int
-vprintf_s(const char *restrict format, va_list arg)
-    BOS_FMT(format);
+vprintf_s(const char *restrict fmt, va_list ap)
+    BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int
-vfprintf_s(FILE *restrict stream, const char *restrict format,
+vfprintf_s(FILE *restrict stream, const char *restrict fmt,
            va_list arg)
-    BOS_FMT(format);
+    BOS_FMT(fmt);
 #endif /* __KERNEL__ */
+
 
 EXTERN errno_t
 strerror_s(char *dest, rsize_t dmax, errno_t errnum)

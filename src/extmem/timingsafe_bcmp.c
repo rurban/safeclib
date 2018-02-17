@@ -25,7 +25,7 @@
 #endif
 
 /**
- * @def timingsafe_bcmp(b1,b2,len)
+ * @def timingsafe_bcmp(b1,b2,n)
  * @brief
  *    Compare all memory bytes. Return 0 or not zero.
  *

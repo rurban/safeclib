@@ -41,7 +41,7 @@
 #else
 
 /**
- * @def strtok_s(dest,dmax,delim,ptr)
+ * @def strtok_s(dest,dmaxp,delim,ptr)
  * @brief
  *    A sequence of calls to the strtok_s function breaks the string
  *    pointed to by dest into a sequence of tokens, each of which is
@@ -95,7 +95,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[in]   dest    pointer to string to tokenize
- * @param[out]  dmax    restricted maximum length of dest string
+ * @param[out]  dmaxp   pointer to restricted maximum length of dest string
  * @param[in]   delim   pointer to delimiter string (len < 255)
  * @param[out]  ptr     returned pointer to token
  *
