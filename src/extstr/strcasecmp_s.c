@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strcasecmp_s(dest,dmax,src,resultp)
  * @brief
  *    Case insensitive string comparison by converting
  *    to uppercase prior to the compare.
@@ -48,22 +49,22 @@
  * @param[in]   dest       pointer to string to compare against
  * @param[in]   dmax       restricted maximum length of string dest
  * @param[in]   src        pointer to the string to be compared to dest
- * @param[out]  indicator  pointer to result indicator, greater than 0,
+ * @param[out]  resultp    pointer to int result, greater than 0,
  *                         equal to 0 or less than 0, if the string pointed
  *                         to by dest is greater than, equal to or less
  *                         than the string pointed to by src respectively.
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   indicator shall not be a null pointer.
+ * @pre   resultp shall not be a null pointer.
  * @pre   dmax shall not be 0
  * @pre   dmax shall not be greater than RSIZE_MAX_STR
  *
- * @return  indicator (when the return code is OK)
+ * @return  resultp (when the return code is OK)
  * @retval  >0 when dest greater than src
  * @retval  0 when strings the same
  * @retval  <0 when dest less than src
  * @retval  EOK          when comparison is complete
- * @retval  ESNULLP      when dest/src/indicator is NULL pointer
+ * @retval  ESNULLP      when dest/src/resultp is NULL pointer
  * @retval  ESZEROL      when dmax = 0
  * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
  *
@@ -72,47 +73,33 @@
  *
  */
 EXPORT errno_t
-strcasecmp_s (const char *dest, rsize_t dmax,
-              const char *src, int *indicator)
+_strcasecmp_s_chk (const char *dest, rsize_t dmax,
+                   const char *src, int *resultp,
+                   const size_t destbos)
 {
     const unsigned char *udest = (const unsigned char *) dest;
-    const unsigned char *usrc = (const unsigned char *) src;
+    const unsigned char *usrc  = (const unsigned char *) src;
+    int result = 0;
 
-    if (unlikely(indicator == NULL)) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: indicator is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *indicator = 0;
+    CHK_SRC_NULL("strcasecmp_s", resultp)
+    *resultp = 0;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcasecmp_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+    CHK_DEST_NULL("strcasecmp_s")
+    CHK_SRC_NULL("strcasecmp_s", src)
+    CHK_DMAX_ZERO("strcasecmp_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcasecmp_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strcasecmp_s", destbos)
     }
 
     while (*udest && *usrc && dmax) {
 
-        if (toupper(*udest) != toupper(*usrc)) {
-            break;
+        result = toupper(*udest) - toupper(*usrc);
+        if (result) {
+            *resultp = result;
+            return RCNEGATE(EOK);
         }
 
         udest++;
@@ -120,9 +107,9 @@ strcasecmp_s (const char *dest, rsize_t dmax,
         dmax--;
     }
 
-    *indicator = (toupper(*udest) - toupper(*usrc));
+    *resultp = toupper(*udest) - toupper(*usrc);
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strcasecmp_s);
+EXPORT_SYMBOL(_strcasecmp_s_chk);
 #endif /* __KERNEL__ */

@@ -90,9 +90,11 @@ _strcmp_s_chk (const char *dest, rsize_t dmax,
     }
 
     while (*dest && *src && dmax) {
+
         if (*dest != *src) {
             break;
         }
+
         dest++;
         src++;
         dmax--;

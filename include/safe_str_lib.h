@@ -280,12 +280,14 @@ _strcmp_s_chk(const char *dest, rsize_t dmax,
 
 /* string compare */
 EXTERN errno_t
-strcasecmp_s(const char *dest, rsize_t dmax,
-             const char *src, int *indicator)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(indicator);
+_strcasecmp_s_chk(const char *dest, rsize_t dmax,
+                  const char *src, int *resultp,
+                  const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strcasecmp_s(dest,dmax,src,resultp) _strcasecmp_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 
-/* find a substring _ case insensitive */
+/* find a substring - case insensitive */
 EXTERN errno_t
 strcasestr_s(char *dest, rsize_t dmax,
              const char *src, rsize_t slen, char **substring)
