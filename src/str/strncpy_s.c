@@ -55,7 +55,7 @@
  *    pointed to by dest take unspeciﬁed values when strncpy_s returns.
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
  *    NULL bytes.
- *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    With modern compilers and constant arguments most errors
  *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
@@ -116,7 +116,6 @@ _strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
         return EOK;
     }
     CHK_DEST_NULL("strncpy_s")
-    CHK_DEST_OVR("strncpy_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strncpy_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strncpy_s", RSIZE_MAX_STR)

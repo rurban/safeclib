@@ -54,7 +54,7 @@
  *    terminating null character (if any) written by strcpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
  *    strcpy_s returns.
- *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    With modern compilers and constant arguments most errors
  *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
@@ -70,7 +70,8 @@
  * @param[in]   src   pointer to the string that will be copied to dest
  *
  * @pre Neither dest nor src shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR or sizeof(dest).
+ * @pre dmax shall be size of dest
+ * @pre dmax shall not be greater than RSIZE_MAX_STR or size of dest.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than strnlen_s(src, dmax).
  * @pre Copying shall not take place between objects that overlap.
@@ -107,10 +108,10 @@ _strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
     const char *overlap_bumper;
 
     CHK_DEST_NULL("strcpy_s")
-    CHK_DEST_OVR("strcpy_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strcpy_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strcpy_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         CHK_DEST_OVR("strcpy_s", destbos)
     }

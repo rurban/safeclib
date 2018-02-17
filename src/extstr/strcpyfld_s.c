@@ -75,7 +75,8 @@
  *
  */
 EXPORT errno_t
-_strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen, size_t destbos)
+_strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                  const size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
@@ -86,10 +87,10 @@ _strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen, size_
         return EOK;
     }
     CHK_DEST_NULL("strcpyfld_s")
-    CHK_DEST_OVR("strcpyfld_s", RSIZE_MAX_STR)
     CHK_DMAX_ZERO("strcpyfld_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strcpyfld_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         CHK_DEST_OVR("strcpyfld_s", destbos)
     }

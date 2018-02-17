@@ -54,7 +54,7 @@
  *    returns.
  *    With SAFECLIB_STR_NULL_SLACK defined the rest of dest is
  *    cleared with NULL bytes.
- *    With clang-5 and/or \c diagnose_if and \c __builtin_object_size() most errors
+ *    With modern compilers and constant arguments most errors
  *    will be caught at compile-time.
  *
  * @remark SPECIFIED IN
@@ -75,9 +75,9 @@
  *                        to string dest
  *
  * @pre  Neither dest nor src shall be a null pointer
- * @pre  dmax shall be sizeof(dest)
+ * @pre  dmax shall be size of dest
  * @pre  dmax shall not equal zero
- * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  * @pre  dmax shall be greater than strnlen_s(src,m).
  * @pre  Copying shall not take place between objects that overlap
  *
@@ -110,11 +110,10 @@ _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src, size
     const char *overlap_bumper;
 
     CHK_DEST_NULL("strcat_s")
-    /*debug_printf("** bos(dest) %ld dmax %ld [%s:%u]\n", destbos, dmax,
-          "_strcat_s_chk", __LINE__);*/
     CHK_DMAX_ZERO("strcat_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strcat_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         CHK_DEST_OVR("strcat_s", destbos)
     }
@@ -178,7 +177,6 @@ _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src, size
 
         /* Find the end of dest */
         while (*dest != '\0') {
-
             /*
              * NOTE: no need to check for overlap here since src comes first
              * in memory and we're not incrementing src here.
@@ -220,9 +218,7 @@ _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src, size
         }
     }
 
-    /*
-     * the entire src was not copied, so null the string
-     */
+    /* the entire src was not copied, so null the string */
     handle_error(orig_dest, orig_dmax, "strcat_s: not enough "
                       "space for src",
                       ESNOSPC);
