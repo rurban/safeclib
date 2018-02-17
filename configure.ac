@@ -478,11 +478,13 @@ dnl    [],[$ax_ccf_err])
 #AX_APPEND_COMPILE_FLAGS(["-fcheck-pointer-bounds -mmpx"],
 #   [CFLAGS],[$ax_ccf_err])
 dnl icc:
-AX_CHECK_COMPILE_FLAG([-check-pointers-mpx=rw],
-   [CFLAGS="$CFLAGS -check-pointers-mpx=rw" LIBS="$LIBS -lmpx -lchkp"],
-   [],[$ax_ccf_err])
-#AX_APPEND_COMPILE_FLAGS(["-check-pointers-mpx=rw"],
-#   [CFLAGS],[$ax_ccf_err])
+if test x$ac_compiler_gnu = xno -a -n "$ax_ccf_err"; then
+    AX_CHECK_COMPILE_FLAG([-check-pointers-mpx=rw],
+       [CFLAGS="$CFLAGS -check-pointers-mpx=rw" LIBS="$LIBS -lmpx -lchkp"],
+       [],[$ax_ccf_err])
+    #AX_APPEND_COMPILE_FLAGS(["-check-pointers-mpx=rw"],
+    #   [CFLAGS],[$ax_ccf_err])
+fi
 
 dnl windows mult. decl are not properly sorted out yet
 case $host_os in
