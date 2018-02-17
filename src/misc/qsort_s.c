@@ -57,8 +57,8 @@ typedef unsigned long   uint64_t;
 /* in mingw sec_api returning void */
 
 /**
+ * @def qsort_s(base,nmemb,size,compar,context)
  * @brief
-
  *    The \c qsort_s function sorts the given array pointed to by base in
  *    ascending order. The array contains nmemb elements of size
  *    bytes. Function pointed to by compar is used for object comparison.
@@ -353,10 +353,10 @@ qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp, void *ctx)
 }
 
 EXPORT errno_t
-qsort_s(void *base,
-        rsize_t nmemb, rsize_t size,
-        int (*compar)(const void *k, const void *y, void *context),
-        void *context)
+_qsort_s_chk(void *base,
+             rsize_t nmemb, rsize_t size,
+             int (*compar)(const void *k, const void *y, void *context),
+             void *context, const size_t destbos)
 {
     if (likely(nmemb != 0)) {
         if (unlikely(base == NULL || compar == NULL)) {

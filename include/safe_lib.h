@@ -139,12 +139,14 @@ freopen_s(FILE *restrict *restrict newstreamptr,
 #endif /* __KERNEL__ */
 
 EXTERN errno_t
-asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
+_asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destbos)
     BOS_CHK(dest) BOS_ATTR(dmax<26, "dmax underflow") BOS_NULL(tm);
+#define asctime_s(dest,dmax,tm) _asctime_s_chk(dest,dmax,tm,BOS(dest))
 
 EXTERN errno_t
-ctime_s(char *dest, rsize_t dmax, const time_t *timer)
+_ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer, const size_t destbos)
     BOS_CHK(dest) BOS_ATTR(dmax<26, "dmax underflow") BOS_NULL(timer);
+#define ctime_s(dest,dmax,timer) _ctime_s_chk(dest,dmax,timer,BOS(dest))
 
 /* Beware: These return errno_t on the MINGW64 windows sec_api,
    and switched its args:
@@ -166,29 +168,34 @@ localtime_s(const time_t *restrict timer, struct tm *restrict dest)
 /* windows has also the wide and time64 variants, and _strtime_s */
 
 EXTERN errno_t
-getenv_s(size_t *restrict len,
+_getenv_s_chk(size_t *restrict len,
          char *restrict dest, rsize_t dmax,
-         const char *restrict name)
+         const char *restrict name, const size_t destbos)
     BOS_CHK(dest) BOS_ATTR(_BOS_NULL(name), "empty name");
+#define getenv_s(len,dest,dmax,name) _getenv_s_chk(len,dest,dmax,name,BOS(dest))
 
 EXTERN void *
-bsearch_s(const void *key, const void *base,
+_bsearch_s_chk(const void *key, const void *base,
           rsize_t nmemb, rsize_t size,
           int (*compar)(const void *k, const void *y, void *context),
-          void *context)
+          void *context, const size_t basebos)
     BOS_ATTR(nmemb && (_BOS_NULL(key) || _BOS_NULL(base) || _BOS_ZERO(base,nmemb*size)),
              "empty buf or bufsize")
     BOS_OVR2_BUTNULL(base, nmemb*size)
     BOS_ATTR(nmemb && !compar, "empty compar");
+#define bsearch_s(key,base,nmemb,size,compar,context)             \
+    _bsearch_s_chk(key,base,nmemb,size,compar,context,BOS(base))
 
-#ifndef MINGW_HAS_SECURE_API
 EXTERN errno_t
-qsort_s(void *base, rsize_t nmemb, rsize_t size,
+_qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
         int (*compar)(const void *x, const void *y, void *context),
-        void *context)
+        void *context, const size_t basebos)
     BOS_ATTR(nmemb && (_BOS_NULL(base) || _BOS_ZERO(base,nmemb*size)), "empty buf or bufsize")
     BOS_OVR2_BUTNULL(base, nmemb*size)
     BOS_ATTR(nmemb && !compar, "empty compar");
+#ifndef MINGW_HAS_SECURE_API
+#define qsort_s(base,nmemb,size,compar,context) \
+    _qsort_s_chk(base,nmemb,size,compar,context,BOS(base))
 #endif
 
 #ifdef __cplusplus

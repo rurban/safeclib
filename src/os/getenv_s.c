@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def getenv_s(len,dest,dmax,name)
  * @brief
  *    The \c getenv_s function searches for an environmental variable with
  *    name name in the host-specified environment list and returns a pointer
@@ -68,7 +69,7 @@
  *                    the environmental variable to look for.
  *
  * @pre name and dest shall not be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than the strlen of the returned env value.
  *
@@ -77,42 +78,33 @@
  *         writes zero to *len (unless len is a null pointer).
  *
  * @retval  EOK        on success
- * @retval  -ESNULLP   when dest or name are a NULL pointer
- * @retval  -ESZEROL   when dmax = 0
- * @retval  -ESLEMAX   when dmax > RSIZE_MAX_STR
- * @retval  -ESNOSPC   when dmax is too small for the value
+ * @retval  ESNULLP    when dest or name are a NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESNOSPC    when dmax is too small for the value
  * @retval  -1         when not found
  */
 
 EXPORT errno_t
-getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
-         const char *restrict name)
+_getenv_s_chk(size_t *restrict len, char *restrict dest, rsize_t dmax,
+              const char *restrict name, const size_t destbos)
 {
     const char* buf;
     int len1;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("getenv_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("getenv_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("getenv_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
+    CHK_DEST_NULL("getenv_s")
+    CHK_DMAX_ZERO("getenv_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("ctime_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("ctime_s", destbos)
+    }        
     if (unlikely(name == NULL)) {
         handle_error(dest, dmax, "getenv_s: name is null",
                      ESNULLP);
-        return RCNEGATE(ESNULLP);
+        return ESNULLP;
     }
 
     errno = 0;
@@ -127,8 +119,7 @@ getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
         if (len)
             *len = 0;
         strcat(errstr, strerror(errno));
-        handle_error(dest, dmax, errstr,
-                     -1);
+        handle_error(dest, dmax, errstr, -1);
         return -1;
     }
 

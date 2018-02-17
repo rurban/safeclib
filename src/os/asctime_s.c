@@ -46,6 +46,7 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
 */
 
 /**
+ * @def asctime_s(dest,dmax,tm)
  * @brief
  *    The \c asctime_s function converts the given calendar time \c tm to a
  *    textual representation of the following fixed 25-character form:
@@ -99,7 +100,7 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
  */
 
 EXPORT errno_t
-asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
+_asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destbos)
 {
     const char* buf;
     size_t len;
@@ -110,7 +111,17 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
                    NULL, ESLEMIN);
         return ESLEMIN;
     }
-    CHK_DMAX_MAX("asctime_s", RSIZE_MAX_STR)
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("asctime_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("asctime_s", destbos)
+        if (unlikely(destbos < 26)) {
+            invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
+                   dest, ESLEMIN);
+            return ESLEMIN;
+        }
+    }
 
     if (unlikely(tm == NULL)) {
         invoke_safe_str_constraint_handler("asctime_s: tm is null",
@@ -195,7 +206,7 @@ asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
     } else {
       esnospc:
         invoke_safe_str_constraint_handler("asctime_s: dmax is too small",
-                   NULL, ESNOSPC);
+                   dest, ESNOSPC);
         return ESNOSPC;
     }
 

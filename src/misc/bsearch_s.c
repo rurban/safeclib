@@ -40,6 +40,7 @@
 #else
 
 /**
+ * @def bsearch_s(key,base,nmemb,size,compar,context)
  * @brief
  *    The \c bsearch_s function finds an element equal to element pointed to
  *    by key in an array pointed to by base. The array contains count elements
@@ -57,23 +58,23 @@
  *    K.3.6.3.1 The bsearch_s function (p: 608-609)
  *    http://en.cppreference.com/w/c/algorithm/bsearch
  *
- * @param[in] key    pointer to the element to search for
- * @param[in] base   pointer to the array to examine
- * @param[in] nmemb  number of elements in the array
- * @param[in] size   size of each element in the array in bytes
- * @param[in] compar comparison function which returns ​a negative integer
- *                   value if the first argument is less than the second, a
- *                   positive integer value if the first argument is greater
- *                   than the second and zero if the arguments are equal. key
- *                   is passed as the first argument, an element from the
- *                   array as the second.  The signature of the comparison
- *                   function should be equivalent to the following: int
- *                   cmp(const void *a, const void *b); The function must not
- *                   modify the objects passed to it and must return
- *                   consistent results when called for the same objects,
- *                   regardless of their positions in the array.
+ * @param[in] key     pointer to the element to search for
+ * @param[in] base    pointer to the array to examine
+ * @param[in] nmemb   number of elements in the array
+ * @param[in] size    size of each element in the array in bytes
+ * @param[in] compar  comparison function which returns ​a negative integer
+ *                    value if the first argument is less than the second, a
+ *                    positive integer value if the first argument is greater
+ *                    than the second and zero if the arguments are equal. key
+ *                    is passed as the first argument, an element from the
+ *                    array as the second.  The signature of the comparison
+ *                    function should be equivalent to the following: int
+ *                    cmp(const void *a, const void *b); The function must not
+ *                    modify the objects passed to it and must return
+ *                    consistent results when called for the same objects,
+ *                    regardless of their positions in the array.
  * @param[in] context additional information (e.g., collating sequence), passed
- *                   to compar as the third argument
+ *                    to compar as the third argument
  *
  * @pre key, base or compar shall not be a null pointer (unless nmemb is zero).
  * @pre nmemb or size shall not be greater than RSIZE_MAX_MEM.
@@ -105,25 +106,44 @@
  */
 
 EXPORT void *
-bsearch_s(const void *key, const void *base,
-          rsize_t nmemb, rsize_t size,
-          int (*compar)(const void *k, const void *y, void *context),
-          void *context)
+_bsearch_s_chk(const void *key, const void *base,
+               rsize_t nmemb, rsize_t size,
+               int (*compar)(const void *k, const void *y, void *context),
+               void *context, const size_t basebos)
 {
     if (likely(nmemb != 0)) {
         if (unlikely(key == NULL || base == NULL || compar == NULL)) {
-            invoke_safe_str_constraint_handler("bsearch_s: key/base/compar is null",
-                                               NULL, ESNULLP);
+            invoke_safe_mem_constraint_handler("bsearch_s: key/base/compar is null",
+                       (void*)base, ESNULLP);
             errno = ESNULLP;
             return NULL;
         }
     }
-
-    if (unlikely(nmemb > RSIZE_MAX_MEM || size > RSIZE_MAX_MEM)) {
-        invoke_safe_str_constraint_handler("bsearch_s: nmemb/size exceeds max",
-                   NULL, ESLEMAX);
-        errno = ESLEMAX;
-        return NULL;
+    if (basebos == BOS_UNKNOWN) {
+        if (unlikely(nmemb > RSIZE_MAX_MEM || size > RSIZE_MAX_MEM)) {
+            invoke_safe_mem_constraint_handler("bsearch_s: nmemb/size exceeds max",
+                       (void*)base, ESLEMAX);
+            errno = ESLEMAX;
+            return NULL;
+        }
+        BND_CHK_PTR_BOUNDS(base,nmemb*size);
+    } else {
+        rsize_t basesz = nmemb * size;
+        if (unlikely(basesz > basebos)) {
+            invoke_safe_mem_constraint_handler("bsearch_s: nmemb*size exceeds base",
+                       (void*)base, ESLEMAX);
+            errno = ESLEMAX;
+            return NULL;
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(basesz != basebos)) {
+            handle_mem_bos_chk_warn("bsearch_s",(void*)base,basesz,basebos);
+# ifdef HAVE_ERROR_DMAX
+            errno = ESLEWRNG;
+            return NULL;
+# endif
+        }
+#endif
     }
 
     errno = 0;
