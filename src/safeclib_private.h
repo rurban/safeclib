@@ -290,11 +290,21 @@ void abort(void) __attribute__((noreturn));
 /* for known dest size, we should have already errored at compile-time before.
    anyway, for known dest size check overflows in detail. does CLEAR */
 #if defined(HAVE_WARN_DMAX)
-# define CHK_DEST_OVR(func, destbos)                                    \
+# define CHK_DEST_OVR_CLEAR(func, destbos)                              \
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
             return handle_str_bos_overload(func": dmax exceeds dest",   \
                                            (char*)dest,destbos);        \
+        }                                                               \
+        handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
+        RETURN_ESLEWRNG;                                                \
+    }
+# define CHK_DEST_OVR(func, destbos)                                    \
+    if (unlikely(dmax != destbos)) {                                    \
+        if (unlikely(dmax > destbos)) {                                 \
+            invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
+                                               (void*)dest, ESLEMAX);   \
+            return RCNEGATE(ESLEMAX);                                   \
         }                                                               \
         handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
         RETURN_ESLEWRNG;                                                \
@@ -311,10 +321,20 @@ void abort(void) __attribute__((noreturn));
         RETURN_ESLEWRNG;                                                \
     }
 #else
-# define CHK_DEST_OVR(func, destbos)                                    \
+# define CHK_DEST_OVR_CLEAR(func, destbos)                              \
     if (unlikely(dmax > destbos)) {                                     \
         return handle_str_bos_overload(func": dmax exceeds dest",       \
                                        (char*)dest,destbos);            \
+    }
+# define CHK_DEST_OVR(func, destbos)                                    \
+    if (unlikely(dmax != destbos)) {                                    \
+        if (unlikely(dmax > destbos)) {                                 \
+            invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
+                                               (void*)dest, ESLEMAX);   \
+            return RCNEGATE(ESLEMAX);                                   \
+        }                                                               \
+        handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
+        RETURN_ESLEWRNG;                                                \
     }
 # define CHK_DEST_MEM_OVR(func, destbos)                                \
     if (unlikely(dmax != destbos)) {                                    \

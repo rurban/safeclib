@@ -92,7 +92,7 @@ _strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
         CHK_DMAX_MAX("strcpyfld_s", RSIZE_MAX_STR)
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
-        CHK_DEST_OVR("strcpyfld_s", destbos)
+        CHK_DEST_OVR_CLEAR("strcpyfld_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("strcpyfld_s", src)
     CHK_SLEN_MAX_NOSPC_CLEAR("strcpyfld_s", slen, RSIZE_MAX_STR)

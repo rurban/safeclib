@@ -121,7 +121,7 @@ _strncpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
         CHK_DMAX_MAX("strncpy_s", RSIZE_MAX_STR)
         BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
-        CHK_DEST_OVR("strncpy_s", destbos)
+        CHK_DEST_OVR_CLEAR("strncpy_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("strncpy_s", src)
     CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
