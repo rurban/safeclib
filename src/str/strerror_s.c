@@ -37,6 +37,7 @@
 #endif
 
 /**
+ * @def strerror_s(dest,dmax,errnum)
  * @brief
  *    The \c strerror_s function returns a pointer to the textual description
  *    of the system error code errnum, identical to the description that would
@@ -45,9 +46,9 @@
  *    truncates overlong error messages with "...".
  *
  * @details
- *    No more than bufsz-1 bytes are written, the buffer is always
+ *    No more than dmax-1 bytes are written, the buffer is always
  *    null-terminated. If the message had to be truncated to fit the buffer
- *    and bufsz is greater than 3, then only bufsz-4 bytes are written, and
+ *    and dmax is greater than 3, then only dmax-4 bytes are written, and
  *    the characters "..." are appended before the null terminator.  The
  *    behavior is undefined if writing to dest occurs past the end of the
  *    array, which can happen when the size of the buffer pointed to by dest is
@@ -63,12 +64,12 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  dest    pointer to a user-provided buffer.
+ * @param[out]  dest    pointer to a user-provided string buffer
  * @param[in]   dmax    restricted maximum length of dest
  * @param[in]   errnum  integer value referring to an error code
  *
  * @pre dest shall not be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR and sizeof(dest)
  * @pre dmax shall not equal zero.
  *
  * @return  Zero if the entire message was successfully stored in dest,
@@ -76,7 +77,7 @@
  * @retval  EOK        on success
  * @retval  ESNULLP    when dest is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > sizeof(dest)
  * @retval  ESLEMIN    when the result would be longer than 4 and dmax < 4
  *
  * @see
@@ -84,24 +85,17 @@
  */
 
 EXPORT errno_t
-strerror_s(char *dest, rsize_t dmax, errno_t errnum)
+_strerror_s_chk(char *dest, rsize_t dmax,  errno_t errnum, const size_t destbos)
 {
     size_t len;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strerror_s: dest is null",
-                   NULL, ESNULLP);
-        return ESNULLP;
-    }
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strerror_s: dmax is 0",
-                   NULL, ESZEROL);
-        return ESZEROL;
-    }
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strerror_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return ESLEMAX;
+    CHK_DEST_NULL("strerror_s")
+    CHK_DMAX_ZERO("strerror_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strerror_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strerror_s", destbos)
     }
 
     len = strerrorlen_s(errnum);
@@ -125,7 +119,7 @@ strerror_s(char *dest, rsize_t dmax, errno_t errnum)
         strcat_s(dest, dmax, "...");
     } else {
         invoke_safe_str_constraint_handler("strerror_s: dmax is too small",
-                   NULL, ESLEMIN);
+                   dest, ESLEMIN);
         return ESLEMIN;
     }
 

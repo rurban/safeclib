@@ -257,8 +257,9 @@ vfprintf_s(FILE *restrict stream, const char *restrict fmt,
 
 
 EXTERN errno_t
-strerror_s(char *dest, rsize_t dmax, errno_t errnum)
+_strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum, const size_t destbos)
     BOS_CHK(dest);
+#define strerror_s(dest,dmax,errnum) _strerror_s_chk(dest,dmax,errnum,BOS(dest))
 
 EXTERN size_t
 strerrorlen_s(errno_t errnum);
