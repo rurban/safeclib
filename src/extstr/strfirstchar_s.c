@@ -72,17 +72,16 @@ EXPORT errno_t
 _strfirstchar_s_chk (char *dest, rsize_t dmax, char c, char **firstp,
                      const size_t destbos)
 {
-
     CHK_SRC_NULL("strfirstchar_s", firstp)
     *firstp = NULL;
 
     CHK_DEST_NULL("strfirstchar_s")
     CHK_DMAX_ZERO("strfirstchar_s")
     if (destbos == BOS_UNKNOWN) {
-        CHK_DMAX_MAX("strcspn_s", RSIZE_MAX_STR)
+        CHK_DMAX_MAX("strfirstchar_s", RSIZE_MAX_STR)
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
-        CHK_DEST_OVR("strcspn_s", destbos)
+        CHK_DEST_OVR("strfirstchar_s", destbos)
     }
 
     while (*dest && dmax) {

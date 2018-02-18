@@ -348,9 +348,12 @@ _strfirstchar_s_chk(char *dest, rsize_t dmax, char c, char **firstp,
 
 /* returns index of first difference */
 EXTERN errno_t
-strfirstdiff_s(const char *dest, rsize_t dmax,
-               const char *src, rsize_t *idx)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(idx);
+_strfirstdiff_s_chk(const char *dest, rsize_t dmax,
+                    const char *src, rsize_t *resultp,
+                    const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strfirstdiff_s(dest,dmax,src,resultp) \
+    _strfirstdiff_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 /* validate alphanumeric string */
 EXTERN bool
