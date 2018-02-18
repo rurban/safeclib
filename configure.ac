@@ -619,7 +619,9 @@ AC_CHECK_HEADERS([stdlib.h	\
                   stdint.h	\
                   errno.h	\
                   wchar.h	\
-                  langinfo.h])
+                  langinfo.h    \
+                  valgrind/valgrind.h \
+                  ])
 
 INSERT_SYS_TYPES_H=""
 if test "x$ac_cv_header_sys_types_h" = "xyes"; then

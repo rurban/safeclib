@@ -8,6 +8,9 @@
 
 #include "test_private.h"
 #include "test_expmem.h"
+#if !defined(__KERNEL__) && defined(HAVE_VALGRIND_VALGRIND_H)
+# include <valgrind/valgrind.h>
+#endif
 
 #define LEN   ( 128 )
 
@@ -124,9 +127,15 @@ int test_memccpy_s (void)
     CHECK_SLACK(str1, nlen);
 #if !defined(__KERNEL__) && defined(HAVE_MEMCCPY) && \
     (defined(__GLIBC__) || defined(_WIN32))
+# if defined(HAVE_VALGRIND_VALGRIND_H) && \
+    (__VALGRIND_MAJOR__ > 3                                     \
+     || (__VALGRIND_MAJOR__ == 3 && __VALGRIND_MINOR__ >= 13))
+    if (!RUNNING_ON_VALGRIND)
+# endif
     {
         /* with glibc/windows overlap allowed, &str[1] returned.
          * an darwin/bsd fails the __memccpy_chk().
+         * fails also since valgrind 3.13, 3.12 was ok.
          */
         char *sub = (char*)memccpy(str1, str1, 0, nlen);
         printf("memccpy overlap: %p <=> %p\n", sub, str1);
