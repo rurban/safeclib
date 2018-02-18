@@ -297,9 +297,12 @@ _strcasestr_s_chk(char *dest, rsize_t dmax,
 
 /* fixed field string compare */
 EXTERN errno_t
-strcmpfld_s(const char *dest, rsize_t dmax,
-            const char *src, int *indicator)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(indicator);
+_strcmpfld_s_chk(const char *dest, rsize_t dmax,
+                 const char *src, int *resultp,
+                 const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strcmpfld_s(dest,dmax,src,resultp) \
+    _strcmpfld_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 /* fixed char array copy */
 EXTERN errno_t

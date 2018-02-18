@@ -3,7 +3,6 @@
  * File 'extstr/strcmpfld_s.c'
  * Lines executed:96.00% of 25
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -37,7 +36,7 @@ int main()
     ERR(ESNULLP)
 
     len = 5;
-    EXPECT_BOS("empty indicator")
+    EXPECT_BOS("empty resultp")
     rc = strcmpfld_s(str1, len, str2, NULL);
     ERR(ESNULLP)
 
@@ -48,6 +47,13 @@ int main()
     EXPECT_BOS("dest overflow")
     rc = strcmpfld_s(str1, (RSIZE_MAX_STR+1), str2, &ind);
     ERR(ESLEMAX)
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strcmp_s(str1, LEN+1, str2, &ind);
+    ERR(ESLEMAX)
+    INDZERO()
+# endif
 #endif
 /*--------------------------------------------------*/
 

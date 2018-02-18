@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strcmpfld_s(dest,dmax,src,resultp)
  * @brief
  *    Compares the character array pointed to by src to the character array
  *    pointed to by dest for dmax characters.  The null terminator does not
@@ -49,67 +50,49 @@
  * @param[in]   dest       pointer to string to compare against
  * @param[in]   dmax       restricted maximum length of string dest
  * @param[in]   src        pointer to the string to be compared to dest
- * @param[out]  indicator  pointer to result indicator, greater than 0,
+ * @param[out]  resultp    pointer to int result. greater than 0,
  *                         equal to 0 or less than 0, if the string pointed
  *                         to by dest is greater than, equal to or less
  *                         than the string pointed to by src respectively.
  *
- * @pre   Neither dest nor src shall be a null pointer.
- * @pre   indicator shall not be a null pointer.
+ * @pre   Neither dest, src nor resultp shall be a null pointer.
  * @pre   dmax shall not be 0
- * @pre   dmax shall not be greater than RSIZE_MAX_STR
+ * @pre   dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
- * @return  indicator (when the return code is OK)
+ * @return  resultp (when the return code is OK)
  * @retval  >0 when dest greater than src
- * @retval  0 when strings the same
+ * @retval   0 when the strings are the same
  * @retval  <0 when dest less than src
  * @retval  EOK          when comparison is complete
- * @retval  ESNULLP      when dest/src/indicator is NULL pointer
+ * @retval  ESNULLP      when dest/src/resultp is NULL pointer
  * @retval  ESZEROL      when dmax = 0
- * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR or > size of dest
  *
  * @see
  *    strcpyfld_s(), strcpyfldin_s(), strcpyfldout_s()
- *
  */
+
 EXPORT errno_t
-strcmpfld_s (const char *dest, rsize_t dmax,
-             const char *src, int *indicator)
+_strcmpfld_s_chk (const char *dest, rsize_t dmax,
+                  const char *src, int *resultp,
+                  const size_t destbos)
 {
-    if (unlikely(indicator == NULL)) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: indicator is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-    *indicator = 0;
+    CHK_SRC_NULL("strcmpfld_s", resultp)
+    *resultp = 0;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strcmpfld_s")
+    CHK_SRC_NULL("strcmpfld_s", src)
+    CHK_DMAX_ZERO("strcmpfld_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcmpfld_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strcmpfld_s", destbos)
     }
+    BND_CHK_PTR_BOUNDS(src, dmax);
 
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcmpfld_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
-    /* compare for dmax charactrers, not the null! */
+    /* compare for dmax characters, ignoring the null */
     while (dmax) {
-
         if (*dest != *src) {
             break;
         }
@@ -119,6 +102,6 @@ strcmpfld_s (const char *dest, rsize_t dmax,
         dmax--;
     }
 
-    *indicator = *dest - *src;
+    *resultp = *dest - *src;
     return (EOK);
 }
