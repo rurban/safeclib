@@ -49,7 +49,7 @@ int test_strcspn_s (void)
     ERR(ESNULLP)
     COUNT(0)
 
-    EXPECT_BOS("empty count")
+    EXPECT_BOS("empty countp")
     rc = strcspn_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 

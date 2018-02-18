@@ -331,9 +331,12 @@ _strcpyfldout_s_chk(char *dest, rsize_t dmax, const char *src, rsize_t slen,
 
 /* computes excluded prefix length */
 EXTERN errno_t
-strcspn_s(const char *dest, rsize_t dmax,
-          const char *src,  rsize_t slen, rsize_t *count)
-    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(count);
+_strcspn_s_chk(const char *dest, rsize_t dmax,
+               const char *src,  rsize_t slen, rsize_t *countp,
+               const size_t destbos, const size_t srcbos)
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(countp);
+#define strcspn_s(dest,dmax,src,slen,countp) \
+    _strcspn_s_chk(dest,dmax,src,slen,countp,BOS(dest),BOS(src))
 
 /* returns a pointer to the first occurrence of c in dest */
 EXTERN errno_t
