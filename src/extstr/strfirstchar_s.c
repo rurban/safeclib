@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strfirstchar_s(dest,dmax,c,firstp)
  * @brief
  *    This function returns a pointer to the first occurrence
  *    of character c in dest. The scanning stops at the first null
@@ -46,60 +47,48 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[in]   dest   pointer to string to compare against
- * @param[in]   dmax   restricted maximum length of string
- * @param[in]   c      character to locate
- * @param[out]  first  returned pointer to first occurrence of c
+ * @param[in]   dest    pointer to string to compare against
+ * @param[in]   dmax    restricted maximum length of string
+ * @param[in]   c       character to locate
+ * @param[out]  firstp  returned pointer to first occurrence of c
  *
- * @pre  dest shall not be a null pointer.
- * @pre  first shall not be a null pointer.
+ * @pre  dest and firstp shall not be a null pointer.
  * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
- * @return  pointer to first occurence of c, NULL if not found
- * @retval  EOK         when pointer to first occurrence is returned
- * @retval  ESNULLP     when dst/first is NULL pointer
- * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @return  pointer to first occurence of c in dest, NULL if not found
+ * @retval  EOK        when pointer to first occurrence is returned
+ * @retval  ESNULLP    when dest/firstp is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strlastchar_s(), strfirstdiff_s(), strfirstsame_s(),
  *    strlastdiff_s(), strlastsame_s(),
- *
  */
+
 EXPORT errno_t
-strfirstchar_s (char *dest, rsize_t dmax, char c, char **first)
+_strfirstchar_s_chk (char *dest, rsize_t dmax, char c, char **firstp,
+                     const size_t destbos)
 {
 
-    if (unlikely(first == NULL)) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: index is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-    *first = NULL;
+    CHK_SRC_NULL("strfirstchar_s", firstp)
+    *firstp = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strfirstchar_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strfirstchar_s")
+    CHK_DMAX_ZERO("strfirstchar_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcspn_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strcspn_s", destbos)
     }
 
     while (*dest && dmax) {
 
         if (*dest == c) {
-            *first = dest;
+            *firstp = dest;
             return (EOK);
         }
         dest++;

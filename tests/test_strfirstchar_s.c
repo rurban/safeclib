@@ -39,7 +39,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty first")
+    EXPECT_BOS("empty firstp")
     rc = strfirstchar_s(str1, LEN, 'a', NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n",

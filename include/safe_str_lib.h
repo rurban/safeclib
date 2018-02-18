@@ -340,8 +340,11 @@ _strcspn_s_chk(const char *dest, rsize_t dmax,
 
 /* returns a pointer to the first occurrence of c in dest */
 EXTERN errno_t
-strfirstchar_s(char *dest, rsize_t dmax, char c, char **first)
-    BOS_CHK(dest) BOS_NULL(first);
+_strfirstchar_s_chk(char *dest, rsize_t dmax, char c, char **firstp,
+                    const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(firstp);
+#define strfirstchar_s(dest,dmax,src,firstp) \
+    _strfirstchar_s_chk(dest,dmax,src,firstp,BOS(dest))
 
 /* returns index of first difference */
 EXTERN errno_t
