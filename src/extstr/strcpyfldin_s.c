@@ -38,6 +38,7 @@
 #endif
 
 /**
+ * @def strncpyfldin_s(dest,dmax,src,slen)
  * @brief
  *    The strcpyfldin_s function copies at most slen characters from the
  *    null terminated string pointed to by src into the fixed character
@@ -58,7 +59,7 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  * @pre  slen shall not exceed dmax
  * @pre  Copying shall not take place between objects that overlap.
  *
@@ -68,7 +69,8 @@
  * @retval  EOK        when operation is successful or slen = 0
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dmax < slen
  *
@@ -77,47 +79,26 @@
  *
  */
 EXPORT errno_t
-strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
+_strcpyfldin_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                    const size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcpyfldin_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strcpyfldin_s")
+    CHK_DMAX_ZERO("strcpyfldin_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcpyfldin_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strcpyfldin_s", destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcpyfldin_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcpyfldin_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
-    if (unlikely(src == NULL)) {
-        handle_error(dest, dmax, "strcpyfldin_s: src is null",
-                     ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(slen > dmax)) {
-        handle_error(dest, dmax, "strcpyfldin_s: src exceeds max",
-                     ESNOSPC);
-        return (ESNOSPC);
-    }
-
+    CHK_SRC_NULL_CLEAR("strcpyfldin_s", src)
+    CHK_SLEN_MAX_NOSPC_CLEAR("strcpyfldin_s", slen, RSIZE_MAX_STR)
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
@@ -157,7 +138,11 @@ strcpyfldin_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
     /*
      * finish filling in the field with nulls if there is slack space
      */
-    while (dmax) { *dest = '\0'; dmax--; dest++; }
+    if (dmax > 0x20)
+        memset(dest, 0, dmax);
+    else {
+        while (dmax) { *dest = '\0'; dmax--; dest++; }
+    }
 
     return (EOK);
 }

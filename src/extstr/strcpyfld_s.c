@@ -82,8 +82,7 @@ _strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
     CHK_DEST_NULL("strcpyfld_s")

@@ -38,8 +38,9 @@
 #endif
 
 /**
+ * @def strncpyfldout_s(dest,dmax,src,slen)
  * @brief
- *    The \c strcpyfldout_s function copies \c slen characters from
+ *    The \b strcpyfldout_s function copies \c slen characters from
  *    the character array pointed to by \c src into the string
  *    pointed to by \c dest. A null is included to properly
  *    terminate the dest string. The copy operation does not
@@ -60,7 +61,7 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  * @pre  slen shall not exceed dmax
  * @pre  Copying shall not take place between objects that overlap.
  *
@@ -69,7 +70,8 @@
  * @retval  EOK        when operation is successful or slen = 0
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dmax < slen
  * @see
@@ -77,47 +79,26 @@
  *
  */
 EXPORT errno_t
-strcpyfldout_s (char *dest, rsize_t dmax, const char *src, rsize_t slen)
+_strcpyfldout_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                     const size_t destbos)
 {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
 
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcpyfldout_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strcpyfldout_s")
+    CHK_DMAX_ZERO("strcpyfldout_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcpyfldout_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strcpyfldout_s", destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcpyfldout_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcpyfldout_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
-    if (unlikely(src == NULL)) {
-        handle_error(dest, dmax, "strcpyfldout_s: src is null",
-                     ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(slen > dmax)) {
-        handle_error(dest, dmax, "strcpyfldout_s: src exceeds max",
-                     ESNOSPC);
-        return (ESNOSPC);
-    }
-
+    CHK_SRC_NULL_CLEAR("strcpyfldout_s", src)
+    CHK_SLEN_MAX_NOSPC_CLEAR("strcpyfldout_s", slen, RSIZE_MAX_STR)
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;

@@ -314,15 +314,19 @@ _strcpyfld_s_chk(char *dest, const rsize_t dmax, const char *src, rsize_t slen,
 
 /* copy from a null terminated string to fixed char array */
 EXTERN errno_t
-strcpyfldin_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
+_strcpyfldin_s_chk(char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                   const size_t destbos)
     BOS_CHK_BUTZERO(dest,slen) BOS_OVR2_BUTZERO(src,slen)
     VAL_OVR2(slen, dmax);
+#define strcpyfldin_s(dest,dmax,src,slen) _strcpyfldin_s_chk(dest,dmax,src,slen,BOS(dest))
 
 /* copy from a char array to null terminated string */
 EXTERN errno_t
-strcpyfldout_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
+_strcpyfldout_s_chk(char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                    const size_t destbos)
     BOS_CHK_BUTZERO(dest,slen) BOS_OVR2_BUTZERO(src,slen)
     VAL_OVR2(slen, dmax);
+#define strcpyfldout_s(dest,dmax,src,slen) _strcpyfldout_s_chk(dest,dmax,src,slen,BOS(dest))
 
 
 /* computes excluded prefix length */
