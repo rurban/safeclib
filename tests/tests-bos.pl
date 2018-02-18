@@ -41,7 +41,7 @@ END {
       print "PASS $t\n";
     }
   }
-  exit(errs);
+  exit($errs);
 }
 
 package MyUni;

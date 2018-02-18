@@ -44,7 +44,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty idx")
+    EXPECT_BOS("empty resultp")
     rc = strfirstdiff_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
