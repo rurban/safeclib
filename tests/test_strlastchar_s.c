@@ -3,7 +3,6 @@
  * File 'extstr/strlastchar_s.c'
  * Lines executed:100.00% of 22
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -24,7 +23,7 @@ int main()
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strlastchar_s(NULL, LEN, 'a', &last);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
@@ -38,7 +37,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty first")
+    EXPECT_BOS("empty lastp")
     rc = strlastchar_s(str1, LEN, 'a', NULL);
     if (rc != ESNULLP) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
@@ -47,7 +46,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty str or smax")
+    EXPECT_BOS("empty dest or dmax")
     rc = strlastchar_s(str1, 0, 'a', &last);
     if (rc != ESZEROL) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
@@ -61,7 +60,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("str overflow")
+    EXPECT_BOS("dest overflow")
     rc = strlastchar_s(str1, RSIZE_MAX_STR+1, 'a', &last);
     if (rc != ESLEMAX) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",

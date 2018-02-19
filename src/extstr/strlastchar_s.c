@@ -36,9 +36,10 @@
 #endif
 
 /**
+ * @def strlastchar_s(dest,dmax,c,lastp)
  * @brief
  *    Returns a pointer to the last occurrence of character c in
- *    dest.  The scanning stops at the first null or after dmax
+ *    dest.  The scanning stops at null or after dmax
  *    characters.
  *
  * @remark EXTENSION TO
@@ -49,12 +50,11 @@
  * @param[in]   dest  pointer to string to compare against
  * @param[in]   dmax  restricted maximum length of string
  * @param[in]   c     character to locate
- * @param[out]  last  returned pointer to first occurrence of c
+ * @param[out]  lastp returned pointer to last occurrence of c
  *
- * @pre  dest shall not be a null pointer.
- * @pre  last shall not be a null pointer.
+ * @pre  dest and lastp shall not be a null pointer.
  * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  pointer to last occurence of c, NULL if not found
  * @retval  EOK         when pointer to last occurrence is returned
@@ -68,44 +68,32 @@
  *
  */
 EXPORT errno_t
-strlastchar_s(char *dest, rsize_t dmax, char c, char **last)
+_strlastchar_s_chk(char *dest, rsize_t dmax, char c, char **lastp,
+                   const size_t destbos)
 {
-    if (unlikely(last == NULL)) {
-        invoke_safe_str_constraint_handler("strlastchar_s: last is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-    *last = NULL;
+    CHK_SRC_NULL("strlastchar_s", lastp)
+    *lastp = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strlastchar_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strlastchar_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strlastchar_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strlastchar_s")
+    CHK_DMAX_ZERO("strlastchar_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strlastchar_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strlastchar_s", destbos)
     }
 
     while (*dest && dmax) {
 
         if (*dest == c) {
-            *last = dest;
+            *lastp = dest;
         }
 
         dest++;
         dmax--;
     }
 
-    if (*last == NULL) {
+    if (*lastp == NULL) {
         return (ESNOTFND);
     } else {
         return (EOK);

@@ -219,10 +219,10 @@ if HAVE_ATTRIBUTE_DIAGNOSE_IF
 tests: tests-bos $(TESTS)
 
 tests-bos:
-	-rm test_*_s.o* 2>/dev/null
+	-rm test_*.o* 2>/dev/null
 	+$(MAKE) -j1 $(TESTS) DEFS="$(DEFS) -DTEST_BOS" 2>&1 | tee tests-bos.log | grep warning:
 	perl tests-bos.pl tests-bos.log | tee tests-bos.err
-	-rm test_*_s.o* 2>/dev/null
+	-rm test_*.o* 2>/dev/null
 
 #.c.obos:
 #	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

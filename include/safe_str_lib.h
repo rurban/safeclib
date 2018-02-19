@@ -413,14 +413,20 @@ _strisuppercase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
 
 /* returns  a pointer to the last occurrence of c in s1 */
 EXTERN errno_t
-strlastchar_s(char *str, rsize_t smax, char c, char **first)
-    BOS_CHK2(str, smax) BOS_NULL(first);
+_strlastchar_s_chk(char *dest, rsize_t dmax, char c, char **lastp,
+                   const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(lastp);
+#define strlastchar_s(dest,dmax,c,lastp)            \
+    _strlastchar_s_chk(dest,dmax,c,lastp,BOS(dest))
 
 /* returns index of last difference */
 EXTERN errno_t
-strlastdiff_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *idx)
-    BOS_CHK(dest) BOS_NULL(idx);
+_strlastdiff_s_chk(const char *dest, rsize_t dmax,
+                   const char *src, rsize_t *resultp,
+                   const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strlastdiff_s(dest,dmax,src,resultp) \
+    _strlastdiff_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 /* left justify */
 EXTERN errno_t
@@ -485,18 +491,18 @@ strrchr_s(const char *restrict dest, rsize_t dmax,
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */
 EXTERN errno_t
-_strtolowercase_s_chk(char *str, rsize_t slen, const size_t srcbos)
-    BOS_CHK2(str, slen);
-#define strtolowercase_s(str,slen)               \
-    _strtolowercase_s_chk(str,slen,BOS(str))
+_strtolowercase_s_chk(char *dest, rsize_t dmax, const size_t srcbos)
+    BOS_CHK2(dest, dmax);
+#define strtolowercase_s(dest,dmax)               \
+    _strtolowercase_s_chk(dest,dmax,BOS(str))
 
 /* convert string to uppercase
    mingw string_s.h: _strupr_s */
 EXTERN errno_t
-_strtouppercase_s_chk(char *str, rsize_t slen, const size_t srcbos)
-    BOS_CHK2(str, slen);
-#define strtouppercase_s(str,slen)              \
-    _strtouppercase_s_chk(str,slen,BOS(str))
+_strtouppercase_s_chk(char *dest, rsize_t dmax, const size_t srcbos)
+    BOS_CHK2(dest,dmax);
+#define strtouppercase_s(dest,dmax)              \
+    _strtouppercase_s_chk(dest,dmax,BOS(dest))
 
 #define strlwr_s(str, slen) strtolowercase_s((str), (slen))
 #define strupr_s(str, slen) strtouppercase_s((str), (slen))

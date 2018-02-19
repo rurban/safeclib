@@ -35,6 +35,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
+    EXPECT_BOS("empty src")
     rc = strlastdiff_s(str1, LEN, NULL, &ind);
     ERR(ESNULLP)
     if (ind != 0) {
@@ -44,7 +45,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty idx")
+    EXPECT_BOS("empty resultp")
     rc = strlastdiff_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 /*--------------------------------------------------*/
