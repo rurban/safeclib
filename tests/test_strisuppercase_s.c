@@ -31,9 +31,16 @@ int main()
     EXPECT_BOS("empty dest or dmax")
     rc = strisuppercase_s("test", 0);
     ERR(false)
-#endif
 
     EXPECT_BOS("dest overflow")
+    rc = strisuppercase_s(str, 99999);
+    ERR(false)
+#endif
+
+    EXPECT_BOS_TODO("dest overflow") /* TODO clang literal string bug */
+    /*printf("%u BOS: %d %d/%d %d - %lu/%lu\n", __LINE__, _BOS_KNOWN("test"), CONSTP("test"),
+           _BOS_KNOWN(str), CONSTP(str),
+           BOS("test"), BOS(str));*/
     rc = strisuppercase_s("test", 99999);
     ERR(false)
 

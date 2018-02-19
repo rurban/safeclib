@@ -33,11 +33,11 @@ int main()
     ERR(false)
 #endif
 
-    EXPECT_BOS("dest overflow") /* TODO */
+    EXPECT_BOS_TODO("dest overflow")
     rc = strisascii_s("test", 99999);
     ERR(false)
 
-    EXPECT_BOS("dest overflow") /* TODO */
+    EXPECT_BOS_TODO("dest overflow")
     rc = strisascii_s("", 2);
     ERR(false)
 /*--------------------------------------------------*/

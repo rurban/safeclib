@@ -86,12 +86,14 @@ int test_strcoll_s (void)
     ERR(ESLEMAX)
     INDZERO()
 
-    EXPECT_BOS("dest overflow") /* TODO */
+#endif
+
+/*  no static overflow _chk yet
+    EXPECT_BOS_TODO("dest overflow")
     rc = strcoll_s("xxxxxx", 20, "xxxxxxyy", &ind);
     ERR(ESLEMAX)
     INDZERO()
-#endif
-
+*/
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

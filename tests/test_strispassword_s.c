@@ -28,19 +28,20 @@ int main()
     EXPECT_BOS("empty dest or dmax")
     rc = strispassword_s("Test4You&", 0);
     ERR(false)
+#endif
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strispassword_s("Test4You&", 999);
     ERR(false)
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strispassword_s("", 9);
     ERR(false)
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strispassword_s("", LEN);
     ERR(false)
-#endif
+
 /*--------------------------------------------------*/
 
     strcpy (str, "Test4You*123");

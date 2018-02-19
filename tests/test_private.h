@@ -149,9 +149,11 @@
 # ifndef TEST_BOS
 #  define HAVE_CT_BOS_OVR
 #  define EXPECT_BOS(msg)
+#  define EXPECT_BOS_TODO(msg)
 # else
 #  define HAVE_RT_BOS_CHK
 #  define EXPECT_BOS(msg) printf("EXPECT_BOS %s:%u\t%s\n", __FILE__, __LINE__+1, msg);
+#  define EXPECT_BOS_TODO(msg) printf("EXPECT_BOS_TODO %s:%u\t%s\n", __FILE__, __LINE__+1, msg);
 # endif
 # ifdef HAVE_USER_DEFINED_WARNINGS
 #  define GCC_PUSH_WARN_DMAX GCC_DIAG_IGNORE(-Wuser-defined-warnings)
@@ -162,11 +164,13 @@
 # endif
 #elif defined(HAVE_WARN_DMAX)
 # define EXPECT_BOS(msg)
+# define EXPECT_BOS_TODO(msg)
 # define HAVE_RT_BOS_CHK
 # define GCC_PUSH_WARN_DMAX
 # define GCC_POP_WARN_DMAX
 #else
 # define EXPECT_BOS(msg)
+# define EXPECT_BOS_TODO(msg)
 # define GCC_PUSH_WARN_DMAX
 # define GCC_POP_WARN_DMAX
 #endif

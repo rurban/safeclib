@@ -26,7 +26,11 @@ END {
       $got .= "test_$t.c:$w->[0]: error:\t$w->[1]\n"; # [line, warning]
     }
     my $expected = `./t_$t | grep EXPECT_BOS`;
+    my ($todo) = $expected =~ /EXPECT_BOS_TODO (test_$t\.c:\d+\t.*?)\n/g;
     $expected =~ s/EXPECT_BOS (test_$t\.c:\d+)\t/$1: error:\t/gs;
+    if ($todo) {
+      $expected =~ s/EXPECT_BOS_TODO test_$t\.c:\d+\t.*?\n//gs;
+    }
     if ($got ne $expected) {
       print "FAIL $t\n";
       if (require Text::Diff) {
@@ -38,7 +42,11 @@ END {
       }
       $errs++;
     } else {
-      print "PASS $t\n";
+      if ($todo) {
+        print "PASS $t #TODO $todo\n";
+      } else {
+        print "PASS $t\n";
+      }
     }
   }
   exit($errs);
