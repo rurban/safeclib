@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strljustify_s(dest,dmax)
  * @brief
  *    Removes beginning whitespace from the string pointed to by
  *    dest by shifting the text left over writting the beginning
@@ -54,14 +55,15 @@
  * @param[in]   dmax  restricted maximum length of string
  *
  * @pre  dest shall not be a null pointer.
- * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall not be 0.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  * @pre  dest shall be null terminated
  *
  * @retval  EOK         when successful operation
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or sizeof dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESUNTERM    when dest was not null terminated
  *
  * @see
@@ -69,30 +71,18 @@
  *
  */
 EXPORT errno_t
-strljustify_s (char *dest, rsize_t dmax)
+_strljustify_s_chk (char *dest, rsize_t dmax, const size_t destbos)
 {
     char *orig_dest;
     rsize_t orig_dmax;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strljustify_s_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strljustify_s_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strljustify_s_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strljustify_s")
+    CHK_DMAX_ZERO("strljustify_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strljustify_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strljustify_s", destbos)
     }
 
     /*

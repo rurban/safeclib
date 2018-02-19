@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strprefix_s(dest,dmax,src)
  * @brief
  *    Determines if the prefix pointed to by src is at the
  *    beginning of string pointed to by dest.  The prefix
@@ -54,13 +55,13 @@
  *
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be 0.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR.
  *
  * @retval  EOK        when successful operation, substring found.
- * @retval  ESNULLP    when dest/src/substring is NULL pointer
- * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESNULLP    when dest/src is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  ESNOTFND   when prefix not found in dest
  *
  * @see
@@ -68,30 +69,17 @@
  *
  */
 EXPORT errno_t
-strprefix_s (const char *dest, rsize_t dmax, const char *src)
+_strprefix_s_chk (const char *dest, rsize_t dmax, const char *src,
+                  const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strprefix_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strprefix_s: src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strprefix_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strprefix_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strprefix_s")
+    CHK_SRC_NULL("strprefix_s", src)
+    CHK_DMAX_ZERO("strprefix_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strprefix_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strprefix_s", destbos)
     }
 
     if (unlikely(*src == '\0')) {

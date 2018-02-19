@@ -3,7 +3,6 @@
  * File 'extstr/strfirstsame_s.c'
  * Lines executed:100.00% of 27
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -45,7 +44,7 @@ int main()
     }
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty idx")
+    EXPECT_BOS("empty resultp")
     rc = strfirstsame_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 /*--------------------------------------------------*/

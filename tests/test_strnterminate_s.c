@@ -3,7 +3,6 @@
  * File 'extstr/strnterminate_s.c'
  * Lines executed:100.00% of 18
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -25,7 +24,7 @@ int main()
     strcpy(dest,"");
     max_len = 3;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty s")
+    EXPECT_BOS("empty dest")
     len = strnterminate_s(NULL, max_len);
     if (len != 0) {
         debug_printf("%s %u   Len=%u \n",
@@ -61,11 +60,20 @@ int main()
 
     len = strnterminate_s (dest, max_len);
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* dmax > sizeof dest */
+    if (std_len == len) {
+        debug_printf("%s %u   std_len=%u  len=%u  \n",
+                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
+        errs++;
+    }
+#else
     if (std_len != len) {
         debug_printf("%s %u   std_len=%u  len=%u  \n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
+#endif
 /*--------------------------------------------------*/
 
     strcpy(dest,"ff");
@@ -79,7 +87,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(dest,"f");
-    max_len = RSIZE_MAX_STR;
+    max_len = LEN;
     len = strnterminate_s (dest, max_len);
 
     if (len != 1 ) {
@@ -90,7 +98,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(dest,"f");
-    max_len = RSIZE_MAX_STR;
+    max_len = LEN;
     len = strnterminate_s (dest, max_len);
 
     if (len != 1 ) {
@@ -101,7 +109,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(dest,"ff");
-    max_len = RSIZE_MAX_STR;
+    max_len = LEN;
     len = strnterminate_s (dest, max_len);
 
     if (len != 2) {
@@ -112,7 +120,7 @@ int main()
 /*--------------------------------------------------*/
 
     strcpy(dest,"test");
-    max_len = RSIZE_MAX_STR;
+    max_len = LEN;
     len = strnterminate_s (dest, max_len);
 
     if (len != 4) {

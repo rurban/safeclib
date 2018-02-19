@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strremovews_s(dest,dmax)
  * @brief
  *    Removes beginning and trailing whitespace from the string pointed to by
  *    dest by shifting the text left over writting the beginning whitespace
@@ -56,42 +57,34 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_STR
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  * @pre  dest shall be null terminated
  *
- * @retval  EOK         when successful operation
- * @retval  ESNULLP     when dest is NULL pointer
- * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
- * @retval  ESUNTERM    when dest was not null terminated
+ * @retval  EOK        when successful operation
+ * @retval  ESNULLP    when dest is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR of > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESUNTERM   when dest was not null terminated
  *
  * @see
  *    strljustify_s(),
  *
  */
 EXPORT errno_t
-strremovews_s (char *dest, rsize_t dmax)
+_strremovews_s_chk (char *dest, rsize_t dmax, const size_t destbos)
 {
     char *orig_dest;
     char *orig_end;
     rsize_t orig_dmax;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strremovews_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strremovews_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strremovews_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strremovews_s")
+    CHK_DMAX_ZERO("strremovews_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strremovews_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strremovews_s", destbos)
     }
 
     /*

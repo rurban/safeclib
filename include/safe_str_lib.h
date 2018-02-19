@@ -430,39 +430,60 @@ _strlastdiff_s_chk(const char *dest, rsize_t dmax,
 
 /* left justify */
 EXTERN errno_t
-strljustify_s(char *dest, rsize_t dmax)
+_strljustify_s_chk(char *dest, rsize_t dmax,
+                   const size_t destbos)
     BOS_CHK(dest);
+#define strljustify_s(dest,dmax) \
+    _strljustify_s_chk(dest,dmax,BOS(dest))
 
 /* string terminate */
 EXTERN rsize_t
-strnterminate_s (char *s, rsize_t smax)
-    BOS_CHK2(s, smax);
+_strnterminate_s_chk (char *dest, rsize_t dmax,
+                      const size_t destbos)
+    BOS_CHK2(dest,dmax);
+#define strnterminate_s(dest,dmax) \
+    _strnterminate_s_chk(dest,dmax,BOS(dest))
 
 /* get pointer to first occurrence from set of char */
 EXTERN errno_t
-strpbrk_s(char *dest, rsize_t dmax,
-          char *src,  rsize_t slen, char **first)
-    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(first);
+_strpbrk_s_chk(char *dest, rsize_t dmax,
+               char *src,  rsize_t slen, char **firstp,
+               const size_t destbos, const size_t srcbos)
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(firstp);
+#define strpbrk_s(dest,dmax,src,slen,firstp)          \
+    _strpbrk_s_chk(dest,dmax,src,slen,firstp,BOS(dest),BOS(src))
 
 EXTERN errno_t
-strfirstsame_s(const char *dest, rsize_t dmax,
-               const char *src,  rsize_t *idx)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(idx);
+_strfirstsame_s_chk(const char *dest, rsize_t dmax,
+                    const char *src,  rsize_t *resultp,
+                    const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strfirstsame_s(dest,dmax,src,resultp) \
+    _strfirstsame_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 EXTERN errno_t
-strlastsame_s(const char *dest, rsize_t dmax,
-              const char *src, rsize_t *idx)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(idx);
+_strlastsame_s_chk(const char *dest, rsize_t dmax,
+                   const char *src, rsize_t *resultp,
+                   const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strlastsame_s(dest,dmax,src,resultp) \
+    _strlastsame_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 /* searches for a prefix */
 EXTERN errno_t
-strprefix_s(const char *dest, rsize_t dmax, const char *src)
+_strprefix_s_chk(const char *dest, rsize_t dmax, const char *src,
+                 const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
+#define strprefix_s(dest,dmax,src) \
+    _strprefix_s_chk(dest,dmax,src,BOS(dest))
 
 /* removes leading and trailing white space */
 EXTERN errno_t
-strremovews_s(char *dest, rsize_t dmax)
+_strremovews_s_chk(char *dest, rsize_t dmax,
+                   const size_t destbos)
     BOS_CHK(dest);
+#define strremovews_s(dest,dmax) \
+    _strremovews_s_chk(dest,dmax,BOS(dest))
 
 /* computes inclusive prefix length */
 EXTERN errno_t

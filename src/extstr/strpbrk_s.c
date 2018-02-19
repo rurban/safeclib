@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strpbrk_s(dest,dmax,src,slen,firstp)
  * @brief
  *    Returns a pointer, first, to the first ocurrence of any character
  *    in src which is contained in dest.
@@ -45,21 +46,22 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param  dest   pointer to string to compare against
- * @param  dmax   restricted maximum length of string dest
- * @param  src    pointer to the string
- * @param  slen   restricted length of string src
- * @param  first  returned pointer to first occurence
+ * @param  dest    pointer to string to compare against
+ * @param  dmax    restricted maximum length of string dest
+ * @param  src     pointer to the string
+ * @param  slen    restricted length of string src
+ * @param  firstp  returned pointer to first occurence
  *
- * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  Neither dest, src nor firstp shall be a null pointer.
  * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src
  *
  * @return  pointer to the first ocurrence of any character contained in src
  * @retval  EOK         when successful operation
- * @retval  ESNULLP     when dest/src/first is NULL pointer
+ * @retval  ESNULLP     when dest/src/firstp is NULL pointer
  * @retval  ESZEROL     when dmax/slen = 0
- * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strfirstchar_s(), strlastchar_s(), strfirstdiff_s(),
@@ -67,53 +69,45 @@
  *
  */
 EXPORT errno_t
-strpbrk_s (char *dest, rsize_t dmax,
-           char *src,  rsize_t slen, char **first)
+_strpbrk_s_chk (char *dest, rsize_t dmax,
+                char *src,  rsize_t slen, char **firstp,
+                const size_t destbos, const size_t srcbos)
 {
     char *ps;
     rsize_t len;
 
-    if (unlikely(first == NULL)) {
-        invoke_safe_str_constraint_handler("strpbrk_s: count is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *first = NULL;
+    CHK_SRC_NULL("strpbrk_s", firstp)
+    *firstp = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strpbrk_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strpbrk_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("strpbrk_s")
+    CHK_SRC_NULL("strpbrk_s", src)
+    CHK_DMAX_ZERO("strpbrk_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strpbrk_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, slen);
+    } else {
+        CHK_DEST_OVR("strpbrk_s", destbos)
     }
 
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strpbrk_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+    if (srcbos == BOS_UNKNOWN) {
+        if (unlikely(slen > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds dmax",
+                                               (void*)dest, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else {
+        if (unlikely(slen > srcbos)) {
+            invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds src",
+                       (void*)src, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strpbrk_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
     if (unlikely(slen == 0 )) {
         invoke_safe_str_constraint_handler("strpbrk_s: slen is 0",
-                   NULL, ESZEROL);
+                   (void*)src, ESZEROL);
         return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
     }
 
     /*
@@ -127,7 +121,7 @@ strpbrk_s (char *dest, rsize_t dmax,
 
             /* check for a match with the substring */
             if (*dest == *ps) {
-                *first = dest;
+                *firstp = dest;
                 return RCNEGATE(EOK);
             }
             ps++;
@@ -140,5 +134,5 @@ strpbrk_s (char *dest, rsize_t dmax,
     return RCNEGATE(ESNOTFND);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strpbrk_s);
+EXPORT_SYMBOL(_strpbrk_s_chk);
 #endif /* __KERNEL__ */

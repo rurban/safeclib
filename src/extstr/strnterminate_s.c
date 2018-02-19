@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strnterminate_s(str,smax)
  * @brief
  *    The strnterminate_s function will terminate the string if a
  *    null is not encountered before dmax characters.
@@ -50,7 +51,7 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return
  *    The function returns a terminated string.  If a null is not
@@ -63,24 +64,33 @@
  *
  */
 EXPORT rsize_t
-strnterminate_s (char *dest, rsize_t dmax)
+_strnterminate_s_chk (char *dest, rsize_t dmax, const size_t destbos)
 {
     rsize_t count;
 
     if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("strnterminate_s: dest is null",
+                   (void*)dest, ESNULLP);
         return (0);
     }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strnterminate_s: dmax is 0",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return (0);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (0);
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds max",
+                       (void*)dest, ESLEMAX);
+            return (0);
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        if (unlikely(dmax > destbos)) {
+            invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds dest",
+                       (void*)dest, ESLEMAX);
+            return (0);
+        }
     }
 
     count = 0;

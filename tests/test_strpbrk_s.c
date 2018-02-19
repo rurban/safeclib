@@ -3,7 +3,6 @@
  * File 'extstr/strpbrk_s.c'
  * Lines executed:94.29% of 35
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -35,7 +34,7 @@ int test_strpbrk_s (void)
         errs++;
     }
 
-    EXPECT_BOS("empty first")
+    EXPECT_BOS("empty firstp")
     rc = strpbrk_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 

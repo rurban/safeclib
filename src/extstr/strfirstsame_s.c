@@ -36,32 +36,34 @@
 #endif
 
 /**
+ * @def strfirstsame_s(dest,dmax,src,resultp)
  * @brief
  *    Returns the index of the first character that is the
  *    same between dest and src.  The scanning stops at the
- *    fisrt null in dest or src, or after dmax characters.
+ *    first null in dest or src, or after dmax characters.
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[in]   dest   pointer to string to compare against
- * @param[in]   dmax   restricted maximum length of string dest
- * @param[in]   src    pointer to the string to be compared to dest
- * @param[out]  idx    pointer to returned index
+ * @param[in]   dest    pointer to string to compare against
+ * @param[in]   dmax    restricted maximum length of string dest
+ * @param[in]   src     pointer to the string to be compared to dest
+ * @param[out]  resultp pointer to returned index
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  indicator shall not be a null pointer.
+ * @pre  resultp shall not be a null pointer.
  * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
- * @return  idx to first same char, when the return code is OK
- * @retval  EOK         when idx to first same char is returned
- * @retval  ESNULLP     when dst/src/idx is NULL pointer
- * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
- * @retval  ESNOTFND    when not found
+ * @return  index to first same char, when the return code is OK
+ * @retval  EOK        when index to first same char is returned
+ * @retval  ESNULLP    when dest/src/resultp is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR of > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESNOTFND   when not found
  *
  * @see
  *    strfirstchar_s(), strfirstdiff_s(), strlastchar_s(),
@@ -69,40 +71,23 @@
  *
  */
 EXPORT errno_t
-strfirstsame_s (const char *dest, rsize_t dmax,
-                const char *src,  rsize_t *idx)
+_strfirstsame_s_chk (const char *dest, rsize_t dmax,
+                     const char *src,  rsize_t *resultp,
+                     const size_t destbos)
 {
     const char *rp = 0;
 
-    if (unlikely(idx == NULL)) {
-        invoke_safe_str_constraint_handler("strfirstsame_s: idx is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-    *idx = 0;
+    CHK_SRC_NULL("strfirstsame_s", resultp)
+    *resultp = 0;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strfirstsame_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strfirstsame_s: src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strfirstsame_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strfirstsame_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strfirstsame_s")
+    CHK_SRC_NULL("strfirstsame_s", src)
+    CHK_DMAX_ZERO("strfirstsame_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strfirstsame_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strfirstsame_s", destbos)
     }
 
     /* hold reference point */
@@ -114,7 +99,7 @@ strfirstsame_s (const char *dest, rsize_t dmax,
     while (*dest && *src && dmax) {
 
         if (*dest == *src) {
-            *idx = (uint32_t)(dest - rp);
+            *resultp = (uint32_t)(dest - rp);
             return (EOK);
         }
 

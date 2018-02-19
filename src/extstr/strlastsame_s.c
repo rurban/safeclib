@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strlastsame_s(dest,dmax,src,resultp)
  * @brief
  *    Returns the index of the last character that is the
  *    same between dest and src. The scanning stops at the
@@ -46,21 +47,22 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[in]   dest   pointer to string to compare against
- * @param[in]   dmax   restricted maximum length of string dest
- * @param[in]   src    pointer to the string to be compared to dest
- * @param[out]  idx    pointer to returned index
+ * @param[in]   dest    pointer to string to compare against
+ * @param[in]   dmax    restricted maximum length of string dest
+ * @param[in]   src     pointer to the string to be compared to dest
+ * @param[out]  resultp pointer to returned index
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  indicator shall not be a null pointer.
+ * @pre  resultp shall not be a null pointer.
  * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  index to last same char, when the return code is OK
  * @retval  EOK         when index to last same char is returned
- * @retval  ESNULLP     when dst/src/idx is NULL pointer
+ * @retval  ESNULLP     when dst/src/resultp is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR of > size of dest
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOTFND    when not found
  *
  * @see
@@ -69,41 +71,24 @@
  *
  */
 EXPORT errno_t
-strlastsame_s (const char *dest, rsize_t dmax,
-               const char *src, rsize_t *idx)
+_strlastsame_s_chk (const char *dest, rsize_t dmax,
+                    const char *src, rsize_t *resultp,
+                    const size_t destbos)
 {
     const char *rp;
-    bool similarity;
+    bool found;
 
-    if (unlikely(idx == NULL)) {
-        invoke_safe_str_constraint_handler("strlastsame_s: idx is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-    *idx = 0;
+    CHK_SRC_NULL("strfirstsame_s", resultp)
+    *resultp = 0;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strlastsame_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strlastsame_s: src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0 )) {
-        invoke_safe_str_constraint_handler("strlastsame_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strlastsame_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strlastsame_s")
+    CHK_SRC_NULL("strlastsame_s", src)
+    CHK_DMAX_ZERO("strlastsame_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strlastsame_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strlastsame_s", destbos)
     }
 
     /* hold reference point */
@@ -112,12 +97,12 @@ strlastsame_s (const char *dest, rsize_t dmax,
     /*
      * find the last offset
      */
-    similarity = false;
+    found = false;
     while (*dest && *src && dmax) {
 
         if (*dest == *src) {
-            similarity = true;
-            *idx = (uint32_t)(dest - rp);
+            found = true;
+            *resultp = (uint32_t)(dest - rp);
         }
 
         dest++;
@@ -125,7 +110,7 @@ strlastsame_s (const char *dest, rsize_t dmax,
         dmax--;
     }
 
-    if (similarity) {
+    if (found) {
         return (EOK);
     } else {
         return (ESNOTFND);
