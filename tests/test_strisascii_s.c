@@ -3,7 +3,6 @@
  * File 'extstr/strisascii_s.c'
  * Lines executed:100.00% of 16
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -24,25 +23,23 @@ int main()
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strisascii_s(NULL, len);
     ERR(false)
-#endif
-/*--------------------------------------------------*/
 
     len = 0;
-    rc = strisascii_s("test", len);
+    EXPECT_BOS("empty dest or dmax")
+    rc = strisascii_s("test", 0);
     ERR(false)
-/*--------------------------------------------------*/
+#endif
 
-    len = 99999;
-    rc = strisascii_s("test", len);
+    EXPECT_BOS("dest overflow") /* TODO */
+    rc = strisascii_s("test", 99999);
     ERR(false)
-/*--------------------------------------------------*/
 
-    /* empty string */
+    EXPECT_BOS("dest overflow") /* TODO */
     rc = strisascii_s("", 2);
-    ERR(true)
+    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy (str, "ABCDEFGHIJK");

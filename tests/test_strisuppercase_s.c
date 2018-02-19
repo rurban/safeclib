@@ -23,20 +23,20 @@ int main()
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strisuppercase_s(NULL, len);
     ERR(false)
-#endif
-/*--------------------------------------------------*/
-
-    len = 99999;
-    rc = strisuppercase_s("test", len);
-    ERR(false)
-/*--------------------------------------------------*/
 
     len = 0;
-    rc = strisuppercase_s("test", len);
+    EXPECT_BOS("empty dest or dmax")
+    rc = strisuppercase_s("test", 0);
     ERR(false)
+#endif
+
+    EXPECT_BOS("dest overflow")
+    rc = strisuppercase_s("test", 99999);
+    ERR(false)
+
 /*--------------------------------------------------*/
 
     str[0] = '\0';

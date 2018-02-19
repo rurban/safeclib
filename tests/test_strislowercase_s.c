@@ -23,7 +23,7 @@ int main()
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strislowercase_s(NULL, len);
     ERR(false)
 #endif

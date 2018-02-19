@@ -85,6 +85,11 @@ int test_strcoll_s (void)
     rc = strcoll_s(str1, RSIZE_MAX_STR+1, str2, &ind);
     ERR(ESLEMAX)
     INDZERO()
+
+    EXPECT_BOS("dest overflow") /* TODO */
+    rc = strcoll_s("xxxxxx", 20, "xxxxxxyy", &ind);
+    ERR(ESLEMAX)
+    INDZERO()
 #endif
 
 /*--------------------------------------------------*/

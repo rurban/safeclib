@@ -35,14 +35,12 @@
 #include "safeclib_private.h"
 #endif
 
-
-
-
 /**
+ * @def strisalphanumeric_s(dest,smax)
  * @brief
  *    This function checks if the entire string contains
  *    alphanumerics.  The scanning stops at the first null
- *    or after dmax characters.
+ *    or after smax characters.
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -52,12 +50,11 @@
  * @param dest  pointer to string
  * @param dmax  maximum length of string
  *
- *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
- * @return  true   when dest is alphanumeric
+ * @return  true   when all chars in dest are alphanumeric
  * @return  false  when dest is not alphanumeric or an error occurred
  *
  * @see
@@ -66,28 +63,9 @@
  *
  */
 bool
-strisalphanumeric_s (const char *dest, rsize_t dmax)
+_strisalphanumeric_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strisalphanumeric_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (false);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strisalphanumeric_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (false);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strisalphanumeric_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (false);
-    }
+    CHK_DEST_DMAX_BOOL("strisalphanumeric_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {
         return (false);

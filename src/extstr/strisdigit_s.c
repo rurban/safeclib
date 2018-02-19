@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strisdigit_s(dest,dmax)
  * @brief
  *    This function checks that the entire string contains digits.
  *    The scanning stops at the first null or after dmax characters.
@@ -49,8 +50,9 @@
  * @param  dmax  maximum length of string
  *
  * @pre  dest shall not be a null pointer.
+ * @pre  dest shall be a null terminated.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR..
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  true      when string is digit
  * @return  false     when string is not digit or an error occurred
@@ -58,28 +60,12 @@
  * @see
  *    strisalphanumeric_s(), strisascii_s(), strishex_s(),
  *    strislowercase_s(), strismixedcase_s(), strisuppercase_s()
- *
  */
-bool
-strisdigit_s (const char *dest, rsize_t dmax)
+
+EXPORT bool
+_strisdigit_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strisdigit_s: dest is null",
-                   NULL, ESNULLP);
-        return (false);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strisdigit_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (false);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strisdigit_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (false);
-    }
+    CHK_DEST_DMAX_BOOL("strisdigit_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {
         return (false);

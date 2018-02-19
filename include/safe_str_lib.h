@@ -343,8 +343,8 @@ EXTERN errno_t
 _strfirstchar_s_chk(char *dest, rsize_t dmax, char c, char **firstp,
                     const size_t destbos)
     BOS_CHK(dest) BOS_NULL(firstp);
-#define strfirstchar_s(dest,dmax,src,firstp) \
-    _strfirstchar_s_chk(dest,dmax,src,firstp,BOS(dest))
+#define strfirstchar_s(dest,dmax,c,firstp) \
+    _strfirstchar_s_chk(dest,dmax,c,firstp,BOS(dest))
 
 /* returns index of first difference */
 EXTERN errno_t
@@ -357,43 +357,59 @@ _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
 
 /* validate alphanumeric string */
 EXTERN bool
-strisalphanumeric_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strisalphanumeric_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strisalphanumeric_s(dest,dmax)                  \
+    _strisalphanumeric_s_chk(dest,dmax,BOS(dest))
 
 /* validate ascii string */
 EXTERN bool
-strisascii_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strisascii_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strisascii_s(dest,dmax)                 \
+    _strisascii_s_chk(dest,dmax,BOS(dest))
 
 /* validate string of digits */
 EXTERN bool
-strisdigit_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strisdigit_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strisdigit_s(dest,dmax)                 \
+    _strisdigit_s_chk(dest,dmax,BOS(dest))
 
 /* validate hex string */
 EXTERN bool
-strishex_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strishex_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strishex_s(dest,dmax)                  \
+    _strishex_s_chk(dest,dmax,BOS(dest))
 
 /* validate lower case */
 EXTERN bool
-strislowercase_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strislowercase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strislowercase_s(dest,dmax)             \
+    _strislowercase_s_chk(dest,dmax,BOS(dest))
 
 /* validate mixed case */
 EXTERN bool
-strismixedcase_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strismixedcase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strismixedcase_s(dest,dmax)             \
+    _strismixedcase_s_chk(dest,dmax,BOS(dest))
 
 /* validate password */
 EXTERN bool
-strispassword_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strispassword_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strispassword_s(dest,dmax)                  \
+    _strispassword_s_chk(dest,dmax,BOS(dest))
 
 /* validate upper case */
 EXTERN bool
-strisuppercase_s(const char *str, rsize_t slen)
-    BOS_OVR2(str, slen);
+_strisuppercase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
+    BOS_CHK(dest);
+#define strisuppercase_s(dest,dmax)                  \
+    _strisuppercase_s_chk(dest,dmax,BOS(dest))
 
 /* returns  a pointer to the last occurrence of c in s1 */
 EXTERN errno_t

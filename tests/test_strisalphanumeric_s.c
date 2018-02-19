@@ -3,7 +3,6 @@
  * File 'extstr/strisalphanumeric_s.c'
  * Lines executed:100.00% of 20
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -24,7 +23,7 @@ int main()
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strisalphanumeric_s(NULL, len);
     ERR(false)
 #endif

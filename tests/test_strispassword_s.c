@@ -21,28 +21,26 @@ int main()
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strispassword_s(NULL, LEN);
     ERR(false)
-#endif
-/*--------------------------------------------------*/
 
-    rc = strispassword_s("", LEN);
-    ERR(false)
-/*--------------------------------------------------*/
-
+    EXPECT_BOS("empty dest or dmax")
     rc = strispassword_s("Test4You&", 0);
     ERR(false)
-/*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow")
     rc = strispassword_s("Test4You&", 999);
     ERR(false)
-#endif
-/*--------------------------------------------------*/
 
+    EXPECT_BOS("dest overflow")
     rc = strispassword_s("", 9);
     ERR(false)
+
+    EXPECT_BOS("dest overflow")
+    rc = strispassword_s("", LEN);
+    ERR(false)
+#endif
 /*--------------------------------------------------*/
 
     strcpy (str, "Test4You*123");

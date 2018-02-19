@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strismixedcase_s(dest,dmax)
  * @brief
  *    This function checks that the entire string is mixed
  *    case.  The scanning stops at the first null or after
@@ -51,8 +52,7 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
- *
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  true   when string is mixed case
  * @return  false  when string is not mixed case or error
@@ -61,31 +61,12 @@
  *    strisalphanumeric_s(), strisascii_s(), strisdigit_s(),
  *    strishex_s(), strislowercase_s(),
  *    strisuppercase_s()
- *
  */
-bool
-strismixedcase_s (const char *dest, rsize_t dmax)
+
+EXPORT bool
+_strismixedcase_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strismixedcase_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (false);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strismixedcase_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (false);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strismixedcase_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (false);
-    }
+    CHK_DEST_DMAX_BOOL("strismixedcase_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {
         return (false);
