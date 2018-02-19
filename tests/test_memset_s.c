@@ -48,7 +48,7 @@ int test_memset_s (void)
     value = 34;
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
-    rc = memset_s(NULL, LEN, value, LEN);
+    rc = memset_s(NULL, LEN, value, 0);
     if ( rc == ESNULLP ) {
         if (use_msvcrt)
             printf("safec overriding libc\n");
@@ -82,13 +82,13 @@ int test_memset_s (void)
         EXPMEM(mem1, 0, LEN, value, 1);
 
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    EXPECT_BOS("n overflow >dest")
+    EXPECT_BOS("n overflow >dest/dmax")
     rc = memset_s(mem1, LEN, value, MAX+1);
     ERR_MSVC(ESLEMAX, EOVERFLOW); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 1);
 
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
-    EXPECT_BOS("n overflow >dest")
+    EXPECT_BOS("n overflow >dest/dmax")
     rc = memset_s(mem1, LEN, value, LEN+1);
     ERR_MSVC(ESNOSPC, EOVERFLOW); /* and set all */
     EXPMEM(mem1, 0, LEN, value, 1);
