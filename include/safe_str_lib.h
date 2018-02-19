@@ -358,56 +358,56 @@ _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
 /* validate alphanumeric string */
 EXTERN bool
 _strisalphanumeric_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strisalphanumeric_s(dest,dmax)                  \
     _strisalphanumeric_s_chk(dest,dmax,BOS(dest))
 
 /* validate ascii string */
 EXTERN bool
 _strisascii_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strisascii_s(dest,dmax)                 \
     _strisascii_s_chk(dest,dmax,BOS(dest))
 
 /* validate string of digits */
 EXTERN bool
 _strisdigit_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strisdigit_s(dest,dmax)                 \
     _strisdigit_s_chk(dest,dmax,BOS(dest))
 
 /* validate hex string */
 EXTERN bool
 _strishex_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strishex_s(dest,dmax)                  \
     _strishex_s_chk(dest,dmax,BOS(dest))
 
 /* validate lower case */
 EXTERN bool
 _strislowercase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strislowercase_s(dest,dmax)             \
     _strislowercase_s_chk(dest,dmax,BOS(dest))
 
 /* validate mixed case */
 EXTERN bool
 _strismixedcase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strismixedcase_s(dest,dmax)             \
     _strismixedcase_s_chk(dest,dmax,BOS(dest))
 
 /* validate password */
 EXTERN bool
 _strispassword_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strispassword_s(dest,dmax)                  \
     _strispassword_s_chk(dest,dmax,BOS(dest))
 
 /* validate upper case */
 EXTERN bool
 _strisuppercase_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-    BOS_CHK(dest);
+    BOS_CHK2(dest,dmax);
 #define strisuppercase_s(dest,dmax)                  \
     _strisuppercase_s_chk(dest,dmax,BOS(dest))
 
@@ -485,14 +485,18 @@ strrchr_s(const char *restrict dest, rsize_t dmax,
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */
 EXTERN errno_t
-strtolowercase_s(char *restrict str, rsize_t slen)
+_strtolowercase_s_chk(char *str, rsize_t slen, const size_t srcbos)
     BOS_CHK2(str, slen);
+#define strtolowercase_s(str,slen)               \
+    _strtolowercase_s_chk(str,slen,BOS(str))
 
 /* convert string to uppercase
    mingw string_s.h: _strupr_s */
 EXTERN errno_t
-strtouppercase_s(char *str, rsize_t slen)
+_strtouppercase_s_chk(char *str, rsize_t slen, const size_t srcbos)
     BOS_CHK2(str, slen);
+#define strtouppercase_s(str,slen)              \
+    _strtouppercase_s_chk(str,slen,BOS(str))
 
 #define strlwr_s(str, slen) strtolowercase_s((str), (slen))
 #define strupr_s(str, slen) strtouppercase_s((str), (slen))

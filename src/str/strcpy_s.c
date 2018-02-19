@@ -90,7 +90,7 @@
  *                     copied into dest and the result is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or sizeof(dest)
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src

@@ -23,23 +23,34 @@ int main()
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strtouppercase_s(NULL, len);
     ERR(ESNULLP)
 
-    EXPECT_BOS("empty str or slen")
+    EXPECT_BOS("empty dest or dmax")
     rc = strtouppercase_s("test", 0);
     ERR(ESZEROL)
 
-    EXPECT_BOS("str overflow")
+    /* XXX This is a TODO with other tests, here it works !?! */
+    EXPECT_BOS("dest overflow")
     rc = strtouppercase_s("test", 99999);
     ERR(ESLEMAX)
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strtouppercase_s("", 2);
+    ERR(ESLEMAX)
+# endif
 #endif
 /*--------------------------------------------------*/
 
-    /* empty string */
-    len = 5;
-    rc = strtouppercase_s("", len);
+    /* empty string: static */
+    rc = strtouppercase_s("", 1);
+    ERR(EOK)
+
+    /* dynamic */
+    *str = '\0';
+    rc = strtouppercase_s(str, 5);
     ERR(EOK)
 
 /*--------------------------------------------------*/

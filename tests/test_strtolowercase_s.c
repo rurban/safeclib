@@ -22,15 +22,15 @@ int main()
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty str")
+    EXPECT_BOS("empty dest")
     rc = strtolowercase_s(NULL, len);
     ERR(ESNULLP)
 
-    EXPECT_BOS("empty str or slen")
+    EXPECT_BOS("empty dest or dmax")
     rc = strtolowercase_s("test", 0);
     ERR(ESZEROL)
 
-    EXPECT_BOS("str overflow")
+    EXPECT_BOS("dest overflow")
     rc = strtolowercase_s("test", RSIZE_MAX_STR+1);
     ERR(ESLEMAX)
 #endif

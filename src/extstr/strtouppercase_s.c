@@ -36,10 +36,11 @@
 #endif
 
 /**
+ * @def strtouppercase_s(dest, dmax) 
  * @brief
- *    Scans the string converting lowercase characters to
- *    uppercase, leaving all other characters unchanged.
- *    The scanning stops at the first null or after dmax
+ *    Converts all lowercase characters to uppercase, leaving all
+ *    other characters unchanged.
+ *    The conversion stops at the first null or after dmax
  *    characters.
  *
  * @remark EXTENSION TO
@@ -57,34 +58,23 @@
  * @retval  EOK         when successful operation
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or size of dest
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  *
  * ALSO SEE
  *    strtolowercase_s()
  *
  */
 EXPORT errno_t
-strtouppercase_s (char *dest, rsize_t dmax)
+_strtouppercase_s_chk (char *dest, rsize_t dmax, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strtouppercase_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strtouppercase_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strtouppercase_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strtouppercase_s")
+    CHK_DMAX_ZERO("strtouppercase_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strtouppercase_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strtouppercase_s", destbos)
     }
 
     while (*dest && dmax) {

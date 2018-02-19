@@ -36,10 +36,11 @@
 #endif
 
 /**
+ * @def strtolowercase_s(dest, dmax) 
  * @brief
- *    Scans the string converting uppercase characters to
+ *    Converts all uppercase characters to
  *    lowercase, leaving all other characters unchanged.
- *    The scanning stops at the first null or after dmax
+ *    The conversion stops at the first null or after dmax
  *    characters.
  *
  * @remark EXTENSION TO
@@ -52,39 +53,28 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @retval  EOK         when successful operation
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or size of dest
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strtouppercase_s()
  *
  */
 EXPORT errno_t
-strtolowercase_s (char * restrict dest, rsize_t dmax)
+_strtolowercase_s_chk (char * restrict dest, rsize_t dmax, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strtolowercase_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strtolowercase_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strtolowercase_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strtolowercase_s")
+    CHK_DMAX_ZERO("strtolowercase_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strtolowercase_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strtolowercase_s", destbos)
     }
 
     while (*dest && dmax) {
