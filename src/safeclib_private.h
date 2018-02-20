@@ -309,6 +309,16 @@ void abort(void) __attribute__((noreturn));
         handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
         RETURN_ESLEWRNG;                                                \
     }
+# define CHK_DESTW_OVR(func,destsz,destbos)                             \
+    if (unlikely(destsz != destbos)) {                                  \
+        if (unlikely(destsz > destbos)) {                               \
+            invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
+                       (void*)dest, ESLEMAX);                           \
+            return RCNEGATE(ESLEMAX);                                   \
+        }                                                               \
+        handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos/sizeof(wchar_t)); \
+        RETURN_ESLEWRNG;                                                \
+    }
 #define CHK_DEST_OVR_BOOL(func, destbos)                                \
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
@@ -337,6 +347,12 @@ void abort(void) __attribute__((noreturn));
     }
 # define CHK_DEST_OVR(func, destbos)                                    \
     if (unlikely(dmax > destbos)) {                                     \
+        invoke_safe_str_constraint_handler(func": dmax exceeds dest",   \
+                                           (void*)dest, ESLEMAX);       \
+        return RCNEGATE(ESLEMAX);                                       \
+    }
+# define CHK_DESTW_OVR(func,destsz,destbos)                             \
+    if (unlikely(destsz > destbos)) {                                   \
         invoke_safe_str_constraint_handler(func": dmax exceeds dest",   \
                                            (void*)dest, ESLEMAX);       \
         return RCNEGATE(ESLEMAX);                                       \

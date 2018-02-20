@@ -41,9 +41,10 @@ int test_mbstowcs_s (void)
 /*--------------------------------------------------*/
 
     cs = "a";
+    strcpy(src, "abc");
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty retval") EXPECT_BOS("empty src or len") 
+    EXPECT_BOS("empty retvalp") EXPECT_BOS("empty src or len") 
     rc = mbstowcs_s(NULL, NULL, LEN, cs, 0);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
@@ -72,15 +73,22 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 3);
     ERR_MSVC(ESLEMAX, 0);
     
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = mbstowcs_s(&ind, dest, LEN+1, cs, 3);
+    ERR_MSVC(ESLEMAX, 0);
+# endif
+
     dest[0] = L'a';
     EXPECT_BOS("dest overlap")
     rc = mbstowcs_s(&ind, dest, LEN, (const char*)dest, 1);
     ERR_MSVC(ESOVRLP, ERANGE);
-#endif
 
     cs = "abcdef";
-    rc = mbstowcs_s(&ind, (wchar_t*)cs, LEN, cs, 3);
+    EXPECT_BOS("dest overlap")
+    rc = mbstowcs_s(&ind, (wchar_t*)src, LEN/4, (const char*)src, 3);
     ERR_MSVC(ESOVRLP, ERANGE);
+#endif
 
 /*--------------------------------------------------*/
 

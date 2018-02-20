@@ -585,57 +585,62 @@ wcsstr(wchar_t *restrict dest, const wchar_t *restrict src);
 /* multibyte wchar */
 
 EXTERN errno_t
-mbstowcs_s(size_t *restrict retval,
-           wchar_t *restrict dest, rsize_t dmax,
-           const char *restrict src, rsize_t len)
-    BOS_NULL(retval)
+_mbstowcs_s_chk(size_t *restrict retvalp,
+                wchar_t *restrict dest, rsize_t dmax,
+                const char *restrict src, rsize_t len,
+                const size_t destbos)
+    BOS_NULL(retvalp)
     BOS_ATTR(!_BOS_NULL(dest) && _BOS_ZERO(dest,dmax), "empty dmax")
     BOS_ATTR(!_BOS_NULL(dest) && _BOSW_OVR(dest,dmax), "dest overflow")
     BOS_ATTR(!_BOS_NULL(dest) && (void*)dest == (void*)src, "dest overlap")
     BOS_CHK2(src, len);
+#define mbstowcs_s(retvalp,dest,dmax,src,len)                   \
+    _mbstowcs_s_chk(retvalp,dest,dmax,src,len,BOS(dest))
 
 EXTERN errno_t
-mbsrtowcs_s(size_t *restrict retval,
-            wchar_t *restrict dest, rsize_t dmax,
-            const char **restrict src, rsize_t len,
-            mbstate_t *restrict ps)
-    BOS_NULL(retval)
+_mbsrtowcs_s_chk(size_t *restrict retvalp,
+                 wchar_t *restrict dest, rsize_t dmax,
+                 const char **restrict srcp, rsize_t len,
+                 mbstate_t *restrict ps,
+                 const size_t destbos)
+    BOS_NULL(retvalp) BOS_NULL(srcp) BOS_NULL(ps)
     BOS_ATTR(!_BOS_NULL(dest) && _BOS_ZERO(dest,dmax), "empty dmax")
     BOS_ATTR(!_BOS_NULL(dest) && _BOSW_OVR(dest,dmax), "dest overflow")
-    BOS_ATTR(!_BOS_NULL(dest) && (void*)dest == (void*)src, "dest overlap")
-    BOS_CHK2(src, len)
-    BOS_ATTR(dmax && len > dmax, "len overflow >dmax")
-    BOS_NULL(ps);
+    BOS_ATTR(!_BOS_NULL(dest) && (char*)dest == *srcp, "dest overlap")
+    BOS_CHK2(*srcp, len)
+    BOS_ATTR(dmax && len > dmax, "len overflow >dmax");
+#define mbsrtowcs_s(retvalp,dest,dmax,srcp,len,ps)               \
+    _mbsrtowcs_s_chk(retvalp,dest,dmax,srcp,len,ps,BOS(dest))
 
 EXTERN errno_t
-wcsrtombs_s(size_t *restrict retval,
+wcsrtombs_s(size_t *restrict retvalp,
             char *restrict dest, rsize_t dmax,
-            const wchar_t **restrict src, rsize_t len,
+            const wchar_t **restrict srcp, rsize_t len,
             mbstate_t *restrict ps)
-    BOS_NULL(retval) BOS_NULL(ps)
+    BOS_NULL(retvalp) BOS_NULL(ps)
     BOS_ATTR(!_BOS_NULL(dest) && !dmax, "empty dmax")
     BOS_ATTR(!_BOS_NULL(dest) && _BOS_OVR(dest,dmax), "dest overflow")
-    BOS_ATTR(!_BOS_NULL(dest) && (void*)dest == (void*)src, "dest overlap")
-    BOS_NULL(src)
-    BOSW_CHK2(*src, len)
+    BOS_ATTR(!_BOS_NULL(dest) && (void*)dest == (void*)srcp, "dest overlap")
+    BOS_NULL(srcp)
+    BOSW_CHK2(*srcp, len)
     BOS_ATTR(dmax && len > dmax, "len overflow >dmax");
 
 EXTERN errno_t
-wcstombs_s(size_t *restrict retval,
+wcstombs_s(size_t *restrict retvalp,
            char *restrict dest, rsize_t dmax,
            const wchar_t *restrict src, rsize_t len)
-    BOS_NULL(retval) BOS_CHK(dest) BOSW_CHK2(src, len)
+    BOS_NULL(retvalp) BOS_CHK(dest) BOSW_CHK2(src, len)
     BOS_ATTR(dmax && len > dmax, "len overflow >dmax");
 
 EXTERN errno_t
-wcrtomb_s(size_t *restrict retval, char *restrict dest, rsize_t dmax,
+wcrtomb_s(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,
           wchar_t wc, mbstate_t *restrict ps)
-    BOS_NULL(retval) BOS_CHK(dest) BOS_NULL(ps)
+    BOS_NULL(retvalp) BOS_CHK(dest) BOS_NULL(ps)
     VAL_OVR2(wc, 0x10ffff);
 
 EXTERN errno_t
-wctomb_s(int *restrict retval, char *restrict dest, rsize_t dmax, wchar_t wc)
-    BOS_NULL(retval)
+wctomb_s(int *restrict retvalp, char *restrict dest, rsize_t dmax, wchar_t wc)
+    BOS_NULL(retvalp)
     BOS_ATTR(!_BOS_NULL(dest) && (!dmax || dmax > RSIZE_MAX_STR || _BOS_OVR(dest,dmax)),
              "dest overflow or empty")
     VAL_OVR2(wc, 0x10ffff);

@@ -57,13 +57,13 @@ int test_wcsrtombs_s (void)
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty retval")
+    EXPECT_BOS("empty retvalp")
     rc = wcsrtombs_s(NULL, dest, LEN, &cs, 1, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, 0);
     CLRPS;
 
-    EXPECT_BOS("empty src")
+    EXPECT_BOS("empty srcp")
     rc = wcsrtombs_s(&ind, dest, LEN, NULL, 1, &ps);
     ERR_MSVC(ESNULLP, EINVAL);
     CHECK_SLACK(dest, LEN);
@@ -86,7 +86,7 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     src[0] = L'\0';
-    EXPECT_BOS("empty *src or len")
+    EXPECT_BOS("empty *srcp or len")
     rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&src, 0, &ps);
     ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
     CHECK_SLACK(dest, LEN);

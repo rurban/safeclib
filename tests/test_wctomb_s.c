@@ -43,7 +43,7 @@ int test_wctomb_s (void)
     src = L'a';
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty retval")
+    EXPECT_BOS("empty retvalp")
     rc = wctomb_s(NULL, NULL, LEN, src);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, 0);

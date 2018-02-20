@@ -48,6 +48,7 @@
 #endif
 
 /**
+ * @def mbstowcs_s(retvalp,dest,dmax,src,len)
  * @brief
  *    The \c mbstowcs_s function converts a null-terminated multibyte
  *    character sequence from the current LC_CTYPE locale to wchar, which
@@ -81,13 +82,14 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval pointer to a \c size_t object where the result will be stored
- * @param[out]  dest   NULL or pointer to wide character array for the result
- * @param[in]   dmax   restricted maximum length of \c dest
- * @param[in]   src    pointer to the string that will be copied to \c dest
- * @param[in]   len    number of wide characters available in \c dest
+ * @param[out]  retvalp pointer to a \c size_t object where the result will be stored
+ * @param[out]  dest    NULL or pointer to wide character array for the result
+ * @param[in]   dmax    restricted maximum length of \c dest
+ * @param[in]   src     string that will be converted to \c dest
+ * @param[in]   len     maximal number of wide characters to be written to \c dest
+ *                      (exclusive the final L'\0' when needed)
  *
- * @pre retval and src shall not be a null pointer.
+ * @pre retvalp and src shall not be a null pointer.
  * @pre dmax and len shall not be greater than \c RSIZE_MAX_WSTR,
  *      unless dest is null.
  * @pre dmax shall not equal zero, unless dest is null.
@@ -102,7 +104,7 @@
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retval or src are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR, unless dst is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR or > size of dest, unless dest is NULL
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the src array and len is
@@ -112,9 +114,10 @@
  *
  */
 EXPORT errno_t
-mbstowcs_s(size_t *restrict retval,
-           wchar_t *restrict dest, rsize_t dmax,
-           const char *restrict src, rsize_t len)
+_mbstowcs_s_chk(size_t *restrict retvalp,
+                wchar_t *restrict dest, rsize_t dmax,
+                const char *restrict src, rsize_t len,
+                const size_t destbos)
 {
     wchar_t *orig_dest;
     errno_t rc;
@@ -122,38 +125,36 @@ mbstowcs_s(size_t *restrict retval,
     mbstate_t st;
 #endif
 
-    if (unlikely(retval == NULL)) {
-        invoke_safe_str_constraint_handler("mbstowcs_s: retval is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        if (dest) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-            /* null string to clear data */
-            memset_s((void*)dest,dmax,0,len);
-#else
-            *dest = '\0';
+    CHK_SRC_NULL("mbstowcs_s", retvalp)
+    *retvalp = 0;
+    CHK_SRCW_NULL_CLEAR("mbstowcs_s", src)
+    if (dest) {
+        /* string literals also have the ending \0 */
+        size_t destsz = (CONSTP(dest) ? dmax+1 : dmax) * sizeof(wchar_t);
+        CHK_DMAX_ZERO("mbstowcs_s")
+        if (destbos == BOS_UNKNOWN) {
+            if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
+                invoke_safe_str_constraint_handler("mbstowcs" ": dmax/len exceeds max",
+                           (void*)dest, ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            }
+            BND_CHK_PTR_BOUNDS(dest, destsz);
+        } else {
+            if (unlikely(destsz > destbos || len*sizeof(wchar_t) > destbos)) {
+                invoke_safe_str_constraint_handler("mbstowcs"
+                           ": dmax/len exceeds destsz",
+                           (void*)dest, ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            }
+#ifdef HAVE_WARN_DMAX
+            if (unlikely(destsz != destbos)) {
+                handle_str_bos_chk_warn("mbstowcs",(char*)dest,dmax,
+                                        destbos/sizeof(wchar_t));
+                RETURN_ESLEWRNG;
+            }
 #endif
         }
-        invoke_safe_str_constraint_handler("mbstowcs_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely((dmax == 0) && dest)) {
-        invoke_safe_str_constraint_handler("mbstowcs_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely((dmax > RSIZE_MAX_WSTR) && dest)) {
-        invoke_safe_str_constraint_handler("mbstowcs_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
     if (unlikely((char*)dest == src)) {
         return RCNEGATE(ESOVRLP);
     }
@@ -162,14 +163,14 @@ mbstowcs_s(size_t *restrict retval,
     orig_dest = dest;
     errno = 0;
 
-    *retval = mbstowcs(dest, src, len);
+    *retvalp = mbstowcs(dest, src, len);
 
-    if (likely(*retval < dmax)) {
+    if (likely(*retvalp < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(&dest[*retval], 0, (dmax-*retval)*sizeof(wchar_t));
+            memset(&dest[*retvalp], 0, (dmax-*retvalp)*sizeof(wchar_t));
 #else
-            dest[*retval] = L'\0';
+            dest[*retvalp] = L'\0';
 #endif
         }
         rc = EOK;
@@ -177,7 +178,7 @@ mbstowcs_s(size_t *restrict retval,
         if (dest) {
             size_t tmp = 0;
             errno = 0;
-            if (*retval > RSIZE_MAX_WSTR) { /* else ESNOSPC */
+            if (*retvalp > RSIZE_MAX_WSTR) { /* else ESNOSPC */
                 tmp = mbstowcs(NULL, src, len);
             }
             /* with NULL either 0 or -1 is returned */
@@ -190,7 +191,7 @@ mbstowcs_s(size_t *restrict retval,
                          rc);
         }
         else {
-            rc = ((size_t)*retval == 0) ? EOK : errno;
+            rc = ((size_t)*retvalp == 0) ? EOK : errno;
         }
     }
 
