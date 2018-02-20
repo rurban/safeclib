@@ -558,13 +558,19 @@ _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
    defined(MINGW_HAS_SECURE_API) */
 
 EXTERN errno_t
-strset_s(char *restrict dest, rsize_t dmax, int value)
+_strset_s_chk(char *restrict dest, rsize_t dmax, int value,
+              const size_t destbos)
     BOS_CHK(dest) VAL_OVR2(value, 255);
+#define strset_s(dest,dmax,value)          \
+    _strset_s_chk(dest,dmax,value,BOS(dest))
 
 EXTERN errno_t
-strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n)
+_strnset_s_chk(char *restrict dest, rsize_t dmax, int value, rsize_t n,
+               const size_t destbos)
     BOS_CHK(dest) BOS_OVR2_BUTZERO(dest, n) VAL_OVR2(value, 255)
     VAL_OVR2_BUTZERO(n, dmax);
+#define strnset_s(dest,dmax,value,n)             \
+    _strnset_s_chk(dest,dmax,value,n,BOS(dest))
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

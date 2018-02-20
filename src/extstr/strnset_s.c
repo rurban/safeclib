@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strnset_s(dest,dmax,value,n)
  * @brief
  *    Sets maximal n characters of dest to a character value,
  *    but not the final NULL character.
@@ -55,7 +56,7 @@
  * @param[in]   n       number of characters to be written
  *
  * @pre dest shall not be a null pointer, and shall be null-terminated.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest.
  * @pre dmax shall not equal zero.
  * @pre n shall not be greater than dmax
  * @pre value shall not be greater than 255
@@ -63,38 +64,36 @@
  * @retval  EOK         when successful
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or value > 255
+ * @retval  ESLEMAX     when value > 255
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when n > dmax
  *
  * @see
  *    strzero_s(), strset_s(), wcsnset_s(), strispassword_s()
- *
  */
+
 EXPORT errno_t
-strnset_s (char *restrict dest, rsize_t dmax, int value, rsize_t n)
+_strnset_s_chk (char *restrict dest, rsize_t dmax, int value, rsize_t n,
+                const size_t destbos)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     char * orig_dest;
 #endif
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strnset_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strnset_s")
+    CHK_DMAX_ZERO("strnset_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strnset_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strnset_s", destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strnset_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR || value > 255)) {
-        invoke_safe_str_constraint_handler("strnset_s: dmax/value exceeds max",
-                   NULL, ESLEMAX);
+    if (unlikely((unsigned)value > 255)) {
+        invoke_safe_str_constraint_handler("strnset_s: value exceeds max",
+                   (void*)dest, ESLEMAX);
         return (ESLEMAX);
     }
-
     if (unlikely(n > dmax)) {
         invoke_safe_str_constraint_handler("strnset_s: n exceeds dmax",
                    NULL, ESNOSPC);

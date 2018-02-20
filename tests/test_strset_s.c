@@ -36,6 +36,12 @@ int main()
     rc = strset_s(str1, RSIZE_MAX_STR+1, 0);
     ERR(ESLEMAX);
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strset_s(str1, LEN+1, 0);
+    ERR(ESLEMAX)
+# endif
+
     EXPECT_BOS("value overflow >255")
     rc = strset_s(str1, LEN, 256);
     ERR(ESLEMAX);

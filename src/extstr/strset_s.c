@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strset_s(dest,dmax,value)
  * @brief
  *    Sets maximal dmax characters of dest to a character value, but not
  *    the final NULL character.
@@ -54,37 +55,35 @@
  * @param[in]   value   character value to write
  *
  * @pre dest shall not be a null pointer, and shall be null-terminated.
- * @pre dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest.
  * @pre dmax shall not equal zero.
  * @pre value shall not be greater than 255
  *
  * @retval  EOK         when successful
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or value > 255
+ * @retval  ESLEMAX     when value > 255
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strzero_s(), strnset_s(), strispassword_s()
- *
  */
+
 EXPORT errno_t
-strset_s (char *restrict dest, rsize_t dmax, int value)
+_strset_s_chk (char *restrict dest, rsize_t dmax, int value, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strset_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strset_s")
+    CHK_DMAX_ZERO("strset_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strset_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strset_s", destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strset_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR || (unsigned)value > 255)) {
-        invoke_safe_str_constraint_handler("strset_s: dmax/value exceeds max",
-                   NULL, ESLEMAX);
+    if (unlikely((unsigned)value > 255)) {
+        invoke_safe_str_constraint_handler("strset_s: value exceeds max",
+                   (void*)dest, ESLEMAX);
         return (ESLEMAX);
     }
 
