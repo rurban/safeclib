@@ -522,15 +522,15 @@ _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */
 EXTERN errno_t
-_strtolowercase_s_chk(char *dest, rsize_t dmax, const size_t srcbos)
+_strtolowercase_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK2(dest, dmax);
 #define strtolowercase_s(dest,dmax)               \
-    _strtolowercase_s_chk(dest,dmax,BOS(str))
+    _strtolowercase_s_chk(dest,dmax,BOS(dest))
 
 /* convert string to uppercase
    mingw string_s.h: _strupr_s */
 EXTERN errno_t
-_strtouppercase_s_chk(char *dest, rsize_t dmax, const size_t srcbos)
+_strtouppercase_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK2(dest,dmax);
 #define strtouppercase_s(dest,dmax)              \
     _strtouppercase_s_chk(dest,dmax,BOS(dest))
@@ -541,8 +541,10 @@ _strtouppercase_s_chk(char *dest, rsize_t dmax, const size_t srcbos)
 /* zero an entire string with nulls.
    mingw string_s.h has: _strset_s */
 EXTERN errno_t
-strzero_s(char *dest, rsize_t dmax)
+_strzero_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
+#define strzero_s(dest,dmax)          \
+    _strzero_s_chk(dest,dmax,BOS(dest))
 
 EXTERN errno_t
 strcoll_s(const char *restrict dest, rsize_t dmax,

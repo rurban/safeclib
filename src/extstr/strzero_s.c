@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strzero_s(dest,dmax)
  * @brief
  *    Nulls maximal dmax characters of dest.  This function can be used
  *    to clear strings that contained sensitive data, until the terminating NULL
@@ -55,31 +56,23 @@
  * @retval  EOK         when successful operation
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strispassword_s()
- *
  */
+
 EXPORT errno_t
-strzero_s (char *dest, rsize_t dmax)
+_strzero_s_chk (char *dest, rsize_t dmax, const size_t destbos)
 {
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strzero_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strzero_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strzero_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
+    CHK_DEST_NULL("strzero_s")
+    CHK_DMAX_ZERO("strzero_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strzero_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strzero_s", destbos)
     }
 
     /* null string to eliminate data */
