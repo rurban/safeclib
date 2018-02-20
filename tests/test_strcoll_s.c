@@ -72,7 +72,7 @@ int test_strcoll_s (void)
     ERR(ESNULLP)
     INDZERO()
 
-    EXPECT_BOS("empty indicator")
+    EXPECT_BOS("empty resultp")
     rc = strcoll_s(str1, LEN, str2, NULL);
     ERR(ESNULLP)
 
@@ -86,14 +86,20 @@ int test_strcoll_s (void)
     ERR(ESLEMAX)
     INDZERO()
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strcoll_s(str1, LEN+1, str2, &ind);
+    ERR(ESLEMAX)
+    INDZERO()
+# endif
 #endif
 
-/*  no static overflow _chk yet
+    /* no static overflow _chk yet with string literals (clang bug) */
     EXPECT_BOS_TODO("dest overflow")
     rc = strcoll_s("xxxxxx", 20, "xxxxxxyy", &ind);
     ERR(ESLEMAX)
     INDZERO()
-*/
+
 /*--------------------------------------------------*/
 
     str1[0] = '\0';

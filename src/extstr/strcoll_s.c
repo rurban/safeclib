@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strcoll_s(dest,dmax,src,resultp)
  * @brief
  *    Compares two null-terminated byte strings according to the
  *    current locale as defined by the \c LC_COLLATE category.
@@ -58,65 +59,49 @@
  * @param[in]   dest       pointer to string to compare against
  * @param[in]   dmax       restricted maximum length of string dest
  * @param[in]   src        pointer to the string to be compared to dest
- * @param[out]  indicator  pointer to result indicator, greater than 0,
+ * @param[out]  resultp    pointer to result indicator, greater than 0,
  *                         equal to 0 or less than 0, if the string pointed
  *                         to by dest is greater than, equal to or less
  *                         than the string pointed to by src respectively.
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   indicator shall not be a null pointer.
+ * @pre   resultp shall not be a null pointer.
  * @pre   dmax shall not be 0
- * @pre   dmax shall not be greater than RSIZE_MAX_STR
+ * @pre   dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  indicator (when the return code is OK)
  * @retval  >0 when dest greater than src
  * @retval  0 when strings the same
  * @retval  <0 when dest less than src
  * @retval  EOK          when comparison is complete
- * @retval  ESNULLP      when dest/src/indicator is NULL pointer
+ * @retval  ESNULLP      when dest/src/resultp is NULL pointer
  * @retval  ESZEROL      when dmax = 0
- * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    wcscoll_s(), strcmp_s(), strcasecmp_s()
- *
  */
+
 EXPORT errno_t
-strcoll_s (const char *restrict dest, rsize_t dmax,
-           const char *restrict src, int *indicator)
+_strcoll_s_chk (const char *restrict dest, rsize_t dmax,
+                const char *restrict src, int *resultp,
+                const size_t destbos)
 {
-    if (unlikely(indicator == NULL)) {
-        invoke_safe_str_constraint_handler("strcoll_s: indicator is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *indicator = 0;
+    CHK_SRC_NULL("strcoll_s", resultp)
+    *resultp = 0;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strcoll_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strcoll_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("strcoll_s")
+    CHK_SRC_NULL("strcoll_s", src)
+    CHK_DMAX_ZERO("strcoll_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcoll_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strcoll_s", destbos)
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strcoll_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcoll_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    *indicator = strcoll(dest, src);
+    *resultp = strcoll(dest, src);
 
     return RCNEGATE(EOK);
 }

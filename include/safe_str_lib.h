@@ -547,9 +547,12 @@ _strzero_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     _strzero_s_chk(dest,dmax,BOS(dest))
 
 EXTERN errno_t
-strcoll_s(const char *restrict dest, rsize_t dmax,
-          const char *restrict src, int *indicator)
-    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(indicator);
+_strcoll_s_chk(const char *restrict dest, rsize_t dmax,
+               const char *restrict src, int *resultp,
+               const size_t destbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strcoll_s(dest,dmax,src,resultp)          \
+    _strcoll_s_chk(dest,dmax,src,resultp,BOS(dest))
 
 /* Derived from windows extensions sec_api/string_s.h
    defined(MINGW_HAS_SECURE_API) */
