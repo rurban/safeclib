@@ -132,7 +132,7 @@ RSIZE_MAX::
 	range limit for the safe string functions.  RSIZE_MAX_MEM defines the
 	range limit for the safe memory functions.  The point is that string
 	limits can and should be different from memory limits.
-    There also exist RSIZE_MAX_WSTR, RSIZE_MAX_MEM16, RSIZE_MAX_MEM32.
+	There also exist RSIZE_MAX_WSTR, RSIZE_MAX_MEM16, RSIZE_MAX_MEM32.
 
 * Compile-time constraints
 
@@ -169,7 +169,6 @@ development tool chain.
 
 Userspace Library
 -----------------
-
 The build system for the userspace library is the well known *GNU build
 system*, a.k.a. Autotools. This system is well understood and supported
 by many different platforms and distributions which should allow this
