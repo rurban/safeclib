@@ -613,10 +613,11 @@ _mbsrtowcs_s_chk(size_t *restrict retvalp,
     _mbsrtowcs_s_chk(retvalp,dest,dmax,srcp,len,ps,BOS(dest))
 
 EXTERN errno_t
-wcsrtombs_s(size_t *restrict retvalp,
-            char *restrict dest, rsize_t dmax,
-            const wchar_t **restrict srcp, rsize_t len,
-            mbstate_t *restrict ps)
+_wcsrtombs_s_chk(size_t *restrict retvalp,
+                 char *restrict dest, rsize_t dmax,
+                 const wchar_t **restrict srcp, rsize_t len,
+                 mbstate_t *restrict ps,
+                 const size_t destbos)
     BOS_NULL(retvalp) BOS_NULL(ps)
     BOS_ATTR(!_BOS_NULL(dest) && !dmax, "empty dmax")
     BOS_ATTR(!_BOS_NULL(dest) && _BOS_OVR(dest,dmax), "dest overflow")
@@ -624,6 +625,8 @@ wcsrtombs_s(size_t *restrict retvalp,
     BOS_NULL(srcp)
     BOSW_CHK2(*srcp, len)
     BOS_ATTR(dmax && len > dmax, "len overflow >dmax");
+#define wcsrtombs_s(retvalp,dest,dmax,srcp,len,ps)               \
+    _wcsrtombs_s_chk(retvalp,dest,dmax,srcp,len,ps,BOS(dest))
 
 EXTERN errno_t
 wcstombs_s(size_t *restrict retvalp,

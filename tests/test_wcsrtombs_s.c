@@ -98,14 +98,17 @@ int test_wcsrtombs_s (void)
     ERR_MSVC(ESNOSPC,ERANGE);
     CLRPS;*/
 
+    cs = L"a";
 #ifndef HAVE_ASAN
     if (_BOS_KNOWN(dest) && !use_msvcrt) {
         EXPECT_BOS("dest overflow")
         rc = wcsrtombs_s(&ind, dest, LEN+1, &cs, 3, &ps);
-        ERR(0); /* TODO overflow */
+        if (rc) /* TODO overflow */
+            ERR(ESLEMAX);
         CLRPS;
     }
 #endif
+    cs = L"abcdefghijklmno"; /* must be >= 4*3 */
     if (!use_msvcrt) { /* segfaults */
         EXPECT_BOS("dest overflow")
         rc = wcsrtombs_s(&ind, dest, RSIZE_MAX_STR+1, &cs, 3, &ps);
@@ -115,8 +118,8 @@ int test_wcsrtombs_s (void)
     }
 
     if (!use_msvcrt) { /* segfaults */
-        EXPECT_BOS("dest overflow") EXPECT_BOS("dest overlap")
-        rc = wcsrtombs_s(&ind, (char*)&cs, LEN, &cs, 3, &ps);
+        EXPECT_BOS("dest overlap")
+        rc = wcsrtombs_s(&ind, (char*)&cs, 3, &cs, 3, &ps);
         ERR_MSVC(ESOVRLP, have_wine?EILSEQ:0);
         CLRPS;
     }
