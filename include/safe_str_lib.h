@@ -505,9 +505,11 @@ _strstr_s_chk(char *dest, rsize_t dmax,
 
 /* find a character */
 EXTERN errno_t
-strchr_s(const char *restrict dest, rsize_t dmax,
-         const int ch, char **result)
-    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(result);
+_strchr_s_chk(const char *restrict dest, rsize_t dmax,
+              const int ch, char **restrict resultp, const size_t destbos)
+    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(resultp);
+#define strchr_s(dest,dmax,ch,resultp)          \
+    _strchr_s_chk(dest,dmax,ch,resultp,BOS(dest))
 
 EXTERN errno_t
 strrchr_s(const char *restrict dest, rsize_t dmax,

@@ -32,7 +32,7 @@ int test_strchr_s (void)
     ERR(ESNULLP);
     SUBNULL();
 
-    EXPECT_BOS("empty result")
+    EXPECT_BOS("empty resultp")
     rc = strchr_s(str, LEN, ch, NULL);
     ERR(ESNULLP);
 
