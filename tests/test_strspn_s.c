@@ -3,7 +3,6 @@
  * File 'extstr/strspn_s.c'
  * Lines executed:100.00% of 39
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -50,7 +49,7 @@ int test_strspn_s (void)
     ERR(ESNULLP)
     COUNT(0)
 
-    EXPECT_BOS("empty count")
+    EXPECT_BOS("empty countp")
     rc = strspn_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
@@ -73,6 +72,18 @@ int test_strspn_s (void)
     rc = strspn_s(str1, LEN, str2, RSIZE_MAX_STR+1, &count);
     ERR(ESLEMAX)
     COUNT(0)
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strspn_s(str1, LEN+1, str2, LEN, &count);
+    ERR(ESLEMAX)
+    COUNT(0)
+
+    EXPECT_BOS("src overflow")
+    rc = strspn_s(str1, LEN, str2, LEN+1, &count);
+    ERR(ESLEMAX)
+    COUNT(0)
+# endif
 #endif
 /*--------------------------------------------------*/
 

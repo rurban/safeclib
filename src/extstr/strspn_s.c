@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strspn_s(dest,dmax,src,slen,count)
  * @brief
  *    This function computes the prefix length of the string
  *    pointed to by dest which consists entirely of characters
@@ -50,76 +51,68 @@
  * @param[in]   dmax   restricted maximum length of string dest
  * @param[in]   src    pointer to exclusion string
  * @param[in]   slen   restricted maximum length of string src
- * @param[out]  count  pointer to a count variable that will be updated
+ * @param[out]  countp pointer to a count variable that will be updated
  *                     with the dest substring length
  *
- * @pre  Neither dest nor src shall be a null pointer.
- * @pre  count shall not be a null pointer.
- * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
+ * @pre  Neither dest, src nor countp shall be a null pointer.
+ * @pre  Neither dmax nor slen shall be 0.
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src.
  *
  * @retval  EOK        when successful operation, substring found.
- * @retval  ESNULLP    when dest/src/substring is NULL pointer
+ * @retval  ESNULLP    when dest/src/countp is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strcspn_s(), strpbrk_s(), strstr_s(), strprefix_s()
- *
  */
+
 EXPORT errno_t
-strspn_s (const char *dest, rsize_t dmax,
-          const char *src,  rsize_t slen, rsize_t *count)
+_strspn_s_chk (const char *dest, rsize_t dmax,
+               const char *src,  rsize_t slen, rsize_t *countp,
+               const size_t destbos, const size_t srcbos)
 {
     const char *scan2;
     rsize_t smax;
     bool match_found;
 
-    if (unlikely(count == NULL)) {
-        invoke_safe_str_constraint_handler("strspn_s: count is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *count = 0;
+    CHK_SRC_NULL("strspn_s", countp)
+    *countp = 0;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strspn_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strspn_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("strspn_s")
+    CHK_SRC_NULL("strspn_s", src)
+    CHK_DMAX_ZERO("strspn_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strspn_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, slen);
+    } else {
+        CHK_DEST_OVR("strspn_s", destbos)
     }
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strspn_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+    if (srcbos == BOS_UNKNOWN) {
+        if (unlikely(slen > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("strspn_s: slen exceeds dmax",
+                       (void*)src, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else {
+        if (unlikely(slen > srcbos)) {
+            invoke_safe_str_constraint_handler("strspn_s: slen exceeds src",
+                       (void*)src, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
     }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strspn_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
     if (unlikely(slen == 0 )) {
         invoke_safe_str_constraint_handler("strspn_s: slen is 0",
-                   NULL, ESZEROL);
+                   (void*)src, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strspn_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
 
     while (*dest && dmax) {
-
         /*
          * Scan the entire src string for each dest character, counting
          * inclusions.
@@ -138,7 +131,7 @@ strspn_s (const char *dest, rsize_t dmax,
         }
 
         if (match_found) {
-            (*count)++;
+            (*countp)++;
         } else {
             break;
         }
@@ -150,5 +143,5 @@ strspn_s (const char *dest, rsize_t dmax,
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strspn_s);
+EXPORT_SYMBOL(_strspn_s_chk);
 #endif /* __KERNEL__ */

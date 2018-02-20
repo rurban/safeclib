@@ -487,9 +487,12 @@ _strremovews_s_chk(char *dest, rsize_t dmax,
 
 /* computes inclusive prefix length */
 EXTERN errno_t
-strspn_s(const char *dest, rsize_t dmax,
-         const char *src,  rsize_t slen, rsize_t *count)
-    BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(count);
+_strspn_s_chk(const char *dest, rsize_t dmax,
+              const char *src,  rsize_t slen, rsize_t *countp,
+              const size_t destbos, const size_t srcbos)
+    BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(countp);
+#define strspn_s(dest,dmax,src,slen,countp)           \
+    _strspn_s_chk(dest,dmax,src,slen,countp,BOS(dest),BOS(src))
 
 /* find a substring */
 EXTERN errno_t

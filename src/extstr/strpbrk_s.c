@@ -93,7 +93,7 @@ _strpbrk_s_chk (char *dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         if (unlikely(slen > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds dmax",
-                                               (void*)dest, ESLEMAX);
+                       (void*)src, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
         BND_CHK_PTR_BOUNDS(src, slen);
