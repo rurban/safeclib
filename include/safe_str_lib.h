@@ -512,10 +512,12 @@ _strchr_s_chk(const char *restrict dest, rsize_t dmax,
     _strchr_s_chk(dest,dmax,ch,resultp,BOS(dest))
 
 EXTERN errno_t
-strrchr_s(const char *restrict dest, rsize_t dmax,
-         const int ch, char **result)
-    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(result)
+_strrchr_s_chk(const char *restrict dest, rsize_t dmax,
+               const int ch, char **restrict resultp, const size_t destbos)
+    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(resultp)
     BOS_ATTR(!*dest, "empty *dest");
+#define strrchr_s(dest,dmax,ch,resultp)          \
+    _strrchr_s_chk(dest,dmax,ch,resultp,BOS(dest))
 
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */

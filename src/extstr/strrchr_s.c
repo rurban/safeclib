@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strrchr_s(dest,dmax,ch,resultp)
  * @brief
  *    Finds the last occurrence of ch (after conversion to char as if by
  *    (char)ch) in the null-terminated byte string pointed to by dest (each
@@ -49,17 +50,17 @@
  * @param[in]  dest    pointer to string to compare against
  * @param[in]  dmax    restricted maximum length of dest
  * @param[in]  ch      character to search for
- * @param[out] result  pointer to char* in dest
+ * @param[out] resultp pointer to char* in dest
  *
- * @pre  Neither dest nor result shall be a null pointer.
+ * @pre  Neither dest nor resultp shall be a null pointer.
  * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR.
- * @pre  ch shall not be greater than 255
+ * @pre  ch shall not be greater than 255.
  *
  * @retval  EOK        when successfully character found.
- * @retval  ESNULLP    when dest/result is a NULL pointer
+ * @retval  ESNULLP    when dest/resultp is a NULL pointer
  * @retval  ESZEROL    when dmax = 0 or strnlen_s = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or dmax > size of dest
  * @retval  ESLEMAX    when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *
@@ -68,45 +69,34 @@
  *
  */
 EXPORT errno_t
-strrchr_s (const char *restrict dest, rsize_t dmax,
-          const int ch, char **result)
+_strrchr_s_chk (const char *restrict dest, rsize_t dmax,
+                const int ch, char **resultp,
+                const size_t destbos)
 {
     rsize_t len;
 
-    if (unlikely(result == NULL)) {
-        invoke_safe_str_constraint_handler("strrchr_s: result is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-    *result = NULL;
+    CHK_SRC_NULL("strrchr_s", resultp)
+    *resultp = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strrchr_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("strrchr_s")
+    CHK_DMAX_ZERO("strrchr_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strrchr_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else if (unlikely(dmax > destbos)) {
+        invoke_safe_str_constraint_handler("strrchr_s" ": dmax exceeds dest",
+                   (void*)dest, ESLEMAX);
+        return RCNEGATE(ESLEMAX);
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strrchr_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strrchr_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
     if (unlikely(ch > 255)) {
         invoke_safe_str_constraint_handler("strrchr_s: ch exceeds max",
-                   NULL, ESLEMAX);
+                   (void*)dest, ESLEMAX);
         return (ESLEMAX);
     }
 
     len = strnlen_s(dest, dmax);
     if (len)
-        return memrchr_s(dest, dmax == len ? dmax : len + 1, ch, (void**)result);
+        return memrchr_s(dest, dmax == len ? dmax : len + 1, ch, (void**)resultp);
     else
         return (ESZEROL);
 }

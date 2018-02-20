@@ -34,7 +34,7 @@ int test_strrchr_s (void)
     ERR(ESNULLP);
     SUBNULL();
 
-    EXPECT_BOS("empty result")
+    EXPECT_BOS("empty resultp")
     rc = strrchr_s(str, LEN, ch, NULL);
     ERR(ESNULLP);
 
@@ -52,13 +52,12 @@ int test_strrchr_s (void)
     rc = strrchr_s(str, LEN, 256, &sub);
     ERR(ESLEMAX)
     SUBNULL();
-#endif
 
     memset(str, 0, LEN);
     rc = strrchr_s(str, LEN, 0, &sub);
     ERR(ESZEROL);
     SUBNULL();
-/*--------------------------------------------------*/
+#endif
 
     strcpy(str, "keep it all together");
     len = strlen(str);
