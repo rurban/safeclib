@@ -3,7 +3,6 @@
  * File 'extstr/strstr_s.c'
  * Lines executed:100.00% of 43
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -32,62 +31,62 @@ int test_strstr_s (void)
     EXPECT_BOS("empty dest")
     rc = strstr_s(NULL, LEN, str2, LEN, &sub);
     ERR(ESNULLP)
-
-    if (sub) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    SUBNULL()
 
     EXPECT_BOS("empty src")
     rc = strstr_s(str1, LEN, NULL, LEN, &sub);
     ERR(ESNULLP)
-    if (sub) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    SUBNULL()
 
-    EXPECT_BOS("empty substring")
+    EXPECT_BOS("empty substringp")
     rc = strstr_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
     EXPECT_BOS("empty dest or dmax")
     rc = strstr_s(str1, 0, str2, LEN, &sub);
     ERR(ESZEROL)
-    if (sub) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    SUBNULL()
 
     EXPECT_BOS("dest overflow")
     rc = strstr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
     ERR(ESLEMAX)
-    if (sub) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
-
-    EXPECT_BOS("empty src or slen")
-    rc = strstr_s(str1, LEN, str2, 0, &sub);
-    ERR(ESZEROL)
-    if (sub) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    SUBNULL()
 
     EXPECT_BOS("src overflow")
     rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
     ERR(ESLEMAX)
-    if (sub) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    SUBNULL()
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strstr_s(str1, LEN+1, str2, LEN, &sub);
+    ERR(ESLEMAX)
+    SUBNULL()
+
+    EXPECT_BOS("src overflow")
+    rc = strstr_s(str1, LEN, str2, LEN+1, &sub);
+    ERR(ESLEMAX)
+    SUBNULL()
+# endif    
 #endif
+
+
+/*--------------------------------------------------*/
+
+    strcpy(str2, "a");
+    rc = strstr_s(str1, LEN, str2, 0, &sub);
+    ERR(ESZEROL)
+    SUBNULL()
+
+
+    strcpy(str1, "keep it all together");
+    strcpy(str2, "keep");
+
+    /* equality with restricted lengths (slen > dmax) */
+    rc = strstr_s(str1, 3, str2, LEN, &sub);
+    ERR(ESNOTFND)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     *str1 = '\0';
@@ -95,11 +94,8 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
-    if (sub != str1) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, str1)
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -107,11 +103,8 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
-    if (sub != str1) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, str1)
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -120,11 +113,18 @@ int test_strstr_s (void)
     /* substring at beginning */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
-    if (sub != &str1[0]) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, str1)
+
+/*--------------------------------------------------*/
+
+    strcpy(str1, "keep it all together");
+    strcpy(str2, "");
+
+    /* allow slen = 0 with empty src */
+    rc = strstr_s(str1, LEN, str2, 0, &sub);
+    ERR(EOK)
+    PTREQ(sub, str1)
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -133,11 +133,8 @@ int test_strstr_s (void)
     /* substring in the middle - left */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
-    if (sub != &str1[1]) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, &str1[1])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -146,11 +143,8 @@ int test_strstr_s (void)
     /* substring in the middle - right */
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
-    if (sub != &str1[15]) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, &str1[15])
+
 /*--------------------------------------------------*/
                // 012345678901234567890
     strcpy(str1, "keep it all together");
@@ -161,11 +155,8 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, len1, str2, len2, &sub);
     ERR(EOK)
-    if (sub != &str1[17]) {
-        debug_printf("%s %u  Error rc=%d  sub=%s \n",
-                     __FUNCTION__, __LINE__, rc, sub);
-        errs++;
-    }
+    PTREQ(sub, &str1[17])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -176,11 +167,8 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, len1, str2, len2, &sub);
     ERR(EOK)
-    if (sub != &str1[18]) {
-        debug_printf("%s %u  Error rc=%d  sub=%s \n",
-                     __FUNCTION__, __LINE__, rc, sub);
-        errs++;
-    }
+    PTREQ(sub, &str1[18])
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -188,6 +176,8 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, 3, str2, LEN, &sub);
     ERR(ESNOTFND)
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -212,11 +202,8 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, len1, str2, LEN, &sub);
     ERR(ESNOTFND)
-    if (sub != NULL) {
-        debug_printf("%s %u  Error rc=%d \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    SUBNULL()
+
 /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
@@ -231,18 +218,12 @@ int test_strstr_s (void)
 
     rc = strstr_s(str1, LEN, str2, LEN, &sub);
     ERR(EOK)
-    if (sub != &str1[1]) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, &str1[1])
+
     /* compare to legacy */
     std_sub = strstr(str1, str2);
-    if (sub != std_sub) {
-        debug_printf("%s %u  Error rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
-        errs++;
-    }
+    PTREQ(sub, std_sub)
+
 /*--------------------------------------------------*/
 
     return (errs);

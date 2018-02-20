@@ -496,9 +496,12 @@ _strspn_s_chk(const char *dest, rsize_t dmax,
 
 /* find a substring */
 EXTERN errno_t
-strstr_s(char *dest, rsize_t dmax,
-         const char *src, rsize_t slen, char **substring)
-    BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(substring);
+_strstr_s_chk(char *dest, rsize_t dmax,
+              const char *src, rsize_t slen, char **substringp,
+              const size_t destbos, const size_t srcbos)
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(substringp);
+#define strstr_s(dest,dmax,src,slen,substringp)          \
+    _strstr_s_chk(dest,dmax,src,slen,substringp,BOS(dest),BOS(src))
 
 /* find a character */
 EXTERN errno_t

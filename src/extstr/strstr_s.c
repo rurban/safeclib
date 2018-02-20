@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def strstr_s(dest,dmax,src,slen,substringp)
  * @brief
  *    The strstr_s() function locates the first occurrence of the
  *    substring pointed to by src which would be located in the
@@ -50,16 +51,18 @@
  * @param[in]   dmax       restricted maximum length of dest string
  * @param[in]   src        pointer to the sub string
  * @param[in]   slen       the maximum number of characters to use from src
- * @param[out]  substring  the returned substring pointer
+ * @param[out]  substringp the returned substring pointer
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be 0.
+ * @pre  slen shall not be 0, when *src != 0 and src != dest
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src.
  *
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dest/src/substring is NULL pointer
- * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESZEROL    when dmax/slen = 0, unless *src = 0
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOTFND   when substring not found
  *
  * @see
@@ -67,54 +70,47 @@
  *
  */
 EXPORT errno_t
-strstr_s (char *dest, rsize_t dmax,
-          const char *src, rsize_t slen, char **substring)
+_strstr_s_chk (char *dest, rsize_t dmax,
+               const char *src, rsize_t slen, char **substringp,
+               const size_t destbos, const size_t srcbos)
 {
     rsize_t len;
     rsize_t dlen;
     int i;
 
-    if (unlikely(substring == NULL)) {
-        invoke_safe_str_constraint_handler("strstr_s: substring is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *substring = NULL;
+    CHK_SRC_NULL("strspn_s", substringp)
+    *substringp = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strstr_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("strstr_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+    CHK_DEST_NULL("strspn_s")
+    CHK_SRC_NULL("strspn_s", src)
+    CHK_DMAX_ZERO("strspn_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strspn_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+        BND_CHK_PTR_BOUNDS(dest, slen);
+    } else {
+        CHK_DEST_OVR("strspn_s", destbos)
     }
 
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strstr_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+    if (srcbos == BOS_UNKNOWN) {
+        if (unlikely(slen > RSIZE_MAX_STR)) {
+            invoke_safe_str_constraint_handler("strspn_s: slen exceeds dmax",
+                       (void*)src, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else {
+        if (unlikely(slen > srcbos)) {
+            invoke_safe_str_constraint_handler("strspn_s: slen exceeds src",
+                       (void*)src, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("strstr_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(slen == 0)) {
-        invoke_safe_str_constraint_handler("strstr_s: slen is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strstr_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+    if (unlikely(slen > dmax)) { /* now check the actual lengths */
+        len = strlen(src);
+        dlen = strlen(dest);
+        if (len > dmax || len > strlen(dest))
+            return RCNEGATE(ESNOTFND);
     }
 
     /*
@@ -122,8 +118,14 @@ strstr_s (char *dest, rsize_t dmax,
      * src equals dest, return dest
      */
     if (unlikely(*src == '\0' || dest == src)) {
-        *substring = dest;
+        *substringp = dest;
         return RCNEGATE(EOK);
+    }
+    /* Since 3.3 allow slen=0 with src="" */
+    if (unlikely(slen == 0)) {
+        invoke_safe_str_constraint_handler("strspn_s: slen is 0",
+                   (void*)src, ESZEROL);
+        return RCNEGATE(ESZEROL);
     }
 
     while (*dest && dmax) {
@@ -144,7 +146,7 @@ strstr_s (char *dest, rsize_t dmax,
             dlen--;
 
             if (src[i] == '\0' || !len) {
-                *substring = dest;
+                *substringp = dest;
                 return RCNEGATE(EOK);
             }
         }
@@ -155,9 +157,9 @@ strstr_s (char *dest, rsize_t dmax,
     /*
      * substring was not found, return NULL
      */
-    *substring = NULL;
+    *substringp = NULL;
     return RCNEGATE(ESNOTFND);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(strstr_s);
+EXPORT_SYMBOL(_strstr_s_chk);
 #endif /* __KERNEL__ */
