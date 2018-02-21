@@ -61,11 +61,11 @@ int test_strncpy_s (void)
 
     EXPECT_BOS("empty dest")
     rc = strncpy_s(NULL, LEN, str2, 0);
-    ERR_MSVC(ESNULLP, EINVAL); /* and untouched */
+    ERR_MSVC(ESNULLP, 0); /* and untouched */
 
     EXPECT_BOS("empty dest or dmax")
     rc = strncpy_s(str1, 0, str2, 0);
-    ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
+    ERR_MSVC(ESZEROL, 0); /* and untouched */
     EXPSTR(str1, "aaaaa")
 #endif
 
@@ -98,7 +98,7 @@ int test_strncpy_s (void)
     strcpy(str1, "a");
     EXPECT_BOS("empty dest or dmax")
     rc = strncpy_s(str1, 0, str2, 0);
-    ERR_MSVC(ESZEROL, EINVAL); /* and untouched */
+    ERR_MSVC(ESZEROL, 0); /* and untouched */
     EXPSTR(str1, "a")
 
 /*--------------------------------------------------*/
@@ -145,7 +145,7 @@ int test_strncpy_s (void)
 
     EXPECT_BOS("src overflow or empty")
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR+1));
-    ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
+    ERR_MSVC(ESLEMAX, EINVAL); /* and cleared */
     EXPSTR(str1, "");
 #endif
 
@@ -171,6 +171,9 @@ int test_strncpy_s (void)
     /* test overlap */
     rc = strncpy_s(str1, LEN, str1, nlen);
     ERR_MSVC(ESOVRLP, 0); /* and cleared/mangled */
+#ifdef HAVE_CT_BOS_OVR
+    init_msvcrt(rc == ESOVRLP, &use_msvcrt);
+#endif
     if (!use_msvcrt) {
         CHECK_SLACK(str1, LEN);
     } else {
@@ -235,7 +238,7 @@ int test_strncpy_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strncpy_s(str1, 1, str2, nlen);
-    ERR_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(ESNOSPC, EINVAL);
     if (!use_msvcrt) {
         CHECK_SLACK(str1, 1);
     } else {
@@ -248,7 +251,7 @@ int test_strncpy_s (void)
     strcpy(str2, "keep it simple");
 
     rc = strncpy_s(str1, 2, str2, nlen);
-    ERR_MSVC(ESNOSPC, ERANGE); /* and cleared */
+    ERR_MSVC(ESNOSPC, EINVAL); /* and cleared */
     if (*str1 != '\0') {
         debug_printf("%s %u -%s-  Error rc=%u \n",
                      __FUNCTION__, __LINE__,  str1, rc );
@@ -274,7 +277,7 @@ int test_strncpy_s (void)
     strcpy(str2, "goodbye");
 
     rc = strncpy_s(dest, 5, str2, 7);
-    ERR_MSVC(ESNOSPC, ERANGE);
+    ERR_MSVC(ESNOSPC, EINVAL);
     if (!use_msvcrt) {
         CHECK_SLACK(dest, 5);
     }

@@ -63,9 +63,11 @@ int test_strncat_s (void)
     EXPSTR(str1, "a");
 #endif
 
-    /*EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")*/
     rc = strncat_s(NULL, 0, str2, 0);
-    ERR(EOK);
+#ifdef HAVE_CT_BOS_OVR
+    init_msvcrt(rc == EOK, &use_msvcrt);
+#endif
+    ERR_MSVC(EOK, EINVAL);
 
     GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 1, str2, 0);

@@ -105,8 +105,11 @@ int test_strcat_s (void)
 
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(str1, 1, str2);
+#ifdef HAVE_CT_BOS_OVR
+    init_msvcrt(rc == ESUNTERM, &use_msvcrt);
+#endif
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESUNTERM, EINVAL);
+    ERR_MSVC(ESUNTERM, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
 
@@ -118,7 +121,7 @@ int test_strcat_s (void)
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(str1, 2, str2);
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESUNTERM, EINVAL);
+    ERR_MSVC(ESUNTERM, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
 
@@ -138,7 +141,7 @@ int test_strcat_s (void)
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(&str1[0], 4, &str1[3]);
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESOVRLP, EINVAL);
+    ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1);
     CHECK_SLACK(str1, 4);
 
@@ -149,7 +152,7 @@ int test_strcat_s (void)
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(&str1[3], 5, &str1[0]);
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESUNTERM, EINVAL);
+    ERR_MSVC(ESUNTERM, ERANGE);
     EXPNULL(&str1[3])
     CHECK_SLACK(&str1[3], 5);
 
@@ -279,7 +282,7 @@ int test_strcat_s (void)
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(str1, 8, &str1[7]);
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESOVRLP, EINVAL);
+    ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 8);
 
@@ -290,7 +293,7 @@ int test_strcat_s (void)
     GCC_PUSH_WARN_DMAX
     rc = strcat_s(str1, 9, &str1[8]);
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESOVRLP, EINVAL);
+    ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(str1)
     CHECK_SLACK(str1, 9);
 

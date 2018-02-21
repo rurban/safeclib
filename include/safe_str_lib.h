@@ -99,6 +99,7 @@ set_str_constraint_handler_s(constraint_handler_t handler);
 
 
 /* string concatenate */
+#if !defined(TEST_MSVCRT)
 EXTERN errno_t
 _strcat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
               const size_t destbos)
@@ -111,6 +112,7 @@ _strcpy_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
               const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 #define strcpy_s(dest,dmax,src) _strcpy_s_chk(dest,dmax,src,BOS(dest))
+#endif
 
 /* fitted string concatenate */
 EXTERN errno_t

@@ -72,6 +72,9 @@ int test_swscanf_s (void)
     wcscpy(wstr1, L"      24");
     /* msvcrt doesn't check for %n neither */
     rc = swscanf_s(wstr1, L"%ls %n", wstr2, LEN, &ind);
+#ifdef HAVE_CT_BOS_OVR
+    init_msvcrt(errno != EINVAL, &use_msvcrt);
+#endif
     if (!use_msvcrt) {
         ERREOF(EINVAL);
         WEXPSTR(wstr2, L"");

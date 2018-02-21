@@ -115,6 +115,9 @@ int test_strcpy_s (void)
     strcpy(&str1[0], "keep it simple");
 
     rc = strcpy_s(&str1[0], LEN, &str1[5]);
+#ifdef HAVE_CT_BOS_OVR
+    init_msvcrt(rc == ESOVRLP, &use_msvcrt);
+#endif
     ERR_MSVC(ESOVRLP, 0);
     if (!use_msvcrt) {
         CHECK_SLACK(str1, LEN);
