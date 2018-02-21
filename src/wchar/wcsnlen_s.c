@@ -38,9 +38,10 @@
 #ifdef HAVE_WCHAR_H
 
 /**
+ * @def wcsnlen_s(dest,dmax)
  * @brief
  *    The wcsnlen_s function computes the length of the wide string pointed
- *    to by dest.
+ *    to by dest, providing limited support for non-null terminated strings.
  *
  * @remark SPECIFIED IN
  *    ISO/IEC TR 24731-1, Programming languages, environments
@@ -48,30 +49,32 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param  dest  pointer to wide string
- * @param  dmax  maximum length of wide string
+ * @param  dmax  maximum length of wide string, incl. the final null
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest
+ *       (inc. final null).
  *
- * @note     On mingw with \c MINGW_HAS_SECURE_API this API is forceinline'd
- *           and the native \c wcsnlen_s with the msvcrt has a different dmax limit:
- *           \c INT_MAX.
+ * @note   On mingw with \c MINGW_HAS_SECURE_API this API is forceinline'd
+ *         and the native \c wcsnlen_s with the msvcrt has a different dmax limit:
+ *         \c INT_MAX.
+ * @note   Unlike specified in the C11 spec the runtime-constraint handlers are called.
  *
- * @return   The function returns the wide string length, excluding  the terminating
- *           null character.  If \c dest is NULL, then \c wcsnlen_s returns 0.
- *           Otherwise, the \c wcsnlen_s function returns the number of wide characters
- *           that precede the terminating null character. If there is no null
- *           character in the first \c dmax characters of dest then \c wcsnlen_s returns
- *           \c dmax. At most the first \c dmax characters of dest are accessed
- *           by \c wcsnlen_s.
+ * @return The function returns the wide string length, excluding the terminating
+ *         null character.  If \c dest is NULL, then \c wcsnlen_s returns 0.
+ *         Otherwise, the \c wcsnlen_s function returns the number of wide characters
+ *         that precede the terminating null character. If there is no null
+ *         character in the first \c dmax characters of dest then \c wcsnlen_s returns
+ *         \c dmax. At most the first \c dmax characters of dest are accessed
+ *         by \c wcsnlen_s.
  *
  * @see
  *    strnlen_s(), strnterminate_s()
  */
 
 EXPORT rsize_t
-wcsnlen_s (const wchar_t *dest, rsize_t dmax)
+_wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, const size_t destbos)
 {
     const wchar_t *z;
     rsize_t orig_dmax = dmax;
@@ -79,17 +82,33 @@ wcsnlen_s (const wchar_t *dest, rsize_t dmax)
     if (unlikely(dest == NULL)) {
         return RCNEGATE(0);
     }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("wcsnlen_s: dmax is 0",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return RCNEGATE(0);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(0);
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_WSTR)) {
+            invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
+                       (void*)dest, ESLEMAX);
+            return RCNEGATE(0);
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
+    } else {
+        /* string literals also have the ending \0 */
+        size_t destsz = (dmax) * sizeof(wchar_t);
+        if (unlikely(destsz > destbos)) {
+            invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds dest",
+                       (void*)dest, ESLEMAX);
+            return RCNEGATE(0);
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(destsz != destbos)) {
+            handle_str_bos_chk_warn("wcsnlen_s",(char*)dest,dmax,
+                                    destbos/sizeof(wchar_t));
+            RETURN_ESLEWRNG;
+        }
+#endif
     }
 
 #if 0 && defined(HAVE_WMEMCHR) /* rather inline it */

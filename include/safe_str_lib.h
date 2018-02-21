@@ -658,8 +658,10 @@ _wctomb_s_chk(int *restrict retvalp, char *restrict dest, rsize_t dmax, wchar_t 
     _wctomb_s_chk(retvalp,dest,dmax,wc,BOS(dest))
 
 EXTERN size_t
-wcsnlen_s(const wchar_t *dest, size_t dmax)
+_wcsnlen_s_chk(const wchar_t *dest, size_t dmax, const size_t destbos)
     BOSW_CHK(dest);
+#define wcsnlen_s(dest,dmax)            \
+    _wcsnlen_s_chk(dest,dmax,BOS(dest))
 
 EXTERN errno_t
 wcscpy_s(wchar_t *restrict dest, rsize_t dmax,

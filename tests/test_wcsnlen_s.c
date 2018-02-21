@@ -11,6 +11,20 @@
 
 #define LEN   ( 128 )
 
+static wchar_t str1[LEN];
+
+#define EXPLEN(n) \
+    if (len != n) { \
+        debug_printf("%s %u   Len=%u \n", __FUNCTION__, __LINE__,  (unsigned)len); \
+        errs++; \
+    }
+#define STDLEN() \
+    if (std_len != len) { \
+        debug_printf("%s %u   std_len=%u  len=%u  \n", __FUNCTION__, __LINE__, \
+                     (unsigned)std_len, (unsigned)len);                 \
+        errs++; \
+    }
+
 int test_wcsnlen_s (void)
 {
     rsize_t len;
@@ -20,131 +34,119 @@ int test_wcsnlen_s (void)
 
 /*--------------------------------------------------*/
 
-    max_len = 3;
 #ifndef HAVE_CT_BOS_OVR
+    max_len = 3;
     EXPECT_BOS("empty dest")
     len = wcsnlen_s(NULL, max_len);
-    if (len != 0) {
-        debug_printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  (unsigned)len);
-        errs++;
-    }
+    EXPLEN(0)
 /*--------------------------------------------------*/
 
     max_len = 0;
     EXPECT_BOS("empty dest or dmax") 
     len = wcsnlen_s(L"test", 0);
-    if (len != 0) {
-        debug_printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  (unsigned)len);
-        errs++;
-    }
+    EXPLEN(0)
 /*--------------------------------------------------*/
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str1, L"test");
+    EXPECT_BOS("dest overflow")
+    len = wcsnlen_s(str1, LEN+1);
+    EXPLEN(0)
+# endif
+
+    wcscpy(str1, L"test");
     max_len = RSIZE_MAX_WSTR+1;
-    /*EXPECT_BOS("dest overflow") TODO? */
-    len = wcsnlen_s(L"test", RSIZE_MAX_WSTR+1);
+    EXPECT_BOS("dest overflow")
+    len = wcsnlen_s(str1, RSIZE_MAX_WSTR+1);
     /* They allow more */
 # if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
-    if (len != 0) {
-        debug_printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  (unsigned)len);
-        errs++;
-    }
+    EXPLEN(0)
 # else
     if (max_len < INT_MAX) {
-        if (len != 4) {
-            debug_printf("%s %u   Len=%u \n",
-                         __FUNCTION__, __LINE__,  (unsigned)len);
-            errs++;
-        }
+        EXPLEN(4)
     } else {
-        if (len != 0) {
-            debug_printf("%s %u   Len=%u \n",
-                         __FUNCTION__, __LINE__,  (unsigned)len);
-            errs++;
-        }
+        EXPLEN(0)
     }
 # endif
 #endif
+
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* no overflow: sizeof = 5 */
+    len = wcsnlen_s (L"test", 4);
+    EXPLEN(4)
+
+    /* no overflow: sizeof = 5 */
+    len = wcsnlen_s (L"test", 5);
+    EXPLEN(4)
+
+    /* overflow: sizeof = 5 */
+    EXPECT_BOS_TODO("dest overflow")
+    len = wcsnlen_s(L"test", 6);
+    EXPLEN(0)
+#endif
+
+    return errs;
 /*--------------------------------------------------*/
 
     std_len = strlen("");
-    max_len = RSIZE_MAX_WSTR;
+    wcscpy(str1, L"");
+    max_len = LEN;
 
-    len = wcsnlen_s (L"", max_len);
+    len = wcsnlen_s (str1, LEN);
+    STDLEN()
 
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     std_len = strlen("t");
-    max_len = RSIZE_MAX_WSTR;
+    wcscpy(str1, L"t");
+    max_len = LEN;
 
-    len = wcsnlen_s (L"t", max_len);
+    len = wcsnlen_s (str1, max_len); /* static string would overflow */
+    STDLEN()
 
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
+    len = wcsnlen_s (L"t", 1); /* static string */
+    STDLEN()
+
 /*--------------------------------------------------*/
 
     std_len = strlen("to");
-    max_len = RSIZE_MAX_WSTR;
+    wcscpy(str1, L"to");
+    max_len = LEN;
 
-    len = wcsnlen_s (L"to", max_len);
+    len = wcsnlen_s (str1, max_len);
+    STDLEN()
 
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     std_len = strlen("testing");
-    max_len = RSIZE_MAX_WSTR;
+    wcscpy(str1, L"testing");
+    max_len = LEN;
 
-    len = wcsnlen_s (L"testing", max_len);
+    len = wcsnlen_s (str1, max_len);
+    STDLEN()
 
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     max_len = 1;
-    len = wcsnlen_s (L"testing", max_len);
+    len = wcsnlen_s (L"testing", 1);
+    EXPLEN(max_len)
 
-    if (len != max_len) {
-        debug_printf("%s %u   len=%u  \n",
-               __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     max_len = 2;
-    len = wcsnlen_s (L"testing", max_len);
+    len = wcsnlen_s (L"testing", 2);
+    EXPLEN(max_len)
 
-    if (len != max_len) {
-        debug_printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
 /*--------------------------------------------------*/
 
     max_len = 3;
-    len = wcsnlen_s (L"testing", max_len);
+    len = wcsnlen_s (L"testing", 3);
+    EXPLEN(max_len)
 
-    if (len != max_len) {
-        debug_printf("%s %u   len=%u  \n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+/*--------------------------------------------------*/
+    len = wcsnlen_s (L"test", 5);
+    EXPLEN(4)
+
 /*--------------------------------------------------*/
 
     return (errs);
