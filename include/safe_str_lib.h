@@ -178,7 +178,7 @@ _vsprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use sprintf_s instead */
-#ifdef HAVE_C99
+#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int
 _snprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
                 const char * restrict fmt, ...)
