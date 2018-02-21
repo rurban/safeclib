@@ -39,6 +39,7 @@
 #else
 
 /**
+ * @def wcrtomb_s(retvalp,dest,dmax,wc,ps)
  * @brief
  *    Does not permit the \c ps parameter (the pointer to the conversion state)
  *    to be a null pointer.
@@ -85,14 +86,14 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval pointer to a \c size_t object where the result will be stored
- * @param[out]  dest  pointer to bytes where the result will be stored
- * @param[in]   dmax  restricted maximum length of \c dest
- * @param[in]   wc    the wide character to convert
- * @param[in]   ps    pointer to the conversion state object
+ * @param[out]  retvalp  pointer to a \c size_t object where the result will be stored
+ * @param[out]  dest     pointer to bytes where the result will be stored
+ * @param[in]   dmax     restricted maximum length of \c dest
+ * @param[in]   wc       the wide character to convert
+ * @param[in]   ps       pointer to the conversion state object
  *
- * @pre retval and ps shall not be a null pointer.
- * @pre dmax shall not be greater than \c RSIZE_MAX_STR
+ * @pre retvalp and ps shall not be a null pointer.
+ * @pre dmax shall not be greater than \c RSIZE_MAX_STR and size of dest
  *      (unless dest is null).
  * @pre dmax shall not equal zero (unless dest is null).
  * @pre dmax must be zero if dest is null.
@@ -100,53 +101,49 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return Returns zero on success and non-zero on failure, in which
- *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is zero or
- *         greater than RSIZE_MAX_STR) and \c *retval is set to (size_t)-1 (unless
- *         retval is null).
+ *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is invalid)
+ *         and \c *retvalp is set to (size_t)-1 (unless retvalp is null).
  *
  * @retval  EOK        on successful conversion.
- * @retval  ESNULLP    when retval or ps are a NULL pointer
+ * @retval  ESNULLP    when retvalp or ps are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest, unless dest is NULL
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
  *
  * @see
  *    wctomb_s()
  */
+
 EXPORT errno_t
-wcrtomb_s(size_t *restrict retval,
-          char *restrict dest, rsize_t dmax,
-          wchar_t wc, mbstate_t *restrict ps)
+_wcrtomb_s_chk(size_t *restrict retvalp,
+               char *restrict dest, rsize_t dmax,
+               wchar_t wc, mbstate_t *restrict ps,
+               const size_t destbos)
 {
     size_t len;
     errno_t rc;
 
-    if (unlikely(retval == NULL)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: retval is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(ps == NULL)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: ps is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
+    CHK_SRC_NULL("wcrtomb_s", retvalp)
+    CHK_SRC_NULL("wcrtomb_s", ps)
     /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine. */
-    if (unlikely((dmax == 0) && dest)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+    if (dest) {
+        CHK_DMAX_ZERO("wcrtomb_s")
+        if (destbos == BOS_UNKNOWN) {
+            CHK_DMAX_MAX("wcrtomb_s", RSIZE_MAX_WSTR)
+            BND_CHK_PTR_BOUNDS(dest, dmax);
+        } else {
+            CHK_DEST_OVR("wcrtomb_s", destbos)
+        }
+    } else {
+        if (unlikely(dmax != 0)) {
+            invoke_safe_str_constraint_handler("wcrtomb_s"
+                       ": dmax is not 0",
+                       (void*)dest, ESNULLP);
+            return RCNEGATE(ESNULLP);
+        }
     }
 
-    if (unlikely((dmax > RSIZE_MAX_STR) && dest)) {
-        invoke_safe_str_constraint_handler("wcrtomb_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    len = *retval = wcrtomb(dest, wc, ps);
+    len = *retvalp = wcrtomb(dest, wc, ps);
 
     if (likely(len < dmax)) {
         if (dest) {

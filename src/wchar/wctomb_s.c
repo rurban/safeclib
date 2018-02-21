@@ -44,6 +44,7 @@
 
 
 /**
+ * @def wctomb_s(retvalp,dest,dmax,wc)
  * @brief
  *    The \c wctomb_s function converts a single
  *    wide character to its narrow multibyte representation from the current
@@ -84,13 +85,13 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval pointer to a \c size_t object where the result will be stored
- * @param[out]  dest  pointer to bytes where the result will be stored
- * @param[in]   dmax  restricted maximum length of \c dest
- * @param[in]   wc    the wide character to convert
+ * @param[out]  retvalp  pointer to a \c size_t object where the result will be stored
+ * @param[out]  dest     pointer to bytes where the result will be stored
+ * @param[in]   dmax     restricted maximum length of \c dest
+ * @param[in]   wc       the wide character to convert
  *
- * @pre retval shall not be a null pointer.
- * @pre dmax shall not be greater than \c RSIZE_MAX_STR
+ * @pre retvalp shall not be a null pointer.
+ * @pre dmax shall not be greater than \c RSIZE_MAX_STR and size of dest
  *      (unless dest is null).
  * @pre dmax shall not equal zero (unless dest is null).
  * @pre dmax must be zero if dest is null.
@@ -98,14 +99,13 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return Returns zero on success and non-zero on failure, in which
- *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is zero or
- *         greater than RSIZE_MAX_STR) and \c *retval is set to (size_t)-1 (unless
- *         retval is null).
+ *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is invalid)
+ *         and \c *retvalp is set to (size_t)-1 (unless retvalp is null).
  *
  * @retval  EOK        on successful conversion.
- * @retval  ESNULLP    when retval is a NULL pointer
+ * @retval  ESNULLP    when retvalp is a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest, unless dest is NULL
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
  * @retval  EILSEQ     if returned by wctomb()
  *
@@ -113,9 +113,9 @@
  *    wcrtomb_s()
  */
 EXPORT errno_t
-wctomb_s(int *restrict retval,
-         char *restrict dest, rsize_t dmax,
-         wchar_t wc)
+_wctomb_s_chk(int *restrict retvalp,
+              char *restrict dest, rsize_t dmax,
+              wchar_t wc, const size_t destbos)
 {
     int len;
     errno_t rc;
@@ -123,26 +123,26 @@ wctomb_s(int *restrict retval,
     mbstate_t st;
 #endif
 
-    if (unlikely(retval == NULL)) {
-        invoke_safe_str_constraint_handler("wctomb_s: retval is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
+    CHK_SRC_NULL("wctomb_s", retvalp)
     /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine. */
-    if (unlikely((dmax == 0) && dest)) {
-        invoke_safe_str_constraint_handler("wctomb_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
+    if (dest) {
+        CHK_DMAX_ZERO("wctomb_s")
+        if (destbos == BOS_UNKNOWN) {
+            CHK_DMAX_MAX("wctomb_s", RSIZE_MAX_WSTR)
+            BND_CHK_PTR_BOUNDS(dest, dmax);
+        } else {
+            CHK_DEST_OVR("wctomb_s", destbos)
+        }
+    } else {
+        if (unlikely(dmax != 0)) {
+            invoke_safe_str_constraint_handler("wctomb_s"
+                       ": dmax is not 0",
+                       (void*)dest, ESNULLP);
+            return RCNEGATE(ESNULLP);
+        }
     }
 
-    if (unlikely((dmax > RSIZE_MAX_STR) && dest)) {
-        invoke_safe_str_constraint_handler("wctomb_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    len = *retval = wctomb(dest, wc);
+    len = *retvalp = wctomb(dest, wc);
 
     if (likely(len > 0 && (rsize_t)len < dmax)) {
 #ifdef SAFECLIB_STR_NULL_SLACK

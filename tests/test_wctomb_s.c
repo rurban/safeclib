@@ -44,7 +44,7 @@ int test_wctomb_s (void)
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty retvalp")
-    rc = wctomb_s(NULL, NULL, LEN, src);
+    rc = wctomb_s(NULL, dest, LEN, src);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, 0);
 
@@ -55,7 +55,17 @@ int test_wctomb_s (void)
     EXPECT_BOS("dest overflow or empty")
     rc = wctomb_s(&ind, dest, RSIZE_MAX_STR+1, src);
     ERR_MSVC(ESLEMAX, 0);
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow or empty")
+    rc = wctomb_s(&ind, dest, LEN+1, src);
+    ERR_MSVC(ESLEMAX, 0);
+# endif
 #endif
+
+    /* check dmax zero, with !dest */
+    rc = wctomb_s(&ind, NULL, 1, src);
+    ERR_MSVC(ESNULLP, ERANGE);
 
 /*--------------------------------------------------*/
 

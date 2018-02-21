@@ -639,17 +639,23 @@ _wcstombs_s_chk(size_t *restrict retvalp,
     _wcstombs_s_chk(retvalp,dest,dmax,src,len,BOS(dest))
 
 EXTERN errno_t
-wcrtomb_s(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,
-          wchar_t wc, mbstate_t *restrict ps)
+_wcrtomb_s_chk(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,
+               wchar_t wc, mbstate_t *restrict ps,
+               const size_t destbos)
     BOS_NULL(retvalp) BOS_CHK(dest) BOS_NULL(ps)
     VAL_OVR2(wc, 0x10ffff);
+#define wcrtomb_s(retvalp,dest,dmax,wc,ps)            \
+    _wcrtomb_s_chk(retvalp,dest,dmax,wc,ps,BOS(dest))
 
 EXTERN errno_t
-wctomb_s(int *restrict retvalp, char *restrict dest, rsize_t dmax, wchar_t wc)
+_wctomb_s_chk(int *restrict retvalp, char *restrict dest, rsize_t dmax, wchar_t wc,
+              const size_t destbos)
     BOS_NULL(retvalp)
     BOS_ATTR(!_BOS_NULL(dest) && (!dmax || dmax > RSIZE_MAX_STR || _BOS_OVR(dest,dmax)),
              "dest overflow or empty")
     VAL_OVR2(wc, 0x10ffff);
+#define wctomb_s(retvalp,dest,dmax,wc)            \
+    _wctomb_s_chk(retvalp,dest,dmax,wc,BOS(dest))
 
 EXTERN size_t
 wcsnlen_s(const wchar_t *dest, size_t dmax)

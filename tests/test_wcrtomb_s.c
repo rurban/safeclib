@@ -65,14 +65,26 @@ int test_wcrtomb_s (void)
     ERR_MSVC(ESZEROL, have_wine?EINVAL:0);
     CLRPS;
 
-    EXPECT_BOS("empty dest") EXPECT_BOS("empty ps")
-    rc = wcrtomb_s(&ind, NULL, LEN, wc, NULL);
+    EXPECT_BOS("empty dest")
+    rc = wcrtomb_s(&ind, NULL, LEN, wc, &ps);
+    ERR_MSVC(ESNULLP, EINVAL);
+    CLRPS;
+
+    EXPECT_BOS("empty ps")
+    rc = wcrtomb_s(&ind, dest, LEN, wc, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
 
     EXPECT_BOS("dest overflow")
     rc = wcrtomb_s(&ind, dest, RSIZE_MAX_STR+1, wc, &ps);
     ERR_MSVC(ESLEMAX,0);
     CLRPS;
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = wcrtomb_s(&ind, dest, LEN+1, wc, &ps);
+    ERR_MSVC(ESLEMAX,0);
+    CLRPS;
+# endif
 #endif
 
 /*--------------------------------------------------*/
