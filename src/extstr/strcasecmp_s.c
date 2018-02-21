@@ -57,16 +57,19 @@
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   resultp shall not be a null pointer.
  * @pre   dmax shall not be 0
- * @pre   dmax shall not be greater than RSIZE_MAX_STR
+ * @pre   dmax shall not be greater than RSIZE_MAX_STR or size of dest
  *
  * @return  resultp (when the return code is OK)
  * @retval  >0 when dest greater than src
  * @retval  0 when strings the same
  * @retval  <0 when dest less than src
- * @retval  EOK          when comparison is complete
- * @retval  ESNULLP      when dest/src/resultp is NULL pointer
- * @retval  ESZEROL      when dmax = 0
- * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
+ * @retval  EOK        when comparison is complete
+ * @retval  ESNULLP    when dest/src/resultp is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  *
  * @see
  *    strcmp_s()

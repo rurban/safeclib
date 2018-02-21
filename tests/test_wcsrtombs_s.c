@@ -104,7 +104,7 @@ int test_wcsrtombs_s (void)
         EXPECT_BOS("dest overflow")
         rc = wcsrtombs_s(&ind, dest, LEN+1, &cs, 3, &ps);
         if (rc) /* TODO overflow */
-            ERR(ESLEMAX);
+            ERR(EOVERFLOW);
         CLRPS;
     }
 #endif

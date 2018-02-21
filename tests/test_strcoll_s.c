@@ -89,16 +89,18 @@ int test_strcoll_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = strcoll_s(str1, LEN+1, str2, &ind);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     INDZERO()
 # endif
 #endif
 
     /* no static overflow _chk yet with string literals (clang bug) */
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS_TODO("dest overflow")
     rc = strcoll_s("xxxxxx", 20, "xxxxxxyy", &ind);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     INDZERO()
+#endif
 
 /*--------------------------------------------------*/
 

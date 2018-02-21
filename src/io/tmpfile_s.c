@@ -57,7 +57,6 @@
  * @pre streamptr shall not be a null pointer.
  * @pre No more than TMP_MAX_S files may be opened
  *
- *
  * If the file was created successfully, then the pointer to FILE
  * pointed to by streamptr will be set to the pointer to the object
  * controlling the opened file. Otherwise, the pointer to FILE pointed
@@ -69,6 +68,7 @@
  *         If there is a runtime-constraint violation, tmpfile_s does not attempt
  *         to create a file.
  *         Sets the streamptr on success.
+ *
  * @retval  EOK        on success
  * @retval  ESNULLP    when streamptr is a NULL pointer
  * @retval  ESLEMAX    when more than TMP_MAX_S files were opened.

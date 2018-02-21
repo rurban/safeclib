@@ -60,12 +60,12 @@ int test_strstr_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = strstr_s(str1, LEN+1, str2, LEN, &sub);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     SUBNULL()
 
     EXPECT_BOS("src overflow")
     rc = strstr_s(str1, LEN, str2, LEN+1, &sub);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     SUBNULL()
 # endif    
 #endif

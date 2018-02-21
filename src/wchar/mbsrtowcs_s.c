@@ -105,6 +105,9 @@
  * @retval  ESNULLP    when retvalp, ps, srcp or *srcp are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR, unless dest is NULL
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and dest != NULL
  * @retval  ESOVRLP    when *srcp and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the *srcp array and len is
@@ -131,8 +134,7 @@ _mbsrtowcs_s_chk (size_t *restrict retvalp,
     CHK_SRCW_NULL_CLEAR("mbstowcs_s", srcp)
     CHK_SRC_NULL("mbstowcs_s", *srcp)
     if (dest) {
-        /* string literals also have the ending \0 */
-        size_t destsz = (CONSTP(dest) ? dmax+1 : dmax) * sizeof(wchar_t);
+        size_t destsz = dmax * sizeof(wchar_t);
         CHK_DMAX_ZERO("mbstowcs_s")
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
@@ -143,10 +145,17 @@ _mbsrtowcs_s_chk (size_t *restrict retvalp,
             BND_CHK_PTR_BOUNDS(dest, destsz);
         } else {
             if (unlikely(destsz > destbos || len*sizeof(wchar_t) > destbos)) {
-                invoke_safe_str_constraint_handler("mbstowcs"
-                           ": dmax/len exceeds destsz",
-                           (void*)dest, ESLEMAX);
-                return RCNEGATE(ESLEMAX);
+                if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
+                    invoke_safe_str_constraint_handler("mbstowcs"
+                               ": dmax/len exceeds max",
+                               (void*)dest, ESLEMAX);
+                    return RCNEGATE(ESLEMAX);
+                } else {
+                    invoke_safe_str_constraint_handler("mbstowcs"
+                               ": dmax/len exceeds destsz",
+                               (void*)dest, EOVERFLOW);
+                    return RCNEGATE(EOVERFLOW);
+                }
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(destsz != destbos)) {

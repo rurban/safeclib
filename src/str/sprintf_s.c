@@ -123,27 +123,33 @@ sprintf_s     (char * restrict dest, rsize_t dmax,
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("sprintf_s: fmt is null",
-                   NULL, ESNULLP);
+                   dest, ESNULLP);
         return -ESNULLP;
     }
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("sprintf_s: dmax is 0",
-                   NULL, ESZEROL);
+                   dest, ESZEROL);
         return -ESZEROL;
     }
 
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
-                                               dest, ESLEMAX);
+                       dest, ESLEMAX);
             return -ESLEMAX;
         }
         BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
-            return -(handle_str_bos_overload("sprintf_s: dmax exceeds dest",
-                                             dest, destbos));
+            if (unlikely(dmax > RSIZE_MAX_STR)) {
+                invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max",
+                           dest, ESLEMAX);
+                return -ESLEMAX;
+            } else {
+                return -(handle_str_bos_overload("sprintf_s: dmax exceeds dest",
+                                   dest, destbos));
+            }
         }
     }
 
@@ -151,7 +157,7 @@ sprintf_s     (char * restrict dest, rsize_t dmax,
         /* at the beginning or if inside, not %%n */
         if ((p-fmt == 0) || *(p-1) != '%') {
             invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
-                                               (char *restrict)fmt, EINVAL);
+                       (char *restrict)fmt, EINVAL);
             return -1; /* EINVAL */
         }
     }

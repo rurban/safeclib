@@ -60,8 +60,10 @@
  * @retval  EOK         when successful operation
  * @retval  ESNULLP     when dest/src/firstp is NULL pointer
  * @retval  ESZEROL     when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_STR
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    strfirstchar_s(), strlastchar_s(), strfirstdiff_s(),

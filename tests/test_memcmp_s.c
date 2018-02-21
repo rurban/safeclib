@@ -57,6 +57,15 @@ int test_memcmp_s (void)
     rc = memcmp_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
     ERR(ESLEMAX);
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow") 
+    rc = memcmp_s(mem1, LEN+1, mem2, LEN, &ind);
+    ERR(EOVERFLOW);
+
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dmax")
+    rc = memcmp_s(mem1, LEN, mem2, LEN+1, &ind);
+    ERR(EOVERFLOW);
+# endif  
 /*--------------------------------------------------*/
 
     EXPECT_BOS("slen overflow >dmax")

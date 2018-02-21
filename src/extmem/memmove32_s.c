@@ -58,12 +58,12 @@
  * @param[out] dest   pointer to the memory that will be replaced by src.
  * @param[in]  dmax   maximum length of the resulting dest, in bytes
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  slen  number of uint32_t's to be copied
+ * @param[in]  slen   number of uint32_t's to be copied
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   dmax shall not be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest).
- * @pre   slen shall not be greater than dmax/4.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM and size of dest.
+ * @pre   4*slen shall not be greater than dmax and size of src
  *
  * @return  If there is a runtime-constraint violation, memmove32_s
  *          stores zeros in the first dmax bytes of the region pointed to
@@ -71,10 +71,14 @@
  * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the
+ *                      compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32 or > sizeof(src)/4
- * @retval  ESNOSPC     when dmax < slen*4
+ * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32
+ * @retval  EOVERFLOW   when 4*slen > size of src (optionally, when the
+ *                      compiler knows the object_size statically)
+ * @retval  ESNOSPC     when 4*slen > dmax
  *
  * @see
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
@@ -108,8 +112,8 @@ _memmove32_s_chk (uint32_t *dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, smax);
     } else if (unlikely(smax > srcbos)) {
         invoke_safe_mem_constraint_handler("memmove32_s: slen exceeds src",
-                       (void*)src, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                       (void*)src, EOVERFLOW);
+        return (RCNEGATE(EOVERFLOW));
     }
 
     /*

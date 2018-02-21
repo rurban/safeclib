@@ -76,7 +76,7 @@ int test_strcat_s (void)
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strcat_s(str1, LEN+1, str2);
-        ERR_MSVC(ESLEMAX, 0);     /* dmax exceeds dest */
+        ERR(EOVERFLOW);     /* dmax exceeds dest */
         if (!use_msvcrt) {
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 4);

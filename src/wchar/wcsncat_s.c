@@ -91,6 +91,9 @@
  * @retval  ESNULLP    when dest/src is NULL pointer and slen > 0
  * @retval  ESZEROL    when dmax = 0 and slen > 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR and slen > 0
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESUNTERM   when dest not terminated and slen > 0
  * @retval  ESOVRLP    when src overlaps with dest and slen > 0
  *

@@ -93,7 +93,7 @@ _strnlen_s_chk (const char *str, rsize_t smax, const size_t strbos)
         if (unlikely(smax != strbos)) {
             if (unlikely(smax > strbos)) {
                 invoke_safe_str_constraint_handler("strnlen_s: smax exceeds str",
-                           (void*)str, ESLEMAX);
+                           (void*)str, EOVERFLOW);
                 return 0;
             }
 #ifdef HAVE_WARN_DMAX

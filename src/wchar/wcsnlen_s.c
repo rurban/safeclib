@@ -96,10 +96,10 @@ _wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, const size_t destbos)
         BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
     } else {
         /* string literals also have the ending \0 */
-        size_t destsz = (dmax) * sizeof(wchar_t);
+        size_t destsz = dmax * sizeof(wchar_t);
         if (unlikely(destsz > destbos)) {
             invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds dest",
-                       (void*)dest, ESLEMAX);
+                       (void*)dest, EOVERFLOW);
             return RCNEGATE(0);
         }
 #ifdef HAVE_WARN_DMAX

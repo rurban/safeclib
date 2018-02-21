@@ -86,20 +86,21 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
- *       ESLEMAX dmax/slen>MAX not, ESOVRLP partially. When dest>src Windows
- *       appends the result, when dest<src ERANGE or EINVAL is returned.
+ *       ESLEMAX dmax/slen > MAX not, ESOVRLP partially. When dest > src Windows
+ *       appends the result, when dest < src ERANGE or EINVAL is returned.
  *
- * @returns  If there is a runtime-constraint violation, then if dest is
- *           not a null pointer and dmax is greater than zero and not
- *           greater than RSIZE_MAX_STR, then strncat_s nulls dest.
+ * @returns  If there is a runtime-constraint violation, and if dest and dmax
+ *           are valid, then strncat_s nulls dest.
  * @retval  EOK        successful operation, when slen == 0 or all the characters
  *                     are copied from src and dest is null terminated.
  *          As special case, analog to msvcrt: when slen == 0 and dmax is big
  *          enough for dest, also return EOK, but clear dest.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax/slen > dest/src
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESUNTERM   when dest not terminated
  * @retval  ESOVRLP    when src overlaps with dest
  *

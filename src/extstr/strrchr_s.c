@@ -54,13 +54,16 @@
  *
  * @pre  Neither dest nor resultp shall be a null pointer.
  * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest.
  * @pre  ch shall not be greater than 255.
  *
  * @retval  EOK        when successfully character found.
  * @retval  ESNULLP    when dest/resultp is a NULL pointer
  * @retval  ESZEROL    when dmax = 0 or strnlen_s = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or dmax > size of dest
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESLEMAX    when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *
@@ -84,9 +87,7 @@ _strrchr_s_chk (const char *restrict dest, rsize_t dmax,
         CHK_DMAX_MAX("strrchr_s", RSIZE_MAX_STR)
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else if (unlikely(dmax > destbos)) {
-        invoke_safe_str_constraint_handler("strrchr_s" ": dmax exceeds dest",
-                   (void*)dest, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+        CHK_DEST_OVR("strrchr_s", destbos)
     }
     if (unlikely(ch > 255)) {
         invoke_safe_str_constraint_handler("strrchr_s: ch exceeds max",

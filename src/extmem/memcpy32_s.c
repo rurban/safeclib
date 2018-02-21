@@ -57,6 +57,7 @@
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   dmax shall not be 0.
  * @pre   dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest)
+ * @pre   slen shall not be greater than RSIZE_MAX_MEM32 and sizeof(src)
  * @pre   slen shall not be greater than dmax/4.
  * @pre   Copying shall not take place between regions that overlap.
  *
@@ -66,10 +67,14 @@
  * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32 or > sizeof(dest)/4
- * @retval  ESNOSPC     when slen*4 > dmax
+ * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32
+ * @retval  EOVERFLOW   when 4*slen > size of src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESNOSPC     when 4*slen > dmax
  * @retval  ESOVRLP     when src memory overlaps dest
  *
  * @see

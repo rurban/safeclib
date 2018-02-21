@@ -87,8 +87,10 @@
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest or src is a NULL POINTER
  * @retval  ESZEROL     when dlen = ZERO
- * @retval  ESLEMAX     when dlen/count > RSIZE_MAX_WMEM or > dest/src
- * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when dlen/count > RSIZE_MAX_WMEM
+ * @retval  EOVERFLOW   when dlen/count > size of dest/src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dlen != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when dlen < count
  * @retval  ESOVRLP     when src memory overlaps dst
  *
@@ -126,8 +128,8 @@ _wmemcpy_s_chk (wchar_t *dest, rsize_t dlen, const wchar_t *src, rsize_t count,
         if (unlikely(smax > srcbos)) {
             wmem_set((wmem_type*)dest, (uint32_t)dlen, 0);
             invoke_safe_mem_constraint_handler("wmemmove_s: slen exceeds src",
-                       (void*)src, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
+                       (void*)src, EOVERFLOW);
+            return (RCNEGATE(EOVERFLOW));
         }
     }
 

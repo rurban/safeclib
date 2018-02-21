@@ -69,7 +69,7 @@
  * @param[in]   errnum  integer value referring to an error code
  *
  * @pre dest shall not be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR and sizeof(dest)
+ * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest
  * @pre dmax shall not equal zero.
  *
  * @return  Zero if the entire message was successfully stored in dest,
@@ -77,7 +77,10 @@
  * @retval  EOK        on success
  * @retval  ESNULLP    when dest is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > sizeof(dest)
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESLEMIN    when the result would be longer than 4 and dmax < 4
  *
  * @see

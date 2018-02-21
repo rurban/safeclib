@@ -64,7 +64,9 @@
  * @retval  EOK        when comparison is complete
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR of > size of dest
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see

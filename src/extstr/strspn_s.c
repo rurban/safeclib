@@ -61,7 +61,9 @@
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dest/src/countp is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
@@ -100,9 +102,15 @@ _strspn_s_chk (const char *dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
-            invoke_safe_str_constraint_handler("strspn_s: slen exceeds src",
+            if (unlikely(slen > RSIZE_MAX_STR)) {
+                invoke_safe_str_constraint_handler("strspn_s: slen exceeds dmax",
                        (void*)src, ESLEMAX);
-            return RCNEGATE(ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            } else {
+                invoke_safe_str_constraint_handler("strspn_s: slen exceeds src",
+                       (void*)src, EOVERFLOW);
+                return RCNEGATE(EOVERFLOW);
+            }
         }
     }
     if (unlikely(slen == 0 )) {

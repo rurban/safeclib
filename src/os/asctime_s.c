@@ -79,8 +79,11 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
  *          non-zero otherwise.
  * @retval  EOK        on success
  * @retval  ESNULLP    when dest or tm is a NULL pointer
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or a tm member is too large
  * @retval  ESLEMIN    when dmax < 26 or a tm member is too small
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or a tm member is too large
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC    when dmax is too small for the result buffer
  * @retval  -1         when asctime_r or asctime returned NULL
  *

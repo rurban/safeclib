@@ -64,7 +64,7 @@ int test_strcpy_s (void)
         if (!rc) {
             printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
         } else {
-            ERR(ESLEMAX);     /* dmax exceeds dest */
+            ERR(EOVERFLOW);     /* dmax exceeds dest */
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, len);
         }

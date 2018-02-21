@@ -82,7 +82,7 @@ int test_wcrtomb_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = wcrtomb_s(&ind, dest, LEN+1, wc, &ps);
-    ERR_MSVC(ESLEMAX,0);
+    ERR_MSVC(EOVERFLOW,0);
     CLRPS;
 # endif
 #endif

@@ -68,7 +68,7 @@ int test_wcstombs_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = wcstombs_s(&ind, dest, LEN+1, cs, 1);
-    ERR_MSVC(ESLEMAX, 0);
+    ERR(EOVERFLOW);
 # endif
 #endif
 

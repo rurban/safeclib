@@ -87,7 +87,8 @@
  *                     were appended to dest and the result in dest is null terminated.
  * @retval  0 + errno=ESNULLP    when dest is a NULL pointer
  * @retval  0 + errno=ESZEROL    when dmax = 0
- * @retval  0 + errno=ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest
+ * @retval  0 + errno=ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  0 + errno=EOVERFLOW  when dmax > size of dest
  * @retval  0 + errno=ESUNTERM   endline or eof not encountered after storing
  *                               dmax-1 characters to dest.
  *
@@ -122,10 +123,17 @@ _gets_s_chk (char *restrict dest, rsize_t dmax, const size_t destbos)
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         if (unlikely(dmax > destbos)) {
-            invoke_safe_str_constraint_handler("get_s: dmax exceeds dest",
+            if (unlikely(dmax > RSIZE_MAX_STR)) {
+                invoke_safe_str_constraint_handler("gets_s: dmax exceeds max",
                        dest, ESLEMAX);
-            errno = ESLEMAX;
-            return NULL;
+                errno = ESLEMAX;
+                return NULL;
+            } else {
+                invoke_safe_str_constraint_handler("gets_s: dmax exceeds dest",
+                       dest, EOVERFLOW);
+                errno = EOVERFLOW;
+                return NULL;
+            }
         }
     }
 

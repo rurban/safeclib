@@ -60,8 +60,8 @@
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   dmax shall not be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
- * @pre   slen shall not be greater than dmax/2.
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM or size of dest.
+ * @pre   2*slen shall not be greater than dmax and size of src.
  *
  * @return  If there is a runtime-constraint violation, memmove16_s
  *          stores zeros in the first dmax bytes of the region pointed to
@@ -69,10 +69,14 @@
  * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the
+ *                      compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM16 or > sizeof(src)/2
- * @retval  ESNOSPC     when slen*2 > dmax
+ * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM16
+ * @retval  EOVERFLOW   when 2*slen > size of src (optionally, when the
+ *                      compiler knows the object_size statically)
+ * @retval  ESNOSPC     when 2*slen > dmax
  *
  * @see
  *    memmove_s(), memmove32_s(), memcpy_s(), memcpy16_s() memcpy32_s()
@@ -108,8 +112,8 @@ _memmove16_s_chk (uint16_t *dest, rsize_t dmax,
     } else {
         if (unlikely(smax > srcbos)) {
             invoke_safe_mem_constraint_handler("memmove16_s: slen exceeds src",
-                       (void*)src, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
+                       (void*)src, EOVERFLOW);
+            return (RCNEGATE(EOVERFLOW));
         }
     }
 

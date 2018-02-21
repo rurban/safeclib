@@ -60,14 +60,17 @@
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   Neither dlen nor slen shall be 0.
- * @pre   dlen shall not be greater than RSIZE_MAX_WMEM.
- * @pre   slen shall not be greater than dlen.
+ * @pre   dlen shall not be greater than RSIZE_MAX_WMEM and size of dest.
+ * @pre   slen shall not be greater than dlen and size of src.
  *
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dlen/slen = ZERO
  * @retval  ESLEMAX     when dlen/slen > RSIZE_MAX_WMEM
- * @retval  ESNOSPC     when dlen < slen
+ * @retval  EOVERFLOW   when dlen/slen > size of dest/src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dlen != size of dest and --enable-error-dmax
+ * @retval  ESNOSPC     when slen > dlen
  *
  * @see
  *    memcmp16_s(), memcmp32_s()

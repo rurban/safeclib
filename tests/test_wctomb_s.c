@@ -59,7 +59,7 @@ int test_wctomb_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow or empty")
     rc = wctomb_s(&ind, dest, LEN+1, src);
-    ERR_MSVC(ESLEMAX, 0);
+    ERR(EOVERFLOW);
 # endif
 #endif
 

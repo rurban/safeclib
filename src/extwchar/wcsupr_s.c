@@ -59,11 +59,14 @@
  * @param[in]   slen  maximum length of string
  *
  * @pre  src shall not be a null pointer.
- * @pre  slen shall not be greater than RSIZE_MAX_WSTR.
+ * @pre  slen shall not be greater than RSIZE_MAX_WSTR and size of dest.
  *
  * @retval  EOK         on successful operation or slen = 0
  * @retval  ESNULLP     when src is NULL pointer
  * @retval  ESLEMAX     when slen > RSIZE_MAX_WSTR
+ * @retval  EOVERFLOW   when slen > size of src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when slen != size of src and --enable-error-dmax
  *
  * @see
  *    strtouppercase_s(), strlwr_s(), wcslwr_s()

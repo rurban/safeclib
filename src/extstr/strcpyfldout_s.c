@@ -62,7 +62,7 @@
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not equal zero.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
- * @pre  slen shall not exceed dmax
+ * @pre  slen shall not exceed dmax and size of src
  * @pre  Copying shall not take place between objects that overlap.
  *
  * @return  If there is a runtime-constraint violation and if dest and dmax
@@ -70,10 +70,12 @@
  * @retval  EOK        when operation is successful or slen = 0
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
- * @retval  ESNOSPC    when dmax < slen
+ * @retval  ESNOSPC    when slen > dmax
  * @see
  *    strcpyfld_s(), strcpyfldin_s()
  *

@@ -1,7 +1,15 @@
 
                 ChangeLog file for safeclib
 
-Changes in v??022018 3.3.0
+Changes in v??032018 3.3.0
+        - Added compile-time and run-time object_size checks (BOS), resulting
+          in EOVERFLOW error codes. Compilers only do this reliably with static
+          arrays, less so with literal strings. With known static allocation size
+          you can bypass RSIZE_MAX_* limits. (GH #40)
+          Renamed all functions to _*_chk, with the API as macros.
+        - Added run-time libmpx pointer boundary checks if supported. (GH #49)
+        - Added --enable-warn-dmax option to warn when dmax != sizeof(dest),
+          and fatalized via --enable-error-dmax.
         - Fixed wrong count max check in memmove32_s
         - Fully tested against other secure libc extensions, the native msvcrt 7.0 (Win8)
           and the msvcrt under wine-2.0.4 and wine-3.0.

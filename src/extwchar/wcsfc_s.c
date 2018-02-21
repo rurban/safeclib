@@ -90,12 +90,15 @@ _is_lt_accented(uint32_t wc) {
  *
  * @pre  dest and src shall not be null pointers.
  * @pre  dmax shall not be smaller than 5 and big enough for dest.
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
  *
  * @retval  EOK         on successful operation
  * @retval  ESNULLP     when dest or src is NULL pointer
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR or a cp > 0x10ffff
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax is too small for the decomposition.
  *                      *lenp is still written, to know how much space is needed.
  * @retval  ESNOTFND    Internal error as returned by towfc_s() for multi-char foldings.

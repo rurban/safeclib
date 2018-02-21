@@ -61,8 +61,10 @@
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dst/src/substring is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or > size of dest/src
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOTFND   when substring not found
  *
  * @see

@@ -55,12 +55,15 @@
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   diff shall not be a null pointer.
  * @pre   dmax/smax shall not be 0
- * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR
+ * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of dest/src
  *
- * @retval  EOK          when comparison is complete
- * @retval  ESNULLP      when dest/src/diff is NULL pointer
- * @retval  ESZEROL      when dmax/smax = 0
- * @retval  ESLEMAX      when dmax/smax > RSIZE_MAX_WSTR
+ * @retval  EOK        when comparison is complete
+ * @retval  ESNULLP    when dest/src/diff is NULL pointer
+ * @retval  ESZEROL    when dmax/smax = 0
+ * @retval  ESLEMAX    when dmax/smax > RSIZE_MAX_WSTR
+ * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  *
  * @see
  *    strcmp_s(), wcsncmp_s(), wcsicmp_s()

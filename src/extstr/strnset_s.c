@@ -65,7 +65,9 @@
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when value > 255
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR or > size of dest
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when n > dmax
  *

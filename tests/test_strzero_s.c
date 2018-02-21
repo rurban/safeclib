@@ -37,7 +37,7 @@ int main()
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = strzero_s(str1, LEN+1);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
 # endif
 #endif
 /*--------------------------------------------------*/

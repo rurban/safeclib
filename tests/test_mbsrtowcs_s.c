@@ -83,7 +83,7 @@ int test_mbsrtowcs_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = mbsrtowcs_s(&ind, dest, LEN+1, &cs, 3, &ps);
-    ERR_MSVC(ESLEMAX, 0);
+    ERR(EOVERFLOW);
     CLRPS;
 #endif
 

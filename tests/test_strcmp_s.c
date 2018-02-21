@@ -90,7 +90,7 @@ int test_strcmp_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = strcmp_s(str1, LEN+1, str2, &ind);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     INDZERO()
 # endif
 #endif

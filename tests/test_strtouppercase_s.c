@@ -39,7 +39,7 @@ int main()
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = strtouppercase_s("", 2);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
 # endif
 #endif
 /*--------------------------------------------------*/

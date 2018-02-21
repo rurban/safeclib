@@ -53,10 +53,11 @@ int test_tmpnam_s (void)
     rc = tmpnam_s(str1, RSIZE_MAX_STR+1);
     ERR_MSVC(ESLEMAX, 0);
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = tmpnam_s("aaa", 5);
-    ERR_MSVC(ESLEMAX, 0);
-
+    ERR(EOVERFLOW);
+# endif
 /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")

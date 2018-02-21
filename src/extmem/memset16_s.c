@@ -55,9 +55,9 @@
  *
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM or size of dest.
  * @pre  n shall not be greater than RSIZE_MAX_MEM16.
- * @pre  dmax*2 may not be smaller than n.
+ * @pre  2*n may not be greater than dmax
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
  *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
@@ -65,10 +65,12 @@
  *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest is NULL POINTER
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or >sizeof(dest)
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESLEMAX     when n > RSIZE_MAX_MEM16
- * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESNOSPC     when dmax/2 < n
+ * @retval  ESNOSPC     when 2*n > dmax
  *
  * @see
  *    memset_s(), memset32_s()

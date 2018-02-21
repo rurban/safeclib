@@ -88,10 +88,12 @@
  *                     src were copied to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR or dmax/slen > dest/src
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
- * @retval  ESNOSPC    when dest < src
+ * @retval  ESNOSPC    when src longer than dest
  *
  * @details
  *    If dmax != sizeof(dest): With --enable-warn-dmax ESLEWRNG will be passed to the

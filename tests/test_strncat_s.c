@@ -103,7 +103,7 @@ int test_strncat_s (void)
         if (_BOS_KNOWN(str1)) {
             EXPECT_BOS("dest overflow")
                 rc = strncat_s(str1, LEN+1, str2, LEN);
-            ERR(ESLEMAX);
+            ERR(EOVERFLOW);
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 2);
         } else {
@@ -139,7 +139,7 @@ int test_strncat_s (void)
         if (_BOS_KNOWN(str1)) {
             EXPECT_BOS("dest overflow")
             rc = strncat_s(str1, LEN+1, str2, LEN);
-            ERR(ESLEMAX);     /* dmax exceeds dest */
+            ERR(EOVERFLOW);     /* dmax exceeds dest */
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 4);
 

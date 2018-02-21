@@ -78,7 +78,9 @@
  *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest is NULL pointer
- * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or > sizeof(dest) or value > 255
+ * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or value > 255
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < n
  *

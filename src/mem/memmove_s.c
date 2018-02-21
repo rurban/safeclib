@@ -69,7 +69,8 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM and size of dest.
+ * @pre  slen shall not be greater than RSIZE_MAX_MEM and size of src.
  * @pre  slen shall not be greater than dmax.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
@@ -80,8 +81,10 @@
  * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM or sizeof(dest)
- * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  *
  * @see
@@ -131,8 +134,8 @@ _memmove_s_chk (void *dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
         invoke_safe_mem_constraint_handler("memmove_s: slen exceeds src",
-                   (void*)src, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   (void*)src, EOVERFLOW);
+        return (RCNEGATE(EOVERFLOW));
     }
 
     /* now perform the copy, with overlap allowed */

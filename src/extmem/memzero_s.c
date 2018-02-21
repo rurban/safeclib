@@ -50,14 +50,16 @@
  * @param[in]  len   number of bytes to be zeroed
  *
  * @pre   dest shall not be a null pointer.
- * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM and sizeof(dest)
+ * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM and size of dest
  *
  * @return  If there is a runtime constraint, the operation is not performed.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when len = ZERO
- * @retval  ESLEMAX     when len > RSIZE_MAX_MEM or > sizeof(dest)
- * @retval  ESLEWRNG    when len != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when len > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when len != size of dest and --enable-error-dmax
  *
  * @see
  *    memzero16_s(), memzero32_s()

@@ -79,19 +79,19 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @note The Windows MSVCRT sec_api EINVAL and ERANGE works ok,
- *       ESLEMAX dmax>MAX not, ESOVRLP partially. When dest>src Windows
- *       copies the result, when dest<src ERANGE is returned.
+ *       ESLEMAX dmax > MAX not, ESOVRLP partially. When dest > src Windows
+ *       copies the result, when dest < src ERANGE is returned.
  *
- * @return  If there is a runtime-constraint violation, then if dest
- *          is not a null pointer and dmax is greater than zero and
- *          not greater than RSIZE_MAX_STR or sizeof(dest),
- *          then strcpy_s nulls dest.
+ * @return  If there is a runtime-constraint violation, and if dest
+ *          and dmax are valid, then strcpy_s nulls dest.
  * @retval  EOK        when successful operation, the characters in src were
  *                     copied into dest and the result is null terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when dest < src
  *

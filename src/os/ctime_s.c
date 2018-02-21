@@ -79,9 +79,11 @@ char *ctime_r(const time_t *, char *);
  *          non-zero otherwise.
  * @retval  EOK        on success
  * @retval  ESNULLP    when dest or tm is a NULL pointer
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest
  * @retval  ESLEMIN    when dmax < 26 or *timer < 0
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESLEMAX    when *timer > 313360441200L, the year 10000,
  *                     resp. LONG_MAX on 32bit systems
  * @retval  ESNOSPC    when dmax is too small for the result buffer

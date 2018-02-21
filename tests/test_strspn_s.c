@@ -76,12 +76,12 @@ int test_strspn_s (void)
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     rc = strspn_s(str1, LEN+1, str2, LEN, &count);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     COUNT(0)
 
     EXPECT_BOS("src overflow")
     rc = strspn_s(str1, LEN, str2, LEN+1, &count);
-    ERR(ESLEMAX)
+    ERR(EOVERFLOW)
     COUNT(0)
 # endif
 #endif

@@ -107,7 +107,9 @@
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retvalp or src are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest, unless dest is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
+ * @retval  EOVERFLOW  when dmax or len > size of dest (optionally, when the compiler
+ *                     knows the object_size statically), unless dest is NULL
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the src array and len is
@@ -142,9 +144,15 @@ _wcstombs_s_chk (size_t *restrict retvalp,
             BND_CHK_PTR_BOUNDS(dest, destsz);
         } else {
             if (unlikely(dmax > destbos || len > destbos)) {
-                handle_error(dest,destbos,"wcstombs_s" ": dmax/len exceeds dest",
-                             ESLEMAX);
-                return RCNEGATE(ESLEMAX);
+                if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
+                    handle_error(dest,destbos,"wcstombs_s" ": dmax/len exceeds max",
+                                 ESLEMAX);
+                    return RCNEGATE(ESLEMAX);
+                } else {
+                    handle_error(dest,destbos,"wcstombs_s" ": dmax/len exceeds dest",
+                                 EOVERFLOW);
+                    return RCNEGATE(EOVERFLOW);
+                }
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(dmax != destbos)) {

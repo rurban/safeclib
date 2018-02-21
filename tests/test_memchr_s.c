@@ -46,9 +46,16 @@ int test_memchr_s (void)
 /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
-    rc = memchr_s(mem, RSIZE_MAX_STR+1, ch, &sub);
+    rc = memchr_s(mem, RSIZE_MAX_MEM+1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = memchr_s(mem, LEN+1, ch, &sub);
+    ERR(EOVERFLOW)
+    SUBNULL();
+# endif
 
     EXPECT_BOS("ch overflow >255")
     rc = memchr_s(mem, LEN, 256, &sub);

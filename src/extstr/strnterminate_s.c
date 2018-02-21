@@ -88,7 +88,7 @@ _strnterminate_s_chk (char *dest, rsize_t dmax, const size_t destbos)
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds dest",
-                       (void*)dest, ESLEMAX);
+                       (void*)dest, EOVERFLOW);
             return (0);
         }
     }

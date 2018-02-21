@@ -105,11 +105,11 @@
  * @pre  *dmax shall not be 0.
  * @pre  If dest is a null pointer, then *ptr shall not be a null pointer.
  * @pre  dest must not be unterminated.
- * @pre  The value of *dmax shall not be greater than RSIZE_MAX_STR. The
- *       end of the token found shall occur within the first *dmax
- *       characters of dest for the first call, and shall occur within
- *       the first *dmax characters of where searching resumes on
- *       subsequent calls.
+ * @pre  The value of *dmax shall not be greater than RSIZE_MAX_STR and size of
+ *       dest. The end of the token found shall occur within the first *dmax
+ *       characters of dest for the first call, and shall occur within the
+ *       first *dmax characters of where searching resumes on subsequent
+ *       calls.
  * @pre  delim must not be longer than STRTOK_DELIM_MAX_LEN (default: 16).
  *
  * @note The mingw MINGW_HAS_SECURE_API declares it without the dmax
@@ -131,6 +131,8 @@
  *          ESNULLP     when dest/delim/ptr is NULL pointer
  *          ESZEROL     when *dmax = 0
  *          ESLEMAX     when *dmax > RSIZE_MAX_STR
+ *          EOVERFLOW   when *dmax > size of dest
+ *          ESLEWRNG    when *dmax != size of dest and --enable-error-dmax
  *          ESUNTERM    when unterminated string
  * C11 just returns EINVAL
  *
@@ -231,8 +233,8 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_str_constraint_handler("strtok_s: *dmaxp exceeds dest",
-                       dest, ESLEMAX);
-            errno = ESLEMAX;
+                       dest, EOVERFLOW);
+            errno = EOVERFLOW;
             return (NULL);
         }
 #ifdef HAVE_WARN_DMAX

@@ -64,12 +64,13 @@ int test_memcpy_s (void)
     else
         EXPMEM(mem1, 0, LEN, 44, 1);
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
     for (i=0; i<LEN; i++) { mem1[i] = 33; }
     for (i=0; i<LEN; i++) { mem2[i] = 44; }
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
+
     EXPECT_BOS("dest overflow or empty")
     rc = memcpy_s(mem1, LEN+3, mem2, LEN);
-    ERR_MSVC(ESLEMAX, 0); /* limited to destbos */
+    ERR(EOVERFLOW); /* limited to destbos */
     if (!use_msvcrt)
         EXPMEM(mem1, 0, LEN, 33, 1);
     else

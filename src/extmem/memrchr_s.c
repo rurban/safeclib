@@ -59,13 +59,16 @@ extern void* memrchr(const void *, int, size_t);
  *
  * @pre  Neither dest nor result shall be a null pointer.
  * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest)
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM and size of dest
  * @pre  ch shall not be greater than 255
  *
  * @retval  EOK        when successfully character found.
  * @retval  ESNULLP    when dest/result is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_MEM or > sizeof(dest)
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESLEMAX    when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *

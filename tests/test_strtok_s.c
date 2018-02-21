@@ -66,10 +66,16 @@ int main()
 
 /*--------------------------------------------------*/
 
-    rc = strtok_s(str1, (len=RSIZE_MAX_STR+1,&len), str2,  &p2str);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* EXPECT_BOS_TODO("dest overflow") */
+    rc = strtok_s(str1, (len=LEN+1,&len), str2,  &p2str);
+    ERRPTR(NULL);
+    ERRNO_MSVC(EOVERFLOW, 0);
+#else
+    rc = strtok_s(str1, (len=RSIZE_MAX_LEN+1,&len), str2,  &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESLEMAX, 0);
-
+#endif
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR

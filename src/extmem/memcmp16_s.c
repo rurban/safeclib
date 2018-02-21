@@ -62,13 +62,16 @@
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   Neither dlen nor slen shall be 0.
  * @pre   dlen shall not be greater than RSIZE_MAX_MEM16 and sizeof(dest)/2
- * @pre   slen shall not be greater than dlen and sizeof(dest)/22
+ * @pre   slen shall not be greater than RSIZE_MAX_MEM16 and sizeof(src)/2
+ * @pre   slen shall not be greater than dlen and sizeof(dest)/2
  *
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dlen/slen = ZERO
- * @retval  ESLEMAX     when dlen/slen > RSIZE_MAX_MEM16 or > sizeof(dest/src)/2
- * @retval  ESLEWRNG    when dlen/slen != sizeof(dest/src)/2 and --enable-error-dmax
+ * @retval  ESLEMAX     when dlen/slen > RSIZE_MAX_MEM16
+ * @retval  EOVERFLOW   when 2*dlen/slen > size of dest/src (optionally, when the
+ *                      compiler knows the object_size statically)
+ * @retval  ESLEWRNG    when 2*dlen/slen != sizeof(dest/src) and --enable-error-dmax
  * @retval  ESNOSPC     when dlen < slen
  *
  * @see
@@ -122,9 +125,15 @@ _memcmp16_s_chk (const uint16_t *dest, rsize_t dlen,
         BND_CHK_PTR_BOUNDS(dest, smax);
     } else {
         if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memcmp16_s: dlen exceeds dest",
+            if (unlikely(dmax > RSIZE_MAX_MEM16 )) {
+                invoke_safe_mem_constraint_handler("memcmp16_s: dlen exceeds max",
                    (void*)dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
+                return (RCNEGATE(ESLEMAX));
+            } else {
+                invoke_safe_mem_constraint_handler("memcmp16_s: dlen exceeds dest",
+                   (void*)dest, EOVERFLOW);
+                return (RCNEGATE(EOVERFLOW));
+            }
         }
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
@@ -149,9 +158,15 @@ _memcmp16_s_chk (const uint16_t *dest, rsize_t dlen,
         BND_CHK_PTR_BOUNDS(src, smax);
     } else {
         if (unlikely(smax > srcbos)) {
-            invoke_safe_mem_constraint_handler("memcmp16_s: slen exceeds src",
+            if (unlikely(slen > RSIZE_MAX_MEM16)) {
+                invoke_safe_mem_constraint_handler("memcmp16_s: slen exceeds max",
                        (void*)src, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
+                return (RCNEGATE(ESLEMAX));
+            } else {
+                invoke_safe_mem_constraint_handler("memcmp16_s: slen exceeds src",
+                       (void*)src, EOVERFLOW);
+                return (RCNEGATE(EOVERFLOW));
+            }
         }
     }
 

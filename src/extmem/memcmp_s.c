@@ -62,14 +62,16 @@
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   Neither dmax nor slen shall be 0.
- * @pre   dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest)
- * @pre   slen shall not be greater than dmax or sizeof(src)
+ * @pre   dmax shall not be greater than RSIZE_MAX_MEM or size of dest
+ * @pre   slen shall not be greater than dmax or size of src
  *
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/slen = ZERO
- * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM or > sizeof(dest/src)
- * @retval  ESLEWRNG    when dmax/slen != sizeof(dest/src) and --enable-error-dmax
+ * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax/slen != size of dest/src and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  *
  * @see
@@ -124,9 +126,15 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         if (unlikely(dmax > destbos)) {
-            invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds dest",
+            if (unlikely(dmax > RSIZE_MAX_MEM)) {
+                invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds max",
                        (void*)dest, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
+                return (RCNEGATE(ESLEMAX));
+            } else {
+                invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds dest",
+                       (void*)dest, EOVERFLOW);
+                return (RCNEGATE(EOVERFLOW));
+            }
         }
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
@@ -142,13 +150,6 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
         return (RCNEGATE(ESZEROL));
     }
 
-    if (unlikely(slen > dmax)) {
-        errno_t error = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
-        invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds dmax",
-                       (void*)dest, error);
-        return (RCNEGATE(error));
-    }
-
     if (srcbos == BOS_UNKNOWN) {
         if (unlikely(slen > RSIZE_MAX_MEM)) {
             invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds max",
@@ -158,10 +159,22 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
-            invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds src",
-                       (void*)src, ESLEMAX);
-            return (RCNEGATE(ESLEMAX));
+            if (unlikely(slen > RSIZE_MAX_MEM)) {
+                invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds max",
+                       (void*)dest, ESLEMAX);
+                return (RCNEGATE(ESLEMAX));
+            } else {
+                invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds src",
+                       (void*)src, EOVERFLOW);
+                return (RCNEGATE(EOVERFLOW));
+            }
         }
+    }
+
+    if (unlikely(slen > dmax)) {
+        invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds dmax",
+                       (void*)dest, ESNOSPC);
+        return (RCNEGATE(ESNOSPC));
     }
 
     /* no need to compare the same memory */

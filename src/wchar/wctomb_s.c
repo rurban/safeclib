@@ -105,7 +105,10 @@
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retvalp is a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or > size of dest, unless dest is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
  * @retval  EILSEQ     if returned by wctomb()
  *

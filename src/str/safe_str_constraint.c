@@ -115,10 +115,13 @@ handle_str_bos_overload(const char *restrict msg, char *restrict dest,
                         const rsize_t dmax)
 {
     size_t len = strnlen_s(dest, dmax); /* clear the min of strlen and dmax(=destbos) */
-    if (unlikely(len > RSIZE_MAX_STR))
+    errno_t err = EOVERFLOW;
+    if (unlikely(len > RSIZE_MAX_STR)) {
         len = 1;
-    handle_error(dest, len, msg, ESLEMAX);
-    return RCNEGATE(ESLEMAX);
+        err = ESLEMAX;
+    }
+    handle_error(dest, len, msg, err);
+    return RCNEGATE(err);
 }
 
 void

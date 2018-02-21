@@ -53,19 +53,22 @@
  * @param[out]  substring  the returned substring pointer
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall not be greater than RSIZE_MAX_WSTR.
+ * @pre  dmax/slen shall not be 0
+ * @pre  dmax/slen shall not be greater than RSIZE_MAX_WSTR and size of dest/src.
  *
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dest/src/substring is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
- * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOTFND   when substring not found
  *
  * @see
  *     wcsstr(), strstr_s(), memcmp32_s()
- *
  */
+
 EXPORT errno_t
 wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
           const wchar_t *restrict src, rsize_t slen,

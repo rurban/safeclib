@@ -57,9 +57,11 @@ int main()
     rc = memcmp32_s(mem1, LEN, mem2, RSIZE_MAX_MEM+1, &ind);
     ERR(ESLEMAX);
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
     rc = memcmp32_s(mem1, LEN, mem2, LEN+1, &ind);
-    ERR(ESLEMAX);
+    ERR(EOVERFLOW);
+# endif
 
 /*--------------------------------------------------*/
 
@@ -70,12 +72,19 @@ int main()
 #endif
 
 /*--------------------------------------------------*/
-    /* undetected at compile-time */
+    /* undetected at compile-time, but still doing
+       run-time object_size checks */
 
-    len = RSIZE_MAX_MEM+1;
+    len = RSIZE_MAX_MEM32+1;
     rc = memcmp32_s(mem1, LEN, mem2, len, &ind);
     ERR(ESLEMAX);
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    len = LEN+1;
+    rc = memcmp32_s(mem1, LEN, mem2, len, &ind);
+    ERR(EOVERFLOW);
+#endif
+    
 /*--------------------------------------------------*/
 
     /* short cut */

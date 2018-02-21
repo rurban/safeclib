@@ -469,7 +469,7 @@ static uint8_t _combin_class(uint32_t cp)
  *
  * @pre  dest and src shall not be null pointers.
  * @pre  dmax shall not equal zero and big enough for dest.
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
@@ -479,6 +479,9 @@ static uint8_t _combin_class(uint32_t cp)
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMIN    when dmax < 5 or 19 with a compat mode
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when buffers overlap
  * @retval  ESNOSPC    when dmax too small for the result buffer
  * @retval  EOF        on some normalization error

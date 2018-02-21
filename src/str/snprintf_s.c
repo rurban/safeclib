@@ -143,8 +143,14 @@ snprintf_s     (char * restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
-            return -(handle_str_bos_overload("snprintf_s: dmax exceeds dest",
-                               dest, destbos));
+            if (unlikely(dmax > RSIZE_MAX_STR)) {
+                invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
+                           dest, ESLEMAX);
+                return -ESLEMAX;
+            } else {
+                return -(handle_str_bos_overload("snprintf_s: dmax exceeds dest",
+                                   dest, destbos));
+            }
         }
     }
 

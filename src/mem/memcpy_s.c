@@ -64,7 +64,8 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_MEM or sizeof(dest).
+ * @pre  dmax shall not be greater than RSIZE_MAX_MEM or size of dest.
+ * @pre  slen shall not be greater than RSIZE_MAX_MEM or size of src.
  * @pre  slen shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
  *
@@ -76,8 +77,10 @@
  * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM or sizeof(dest)
- * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
+ * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  * @retval  ESOVRLP     when src memory overlaps dst
  *
@@ -119,8 +122,8 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
         invoke_safe_mem_constraint_handler("memcpy_s: slen exceeds src",
-                   (void*)src, ESLEMAX);
-        return (RCNEGATE(ESLEMAX));
+                   (void*)src, EOVERFLOW);
+        return (RCNEGATE(EOVERFLOW));
     }
 
     /* overlap is disallowed */

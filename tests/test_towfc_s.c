@@ -57,7 +57,7 @@ int test_towfc_s (void)
     /*if (_BOS_KNOWN(result)) {
         EXPECT_BOS("dest overflow") 
         rc = towfc_s(result, MAX_LEN+1, 1);
-        ERR(ESLEMAX);
+        ERR(EOVERFLOW);
     }*/
 #endif
 

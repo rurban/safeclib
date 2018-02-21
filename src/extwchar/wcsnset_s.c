@@ -54,10 +54,19 @@
  * @param[in]   value   wide character value to write
  * @param[in]   n       number of wide characters to be written
  *
+ * @pre   dest shall not be a null pointer.
+ * @pre   dmax shall not be 0
+ * @pre   dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
+ * @pre   value shall not be greater than _UNICODE_MAX
+ * @pre   n shall not be greater than dmax
+ *
  * @retval  EOK         when successful
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR or value > max wchar_t
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_WSTR or value > _UNICODE_MAX
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when n > dmax
  *
  * @see
