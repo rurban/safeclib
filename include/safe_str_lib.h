@@ -629,11 +629,14 @@ _wcsrtombs_s_chk(size_t *restrict retvalp,
     _wcsrtombs_s_chk(retvalp,dest,dmax,srcp,len,ps,BOS(dest))
 
 EXTERN errno_t
-wcstombs_s(size_t *restrict retvalp,
-           char *restrict dest, rsize_t dmax,
-           const wchar_t *restrict src, rsize_t len)
+_wcstombs_s_chk(size_t *restrict retvalp,
+                char *restrict dest, rsize_t dmax,
+                const wchar_t *restrict src, rsize_t len,
+                const size_t destbos)
     BOS_NULL(retvalp) BOS_CHK(dest) BOSW_CHK2(src, len)
     BOS_ATTR(dmax && len > dmax, "len overflow >dmax");
+#define wcstombs_s(retvalp,dest,dmax,src,len)               \
+    _wcstombs_s_chk(retvalp,dest,dmax,src,len,BOS(dest))
 
 EXTERN errno_t
 wcrtomb_s(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,

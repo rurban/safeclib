@@ -44,6 +44,7 @@
 #endif
 
 /**
+ * @def wcstombs_s(retvalp,dest,dmax,src,len)
  * @brief
  *    The \c wcstombs_s function converts a sequence of
  *    wide characters from the array whose first element is pointed to by
@@ -66,7 +67,7 @@
  *      in the current LC_CTYPE locale.
  *
  *    - the next multibyte character to be stored would exceed \c len.
- *      This condition is not checked if \c dst==NULL.
+ *      This condition is not checked if \c dest==NULL.
  *
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written in the array of dmax
@@ -81,15 +82,15 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retval the number of characters converted
- * @param[out]  dest   buffer for the resulting converted multibyte
- *                     character string
- * @param[in]   dmax   The size in bytes of dest
- * @param[in]   src    wide string that will be converted to \c dest
- * @param[in]   len    number of bytes to be stored in \c dest, not
- *                     including the terminating null character.
+ * @param[out]  retvalp the number of characters converted
+ * @param[out]  dest    buffer for the resulting converted multibyte
+ *                      character string
+ * @param[in]   dmax    The size in bytes of dest
+ * @param[in]   src     wide string that will be converted to \c dest
+ * @param[in]   len     number of bytes to be stored in \c dest, not
+ *                      including the terminating null character.
  *
- * @pre \c retval and \c src shall not be a null pointer.
+ * @pre \c retvalp and \c src shall not be a null pointer.
  * @pre dmax and len shall not be greater than \c RSIZE_MAX_STR
  *      (unless \c dest is null).
  * @pre \c dmax shall not equal zero (unless \c dest is null).
@@ -102,11 +103,11 @@
  *          is not a null pointer and \c dmax is greater than zero and
  *          not greater than RSIZE_MAX_STR, then \c wcstombs_s nulls \c dest.
  *          Then the number of bytes excluding terminating zero that were,
- *          or would be written to \c dest, is stored in \c *retval.
+ *          or would be written to \c dest, is stored in \c *retvalp.
  * @retval  EOK        on successful conversion.
- * @retval  ESNULLP    when retval or src are a NULL pointer
+ * @retval  ESNULLP    when retvalp or src are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or size of dest, unless dest is NULL
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the src array and len is
@@ -117,9 +118,10 @@
  *    mbstowc_s()
  */
 EXPORT errno_t
-wcstombs_s (size_t *restrict retval,
-             char *restrict dest, rsize_t dmax,
-             const wchar_t *restrict src, rsize_t len)
+_wcstombs_s_chk (size_t *restrict retvalp,
+                 char *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict src, rsize_t len,
+                 const size_t destbos)
 {
     size_t l;
     errno_t rc;
@@ -127,40 +129,52 @@ wcstombs_s (size_t *restrict retval,
     mbstate_t st;
 #endif
 
-    if (unlikely(retval == NULL)) {
-        invoke_safe_str_constraint_handler("wcstombs_s: retval is null",
-                   NULL, ESNULLP);
+    CHK_SRC_NULL("wcstombs_s", retvalp)
+    *retvalp = 0;
+    if (dest) {
+        CHK_DMAX_ZERO("wcstombs_s")
+        if (destbos == BOS_UNKNOWN) {
+            if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
+                invoke_safe_str_constraint_handler("wcstombs_s" ": dmax/len exceeds max",
+                           (void*)dest, ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            }
+            BND_CHK_PTR_BOUNDS(dest, destsz);
+        } else {
+            if (unlikely(dmax > destbos || len > destbos)) {
+                handle_error(dest,destbos,"wcstombs_s" ": dmax/len exceeds dest",
+                             ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            }
+#ifdef HAVE_WARN_DMAX
+            if (unlikely(dmax != destbos)) {
+                handle_str_bos_chk_warn("wcstombs_s",(char*)dest,dmax,
+                                        destbos);
+                RETURN_ESLEWRNG;
+            }
+#endif
+        }
+    }
+    if (unlikely(src == NULL)) {
+        if (dest) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+            memset(dest, 0, dmax);
+#else
+            dest[0] = '\0';
+#endif
+        }
+        invoke_safe_str_constraint_handler("wcsrtombs_s: src is null",
+                   (void*)dest, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-
-    if (unlikely((dmax == 0) && dest)) {
-        invoke_safe_str_constraint_handler("wcstombs_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely((dmax > RSIZE_MAX_STR) && dest)) {
-        invoke_safe_str_constraint_handler("wcstombs_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
     if (unlikely(dest == (char*)src)) {
-        if (dest) {
-            handle_error(dest, dmax, "wcstombs_s: src is dest", ESOVRLP);
-        }
+        invoke_safe_str_constraint_handler("wcsrtombs_s: dest overlapping objects",
+                   (void*)dest, ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 
-    if (unlikely(src == NULL)) {
-        if (dest) {
-            handle_error(dest, dmax, "wcstombs_s: src is null", ESNULLP);
-        }
-        return RCNEGATE(ESNULLP);
-    }
-
     /* l is the strlen, excluding NULL */
-    l = *retval = wcstombs(dest, src, len);
+    l = *retvalp = wcstombs(dest, src, len);
 
     if (likely(l > 0 && (rsize_t)l < dmax)) {
         if (dest) {

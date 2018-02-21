@@ -64,6 +64,12 @@ int test_wcstombs_s (void)
     EXPECT_BOS("dest overflow")
     rc = wcstombs_s(&ind, dest, RSIZE_MAX_STR+1, cs, 1);
     ERR_MSVC(ESLEMAX, 0);
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = wcstombs_s(&ind, dest, LEN+1, cs, 1);
+    ERR_MSVC(ESLEMAX, 0);
+# endif
 #endif
 
     strcpy(dest, "abcdef");
@@ -73,8 +79,6 @@ int test_wcstombs_s (void)
     dest[0] = 'a'; dest[1] = '\0';
     rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 1);
     ERR_MSVC(ESOVRLP, 0);
-    EXPSTR(dest, "");
-    CHECK_SLACK(dest, LEN);
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty src") EXPECT_BOS("empty src or len")
