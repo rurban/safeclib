@@ -177,7 +177,11 @@
 
 /* mingw 3.4 */
 #ifndef EOVERFLOW
-#define EOVERFLOW 139
+# ifdef _WIN32
+#  define EOVERFLOW 132
+# else
+#  define EOVERFLOW 75
+# endif
 #endif
 
 /* for a proper asctime string with 26 digits, i.e. max 4 digit year.
