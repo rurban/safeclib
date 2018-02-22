@@ -87,7 +87,7 @@ int test_wcsrtombs_s (void)
     CLRPS;
 
     {
-        const wchar_t **srcp = (void*)&src;
+        const wchar_t **srcp = (const wchar_t **)(void*)&src;
         src[0] = L'\0';
         EXPECT_BOS("empty *srcp or len")
         rc = wcsrtombs_s(&ind, dest, LEN, srcp, 0, &ps);

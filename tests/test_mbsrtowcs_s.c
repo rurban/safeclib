@@ -68,7 +68,7 @@ int test_mbsrtowcs_s (void)
     CLRPS;
 
     {
-        const char **srcp = (void*)&src;
+        const char **srcp = (const char **)(void*)&src;
         *src = 0;
         /*EXPECT_BOS_TODO("empty *srcp or len")*/
         rc = mbsrtowcs_s(&ind, dest, LEN, srcp, 1, &ps);
@@ -99,7 +99,7 @@ int test_mbsrtowcs_s (void)
         cs = "abcdef";
         p1 = &cs;
         EXPECT_BOS_TODO("dest overlap")
-        rc = mbsrtowcs_s(&ind, p1, 1, &cs, 1, &ps);
+        rc = mbsrtowcs_s(&ind, (wchar_t*)p1, 1, &cs, 1, &ps);
         ERR_MSVC(ESOVRLP, ERANGE);
         CLRPS;
     }

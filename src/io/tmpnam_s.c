@@ -96,22 +96,14 @@ _tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
 {
     static int count = 0;
     char* result = NULL;
+    char* dp = (char*)dest;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("tmpnam_s: dest is null",
-                   NULL, ESNULLP);
-        return ESNULLP;
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("tmpnam_s: dmax is 0",
-                   (void*)dest, ESZEROL);
-        return ESZEROL;
-    }
+    CHK_DEST_NULL("tmpnam_s")
+    CHK_DMAX_ZERO("tmpnam_s")
 #if 0
-    if (unlikely(dmax < strnlen_s((char*)dest, dmax) + 3)) {
+    if (unlikely(dmax < strnlen_s(dp, dmax) + 3)) {
         invoke_safe_str_constraint_handler("tmpnam_s: dmax underflow < dest+3",
-                   (void*)dest, ESLEMAX);
+                   (void*)dest, ESLEMIN);
         return ESLEMIN;
     }
 #endif
@@ -138,7 +130,7 @@ _tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
     }
 
 #if !defined HAVE_C99 && defined HAVE_CXX
-    result = tmpnam(dest);
+    result = tmpnam(dp);
 #else
 # ifdef __clang
 #  pragma clang diagnostic push
@@ -148,7 +140,7 @@ _tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
 #  pragma GCC diagnostic warning "-Wdeprecated-declarations"
 # endif
 
-    result = tmpnam((char*)dest);
+    result = tmpnam(dp);
 
 # ifdef __clang
 #  pragma clang diagnostic pop

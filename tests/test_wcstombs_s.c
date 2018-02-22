@@ -76,7 +76,7 @@ int test_wcstombs_s (void)
 #endif
 
     {
-        const wchar_t *srcp = (void*)&dest;
+        const wchar_t *srcp = (const wchar_t *)(void*)dest;
         strcpy(dest, "abcdef");
         rc = wcstombs_s(&ind, dest, LEN, srcp, 3);
         ERR_MSVC(ESOVRLP, EILSEQ);
