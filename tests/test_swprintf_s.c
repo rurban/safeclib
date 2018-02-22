@@ -23,7 +23,7 @@ static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
 
 
-int test_swprintf_s (void)
+int main (void)
 {
     errno_t rc;
     size_t  len2;
@@ -213,9 +213,4 @@ int test_swprintf_s (void)
 /*--------------------------------------------------*/
 
     return (errs);
-}
-
-int main (void)
-{
-    return (test_swprintf_s());
 }

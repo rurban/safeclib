@@ -276,7 +276,7 @@ void *bnd_chk_malloc (size_t n)
 #define ERRPTR(n)                                 \
     if (rc != (n)) {                              \
         debug_printf("%s %u  Error rc=%p \n",     \
-                     __FUNCTION__, __LINE__,  rc);\
+                     __FUNCTION__, __LINE__,  (void*)rc); \
         errs++;                                   \
     }
 #define NEGERR(n)                                 \
@@ -343,10 +343,11 @@ void *bnd_chk_malloc (size_t n)
     debug_printf("\"");                            \
     { int i;                                       \
       for (i=0; (size_t)i<wcslen(str); i++) {      \
-          if ((str)[i] >= 32 && (str)[i] < 0x7f)   \
+          if ((str)[i] >= 32 && (str)[i] < 0x7f) { \
               debug_printf("%c", (str)[i]);        \
-          else                                     \
+          } else {                                 \
               debug_printf("\\x%x", (str)[i]);     \
+          }                                        \
     }}                                             \
     debug_printf("\"");
 #define WEXPSTR(str1, str2)                        \
@@ -362,13 +363,14 @@ void *bnd_chk_malloc (size_t n)
 #define CHECK_SLACK(dest,dmax)                  \
     {   int i;                                  \
         for (i=0; i<(int)(dmax); i++) {         \
-        int e = 0;                              \
-        if ((dest)[i] != '\0') {                \
+          int e = 0;                              \
+          if ((dest)[i] != '\0') {                \
             debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %c of %d\n", \
                 __FUNCTION__, __LINE__,  rc, i, (dest)[i], (int)(dmax)); \
             if (!e) { errs++; e++; }            \
+          } \
         } \
-    }}
+    }
 #else
 #define CHECK_SLACK(dest,dmax) \
     EXPNULL(dest)
@@ -378,13 +380,14 @@ void *bnd_chk_malloc (size_t n)
 #define WCHECK_SLACK(dest,dmax)                 \
     {   int i;                                  \
         for (i=0; i<(int)(dmax); i++) {         \
-        int e = 0;                              \
-        if ((dest)[i] != L'\0') {               \
+          int e = 0;                              \
+          if ((dest)[i] != L'\0') {               \
             debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %lc \n", \
                          __FUNCTION__, __LINE__,  rc, i, (dest)[i]); \
             if (!e) { errs++; e++; }            \
-        } \
-    }}
+          } \
+        }\
+    }
 #else
 #define WCHECK_SLACK(dest,dmax) \
     WEXPNULL(dest)
@@ -398,6 +401,13 @@ void *bnd_chk_malloc (size_t n)
     }
 #define INDCMP(cmp)                                \
     if ((int)ind cmp) {                            \
+        printf("%s %u  Error  ind=%d rc=%d \n",    \
+               __FUNCTION__, __LINE__, (int)ind, rc); \
+        errs++;                                    \
+    }
+/* unsigned size_t compare */
+#define INDCMP_(cmp)                               \
+    if (ind cmp) {                                 \
         printf("%s %u  Error  ind=%d rc=%d \n",    \
                __FUNCTION__, __LINE__, (int)ind, rc); \
         errs++;                                    \

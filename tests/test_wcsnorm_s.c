@@ -20,6 +20,7 @@
 #else
 EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
+int test_wcsnorm_s(void);
 
 /*#define PERL_TEST*/
 /* Must have the same Unicode version 10, since 5.27.3
@@ -275,7 +276,7 @@ int test_wcsnorm_s(void)
     ERR(EOK);
     wcscpy(str1, L"\x37e"); /* NFKC => 3b */
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP(!= (int)len);
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[len], LEN-len);
 
@@ -330,7 +331,7 @@ int test_wcsnorm_s(void)
     ERR(EOK);
     wcscpy(str1, L"(\x110b\x1169\x110c\x1165\x11ab)");
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[len], LEN-len);
 #else
@@ -346,7 +347,7 @@ int test_wcsnorm_s(void)
     ERR(EOK);
     wcscpy(str1, L"\x3b");
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[len], LEN-len);
 
@@ -356,7 +357,7 @@ int test_wcsnorm_s(void)
     wcscpy(str1, L"(\xc624\xc804)");
     WEXPSTR(str, str1);
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WCHECK_SLACK(&str[ind], LEN-ind);
 
     rc = wcsnorm_s(str, LEN, L"\xfdfb", WCSNORM_NFKD, &ind);
@@ -364,7 +365,7 @@ int test_wcsnorm_s(void)
     wcscpy(str1, L"\x062c\x0644\x0020\x062c\x0644\x0627\x0644\x0647");
     WEXPSTR(str, str1);
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WCHECK_SLACK(&str[ind], LEN-ind);
 
     rc = wcsnorm_s(str, LEN, L"\x2103", WCSNORM_NFKD, &ind);
@@ -372,7 +373,7 @@ int test_wcsnorm_s(void)
     wcscpy(str1, L"\xb0" L"\x43");
     WEXPSTR(str, str1);
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WCHECK_SLACK(&str[ind], LEN-ind);
 
     rc = wcsnorm_s(str, LEN, L"\x2150", WCSNORM_NFKD, &ind);
@@ -380,7 +381,7 @@ int test_wcsnorm_s(void)
     wcscpy(str1, L"\x31" L"\x2044" L"\x37");
     WEXPSTR(str, str1);
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WCHECK_SLACK(&str[ind], LEN-ind);
 
     rc = wcsnorm_s(str, LEN, L"\x3382", WCSNORM_NFKD, &ind);
@@ -388,7 +389,7 @@ int test_wcsnorm_s(void)
     wcscpy(str1, L"\x03bc" L"\x41");
     WEXPSTR(str, str1);
     len = wcslen(str1);
-    INDCMP(!= len);
+    INDCMP_(!= len);
     WCHECK_SLACK(&str[ind], LEN-ind);
 
 #endif
@@ -428,7 +429,6 @@ int test_wcsnorm_s(void)
         static wchar_t src[5];
         wchar_t *dest = &src[0];
         rsize_t dmax = 5;
-        rsize_t len;
         if (ind == 0xd800) {
             ind = 0xdfff;
             continue;

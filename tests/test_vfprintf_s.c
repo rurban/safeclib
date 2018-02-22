@@ -23,6 +23,8 @@
 static FILE* out;
 static char   str1[LEN];
 static char   str2[LEN];
+int vtfprintf_s (FILE *restrict stream, const char *restrict fmt, ...);
+int test_vfprintf_s (void);
 
 int vtfprintf_s (FILE *restrict stream, const char *restrict fmt, ...) {
     int rc;

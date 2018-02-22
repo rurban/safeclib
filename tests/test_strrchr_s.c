@@ -13,6 +13,7 @@
 #define LEN   ( 128 )
 
 static char   str[LEN];
+int test_strrchr_s (void);
 
 int test_strrchr_s (void)
 {

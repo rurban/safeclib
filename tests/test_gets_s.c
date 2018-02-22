@@ -16,6 +16,7 @@
 
 static FILE* out;
 static char  dest[LEN];
+int test_gets_s (void);
 
 int test_gets_s (void)
 {

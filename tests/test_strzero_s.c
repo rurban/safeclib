@@ -16,7 +16,7 @@ int main()
     errno_t rc;
     rsize_t max_len;
     char   str1[LEN];
-    uint32_t i;
+    uint32_t j;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -46,8 +46,8 @@ int main()
     max_len = 1;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != '\0') {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -60,8 +60,8 @@ int main()
     max_len = 2;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != '\0') {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -74,8 +74,8 @@ int main()
     max_len = 3;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != '\0') {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -88,8 +88,8 @@ int main()
     max_len = 4;
     rc = strzero_s(str1, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != '\0') {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -102,8 +102,8 @@ int main()
     strcpy(str1, "abc\0xxxxxxxxxxxxxxxxxxx");
     rc = strzero_s(str1, LEN);
     ERR(EOK)
-    for (i=0; i<3; i++) {
-       if (str1[i] != '\0') {
+    for (j=0; j<3; j++) {
+       if (str1[j] != '\0') {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;

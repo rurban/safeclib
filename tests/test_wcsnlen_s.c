@@ -12,6 +12,7 @@
 #define LEN   ( 128 )
 
 static wchar_t str1[LEN];
+int test_wcsnlen_s (void);
 
 #define EXPLEN(n) \
     if (len != n) { \
@@ -61,6 +62,8 @@ int test_wcsnlen_s (void)
     /* They allow more */
 # if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
     EXPLEN(0)
+# elif !(defined(TEST_MSVCRT) && defined(HAVE_WCSNLEN_S))
+    EXPLEN(0)
 # else
     if (max_len < INT_MAX) {
         EXPLEN(4)
@@ -68,6 +71,15 @@ int test_wcsnlen_s (void)
         EXPLEN(0)
     }
 # endif
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* overflow: sizeof = 5 */
+    /* PS: compile-time check once fixed by adding const'ness and all warnings */
+    EXPECT_BOS_TODO("dest overflow")
+    len = wcsnlen_s(L"test", 6);
+    EXPLEN(0)
+# endif
+
 #endif
 
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
@@ -78,11 +90,6 @@ int test_wcsnlen_s (void)
     /* no overflow: sizeof = 5 */
     len = wcsnlen_s (L"test", 5);
     EXPLEN(4)
-
-    /* overflow: sizeof = 5 */
-    EXPECT_BOS_TODO("dest overflow")
-    len = wcsnlen_s(L"test", 6);
-    EXPLEN(0)
 #endif
 
     return errs;
@@ -152,11 +159,7 @@ int test_wcsnlen_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_wcsnlen_s());
 }
-#endif

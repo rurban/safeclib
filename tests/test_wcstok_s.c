@@ -225,9 +225,10 @@ int main()
 
         xdebug_printf("%u  p2tok = wcstok_s(p2str, &len, str2, &p2str); \n", __LINE__);
         p2tok = wcstok_s(p2str, &len, str2, &p2str);
-        if (p2tok)
+        if (p2tok) {
             xdebug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
+        }
         ERRNO(EOK);
     }
 /*--------------------------------------------------*/
@@ -268,9 +269,10 @@ int main()
     /* len is zero at this point */
     xdebug_printf("%u  p2tok = wcstok_s(NULL, &len, str2, &p2str); \n", __LINE__);
     p2tok = wcstok_s(NULL, &len, str2, &p2str);
-    if (p2tok)
+    if (p2tok) {
         xdebug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                      p2tok, p2str, (int)len );
+    }
 
     ERRNO(EOK);
     xdebug_printf("\n");
@@ -293,9 +295,10 @@ int main()
         xdebug_printf("  p2tok = wcstok_s(p2str, &len, str2, &p2str); \n");
         p2tok = wcstok_s(p2str, &len, str2, &p2str);
         ERRNO(EOK);
-        if (p2tok)
+        if (p2tok) {
             xdebug_printf("%u  token -%ls-  -%ls- len=%d \n", __LINE__,
                          p2tok, p2str, (int)len );
+        }
     }
 /*--------------------------------------------------*/
 

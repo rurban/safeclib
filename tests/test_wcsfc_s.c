@@ -14,6 +14,7 @@
 #include <locale.h>
 
 #define LEN   ( 128 )
+int test_wcsfc_s(void);
 
 #define PERL_TEST
 /* Must have the same Unicode version 9.0, at least 5.26.
@@ -66,7 +67,7 @@ int test_wcsfc_s(void)
 
 /*--------------------------------------------------*/
 
-    rc = wcsfc_s(str, LEN, L"Name", &ind);
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"Name", &ind);
     ERR(EOK);
     WEXPSTR(str, L"name");
     INDCMP(!= 4);
@@ -74,7 +75,7 @@ int test_wcsfc_s(void)
 
 /*--------------------------------------------------*/
 
-    rc = wcsfc_s(str, LEN, L"name", &ind);
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"name", &ind);
     ERR(EOK)
     WEXPSTR(str, L"name");
     INDCMP(!= 4);
@@ -82,7 +83,7 @@ int test_wcsfc_s(void)
 
 /*--------------------------------------------------*/
 
-    rc = wcsfc_s(str, LEN, L"NOWISTHETIM3", NULL);
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"NOWISTHETIM3", NULL);
     ERR(EOK)
     WEXPSTR(str, L"nowisthetim3");
     len = wcslen(L"nowisthetim3");
@@ -91,67 +92,67 @@ int test_wcsfc_s(void)
 /*--------------------------------------------------*/
 
     /* towfc_s() */
-    rc = wcsfc_s(str, LEN, L"A" L"\x1fb3", &ind); /* casefold ᾳ => 2 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"A" L"\x1fb3", &ind); /* casefold ᾳ => 2 */
     ERR(EOK);
     wcscpy(str1, L"a" L"\x3b1" L"\x3b9"); /* but decomp: 1fb3 => 3b1 345 */
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[3], LEN-3);
 
-    rc = wcsfc_s(str, LEN, L"A" L"\x1fb7", &ind); /* casefold ᾷ => 3 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"A" L"\x1fb7", &ind); /* casefold ᾷ => 3 */
     ERR(EOK);
     wcscpy(str1, L"a" L"\x3b1" L"\x342" L"\x3b9");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[4], LEN-4);
 
-    rc = wcsfc_s(str, LEN, L"\x100", &ind); /* fc=>101, nfd=>61 304 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x100", &ind); /* fc=>101, nfd=>61 304 */
     ERR(EOK);
     wcscpy(str1, L"\x61" L"\x304");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x101", &ind); /* fc=101, nfd only */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x101", &ind); /* fc=101, nfd only */
     ERR(EOK);
     wcscpy(str1, L"\x61" L"\x304");   /* A w/ MACRON */
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x115", &ind); /* fc=115, nfd=65 306 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x115", &ind); /* fc=115, nfd=65 306 */
     ERR(EOK);
     wcscpy(str1, L"\x65" L"\x306");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\xdf", &ind); /* fc=73 73, !nfd */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\xdf", &ind); /* fc=73 73, !nfd */
     ERR(EOK);
     wcscpy(str1, L"\x73" L"\x73");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x385", &ind); /* fc=385, nfd=a8 301 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x385", &ind); /* fc=385, nfd=a8 301 */
     ERR(EOK);
     wcscpy(str1, L"\xa8" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x386", &ind); /* fc=3ac, nfd=3b1 301 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x386", &ind); /* fc=3ac, nfd=3b1 301 */
     ERR(EOK);
     wcscpy(str1, L"\x3b1" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x388", &ind); /* c=0, fc=3ad, nfd=3b5 301 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x388", &ind); /* c=0, fc=3ad, nfd=3b5 301 */
     ERR(EOK);
     wcscpy(str1, L"\x3b5" L"\x301");  /* 3ad: 249|TBL(2) */
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x1f71", &ind); /* !fc, nfd=3b1 301 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x1f71", &ind); /* !fc, nfd=3b1 301 */
     ERR(EOK);
     wcscpy(str1, L"\x3b1" L"\x301");
     WEXPSTR(str, str1);
     WCHECK_SLACK(&str[2], LEN-2);
 
-    rc = wcsfc_s(str, LEN, L"\x1f82", &ind); /*  fc=1f02 389 => l=4 */
+    rc = wcsfc_s(str, LEN, (wchar_t*)L"\x1f82", &ind); /*  fc=1f02 389 => l=4 */
     ERR(EOK);
     wcscpy(str1, L"\x3b1" L"\x313" L"\x300" L"\x3b9");
     WEXPSTR(str, str1);
@@ -364,7 +365,6 @@ int test_wcsfc_s(void)
         wchar_t *dest = &src[0];
         rsize_t dmax = 5;
         int c;
-        rsize_t len;
         if (wc == 0xd800) {
             wc = 0xdfff;
             continue;
@@ -393,11 +393,11 @@ int test_wcsfc_s(void)
         }
 #ifdef PERL_TEST
         {
-            int len = wcslen(str);
             int i;
+            len = wcslen(str);
             /* cross-check with perl */
             fprintf_s(pl, "$err += chk(\"\\N{U+%04X}\",\"\\N{U+%04X}", wc, str[0]);
-            for (i=1;i<len;i++) {
+            for (i=1;i<(int)len;i++) {
                 fprintf_s(pl, "\\N{U+%04X}", str[i]);
             }
             fprintf_s(pl, "\");\n");
@@ -425,7 +425,8 @@ int test_wcsfc_s(void)
         if (system(PERL " " TESTPL) < 0) {
             printf("Redo with perl (probably wrong Unicode version):\n");
             fflush(stdout);
-            system("perl " TESTPL) || printf("perl " TESTPL " failed\n");
+            if (!system("perl " TESTPL))
+                printf("perl " TESTPL " failed\n");
         }
     }
 #ifndef DEBUG

@@ -15,6 +15,7 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_strcasecmp_s (void);
 
 int test_strcasecmp_s (void)
 {

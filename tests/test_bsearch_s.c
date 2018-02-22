@@ -16,6 +16,7 @@
 # define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
+int test_bsearch_s (void);
 
 #define LEN   10
 /* needs to be sorted! */
@@ -51,7 +52,9 @@ comp (const void *ptr1, const void *ptr2, void *ctx)
 int test_bsearch_s (void)
 {
     int errs = 0;
+#ifndef HAVE_CT_BOS_OVR
     int have_wine = 0;
+#endif
     int i;
     struct items key;
     struct items *item;

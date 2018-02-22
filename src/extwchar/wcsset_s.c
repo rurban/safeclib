@@ -71,7 +71,7 @@
  *
  */
 EXPORT errno_t
-wcsset_s (wchar_t *restrict dest, rsize_t dmax, wchar_t value)
+wcsset_s (wchar_t *restrict dest, rsize_t dmax, const wchar_t value)
 {
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("wcsset_s: dest is null",

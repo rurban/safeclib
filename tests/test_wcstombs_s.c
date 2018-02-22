@@ -21,6 +21,7 @@
 
 static char      dest[LEN];
 static wchar_t   src[LEN];
+int test_wcstombs_s (void);
 
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
@@ -37,7 +38,9 @@ int test_wcstombs_s (void)
     const char* lang;
     const char* lc_cat;
     int errs = 0;
+#ifndef HAVE_CT_BOS_OVR
     int have_wine = 0;
+#endif
 
 /*--------------------------------------------------*/
 
@@ -72,13 +75,16 @@ int test_wcstombs_s (void)
 # endif
 #endif
 
-    strcpy(dest, "abcdef");
-    rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 3);
-    ERR_MSVC(ESOVRLP, EILSEQ);
+    {
+        const wchar_t *srcp = (void*)&dest;
+        strcpy(dest, "abcdef");
+        rc = wcstombs_s(&ind, dest, LEN, srcp, 3);
+        ERR_MSVC(ESOVRLP, EILSEQ);
 
-    dest[0] = 'a'; dest[1] = '\0';
-    rc = wcstombs_s(&ind, dest, LEN, (const wchar_t*)dest, 1);
-    ERR_MSVC(ESOVRLP, 0);
+        dest[0] = 'a'; dest[1] = '\0';
+        rc = wcstombs_s(&ind, dest, LEN, srcp, 1);
+        ERR_MSVC(ESOVRLP, 0);
+    }
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty src") EXPECT_BOS("empty src or len")

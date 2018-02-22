@@ -24,15 +24,18 @@
 static wchar_t   wstr1[LEN];
 static wchar_t   wstr2[LEN];
 static char      str3[LEN];
+void stuff_stdin(const wchar_t *dest);
+int test_wscanf_s (void);
+
 #define TMP   "tmpwscanf"
 static FILE* stream = NULL;
 
-void stuff_stdin(wchar_t *restrict dest)
+void stuff_stdin(const wchar_t *dest)
 {
     stream = fopen(TMP, "w+");
     fwprintf(stream, L"%ls\n", dest);
     fclose(stream);
-    freopen(TMP, "r", stdin);
+    stream = freopen(TMP, "r", stdin);
 }
 
 int test_wscanf_s (void)
@@ -127,9 +130,6 @@ int test_wscanf_s (void)
     len2 = wcslen(wstr2);
     len3 = wcslen(wstr1);
     if (len3 != len2) {
-#ifdef DEBUG
-        size_t len1 = wcslen(wstr1);
-#endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;

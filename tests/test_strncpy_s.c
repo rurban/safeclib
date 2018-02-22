@@ -28,6 +28,7 @@ EXTERN errno_t strncpy_s(char * restrict dest, rsize_t dmax,
 static char   str1[LEN];
 static char   str2[LEN];
 static char   dest[LEN];
+int test_strncpy_s (void);
 
 int test_strncpy_s (void)
 {

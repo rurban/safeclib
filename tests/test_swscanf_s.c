@@ -23,7 +23,7 @@ static wchar_t   wstr1[LEN];
 static wchar_t   wstr2[LEN];
 static char      str3[LEN];
 
-int test_swscanf_s (void)
+int main (void)
 {
     errno_t rc;
     int32_t  ind;
@@ -145,7 +145,7 @@ int test_swscanf_s (void)
     len3 = wcslen(wstr1);
     if (len3 != len2) {
 #ifdef DEBUG
-        size_t len1 = wcslen(wstr1);
+        len1 = wcslen(wstr1);
 #endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
@@ -207,9 +207,4 @@ int test_swscanf_s (void)
 /*--------------------------------------------------*/
 
     return (errs);
-}
-
-int main (void)
-{
-    return (test_swscanf_s());
 }

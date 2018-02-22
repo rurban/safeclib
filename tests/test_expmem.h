@@ -44,26 +44,30 @@
 # include <stdlib.h>
 #endif
 
+void _expmem(char* mem, int from, int to, int what, int size,
+             int *errp, const char *f, const unsigned l);
 #define EXPMEM(mem, from, to, what, size) \
     _expmem((char*)mem, (from), (to), (what), (size), &errs, __FUNCTION__, __LINE__)
 
 void _expmem(char* mem, int from, int to, int what, int size,
              int *errp, const char *f, const unsigned l) {
     int len = (to-from)*size;
-    char* mem2 = (char*)calloc(len, 1);
+    void* mem2 = calloc(len, 1);
     if (what != 0) {
         if (size == 1) {
             memset(mem2, what, len);
         } else if (size == 2) {
             int i;
+            uint16_t* mem16 = (uint16_t*)mem2;
             for (i=0; i<to-from; i++) {
-                ((uint16_t*)mem2)[i] = (uint16_t)what;
+                mem16[i] = (uint16_t)what;
             }
         }
         else if (size == 4) {
             int i;
+            uint32_t* mem32 = (uint32_t*)mem2;
             for (i=0; i<to-from; i++) {
-                ((uint32_t*)mem2)[i] = (uint32_t)what;
+                mem32[i] = (uint32_t)what;
             }
         }
         else {
@@ -72,7 +76,7 @@ void _expmem(char* mem, int from, int to, int what, int size,
     }
     if (memcmp(&mem[from*size], mem2, size) != 0) {
         debug_printf("%s %u  Expected \"%s\", got \"%s\" \n", 
-                     f, l, mem2, &mem[from*size]);
+                     f, l, (char*)mem2, (char*)&mem[from*size]);
         (*errp)++;
     }
     free(mem2);

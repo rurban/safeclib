@@ -21,6 +21,7 @@
 
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
+int test_wcscpy_s (void);
 
 int test_wcscpy_s (void)
 {
@@ -180,11 +181,7 @@ int test_wcscpy_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_wcscpy_s());
 }
-#endif

@@ -92,7 +92,7 @@
  */
 
 EXPORT errno_t
-_tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
+_tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
 {
     static int count = 0;
     char* result = NULL;
@@ -105,19 +105,19 @@ _tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
 
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("tmpnam_s: dmax is 0",
-                   dest, ESZEROL);
+                   (void*)dest, ESZEROL);
         return ESZEROL;
     }
 #if 0
-    if (unlikely(dmax < strnlen_s(dest, dmax) + 3)) {
+    if (unlikely(dmax < strnlen_s((char*)dest, dmax) + 3)) {
         invoke_safe_str_constraint_handler("tmpnam_s: dmax underflow < dest+3",
-                   dest, ESLEMAX);
+                   (void*)dest, ESLEMAX);
         return ESLEMIN;
     }
 #endif
     if (unlikely(dmax > RSIZE_MAX_STR || dmax > L_tmpnam_s)) {
         invoke_safe_str_constraint_handler("tmpnam_s: dmax exceeds max",
-                                           dest, ESLEMAX);
+                   (void*)dest, ESLEMAX);
         return ESLEMAX;
     }
     if (destbos == BOS_UNKNOWN) {
@@ -125,7 +125,7 @@ _tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_str_constraint_handler("tmpnam_s: dmax exceeds dest",
-                       dest, EOVERFLOW);
+                       (void*)dest, EOVERFLOW);
             return EOVERFLOW;
         }
     }
@@ -148,7 +148,7 @@ _tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
 #  pragma GCC diagnostic warning "-Wdeprecated-declarations"
 # endif
 
-    result = tmpnam(dest);
+    result = tmpnam((char*)dest);
 
 # ifdef __clang
 #  pragma clang diagnostic pop
@@ -161,26 +161,26 @@ _tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
         size_t len = strlen(result);
 
         if (unlikely(len > dmax)) {
-            *dest = '\0';
+            *(char*)dest = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds size",
-                                               dest, ESNOSPC);
+                           (void*)dest, ESNOSPC);
             return ESNOSPC;
         }
 
         if (unlikely(len > L_tmpnam_s)) {
-            *dest = '\0';
+            *(char*)dest = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds L_tmpnam_s",
-                                               dest, ESLEMAX);
+                           (void*)dest, ESLEMAX);
             return ESLEMAX;
         }
-        strncpy_s(dest, dmax, result, len);
+        strncpy_s((char*)dest, dmax, result, len);
 #ifdef SAFECLIB_STR_NULL_SLACK
-        memset_s(&dest[len], dmax, 0, dmax-len);
+        memset_s((void*)&dest[len], dmax, 0, dmax-len);
 #endif
         return EOK;
     } else {
         invoke_safe_str_constraint_handler("tmpnam_s: tmpnam() failed",
-                   dest, ESNOTFND);
+                   (void*)dest, ESNOTFND);
         return errno;
     }
 }

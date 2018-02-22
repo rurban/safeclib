@@ -3,7 +3,6 @@
  * File 'extstr/strtouppercase_s.c'
  * Lines executed:100.00% of 16
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -28,25 +27,28 @@ int main()
     ERR(ESNULLP)
 
     EXPECT_BOS("empty dest or dmax")
-    rc = strtouppercase_s("test", 0);
+    rc = strtouppercase_s(str, 0);
     ERR(ESZEROL)
 
-    /* XXX This is a TODO with other tests, here it works !?! */
     EXPECT_BOS("dest overflow")
-    rc = strtouppercase_s("test", 99999);
+    rc = strtouppercase_s(str, 99999);
     ERR(ESLEMAX)
 
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
-    rc = strtouppercase_s("", 2);
+    rc = strtouppercase_s(str, LEN+1);
     ERR(EOVERFLOW)
+
+    EXPECT_BOS_TODO("dest overflow")
+    rc = strtouppercase_s((char*)"", 2);
+    ERR(EOVERFLOW)
+
+    /* empty string: static */
+    rc = strtouppercase_s((char*)"", 1);
+    ERR(EOK)
 # endif
 #endif
 /*--------------------------------------------------*/
-
-    /* empty string: static */
-    rc = strtouppercase_s("", 1);
-    ERR(EOK)
 
     /* dynamic */
     *str = '\0';

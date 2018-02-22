@@ -23,6 +23,8 @@
 static FILE* out;
 static wchar_t   wstr[LEN];
 static char      str[LEN];
+int vtwprintf_s (FILE *restrict stream, const wchar_t *restrict fmt, ...);
+int test_vfwprintf_s (void);
 
 int vtwprintf_s (FILE *restrict stream,
                 const wchar_t *restrict fmt, ...) {

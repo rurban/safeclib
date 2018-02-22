@@ -18,6 +18,7 @@ extern void* memrchr(const void *, int, size_t);
 #define LEN   ( 128 )
 
 static uint8_t mem[LEN];
+int test_memrchr_s (void);
 
 int test_memrchr_s (void)
 {

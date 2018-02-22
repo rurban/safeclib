@@ -29,11 +29,11 @@ int main()
     ERR(ESNULLP)
 
     EXPECT_BOS("empty dest or dmax")
-    rc = strremovews_s("test", 0);
+    rc = strremovews_s((char*)"test", 0);
     ERR(ESZEROL)
 
-    EXPECT_BOS("dest overflow")
-    rc = strremovews_s("test", RSIZE_MAX_STR+1);
+    EXPECT_BOS_TODO("dest overflow")
+    rc = strremovews_s((char*)"test", RSIZE_MAX_STR+1);
     ERR(ESLEMAX);
 #endif
 /*--------------------------------------------------*/

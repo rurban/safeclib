@@ -206,8 +206,12 @@ SAFEC_TEST_MSVCRT = \
 
 # WARNING: tests won't build with -Werror right now. A few minor warnings
 #AM_CFLAGS   += -Werror
-
 AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
+if !HAVE_MINGW
+AM_CFLAGS += -pedantic
+endif
+AM_CFLAGS += $(WARN_CFLAGS)
+
 LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
 TESTS = $(SAFEC_BUILT_TESTS)

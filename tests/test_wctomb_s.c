@@ -21,6 +21,7 @@
 
 static char      dest[LEN];
 static wchar_t   src;
+int test_wctomb_s (void);
 
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>

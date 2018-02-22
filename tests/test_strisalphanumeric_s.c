@@ -26,6 +26,11 @@ int main()
     EXPECT_BOS("empty dest")
     rc = strisalphanumeric_s(NULL, len);
     ERR(false)
+
+    /* empty string */
+    EXPECT_BOS("dest overflow")
+    rc = strisalphanumeric_s("", LEN);
+    ERR(false)
 #endif
 /*--------------------------------------------------*/
 
@@ -38,11 +43,7 @@ int main()
     len = 99999;
     rc = strisalphanumeric_s("test", len);
     ERR(false)
-/*--------------------------------------------------*/
 
-    /* empty string */
-    rc = strisalphanumeric_s("", LEN);
-    ERR(false)
 /*--------------------------------------------------*/
 
     strcpy(str, "123456789");

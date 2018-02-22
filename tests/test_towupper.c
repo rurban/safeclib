@@ -21,6 +21,9 @@ EXTERN uint32_t _towupper(uint32_t wc);
 #endif
 
 EXTERN uint32_t _towcase(uint32_t wc, int lower);
+int check_casefolding(uint32_t lwr, uint32_t upr);
+int check(uint32_t wc, const char* status, const char* name);
+int test_towupper (void);
 
 #define GENCAT  "DerivedGeneralCategory.txt"
 #define CFOLD   "CaseFolding.txt"
@@ -104,7 +107,7 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
 }
 
 /* checks a lower case letter from DerivedGeneralCategory */
-int check(uint32_t wc, const char* status, const char* name) {
+int check(uint32_t wc, const char* _status, const char* _name) {
     int errs = 0;
     uint32_t upr;
     upr = wc < 128 ? (uint32_t)toupper(wc) : _towcase(wc, 0);
@@ -114,7 +117,7 @@ int check(uint32_t wc, const char* status, const char* name) {
         upr = (uint32_t)towupper(wc);
         if (upr != wc) {
             printf("%u Error towupper(U+%04X) = U+%04X status=%s, name=%s\n",
-                   __LINE__, wc, upr, status, name);
+                   __LINE__, wc, upr, _status, _name);
             errs++;
             /* else system libc agrees with us.
                which says nothing. system wctype functions are generally
@@ -125,7 +128,7 @@ int check(uint32_t wc, const char* status, const char* name) {
         upr = _towupper(wc);
         if (upr != wc) {
             printf("%u _towupper(U+%04X) = U+%04X status=%s, name=%s\n",
-                   __LINE__, wc, upr, status, name);
+                   __LINE__, wc, upr, _status, _name);
         }
 #endif
     }
@@ -146,8 +149,10 @@ int test_towupper (void)
     if (!f) {
         printf("downloading %s ...", GENCAT);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt")
-            ? printf(" done\n") : printf(" failed\n");
+        if (system("wget ftp://ftp.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt"))
+            printf(" done\n");
+        else
+            printf(" failed\n");
         f = fopen(GENCAT, "r");
     }
 
@@ -155,8 +160,10 @@ int test_towupper (void)
     if (!cf) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt")
-            ? printf(" done\n") : printf(" failed\n");
+        if (system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt"))
+            printf(" done\n");
+        else
+            printf(" failed\n");
         cf = fopen(CFOLD, "r");
     }
 
@@ -200,8 +207,9 @@ int test_towupper (void)
                 for (wc=from; wc<=to; wc++) {
                     check(wc, status, name);
                 }
-            } else
+            } else {
                 c = sscanf(code, "%X", &wc); /* upr */
+            }
             if (c) {
                 errs += check(wc, status, name);
             }
@@ -228,7 +236,8 @@ int test_towupper (void)
         if (system(PERL " " TESTPL)) {
             printf("Redo with perl (probably wrong Unicode version):\n");
             fflush(stdout);
-            system("perl " TESTPL) || printf("perl " TESTPL " failed\n");
+            if (!system("perl " TESTPL))
+                printf("perl " TESTPL " failed\n");
         }
     }
 #ifndef DEBUG

@@ -25,6 +25,7 @@ int main (void)
     return 0;
 }
 #else
+int test_qsort_s (void);
 
 #define LEN   10
 struct items {

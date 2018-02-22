@@ -20,6 +20,7 @@
 #define LEN   ( 4090 )
 
 static char   dest[LEN];
+int test_getenv_s (void);
 
 int test_getenv_s (void)
 {
@@ -28,7 +29,7 @@ int test_getenv_s (void)
     int ind;
     size_t len;
     char *str2;
-    char *name = "PATH";
+    const char *name = "PATH";
 
 /*--------------------------------------------------*/
 

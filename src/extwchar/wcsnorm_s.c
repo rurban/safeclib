@@ -493,8 +493,8 @@ static uint8_t _combin_class(uint32_t cp)
 
 /* create an unordered decomposed wide string */
 EXPORT errno_t
-wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
-                    rsize_t *restrict lenp, bool iscompat)
+wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+                    rsize_t *restrict lenp, const bool iscompat)
 {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
@@ -689,10 +689,10 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
  *
  * @param[out]  dest      wide string to hold the result
  * @param[in]   dmax      maximum result buffer size
- * @param[in]   p         wide string to be converted
- * @param[in]   len       length of p
+ * @param[in]   src       wide string to be converted
+ * @param[in]   len       length of src
  *
- * @pre  dest and p shall not be null pointers.
+ * @pre  dest and src shall not be null pointers.
  * @pre  dmax shall not equal zero and big enough for dest.
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
  *
@@ -709,14 +709,15 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
 
 /* reorder decomposed sequence to NFD */
 EXPORT errno_t
-wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
-                  rsize_t len)
+wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+                  const rsize_t len)
 {
     UNWIF_cc seq_ary[CC_SEQ_SIZE];
     UNWIF_cc* seq_ptr = (UNWIF_cc*)seq_ary; /* start with stack */
     UNWIF_cc* seq_ext = NULL;               /* heap when needed */
     size_t seq_max = CC_SEQ_SIZE;
     size_t cc_pos = 0;
+    wchar_t *p = (wchar_t *)src;
     const wchar_t *e = p + len;
     wchar_t *orig_dest = dest;
     rsize_t orig_dmax = dmax;
@@ -804,11 +805,11 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
  *
  * @param[out]  dest      wide string to hold the result
  * @param[in]   dmax      maximum result buffer size
- * @param[in]   p         wide string to be converted
+ * @param[in]   src       wide string to be converted
  * @param[out]  lenp      pointer to length of p and the result length.
  * @param[in]   iscontig  if true, the result will only be a fast FCC
  *
- * @pre  dest, p and lenp shall not be null pointers.
+ * @pre  dest, src and lenp shall not be null pointers.
  * @pre  dmax shall not equal zero and big enough for dest.
  * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
  *
@@ -826,9 +827,10 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 /* combine decomposed sequences to NFC. */
 /* iscontig = false; composeContiguous? FCC if true */
 EXPORT errno_t
-wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
-                  rsize_t *restrict lenp, bool iscontig)
+wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+                  rsize_t *restrict lenp, const bool iscontig)
 {
+    wchar_t *p = (wchar_t *)src;
     const wchar_t *e = p + *lenp;
     uint32_t  cpS = 0;           /* starter code point */
     bool    valid_cpS = false; /* if false, cpS isn't initialized yet */
@@ -1007,8 +1009,8 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict p,
 
 /* Normalize to NFC, NFD, FCC, FCD (fastest, used in wcsfc_s), and optionally NFKD, NFKC */
 EXPORT errno_t
-wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
-          wcsnorm_mode_t mode, rsize_t *restrict lenp)
+wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+          const wcsnorm_mode_t mode, rsize_t *restrict lenp)
 {
     wchar_t tmp_stack[128];
     wchar_t *tmp_ptr;

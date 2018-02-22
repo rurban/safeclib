@@ -14,6 +14,8 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+int vtprintf_s (const char *restrict fmt, ...);
+int test_vprintf_s (void);
 
 int vtprintf_s (const char *restrict fmt, ...) {
     int rc;
@@ -77,11 +79,7 @@ int test_vprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_vprintf_s());
 }
-#endif

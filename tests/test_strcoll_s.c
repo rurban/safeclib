@@ -51,6 +51,7 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_strcoll_s (void);
 
 int test_strcoll_s (void)
 {
@@ -91,16 +92,18 @@ int test_strcoll_s (void)
     rc = strcoll_s(str1, LEN+1, str2, &ind);
     ERR(EOVERFLOW)
     INDZERO()
-# endif
-#endif
 
-    /* no static overflow _chk yet with string literals (clang bug) */
-#ifdef HAVE___BUILTIN_OBJECT_SIZE
-    EXPECT_BOS_TODO("dest overflow")
+    /* no static overflow _chk with string literals (clang bug?),
+       without prototypes. fixed after adding.
+     */
+    EXPECT_BOS("dest overflow")
     rc = strcoll_s("xxxxxx", 20, "xxxxxxyy", &ind);
     ERR(EOVERFLOW)
     INDZERO()
+# endif
+
 #endif
+
 
 /*--------------------------------------------------*/
 

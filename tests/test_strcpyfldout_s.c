@@ -15,7 +15,7 @@
 int main()
 {
     errno_t rc;
-    uint32_t i;
+    uint32_t j;
     rsize_t len;
     rsize_t slen;
     int ind;
@@ -94,10 +94,10 @@ int main()
     rc = strcpyfldout_s(str1, len, str2, slen);
     ERR(EOK)
     /* str1 becomes null */
-    for (i=0; i<len; i++) {
-        if (str1[i] != '\0') {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                   __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
+    for (j=0; j<len; j++) {
+        if (str1[j] != '\0') {
+            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+                     __FUNCTION__, __LINE__, j, str1[j], j, str2[j],  rc );
             errs++;
         }
     }
@@ -111,10 +111,10 @@ int main()
     slen = 2;
     rc = strcpyfldout_s(str1, len, str2, slen);
     ERR(EOK)
-    for (i=0; i<len-1; i++) {
-        if (str1[i] != str2[i]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
+    for (j=0; j<len-1; j++) {
+        if (str1[j] != str2[j]) {
+            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+                     __FUNCTION__, __LINE__, j, str1[j], j, str2[j],  rc );
             errs++;
         }
     }
@@ -128,10 +128,10 @@ int main()
     slen = 3;
     rc = strcpyfldout_s(str1, len, str2, slen);
     ERR(EOK)
-    for (i=0; i<len-1; i++) {
-        if (str1[i] != str2[i]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
+    for (j=0; j<len-1; j++) {
+        if (str1[j] != str2[j]) {
+            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+                     __FUNCTION__, __LINE__, j, str1[j], j, str2[j],  rc );
             errs++;
         }
     }
@@ -176,10 +176,10 @@ int main()
 
     rc = strcpyfldout_s(str1, len, str2, slen);
     ERR(EOK)
-    for (i=0; i<len-1; i++) {
-        if (str1[i] != str2[i]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
+    for (j=0; j<len-1; j++) {
+        if (str1[j] != str2[j]) {
+            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+                     __FUNCTION__, __LINE__, j, str1[j], j, str2[j],  rc );
             errs++;
         }
     }
@@ -194,10 +194,10 @@ int main()
 
     rc = strcpyfldout_s(str1, len, str2, slen);
     ERR(EOK)
-    for (i=0; i<slen; i++) {
-        if (str1[i] != str2[i]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d  rc=%u \n",
-                     __FUNCTION__, __LINE__, i, str1[i], i, str2[i], rc);
+    for (j=0; j<slen; j++) {
+        if (str1[j] != str2[j]) {
+            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+                     __FUNCTION__, __LINE__, j, str1[j], j, str2[j],  rc );
             errs++;
         }
     }

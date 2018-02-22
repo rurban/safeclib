@@ -12,6 +12,19 @@
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 
+#define EXPLAST(x) \
+    if (rc != x) { \
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n", \
+                     __FUNCTION__, __LINE__, (void*)str1, (void*)last, rc); \
+        errs++; \
+    }
+#define NOLAST() \
+    if (last) { \
+        debug_printf("%s %u  Error  str1=%p  first=%p  rc=%d \n", \
+                     __FUNCTION__, __LINE__, (void*)str1, (void*)last, rc); \
+        errs++; \
+    }
+
 int main()
 {
     errno_t rc;
@@ -25,97 +38,53 @@ int main()
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
     rc = strlastchar_s(NULL, LEN, 'a', &last);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
-    if (last) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(ESNULLP)
+    NOLAST()
 /*--------------------------------------------------*/
 
     EXPECT_BOS("empty lastp")
     rc = strlastchar_s(str1, LEN, 'a', NULL);
-    if (rc != ESNULLP) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(ESNULLP)
 /*--------------------------------------------------*/
 
     EXPECT_BOS("empty dest or dmax")
     rc = strlastchar_s(str1, 0, 'a', &last);
-    if (rc != ESZEROL) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
-    if (last) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(ESZEROL)
+    NOLAST()
+
 /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
     rc = strlastchar_s(str1, RSIZE_MAX_STR+1, 'a', &last);
-    if (rc != ESLEMAX) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
-    if (last) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(ESLEMAX)
+    NOLAST()
+
 #endif
 /*--------------------------------------------------*/
 
     str1[0] = '\0';
 
     rc = strlastchar_s(str1, LEN, 'a', &last);
-    if (rc != ESNOTFND) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
-    if (last) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(ESNOTFND)
+    NOLAST()
+
 /*--------------------------------------------------*/
 
     strcpy (str1, "Keep it simple");
 
     rc = strlastchar_s(str1, 5, 'z', &last);
-    if (rc != ESNOTFND) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
-    if (last) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(ESNOTFND)
+    NOLAST()
+
 /*--------------------------------------------------*/
 
     strcpy (str1, "Keep it simplezz");
 
     rc = strlastchar_s(str1, LEN, 'z', &last);
-    if (rc != EOK) {
-        debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
-        errs++;
-    }
+    EXPLAST(EOK)
     if (last != &str1[15]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
+                     __FUNCTION__, __LINE__, (void*)str1, (void*)last, rc);
         errs++;
     }
 /*--------------------------------------------------*/
@@ -126,7 +95,7 @@ int main()
     ERR(EOK)
     if (last != &str1[0]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
+                     __FUNCTION__, __LINE__, (void*)str1, (void*)last, rc);
         errs++;
     }
 /*--------------------------------------------------*/
@@ -137,7 +106,7 @@ int main()
     ERR(EOK)
     if (last != &str1[2]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
+                     __FUNCTION__, __LINE__, (void*)str1, (void*)last, rc);
         errs++;
     }
 /*--------------------------------------------------*/
@@ -148,7 +117,7 @@ int main()
     ERR(EOK)
     if (last != &str1[8]) {
         debug_printf("%s %u  Error  str1=%p  last=%p  rc=%d \n",
-                     __FUNCTION__, __LINE__,  str1, last, rc);
+                     __FUNCTION__, __LINE__, (void*)str1, (void*)last, rc);
         errs++;
     }
 /*--------------------------------------------------*/

@@ -14,6 +14,7 @@
 #ifndef ELAST
 #define ELAST 100
 #endif
+int test_strerrorlen_s (void);
 
 int test_strerrorlen_s (void)
 {

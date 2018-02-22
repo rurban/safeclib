@@ -19,12 +19,12 @@
 #define LEN   ( 128 )
 
 static char   str1[LEN];
+int test_ctime_s (void);
 
 int test_ctime_s (void)
 {
     errno_t rc;
     int errs = 0;
-    int have_wine = 0;
     time_t timer;
 
     timer = time(NULL);
@@ -65,7 +65,7 @@ int test_ctime_s (void)
     timer = 0;
     rc = ctime_s(str1, LEN, &timer);
     if (use_msvcrt && rc == EINVAL)
-        have_wine = 1;
+        ;
     else {
         ERR(EOK);
     }
@@ -87,7 +87,7 @@ int test_ctime_s (void)
 #else
         tm->tm_year = 10000;
         timer = mktime(tm);
-        debug_printf("year 10000 = %ld\n", timer);
+        debug_printf("year 10000 = %ld\n", (long)timer);
         if (timer != -1)
             timer++;
 #endif
@@ -113,11 +113,7 @@ int test_ctime_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_ctime_s());
 }
-#endif

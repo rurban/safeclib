@@ -29,8 +29,11 @@ static wchar_t   wstr2[LEN];
 static char      str3[LEN];
 #define TMP   "tmpvfwscanf"
 static FILE* stream = NULL;
+static void win_stuff_stream(const wchar_t *dest);
+static int vtwscanf_s (FILE *stream, const wchar_t *restrict fmt, ...);
+static int test_vfwscanf_s (void);
 
-static void win_stuff_stream(wchar_t *restrict dest)
+static void win_stuff_stream(const wchar_t *dest)
 {
     if (!stream)
         stream = fopen(TMP, "w+");
@@ -51,12 +54,12 @@ static void win_stuff_stream(wchar_t *restrict dest)
     write(p[1], L"\n", sizeof(L"\n")-1);
 #endif
 
-static int vtwscanf_s (FILE *stream, const wchar_t *restrict fmt, ...)
+static int vtwscanf_s (FILE *restrict f, const wchar_t *restrict fmt, ...)
 {
     int rc;
     va_list ap;
     va_start(ap, fmt);
-    rc = vfwscanf_s(stream, fmt, ap);
+    rc = vfwscanf_s(f, fmt, ap);
     va_end(ap);
     return rc;
 }
@@ -69,7 +72,9 @@ static int test_vfwscanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
+#ifdef USE_PIPE
     int p[2];
+#endif
 
 /*--------------------------------------------------*/
 
@@ -162,7 +167,7 @@ static int test_vfwscanf_s (void)
     len3 = wcslen(wstr1);
     if (len3 != len2) {
 #ifdef DEBUG
-        size_t len1 = wcslen(wstr1);
+        len1 = wcslen(wstr1);
 #endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
@@ -230,7 +235,9 @@ static int test_vfwscanf_s (void)
        Reading from a closed stream is platform dependent.
      */
     fclose(stream);
+#ifdef USE_PIPE
     close(p[1]);
+#endif
 #if 0
     rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
 

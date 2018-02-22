@@ -14,6 +14,7 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_strstr_s (void);
 
 int test_strstr_s (void)
 {
@@ -68,8 +69,8 @@ int test_strstr_s (void)
     ERR(EOVERFLOW)
     SUBNULL()
 # endif    
-#endif
 
+#endif /* HAVE_CT_BOS_OVR */
 
 /*--------------------------------------------------*/
 

@@ -23,6 +23,7 @@
 #define MAX   RSIZE_MAX_MEM
 
 static uint8_t mem1[LEN];
+int test_memset_s (void);
 
 int test_memset_s (void)
 {

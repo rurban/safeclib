@@ -19,11 +19,12 @@
 #define LEN   ( 128 )
 
 static char   str1[LEN];
+int test_tmpnam_s (void);
 
 int test_tmpnam_s (void)
 {
     errno_t rc;
-    int len, ind;
+    int len;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -54,6 +55,7 @@ int test_tmpnam_s (void)
     ERR_MSVC(ESLEMAX, 0);
 
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* dest is now const so the literal check works */
     EXPECT_BOS("dest overflow")
     rc = tmpnam_s("aaa", 5);
     ERR(EOVERFLOW);
@@ -110,11 +112,7 @@ int test_tmpnam_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_tmpnam_s());
 }
-#endif

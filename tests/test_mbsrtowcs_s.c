@@ -21,7 +21,9 @@
 #define LEN   ( 128 )
 
 static wchar_t   dest[LEN];
+#ifndef HAVE_CT_BOS_OVR
 static char      src[LEN];
+#endif
 
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
@@ -32,6 +34,7 @@ static char      src[LEN];
 
 #define CLRPS \
   memset (&ps, '\0', sizeof (mbstate_t))
+int test_mbsrtowcs_s (void);
 
 int test_mbsrtowcs_s (void)
 {
@@ -64,12 +67,16 @@ int test_mbsrtowcs_s (void)
     ERR_MSVC(ESNULLP, EINVAL);
     CLRPS;
 
-    src[0] = '\0';
-    EXPECT_BOS("empty *srcp or len")
-    rc = mbsrtowcs_s(&ind, NULL, LEN, (const char**)&src, 0, &ps);
-    ERR_MSVC(ESNULLP, EINVAL);
-    CLRPS;
+    {
+        const char **srcp = (void*)&src;
+        *src = 0;
+        /*EXPECT_BOS_TODO("empty *srcp or len")*/
+        rc = mbsrtowcs_s(&ind, dest, LEN, srcp, 1, &ps);
+        ERR_MSVC(ESNULLP, EINVAL);
+        CLRPS;
+    }
 
+    cs = "a";
     EXPECT_BOS("empty dmax")
     rc = mbsrtowcs_s(&ind, dest, 0, &cs, 3, &ps);
     ERR_MSVC(ESZEROL, EINVAL);
@@ -87,17 +94,15 @@ int test_mbsrtowcs_s (void)
     CLRPS;
 #endif
 
-    cs = "abcdef"; src[0] = 'a';
-    EXPECT_BOS_TODO("dest overlap")
-    rc = mbsrtowcs_s(&ind, (wchar_t*)src, LEN/4, (const char**)&src, 3, &ps);
-    ERR_MSVC(ESOVRLP, ERANGE);
-    CLRPS;
-
-    dest[0] = 0x11081; /* ensure that *src != NULL */
-    EXPECT_BOS_TODO("dest overlap")
-    rc = mbsrtowcs_s(&ind, dest, LEN, (const char**)&dest, 1, &ps);
-    ERR_MSVC(ESOVRLP, ERANGE);
-    CLRPS;
+    {
+        void *p1;
+        cs = "abcdef";
+        p1 = &cs;
+        EXPECT_BOS_TODO("dest overlap")
+        rc = mbsrtowcs_s(&ind, p1, 1, &cs, 1, &ps);
+        ERR_MSVC(ESOVRLP, ERANGE);
+        CLRPS;
+    }
 #endif
 
 /*--------------------------------------------------*/

@@ -26,6 +26,7 @@
 
 static char      dest[LEN];
 static wchar_t   src[LEN];
+int test_wcsrtombs_s (void);
 
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
@@ -85,12 +86,15 @@ int test_wcsrtombs_s (void)
     ERR_MSVC(ESZEROL, have_wine?0:EINVAL);
     CLRPS;
 
-    src[0] = L'\0';
-    EXPECT_BOS("empty *srcp or len")
-    rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&src, 0, &ps);
-    ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
-    CHECK_SLACK(dest, LEN);
-    CLRPS;
+    {
+        const wchar_t **srcp = (void*)&src;
+        src[0] = L'\0';
+        EXPECT_BOS("empty *srcp or len")
+        rc = wcsrtombs_s(&ind, dest, LEN, srcp, 0, &ps);
+        ERR_MSVC(ESNULLP, have_wine?EINVAL:0);
+        CHECK_SLACK(dest, LEN);
+        CLRPS;
+    }
 
     /*
     EXPECT_BOS("empty buf or bufsize")
@@ -130,14 +134,6 @@ int test_wcsrtombs_s (void)
     ERR_MSVC(ESNOSPC,ERANGE);
     CHECK_SLACK(dest, 2);
     CLRPS;
-
-    dest[0] = 'a';
-    if (!use_msvcrt) { /* crashes with msvcrt in wctob/wcsrtombs */
-        EXPECT_BOS("dest overlap")
-        rc = wcsrtombs_s(&ind, dest, LEN, (const wchar_t**)&dest[0], 1, &ps);
-        ERR(ESOVRLP);
-        CLRPS;
-    }
 #endif
 
 /*--------------------------------------------------*/
@@ -200,7 +196,7 @@ int test_wcsrtombs_s (void)
       CHECK_SLACK(&dest[4], LEN-4);
       if (cs && !have_wine) { /* needs to be at the end */
         printf("%s %u  Error  ind=%d rc=%d %p\n",
-               __FUNCTION__, __LINE__, (int)ind, rc, cs);
+               __FUNCTION__, __LINE__, (int)ind, rc, (void*)cs);
         errs++;
       }
     } else {

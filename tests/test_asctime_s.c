@@ -19,12 +19,12 @@
 #define LEN   ( 128 )
 
 static char   str1[LEN];
+int test_asctime_s (void);
 
 int test_asctime_s (void)
 {
     errno_t rc;
     int errs = 0;
-    int have_wine = 1;
     int old;
     int ind;
     int len;
@@ -96,8 +96,6 @@ int test_asctime_s (void)
         old = tm->tm_mday;
         tm->tm_mday = 0;
         rc = asctime_s(str1, LEN, tm);
-        if (rc == 0)
-            have_wine = 1;
         tm->tm_mday = old;
     }
     TM_RANGE(mday, 1, 31);
@@ -142,11 +140,7 @@ int test_asctime_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_asctime_s());
 }
-#endif

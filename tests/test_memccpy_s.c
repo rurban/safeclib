@@ -17,6 +17,7 @@
 static char   str1[LEN];
 static char   str2[LEN];
 static char   dest[LEN];
+int test_memccpy_s (void);
 
 int test_memccpy_s (void)
 {
@@ -138,7 +139,7 @@ int test_memccpy_s (void)
          * fails also since valgrind 3.13, 3.12 was ok.
          */
         char *sub = (char*)memccpy(str1, str1, 0, nlen);
-        printf("memccpy overlap: %p <=> %p\n", sub, str1);
+        printf("memccpy overlap: %p <=> %p\n", (void*)sub, (void*)str1);
     }
 #endif
 
@@ -154,7 +155,7 @@ int test_memccpy_s (void)
     {
         /* overlap allowed, &str[1] returned */
         char *sub = (char*)memccpy(&str1[0], &str1[5], 0, nlen);
-        printf("memccpy overlap: %p <=> %p\n", sub, str1);
+        printf("memccpy overlap: %p <=> %p\n", (void*)sub, (void*)str1);
     }
 #endif
 

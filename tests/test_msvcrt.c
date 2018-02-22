@@ -33,10 +33,10 @@
 #include "test_msvcrt.h"
 
 bool use_msvcrt;
-void print_msvcrt(bool use_msvcrt) {
+void print_msvcrt(bool is_msvcrt) {
 #if defined(_WIN32) || defined(TEST_MSVCRT)
     printf("Using %s, %s...\n",
-        use_msvcrt ? "msvcrt" : "safec",
+        is_msvcrt ? "msvcrt" : "safec",
 # ifdef DISABLE_DLLIMPORT
         "static"
 # else
@@ -44,7 +44,7 @@ void print_msvcrt(bool use_msvcrt) {
 # endif
         );
 #else
-    (void)use_msvcrt;
+    (void)is_msvcrt;
 #endif
 }
 

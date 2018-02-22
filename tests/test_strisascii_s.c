@@ -31,15 +31,17 @@ int main()
     EXPECT_BOS("empty dest or dmax")
     rc = strisascii_s("test", 0);
     ERR(false)
-#endif
 
-    EXPECT_BOS_TODO("dest overflow")
+    /* Fixed compile-time BOS check by adding prototypes */
+    EXPECT_BOS("dest overflow")
     rc = strisascii_s("test", 99999);
     ERR(false)
 
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     rc = strisascii_s("", 2);
     ERR(false)
+#endif
+
 /*--------------------------------------------------*/
 
     strcpy (str, "ABCDEFGHIJK");

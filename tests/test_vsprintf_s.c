@@ -26,6 +26,9 @@ EXTERN int vsprintf_s(char * restrict dest, rsize_t dmax,
 
 static char   str1[LEN];
 static char   str2[LEN];
+static inline int vtprintf_s (char *restrict dest, rsize_t dmax,
+                              const char *restrict fmt, ...);
+int test_vsprintf_s (void);
 
 static inline int
 vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)

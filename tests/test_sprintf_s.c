@@ -26,6 +26,7 @@ EXTERN int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict f
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_sprintf_s (void);
 
 int test_sprintf_s (void)
 {

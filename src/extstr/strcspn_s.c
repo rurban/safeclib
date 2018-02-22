@@ -106,6 +106,13 @@ _strcspn_s_chk (const char *dest, rsize_t dmax,
                    NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen);
+    } else if (unlikely(slen > srcbos)) {
+        invoke_safe_mem_constraint_handler("memcpy_s: slen exceeds src",
+                   (void*)src, EOVERFLOW);
+        return (RCNEGATE(EOVERFLOW));
+    }
 
     while (*dest && dmax) {
 

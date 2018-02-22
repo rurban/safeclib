@@ -23,6 +23,7 @@
 #define LEN   ( 128 )
 
 static char   str1[LEN];
+int test_strerror_s (void);
 
 int test_strerror_s (void)
 {

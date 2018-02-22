@@ -25,13 +25,15 @@ static char   str1[LEN];
 static char   str2[LEN];
 #define TMP   "tmpscanf"
 static FILE*  stream = NULL;
+void stuff_stdin(const char *dest);
+int test_scanf_s (void);
 
-void stuff_stdin(char *restrict dest)
+void stuff_stdin(const char *dest)
 {
     stream = fopen(TMP, "w+");
     fprintf(stream, "%s\n", dest);
     fclose(stream);
-    freopen(TMP, "r", stdin);
+    stream = freopen(TMP, "r", stdin);
 }
 
 int test_scanf_s (void)
@@ -122,7 +124,7 @@ int test_scanf_s (void)
     len3 = strlen(str1);
     if (len3 != len2) {
 #ifdef DEBUG
-        size_t len1 = strlen(str1);
+        len1 = strlen(str1);
 #endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);

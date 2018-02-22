@@ -21,6 +21,8 @@
 
 static wchar_t   wstr[LEN];
 static char      str[LEN];
+int vtwprintf_s (const wchar_t *restrict fmt, ...);
+int test_vwprintf_s (void);
 
 int vtwprintf_s (const wchar_t *restrict fmt, ...) {
     int rc;

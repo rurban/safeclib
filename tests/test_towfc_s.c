@@ -22,6 +22,7 @@
 #define MAX_LEN 8
 EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
+int test_towfc_s (void);
 
 int test_towfc_s (void)
 {
@@ -96,7 +97,6 @@ int test_towfc_s (void)
             if (c) {
                 uint32_t m0;
                 int n, len;
-                wchar_t result[MAX_LEN];
                 uint32_t cp;
 
                 result[0] = L'\0';
@@ -214,11 +214,7 @@ int test_towfc_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_towfc_s());
 }
-#endif

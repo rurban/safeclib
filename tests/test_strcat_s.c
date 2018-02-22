@@ -26,6 +26,7 @@ strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_strcat_s (void);
 
 int test_strcat_s (void)
 {

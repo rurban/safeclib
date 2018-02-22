@@ -21,6 +21,7 @@
 
 static wchar_t   wstr[LEN];
 static char      str[LEN];
+int test_wprintf_s (void);
 
 int test_wprintf_s (void)
 {

@@ -109,7 +109,7 @@ ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error);
    and excluded by default. In most libc's it is deprecated. */
 #ifdef SAFECLIB_ENABLE_UNSAFE
 EXTERN errno_t
-_tmpnam_s_chk(char *dest, rsize_t dmax, const size_t destbos)
+_tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
     BOS_OVR2Z(dest, dmax);
 #define tmpnam_s(dest,dmax) _tmpnam_s_chk(dest,dmax,BOS(dest))
 #endif

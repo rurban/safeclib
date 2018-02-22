@@ -26,10 +26,13 @@ int vsnprintf_s(char *dest, size_t dmax, size_t maxcount,const char *fmt, va_lis
 
 static char   str1[LEN];
 static char   str2[LEN];
+static inline int vtprintf_s (char *restrict dest, rsize_t dmax,
+                              const char *restrict fmt, ...)
+    BOS_CHK(dest) BOS_NULL(fmt);
+int test_vsnprintf_s (void);
 
 static inline int
 vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
-    BOS_CHK(dest) BOS_NULL(fmt)
 {
     int rc;
     va_list ap;
@@ -50,8 +53,10 @@ int test_vsnprintf_s (void)
     int32_t  len2;
     int32_t  len3;
     int errs = 0;
+#ifndef HAVE_CT_BOS_OVR
     int have_wine = 0;
-
+#endif
+    
 /*--------------------------------------------------*/
 
     /* not testable

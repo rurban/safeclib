@@ -13,7 +13,7 @@
 
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
-
+int test_snwprintf_s (void);
 
 int test_snwprintf_s (void)
 {
@@ -233,7 +233,7 @@ int test_snwprintf_s (void)
 # endif
 
     /* not the fast stack-branch */
-    wstr3 = (wchar_t*)malloc(513);
+    wstr3 = (wchar_t*)malloc(513*sizeof(wchar_t));
     rc = snwprintf_s(wstr3, 513, L"%vls", str1);
 # if defined(__GLIBC__) || defined(BSD_OR_WINDOWS_LIKE)
     /* they print unknown formats verbatim */

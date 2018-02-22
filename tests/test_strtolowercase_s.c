@@ -27,11 +27,11 @@ int main()
     ERR(ESNULLP)
 
     EXPECT_BOS("empty dest or dmax")
-    rc = strtolowercase_s("test", 0);
+    rc = strtolowercase_s(str, 0);
     ERR(ESZEROL)
 
     EXPECT_BOS("dest overflow")
-    rc = strtolowercase_s("test", RSIZE_MAX_STR+1);
+    rc = strtolowercase_s(str, RSIZE_MAX_STR+1);
     ERR(ESLEMAX)
 #endif
 

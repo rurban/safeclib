@@ -3,7 +3,6 @@
  * File 'extstr/strljustify_s.c'
  * Lines executed:100.00% of 33
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -11,8 +10,9 @@
 #include "safe_str_lib.h"
 
 #define LEN   ( 128 )
+int test_strljustify_s(void);
 
-int main()
+int test_strljustify_s(void)
 {
     errno_t rc;
     int ind;
@@ -30,12 +30,22 @@ int main()
 
     len = 0;
     EXPECT_BOS("empty dest or dmax")
-    rc = strljustify_s("test", 0);
+    rc = strljustify_s(str, 0);
     ERR(ESZEROL)
 
     EXPECT_BOS("dest overflow")
-    rc = strljustify_s("test", RSIZE_MAX_STR+1);
+    rc = strljustify_s(str, RSIZE_MAX_STR+1);
     ERR(ESLEMAX);
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS_TODO("dest overflow")
+    rc = strljustify_s((char*)"test", 6);
+    ERR(EOVERFLOW);
+
+    EXPECT_BOS("dest overflow")
+    rc = strljustify_s(str, LEN+1);
+    ERR(EOVERFLOW);
+# endif
 #endif
 /*--------------------------------------------------*/
 
@@ -204,4 +214,9 @@ int main()
 /*--------------------------------------------------*/
 
     return (errs);
+}
+
+int main (void)
+{
+    return (test_strljustify_s());
 }

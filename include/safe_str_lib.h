@@ -756,7 +756,7 @@ vswscanf_s(const wchar_t *restrict buffer,
     BOS_NULL(buffer) BOS_FMT(fmt);
 
 EXTERN int
-wscanf_s( const wchar_t *restrict fmt, ...)
+wscanf_s (const wchar_t *restrict fmt, ...)
     BOS_FMT(fmt);
 
 EXTERN int
@@ -806,11 +806,11 @@ wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
     BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(diff);
 
 EXTERN errno_t
-wcsset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value)
+wcsset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value)
     BOSW_CHK(dest) VAL_OVR2(value, 0x10ffff);
 
 EXTERN errno_t
-wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, size_t n)
+wcsnset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value, size_t n)
     BOSW_CHK(dest) VAL_OVR2(value, 0x10ffff);
 
 EXTERN errno_t
@@ -829,7 +829,7 @@ wcsupr_s(wchar_t *restrict src, rsize_t slen)
 
 /* is a wide upper character which folds to multiple lowercase chars? how many */
 EXTERN int
-iswfc(uint32_t wc)
+iswfc(const uint32_t wc)
     VAL_OVR2(wc, 0x10ffff);
 
 /* full foldcase a single upper char to mult. lower chars */
@@ -840,26 +840,26 @@ towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
 /* full foldcase + NFD normalization */
 EXTERN errno_t
 wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
-        wchar_t *restrict src, rsize_t *restrict lenp)
+        const wchar_t *restrict src, rsize_t *restrict lenp)
     BOSW_CHK(dest) BOS_NULL(src);
 
 /* Normalize to FCD/pre-NFKD */
 EXTERN errno_t
 wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
-                    wchar_t *restrict src, rsize_t *restrict lenp,
-                    bool iscompat)
+                    const wchar_t *restrict src, rsize_t *restrict lenp,
+                    const bool iscompat)
     BOSW_CHK(dest) BOS_NULL(src);
 
 /* Normalize to NCD/NFKD */
 EXTERN errno_t
 wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax,
-                  wchar_t *restrict src, rsize_t len)
+                  const wchar_t *restrict src, const rsize_t len)
     BOSW_CHK(dest)  BOSW_OVR2(src, len);
 
 /* Normalize to NFC/NFKC */
 EXTERN errno_t
 wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax,
-                  wchar_t *restrict src, rsize_t *restrict lenp,
+                  const wchar_t *restrict src, rsize_t *restrict lenp,
                   bool iscontig)
     BOSW_CHK(dest) BOS_NULL(src) BOS_NULL(lenp);
 
@@ -876,8 +876,8 @@ typedef enum wcsnorm_mode wcsnorm_mode_t;
 /* Normalize to NFC (default), NFD nfc=0.
    experim. nfc>1: FCD, FCC */
 EXTERN errno_t
-wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
-          wcsnorm_mode_t mode, rsize_t *restrict lenp)
+wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+          const wcsnorm_mode_t mode, rsize_t *restrict lenp)
     BOSW_CHK(dest) BOS_NULL(src);
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */

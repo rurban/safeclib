@@ -26,6 +26,7 @@ EXTERN errno_t strncat_s(char * restrict dest, rsize_t dmax, const char * restri
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_strncat_s (void);
 
 int test_strncat_s (void)
 {

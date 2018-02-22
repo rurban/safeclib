@@ -14,6 +14,7 @@
 #include <ctype.h>
 
 EXTERN uint32_t _towcase(uint32_t wc, int lower);
+int test_towlower (void);
 
 #define CFOLD "CaseFolding.txt"
 
@@ -97,11 +98,7 @@ int test_towlower (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_towlower());
 }
-#endif

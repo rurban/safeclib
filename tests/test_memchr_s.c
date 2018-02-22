@@ -12,11 +12,14 @@
 #define LEN   ( 128 )
 
 static uint8_t mem[LEN];
+int test_memchr_s (void);
 
 int test_memchr_s (void)
 {
     errno_t rc;
+#ifndef HAVE_CT_BOS_OVR
     int  ch;
+#endif
     void *sub;
     void *std_sub;
 

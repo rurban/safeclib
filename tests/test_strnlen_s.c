@@ -15,6 +15,7 @@
 
 #define LEN   ( 128 )
 static char   str1[LEN];
+int test_strnlen_s (void);
 
 int test_strnlen_s (void)
 {

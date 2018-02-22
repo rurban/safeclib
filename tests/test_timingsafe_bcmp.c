@@ -13,6 +13,7 @@
 
 static uint8_t  mem1[LEN];
 static uint8_t  mem2[LEN];
+int test_timingsafe_bcmp (void);
 
 int test_timingsafe_bcmp (void)
 {

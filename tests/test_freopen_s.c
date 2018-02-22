@@ -18,6 +18,7 @@
 # define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
+int test_freopen_s (void);
 
 int test_freopen_s (void)
 {

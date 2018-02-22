@@ -111,8 +111,8 @@ _is_lt_accented(uint32_t wc) {
  */
 
 EXPORT errno_t
-wcsfc_s(wchar_t *restrict dest, rsize_t dmax, wchar_t *restrict src,
-        rsize_t *restrict lenp)
+wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
+        const wchar_t *restrict src, rsize_t *restrict lenp)
 {
     wchar_t *orig_dest;
     rsize_t orig_dmax;

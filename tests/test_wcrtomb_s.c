@@ -21,6 +21,7 @@
 
 static char      dest[LEN];
 static wchar_t   wc;
+int test_wcrtomb_s (void);
 
 #ifdef HAVE_WCHAR_H
 #include <stdlib.h>
@@ -40,7 +41,9 @@ int test_wcrtomb_s (void)
     const char* lc_cat;
     mbstate_t ps;
     int errs = 0;
+#ifndef HAVE_CT_BOS_OVR
     int have_wine = 0;
+#endif
 
 /*--------------------------------------------------*/
 
@@ -201,14 +204,17 @@ int test_wcrtomb_s (void)
     }
     CLRPS;
 
+#if 0
     /* illegal unicode. but some may allow it: 0xf0 0x9d 0x8c 0x81 */
     /* wc =  0x10000 + ((0xd834 & 0x3ff) << 10) + (0xdf01 & 0x3ff); */
     /* 32bit compilers reject the illegal wchar_t */
+    /* error: overflow in implicit constant conversion [-Werror=overflow] */
 #if SIZEOF_WCHAR_T > 2
     rc = wcrtomb_s(&ind, dest, LEN, 0xd834df01UL, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
     CHECK_SLACK(dest, LEN);
+#endif
 #endif
 
 /*--------------------------------------------------*/

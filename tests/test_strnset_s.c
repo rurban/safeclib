@@ -17,7 +17,7 @@ int main()
     rsize_t max_len = 5;
     char   str1[LEN];
     int value = 0;
-    uint32_t i;
+    uint32_t j;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -58,8 +58,8 @@ int main()
     max_len = 1;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != (char)value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -73,8 +73,8 @@ int main()
     max_len = 2;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != (char)value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -87,8 +87,8 @@ int main()
     max_len = 3;
     rc = strnset_s(str1, LEN, value, max_len); /* !! */
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-        if (str1[i] != (char)value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -102,8 +102,8 @@ int main()
     max_len = 4;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-        if (str1[i] != (char)value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -117,8 +117,8 @@ int main()
     max_len = 5;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<3; i++) {
-        if (str1[i] != (char)value) {
+    for (j=0; j<3; j++) {
+       if (str1[j] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -132,8 +132,8 @@ int main()
     max_len = LEN;
     rc = strnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<3; i++) {
-       if (str1[i] != (char)value) {
+    for (j=0; j<3; j++) {
+       if (str1[j] != (char)value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;

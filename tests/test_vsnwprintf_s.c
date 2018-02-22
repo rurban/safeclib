@@ -15,11 +15,14 @@
 
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
+static inline int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
+                               const wchar_t *restrict fmt, ...)
+    BOSW_CHK(dest) BOS_NULL(fmt);
+int test_vsnwprintf_s (void);
 
 static inline int
 vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
              const wchar_t *restrict fmt, ...)
-    BOSW_CHK(dest) BOS_NULL(fmt)
 {
     int rc;
     va_list ap;
@@ -236,11 +239,7 @@ int test_vsnwprintf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_vsnwprintf_s());
 }
-#endif

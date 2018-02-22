@@ -33,8 +33,10 @@ static wchar_t   wstr2[LEN];
 static char      str3[LEN];
 #define TMP   "tmpfwscanf"
 static FILE* stream = NULL;
+void win_stuff_stream(const wchar_t *dest);
+int test_fwscanf_s (void);
 
-void win_stuff_stream(wchar_t *restrict dest)
+void win_stuff_stream(const wchar_t *dest)
 {
     if (!stream)
         stream = fopen(TMP, "w+");
@@ -47,10 +49,12 @@ void win_stuff_stream(wchar_t *restrict dest)
 #ifndef USE_PIPE
 # define stuff_stream(s) \
     wcscpy(wstr1, s); \
+    len1 = wcslen(s); \
     win_stuff_stream(s);
 #else
 # define stuff_stream(s) \
     wcscpy(wstr1, s); \
+    len1 = wcslen(s); \
     write(p[1], (s), sizeof(s)-1); \
     write(p[1], L"\n", sizeof(L"\n")-1);
 #endif
@@ -63,7 +67,9 @@ int test_fwscanf_s (void)
     size_t  len2;
     size_t  len3;
     int errs = 0;
+#ifdef USE_PIPE
     int p[2];
+#endif
 
 /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
@@ -157,9 +163,6 @@ int test_fwscanf_s (void)
     len2 = wcslen(wstr2);
     len3 = wcslen(wstr1);
     if (len3 != len2) {
-#ifdef DEBUG
-        size_t len1 = wcslen(wstr1);
-#endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;

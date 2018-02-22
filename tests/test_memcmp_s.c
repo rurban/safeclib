@@ -13,6 +13,7 @@
 
 static uint8_t  mem1[LEN];
 static uint8_t  mem2[LEN];
+int test_memcmp_s (void);
 
 int test_memcmp_s (void)
 {

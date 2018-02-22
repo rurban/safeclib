@@ -3,7 +3,6 @@
  * File 'extstr/strisuppercase_s.c'
  * Lines executed:100.00% of 18
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -36,20 +35,22 @@ int main()
     rc = strisuppercase_s(str, 99999);
     ERR(false)
 
-#endif
-
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
-    EXPECT_BOS_TODO("dest overflow") /* but see test_strtouppercase_s.c */
+    EXPECT_BOS("dest overflow") /* but see test_strtouppercase_s.c */
     rc = strisuppercase_s("", 2);
     ERR(false)
-# endif
 
-    EXPECT_BOS_TODO("dest overflow") /* TODO clang literal string bug */
     /*printf("%u BOS: %d %d/%d %d - %lu/%lu\n", __LINE__, _BOS_KNOWN("test"), CONSTP("test"),
            _BOS_KNOWN(str), CONSTP(str),
            BOS("test"), BOS(str));*/
+    EXPECT_BOS("dest overflow") /* fixed by adding prototypes: clang literal string bug */
     rc = strisuppercase_s("test", 99999);
     ERR(false)
+# endif
+
+#endif
+
+
 
 /*--------------------------------------------------*/
 

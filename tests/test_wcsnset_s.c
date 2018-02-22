@@ -17,7 +17,7 @@ int main()
     rsize_t max_len;
     wchar_t str1[LEN];
     wchar_t value = L'\0';
-    uint32_t i;
+    uint32_t j;
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -46,8 +46,8 @@ int main()
     max_len = 1;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -61,8 +61,8 @@ int main()
     max_len = 2;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-       if (str1[i] != value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -75,8 +75,8 @@ int main()
     max_len = 3;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<max_len; i++) {
-        if (str1[i] != value) {
+    for (j=0; j<max_len; j++) {
+       if (str1[j] != value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;
@@ -90,8 +90,8 @@ int main()
     max_len = LEN;
     rc = wcsnset_s(str1, LEN, value, max_len);
     ERR(EOK)
-    for (i=0; i<3; i++) {
-       if (str1[i] != value) {
+    for (j=0; j<3; j++) {
+       if (str1[j] != value) {
            debug_printf("%s %u   Error rc=%u \n",
                      __FUNCTION__, __LINE__,  rc );
            errs++;

@@ -18,6 +18,8 @@ static wchar_t   wstr1[LEN];
 static wchar_t   wstr2[LEN];
 static char      str3[LEN];
 #define TMP   "tmpvwscanf"
+int vtwscanf_s (wchar_t *restrict dest, const wchar_t *restrict fmt, ...);
+int test_vwscanf_s (void);
 
 int vtwscanf_s (wchar_t *restrict dest, const wchar_t *restrict fmt, ...)
 {
@@ -116,9 +118,6 @@ int test_vwscanf_s (void)
     len2 = wcslen(wstr2);
     len3 = wcslen(wstr1);
     if (len3 != len2) {
-#ifdef DEBUG
-        size_t len1 = wcslen(wstr1);
-#endif
         debug_printf("%s %u lengths wrong: %d  %d  %d \n",
                      __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;
@@ -191,11 +190,7 @@ int test_vwscanf_s (void)
     return (errs);
 }
 
-#ifndef __KERNEL__
-/* simple hack to get this to work for both userspace and Linux kernel,
-   until a better solution can be created. */
 int main (void)
 {
     return (test_vwscanf_s());
 }
-#endif

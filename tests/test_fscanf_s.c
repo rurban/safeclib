@@ -25,8 +25,10 @@ static char   str1[LEN];
 static char   str2[LEN];
 #define TMP   "tmpscanf"
 static FILE*  stream = NULL;
+void stuff_stream(const char *dest);
+int test_fscanf_s (void);
 
-void stuff_stream(char *restrict dest)
+void stuff_stream(const char *dest)
 {
     if (!stream)
         stream = fopen(TMP, "w+");

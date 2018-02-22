@@ -11,6 +11,7 @@
 
 /* conflicting API */
 #ifndef HAVE_MINGW64
+int test_localtime_s (void);
 
 int test_localtime_s (void)
 {
@@ -47,14 +48,14 @@ int test_localtime_s (void)
     PTRNULL(tmptr);
 
     {
-        struct tm *tm = localtime(&timer);
-        memset(tm, 0, sizeof(struct tm));
+        struct tm *tmp = localtime(&timer);
+        memset(tmp, 0, sizeof(struct tm));
 #if SIZEOF_TIME_T < 8
         /* year 10000, ie 313392063599L would overflow on 32bit */
         timer = MAX_TIME_T_STR;
 #else
-        tm->tm_year = 10000;
-        timer = mktime(tm);
+        tmp->tm_year = 10000;
+        timer = mktime(tmp);
         debug_printf("year 10000 = %ld\n", timer);
         timer++;
 #endif

@@ -75,24 +75,12 @@ _strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
     uint32_t cnt_numbers;
     uint32_t cnt_specials;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("strispassword_s: "
-                   ": dest is null",
-                   NULL, ESNULLP);
-        return false;
-    }
+    CHK_DEST_DMAX_BOOL("strispassword_s", SAFE_STR_PASSWORD_MAX_LENGTH)
 
     if (unlikely(dmax < SAFE_STR_PASSWORD_MIN_LENGTH)) {
         invoke_safe_str_constraint_handler("strispassword_s: "
                    "dest is too short",
                    (void*)dest, ESLEMIN);
-        return (false);
-    }
-
-    if (unlikely(dmax > SAFE_STR_PASSWORD_MAX_LENGTH)) {
-        invoke_safe_str_constraint_handler("strispassword_s: "
-                   "dest exceeds max",
-                   (void*)dest, ESLEMAX);
         return (false);
     }
 

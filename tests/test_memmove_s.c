@@ -24,15 +24,13 @@ EXTERN errno_t memmove_s(void *dest, rsize_t dmax, const void *src, rsize_t slen
 
 static uint8_t  mem1[LEN+1];
 static uint8_t  mem2[LEN];
+int test_memmove_s (void);
 
 int test_memmove_s (void)
 {
     errno_t rc;
     uint32_t i;
     rsize_t len;
-#ifndef __KERNEL__
-    int ind;
-#endif
     int errs = 0;
 
 /*--------------------------------------------------*/

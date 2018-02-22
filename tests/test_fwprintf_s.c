@@ -16,6 +16,7 @@
 static FILE* out;
 static wchar_t   wstr[LEN];
 static char      str[LEN];
+int test_fwprintf_s (void);
 
 int test_fwprintf_s (void)
 {

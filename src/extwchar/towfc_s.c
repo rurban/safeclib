@@ -193,7 +193,7 @@ static const struct {
    iswfc only matches towfc_s, but not wcsfc_s which does NFD decomposition also.
 */
 int
-iswfc(uint32_t wc)
+iswfc(const uint32_t wc)
 {
     /* the slow variant would walk the 2 loops */
     if (likely((wc < 0xdf) ||

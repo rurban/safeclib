@@ -22,6 +22,7 @@
 
 static FILE* out;
 static char  str[LEN];
+int test_fprintf_s (void);
 
 int test_fprintf_s (void)
 {

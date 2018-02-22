@@ -11,6 +11,7 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+int test_snprintf_s (void);
 
 int test_snprintf_s (void)
 {

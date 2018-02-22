@@ -22,6 +22,7 @@
 static char   str1[LEN];
 static char   str2[LEN];
 static char   str3[LEN];
+int test_sscanf_s (void);
 
 int test_sscanf_s (void)
 {

@@ -22,6 +22,9 @@
 
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
+int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict fmt, ...);
+int test_vswprintf_s (void);
 
 int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
                 const wchar_t *restrict fmt, ...) {

@@ -29,6 +29,8 @@ static char      src[LEN];
 #include <langinfo.h>
 #endif
 
+int test_mbstowcs_s (void);
+
 int test_mbstowcs_s (void)
 {
     errno_t rc;
@@ -55,7 +57,7 @@ int test_mbstowcs_s (void)
 
     src[0] = '\0';
     EXPECT_BOS("empty src or len")
-    rc = mbstowcs_s(&ind, NULL, 0, (const char*)src, 0);
+    rc = mbstowcs_s(&ind, NULL, 0, cs, 0);
 #ifdef BSD_LIKE
     if (rc != 2) { /* BSD's return 2 */
         printf("%s %u wrong mbstowcs(NULL,\"\\0\"): %d\n",
@@ -84,10 +86,13 @@ int test_mbstowcs_s (void)
     rc = mbstowcs_s(&ind, dest, LEN, (const char*)dest, 1);
     ERR_MSVC(ESOVRLP, ERANGE);
 
-    cs = "abcdef";
-    EXPECT_BOS("dest overlap")
-    rc = mbstowcs_s(&ind, (wchar_t*)src, LEN/4, (const char*)src, 3);
-    ERR_MSVC(ESOVRLP, ERANGE);
+    {
+        void *p1;
+        cs = "abcdef";
+        EXPECT_BOS("dest overlap")
+        rc = mbstowcs_s(&ind, (wchar_t*)&p1, 1, (const char*)&p1, 1);
+        ERR_MSVC(ESOVRLP, ERANGE);
+    }
 #endif
 
 /*--------------------------------------------------*/
