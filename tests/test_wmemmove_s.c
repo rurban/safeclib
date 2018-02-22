@@ -18,7 +18,7 @@
 
 #define LEN   ( 1024 )
 
-int main()
+int main(void)
 {
     errno_t rc;
     uint32_t i;

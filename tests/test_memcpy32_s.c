@@ -12,7 +12,7 @@
 #define LEN   ( 1024 )
 #define MAX   ( LEN * 4 )
 
-int main()
+int main(void)
 {
     errno_t rc;
     uint32_t len;

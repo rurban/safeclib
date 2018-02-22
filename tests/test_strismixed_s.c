@@ -10,7 +10,7 @@
 
 #define LEN   ( 128 )
 
-int main()
+int main(void)
 {
     bool rc;
     rsize_t len;

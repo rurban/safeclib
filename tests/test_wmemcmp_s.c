@@ -13,7 +13,7 @@
 
 #define sgn(i) ((i)>0 ? 1 : ((i)<0 ? -1 : 0))
 
-int main()
+int main(void)
 {
     errno_t rc;
 

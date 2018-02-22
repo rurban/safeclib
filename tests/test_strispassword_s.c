@@ -11,7 +11,7 @@
 
 #define LEN 64
 
-int main()
+int main(void)
 {
     bool rc;
     uint32_t len;

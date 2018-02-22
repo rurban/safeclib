@@ -11,7 +11,7 @@
 
 #define LEN   ( 512 )
 
-int main()
+int main(void)
 {
     errno_t rc;
     uint32_t i;

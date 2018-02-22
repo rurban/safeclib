@@ -12,7 +12,7 @@
 
 #define LEN   ( 128 )
 
-int main()
+int main(void)
 {
     bool rc;
     uint32_t len;

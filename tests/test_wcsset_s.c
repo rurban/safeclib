@@ -10,8 +10,9 @@
 #include "safe_str_lib.h"
 
 #define LEN   ( 128 )
+int main(void);
 
-int main()
+int main(void)
 {
     errno_t rc;
     rsize_t max_len;

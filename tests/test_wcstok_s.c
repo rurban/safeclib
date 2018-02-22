@@ -25,7 +25,7 @@
 
 #define LEN   ( 128 )
 
-int main()
+int main(void)
 {
     wchar_t *p2str = NULL;
     wchar_t *p2tok;

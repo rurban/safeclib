@@ -25,7 +25,7 @@
         errs++; \
     }
 
-int main()
+int main(void)
 {
     errno_t rc;
 

@@ -13,7 +13,7 @@
 #define LEN   ( 128 )
 #define SHORT_LEN  ( 5 )
 
-int main()
+int main(void)
 {
     errno_t rc;
     rsize_t len;

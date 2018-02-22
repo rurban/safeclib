@@ -25,7 +25,7 @@
 
 #define LEN   ( 128 )
 
-int main()
+int main(void)
 {
     char *p2str;
     char *p2tok;

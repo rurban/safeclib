@@ -12,7 +12,7 @@
 #define MAX   ( 128 )
 #define LEN   ( 128 )
 
-int main()
+int main(void)
 {
     errno_t rc;
     uint32_t i;
