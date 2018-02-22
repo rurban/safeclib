@@ -23,15 +23,13 @@
 
 static uint8_t  mem1[LEN+2];
 static uint8_t  mem2[LEN+2];
+int test_memcpy_s (void);
 
 int test_memcpy_s (void)
 {
     errno_t rc;
     uint32_t i;
     rsize_t len;
-#ifndef __KERNEL__
-    int ind;
-#endif
     int errs = 0;
 
 /*--------------------------------------------------*/
@@ -71,10 +69,15 @@ int test_memcpy_s (void)
     EXPECT_BOS("dest overflow or empty")
     rc = memcpy_s(mem1, LEN+3, mem2, LEN);
     ERR(EOVERFLOW); /* limited to destbos */
+# ifdef _WIN32
+    debug_printf("errno EOVERFLOW=%s\n",strerror(EOVERFLOW));
+    debug_printf("errno 132=%s\n",strerror(132));
+# endif
     if (!use_msvcrt)
         EXPMEM(mem1, 0, LEN, 33, 1);
-    else
+    else {
         EXPMEM(mem1, 0, LEN, 44, 1);
+    }
 # endif
 
 /*--------------------------------------------------*/

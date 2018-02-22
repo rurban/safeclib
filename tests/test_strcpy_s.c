@@ -57,7 +57,7 @@ int test_strcpy_s (void)
 
 /*--------------------------------------------------*/
 
-# ifndef HAVE_ASAN /* With asan no BOS */
+# ifndef HAVE_ASAN /* With asan no BOS? */
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strcpy_s(str1, LEN+1, str2);
