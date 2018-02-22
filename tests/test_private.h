@@ -524,7 +524,7 @@ void *bnd_chk_malloc (size_t n)
 #define SKIP_APPVEYOR(str)
 #endif
 
-#ifndef __KERNEL__
+#if !(defined(SAFECLIB_DISABLE_WCHAR) || defined(__KERNEL__))
 
 #if SIZEOF_WCHAR_T > 2
 #define _ENC_W16(dest,dmax,cp) *(dest)++ = (cp); (dmax)--
@@ -539,6 +539,6 @@ void *bnd_chk_malloc (size_t n)
         (dmax)--; (dmax)--;                     \
     }
 #endif
-#endif /* __KERNEL__ */
+#endif /* __KERNEL__/WCHAR */
 
 #endif /* __TEST_PRIVATE_H__ */

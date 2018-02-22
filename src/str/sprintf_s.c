@@ -206,5 +206,8 @@ sprintf_s     (char * restrict dest, rsize_t dmax,
 
     return ret;
 }
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_sprintf_s_chk);
+#endif /* __KERNEL__ */
 
 #endif /* TEST_MSVCRT */

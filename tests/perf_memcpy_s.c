@@ -28,7 +28,8 @@
 
 uint8_t  mem1[LEN];
 uint8_t  mem2[LEN];
-
+static void timing_loop (uint32_t len, uint32_t loops);
+int main(void);
 
 static void timing_loop (uint32_t len, uint32_t loops)
 {
@@ -96,9 +97,7 @@ static void timing_loop (uint32_t len, uint32_t loops)
     return;
 }
 
-
-
-int main()
+int main(void)
 {
     uint32_t loops;
     rsize_t len;

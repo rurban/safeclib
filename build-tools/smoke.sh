@@ -117,9 +117,13 @@ make -s clean
 CC="clang-7 -DTEST_BOS" ./configure --enable-error-dmax && \
     make -s -j4 check-log && exit
 make -s clean
+git clean -dxf src tests
+autoreconf
 ./configure --disable-wchar && \
     make -s -j4 -f Makefile.kernel || exit
 make -s clean
+git clean -dxf src tests
+autoreconf
 ./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat && \
     $make -s -j4 gcov
 #    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \

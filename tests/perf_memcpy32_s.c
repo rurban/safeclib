@@ -27,6 +27,8 @@ uint32_t  mem2[LEN];
 
 uint16_t  mem3[LEN];
 uint16_t  mem4[LEN];
+static void timing_loop (uint32_t len, uint32_t loops);
+int main(void);
 
 
 static void timing_loop (uint32_t len, uint32_t loops)
@@ -99,12 +101,11 @@ static void timing_loop (uint32_t len, uint32_t loops)
 
 
 
-int main()
+int main(void)
 {
     uint32_t loops;
     rsize_t len;
 
-/*--------------------------------------------------*/
 /*--------------------------------------------------*/
 
     printf("\n\n");
