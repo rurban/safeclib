@@ -210,7 +210,8 @@ AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
 if !HAVE_MINGW
 AM_CFLAGS += -pedantic
 endif
-AM_CFLAGS += $(WARN_CFLAGS)
+# works mostly, but too strict with gnu extensions
+# AM_CFLAGS += $(WARN_CFLAGS)
 
 LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
