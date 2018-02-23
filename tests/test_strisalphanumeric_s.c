@@ -28,9 +28,20 @@ int main(void)
     ERR(false)
 
     /* empty string */
+    *str = 0;
     EXPECT_BOS("dest overflow")
-    rc = strisalphanumeric_s("", LEN);
+    rc = strisalphanumeric_s(str, RSIZE_MAX_STR+1);
     ERR(false)
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strisalphanumeric_s(str, LEN+1);
+    ERR(false)
+
+    EXPECT_BOS_TODO("dest overflow")
+    rc = strisalphanumeric_s("", 2);
+    ERR(false)
+# endif
 #endif
 /*--------------------------------------------------*/
 

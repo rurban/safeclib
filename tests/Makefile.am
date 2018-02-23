@@ -207,11 +207,17 @@ SAFEC_TEST_MSVCRT = \
 # WARNING: tests won't build with -Werror right now. A few minor warnings
 #AM_CFLAGS   += -Werror
 AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
-if !HAVE_MINGW
-AM_CFLAGS += -pedantic
-endif
+# pedantic complains about __FUNCTION__
+#if !HAVE_MINGW
+#AM_CFLAGS += -pedantic
+#endif
+AM_CFLAGS += -Wall -Wextra
 # works mostly, but too strict with gnu extensions
 # AM_CFLAGS += $(WARN_CFLAGS)
+# clang:
+if HAVE_ATTRIBUTE_DIAGNOSE_IF
+AM_CFLAGS += -Wno-gcc-compat
+endif
 
 LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 
@@ -232,6 +238,9 @@ tests-bos:
 #.c.obos:
 #	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 #	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $<
+#.obos.bos:
+#	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+#	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -o $@ $<
 else
 tests: $(TESTS)
 endif

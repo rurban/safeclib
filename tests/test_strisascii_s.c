@@ -32,14 +32,24 @@ int main(void)
     rc = strisascii_s("test", 0);
     ERR(false)
 
-    /* Fixed compile-time BOS check by adding prototypes */
     EXPECT_BOS("dest overflow")
+    rc = strisascii_s(str, RSIZE_MAX_STR+1);
+    ERR(false)
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = strisascii_s(str, LEN+1);
+    ERR(false)
+
+    /* literal strings once fixed via const decl. fragile */
+    EXPECT_BOS_TODO("dest overflow")
     rc = strisascii_s("test", 99999);
     ERR(false)
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strisascii_s("", 2);
     ERR(false)
+# endif
 #endif
 
 /*--------------------------------------------------*/

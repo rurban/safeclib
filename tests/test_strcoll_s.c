@@ -96,7 +96,7 @@ int test_strcoll_s (void)
     /* no static overflow _chk with string literals (clang bug?),
        without prototypes. fixed after adding.
      */
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strcoll_s("xxxxxx", 20, "xxxxxxyy", &ind);
     ERR(EOVERFLOW)
     INDZERO()

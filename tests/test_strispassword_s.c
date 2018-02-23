@@ -29,15 +29,20 @@ int main(void)
     rc = strispassword_s("Test4You&", 0);
     ERR(false)
 
+    strcpy(str, "Test4You&");
     EXPECT_BOS("dest overflow")
+    rc = strispassword_s(str, 999);
+    ERR(false)
+
+    EXPECT_BOS_TODO("dest overflow")
     rc = strispassword_s("Test4You&", 999);
     ERR(false)
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strispassword_s("", 9);
     ERR(false)
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS_TODO("dest overflow")
     rc = strispassword_s("", LEN);
     ERR(false)
 #endif

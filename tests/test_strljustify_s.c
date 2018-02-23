@@ -38,12 +38,12 @@ int test_strljustify_s(void)
     ERR(ESLEMAX);
 
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
-    EXPECT_BOS_TODO("dest overflow")
-    rc = strljustify_s((char*)"test", 6);
-    ERR(EOVERFLOW);
-
     EXPECT_BOS("dest overflow")
     rc = strljustify_s(str, LEN+1);
+    ERR(EOVERFLOW);
+
+    EXPECT_BOS("dest overflow") /* too fragile */
+    rc = strljustify_s((char*)"test", 6);
     ERR(EOVERFLOW);
 # endif
 #endif

@@ -16,7 +16,8 @@
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+/* on some systems L_tmpnam_s < 128 */
+#define LEN   ( 48 )
 
 static char   str1[LEN];
 int test_tmpnam_s (void);
@@ -55,10 +56,15 @@ int test_tmpnam_s (void)
     ERR_MSVC(ESLEMAX, 0);
 
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
-    /* dest is now const so the literal check works */
     EXPECT_BOS("dest overflow")
+    rc = tmpnam_s(str1, LEN+1);
+    /* on some systems L_tmpnam_s is very low */
+    ERR_MSVC(L_tmpnam_s > LEN ? EOVERFLOW : ESLEMAX, 0);
+
+    /* literal check worked once with const dest */
+    EXPECT_BOS_TODO("dest overflow")
     rc = tmpnam_s("aaa", 5);
-    ERR(EOVERFLOW);
+    ERR_MSVC(EOVERFLOW, 0);
 # endif
 /*--------------------------------------------------*/
 
@@ -76,6 +82,9 @@ int test_tmpnam_s (void)
     strcpy(str1, "qqweqeqeqeq");
 
     rc = tmpnam_s(str1, 2);
+#ifdef HAVE_CT_BOS_OVR
+    init_msvcrt(rc == ESNOSPC, &use_msvcrt);
+#endif
     ERR_MSVC(ESNOSPC, ERANGE);
     if (*str1 != '\0') {
         debug_printf("%s %u \"%s\"  Error rc=%d \n",
