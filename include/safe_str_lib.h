@@ -698,16 +698,19 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #define wcsncat_s(dest,dmax,src,slen)               \
     _wcsncat_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 
+EXTERN wchar_t *
+_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
+              const wchar_t *restrict delim, wchar_t **restrict ptr,
+              const size_t destbos)
+    BOS_ATTR(_BOS_NULL(dmaxp) || !*dmaxp, "empty dmax")
+    BOSW_OVR2_BUTNULL(dest, *dmaxp)
+    BOS_NULL(delim)
+    BOS_NULL(ptr);
 #if !(defined(_WIN32) && defined(HAVE_WCSTOK_S))
 /* they use a buggy:
 wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
-EXTERN wchar_t *
-wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmax,
-         const wchar_t *restrict delim, wchar_t **restrict ptr)
-    BOS_ATTR(_BOS_NULL(dmax) || !*dmax, "empty dmax")
-    BOSW_OVR2_BUTNULL(dest, *dmax)
-    BOS_NULL(delim)
-    BOS_NULL(ptr);
+#define wcstok_s(dest,dmaxp,delim,ptr) \
+    _wcstok_s_chk(dest,dmaxp,delim,ptr,BOS(dest))
 #endif
 
 EXTERN int
