@@ -22,7 +22,7 @@ matrix:
       os: osx
       env: CONF="--enable-unsafe"
     - compiler: clang
-      env: CONF="--disable-nullslack"
+      env: CONF="--disable-nullslack --enable-dmax-warn"
     - compiler: gcc
       env: CONF="--disable-extensions"
     - compiler: clang
@@ -32,8 +32,8 @@ matrix:
       addons:
         apt:
           packages:
-            - clang-3.8
-      env: CC="clang-3.8 -fsanitize=address" CONF="--enable-debug"
+            - libtext-diff-perl
+      env: CONF="--enable-debug CC='clang -fsanitize=address'"
   # clang++ does not allow c anymore. gcc is duplicate to cc
   #exclude:
   #  - env: XCC="gcc" TRAVIS_OS_NAME=osx
@@ -55,5 +55,6 @@ script:
   #  fi
   - ./configure $CONF
   - make -j4
+  - make -C tests tests
   - make check || (cat tests/test-suite.log; false)
   - if [ "$VG" = "1" ]; then make check-valgrind && make distcheck ; fi
