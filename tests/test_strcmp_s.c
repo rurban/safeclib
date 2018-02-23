@@ -3,7 +3,6 @@
  * File 'extstr/strcmp_s.c'
  * Lines executed:94.12% of 17
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -52,6 +51,7 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+static char   str4[4];
 int test_strcmp_s (void);
 
 int test_strcmp_s (void)
@@ -92,6 +92,12 @@ int test_strcmp_s (void)
     EXPECT_BOS("dest overflow")
     rc = strcmp_s(str1, LEN+1, str2, &ind);
     ERR(EOVERFLOW)
+    INDZERO()
+
+    strcpy (str1, "test");
+    memcpy (str4, "test", 4);
+    rc = strcmp_s(str1, LEN, str4, &ind);
+    ERR(ESUNTERM)
     INDZERO()
 # endif
 #endif

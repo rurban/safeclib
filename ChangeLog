@@ -8,6 +8,7 @@ Changes in v??032018 3.3.0
           you can bypass RSIZE_MAX_* limits. (GH #40)
           Renamed all functions to _*_chk, with the API as macros.
         - Added run-time libmpx pointer boundary checks if supported. (GH #49)
+        - Added strnatcmp_s, strnatcasecmp_s
         - Added --enable-warn-dmax option to warn when dmax != sizeof(dest),
           and fatalized via --enable-error-dmax.
         - Fixed wrong count max check in memmove32_s

@@ -62,6 +62,7 @@
  * @retval  0  when strings the same
  * @retval  <0 when dest less than src
  * @retval  EOK        when comparison is complete
+ * @retval  ESUNTERM   when dest or src is unterminated, or dmax is too small.
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
@@ -76,8 +77,9 @@
 EXPORT errno_t
 _strcmp_s_chk (const char *dest, rsize_t dmax,
                const char *src, int *resultp,
-               const size_t destbos)
+               const size_t destbos, size_t srcbos)
 {
+    size_t slen;
     CHK_SRC_NULL("strcmp_s", resultp)
     *resultp = 0;
 
@@ -91,6 +93,7 @@ _strcmp_s_chk (const char *dest, rsize_t dmax,
         CHK_DEST_OVR("strcmp_s", destbos)
     }
 
+    slen = 0;
     while (*dest && *src && dmax) {
 
         if (*dest != *src) {
@@ -100,8 +103,14 @@ _strcmp_s_chk (const char *dest, rsize_t dmax,
         dest++;
         src++;
         dmax--;
+        slen++;
+        /* sentinel srcbos -1 = ULONG_MAX */
+        if (unlikely(slen >= srcbos)) {
+            invoke_safe_str_constraint_handler("strcmp_s"
+                       ": src unterminated", (void*)src, ESUNTERM);
+            return RCNEGATE(ESUNTERM);
+        }
     }
-
     *resultp = *dest - *src;
     return RCNEGATE(EOK);
 }

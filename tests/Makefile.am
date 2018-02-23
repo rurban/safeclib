@@ -140,6 +140,7 @@ SAFEC_BUILT_TESTS += \
 	t_strlastdiff_s       \
 	t_strlastsame_s       \
 	t_strljustify_s       \
+	t_strnatcmp_s         \
 	t_strnterminate_s     \
 	t_strpbrk_s           \
 	t_strprefix_s         \
@@ -435,6 +436,7 @@ t_strlastchar_s_SOURCES       = test_strlastchar_s.c $(SAFEC_TEST_COMMON)
 t_strlastdiff_s_SOURCES       = test_strlastdiff_s.c $(SAFEC_TEST_COMMON)
 t_strlastsame_s_SOURCES       = test_strlastsame_s.c $(SAFEC_TEST_COMMON)
 t_strljustify_s_SOURCES       = test_strljustify_s.c $(SAFEC_TEST_COMMON)
+t_strnatcmp_s_SOURCES         = test_strnatcmp_s.c $(SAFEC_TEST_COMMON)
 t_strnterminate_s_SOURCES     = test_strnterminate_s.c $(SAFEC_TEST_COMMON)
 t_strpbrk_s_SOURCES           = test_strpbrk_s.c $(SAFEC_TEST_COMMON)
 t_strprefix_s_SOURCES         = test_strprefix_s.c $(SAFEC_TEST_COMMON)

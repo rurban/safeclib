@@ -276,17 +276,30 @@ strerrorlen_s(errno_t errnum);
 EXTERN errno_t
 _strcmp_s_chk(const char *dest, rsize_t dmax,
               const char *src, int *resultp,
-              const size_t destbos)
+              const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
-#define strcmp_s(dest,dmax,src,resultp) _strcmp_s_chk(dest,dmax,src,resultp,BOS(dest))
+#define strcmp_s(dest,dmax,src,resultp) \
+    _strcmp_s_chk(dest,dmax,src,resultp,BOS(dest),BOS(src))
 
-/* string compare */
+/* string compare case-insensitive */
 EXTERN errno_t
 _strcasecmp_s_chk(const char *dest, rsize_t dmax,
                   const char *src, int *resultp,
                   const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
-#define strcasecmp_s(dest,dmax,src,resultp) _strcasecmp_s_chk(dest,dmax,src,resultp,BOS(dest))
+#define strcasecmp_s(dest,dmax,src,resultp) \
+    _strcasecmp_s_chk(dest,dmax,src,resultp,BOS(dest))
+
+/* natural order string compare */
+EXTERN errno_t
+_strnatcmp_s_chk(const char *dest, rsize_t dmax,
+                 const char *src, const int fold_case, int *resultp,
+                 const size_t destbos, const size_t srcbos)
+    BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+#define strnatcmp_s(dest,dmax,src,resultp) \
+    _strnatcmp_s_chk(dest,dmax,src,0,resultp,BOS(dest),BOS(src))
+#define strnatcasecmp_s(dest,dmax,src,resultp) \
+    _strnatcasecmp_s_chk(dest,dmax,src,1,resultp,BOS(dest),BOS(src))
 
 /* find a substring - case insensitive */
 EXTERN errno_t

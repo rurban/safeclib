@@ -1,7 +1,7 @@
 # Makefile.am - Process with automake to produce Makefile.in
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
-# 2017, Reini Urban
+# 2017-2018 Reini Urban
 #
 # Copyright (c) 2012, 2013 Cisco Systems
 # Copyright (c) 2017 Reini Urban
@@ -113,6 +113,7 @@ EXT_STR_FILES = \
 	extstr/strlastdiff_s.c       \
 	extstr/strlastsame_s.c       \
 	extstr/strljustify_s.c       \
+	extstr/strnatcmp_s.c         \
 	extstr/strnterminate_s.c     \
 	extstr/strpbrk_s.c           \
 	extstr/strprefix_s.c         \
