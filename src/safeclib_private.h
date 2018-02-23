@@ -297,11 +297,13 @@ void abort(void) __attribute__((noreturn));
 # define CHK_DEST_OVR_CLEAR(func, destbos)                              \
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
-            if (dmax > RSIZE_MAX_STR)                                   \
+            if (dmax > RSIZE_MAX_STR) {                                 \
                 handle_error(dest, destbos, func ": dmax exceeds max", ESLEMAX); \
-            else                                                        \
+                return RCNEGATE(ESLEMAX);                               \
+            } else {                                                    \
                 return handle_str_bos_overload(func": dmax exceeds dest", \
                              (char*)dest,destbos);                      \
+            }                                                           \
         }                                                               \
         handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
         RETURN_ESLEWRNG;                                                \
@@ -317,7 +319,7 @@ void abort(void) __attribute__((noreturn));
                 invoke_safe_str_constraint_handler(func": dmax exceeds dest", \
                            (void*)dest, EOVERFLOW);                     \
                 return RCNEGATE(EOVERFLOW);                             \
-            }
+            }                                                           \
         }                                                               \
         handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
         RETURN_ESLEWRNG;                                                \
@@ -325,13 +327,29 @@ void abort(void) __attribute__((noreturn));
 # define CHK_DESTW_OVR(func,destsz,destbos)                             \
     if (unlikely(destsz != destbos)) {                                  \
         if (unlikely(destsz > destbos)) {                               \
-            if (dmax > RSIZE_MAX_STR) {                                 \
+            if (dmax > RSIZE_MAX_WSTR) {                                \
                 invoke_safe_str_constraint_handler(func": dmax exceeds max", \
                            (void*)dest, ESLEMAX);                       \
                 return RCNEGATE(ESLEMAX);                               \
             } else {                                                    \
                 invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
                        (void*)dest, EOVERFLOW);                         \
+                return RCNEGATE(EOVERFLOW);                             \
+            }                                                           \
+        }                                                               \
+        handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos/sizeof(wchar_t)); \
+        RETURN_ESLEWRNG;                                                \
+    }
+# define CHK_DESTW_OVR_CLEAR(func,destsz,destbos)                       \
+    if (unlikely(destsz != destbos)) {                                  \
+        if (unlikely(destsz > destbos)) {                               \
+            if (dmax > RSIZE_MAX_WSTR) {                               \
+                handle_error((char*)(void*)dest, destbos,               \
+                              func": dmax exceeds max", ESLEMAX);       \
+                return RCNEGATE(ESLEMAX);                               \
+            } else {                                                    \
+                handle_error((char*)(void*)dest, destbos,               \
+                              func": dmax exceeds dest", EOVERFLOW);    \
                 return RCNEGATE(EOVERFLOW);                             \
             }                                                           \
         }                                                               \
@@ -393,13 +411,25 @@ void abort(void) __attribute__((noreturn));
     }
 # define CHK_DESTW_OVR(func,destsz,destbos)                             \
     if (unlikely(destsz > destbos)) {                                   \
-        if (destsz > RSIZE_MAX_STR) {                                   \
+        if (dmax > RSIZE_MAX_WSTR) {                                    \
             invoke_safe_str_constraint_handler(func": dmax exceeds max", \
                            (void*)dest, ESLEMAX);                       \
             return RCNEGATE(ESLEMAX);                                   \
         } else {                                                        \
             invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
                                            (void*)dest, EOVERFLOW);     \
+            return RCNEGATE(EOVERFLOW);                                 \
+        }                                                               \
+    }
+# define CHK_DESTW_OVR_CLEAR(func,destsz,destbos)                       \
+    if (unlikely(destsz > destbos)) {                                   \
+        if (dmax > RSIZE_MAX_WSTR) {                                   \
+            handle_error((char*)(void*)dest, destbos,                   \
+                         func": dmax exceeds max", ESLEMAX);            \
+            return RCNEGATE(ESLEMAX);                                   \
+        } else {                                                        \
+            handle_error((char*)(void*)dest, destbos,                   \
+                         func": dmax exceeds dest", EOVERFLOW);         \
             return RCNEGATE(EOVERFLOW);                                 \
         }                                                               \
     }

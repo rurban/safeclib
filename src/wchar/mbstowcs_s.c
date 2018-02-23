@@ -137,7 +137,8 @@ _mbstowcs_s_chk(size_t *restrict retvalp,
         CHK_DMAX_ZERO("mbstowcs_s")
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                invoke_safe_str_constraint_handler("mbstowcs" ": dmax/len exceeds max",
+                invoke_safe_str_constraint_handler("mbstowcs"
+                           ": dmax/len exceeds max",
                            (void*)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
@@ -145,14 +146,14 @@ _mbstowcs_s_chk(size_t *restrict retvalp,
         } else {
             if (unlikely(destsz > destbos || len*sizeof(wchar_t) > destbos)) {
                 if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                    invoke_safe_str_constraint_handler("mbstowcs"
-                               ": dmax/len exceeds max",
-                               (void*)dest, ESLEMAX);
+                    handle_error((char*)(void*)dest, destbos, "mbstowcs"
+                                  ": dmax/len exceeds max",
+                                  ESLEMAX);
                     return RCNEGATE(ESLEMAX);
                 } else {
-                    invoke_safe_str_constraint_handler("mbstowcs"
-                               ": dmax/len exceeds destsz",
-                               (void*)dest, EOVERFLOW);
+                    handle_error((char*)(void*)dest, destbos, "mbstowcs"
+                                  ": dmax/len exceeds destsz",
+                                  EOVERFLOW);
                     return RCNEGATE(EOVERFLOW);
                 }
             }
@@ -178,7 +179,7 @@ _mbstowcs_s_chk(size_t *restrict retvalp,
     if (likely(*retvalp < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(&dest[*retvalp], 0, (dmax-*retvalp)*sizeof(wchar_t));
+            memset(&dest[*retvalp], 0, (dmax-*retvalp) * sizeof(wchar_t));
 #else
             dest[*retvalp] = L'\0';
 #endif
