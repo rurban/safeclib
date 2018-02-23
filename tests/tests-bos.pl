@@ -33,7 +33,7 @@ END {
     }
     if ($got ne $expected) {
       print "FAIL $t\n";
-      if (require Text::Diff) {
+      if ( eval { require Text::Diff } ) {
         import Text::Diff;
         print diff(\$expected, \$got, { STYLE => "MyUni" });
       } else {
