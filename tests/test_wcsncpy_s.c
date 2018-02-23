@@ -64,8 +64,20 @@ int test_wcsncpy_s (void)
     if (use_msvcrt) {
         WEXPSTR(str1, L"b");
     } else {
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+        WEXPSTR(str1, L""); /* cleared if known destsize */
+# else
         WEXPSTR(str1, L"untouched");
+# endif
     }
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str1, L"untouched");
+    EXPECT_BOS("dest overflow") 
+    rc = wcsncpy_s(str1, LEN+1, str2, nlen);
+    ERR_MSVC(EOVERFLOW, 0);
+    WEXPSTR(str1, L""); /* cleared on known destsize */
+# endif    
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     wcscpy(str2, L"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
@@ -77,6 +89,16 @@ int test_wcsncpy_s (void)
         WEXPSTR(str1, L"");
         WCHECK_SLACK(str1, 5);
     }
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("src overflow") 
+    rc = wcsncpy_s(str1, 5, str2, LEN+1);
+    ERR_MSVC(EOVERFLOW, ERANGE); /* not cleared with msvcrt */
+    if (!use_msvcrt) {
+        WEXPSTR(str1, L"");
+        WCHECK_SLACK(str1, 5);
+    }
+# endif
 #endif
 
 /*--------------------------------------------------*/

@@ -38,6 +38,7 @@
 #ifdef HAVE_WCHAR_H
 
 /**
+ * @def wcscpy_s(dest,dmax,src)
  * @brief
  *    The \c wcscpy_s function copies the string pointed to by \c src
  *    (including the terminating null character) into the array
@@ -60,7 +61,7 @@
  * @param[in]   src   pointer to the wide string that will be copied to dest
  *
  * @pre Neither dest nor src shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_WSTR.
+ * @pre dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than wcsnlen_s(src, dmax).
  * @pre Copying shall not take place between objects that overlap.
@@ -83,45 +84,23 @@
  */
 
 EXPORT errno_t
-wcscpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src)
+_wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
+               const wchar_t * restrict src, const size_t destbos)
 {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
+    const size_t destsz = dmax * sizeof(wchar_t);
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcscpy_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("wcscpy_s")
+    CHK_DMAX_ZERO("wcscpy_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcscpy_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        CHK_DESTW_OVR_CLEAR("wcscpy_s", destsz, destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcscpy_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcscpy_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    if (unlikely(src == NULL)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* null string to clear data */
-        if (dmax > 0x20)
-            memset(dest, 0, dmax*sizeof(wchar_t));
-        else {
-            while (dmax) { *dest = L'\0'; dmax--; dest++; }
-        }
-#else
-        *dest = '\0';
-#endif
-        invoke_safe_str_constraint_handler("wcscpy_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
+    CHK_SRCW_NULL_CLEAR("wcscpy_s", src)
 
     if (unlikely(dest == src)) {
         return RCNEGATE(EOK);

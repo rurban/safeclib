@@ -61,7 +61,19 @@ int test_wcscpy_s (void)
     EXPECT_BOS("dest overflow") 
     rc = wcscpy_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    WEXPSTR(str1, L""); /* cleared if known destsize */
+# else
     WEXPSTR(str1, L"untouched");
+# endif
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str1, L"untouched");
+    EXPECT_BOS("dest overflow") 
+    rc = wcscpy_s(str1, LEN+1, str2);
+    ERR_MSVC(EOVERFLOW, 0);
+    WEXPSTR(str1, L""); /* cleared if known destsize */
+# endif
 #endif
 
 /*--------------------------------------------------*/

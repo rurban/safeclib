@@ -40,8 +40,9 @@
 #else
 
 /**
+ * @def wcsncpy_s(dest,dmax,src,slen)
  * @brief
- *    The wcsncpy_s function copies the wide string pointed to by src
+ *    The \b wcsncpy_s function copies the wide string pointed to by src
  *    (including the terminating null character) into the wide string
  *    pointed to by dest.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
@@ -82,47 +83,49 @@
  *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when buffers overlap
- * @retval  ESNOSPC    when dest < src
+ * @retval  ESNOSPC    when src > dest
  *
  * @see
  *    wcscpy_s(), strncpy_s(), wmemcpy_s(), wmemmove_s()
  */
 
 EXPORT errno_t
-wcsncpy_s (wchar_t * restrict dest, rsize_t dmax, const wchar_t * restrict src, rsize_t slen)
+_wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
+                const wchar_t * restrict src, rsize_t slen,
+                const size_t destbos, const size_t srcbos)
 {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
+    const size_t destsz = dmax * sizeof(wchar_t);
 
     if (unlikely(slen == 0 && dest && dmax)) {
         *dest = L'\0';
         return EOK;
     }
-    else if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsncpy_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("wcsncpy_s")
+    CHK_DMAX_ZERO("wcsncpy_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcsncpy_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        CHK_DESTW_OVR_CLEAR("wcsncpy_s", destsz, destbos)
     }
-    else if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsncpy_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-    else if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsncpy_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-    else if (unlikely(src == NULL)) {
-        handle_werror(dest, dmax, "wcsncpy_s: slen is null",
-                      ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    else if (unlikely(slen > RSIZE_MAX_WSTR)) {
+    CHK_SRCW_NULL_CLEAR("wcsncpy_s", src)
+    if (unlikely(slen > RSIZE_MAX_WSTR)) {
         handle_werror(dest, wcslen(dest), "wcsncpy_s: slen exceeds max",
                       ESLEMAX);
         return RCNEGATE(ESLEMAX);
+    }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen * sizeof(wchar_t));
+    } else {
+        if (unlikely(slen * sizeof(wchar_t) > srcbos)) {
+            handle_werror(dest, wcsnlen_s(dest, dmax),
+                          "wcsncpy_s: slen exceeds src",
+                          EOVERFLOW);
+            return RCNEGATE(EOVERFLOW);
+        }
     }
 
     /* hold base in case src was not copied */

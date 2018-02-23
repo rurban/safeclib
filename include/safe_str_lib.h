@@ -666,14 +666,19 @@ _wcsnlen_s_chk(const wchar_t *dest, size_t dmax, const size_t destbos)
     _wcsnlen_s_chk(dest,dmax,BOS(dest))
 
 EXTERN errno_t
-wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src)
+_wcscpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
+              const wchar_t *restrict src, const size_t destbos)
     BOSW_CHK(dest) BOS_NULL(src);
+#define wcscpy_s(dest,dmax,src)                 \
+    _wcscpy_s_chk(dest,dmax,src,BOS(dest))
 
 EXTERN errno_t
-wcsncpy_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t slen)
+_wcsncpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t slen,
+               const size_t destbos, const size_t srcbos)
     BOSW_CHK(dest) BOSW_OVR2(src, slen);
+#define wcsncpy_s(dest,dmax,src,slen)               \
+    _wcsncpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 
 EXTERN errno_t
 wcscat_s(wchar_t *restrict dest, rsize_t dmax,
