@@ -42,7 +42,7 @@ int test_strljustify_s(void)
     rc = strljustify_s(str, LEN+1);
     ERR(EOVERFLOW);
 
-    EXPECT_BOS("dest overflow") /* too fragile */
+    EXPECT_BOS("dest overflow") /* flapping on travis */
     rc = strljustify_s((char*)"test", 6);
     ERR(EOVERFLOW);
 # endif

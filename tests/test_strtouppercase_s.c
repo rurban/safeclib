@@ -39,7 +39,7 @@ int main(void)
     rc = strtouppercase_s(str, LEN+1);
     ERR(EOVERFLOW)
 
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS("dest overflow") /* flapping */
     rc = strtouppercase_s((char*)"", 2);
     ERR(EOVERFLOW)
 

@@ -33,7 +33,7 @@ int main(void)
     ERR(ESZEROL)
 
     EXPECT_BOS("dest overflow")
-    rc = strremovews_s((char*)"test", RSIZE_MAX_STR+1);
+    rc = strremovews_s(str, RSIZE_MAX_STR+1);
     ERR(ESLEMAX);
 #endif
 /*--------------------------------------------------*/
