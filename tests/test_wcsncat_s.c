@@ -89,6 +89,14 @@ int test_wcsncat_s (void)
         WEXPSTR(str1, L"ab");
     }
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str1, L"untouched");
+    EXPECT_BOS("dest overflow") 
+    rc = wcsncat_s(str1, LEN+1, str2, 5);
+    ERR_MSVC(EOVERFLOW, 0);
+    WEXPSTR(str1, L"untouched");
+# endif
+
     wcscpy(str1, L"a");
     EXPECT_BOS("src overflow or empty")
     rc = wcsncat_s(str1, LEN, str2, (RSIZE_MAX_WSTR+1));
@@ -105,6 +113,19 @@ int test_wcsncat_s (void)
     ERR_MSVC(ESNULLP, EINVAL);
     if (!have_wine)
         WCHECK_SLACK(str1, LEN);
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str1, L"ab");
+    EXPECT_BOS("src overflow or empty")
+    rc = wcsncat_s(str1, LEN, str2, LEN+1);
+    ERR_MSVC(EOVERFLOW, 0);
+    if (!use_msvcrt) {
+        WEXPNULL(str1);
+    } else {
+        WEXPSTR(str1, L"ab");
+    }
+# endif
+
 #endif
 
 /*--------------------------------------------------*/

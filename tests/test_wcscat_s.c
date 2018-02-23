@@ -3,7 +3,6 @@
  * File 'wchar/wcscat_s.c'
  * Lines executed:95.08% of 61
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -54,6 +53,15 @@ int test_wcscat_s (void)
     rc = wcscat_s(str1, (RSIZE_MAX_STR+1), str2);
     ERR_MSVC(ESLEMAX, 0);
     WEXPSTR(str1, L"untouched");
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str1, L"untouched");
+    EXPECT_BOS("dest overflow") 
+    rc = wcscat_s(str1, LEN+1, str2);
+    ERR_MSVC(EOVERFLOW, 0);
+    WEXPSTR(str1, L"untouched");
+# endif
+
 #endif
 
 /*--------------------------------------------------*/

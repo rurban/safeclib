@@ -39,8 +39,9 @@
 #else
 
 /**
+ * @def wcsncat_s(dest,dmax,src,slen)
  * @brief
- *    The wcsncat_s function appends a copy of the wide string pointed
+ *    The \b wcsncat_s function appends a copy of the wide string pointed
  *    to by src (including the terminating null wide character) to the
  *    end of the wide string pointed to by dest. The initial character
  *    from src overwrites the null wide character at the end of dest.
@@ -69,11 +70,11 @@
  *                    to string dest
  * @param[in]   slen  maximum wide characters to append
  *
- * @pre  Neither dest nor src shall be a null pointer
- * @pre  dmax shall not equal zero
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR
+ * @pre  Neither dest nor src shall be a null pointer.
+ * @pre  dmax shall not equal zero.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
  * @pre  dmax shall be greater than wcsnlen_s(src,slen).
- * @pre  Copying shall not take place between objects that overlap
+ * @pre  Copying shall not take place between objects that overlap.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
  *
@@ -102,42 +103,45 @@
  */
 
 EXPORT errno_t
-wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t slen)
+_wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t slen,
+               const size_t destbos, const size_t srcbos)
 {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
+    const size_t destsz = dmax * sizeof(wchar_t);
 
     if (unlikely(slen == 0 && !dest && !dmax)) { /* silent ok as in the msvcrt */
         return EOK;
     }
-    else if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsncat_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("wcsncat_s")
+    CHK_DMAX_ZERO("wcsncat_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcsncat_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        CHK_DESTW_OVR("wcsncat_s", destsz, destbos)
     }
-    else if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsncat_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-    else if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsncat_s: dmax exceeds max",
-                   NULL, ESLEMAX);
+    CHK_SRCW_NULL_CLEAR("wcsncat_s", src)
+    if (unlikely(slen > RSIZE_MAX_WSTR)) {
+        handle_werror(dest, wcsnlen_s(dest, dmax),
+                      "wcsncat_s: slen exceeds max",
+                      ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
-    else if (unlikely(src == NULL)) {
-        handle_werror(dest, dmax, "wcsncat_s: src is null",
-                     ESNULLP);
-        return RCNEGATE(ESNULLP);
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen * sizeof(wchar_t));
+    } else {
+        if (unlikely(slen * sizeof(wchar_t) > srcbos)) {
+            handle_werror(dest, wcsnlen_s(dest, dmax),
+                          "wcsncat_s: slen exceeds src",
+                          EOVERFLOW);
+            return RCNEGATE(EOVERFLOW);
+        }
     }
-    else if (unlikely(slen > RSIZE_MAX_WSTR)) {
-        handle_werror(dest, wcslen(dest), "wcsncat_s: slen exceeds max",
-                     ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-    else if (unlikely(slen == 0)) {
+
+    if (unlikely(slen == 0)) {
         /* Special case, analog to msvcrt: when dest is big enough
            return EOK, but clear dest. */
         errno_t error = (wcsnlen_s(dest, dmax) < dmax) ? EOK : ESZEROL;

@@ -38,6 +38,7 @@
 #ifdef HAVE_WCHAR_H
 
 /**
+ * @def wcscat_s(dest,dmax,src)
  * @brief
  *    The wcscat_s function appends a copy of the wide string pointed
  *    to by src (including the terminating null character) to the
@@ -70,7 +71,7 @@
  *
  * @pre  Neither dest nor src shall be a null pointer
  * @pre  dmax shall not equal zero
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest
  * @pre  dmax shall be greater than wcsnlen_s(src,m).
  * @pre  Copying shall not take place between objects that overlap
  *
@@ -95,35 +96,23 @@
  *
  */
 EXPORT errno_t
-wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
+_wcscat_s_chk(wchar_t *restrict dest, rsize_t dmax,
+              const wchar_t * restrict src, const size_t destbos)
 {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
+    const size_t destsz = dmax * sizeof(wchar_t);
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcscat_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
+    CHK_DEST_NULL("wcscat_s")
+    CHK_DMAX_ZERO("wcscat_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcscat_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        CHK_DESTW_OVR("wcscat_s", destsz, destbos)
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcscat_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcscat_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcscat_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
+    CHK_SRCW_NULL_CLEAR("wcscat_s", src)
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;

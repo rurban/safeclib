@@ -681,17 +681,22 @@ _wcsncpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
     _wcsncpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 
 EXTERN errno_t
-wcscat_s(wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src)
+_wcscat_s_chk(wchar_t *restrict dest, rsize_t dmax,
+              const wchar_t *restrict src, const size_t destbos)
     BOSW_CHK(dest) BOS_NULL(src);
+#define wcscat_s(dest,dmax,src)                 \
+    _wcscat_s_chk(dest,dmax,src,BOS(dest))
 
 EXTERN errno_t
-wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t slen)
+_wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t slen,
+               const size_t destbos, const size_t srcbos)
     BOS_ATTR(slen && (_BOS_NULL(dest) || _BOS_ZERO(dest,dmax) || !dmax), "empty dest or dmax")
     BOS_ATTR(slen && _BOSW_OVR(dest,dmax), "dest overflow")
     BOS_ATTR(!slen && !_BOS_NULL(dest), "empty slen")
     BOS_ATTR(slen && (_BOSW_OVR(src,slen) || _BOS_NULL(src)), "src overflow or empty");
+#define wcsncat_s(dest,dmax,src,slen)               \
+    _wcsncat_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 
 #if !(defined(_WIN32) && defined(HAVE_WCSTOK_S))
 /* they use a buggy:
