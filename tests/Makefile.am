@@ -77,6 +77,7 @@ SAFEC_BUILT_TESTS += \
 	t_wcscmp_s	\
 	t_wcsncmp_s	\
 	t_wcsicmp_s	\
+	t_wcsnatcmp_s	\
 	t_wcsstr_s	\
 	t_wcsset_s	\
 	t_wcsnset_s	\
@@ -386,6 +387,7 @@ t_wmemcmp_s_SOURCES           = test_wmemcmp_s.c $(SAFEC_TEST_COMMON)
 t_wcscmp_s_SOURCES            = test_wcscmp_s.c $(SAFEC_TEST_COMMON)
 t_wcsncmp_s_SOURCES           = test_wcsncmp_s.c $(SAFEC_TEST_COMMON)
 t_wcsicmp_s_SOURCES           = test_wcsicmp_s.c $(SAFEC_TEST_COMMON)
+t_wcsnatcmp_s_SOURCES         = test_wcsnatcmp_s.c $(SAFEC_TEST_COMMON)
 t_wcsstr_s_SOURCES            = test_wcsstr_s.c $(SAFEC_TEST_COMMON)
 t_wcsset_s_SOURCES            = test_wcsset_s.c $(SAFEC_TEST_COMMON)
 t_wcsnset_s_SOURCES           = test_wcsnset_s.c $(SAFEC_TEST_COMMON)

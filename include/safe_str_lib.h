@@ -862,6 +862,18 @@ _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
 #define wcsicmp_s(dest,dmax,src,smax,resultp)              \
     _wcsicmp_s_chk(dest,dmax,src,smax,resultp,BOS(dest),BOS(src))
 
+/* natural sort-order */
+EXTERN errno_t
+_wcsnatcmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict src, rsize_t smax,
+                 const int fold_case, int *resultp,
+                 const size_t destbos, const size_t srcbos)
+    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(resultp);
+#define wcsnatcmp_s(dest,dmax,src,smax,resultp)              \
+    _wcsnatcmp_s_chk(dest,dmax,src,smax,0,resultp,BOS(dest),BOS(src))
+#define wcsnaticmp_s(dest,dmax,src,smax,resultp)             \
+    _wcsnatcmp_s_chk(dest,dmax,src,smax,1,resultp,BOS(dest),BOS(src))
+
 EXTERN errno_t
 wcsset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value)
     BOSW_CHK(dest) VAL_OVR2(value, 0x10ffff);
