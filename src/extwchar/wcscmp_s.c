@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def wcscmp_s(dest,dmax,src,smax,resultp)
  * @brief
  *    Compares wide string src to wide string dest.
  *
@@ -48,17 +49,22 @@
  * @param[in]   dmax       restricted maximum length of wide string dest
  * @param[in]   src        wide string to be compared to dest
  * @param[in]   smax       restricted maximum length of wide string src
- * @param[out]  diff       pointer to result diff, greater than 0,
+ * @param[out]  resultp    pointer to result diff, greater than 0,
  *                         equal to 0 or less than 0, if the dest is greater
  *                         than, equal to or less than src respectively.
  *
  * @pre   Neither dest nor src shall be a null pointer.
- * @pre   diff shall not be a null pointer.
+ * @pre   resultp shall not be a null pointer.
  * @pre   dmax/smax shall not be 0
  * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of dest/src
  *
+ * @return  *resultp, when the return code is OK:
+ *            >0 when dest greater than src
+ *             0 when wide strings the same
+ *            <0 when dest less than src
+ *
  * @retval  EOK        when comparison is complete
- * @retval  ESNULLP    when dest/src/diff is NULL pointer
+ * @retval  ESNULLP    when dest/src/resultp is NULL pointer
  * @retval  ESZEROL    when dmax/smax = 0
  * @retval  ESLEMAX    when dmax/smax > RSIZE_MAX_WSTR
  * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the compiler
@@ -70,39 +76,42 @@
  *
  */
 EXPORT errno_t
-wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src, rsize_t smax,
-         int *diff)
+_wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+              const wchar_t *restrict src, rsize_t smax,
+              int *resultp,
+              const size_t destbos, const size_t srcbos)
 {
-    if (unlikely(diff == NULL)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: diff is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *diff = 0;
+    const size_t destsz = dmax * sizeof(wchar_t);
+    const size_t srcsz  = smax * sizeof(wchar_t);
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
+    CHK_SRC_NULL("wcscmp_s", resultp)
+    *resultp = 0;
+    CHK_DEST_NULL("wcscmp_s")
+    CHK_SRC_NULL("wcscmp_s", src)
     if (unlikely(dmax == 0 || smax == 0)) {
         invoke_safe_str_constraint_handler("wcscmp_s: dmax/smax is 0",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR || smax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcscmp_s: dmax/smax exceeds max",
-                   NULL, ESLEMAX);
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcscmp_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        CHK_DESTW_OVR("wcscmp_s", destsz, destbos)
+    }
+    if (unlikely(smax > RSIZE_MAX_WSTR)) {
+        invoke_safe_str_constraint_handler("wcscmp_s" ": smax exceeds max",
+                   (void*)src, ESLEMAX);
         return RCNEGATE(ESLEMAX);
+    }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, srcsz);
+    } else {
+        if (unlikely(srcsz > srcbos)) {
+            invoke_safe_str_constraint_handler("wcscmp_s" ": smax exceeds src",
+                       (void*)src, EOVERFLOW);
+            return RCNEGATE(EOVERFLOW);
+        }
     }
 
     while (*dest && *src && dmax && smax) {
@@ -117,6 +126,6 @@ wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
         smax--;
     }
 
-    *diff = *dest - *src;
+    *resultp = *dest - *src;
     return RCNEGATE(EOK);
 }

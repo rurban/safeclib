@@ -61,39 +61,52 @@ int test_wcsicmp_s (void)
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty dest") 
+    EXPECT_BOS("empty dest")
     rc = wcsicmp_s(NULL, LEN, str2, LEN, &ind);
     ERR(ESNULLP)
     INDZERO()
 
-    EXPECT_BOS("empty src") 
+    EXPECT_BOS("empty src")
     rc = wcsicmp_s(str1, LEN, NULL, LEN, &ind);
     ERR(ESNULLP)
     INDZERO()
 
-    EXPECT_BOS("empty diff") 
+    EXPECT_BOS("empty resultp")
     rc = wcsicmp_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
-    EXPECT_BOS("empty dest or dmax") 
+    EXPECT_BOS("empty dest or dmax")
     rc = wcsicmp_s(str1, 0, str2, LEN, &ind);
     ERR(ESZEROL)
     INDZERO()
 
-    EXPECT_BOS("empty src or smax") 
+    EXPECT_BOS("empty src or smax")
     rc = wcsicmp_s(str1, LEN, str2, 0, &ind);
     ERR(ESZEROL)
     INDZERO()
 
-    EXPECT_BOS("dest overflow") 
+    EXPECT_BOS("dest overflow")
     rc = wcsicmp_s(str1, RSIZE_MAX_STR+1, str2, LEN, &ind);
     ERR(ESLEMAX)
     INDZERO()
 
-    EXPECT_BOS("src overflow") 
+    EXPECT_BOS("src overflow")
     rc = wcsicmp_s(str1, LEN, str2, RSIZE_MAX_STR+1, &ind);
     ERR(ESLEMAX)
     INDZERO()
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = wcsicmp_s(str1, LEN+1, str2, LEN, &ind);
+    ERR(EOVERFLOW);
+    INDZERO()
+
+    EXPECT_BOS("src overflow")
+    rc = wcsicmp_s(str1, LEN, str2, LEN+1, &ind);
+    ERR(EOVERFLOW)
+    INDZERO()
+# endif
+
 #endif
 
 /*--------------------------------------------------*/

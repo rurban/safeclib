@@ -835,23 +835,32 @@ _wcsstr_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
 /* compare */
 EXTERN errno_t
-wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src, rsize_t smax,
-         int *diff)
-    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(diff);
+_wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+              const wchar_t *restrict src, rsize_t smax,
+              int *resultp,
+              const size_t destbos, const size_t srcbos)
+    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(resultp);
+#define wcscmp_s(dest,dmax,src,smax,resultp)               \
+    _wcscmp_s_chk(dest,dmax,src,smax,resultp,BOS(dest),BOS(src))
 
 EXTERN errno_t
-wcsncmp_s(const wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t smax,
-          rsize_t count, int *diff)
-    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(diff);
+_wcsncmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t smax,
+               rsize_t count, int *resultp,
+               const size_t destbos, const size_t srcbos)
+    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(resultp);
+#define wcsncmp_s(dest,dmax,src,smax,count,resultp)        \
+    _wcsncmp_s_chk(dest,dmax,src,smax,count,resultp,BOS(dest),BOS(src))
 
 /* compare case-folded */
 EXTERN errno_t
-wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t smax,
-          int *diff)
-    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(diff);
+_wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t smax,
+               int *resultp,
+               const size_t destbos, const size_t srcbos)
+    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(resultp);
+#define wcsicmp_s(dest,dmax,src,smax,resultp)              \
+    _wcsicmp_s_chk(dest,dmax,src,smax,resultp,BOS(dest),BOS(src))
 
 EXTERN errno_t
 wcsset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value)

@@ -58,9 +58,9 @@
  * @pre   dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  resultp (when the return code is OK)
- * @retval  >0 when dest greater than src
- * @retval  0  when strings the same
- * @retval  <0 when dest less than src
+ * @retval  >0         when dest greater than src
+ * @retval   0         when strings the same
+ * @retval  <0         when dest less than src
  * @retval  EOK        when comparison is complete
  * @retval  ESUNTERM   when dest or src is unterminated, or dmax is too small.
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
