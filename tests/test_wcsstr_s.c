@@ -43,7 +43,7 @@ int test_wcsstr_s (void)
 
 /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty substring")
+    EXPECT_BOS("empty substringp")
     rc = wcsstr_s(wstr1, LEN, wstr2, LEN, NULL);
     ERR(ESNULLP)
 
@@ -56,13 +56,23 @@ int test_wcsstr_s (void)
 
 /*--------------------------------------------------*/
 
+    wcscpy(wstr1, L"untouched");
     EXPECT_BOS("dest overflow")
     rc = wcsstr_s(wstr1, RSIZE_MAX_STR+1, wstr2, LEN, &sub);
     ERR(ESLEMAX)
     WSUBNULL();
 
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(wstr1, L"untouched");
+    EXPECT_BOS("dest overflow")
+    rc = wcsstr_s(wstr1, LEN+1, wstr2, LEN, &sub);
+    ERR(EOVERFLOW)
+    WSUBNULL();
+# endif
+
 /*--------------------------------------------------*/
 
+    wcscpy(wstr2, L"a");
     rc = wcsstr_s(wstr1, LEN, wstr2, 0, &sub);
     ERR(ESZEROL)
     WSUBNULL();
@@ -73,7 +83,16 @@ int test_wcsstr_s (void)
     rc = wcsstr_s(wstr1, LEN, wstr2, RSIZE_MAX_STR+1, &sub);
     ERR(ESLEMAX)
     WSUBNULL();
-#endif
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("src overflow")
+    rc = wcsstr_s(wstr1, LEN, wstr2, LEN+1, &sub);
+    ERR(EOVERFLOW)
+    WSUBNULL();
+# endif
+
+#endif /* HAVE_CT_BOS_OVR */
+
 /*--------------------------------------------------*/
 
     *wstr1 = '\0';

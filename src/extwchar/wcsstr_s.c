@@ -36,28 +36,30 @@
 #endif
 
 /**
+ * @def wcsstr_s(dest,dmax,src,slen,substringp)
  * @brief
- *    The wcsstr_s() function locates the first occurrence of the
- *    wide substring pointed to by src which would be located in the
- *    wide string pointed to by dest.
+ *    The \b wcsstr_s() function locates the first occurrence of the
+ *    wide substring pointed to by \c src which would be located in the
+ *    wide string pointed to by \c dest.
  *
  * @remark EXTENSION TO
  *    * ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[in]   dest       wide string to be searched for the substring
- * @param[in]   dmax       restricted maximum length of dest
- * @param[in]   src        pointer to the wide sub string
- * @param[in]   slen       the maximum number of wide characters to use from src
- * @param[out]  substring  the returned substring pointer
+ * @param[in]   dest        wide string to be searched for the substring
+ * @param[in]   dmax        restricted maximum length of dest
+ * @param[in]   src         pointer to the wide sub string
+ * @param[in]   slen        the maximum number of wide characters to use from src
+ * @param[out]  substringp  the returned substring pointer
  *
  * @pre  Neither dest nor src shall be a null pointer.
- * @pre  dmax/slen shall not be 0
- * @pre  dmax/slen shall not be greater than RSIZE_MAX_WSTR and size of dest/src.
+ * @pre  dmax/ shall not be 0
+ * @pre  slen shall not be 0, when *src != 0 and src != dest
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_WSTR and size of dest/src.
  *
  * @retval  EOK        when successful operation, substring found.
- * @retval  ESNULLP    when dest/src/substring is NULL pointer
+ * @retval  ESNULLP    when dest/src/substringp is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR
  * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
@@ -70,55 +72,28 @@
  */
 
 EXPORT errno_t
-wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src, rsize_t slen,
-          wchar_t **restrict substring)
+_wcsstr_s_chk (wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src, rsize_t slen,
+               wchar_t **restrict substringp,
+               const size_t destbos, const size_t srcbos)
 {
     rsize_t len;
     rsize_t dlen;
+    const size_t destsz = dmax * sizeof(wchar_t);
     int i;
 
-    if (unlikely(substring == NULL)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: substring is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-    *substring = NULL;
+    CHK_SRC_NULL("wcsstr_s", substringp)
+    *substringp = NULL;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: dest is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: dmax is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
-    }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: src is null",
-                   NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
-    if (unlikely(slen == 0)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: slen is 0",
-                   NULL, ESZEROL);
-        return RCNEGATE(ESZEROL);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsstr_s: slen exceeds max",
-                   NULL, ESLEMAX);
-        return RCNEGATE(ESLEMAX);
+    CHK_DEST_NULL("wcsstr_s")
+    CHK_SRC_NULL("wcsstr_s", src)
+    CHK_DMAX_ZERO("wcsstr_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcsstr_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+        BND_CHK_PTR_BOUNDS(dest, slen*sizeof(wchar_t));
+    } else {
+        CHK_DESTW_OVR("wcsstr_s", destsz, destbos)
     }
 
     /*
@@ -126,10 +101,30 @@ wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
      * src equals dest, return dest
      */
     if (unlikely(*src == '\0' || dest == src)) {
-        *substring = dest;
+        *substringp = dest;
         return RCNEGATE(EOK);
     }
 
+    if (unlikely(slen == 0)) {
+        invoke_safe_str_constraint_handler("wcsstr_s: slen is 0",
+                   (void*)dest, ESZEROL);
+        return RCNEGATE(ESZEROL);
+    }
+    if (unlikely(slen > RSIZE_MAX_WSTR)) {
+        invoke_safe_str_constraint_handler("wcsstr_s: slen exceeds max",
+                   (void*)dest, ESLEMAX);
+        return RCNEGATE(ESLEMAX);
+    }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, slen * sizeof(wchar_t));
+    } else {
+        if (unlikely(slen * sizeof(wchar_t) > srcbos)) {
+            invoke_safe_str_constraint_handler("wcsstr_s: slen exceeds src",
+                       (void*)dest, EOVERFLOW);
+            return RCNEGATE(EOVERFLOW);
+        }
+    }
+    
     while (*dest && dmax) {
         i = 0;
         len = slen;
@@ -148,7 +143,7 @@ wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
             dlen--;
 
             if (src[i] == '\0' || !len) {
-                *substring = dest;
+                *substringp = dest;
                 return RCNEGATE(EOK);
             }
         }
@@ -159,6 +154,6 @@ wcsstr_s (wchar_t *restrict dest, rsize_t dmax,
     /*
      * substring was not found, return NULL
      */
-    *substring = NULL;
+    *substringp = NULL;
     return RCNEGATE(ESNOTFND);
 }

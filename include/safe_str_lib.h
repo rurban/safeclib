@@ -825,10 +825,13 @@ vfwscanf_s(FILE *restrict stream,
 
 /* search wide substring */
 EXTERN errno_t
-wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
-         const wchar_t *restrict src, rsize_t slen,
-         wchar_t **restrict substring)
-    BOSW_CHK(dest) BOSW_OVR2(src, slen) BOS_NULL(substring);
+_wcsstr_s_chk(wchar_t *restrict dest, rsize_t dmax,
+              const wchar_t *restrict src, rsize_t slen,
+              wchar_t **restrict substringp,
+              const size_t destbos, const size_t srcbos)
+    BOSW_CHK(dest) BOSW_OVR2(src, slen) BOS_NULL(substringp);
+#define wcsstr_s(dest,dmax,src,slen,substringp)          \
+    _wcsstr_s_chk(dest,dmax,src,slen,substringp,BOS(dest),BOS(src))
 
 /* compare */
 EXTERN errno_t
