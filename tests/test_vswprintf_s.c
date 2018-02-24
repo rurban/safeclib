@@ -20,18 +20,34 @@
 
 #define LEN   ( 128 )
 
+#undef ERRNO_MSVC
+#define ERRNO_MSVC(rc,err)                      \
+    if (!use_msvcrt) {                          \
+        ERR(rc);                                \
+        ERRNO(0);                               \
+    } else {                                    \
+        ERR(0);                                 \
+        ERRNO(err);                             \
+    }
+
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
-int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
+int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
                  const wchar_t *restrict fmt, ...);
 int test_vswprintf_s (void);
 
-int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax,
+int vtwprintf_s (wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
                 const wchar_t *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
-    rc = vswprintf_s(dest, dmax, fmt, ap);
+    if (use_msvcrt) {
+        (void)destbos;
+        rc = vswprintf_s(dest, dmax, fmt, ap);
+    }
+    else {
+        rc = _vswprintf_s_chk(dest, dmax, destbos, fmt, ap);
+    }
     va_end(ap);
     return rc;
 }
@@ -50,45 +66,43 @@ int test_vswprintf_s (void)
 
     print_msvcrt(use_msvcrt);
 
-    rc = vtwprintf_s(NULL, LEN, L"%ls", str2);
-    ERR(0);
-    init_msvcrt(errno == ESNULLP, &use_msvcrt);
-    ERRNO_MSVC(ESNULLP, EINVAL);
+    rc = vtwprintf_s(NULL, LEN, 0, L"%ls", str2);
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    ERRNO_MSVC(-ESNULLP, EINVAL);
 
     /* not testable */
     if (use_msvcrt) {
-        rc = vtwprintf_s(str1, LEN, L"%ls", NULL);
+        rc = vtwprintf_s(str1, LEN, BOS(str1), L"%ls", NULL);
         ERR(0);
-        ERRNO_MSVC(ESNULLP, EINVAL);
+        ERRNO_MSVC(0, EINVAL);
     }
     
-    rc = vtwprintf_s(str1, LEN, NULL, NULL);
-    ERR(0);
-    ERRNO_MSVC(ESNULLP, EINVAL);
+    rc = vtwprintf_s(str1, LEN, BOS(str1), NULL, NULL);
+    ERRNO_MSVC(-ESNULLP, EINVAL);
 
 /*--------------------------------------------------*/
 
-    rc = vtwprintf_s(str1, 0, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESZEROL, EINVAL);
+    rc = vtwprintf_s(str1, 0, BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-ESZEROL, EINVAL);
 
 /*--------------------------------------------------*/
 
-    rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESLEMAX, 0);
+    rc = vtwprintf_s(str1, (RSIZE_MAX_STR+1), BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-ESLEMAX, 0);
+
+    rc = vtwprintf_s(str1, (LEN+1), BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-EOVERFLOW, 0);
 
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
-    rc = vtwprintf_s(str1, LEN, L"%s %n", str2);
-    ERR(0);
-    ERRNO(EINVAL)
+    rc = vtwprintf_s(str1, LEN, BOS(str1), L"%s %n", str2);
+    ERR(-EINVAL)
 
-    rc = vtwprintf_s(str1, LEN, L"%s %%n", str2);
+    rc = vtwprintf_s(str1, LEN, BOS(str1), L"%s %%n", str2);
     ERR(3)
 
-    rc = vtwprintf_s(str1, LEN, L"%%n");
+    rc = vtwprintf_s(str1, LEN, BOS(str1), L"%%n");
     ERR(2);
 
 /*--------------------------------------------------*/
@@ -98,7 +112,7 @@ int test_vswprintf_s (void)
 
     len2 = wcslen(str2);
 
-    rc = vtwprintf_s(str1, 50, L"%ls", str2);
+    rc = vtwprintf_s(str1, 50, BOS(str1), L"%ls", str2);
     ERR((errno_t)len2)
     len3 = wcslen(str1);
     if (len3 != len2) {
@@ -115,9 +129,8 @@ int test_vswprintf_s (void)
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, 1, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    rc = vtwprintf_s(str1, 1, BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -125,9 +138,8 @@ int test_vswprintf_s (void)
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, 2, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    rc = vtwprintf_s(str1, 2, BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -135,7 +147,7 @@ int test_vswprintf_s (void)
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, 20, L"%ls", str2);
+    rc = vtwprintf_s(str1, 20, BOS(str1), L"%ls", str2);
     NOERR()
     WEXPSTR(str1, str2)
 
@@ -144,7 +156,7 @@ int test_vswprintf_s (void)
     str1[0] = '\0';
     str2[0] = '\0';
 
-    rc = vtwprintf_s(str1, LEN, L"%ls", str2);
+    rc = vtwprintf_s(str1, LEN, BOS(str1), L"%ls", str2);
     ERR(0)
     WEXPNULL(str1)
 
@@ -153,7 +165,7 @@ int test_vswprintf_s (void)
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, LEN, L"%ls", str2);
+    rc = vtwprintf_s(str1, LEN, BOS(str1), L"%ls", str2);
     NOERR()
     WEXPSTR(str1, str2)
 
@@ -162,7 +174,7 @@ int test_vswprintf_s (void)
     wcscpy(str1, L"qqweqq");
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, LEN, L"%ls", str2);
+    rc = vtwprintf_s(str1, LEN, BOS(str1), L"%ls", str2);
     NOERR()
     WEXPSTR(str1, str2)
 
@@ -171,16 +183,14 @@ int test_vswprintf_s (void)
     wcscpy(str1, L"1234");
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, 12, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    rc = vtwprintf_s(str1, 12, BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
     wcscpy(str1, L"1234");
 
-    rc = vtwprintf_s(str1, 5, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    rc = vtwprintf_s(str1, 5, BOS(str1), L"%ls", str2);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -188,7 +198,7 @@ int test_vswprintf_s (void)
     wcscpy(str1, L"1234");
     wcscpy(str2, L"keep it simple");
 
-    rc = vtwprintf_s(str1, 52, L"%ls", str2);
+    rc = vtwprintf_s(str1, 52, BOS(str1), L"%ls", str2);
     NOERR()
     WEXPSTR(str1, str2)
 
@@ -196,15 +206,21 @@ int test_vswprintf_s (void)
 
     wcscpy(str1, L"12345678901234567890");
 
-    rc = vtwprintf_s(str1, 8, L"%ls", &str1[7]);
-    NOERR(); /* overlapping implementation defined */
-    /* WEXPSTR(str1, L"8901234"); or WEXPNULL() */
+    rc = vtwprintf_s(str1, 8, BOS(str1), L"%ls", &str1[7]);
+    /* overlapping implementation defined */
+#if defined(__GLIBC__) || defined(_WIN32)
+    ERR(-ESNOSPC);
+    WEXPNULL(str1);
+#else
+    NOERR();
+    /* WEXPSTR(str1, L"8901234"); or WEXPNULL(str1) */
+#endif
 
 /*--------------------------------------------------*/
 
     wcscpy(str1, L"123456789");
 
-    rc = vtwprintf_s(str1, 9, L"%ls", &str1[8]);
+    rc = vtwprintf_s(str1, 9, BOS(str1), L"%ls", &str1[8]);
     ERR(1) /* overlapping allowed */
     WEXPSTR(str1, L"9")
 
@@ -213,7 +229,7 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"123");
     wcscpy(str1, L"keep it simple");
 
-    rc = vtwprintf_s(str2, 31, L"%ls", &str1[0]);
+    rc = vtwprintf_s(str2, 31, BOS(str1), L"%ls", &str1[0]);
     NOERR()
     WEXPSTR(str2, L"keep it simple");
 
@@ -222,14 +238,14 @@ int test_vswprintf_s (void)
     wcscpy(str2, L"1234");
     wcscpy(str1, L"56789");
 
-    rc = vtwprintf_s(str2, 10, L"%ls", str1);
+    rc = vtwprintf_s(str2, 10, BOS(str1), L"%ls", str1);
     NOERR();
     WEXPSTR(str2, L"56789");
 
 /*--------------------------------------------------*/
 
 #ifndef __APPLE__
-    rc = vtwprintf_s(str1, 10, L"%vls", str2);
+    rc = vtwprintf_s(str1, 10, BOS(str1), L"%vls", str2);
 # if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE) || defined(__MINGW32__)
     /* they print unknown formats verbatim */
     NOERR();
@@ -240,17 +256,17 @@ int test_vswprintf_s (void)
 # endif
 
     /* not the fast stack-branch */
-    wstr3 = (wchar_t*)malloc(513);
-    rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
+    wstr3 = (wchar_t*)malloc(513*sizeof(wchar_t));
+    rc = vtwprintf_s(wstr3, 513, BOS(wstr3), L"%vls", str1);
 # if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE) || defined(__MINGW32__)
     /* they print unknown formats verbatim */
     NOERR();
-    free(wstr3);
 # else /* musl and darwin disallow this */
     ERR(-1);
     WEXPNULL(str1)
     /* musl crashes on free() */
 # endif
+    free(wstr3);
 #endif
 
 /*--------------------------------------------------*/

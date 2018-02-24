@@ -17,11 +17,21 @@
 #endif
 #include "test_msvcrt.h"
 
+#undef ERRNO_MSVC
+#define ERRNO_MSVC(rc,err)                      \
+    if (!use_msvcrt) {                          \
+        ERR(rc);                                \
+        ERRNO(0);                               \
+    } else {                                    \
+        ERR(0);                                 \
+        ERRNO(err);                             \
+    }
+
 #define LEN   ( 128 )
 
 static wchar_t   str1[LEN];
 static wchar_t   str2[LEN];
-
+int main (void);
 
 int main (void)
 {
@@ -34,34 +44,37 @@ int main (void)
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty fmt")
-    rc = swprintf_s(str1, LEN, NULL, NULL);
-    ERR(0);
-    init_msvcrt(errno == ESNULLP, &use_msvcrt);
-    ERRNO_MSVC(ESNULLP, EINVAL);
-
-    EXPECT_BOS("dest overflow")
-    rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESLEMAX, 0);
-
     EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(NULL, 0, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNULLP, EINVAL);
+    init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+    ERRNO_MSVC(-ESNULLP, EINVAL);
+
+    EXPECT_BOS("empty fmt")
+    rc = swprintf_s(str1, LEN, NULL, NULL);
+    ERRNO_MSVC(-ESNULLP, EINVAL);
 
     EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(str1, 0, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESZEROL, EINVAL);
+    ERRNO_MSVC(-ESZEROL, EINVAL);
+
+    EXPECT_BOS("dest overflow")
+    rc = swprintf_s(str1, RSIZE_MAX_STR+1, L"%ls", str2);
+    ERRNO_MSVC(-ESLEMAX, 0);
+
+# if defined HAVE___BUILTIN_OBJECT_SIZE && defined HAVE_C99
+    EXPECT_BOS("dest overflow")
+    rc = swprintf_s(str1, LEN+1, L"%ls", str2);
+    ERRNO_MSVC(-EOVERFLOW, 0);
+# endif
+
 #endif
 /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = swprintf_s(str1, LEN, L"%s %n", str2);
-    ERR(0);
-    ERRNO(EINVAL)
+    ERRNO_MSVC(-EINVAL, EINVAL);
 
+/*--------------------------------------------------*/
     rc = swprintf_s(str1, LEN, L"%s %%n", str2);
     ERR(3)
 
@@ -72,8 +85,7 @@ int main (void)
 
     /* TODO
     rc = swprintf_s(str1, LEN, L"%s", NULL);
-    ERR(0);
-    ERRNO(ESNULLP)
+    ERRNO_MSVC(-ESNULLP, 0)
     */
 
 /*--------------------------------------------------*/
@@ -101,8 +113,7 @@ int main (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 1, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -111,8 +122,7 @@ int main (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 2, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -157,8 +167,7 @@ int main (void)
     wcscpy(str2, L"keep it simple");
 
     rc = swprintf_s(str1, 12, L"%ls", str2);
-    ERR(0);
-    ERRNO_MSVC(ESNOSPC, ERANGE);
+    ERRNO_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
 /*--------------------------------------------------*/
@@ -175,13 +184,25 @@ int main (void)
     wcscpy(str1, L"12345678901234567890");
 
     rc = swprintf_s(str1, 8, L"%ls", &str1[7]);
-    ERR(0); /* overlapping implementation defined */
-    if (errno != ESNOSPC) {
-        /* darwin throws errno 84 EOVERFLOW */
-        WEXPSTR(str1, L"8901234");
+    if (rc) {
+        ERRNO(0);
+        if (rc != -ESNOSPC) {
+            ERRNO_MSVC(-EOVERFLOW, ERANGE);
+            /* darwin throws errno 84 EOVERFLOW */
+            WEXPSTR(str1, L"8901234");
+        } else {
+            ERRNO_MSVC(-ESNOSPC, ERANGE);
+            WEXPNULL(str1);
+        }
     } else {
-        ERRNO_MSVC(ESNOSPC, ERANGE);
-        WEXPNULL(str1);
+        /* overlap implementation defined */
+        if (errno != ESNOSPC) {
+            /* darwin throws errno 84 EOVERFLOW */
+            WEXPSTR(str1, L"8901234");
+        } else {
+            ERRNO_MSVC(ESNOSPC, ERANGE);
+            WEXPNULL(str1);
+        }
     }
 
 /*--------------------------------------------------*/

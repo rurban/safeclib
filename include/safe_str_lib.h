@@ -726,15 +726,26 @@ wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
     _wcstok_s_chk(dest,dmaxp,delim,ptr,BOS(dest))
 #endif
 
+#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
+EXTERN int
+_swprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
+                const wchar_t* restrict fmt, ...)
+    BOSW_CHK(dest) BOS_FMT(fmt);
+#define swprintf_s(dest,dmax,...) \
+    _swprintf_s_chk(dest,dmax,BOS(dest),__VA_ARGS__)
+#else
 EXTERN int
 swprintf_s(wchar_t *restrict dest, rsize_t dmax,
            const wchar_t* restrict fmt, ...)
     BOSW_CHK(dest) BOS_FMT(fmt);
+#endif
 
 EXTERN int
-vswprintf_s(wchar_t *restrict dest, rsize_t dmax,
-            const wchar_t *restrict fmt, va_list ap)
+_vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
+                 const wchar_t *restrict fmt, va_list ap)
     BOSW_CHK(dest) BOS_FMT(fmt);
+#define vswprintf_s(dest,dmax,fmt,ap)                   \
+    _vswprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
 
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
