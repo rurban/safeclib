@@ -43,6 +43,7 @@ any of the arguments corresponding to %s is a null pointer.
 */
 
 /**
+ * @def vsnwprintf_s(dest,dmax,fmt,ap)
  * @brief
  *    The truncating \c vsnwprintf_s function composes a wide string
  *    with same test that would be printed if format was used on \c
@@ -102,37 +103,47 @@ any of the arguments corresponding to %s is a null pointer.
  *          \c vswprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
- * @retval  -ESLEMAX when dmax > RSIZE_MAX_WSTR
  * @retval  -ESNULLP when dest/fmt is NULL pointer
  * @retval  -ESZEROL when dmax = 0
+ * @retval  -ESLEMAX when dmax > RSIZE_MAX_WSTR
+ * @retval  -EOVERFLOW when \c dmax > size of dest
  * @retval  -EINVAL  when fmt contains %n
  * @retval  -1       on some other error. errno is set then
  *
  * @see
  *    vswprintf_s(), snwprintf_s(), vsnprintf_s()
- *
  */
 
 EXPORT int
-vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
-            const wchar_t *restrict fmt, va_list ap)
+_vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
+                  const wchar_t *restrict fmt, va_list ap)
 {
     wchar_t *p;
     int ret = -1;
+    const size_t destsz = dmax * sizeof(wchar_t);
 #ifndef HAVE_VSNWPRINTF_S
     va_list ap2;
 #endif
+
+    if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("vsnwprintf_s: dest is null",
+                   NULL, ESNULLP);
+        return -(ESNULLP);
+    }
 
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dmax exceeds max",
                    NULL, ESLEMAX);
         return -(ESLEMAX);
     }
-
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("vsnwprintf_s: dest is null",
-                   NULL, ESNULLP);
-        return -(ESNULLP);
+    if (destbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(dest,destsz);
+    } else {
+        if (unlikely(destsz > destbos)) {
+            invoke_safe_str_constraint_handler("vsnwprintf_s: dmax exceeds dest",
+                       (void*)dest, EOVERFLOW);
+            return -(EOVERFLOW);
+        }
     }
 
     if (unlikely(fmt == NULL)) {
@@ -207,7 +218,7 @@ vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         strcat(errstr, strerror(errno));
         *dest = L'\0';
         /* dest[dmax-1] = L'\0'; */
-        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+        invoke_safe_str_constraint_handler(errstr, (void*)dest, -ret);
     }
 #endif
 

@@ -750,16 +750,27 @@ _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
 #ifdef SAFECLIB_ENABLE_UNSAFE
 
 /* unsafe! use vswprintf_s instead */
+#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int
-snwprintf_s(wchar_t * restrict dest, rsize_t dmax,
-            const wchar_t * restrict fmt, ...)
+_snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
+                const wchar_t* restrict fmt, ...)
     BOSW_CHK(dest) BOS_FMT(fmt);
+#define snwprintf_s(dest,dmax,...) \
+    _snwprintf_s_chk(dest,dmax,BOS(dest),__VA_ARGS__)
+#else
+EXTERN int
+snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
+           const wchar_t* restrict fmt, ...)
+    BOSW_CHK(dest) BOS_FMT(fmt);
+#endif
 
 /* unsafe! use vswprintf_s instead */
 EXTERN int
-vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
-             const wchar_t *restrict fmt, va_list ap)
+_vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
+                  const wchar_t *restrict fmt, va_list ap)
     BOSW_CHK(dest) BOS_FMT(fmt);
+#define vsnwprintf_s(dest,dmax,fmt,ap) \
+    _vsnwprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
 
 #endif /* SAFECLIB_ENABLE_UNSAFE */
 

@@ -44,6 +44,7 @@ any of the arguments corresponding to %s is a null pointer.
 */
 
 /**
+ * @def snwprintf_s(dest,dmax,fmt,...)
  * @brief
  *    The truncating \c snwprintf_s function composes a wide string
  *    with same test that would be printed if format was used on \c
@@ -68,13 +69,13 @@ any of the arguments corresponding to %s is a null pointer.
  *    http://en.cppreference.com/w/c/io/fwprintf
  *    * only included in safeclib with \c --enable-unsafe
  *
- * @param[out]  dest  pointer to wide string that will be written into.
+ * @param[out]  dest  pointer to wide string that will be written into
  * @param[in]   dmax  restricted maximum length of dest
- * @param[in]   fmt   format-control wide string.
+ * @param[in]   fmt   format-control wide string
  * @param[in]   ...   optional arguments
  *
  * @pre Neither \c dest nor \c fmt shall be a null pointer.
- * @pre \c dmax shall not be greater than \c RSIZE_MAX_WSTR.
+ * @pre \c dmax shall not be greater than \c RSIZE_MAX_WSTR and size of dest.
  * @pre \c dmax shall not equal zero.
  * @pre \c dmax shall be greater than <tt>wcsnlen_s(dest, dmax)</tt>.
  * @pre \c fmt shall not contain the conversion specifier \c %n
@@ -103,37 +104,53 @@ any of the arguments corresponding to %s is a null pointer.
  *          \c swprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
- * @retval  -ESNULLP when \c dest/fmt is NULL pointer
- * @retval  -ESZEROL when \c dmax = 0
- * @retval  -ESLEMAX when \c dmax > \c RSIZE_MAX_WSTR
- * @retval  -ESNOSPC when return value exceeds dmax
- * @retval  -EINVAL  when \c fmt contains \c %n
+ * @retval  -ESNULLP   when \c dest/fmt is NULL pointer
+ * @retval  -ESZEROL   when \c dmax = 0
+ * @retval  -ESLEMAX   when \c dmax > \c RSIZE_MAX_WSTR
+ * @retval  -EOVERFLOW when \c dmax > size of dest
+ * @retval  -EINVAL    when \c fmt contains \c %n
  * @retval  -1       on some other error. errno is set then
  *
  * @see
  *    vswprintf_s(), swprintf_s(), vsnprintf_s()
- *
  */
 
-
+#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
+EXPORT int
+_snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
+                 const wchar_t *restrict fmt, ...)
+#else
 EXPORT int
 snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             const wchar_t *restrict fmt, ...)
+#endif
 {
     va_list ap, ap2;
     wchar_t *p;
     int ret = -1;
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("snwprintf_s: dmax exceeds max",
-                   NULL, ESLEMAX);
-        return -(ESLEMAX);
-    }
+    const size_t destsz = dmax * sizeof(wchar_t);
+#if !(defined(HAVE_C99) && !defined(TEST_MSVCRT))
+    const size_t destbos = BOS_UNKNOWN;
+#endif
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("snwprintf_s: dest is null",
                    NULL, ESNULLP);
         return -(ESNULLP);
+    }
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
+        invoke_safe_str_constraint_handler("snwprintf_s: dmax exceeds max",
+                   (void*)dest, ESLEMAX);
+        return -(ESLEMAX);
+    }
+    if (destbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(dest,destsz);
+    } else {
+        if (unlikely(destsz > destbos)) {
+            invoke_safe_str_constraint_handler("snwprintf_s: dmax exceeds dest",
+                       (void*)dest, EOVERFLOW);
+            return -(EOVERFLOW);
+        }
     }
 
     if (unlikely(fmt == NULL)) {
@@ -146,7 +163,7 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(dmax == 0)) {
         *dest = L'\0';
         invoke_safe_str_constraint_handler("snwprintf_s: dmax is 0",
-                   NULL, ESZEROL);
+                   (void*)dest, ESZEROL);
         return -(ESZEROL);
     }
 
@@ -155,7 +172,7 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         if ((p-fmt == 0) || *(p-1) != L'%') {
             *dest = L'\0';
             invoke_safe_str_constraint_handler("snwprintf_s: illegal %n",
-                   NULL, EINVAL);
+                   (void*)dest, EINVAL);
             return -(EINVAL);
         }
     }
@@ -166,7 +183,7 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             ((p-fmt == 1) || *(p-2) != L'%')) {
             *dest = L'\0';
             invoke_safe_str_constraint_handler("snwprintf_s: illegal %n",
-                                               NULL, EINVAL);
+                       (void*)dest, EINVAL);
             return -(EINVAL);
         }
     }
