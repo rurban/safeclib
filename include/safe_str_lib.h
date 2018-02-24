@@ -788,20 +788,17 @@ fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
     BOS_NULL(stream) BOS_FMT(fmt);
 
 EXTERN int
-vfwprintf_s(FILE * restrict stream,
-            const wchar_t *restrict fmt, va_list ap)
+vfwprintf_s(FILE * restrict stream, const wchar_t *restrict fmt, va_list ap)
     BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 EXTERN int
-swscanf_s(const wchar_t *restrict buffer,
-          const wchar_t *restrict fmt, ...)
-    BOS_NULL(buffer) BOS_FMT(fmt);
+swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, ...)
+    BOS_NULL(src) BOS_FMT(fmt);
 
 EXTERN int
-vswscanf_s(const wchar_t *restrict buffer,
-           const wchar_t *restrict fmt, va_list ap)
-    BOS_NULL(buffer) BOS_FMT(fmt);
+vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, va_list ap)
+    BOS_NULL(src) BOS_FMT(fmt);
 
 EXTERN int
 wscanf_s (const wchar_t *restrict fmt, ...)

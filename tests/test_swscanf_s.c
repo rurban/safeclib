@@ -60,7 +60,7 @@ int main (void)
     /* msvcrt doesn't check src==NULL neither */
 #if !(defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
 # ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty buffer")
+    EXPECT_BOS("empty src")
     rc = swscanf_s(NULL, L"%ls", wstr2);
     ERREOF_MSVC(ESNULLP, EINVAL);
     WEXPSTR(wstr2, L"");

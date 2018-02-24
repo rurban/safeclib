@@ -43,7 +43,7 @@ any of the arguments corresponding to %s is a null pointer.
 
 /**
  * @brief
- *    The \c swscanf_s function reads a formatted wide string.
+ *    The \b swscanf_s function reads a formatted wide string.
  *    Reaching the end of the string is equivalent to reaching the
  *    end-of-file condition for \c fwscanf.
  *
@@ -52,11 +52,11 @@ any of the arguments corresponding to %s is a null pointer.
  *    K.3.9.1.5 The swscanf_s function (p: 631)
  *    http://en.cppreference.com/w/c/io/fwscanf
  *
- * @param[in]   buffer pointer to a null-terminated wide string to read from
+ * @param[in]   src    pointer to a null-terminated wide string to read from
  * @param[in]   fmt    format-control wide string.
  * @param[out]  ...    arguments to write to
  *
- * @pre Neither \c buffer nor \c fmt shall be a null pointer.
+ * @pre Neither \c src nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
  * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
@@ -77,31 +77,30 @@ any of the arguments corresponding to %s is a null pointer.
  *
  * @see
  *    vswscanf_s(), snwprintf_s(), vsnprintf_s()
- *
  */
 
 EXPORT int
-swscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt, ...)
+swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, ...)
 {
     va_list ap;
     wchar_t *p;
     int ret;
 
-    if (unlikely(buffer == NULL)) {
-        invoke_safe_str_constraint_handler("swscanf_s: buffer is null",
+    if (unlikely(src == NULL)) {
+        invoke_safe_str_constraint_handler("swscanf_s: src is null",
                    NULL, ESNULLP);
         errno = ESNULLP;
         return EOF;
     }
 #ifdef __MINGW32__
-    if (unlikely(!*buffer)) {
+    if (unlikely(!*src)) {
         return EOF;
     }
 #endif
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("swscanf_s: fmt is null",
-                   NULL, ESNULLP);
+                   (void*)src, ESNULLP);
         errno = ESNULLP;
         return EOF;
     }
@@ -110,7 +109,7 @@ swscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt, ...)
     if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
         if ((p-fmt == 0) || *(p-1) != L'%') {
             invoke_safe_str_constraint_handler("swscanf_s: illegal %n",
-                   NULL, EINVAL);
+                       (void*)src, EINVAL);
             errno = EINVAL;
             return EOF;
         }
@@ -121,7 +120,7 @@ swscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt, ...)
         if (((p-fmt >= 1) && *(p-1) == L'%') &&
             ((p-fmt == 1) || *(p-2) != L'%')) {
             invoke_safe_str_constraint_handler("swscanf_s: illegal %n",
-                                               NULL, EINVAL);
+                       (void*)src, EINVAL);
             errno = EINVAL;
             return EOF;
         }
@@ -132,13 +131,13 @@ swscanf_s(const wchar_t *restrict buffer, const wchar_t *restrict fmt, ...)
 
     errno = 0;
     va_start(ap, fmt);
-    ret = vswscanf(buffer, fmt, ap);
+    ret = vswscanf(src, fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "swscanf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, errno);
+        invoke_safe_str_constraint_handler(errstr, (void*)src, errno);
     }
 
     return ret;
