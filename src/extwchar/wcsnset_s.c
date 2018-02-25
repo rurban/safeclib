@@ -36,6 +36,7 @@
 #endif
 
 /**
+ * @def wcsnset_s(dest,dmax,value,n)
  * @brief
  *    Sets maximal n wide characters of dest to a wide character value,
  *    but not the final NULL character.
@@ -74,32 +75,32 @@
  *
  */
 EXPORT errno_t
-wcsnset_s (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n)
+_wcsnset_s_chk (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n,
+                const size_t destbos)
 {
 #ifdef SAFECLIB_STR_NULL_SLACK
     wchar_t * orig_dest;
 #endif
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsnset_s: dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
+    const size_t destsz = dmax * sizeof(wchar_t);
 
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsnset_s: dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsnset_s: dmax/value exceeds max",
-                   NULL, ESLEMAX);
+    CHK_DEST_NULL("wcsnset_s")
+    CHK_DMAX_ZERO("wcsnset_s")
+#if SIZEOF_WCHAR_T > 2
+    if (unlikely(value > _UNICODE_MAX)) {
+        invoke_safe_str_constraint_handler("wcsnset_s: value exceeds max",
+                   (void*)&value, ESLEMAX);
         return (ESLEMAX);
     }
-
+#endif
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcsnset_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        CHK_DESTW_OVR_CLEAR("wcsnset_s", destsz, destbos)
+    }
     if (unlikely(n > dmax)) {
-        invoke_safe_str_constraint_handler("wcsnset_s: n exceeds dmax",
-                   NULL, ESNOSPC);
+        handle_werror(dest, dmax, "wcsnset_s: n exceeds dmax",
+                      ESNOSPC);
         return (ESNOSPC);
     }
 

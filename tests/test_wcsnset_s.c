@@ -31,13 +31,27 @@ int main(void)
     rc = wcsnset_s(str1, 0, 0, 5);
     ERR(ESZEROL)
 
+#if SIZEOF_WCHAR_T > 2
+    EXPECT_BOS("value overflow >0x10ffff")
+    rc = wcsset_s(str1, LEN, 0x110000);
+    ERR(ESLEMAX);
+#endif
+
     EXPECT_BOS("dest overflow")
     rc = wcsnset_s(str1, RSIZE_MAX_WSTR+1, 0, 5);
     ERR(ESLEMAX);
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = wcsset_s(str1, LEN+1, 0);
+    ERR(EOVERFLOW);
+    WCHECK_SLACK(str1, LEN);
+# endif
 #endif
 
     rc = wcsnset_s(str1, LEN-1, L' ', LEN);
     ERR(ESNOSPC);
+    WCHECK_SLACK(str1, LEN);
 
 /*--------------------------------------------------*/
 

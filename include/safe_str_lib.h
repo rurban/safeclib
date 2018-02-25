@@ -875,12 +875,18 @@ _wcsnatcmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
     _wcsnatcmp_s_chk(dest,dmax,src,smax,1,resultp,BOS(dest),BOS(src))
 
 EXTERN errno_t
-wcsset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value)
+_wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t value,
+              const size_t destbos)
     BOSW_CHK(dest) VAL_OVR2(value, 0x10ffff);
+#define wcsset_s(dest,dmax,value)              \
+    _wcsset_s_chk(dest,dmax,value,BOS(dest))
 
 EXTERN errno_t
-wcsnset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value, size_t n)
+_wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t value, size_t n,
+               const size_t destbos)
     BOSW_CHK(dest) VAL_OVR2(value, 0x10ffff);
+#define wcsnset_s(dest,dmax,value,n)            \
+    _wcsnset_s_chk(dest,dmax,value,n,BOS(dest))
 
 EXTERN errno_t
 wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
