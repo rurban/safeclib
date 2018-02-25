@@ -933,23 +933,30 @@ _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
 /* Normalize to FCD/pre-NFKD */
 EXTERN errno_t
-wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
-                    const wchar_t *restrict src, rsize_t *restrict lenp,
-                    const bool iscompat)
+_wcsnorm_decompose_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                         const wchar_t *restrict src, rsize_t *restrict lenp,
+                         const bool iscompat, const size_t destbos)
     BOSW_CHK(dest) BOS_NULL(src);
+#define wcsnorm_decompose_s(dest,dmax,src,lenp,iscompat)        \
+    _wcsnorm_decompose_s_chk(dest,dmax,src,lenp,iscompat,BOS(dest))
 
 /* Normalize to NCD/NFKD */
 EXTERN errno_t
-wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax,
-                  const wchar_t *restrict src, const rsize_t len)
+_wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                       const wchar_t *restrict src, const rsize_t len,
+                       const size_t destbos)
     BOSW_CHK(dest)  BOSW_OVR2(src, len);
+#define wcsnorm_reorder_s(dest,dmax,src,len)        \
+    _wcsnorm_reorder_s_chk(dest,dmax,src,len,BOS(dest))
 
 /* Normalize to NFC/NFKC */
 EXTERN errno_t
-wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax,
-                  const wchar_t *restrict src, rsize_t *restrict lenp,
-                  bool iscontig)
+_wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                       const wchar_t *restrict src, rsize_t *restrict lenp,
+                       bool iscontig, const size_t destbos)
     BOSW_CHK(dest) BOS_NULL(src) BOS_NULL(lenp);
+#define wcsnorm_compose_s(dest,dmax,src,lenp,iscontig)        \
+    _wcsnorm_compose_s_chk(dest,dmax,src,lenp,iscontig,BOS(dest))
 
 enum wcsnorm_mode {
     WCSNORM_NFD  = 0,
@@ -964,9 +971,11 @@ typedef enum wcsnorm_mode wcsnorm_mode_t;
 /* Normalize to NFC (default), NFD nfc=0.
    experim. nfc>1: FCD, FCC */
 EXTERN errno_t
-wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-          const wcsnorm_mode_t mode, rsize_t *restrict lenp)
+_wcsnorm_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+               const wcsnorm_mode_t mode, rsize_t *restrict lenp, const size_t destbos)
     BOSW_CHK(dest) BOS_NULL(src);
+#define wcsnorm_s(dest,dmax,src,mode,lenp)             \
+    _wcsnorm_s_chk(dest,dmax,src,mode,lenp,BOS(dest))
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

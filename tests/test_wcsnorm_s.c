@@ -67,10 +67,42 @@ int test_wcsnorm_s(void)
     INDZERO();
     WEXPSTR(str, L"\0");
 
+    ind = 4;
     EXPECT_BOS("dest overflow") 
-    rc = wcsnorm_s(str, RSIZE_MAX_WSTR+1, L"test", WCSNORM_NFD, NULL);
+    rc = wcsnorm_s(str, RSIZE_MAX_WSTR+1, L"test", WCSNORM_NFD, &ind);
     ERR(ESLEMAX);
     WEXPSTR(str, L"\0");
+    INDCMP(!= 0)
+
+    if (_BOS_KNOWN(str)) {
+        ind = 4;
+        EXPECT_BOS("dest overflow") 
+        rc = wcsnorm_s(str, LEN+1, L"test", WCSNORM_NFD, &ind);
+        ERR(EOVERFLOW);
+        WEXPSTR(str, L"\0");
+        INDCMP(!= 0)
+    }
+
+    if (_BOS_KNOWN(str)) {
+        ind = 4;
+        EXPECT_BOS("dest overflow") 
+        rc = wcsnorm_decompose_s(str, LEN+1, L"test", &ind, false);
+        ERR(EOVERFLOW);
+        WEXPSTR(str, L"\0");
+        INDCMP(!= 0)
+
+        ind = 4;
+        EXPECT_BOS("dest overflow") 
+        rc = wcsnorm_reorder_s(str, LEN+1, L"test", ind);
+        ERR(EOVERFLOW);
+        WEXPSTR(str, L"\0");
+
+        EXPECT_BOS("dest overflow") 
+        rc = wcsnorm_compose_s(str, LEN+1, L"test", &ind, false);
+        ERR(EOVERFLOW);
+        WEXPSTR(str, L"\0");
+        INDCMP(!= 0)
+    }
 #endif
 
 #if SIZEOF_WCHAR_T >= 4

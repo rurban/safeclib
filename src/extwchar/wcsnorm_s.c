@@ -445,6 +445,7 @@ static uint8_t _combin_class(uint32_t cp)
 }
 
 /**
+ * @def wcsnorm_decompose_s(dest,dmax,src,lenp,iscompat)
  * @brief
  *    Converts the wide string to the canonical NFD normalization,
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
@@ -493,8 +494,9 @@ static uint8_t _combin_class(uint32_t cp)
 
 /* create an unordered decomposed wide string */
 EXPORT errno_t
-wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-                    rsize_t *restrict lenp, const bool iscompat)
+_wcsnorm_decompose_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+                         rsize_t *restrict lenp, const bool iscompat,
+                         const size_t destbos)
 {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
@@ -504,27 +506,19 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restric
 
     if (lenp)
         *lenp = 0;
-
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsnorm_s: "
-                   "dest is null", NULL, ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
-
+    CHK_DEST_NULL("wcsfc_s")
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "src is null", dest, ESNULLP);
         *dest = 0;
         return RCNEGATE(ESNULLP);
     }
-
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax is 0", dest, ESZEROL);
         *dest = 0;
         return RCNEGATE(ESZEROL);
     }
-
     if (unlikely(dmax < 5)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                    "dmax < 5", dest, ESLEMIN);
@@ -537,6 +531,12 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restric
                    "dmax exceeds max", dest, ESLEMAX);
         *dest = 0;
         return RCNEGATE(ESLEMAX);
+    }
+    if (destbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(dest, dmax*sizeof(wchar_t));
+    } else {
+        const size_t destsz = dmax * sizeof(wchar_t);
+        CHK_DESTW_OVR_CLEAR("wcsfc_s", destsz, destbos)
     }
 
     if (unlikely(dest == src)) {
@@ -682,6 +682,7 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restric
 }
 
 /**
+ * @def wcsnorm_reorder_s(dest,dmax,src,len)
  * @brief
  *    Reorder all decomposed sequences in a wide string to NFD,
  *    as defined in the latest Unicode standard, latest 10.0. The conversion
@@ -709,8 +710,8 @@ wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restric
 
 /* reorder decomposed sequence to NFD */
 EXPORT errno_t
-wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-                  const rsize_t len)
+_wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+                       const rsize_t len, const size_t destbos)
 {
     UNWIF_cc seq_ary[CC_SEQ_SIZE];
     UNWIF_cc* seq_ptr = (UNWIF_cc*)seq_ary; /* start with stack */
@@ -721,6 +722,14 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict 
     const wchar_t *e = p + len;
     wchar_t *orig_dest = dest;
     rsize_t orig_dmax = dmax;
+
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("wcsnorm_reorder_s", RSIZE_MAX_WSTR)
+        BND_CHK_PTR_BOUNDS(dest, dmax*sizeof(wchar_t));
+    } else {
+        const size_t destsz = dmax * sizeof(wchar_t);
+        CHK_DESTW_OVR_CLEAR("wcsnorm_reorder_s", destsz, destbos)
+    }
 
     while (p < e) {
         uint8_t cur_cc;
@@ -798,6 +807,7 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict 
 }
 
 /**
+ * @def wcsnorm_compose_s(dest,dmax,src,lenp,iscontig)
  * @brief
  *    Combine all decomposed sequences in a wide string to NFC,
  *    as defined in the latest Unicode standard, latest 10.0. The conversion
@@ -827,8 +837,9 @@ wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict 
 /* combine decomposed sequences to NFC. */
 /* iscontig = false; composeContiguous? FCC if true */
 EXPORT errno_t
-wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-                  rsize_t *restrict lenp, const bool iscontig)
+_wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+                       rsize_t *restrict lenp, const bool iscontig,
+                       const size_t destbos)
 {
     wchar_t *p = (wchar_t *)src;
     const wchar_t *e = p + *lenp;
@@ -843,6 +854,26 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict 
     size_t cc_pos = 0;
     wchar_t *orig_dest = dest;
     rsize_t orig_dmax = dmax;
+
+    if (destbos == BOS_UNKNOWN) {
+        if (unlikely(dmax > RSIZE_MAX_WSTR)) {
+            *lenp = 0;
+            handle_werror(dest, destbos/sizeof(wchar_t),
+                          "wcsnorm_compose_s: dmax exceeds max",
+                          ESLEMAX);
+            return ESLEMAX;
+        }
+        BND_CHK_PTR_BOUNDS(dest, dmax*sizeof(wchar_t));
+    } else {
+        const size_t destsz = dmax * sizeof(wchar_t);
+        if (unlikely(destsz > destbos)) {
+            *lenp = 0;
+            handle_werror(dest, destbos/sizeof(wchar_t),
+                          "wcsnorm_compose_s: dmax exceeds dest",
+                          EOVERFLOW);
+            return EOVERFLOW;
+        }
+    }
 
     while (p < e) {
         uint8_t cur_cc;
@@ -960,6 +991,7 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict 
 }
 
 /**
+ * @def wcsnorm_s(dest,dmax,src,mode,lenp)
  * @brief
  *    Converts the wide string to the canonical NFC or NFD normalization,
  *    as defined in the latest Unicode standard, latest 10.0.  The conversion
@@ -1009,8 +1041,9 @@ wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict 
 
 /* Normalize to NFC, NFD, FCC, FCD (fastest, used in wcsfc_s), and optionally NFKD, NFKC */
 EXPORT errno_t
-wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-          const wcsnorm_mode_t mode, rsize_t *restrict lenp)
+_wcsnorm_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
+               const wcsnorm_mode_t mode, rsize_t *restrict lenp,
+               const size_t destbos)
 {
     wchar_t tmp_stack[128];
     wchar_t *tmp_ptr;
@@ -1018,7 +1051,7 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
     rsize_t len;
     const bool iscompat = mode & WCSNORM_NFKD; /* WCSNORM_NFKD or WCSNORM_NFKC */
 
-    errno_t rc = wcsnorm_decompose_s(dest, dmax, src, &len, iscompat);
+    errno_t rc = _wcsnorm_decompose_s_chk(dest, dmax, src, &len, iscompat, destbos);
     if (lenp)
         *lenp = len;
     if (unlikely(rc))
@@ -1032,7 +1065,7 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
     else
         tmp_ptr = tmp = (wchar_t*)malloc((len+2) * sizeof(wchar_t));
 
-    rc = wcsnorm_reorder_s(tmp_ptr, len+2, dest, len);
+    rc = _wcsnorm_reorder_s_chk(tmp_ptr, len+2, dest, len, destbos);
     if (unlikely(rc)) {
         if (tmp)
             free(tmp);
@@ -1050,7 +1083,7 @@ wcsnorm_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
         return (EOK);
     }
 
-    rc = wcsnorm_compose_s(dest, dmax, tmp_ptr, &len, mode == WCSNORM_FCC);
+    rc = _wcsnorm_compose_s_chk(dest, dmax, tmp_ptr, &len, mode == WCSNORM_FCC, destbos);
     if (tmp)
         free(tmp);
     if (unlikely(rc))
