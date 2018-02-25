@@ -20,32 +20,38 @@ int main(void)
 
 /*--------------------------------------------------*/
 
+    wcscpy(str, L"untouched");
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("src overflow or empty")
     rc = wcslwr_s(NULL, 5);
     ERR(ESNULLP);
+    WEXPSTR(str, L"untouched");
+
+    wcscpy(str, L"untouched");
+    EXPECT_BOS("src overflow or empty")
+    rc = wcslwr_s(str, RSIZE_MAX_WSTR+1);
+    ERR(ESLEMAX);
+    WEXPSTR(str, L"untouched");
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    wcscpy(str, L"untouched");
+    EXPECT_BOS("src overflow or empty")
+    rc = wcslwr_s(str, LEN+1);
+    ERR(EOVERFLOW);
+    WEXPSTR(str, L"untouched");
+# endif
 #endif
 
 /*--------------------------------------------------*/
 
-    wcscpy(str, L"test");
+    wcscpy(str, L"untouched");
     rc = wcslwr_s(str, 0);
     ERR(EOK); /* and untouched */
-    WEXPSTR(str, L"test");
+    WEXPSTR(str, L"untouched");
 
     rc = wcslwr_s(NULL, 0);
     ERR(EOK); /* and untouched */
-    WEXPSTR(str, L"test");
-
-/*--------------------------------------------------*/
-
-#ifndef HAVE_CT_BOS_OVR
-    wcscpy(str, L"test");
-    EXPECT_BOS("src overflow or empty")
-    rc = wcslwr_s(str, 99999);
-    ERR(ESLEMAX); /* and untouched */
-    WEXPSTR(str, L"test");
-#endif
+    WEXPSTR(str, L"untouched");
 
 /*--------------------------------------------------*/
 

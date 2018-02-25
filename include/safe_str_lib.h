@@ -898,12 +898,16 @@ _wcscoll_s_chk(const wchar_t *restrict dest, rsize_t dmax,
 
 /* simple char-wise folding */
 EXTERN errno_t
-wcslwr_s(wchar_t *restrict src, rsize_t slen)
+_wcslwr_s_chk(wchar_t *restrict src, rsize_t slen, const size_t srcbos)
     BOSW_OVR2_BUTZERO(src, slen);
+#define wcslwr_s(src,slen)                      \
+    _wcslwr_s_chk(src,slen,BOS(src))
 
 EXTERN errno_t
-wcsupr_s(wchar_t *restrict src, rsize_t slen)
+_wcsupr_s_chk(wchar_t *restrict src, rsize_t slen, const size_t srcbos)
     BOSW_OVR2_BUTZERO(src, slen);
+#define wcsupr_s(src,slen)                      \
+    _wcsupr_s_chk(src,slen,BOS(src))
 
 /* is a wide upper character which folds to multiple lowercase chars? how many */
 EXTERN int

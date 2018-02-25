@@ -51,7 +51,9 @@
 
 static char   str1[LEN];
 static char   str2[LEN];
+#if !defined(HAVE_CT_BOS_OVR) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 static char   str4[4];
+#endif
 int test_strcmp_s (void);
 
 int test_strcmp_s (void)

@@ -3,7 +3,7 @@
  *
  * September 2017, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -40,6 +40,7 @@
 #endif
 
 /**
+ * @def wcsupr_s(src,slen)
  * @brief
  *    Scans the string converting lowercase characters to uppercase, leaving
  *    all other characters unchanged.  The scanning stops at the first null or
@@ -66,32 +67,34 @@
  * @retval  ESLEMAX     when slen > RSIZE_MAX_WSTR
  * @retval  EOVERFLOW   when slen > size of src (optionally, when the compiler
  *                      knows the object_size statically)
- * @retval  ESLEWRNG    when slen != size of src and --enable-error-dmax
  *
  * @see
  *    strtouppercase_s(), strlwr_s(), wcslwr_s()
- *
  */
+
 EXPORT errno_t
-wcsupr_s(wchar_t *restrict src, rsize_t slen)
+_wcsupr_s_chk(wchar_t *restrict src, rsize_t slen, const size_t srcbos)
 {
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
+    const size_t srcsz = slen * sizeof(wchar_t);
+
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsupr_s: "
-                   "src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
+    CHK_SRC_NULL("wcsupr_s", src)
+    if (unlikely(slen > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsupr_s: "
                    "slen exceeds max",
-                   NULL, ESLEMAX);
+                   (void*)src, ESLEMAX);
         return (ESLEMAX);
+    }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, srcsz);
+    } else {
+        if (unlikely(srcsz > srcbos)) {
+            invoke_safe_str_constraint_handler("wcsupr_s" ": smax exceeds src",
+                       (void*)src, EOVERFLOW);
+            return RCNEGATE(EOVERFLOW);
+        }
     }
 
     while (*src && slen) {

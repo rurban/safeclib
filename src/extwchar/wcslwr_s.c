@@ -42,6 +42,7 @@ EXTERN wint_t towlower(wint_t wc);
 #endif
 
 /**
+ * @def wcslwr_s(src,slen)
  * @brief
  *    Scans the string converting uppercase characters to simple lowercase,
  *    leaving all other characters unchanged.  The scanning stops at the first
@@ -49,10 +50,10 @@ EXTERN wint_t towlower(wint_t wc);
  *    LC_CTYPE category setting of the locale. Other characters are not
  *    affected. It only performs simple case folding via \c towlower(), it
  *    does not do full multi-char folding and does not obey the special casing
- *    rules for context. Thus the length of buffer stays the same. It returns
- *    a pointer to the altered string. Because the modification is done in
- *    place, the pointer returned is the same as the pointer passed as the
- *    input argument.
+ *    rules for context. See \c wcsfc_s() instead. Thus the length of buffer
+ *    stays the same. It returns a pointer to the altered string. Because the
+ *    modification is done in place, the pointer returned is the same as the
+ *    pointer passed as the input argument.
  *
  * @remark IMPLEMENTED IN
  *    * Microsoft Windows Secure API
@@ -70,32 +71,34 @@ EXTERN wint_t towlower(wint_t wc);
  * @retval  ESLEMAX     when slen > RSIZE_MAX_WSTR
  * @retval  EOVERFLOW   when slen > size of src (optionally, when the compiler
  *                      knows the object_size statically)
- * @retval  ESLEWRNG    when slen != size of src and --enable-error-dmax
  *
  * @see
  *    wcsfc_s(), strtolowercase_s(), strlwr_s(), wcsupr_s()
- *
  */
+
 EXPORT errno_t
-wcslwr_s(wchar_t *restrict src, rsize_t slen)
+_wcslwr_s_chk(wchar_t *restrict src, rsize_t slen, const size_t srcbos)
 {
-    if (unlikely(slen == 0)) {
-        /* Since C11 slen=0 is allowed */
+    const size_t srcsz = slen * sizeof(wchar_t);
+
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
-    if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcslwr_s: "
-                   "src is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
-    }
-
-    if (unlikely(slen > RSIZE_MAX_STR)) {
+    CHK_SRC_NULL("wcsupr_s", src)
+    if (unlikely(slen > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcslwr_s: "
                    "slen exceeds max",
-                   NULL, ESLEMAX);
+                   (void*)src, ESLEMAX);
         return (ESLEMAX);
+    }
+    if (srcbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(src, srcsz);
+    } else {
+        if (unlikely(srcsz > srcbos)) {
+            invoke_safe_str_constraint_handler("wcsupr_s" ": smax exceeds src",
+                       (void*)src, EOVERFLOW);
+            return RCNEGATE(EOVERFLOW);
+        }
     }
 
     while (*src && slen) {
