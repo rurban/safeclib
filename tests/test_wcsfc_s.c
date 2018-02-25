@@ -283,7 +283,7 @@ int test_wcsfc_s(void)
         WCHECK_SLACK(&str[2], LEN-2);
     }
 
-    SETLOCALE("lt_LT");
+    SETLOCALE("lt_LT"); /* leaks 91k on darwin */
     SETLANG("lt");
     CHKLOCALE("lt")
     {

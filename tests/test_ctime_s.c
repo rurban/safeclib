@@ -80,7 +80,7 @@ int test_ctime_s (void)
             printf("gmtime() failed\n");
             return errs+1;
         }
-        memset(tm, 0, sizeof(struct tm));
+        /* memset(tm, 0, sizeof(struct tm)); */
 #if SIZEOF_TIME_T < 8
         /* year 10000, ie 313392063599L would overflow on 32bit */
         timer = MAX_TIME_T_STR;
@@ -90,6 +90,9 @@ int test_ctime_s (void)
         debug_printf("year 10000 = %ld\n", (long)timer);
         if (timer != -1)
             timer++;
+#endif
+#ifdef BSD_OR_DARWIN_LIKE
+        /* leak needs to be supressed, darwin valgrind bug */
 #endif
     }
 

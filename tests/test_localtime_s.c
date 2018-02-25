@@ -41,25 +41,29 @@ int test_localtime_s (void)
     tmptr = localtime_s(&timer, &tm);
     ERRNO(0);
     PTRNN(tmptr);
+#ifdef BSD_OR_DARWIN_LIKE
+    /* leak needs to be supressed, darwin valgrind bug */
+#endif
 
     timer = -1;
     tmptr = localtime_s(&timer, &tm);
     ERRNO(EOVERFLOW);
     PTRNULL(tmptr);
 
-    {
-        struct tm *tmp = localtime(&timer);
-        memset(tmp, 0, sizeof(struct tm));
+    tmptr = localtime(&timer); /* leaks */
+    /* memset(&tm, 0, sizeof(struct tm)); */
 #if SIZEOF_TIME_T < 8
-        /* year 10000, ie 313392063599L would overflow on 32bit */
-        timer = MAX_TIME_T_STR;
+    /* year 10000, ie 313392063599L would overflow on 32bit */
+    timer = MAX_TIME_T_STR;
 #else
-        tmp->tm_year = 10000;
-        timer = mktime(tmp);
-        debug_printf("year 10000 = %ld\n", timer);
-        timer++;
+    tmptr->tm_year = 10000;
+    timer = mktime(tmptr);
+    debug_printf("year 10000 = %ld\n", timer);
+    timer++;
 #endif
-    }
+#ifdef BSD_OR_DARWIN_LIKE
+    /* leak needs to be supressed, darwin valgrind bug */
+#endif
 
     /* eg. 313392063599L */
     tmptr = localtime_s(&timer, &tm);
