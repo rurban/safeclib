@@ -47,22 +47,42 @@ int test_wcsfc_s(void)
 
 /*--------------------------------------------------*/
 
+    wcscpy(str, L"untouched");
 #ifndef HAVE_CT_BOS_OVR
+    ind = 4;
     EXPECT_BOS("empty dest") 
     rc = wcsfc_s(NULL, LEN, L"test", &ind);
     ERR(ESNULLP);
+    INDCMP(!= 0)
 
-    EXPECT_BOS("empty src")
-    rc = wcsfc_s(str, LEN, NULL, &ind);
-    ERR(ESNULLP);
-
+    ind = 4;
     EXPECT_BOS("empty dest or dmax") 
     rc = wcsfc_s(str, 0, L"test", &ind);
     ERR(ESZEROL)
+    WEXPSTR(str, L"untouched")
+    INDCMP(!= 0)
 
+    ind = 4;
     EXPECT_BOS("dest overflow")
     rc = wcsfc_s(str, RSIZE_MAX_WSTR+1, L"test", &ind);
     ERR(ESLEMAX)
+    WEXPSTR(str, L"untouched")
+    INDCMP(!= 0)
+
+    if (_BOS_KNOWN(str)) {
+        EXPECT_BOS("dest overflow")
+        rc = wcsfc_s(str, LEN+1, L"test", &ind);
+        ERR(EOVERFLOW)
+        WEXPSTR(str, L"") /* cleared */
+    }
+
+    ind = 4;
+    EXPECT_BOS("empty src")
+    rc = wcsfc_s(str, LEN, NULL, &ind);
+    ERR(ESNULLP);
+    INDCMP(!= 0)
+    WEXPSTR(str, L"") /* cleared */
+
 #endif
 
 /*--------------------------------------------------*/

@@ -39,7 +39,7 @@
 
 /**
  * @brief
- *    \c iswfc() checks the uppercase character for a mapping to foldcase,
+ *    \b iswfc() checks the uppercase character for a mapping to foldcase,
  *    returning the number of new wide character codepoints needed.
  *    The usual \c iswupper(wc) case returns 1, and the special 104 full folding
  *    cases as specified in Unicode 10.0 \c CaseFolding.txt return either 2 or 3.
@@ -365,6 +365,7 @@ _towfc_single(wchar_t *restrict dest, const uint32_t src)
 }
 
 /**
+ * @def towfc_s(dest,dmax,src)
  * @brief
  *    \c towfc_s() converts a wide character to fully fold-cased (lowercased
  *    with possible expansions), according to the Unicode 10.0 CaseFolding
@@ -373,15 +374,15 @@ _towfc_single(wchar_t *restrict dest, const uint32_t src)
  *
  *  @details
  *    As of Unicode 10.0 there are no possible results as surrogate pairs with
- *    \c sizeof(wchar_t)==2, all results are below U+FFFF.
+ *    \c sizeof(wchar_t)==2, all results are below U+10000.
  *
  * @param[out]  dest  wide string buffer to store result
  * @param[in]   dmax  maximum size of dest, should be 4. (3 + NULL)
  * @param[in]   src   wide character to convert to lowercase
  *
  * @pre  dest shall not be a null pointer.
- * @pre  dmax shall be bigger than 3
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR.
+ * @pre  dmax shall be bigger than 3.
+ * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
  *
  * @retval  >=0          on successful operation, returns the number
  *                       of converted wide characters: 0-3
@@ -389,6 +390,9 @@ _towfc_single(wchar_t *restrict dest, const uint32_t src)
  * @retval  -ESZEROL     when dmax = 0
  * @retval  -ESLEMIN     when dmax < 4
  * @retval  -ESLEMAX     when dmax > RSIZE_MAX_WSTR
+ * @retval  -EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                       knows the object_size statically)
+ * @retval  -ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  -ESNOTFND    when no mapping for src was found, iswfc is wrong.
  *
  * @see
@@ -399,29 +403,49 @@ _towfc_single(wchar_t *restrict dest, const uint32_t src)
    character. dmax should be 4 (3 wchar's + \0).
    Returns the number of replaced wide characters, or -ESNOTFND if not replaced.
 */
-int
-towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
+EXPORT int
+_towfc_s_chk(wchar_t *restrict dest, rsize_t dmax, const uint32_t src,
+             const size_t destbos)
 {
     int i;
+    const size_t destsz = dmax * sizeof(wchar_t);
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("_towfc_s: "
+        invoke_safe_str_constraint_handler("towfc_s: "
                    "dest is null",
                    NULL, ESNULLP);
         return -(ESNULLP);
     }
     if (unlikely(dmax < 4)) {
-        invoke_safe_str_constraint_handler("_towfc_s: "
+        invoke_safe_str_constraint_handler("towfc_s: "
                    "dmax is < 4",
-                   NULL, ESLEMIN);
+                   (void*)dest, ESLEMIN);
         return -(ESLEMIN);
     }
     dest[0] = L'\0';
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("_towfc_s: "
+        invoke_safe_str_constraint_handler("towfc_s: "
                    "dmax exceeds max",
-                   NULL, ESLEMAX);
+                   (void*)dest, ESLEMAX);
         return -(ESLEMAX);
+    }
+    if (destbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(dest, destsz);
+    } else {
+        if (unlikely(destsz > destbos)) {
+            invoke_safe_str_constraint_handler("towfc_s: dmax exceeds dest",
+                       (void*)dest, EOVERFLOW);
+            return -(EOVERFLOW);
+        }
+#ifdef HAVE_WARN_DMAX
+        if (unlikely(destsz != destbos)) {
+            handle_str_bos_chk_warn("towfc_s",(char*)dest, dmax,
+                                    destbos/sizeof(wchar_t));
+# ifdef HAVE_ERROR_DMAX
+            return (-ESLEWRNG);
+# endif
+        }
+#endif
     }
 
     if (src < 128) {

@@ -916,14 +916,20 @@ iswfc(const uint32_t wc)
 
 /* full foldcase a single upper char to mult. lower chars */
 EXTERN int
-towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
+_towfc_s_chk(wchar_t *restrict dest, rsize_t dmax, const uint32_t src,
+             const size_t destbos)
     BOSW_CHK(dest) BOS_ATTR(dmax < 4, "dmax underflow <4");
+#define towfc_s(dest,dmax,src)                  \
+    _towfc_s_chk(dest,dmax,src,BOS(dest))
 
 /* full foldcase + NFD normalization */
 EXTERN errno_t
-wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
-        const wchar_t *restrict src, rsize_t *restrict lenp)
+_wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
+             const wchar_t *restrict src, rsize_t *restrict lenp,
+             const size_t destbos)
     BOSW_CHK(dest) BOS_NULL(src);
+#define wcsfc_s(dest,dmax,src,lenp)             \
+    _wcsfc_s_chk(dest,dmax,src,lenp,BOS(dest))
 
 /* Normalize to FCD/pre-NFKD */
 EXTERN errno_t

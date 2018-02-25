@@ -55,11 +55,11 @@ int test_towfc_s (void)
     rc = towfc_s(result, RSIZE_MAX_WSTR+1, 1);
     NEGERR(ESLEMAX);
 
-    /*if (_BOS_KNOWN(result)) {
+    if (_BOS_KNOWN(result)) {
         EXPECT_BOS("dest overflow") 
         rc = towfc_s(result, MAX_LEN+1, 1);
-        ERR(EOVERFLOW);
-    }*/
+        NEGERR(EOVERFLOW);
+    }
 #endif
 
 /*--------------------------------------------------*/

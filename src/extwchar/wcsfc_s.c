@@ -54,6 +54,7 @@ _is_lt_accented(uint32_t wc) {
 }
 
 /**
+ * @def wcsfc_s(dest,dmax,src,lenp)
  * @brief
  *    Converts the wide string via full case-folding NFD normalized to lowercase.
  *    The conversion stops at the first null or after dmax characters.  The
@@ -111,8 +112,9 @@ _is_lt_accented(uint32_t wc) {
  */
 
 EXPORT errno_t
-wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
-        const wchar_t *restrict src, rsize_t *restrict lenp)
+_wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
+             const wchar_t *restrict src, rsize_t *restrict lenp,
+             const size_t destbos)
 {
     wchar_t *orig_dest;
     rsize_t orig_dmax;
@@ -121,30 +123,18 @@ wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
 
     if (lenp)
         *lenp = 0;
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsfc_s: "
-                   "dest is null",
-                   NULL, ESNULLP);
-        return (ESNULLP);
+    CHK_DEST_NULL("wcsfc_s")
+    CHK_DMAX_ZERO("wcsfc_s")
+    CHK_DMAX_MAX("wcsfc_s", RSIZE_MAX_WSTR)
+    if (destbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(dest, dmax*sizeof(wchar_t));
+    } else {
+        const size_t destsz = dmax * sizeof(wchar_t);
+        CHK_DESTW_OVR_CLEAR("wcsfc_s", destsz, destbos)
     }
-
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsfc_s: "
-                   "dmax is 0",
-                   NULL, ESZEROL);
-        return (ESZEROL);
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsfc_s: "
-                   "dmax exceeds max",
-                   NULL, ESLEMAX);
-        return (ESLEMAX);
-    }
-
     if (unlikely(src == NULL)) {
         handle_werror(dest, dmax, "wcsfc_s: " "src is null",
-                   ESNULLP);
+                      ESNULLP);
         return (ESNULLP);
     }
 
