@@ -52,7 +52,7 @@
  * @param[out] dest   pointer to the memory that will be replaced by src.
  * @param[in]  dmax   maximum length of the resulting dest, in bytes
  * @param[in]  src    pointer to the memory that will be copied to dest
- * @param[in]  slen  number of uint32_t's to be copied
+ * @param[in]  slen   number of uint32_t's to be copied
  *
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   dmax shall not be 0.
@@ -112,11 +112,8 @@ _memcpy32_s_chk (uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t slen
         return (RCNEGATE(ESLEMAX));
     }
 
-    /*
-     * overlap is undefined behavior, do not allow
-     */
-    if (unlikely( ((dest > src) && (dest < (src+slen))) ||
-                  ((src > dest) && (src < (dest+dmax/4))) )) {
+    /* overlap is disallowed, but allow dest==src */
+    if (unlikely(CHK_OVRLP_BUTSAME(dest,dmax/4,src,slen))) {
         mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy32_s: overlap undefined",
                    (void*)dest, ESOVRLP);

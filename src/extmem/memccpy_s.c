@@ -107,11 +107,8 @@ _memccpy_s_chk(void *restrict dest, rsize_t dmax, const void *restrict src,
     CHK_SRC_MEM_NULL_CLEAR("memccpy_s", src)
     CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memccpy_s", n, RSIZE_MAX_MEM)
 
-    /*
-     * overlap is an error
-     */
-    if (unlikely( ((dp >= sp) && (dp < (sp+n))) ||
-                  ((sp > dp) && (sp < (dp+dmax))) )) {
+    /* overlap is disallowed */
+    if (unlikely(CHK_OVRLP(dp,dmax,sp,n))) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memccpy_s: overlap undefined",
                    NULL, ESOVRLP);

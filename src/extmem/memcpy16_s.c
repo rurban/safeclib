@@ -115,11 +115,8 @@ _memcpy16_s_chk (uint16_t *dest, rsize_t dmax,
         }
     }
 
-    /*
-     * overlap is undefined behavior, do not allow
-     */
-    if (unlikely( ((dest > src) && (dest < (src+slen))) ||
-                  ((src > dest) && (src < (dest+dmax/2))) )) {
+    /* overlap is disallowed, but allow dest==src */
+    if (unlikely(CHK_OVRLP_BUTSAME(dest,dmax/2,src,slen))) {
         mem_prim_set(dest, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy16_s: overlap undefined",
                    (void*)dest, ESOVRLP);

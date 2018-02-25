@@ -38,8 +38,8 @@ gmake -s clean
 CC="clang-mp-devel" ./configure --enable-error-dmax && \
     $make -s -j4 check-log && exit
 # try the BSD/darwin memset_s
-CFLAGS="-g -DTEST_MSVCRT" ./configure --enable-shared --enable-debug --enable-unsafe && \
-    make check-log || exit
+#CFLAGS="-g -DTEST_MSVCRT" ./configure --enable-shared --enable-debug --enable-unsafe && \
+#    make check-log || exit
 CC="clang-mp-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit

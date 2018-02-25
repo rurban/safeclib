@@ -133,11 +133,8 @@ _wmemcpy_s_chk (wchar_t *dest, rsize_t dlen, const wchar_t *src, rsize_t count,
         }
     }
 
-    /*
-     * overlap is undefined behavior, do not allow
-     */
-    if (unlikely( ((dest > src) && (dest < (src+count))) ||
-                  ((src > dest) && (src < (dest+dlen))) )) {
+    /* overlap is disallowed, but allow dest==src */
+    if (unlikely(CHK_OVRLP_BUTSAME(dest,dlen,src,count))) {
         wmem_set((wmem_type*)dest, (uint32_t)dlen, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: overlap undefined",
                    (void*)dest, ESOVRLP);

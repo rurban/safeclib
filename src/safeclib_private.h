@@ -124,6 +124,10 @@ void abort(void) __attribute__((noreturn));
 # define WANT_C11
 #endif
 
+#ifndef HAVE_UINTPTR_T
+typedef unsigned long uintptr_t;
+#endif
+
 /* mingw 3.4 */
 #ifndef EOVERFLOW
 # ifdef _WIN32
@@ -560,6 +564,19 @@ void abort(void) __attribute__((noreturn));
         CHK_DEST_OVR_BOOL(func, destbos)                                \
     }
 
+/* Comparing pointers from two separately allocated objects is forbidden
+   as per 6.5.8 C11 except when using (in)equality. GH #51 */
+#define CHK_OVRLP(dp,dlen,sp,slen) \
+    (((uintptr_t)dp >= (uintptr_t)sp) &&        \
+     ((uintptr_t)dp < (uintptr_t)(sp+slen))) || \
+    (((uintptr_t)dp < (uintptr_t)sp) &&         \
+     ((uintptr_t)sp < (uintptr_t)(dp+dlen)))
+/* but allow dp==sp */
+#define CHK_OVRLP_BUTSAME(dp,dlen,sp,slen) \
+    (((uintptr_t)dp > (uintptr_t)sp) &&        \
+     ((uintptr_t)dp < (uintptr_t)(sp+slen))) || \
+    (((uintptr_t)dp < (uintptr_t)sp) &&         \
+     ((uintptr_t)sp < (uintptr_t)(dp+dlen)))
 
 /* platform quirks */
 #ifndef SAFECLIB_DISABLE_WCHAR

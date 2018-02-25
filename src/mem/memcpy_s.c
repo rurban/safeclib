@@ -126,9 +126,8 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax,
         return (RCNEGATE(EOVERFLOW));
     }
 
-    /* overlap is disallowed */
-    if (unlikely( ((dp > sp) && (dp < (sp+slen))) ||
-                  ((sp > dp) && (sp < (dp+dmax))) )) {
+    /* overlap is disallowed, but allow dest==src */
+    if (unlikely(CHK_OVRLP_BUTSAME(dp,dmax,sp,slen))) {
         mem_prim_set(dp, dmax, 0);
         invoke_safe_mem_constraint_handler("memcpy_s: overlap undefined",
                    dest, ESOVRLP);
