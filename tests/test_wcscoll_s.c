@@ -72,7 +72,7 @@ int test_wcscoll_s (void)
     ERR(ESNULLP)
     INDZERO()
 
-    EXPECT_BOS("empty indicator")
+    EXPECT_BOS("empty resultp")
     rc = wcscoll_s(str1, LEN, str2, LEN, NULL);
     ERR(ESNULLP)
 
@@ -95,6 +95,19 @@ int test_wcscoll_s (void)
     rc = wcscoll_s(str1, LEN, str2, RSIZE_MAX_STR+1, &ind);
     ERR(ESLEMAX)
     INDZERO()
+
+# ifdef HAVE___BUILTIN_OBJECT_SIZE
+    EXPECT_BOS("dest overflow")
+    rc = wcscoll_s(str1, LEN+1, str2, LEN, &ind);
+    ERR(EOVERFLOW);
+    INDZERO()
+    
+    EXPECT_BOS("src overflow")
+    rc = wcscoll_s(str1, LEN, str2, LEN+1, &ind);
+    ERR(EOVERFLOW)
+    INDZERO()
+# endif
+
 #endif
 
 /*--------------------------------------------------*/

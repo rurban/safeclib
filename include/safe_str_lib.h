@@ -889,9 +889,12 @@ _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t value, size_t
     _wcsnset_s_chk(dest,dmax,value,n,BOS(dest))
 
 EXTERN errno_t
-wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
-          const wchar_t *restrict src,  rsize_t smax, int *indicator)
-    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(indicator);
+_wcscoll_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+               const wchar_t *restrict src,  rsize_t smax, int *resultp,
+               const size_t destbos, const size_t srcbos)
+    BOSW_CHK(dest) BOSW_CHK2(src, smax) BOS_NULL(resultp);
+#define wcscoll_s(dest,dmax,src,smax,resultp)           \
+    _wcscoll_s_chk(dest,dmax,src,smax,resultp,BOS(dest),BOS(src))
 
 /* simple char-wise folding */
 EXTERN errno_t

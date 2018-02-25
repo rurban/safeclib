@@ -3,7 +3,7 @@
  *
  * September 2017, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -73,8 +73,8 @@
  *
  * @see
  *    strcmp_s(), wcsncmp_s(), wcsicmp_s()
- *
  */
+
 EXPORT errno_t
 _wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
               const wchar_t *restrict src, rsize_t smax,
