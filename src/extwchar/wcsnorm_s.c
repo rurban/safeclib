@@ -858,9 +858,9 @@ _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *rest
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_WSTR)) {
             *lenp = 0;
-            handle_werror(dest, destbos/sizeof(wchar_t),
-                          "wcsnorm_compose_s: dmax exceeds max",
-                          ESLEMAX);
+            invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
+                       "dmax exceeds max",
+                       (void*)dest, ESLEMAX);
             return ESLEMAX;
         }
         BND_CHK_PTR_BOUNDS(dest, dmax*sizeof(wchar_t));
