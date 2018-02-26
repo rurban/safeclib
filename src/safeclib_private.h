@@ -363,12 +363,13 @@ typedef unsigned long uintptr_t;
 #define CHK_DEST_OVR_BOOL(func, destbos)                                \
     if (unlikely(dmax != destbos)) {                                    \
         if (unlikely(dmax > destbos)) {                                 \
-            if (dmax > RSIZE_MAX_STR)                                   \
+            if (dmax > RSIZE_MAX_STR) {                                 \
                 invoke_safe_str_constraint_handler(func": dmax exceeds max", \
                                (void*)dest, ESLEMAX);                   \
-            else                                                        \
+            } else {                                                    \
                 invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
                                (void*)dest, EOVERFLOW);                 \
+            }                                                           \
             return false;                                               \
         }                                                               \
         handle_str_bos_chk_warn(func,(char*)dest,dmax,destbos);         \
@@ -439,12 +440,13 @@ typedef unsigned long uintptr_t;
     }
 #define CHK_DEST_OVR_BOOL(func, destbos)                                \
     if (unlikely(dmax > destbos)) {                                     \
-        if (dmax > RSIZE_MAX_STR)                                       \
+        if (dmax > RSIZE_MAX_STR) {                                     \
             invoke_safe_str_constraint_handler(func": dmax exceeds max", \
                            (void*)dest, ESLEMAX);                       \
-        else                                                            \
+        } else {                                                        \
             invoke_safe_str_constraint_handler(func": dmax exceeds dest", \
                            (void*)dest, EOVERFLOW);                     \
+        }                                                               \
         return false;                                                   \
     }
 # define CHK_DEST_MEM_OVR(func, destbos)                                \

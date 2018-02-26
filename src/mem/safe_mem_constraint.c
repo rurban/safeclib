@@ -80,13 +80,18 @@ set_mem_constraint_handler_s (constraint_handler_t handler)
 EXPORT_SYMBOL(set_mem_constraint_handler_s);
 #endif
 
+/* enable for decl */
+#ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+#undef invoke_safe_mem_constraint_handler
+#endif
 /**
  * @brief
  *    Invokes the currently set constraint handler or the default.
+ *    Can be disabled via \c --disable-constraint-handler
  *
- * @param *msg    Pointer to the message describing the error
- * @param *ptr    Pointer to aassociated data. Can be NULL.
- * @param error  The error code encountered.
+ * @param *msg    Pointer to the message describing the error.
+ * @param *ptr    Pointer to associated data. Can be NULL.
+ * @param error   The error code encountered.
  *
  */
 EXPORT void
@@ -104,6 +109,10 @@ invoke_safe_mem_constraint_handler (const char *msg,
 EXPORT_SYMBOL(invoke_safe_mem_constraint_handler);
 #endif
 
+/* disable again */
+#ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+#define invoke_safe_mem_constraint_handler(msg, ptr, error)
+#else
 
 void
 handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
@@ -114,3 +123,5 @@ handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
             func, (unsigned long)dmax, (unsigned long)destbos);
     invoke_safe_mem_constraint_handler(msg, dest, ESLEWRNG);
 }
+
+#endif

@@ -47,6 +47,12 @@ invoke_safe_mem_constraint_handler(const char *msg,
                                    void *ptr,
                                    errno_t error);
 
+/* Disable the constraint handlers with --disable-constraint-handler */
+#ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+#define invoke_safe_mem_constraint_handler(msg, ptr, error) 
+#define handle_mem_bos_chk_warn(func,dest,dmax,destbos)
+#endif
+
 static inline void
 handle_mem_error(void *restrict dest, rsize_t dmax,
              const char *err_msg, errno_t err_code)
@@ -56,8 +62,10 @@ handle_mem_error(void *restrict dest, rsize_t dmax,
     return;
 }
 
+#ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 void
 handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
                         const rsize_t dmax, const size_t destbos);
+#endif /* SAFECLIB_DISABLE_CONSTRAINT_HANDLER */
 
 #endif /* __SAFE_MEM_CONSTRAINT_H__ */

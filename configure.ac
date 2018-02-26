@@ -232,8 +232,8 @@ AC_SUBST(RSIZE_MAX_STR)
 
 AC_ARG_ENABLE(nullslack,
 	AS_HELP_STRING([--disable-nullslack],
-		       [Null out the remaining part of a string if it is
-			not completely used @<:@default=yes@:>@]),
+		       [Do not null out the remaining part of a string if it is
+			not completely used @<:@default=no@:>@]),
 	[case "${enableval}" in
 	yes) enable_nullslack=true ;;
 	no)  enable_nullslack=false ;;
@@ -251,6 +251,26 @@ else
 	INSERT_NULLSLACK="#undef SAFECLIB_STR_NULL_SLACK"
 fi
 AC_SUBST(INSERT_NULLSLACK)
+
+AC_ARG_ENABLE(constraint-handler,
+	AS_HELP_STRING([--disable-constraint-handler],
+          [Disable C11 invoke_safe_{str,mem}_constraint_handler
+          for performance, smaller size and less flexibility.
+	   @<:@default=no@:>@]),
+       [case "${enableval}" in
+	yes) enable_constraint_handler=true ;;
+	no)  enable_constraint_handler=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-constraint-handler]) ;;
+	esac], [enable_constraint_handler=true])
+AC_MSG_CHECKING([for --disable-constraint-handler])
+if test "x$enable_constraint_handler" = "xfalse" ; then
+	AC_MSG_RESULT([yes])
+	INSERT_CONSTRAINT_HANDLER="#define SAFECLIB_DISABLE_CONSTRAINT_HANDLER 1"
+else
+	AC_MSG_RESULT([no (default)])
+	INSERT_CONSTRAINT_HANDLER="#undef SAFECLIB_DISABLE_CONSTRAINT_HANDLER"
+fi
+AC_SUBST(INSERT_CONSTRAINT_HANDLER)
 
 AC_ARG_ENABLE(unsafe,
 	AS_HELP_STRING([--enable-unsafe],

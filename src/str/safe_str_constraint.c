@@ -86,19 +86,25 @@ set_str_constraint_handler_s (constraint_handler_t handler)
 EXPORT_SYMBOL(set_str_constraint_handler_s);
 #endif
 
+/* enable for decl */
+#ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+#undef invoke_safe_str_constraint_handler
+#endif
+
 /**
  * @brief
  *    Invokes the currently set constraint handler or the default.
+ *    Can be disabled via \c --disable-constraint-handler
  *
- * @param *msg    Pointer to the message describing the error
+ * @param *msg    Pointer to the message describing the error.
  * @param *ptr    Pointer to aassociated data. Can be NULL.
  * @param error   The error code encountered.
  *
  */
 EXPORT void
 invoke_safe_str_constraint_handler (const char *restrict msg,
-                                    void *restrict ptr,
-                                    errno_t error)
+                                     void *restrict ptr,
+                                     errno_t error)
 {
     if (NULL != str_handler) {
         str_handler(msg, ptr, error);
@@ -108,6 +114,11 @@ invoke_safe_str_constraint_handler (const char *restrict msg,
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
+#endif
+
+/* disable again */
+#ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+#define invoke_safe_str_constraint_handler(msg, ptr, error)
 #endif
 
 int
@@ -124,9 +135,11 @@ handle_str_bos_overload(const char *restrict msg, char *restrict dest,
     return RCNEGATE(err);
 }
 
+#ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+
 void
 handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
-                        const rsize_t dmax, const size_t destbos)
+                         const rsize_t dmax, const size_t destbos)
 {
     char msg[128];
     sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
@@ -144,3 +157,5 @@ handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
             func, smaxname, (unsigned long)smax, srcname, (unsigned long)srcbos);
     invoke_safe_str_constraint_handler(msg, (void *)dest, ESLEWRNG);
 }
+
+#endif

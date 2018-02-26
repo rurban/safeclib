@@ -64,8 +64,12 @@ extern "C" {
 #define RSIZE_MAX_STR @RSIZE_MAX_STR@
 #endif
 
-/* null out the remaining part of a string buffer if it is not completely used */
+/* Null out the remaining part of a string buffer if it is not completely used */
 @INSERT_NULLSLACK@
+
+/* Disable the C11 invoke_safe_{str,mem}_constraint_handler callbacks on errors,
+   for performance, smaller size and less flexibility. */
+@INSERT_CONSTRAINT_HANDLER@
 
 /* Define to 1 to include some additional unsafe C11 functions:
    snprintf_s, vsnprintf_s, tmpnam_s */
