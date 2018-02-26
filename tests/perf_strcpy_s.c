@@ -1,18 +1,18 @@
 /*
- * perf_memcpy_s.c
+ * perf_strcpy_s.c
  *
  * gcc-7 objsize:
  * --disable-constraint-handler
- *         memcpy_s.o  952
+ *         strcpy_s.o 1464
  * with:
- *         memcpy_s.o 1908  +100%,  956 bytes
+ *         strcpy_s.o 1972  +34.7%, 508 bytes
  *
- * Speed overhead: 88% --disable-constraint-handler
- *                 88% default
+ * Speed overhead: 91% --disable-constraint-handler
+ *                 91% default
  */
 
 #include "test_private.h"
-#include "safe_mem_lib.h"
+#include "safe_str_lib.h"
 
 #ifndef __KERNEL__
 # ifdef TIME_WITH_SYS_TIME
@@ -29,19 +29,19 @@
 # error Not supported in Linux kernel space
 #endif
 
-#if defined(TEST_MSVCRT) && defined(HAVE_MEMCPY_S)
-#undef memcpy_s
+#if defined(TEST_MSVCRT) && defined(HAVE_STRCPY_S)
+#undef strcpy_s
 #endif
 
+#define LEN   ( 1024 )
 
-#define LEN   ( 1024 * 10 )
-
-uint8_t  mem1[LEN];
-uint8_t  mem2[LEN];
+char str1[LEN];
+char str2[LEN];
 
 static inline clock_t rdtsc();
 static double timing_loop (uint32_t len, uint32_t loops);
 int main(void);
+
 
 static inline clock_t rdtsc()
 {
@@ -74,8 +74,10 @@ static double timing_loop (uint32_t len, uint32_t loops)
     double sd_clock_dur;
     double percent;
 
-    for (i=0; i<LEN; i++) { mem1[i] = 33; }
-    for (i=0; i<LEN; i++) { mem2[i] = 44; }
+    for (i=0; i<LEN-1; i++) { str1[i] = 33; }
+    for (i=0; i<LEN-1; i++) { str2[i] = 44; }
+    str1[LEN-1] = '\0';
+    str2[LEN-1] = '\0';
 
     /*printf("\n Timing %d byte copy, %u loops \n", len, loops); */
 
@@ -85,7 +87,7 @@ static double timing_loop (uint32_t len, uint32_t loops)
     clock_start = rdtsc();
     for (i=0; i<loops; i++) {
         volatile errno_t rc;
-        rc = memcpy_s(mem1, len, mem2, len);
+        rc = strcpy_s(str1, LEN, str2);
         errors += rc;
     }
     clock_end = rdtsc();
@@ -103,7 +105,7 @@ static double timing_loop (uint32_t len, uint32_t loops)
     clock_start = rdtsc();
     for (i=0; i<loops; i++) {
         volatile char* rc;
-        rc = (char*)memcpy(mem1, mem2, len);
+        rc = strcpy(str1, str2);
         errors += *rc;
     }
     clock_end = rdtsc();
@@ -121,7 +123,7 @@ static double timing_loop (uint32_t len, uint32_t loops)
 
     /* just to disable optimizing away the inner loop */
     /* fprintf(stderr, "errors %lu\n", errors); */
-    printf("%u  %u  memcpy_s %1.6f  memcpy %1.6f  diff %1.6f  %2.2f %%\n",
+    printf("%u  %u  strcpy_s %1.6f  strcpy %1.6f  diff %1.6f  %2.2f %%\n",
            loops,
            len,
            sl_clock_dur,
@@ -146,7 +148,7 @@ int main(void)
     avg += timing_loop(1024 * 6, 400);
     avg += timing_loop(1024 * 7, 400);
     avg += timing_loop(1024 * 8, 400);
-    printf("avg: %2.2f %%\n", avg/8.0);
+    printf("avg: %2.2f%%\n", avg/8.0);
 
 /*--------------------------------------------------*/
 
@@ -160,7 +162,7 @@ int main(void)
     avg += timing_loop(1024 * 6, 600);
     avg += timing_loop(1024 * 7, 600);
     avg += timing_loop(1024 * 8, 600);
-    printf("avg: %2.2f %%\n", avg/16.0);
+    printf("avg: %2.2f%%\n", avg/16.0);
 
 /*--------------------------------------------------*/
 
