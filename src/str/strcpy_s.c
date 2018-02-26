@@ -36,9 +36,8 @@
 #endif
 
 /* With mingw shared with sec_api and -DTEST_MSVCRT skip it */
-#if defined(TEST_MSVCRT) && defined(_WIN32) && !defined(DISABLE_DLLIMPORT) &&  \
-    defined(HAVE_STRCPY_S)
-#else
+#if !(defined(TEST_MSVCRT) && defined(_WIN32) && !defined(DISABLE_DLLIMPORT) && \
+      defined(HAVE_STRCPY_S))
 
 /* not via the naive byte copy, but aligned long word copy
    via the (((X) - 0x0101010101010101) & ~(X) & 0x8080808080808080)
@@ -97,44 +96,31 @@
  *
  * @see
  *    strcat_s(), strncat_s(), strncpy_s()
- *
  */
 #ifdef FOR_DOXYGEN
 errno_t strcpy_s(char *restrict dest, rsize_t dmax, const char *restrict src)
 #else
-EXPORT errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src, const size_t destbos)
-#endif
+
+/* already checked at compile-time: BOS_CHK(dest) BOS_NULL(src) */
+EXPORT errno_t
+_strcpy_s_real (char * restrict dest, rsize_t dmax, const char * restrict src)
 {
-    rsize_t orig_dmax;
-    char *orig_dest;
+    /* hold base of dest in case src was not copied */
+    const rsize_t orig_dmax = dmax;
+    const char *orig_dest = dest;
     const char *overlap_bumper;
 
-    CHK_DEST_NULL("strcpy_s")
-    CHK_DMAX_ZERO("strcpy_s")
-    if (destbos == BOS_UNKNOWN) {
-        CHK_DMAX_MAX("strcpy_s", RSIZE_MAX_STR)
-        BND_CHK_PTR_BOUNDS(dest, dmax);
-    } else {
-        CHK_DEST_OVR_CLEAR("strcpy_s", destbos)
-    }
     CHK_SRC_NULL_CLEAR("strcpy_s", src)
 
     if (unlikely(dest == src)) {
         return RCNEGATE(EOK);
     }
-
-    /* hold base of dest in case src was not copied */
-    orig_dmax = dmax;
-    orig_dest = dest;
-
     if (dest < src) {
         overlap_bumper = src;
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax,
-                             "strcpy_s: "
+                handle_error((char*)orig_dest, orig_dmax, "strcpy_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -206,8 +192,28 @@ EXPORT errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
+
+/* checked at compile-time: BOS_CHK(dest) BOS_NULL(src) */
+EXPORT errno_t
+_strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
+               const size_t destbos)
+{
+    CHK_DEST_NULL("strcpy_s")
+    CHK_DMAX_ZERO("strcpy_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strcpy_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR_CLEAR("strcpy_s", destbos)
+    }
+
+    return _strcpy_s_real(dest,dmax,src);
+}
+
 #ifdef __KERNEL__
+EXPORT_SYMBOL(_strcpy_s_real);
 EXPORT_SYMBOL(_strcpy_s_chk);
 #endif /* __KERNEL__ */
 
+#endif /* FOR_DOXYGEN */
 #endif

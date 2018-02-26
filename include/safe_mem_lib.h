@@ -75,13 +75,42 @@ EXTERN errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
                              const void *restrict src, rsize_t slen,
                              const size_t destbos, const size_t srcbos)
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
-        VAL_OVR2_BUTZERO(slen, dmax)
-            BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
-                         ((dest > src && (char *)dest < (char *)src + slen) ||
-                          (src > dest && (char *)src < (char *)dest + dmax)),
-                     "dest overlaps with src");
-#define memcpy_s(dest, dmax, src, slen)                                        \
-    _memcpy_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src))
+    VAL_OVR2_BUTZERO(slen, dmax)
+    BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
+             ((dest > src && (char*)dest < (char*)src + slen) ||
+              (src > dest && (char*)src < (char*)dest + dmax)),
+             "dest overlaps with src");
+EXTERN errno_t
+_memcpy_s_real(void *restrict dest, rsize_t dmax,
+               const void *restrict src, rsize_t slen)
+    BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
+    VAL_OVR2_BUTZERO(slen, dmax)
+    BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
+             ((dest > src && (char*)dest < (char*)src + slen) ||
+              (src > dest && (char*)src < (char*)dest + dmax)),
+             "dest overlaps with src");
+
+#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+# define memcpy_s(dest,dmax,src,slen)     \
+    (_BOS_KNOWN(dest) && _BOS_KNOWN(src)  \
+     ? _memcpy_s_real(dest,dmax,src,slen) \
+     : _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src)))
+#elif defined HAVE___BUILTIN_CHOOSE_EXPR
+/* gcc bug: BOS is not a valid constant compile-time expression for gcc-7 */
+# define memcpy_s(dest,dmax,src,slen)               \
+    IFCONSTP(dmax, dmax != 0,                       \
+      IFCONSTP(dmax, dmax < RSIZE_MAX_STR,          \
+        IFCONSTP(dest, dest != NULL,                \
+          IFCONSTP(src, src != NULL,                \
+            _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src)), \
+            "src is null"),                         \
+          "dest is null"),                          \
+        "dmax > max"),                              \
+      "dmax is zero")
+#else
+#define memcpy_s(dest,dmax,src,slen)                \
+    _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
+#endif
 
 /* move memory, including overlapping memory */
 EXTERN errno_t _memmove_s_chk(void *dest, rsize_t dmax, const void *src,

@@ -39,8 +39,7 @@
 #include "mem/mem_primitives_lib.h"
 #endif
 
-#if defined(TEST_MSVCRT) && defined(HAVE_MEMCPY_S)
-#else
+#if !(defined(TEST_MSVCRT) && defined(HAVE_MEMCPY_S))
 
 /**
  * @def memcpy_s(dest,dmax,src,slen)
@@ -86,7 +85,6 @@
  *
  * @see
  *    memcpy16_s(), memcpy32_s(), memmove_s(), memmove16_s(), memmove32_s()
- *
  */
 #ifdef FOR_DOXYGEN
 errno_t memcpy_s(void *restrict dest, rsize_t dmax,
@@ -95,18 +93,34 @@ errno_t memcpy_s(void *restrict dest, rsize_t dmax,
 EXPORT errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
                              const void *restrict src, rsize_t slen,
                              const size_t destbos, const size_t srcbos)
-#endif
-{
-    uint8_t *dp;
-    const uint8_t *sp;
 
+/* already checked at compile-time:
+ *  BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
+ *  VAL_OVR2_BUTZERO(slen, dmax)
+ *  OVERLAP
+ */
+EXPORT errno_t
+_memcpy_s_real (void * restrict dest, rsize_t dmax,
+               const void * restrict src, rsize_t slen)
+{
     /* Note that MSVC checks this at very first. We do also now */
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
+    /* overlap already checked at compile-time */
+    mem_prim_move(dest, src, slen);
+    return RCNEGATE(EOK);
+}
 
-    dp = (uint8_t *)dest;
-    sp = (uint8_t *)src;
+EXPORT errno_t
+_memcpy_s_chk (void * restrict dest, rsize_t dmax,
+               const void * restrict src, rsize_t slen,
+               const size_t destbos, const size_t srcbos)
+{
+    /* Note that MSVC checks this at very first. We do also now */
+    if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
+        return EOK;
+    }
 
     CHK_DEST_MEM_NULL("memcpy_s")
     CHK_DMAX_MEM_ZERO("memcpy_s")
@@ -131,23 +145,20 @@ EXPORT errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
     }
 
     /* overlap is disallowed, but allow dest==src */
-    if (unlikely(CHK_OVRLP_BUTSAME(dp, dmax, sp, slen))) {
-        mem_prim_set(dp, dmax, 0);
-        MEMORY_BARRIER;
-        invoke_safe_mem_constraint_handler("memcpy_s: overlap undefined", dest,
-                                           ESOVRLP);
+    if (unlikely(CHK_OVRLP_BUTSAME((uint8_t*)dest, dmax, (uint8_t*)src, slen))) {
+        mem_prim_set(dest, dmax, 0);
+        invoke_safe_mem_constraint_handler("memcpy_s: overlap undefined",
+                   dest, ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 
-    /*
-     * now perform the copy
-     */
-    mem_prim_move(dp, sp, slen);
-
+    mem_prim_move(dest,src,slen);
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
+EXPORT_SYMBOL(_memcpy_s_real);
 EXPORT_SYMBOL(_memcpy_s_chk);
 #endif
 
+#endif /* FOR_DOXYGEN */
 #endif
