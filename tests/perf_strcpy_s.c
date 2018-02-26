@@ -1,14 +1,23 @@
 /*
  * perf_strcpy_s.c
  *
- * gcc-7 objsize:
- * --disable-constraint-handler
+ * gcc-7 darwin:
+ *   objsize --disable-constraint-handler
  *         strcpy_s.o 1464
- * with:
+ *   default:
  *         strcpy_s.o 1972  +34.7%, 508 bytes
  *
- * Speed overhead: 91% --disable-constraint-handler
- *                 91% default
+ *   Speed overhead: 91% --disable-constraint-handler
+ *                   91% default
+ *
+ * clang-7 darwin:
+ *   --disable-constraint-handler
+ *         strcpy_s.o 1132
+ *   with:
+ *         strcpy_s.o 1688  +33.1%, 420 bytes
+ *
+ *   Speed overhead: 89% --disable-constraint-handler
+ *                   90% default
  */
 
 #include "test_private.h"

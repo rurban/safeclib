@@ -1,14 +1,38 @@
 /*
  * perf_memcpy_s.c
  *
- * gcc-7 objsize:
- * --disable-constraint-handler
+ * gcc-7 darwin:
+ *   objsize --disable-constraint-handler
  *         memcpy_s.o  952
- * with:
+ *   default:
  *         memcpy_s.o 1908  +100%,  956 bytes
  *
- * Speed overhead: 88% --disable-constraint-handler
- *                 88% default
+ *   Speed overhead: 88% --disable-constraint-handler
+ *                   88% default
+ *
+ * clang-7 darwin:
+ *   objsize --disable-constraint-handler
+ *         memcpy_s.o   944
+ *   default:
+ *         memcpy_s.o  1564  +66%,  620 bytes
+ *
+ *   Speed overhead: 51% --disable-constraint-handler
+ *                   56% default
+ *
+ * clang-7         5-20% -march=native --disable-constraint-handler
+ * clang-4         5-20% -march=native --disable-constraint-handler
+ * clang-3.9         87% -march=native --disable-constraint-handler
+ * clang-3.8         86% -march=native --disable-constraint-handler
+ * clang-3.7         84% -march=native --disable-constraint-handler
+ * clang-3.4         89% -march=native --disable-constraint-handler
+ * clang-3.3         88% -march=native --disable-constraint-handler
+ * Apple/cc          87% -march=native --disable-constraint-handler
+ * gcc-7             89% -march=native -Wa,-q --disable-constraint-handler
+ * gcc-5             88% -march=native -Wa,-q --disable-constraint-handler
+ * gcc-4.9           86% -march=native -Wa,-q --disable-constraint-handler
+ * gcc-4.8           89% -march=native -Wa,-q --disable-constraint-handler
+ * gcc-4.6           89% -march=native -Wa,-q --disable-constraint-handler
+ * gcc-4.3           86% -march=native -Wa,-q --disable-constraint-handler
  */
 
 #include "test_private.h"
