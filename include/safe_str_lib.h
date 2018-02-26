@@ -112,7 +112,22 @@ thrd_set_str_constraint_handler_s(constraint_handler_t handler);
 EXTERN errno_t _strcat_s_chk(char *restrict dest, rsize_t dmax,
                              const char *restrict src, const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
-#define strcat_s(dest, dmax, src) _strcat_s_chk(dest, dmax, src, BOS(dest))
+#ifdef HAVE_STATIC_ASSERTxx
+# define strcat_s(dest,dmax,src) \
+    _strcat_s_chk(CT_DEST_NULL(dest),CT_DMAX_ZERO(dmax),CT_DEST_NULL(src),BOS(dest))
+#elif defined HAVE___BUILTIN_CHOOSE_EXPR
+# define strcat_s(dest,dmax,src)                  \
+    IFCONSTP(dest, dest != NULL,                  \
+      IFCONSTP(dmax, dmax != 0,                   \
+        IFCONSTP(src, src != NULL,                \
+          _strcat_s_chk(dest,dmax,src,BOS(dest)), \
+          "src is null"),                         \
+        "dest is null"),                          \
+      "dmax is zero")
+#else
+# define strcat_s(dest,dmax,src) \
+    _strcat_s_chk(dest,dmax,src,BOS(dest))
+#endif
 
 /* string copy */
 EXTERN errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
