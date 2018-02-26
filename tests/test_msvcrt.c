@@ -72,6 +72,10 @@ void _err_msvc(int rc, const int n, const int winerr, int *errp,
                const char *f, const unsigned l)
 {
     const int chk = use_msvcrt ? winerr : n;
+#ifndef DEBUG
+    (void)f;
+    (void)l;
+#endif
     if (rc != chk) {
         debug_printf("%s %u  Error rc=%d \n", f, l, rc);
         (*errp)++;
