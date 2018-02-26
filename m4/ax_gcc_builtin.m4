@@ -154,7 +154,7 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_bswap16], [$1(0)],
                 [__builtin_bswap32], [$1(0)],
                 [__builtin_bswap64], [$1(0)],
-                [__builtin_choose_expr], [$1(0, 0, 0)],
+                [__builtin_choose_expr], [if($1(1, 1, 0)) 1],
                 [__builtin___clear_cache], [$1("", "")],
                 [__builtin_clrsb], [$1(0)],
                 [__builtin_clrsbl], [$1(0)],
