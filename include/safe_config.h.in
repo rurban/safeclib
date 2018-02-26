@@ -112,6 +112,15 @@ extern "C" {
 #endif
 
 /*
+ * Defined by your compiler when __builtin_choose_expr() is available
+ * for compile-time checks. Override when you use a different compiler.
+ * Available since: clang-3.1+, gcc-3.4+.
+ */
+#ifndef HAVE___BUILTIN_CHOOSE_EXPR
+@INSERT_CHOOSE_EXPR@
+#endif
+
+/*
  * Defined by --enable-warn-dmax, to enable dmax checks against
  *  __builtin_object_size(dest)
  */
