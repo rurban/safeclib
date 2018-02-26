@@ -46,6 +46,14 @@ EXTERN void
 invoke_safe_str_constraint_handler(const char *restrict msg, void *restrict ptr,
                                    errno_t error);
 
+
+/* Disable the constraint handlers with --disable-constraint-handler */
+#ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
+#define invoke_safe_str_constraint_handler(msg, ptr, error) 
+#define handle_str_bos_chk_warn(func,dest,dmax,destbos)
+#define handle_str_src_bos_chk_warn(func,dest,smax,srcbos,srcname,smaxname)
+#endif
+
 /*
  * Safe C Lib internal string routine to consolidate error handling.
  * With SAFECLIB_STR_NULL_SLACK clear the dest buffer to eliminate
@@ -100,6 +108,7 @@ int
 handle_str_bos_overload(const char *restrict msg, char *restrict dest,
                         const rsize_t dmax);
 
+#ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 /*
  * Safe C Lib internal string handler to handle deviating compile-time known dest
  * and dmax sizes, when dest != sizeof(dest).
@@ -112,4 +121,6 @@ void
 handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
                             const rsize_t smax, const size_t srcbos,
                             const char* srcname, const char* smaxname);
+#endif /* SAFECLIB_DISABLE_CONSTRAINT_HANDLER */
+
 #endif   /* __SAFE_STR_CONSTRAINT_H__ */

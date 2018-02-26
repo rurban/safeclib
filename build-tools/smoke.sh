@@ -188,12 +188,15 @@ CC="cc -m32" ./configure && \
     $make -s -j4 check-log || exit
 ./configure --disable-nullslack && \
     $make -s -j4 check-log || exit
+./configure --disable-constraint-handler && \
+    $make -s -j4 check-log || exit
 ./configure --disable-extensions && \
     $make -s -j4 check-log || exit
 ./configure --disable-wchar && \
     $make -s -j4 check-log || exit
 ./configure --enable-warn-dmax && \
     $make -s -j4 check-log || exit
+echo configure --enable-error-dmax must fail
 ./configure --enable-error-dmax && \
     $make -s -j4 check-log && exit
 
