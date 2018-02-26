@@ -91,6 +91,10 @@ void _errno_msvc(const int n, const int winerr, int *errp,
                  const char *f, const unsigned l)
 {
     const int chk = use_msvcrt ? winerr : n;
+#ifndef DEBUG
+    (void)f;
+    (void)l;
+#endif
     if (errno != chk) {
         debug_printf("%s %u  Error errno=%d \n", f, l, (int)errno);
         (*errp)++;
