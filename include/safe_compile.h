@@ -43,14 +43,98 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
  *
  * For pointer sizes we need BOS/__builtin_object_size(),
  * for diagnostics __attribute__((diagnose_if()))
+ *
  * gcc violations might be caught with _Static_assert, but this is limited.
  */
 
 #ifndef __has_attribute
-#define __has_attribute(x) 0
+# define __has_attribute(x) 0
+#endif
+
+#ifdef HAVE___BUILTIN_CONSTANT_P
+# define CONSTP(ptr) __builtin_constant_p(ptr)
+#else
+# define CONSTP(ptr) 0
+#endif
+#ifdef HAVE___BUILTIN_CHOOSE_EXPR
+# define CHOOSE_EXPR(exp,ok,notok)    __builtin_choose_expr(exp,ok,notok)
+# define IFEXPR(exp,ok,errmsg) \
+    CHOOSE_EXPR((exp), (ok), errmsg[-1])
+# define IFCONSTP(var,exp,ok,errmsg) \
+    CHOOSE_EXPR(CONSTP(var) ? (exp) : 1, (ok), errmsg[-1])
+#else
+# define CHOOSE_EXPR(exp,ok,notok) ok
+# define IFCONSTP(var,exp,ok,msg) ok
+# define IFEXPR(exp,ok,errmsg) ok
+#endif
+
+#ifdef HAVE_C11
+# define HAVE_STATIC_ASSERT
+# ifndef static_assert
+#  define static_assert _Static_assert
+# endif
+#elif defined(__cplusplus)
+# ifndef HAVE_CXX_STATIC_ASSERT
+#  define static_assert(exp,msg)
+# else
+#  define HAVE_STATIC_ASSERT
+# endif
+#else
+# define static_assert(exp,msg)
 #endif
 
 /* clang-5+ BOS checks */
+#ifdef HAVE_STATIC_ASSERT
+# define __compiletime_assert(condition,msg,prefix,suffix) \
+    static_assert(condition,msg);
+#else
+/* linux kernel a-like compile checks */
+# if __has_attribute(error)
+#  define __compiletime_error(msg) __attribute__((error(msg)))
+#  define __compiletime_error_fallback(cond,msg) do { } while (0)
+# else
+#  define __compiletime_error(msg)
+#  define __compiletime_error_fallback(cond,msg)                         \
+         do { ((void)sizeof(char[1 - 2 * cond])); } while (0)
+# endif
+# define __compiletime_assert(condition, msg, prefix, suffix)		\
+    do {								\
+        bool __cond = !(condition);                                     \
+        extern void prefix ## suffix(void) __compiletime_error(msg);    \
+        if (__cond) {                                                   \
+            prefix ## suffix();                                         \
+        }                                                               \
+        __compiletime_error_fallback(__cond, msg);                      \
+    } while (0)
+#endif
+#define _compiletime_assert(condition, msg, prefix, suffix)             \
+	__compiletime_assert(condition, msg, prefix, suffix)
+#define compiletime_assert(condition, msg)                              \
+	_compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+
+#define CT_DEST_NULL(ptr) \
+    ({compiletime_assert(ptr != NULL, #ptr " is null")},ptr)
+#define CT_DMAX_ZERO(var)\
+    ({compiletime_assert(var != 0, #var " is zero")},var)
+/*
+#define _BAD_CT_DEST_NULL(ptr) ((void *)sizeof(struct { int:-!!(ptr); }))
+#define _BAD_CT_DMAX_ZERO(var) (sizeof(struct { int:-!!(var); }))
+#define _BAD1_CT_DEST_NULL(dest)                      \
+    ({  typeof(ptr) dest = (ptr);                     \
+        extern void dest_is_null # __LINE__(void)     \
+            __attribute__((error(#dest " is null"))); \
+        if (dest == NULL) dest_is_null # __LINE__();  \
+        dest;                                         \
+    })
+#define _BAD1_CT_DMAX_ZERO(dmax)                    \
+    ({  typeof(number) dmax = (number);             \
+        extern void dmax_is_zero(void)              \
+            __attribute__((error(#dmax " is zero")));   \
+        if (dmax == 0) dmax_is_zero();              \
+        dmax;                                       \
+    })
+*/
+
 #define BOS_UNKNOWN ((size_t)-1)
 #define _BOS_KNOWN(dest) ((size_t)BOS(dest) != BOS_UNKNOWN)
 #ifdef HAVE___BUILTIN_OBJECT_SIZE

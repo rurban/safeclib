@@ -1,4 +1,4 @@
-/*
+/**
  * perf_strcpy_s.c
  *
  * gcc-7 darwin:
@@ -30,8 +30,8 @@
 
 #define LEN (1024)
 
-char str1[LEN];
-char str2[LEN];
+static  char str1[LEN];
+static  char str2[LEN];
 
 static double timing_loop(uint32_t len, uint32_t loops) {
     uint32_t i;
@@ -147,7 +147,7 @@ int main(void) {
     avg += timing_loop(1024 * 7, 800);
     avg += timing_loop(1024 * 8, 800);
 
-    printf("\nsum: %2.2f %%\n", avg / 24.0);
+    printf("\nsum: %2.2f%%\n", avg / 24.0);
     /*--------------------------------------------------*/
 
     return (0);
