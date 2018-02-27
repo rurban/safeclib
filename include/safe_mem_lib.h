@@ -71,9 +71,9 @@ EXTERN constraint_handler_t
 thrd_set_mem_constraint_handler_s(constraint_handler_t handler);
 
 /* copy memory */
-EXTERN errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
-                             const void *restrict src, rsize_t slen,
-                             const size_t destbos, const size_t srcbos)
+EXTERN errno_t
+_memcpy_s(void *restrict dest, rsize_t dmax,
+          const void *restrict src, rsize_t slen)
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
     VAL_OVR2_BUTZERO(slen, dmax)
     BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
@@ -81,8 +81,9 @@ EXTERN errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
               (src > dest && (char*)src < (char*)dest + dmax)),
              "dest overlaps with src");
 EXTERN errno_t
-_memcpy_s_real(void *restrict dest, rsize_t dmax,
-               const void *restrict src, rsize_t slen)
+_memcpy_s_chk(void *restrict dest, rsize_t dmax,
+              const void *restrict src, rsize_t slen,
+              const size_t destbos, const size_t srcbos)
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
     VAL_OVR2_BUTZERO(slen, dmax)
     BOS_ATTR(_BOS_KNOWN(dest) && _BOS_KNOWN(src) &&
@@ -90,10 +91,10 @@ _memcpy_s_real(void *restrict dest, rsize_t dmax,
               (src > dest && (char*)src < (char*)dest + dmax)),
              "dest overlaps with src");
 
-#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+#ifdef HAVE_CT_BOS_OVR
 # define memcpy_s(dest,dmax,src,slen)     \
-    (_BOS_KNOWN(dest) && _BOS_KNOWN(src)  \
-     ? _memcpy_s_real(dest,dmax,src,slen) \
+    (_BOS_KNOWN(dest) && CONSTP(dmax) && _BOS_KNOWN(src) && CONSTP(slen) \
+     ? _memcpy_s(dest,dmax,src,slen) \
      : _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src)))
 #elif defined HAVE___BUILTIN_CHOOSE_EXPR
 /* gcc bug: BOS is not a valid constant compile-time expression for gcc-7 */

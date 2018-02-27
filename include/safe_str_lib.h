@@ -110,11 +110,11 @@ thrd_set_str_constraint_handler_s(constraint_handler_t handler);
 /* string concatenate */
 #if !defined(TEST_MSVCRT)
 EXTERN errno_t
-_strcat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
-              const size_t destbos)
+_strcat_s(char *restrict dest, rsize_t dmax, const char *restrict src)
     BOS_CHK(dest) BOS_NULL(src);
 EXTERN errno_t
-_strcat_s_real(char *restrict dest, rsize_t dmax, const char *restrict src)
+_strcat_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
+              const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 #endif
 
@@ -123,10 +123,10 @@ _strcat_s_real(char *restrict dest, rsize_t dmax, const char *restrict src)
     _strcat_s_chk(CT_DEST_NULL(dest),CT_DMAX_ZERO(dmax), \
                   CT_DEST_NULL(src),BOS(dest))
 */
-#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
-# define strcat_s(dest,dmax,src)          \
-    ((_BOS_KNOWN(dest) && CONSTP(src))    \
-      ? _strcat_s_real(dest,dmax,src)     \
+#ifdef HAVE_CT_BOS_OVR
+# define strcat_s(dest,dmax,src)                    \
+    ((_BOS_KNOWN(dest) && CONSTP(dmax))             \
+      ? _strcat_s(dest,dmax,src)                    \
       : _strcat_s_chk(dest,dmax,src,BOS(dest)))
 #elif defined HAVE___BUILTIN_CHOOSE_EXPR
 /* gcc bug: BOS is not a valid constant compile-time expression for gcc-7 */
@@ -134,7 +134,7 @@ _strcat_s_real(char *restrict dest, rsize_t dmax, const char *restrict src)
         IFCONSTP(dest, dest != NULL,                \
             _strcat_s_chk(dest,dmax,src,BOS(dest)), \
           "dest is null")
-# define _strcat_s(dest,dmax,src)                    \
+# define _fixme_strcat_s(dest,dmax,src)             \
     IFCONSTP(dmax, dmax != 0,                       \
       IFCONSTP(dmax, dmax < RSIZE_MAX_STR,          \
         IFCONSTP(dest, dest != NULL,                \
@@ -150,30 +150,34 @@ _strcat_s_real(char *restrict dest, rsize_t dmax, const char *restrict src)
 #endif
 
 /* string copy */
-EXTERN errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src, const size_t destbos)
+EXTERN errno_t
+_strcpy_s(char * restrict dest, rsize_t dmax, const char * restrict src)
     BOS_CHK(dest) BOS_NULL(src);
 EXTERN errno_t
-_strcpy_s_real(char * restrict dest, rsize_t dmax, const char * restrict src)
+_strcpy_s_chk(char * restrict dest, rsize_t dmax, const char * restrict src,
+              const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 
-#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+#ifdef HAVE_CT_BOS_OVR
+/* clang-4+ can omit all run-time checks, when all 4 args are known */
+/* defer src=NULL,dest==src check to _strcpy_s */
 # define strcpy_s(dest,dmax,src)          \
-    ((_BOS_KNOWN(dest) && CONSTP(src))    \
-      ? _strcpy_s_real(dest,dmax,src)     \
+    ((_BOS_KNOWN(dest) && CONSTP(dmax))   \
+      ? _strcpy_s(dest,dmax,src)          \
       : _strcpy_s_chk(dest,dmax,src,BOS(dest)))
 #elif defined HAVE___BUILTIN_CHOOSE_EXPR
+/* catch as many compile violations as possible with gcc */
 /* gcc bug: BOS is not a valid constant compile-time expression for gcc-7 */
 # define strcpy_s(dest,dmax,src)                    \
         IFCONSTP(dest, dest != NULL,                \
-            _strcpy_s_chk(dest,dmax,src,BOS(dest)), \
+          _strcpy_s_chk(dest,dmax,src,BOS(dest)),   \
           "dest is null")
-# define _strcpy_s_buggy(dest,dmax,src)             \
+# define _strcpy_s_fixme(dest,dmax,src)             \
     IFCONSTP(dmax, dmax != 0,                       \
       IFCONSTP(dmax, dmax < RSIZE_MAX_STR,          \
         IFCONSTP(dest, dest != NULL,                \
           IFCONSTP(src, src != NULL,                \
-            _strcpy_s_chk(dest,dmax,src,BOS(dest)), \
+            _strcpy_s(dest,dmax,src),               \
             "src is null"),                         \
           "dest is null"),                          \
         "dmax > max"),                              \

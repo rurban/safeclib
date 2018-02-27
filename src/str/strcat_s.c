@@ -112,17 +112,16 @@ errno_t strcat_s(char *restrict dest, rsize_t dmax,
 EXPORT errno_t _strcat_s_chk(char *restrict dest, rsize_t dmax,
                              const char *restrict src, size_t destbos)
 
-/* already checked at compile-time: BOS_CHK(dest) BOS_NULL(src) */
-EXPORT errno_t
-_strcat_s_real (char *restrict dest, rsize_t dmax, const char *restrict src)
+/* already checked at compile-time: BOS_CHK(dest), src not */
+static inline errno_t
+_strcat_s_unchecked (char *restrict dest, rsize_t dmax, const char *restrict src)
 {
-    rsize_t orig_dmax;
-    char *orig_dest;
+    /* hold base of dest in case src was not copied */
+    rsize_t orig_dmax = dmax;
+    char *orig_dest = dest;
     const char *overlap_bumper;
 
-    /* hold base of dest in case src was not copied */
-    orig_dmax = dmax;
-    orig_dest = dest;
+    CHK_SRC_NULL_CLEAR("strcat_s", src)
 
     if (dest < src) {
         overlap_bumper = src;
@@ -240,7 +239,7 @@ _strcat_s_real (char *restrict dest, rsize_t dmax, const char *restrict src)
     return RCNEGATE(ESNOSPC);
 }
 
-/* checked at compile-time: BOS_CHK(dest) BOS_NULL(src) */
+/* Not checked at compile-time: _BOS_KNOWN(dest) && CONSTP(dmax) */
 EXPORT errno_t
 _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src,
                size_t destbos)
@@ -253,14 +252,20 @@ _strcat_s_chk (char *restrict dest, rsize_t dmax, const char *restrict src,
     } else {
         CHK_DEST_OVR_CLEAR("strcat_s", destbos)
     }
-    CHK_SRC_NULL_CLEAR("strcat_s", src)
 
-    return _strcat_s_real(dest,dmax,src);
+    return _strcat_s_unchecked(dest,dmax,src);
+}
+
+/* All but src checked at compile-time: BOS_CHK(dest) */
+EXPORT errno_t
+_strcat_s (char *restrict dest, rsize_t dmax, const char *restrict src)
+{
+    return _strcat_s_unchecked(dest,dmax,src);
 }
 
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strcat_s_real);
 EXPORT_SYMBOL(_strcat_s_chk);
+EXPORT_SYMBOL(_strcat_s);
 #endif /* __KERNEL__ */
 
 #endif /* FOR_DOXYGEN */
