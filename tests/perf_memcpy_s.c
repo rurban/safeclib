@@ -60,10 +60,31 @@
 uint8_t mem1[LEN];
 uint8_t mem2[LEN];
 
-//static double timing_loop(uint32_t len, uint32_t loops);
-//int main(void);
+static uint8_t  mem1[LEN];
+static uint8_t  mem2[LEN];
 
-static double timing_loop(uint32_t len, uint32_t loops) {
+static inline clock_t rdtsc();
+static double timing_loop (const uint32_t len, const uint32_t loops);
+int main(void);
+
+static inline clock_t rdtsc()
+{
+#ifdef __x86_64__
+    unsigned int a, d;
+    __asm__ volatile ("rdtsc" : "=a" (a), "=d" (d));
+    return (unsigned long)a | ((unsigned long)d << 32);
+#elif defined(__i386__)
+    unsigned long long int x;
+    __asm__ volatile ("rdtsc" : "=A" (x));
+    return x;
+#else
+#define NO_CYCLE_COUNTER
+    return clock();
+#endif
+}
+
+static double timing_loop (const uint32_t len, const uint32_t loops)
+{
     uint32_t i;
     size_t errors = 0;
 
