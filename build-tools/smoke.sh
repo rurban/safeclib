@@ -70,11 +70,16 @@ CC="gcc-mp-4.3 -ansi" ./configure && \
 echo gcc-mp-4.3 -std=iso9899:199409
 CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
     gmake -s -j4 check-log || exit
+echo "gcc-mp-6"
 CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check-log || exit
+echo "gcc-mp-7  --enable-unsafe"
 CC="gcc-mp-7" ./configure --enable-unsafe && \
     gmake -s -j4 check-log || exit
-echo g++-mp-6 -std=c++11 --enable-unsafe --enable-norm-compat
+echo "gcc-mp-7 -march=native -Wa,-q --enable-unsafe"
+CC="gcc-mp-7 -march=native -Wa,-q" ./configure --enable-unsafe && \
+    gmake -s -j4 check-log || exit
+echo "g++-mp-6 -std=c++11 --enable-unsafe --enable-norm-compat"
 CC="g++-mp-6 -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 echo gcc-mp-6 gcov
@@ -112,7 +117,7 @@ make -s clean
 echo clang-5.0 -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
 CC="clang-5.0 -march=native" \
     ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
+    make -s -j4 check-log && make -s -j4 -C tests tests-bos
 echo clang-4.0 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
 CC="clang-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
