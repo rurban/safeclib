@@ -144,7 +144,7 @@
 #  define GCC_DIAG_RESTORE
 #endif
 
-/* so far clang-7 only */
+/* so far clang-5+ only */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 # ifndef TEST_BOS
 #  define HAVE_CT_BOS_OVR
