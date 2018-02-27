@@ -56,15 +56,18 @@
 #endif
 
 #define LEN (1024 * 10)
+#if __has_attribute(always_inline)
+# define __attribute__always_inline __attribute__((always_inline))
+#else
+# define __attribute__always_inline
+#endif
 
 uint8_t mem1[LEN];
 uint8_t mem2[LEN];
 
-static uint8_t  mem1[LEN];
-static uint8_t  mem2[LEN];
-
 static inline clock_t rdtsc();
-static double timing_loop (const uint32_t len, const uint32_t loops);
+static double timing_loop (const uint32_t len, const uint32_t loops)
+    __attribute__always_inline;
 int main(void);
 
 static inline clock_t rdtsc()
@@ -146,8 +149,9 @@ static double timing_loop (const uint32_t len, const uint32_t loops)
     sd_clock_dur = ((double)(sd_clock_diff) / CLOCKS_PER_SEC);
     percent = 100 * (sl_clock_dur - sd_clock_dur) / sl_clock_dur;
 
-    /* just to disable optimizing away the inner loop */
-    /* fprintf(stderr, "errors %lu\n", errors); */
+    /* ensure the inner loop is not optimized away by some super-smart compiler */
+    if (errors != 44 * loops)
+        fprintf(stderr, "errors %lu\n", errors);
     printf("%"PRIu32"  %"PRIu32"  memcpy_s %1.6f  memcpy %1.6f  diff %1.6f  %2.2f %%\n",
            loops, len, sl_clock_dur, sd_clock_dur,
            (sl_clock_dur - sd_clock_dur), percent);

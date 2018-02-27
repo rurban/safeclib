@@ -92,12 +92,18 @@ _memcpy_s_chk(void *restrict dest, rsize_t dmax,
              "dest overlaps with src");
 
 #ifdef HAVE_CT_BOS_OVR
-# define memcpy_s(dest,dmax,src,slen)     \
-    (_BOS_KNOWN(dest) && CONSTP(dmax) && _BOS_KNOWN(src) && CONSTP(slen) \
-     ? _memcpy_s(dest,dmax,src,slen) \
-     : _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src)))
+/* CONSTP(dmax) && CONSTP(slen) is invalid */
+# define memcpy_s(dest,dmax,src,slen)      \
+    ((_BOS_KNOWN(dest) && _BOS_KNOWN(src) && (dmax == BOS(dest)) && (slen) > 0)) \
+     ? _memcpy_s(dest,dmax,src,slen)       \
+     : _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src))
 #elif defined HAVE___BUILTIN_CHOOSE_EXPR
 /* gcc bug: BOS is not a valid constant compile-time expression for gcc-7 */
+# define _not_memcpy_s(dest,dmax,src,slen)                              \
+    CHOOSE_EXPR(                                                        \
+        !(slen) || ((dmax) == BOS(dest) && _BOS_KNOWN(src) && (slen) <= BOS(src)), \
+        _memcpy_s(dest,dmax,src,slen),                                  \
+        _memcpy_s_chk(dest,dmax,src,slen,BOS(dest),BOS(src)))
 # define memcpy_s(dest,dmax,src,slen)               \
     IFCONSTP(dmax, dmax != 0,                       \
       IFCONSTP(dmax, dmax < RSIZE_MAX_STR,          \

@@ -65,9 +65,9 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #ifdef HAVE___BUILTIN_CHOOSE_EXPR
 # define CHOOSE_EXPR(exp,ok,notok)    __builtin_choose_expr(exp,ok,notok)
 # define IFEXPR(exp,ok,errmsg) \
-    CHOOSE_EXPR((exp), (ok), errmsg[-1])
+    CHOOSE_EXPR((exp), (ok), ""errmsg[-1])
 # define IFCONSTP(var,exp,ok,errmsg) \
-    CHOOSE_EXPR(CONSTP(var) ? (exp) : 1, (ok), errmsg[-1])
+    CHOOSE_EXPR(CONSTP(var) ? (exp) : 1, (ok), ""errmsg[-1])
 #else
 # define CHOOSE_EXPR(exp,ok,notok) ok
 # define IFCONSTP(var,exp,ok,msg) ok

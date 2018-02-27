@@ -121,7 +121,6 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax,
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
-
     CHK_DEST_MEM_NULL("memcpy_s")
     CHK_DMAX_MEM_ZERO("memcpy_s")
     if (destbos == BOS_UNKNOWN) {
