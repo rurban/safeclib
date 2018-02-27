@@ -195,7 +195,7 @@ SAFEC_BUILT_TESTS += 	\
 endif
 endif
 
-SAFEC_BUILT_PERFS =  p_memcpy_s p_strcpy_s
+SAFEC_BUILT_PERFS =  p_memcpy_s p_memset_s p_strcpy_s
 if ENABLE_EXTS
 SAFEC_BUILT_PERFS += p_memcpy32_s
 endif
@@ -270,6 +270,7 @@ endif
 # endif
 
 p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON)
+p_memset_s_SOURCES            = perf_memset_s.c $(SAFEC_TEST_COMMON)
 p_strcpy_s_SOURCES            = perf_strcpy_s.c $(SAFEC_TEST_COMMON)
 
 t_memcpy_s_SOURCES            = test_memcpy_s.c $(SAFEC_TEST_COMMON) \
