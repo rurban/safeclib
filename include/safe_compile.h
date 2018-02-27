@@ -51,6 +51,12 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 # define __has_attribute(x) 0
 #endif
 
+/* Can we do exhaustive compile checks, bypassing the _chk funcs?
+   clang-5+ only */
+#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)  && !defined(TEST_BOS)
+# define HAVE_CT_BOS_OVR
+#endif
+
 #ifdef HAVE___BUILTIN_CONSTANT_P
 # define CONSTP(ptr) __builtin_constant_p(ptr)
 #else

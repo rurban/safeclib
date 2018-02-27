@@ -100,8 +100,8 @@ EXPORT errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
  *  OVERLAP
  */
 EXPORT errno_t
-_memcpy_s_real (void * restrict dest, rsize_t dmax,
-               const void * restrict src, rsize_t slen)
+_memcpy_s (void * restrict dest, rsize_t dmax,
+           const void * restrict src, rsize_t slen)
 {
     /* Note that MSVC checks this at very first. We do also now */
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
@@ -156,7 +156,7 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax,
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_memcpy_s_real);
+EXPORT_SYMBOL(_memcpy_s);
 EXPORT_SYMBOL(_memcpy_s_chk);
 #endif
 
