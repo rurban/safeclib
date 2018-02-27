@@ -13,13 +13,24 @@ CC="clang-mp-5.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 gmake -s clean
+# full optim: failed -O2 in wcsnset_s WCHECK_SLACK, because the static str1 was not initialized.
+#             off-by-one
+CC="clang-mp-5.0 -march-native" \
+    ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
+    gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
+# disable -DFORTIFY_SOURCE=2, asan set it to 0 already
+CC="clang-mp-5.0" \
+    CFLAGS="-g -O2 -fsanitize=address,undefined -fno-omit-frame-pointer" \
+    ./configure --disable-shared --enable-unsafe --enable-norm-compat && \
+    gmake -s -j4 check-log || exit
+gmake -s clean
 CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 gmake -s clean
 # since clang 5 with diagnose_if BOS compile-time checks
 CC="clang-mp-5.0 -std=c11" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+    ./configure --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse

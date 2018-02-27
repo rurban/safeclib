@@ -381,16 +381,16 @@ void *bnd_chk_malloc (size_t n)
 #endif
 
 #ifdef SAFECLIB_STR_NULL_SLACK
-#define WCHECK_SLACK(dest,dmax)                 \
-    {   int i;                                  \
-        for (i=0; i<(int)(dmax); i++) {         \
-          int e = 0;                              \
-          if ((dest)[i] != L'\0') {               \
-            debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %lc \n", \
-                         __FUNCTION__, __LINE__,  rc, i, (dest)[i]); \
-            if (!e) { errs++; e++; }            \
-          } \
-        }\
+#define WCHECK_SLACK(dest,dmax)                \
+    {  int i;                                  \
+       for (i=0; i<(int)(dmax); i++) {         \
+         int e = 0;                            \
+         if ((dest)[i] != L'\0') {             \
+           debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %lc \n", \
+                        __FUNCTION__, __LINE__,  rc, i, (dest)[i]); \
+           if (!e) { errs++; e++; }            \
+         }                                     \
+       }                                       \
     }
 #else
 #define WCHECK_SLACK(dest,dmax) \

@@ -51,7 +51,7 @@ int main(void)
 
     rc = wcsnset_s(str1, LEN-1, L' ', LEN);
     ERR(ESNOSPC);
-    WCHECK_SLACK(str1, LEN);
+    WCHECK_SLACK(str1, LEN-1);
 
 /*--------------------------------------------------*/
 
