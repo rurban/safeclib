@@ -46,7 +46,6 @@
 extern void
 mem_prim_move(void *dest, const void *src, uint32_t len);
 
-
 /* uint8_t moves (handles overlap) memory */
 extern void
 mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len);
@@ -71,6 +70,5 @@ mem_prim_set16(uint16_t *dest, uint32_t len, uint16_t value);
 /* set uint32_t's */
 extern void
 mem_prim_set32(uint32_t *dest, uint32_t len, uint32_t value);
-
 
 #endif  /* __MEM_PRIMITIVES_LIB_H__ */

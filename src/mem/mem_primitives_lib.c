@@ -2,8 +2,10 @@
  * mem_primitives_lib.c - Unguarded Memory Copy Routines
  *
  * February 2005, Bo Berry
+ * February 2018, Reini Urban
  *
  * Copyright (c) 2005-2009 Cisco Systems
+ * Copyright (c) 2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -47,6 +49,9 @@
  * @param[in]  value  byte value
  *
  */
+
+#if __WORDSIZE != 64
+
 void
 mem_prim_set (void *dest, uint32_t len, uint8_t value)
 {
@@ -82,10 +87,9 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
     while (lcount != 0) {
 
         switch (lcount) {
-        /*
-         * Here we do blocks of 8.  Once the remaining count
-         * drops below 8, take the fast track to finish up.
-         */
+        /* Here we do blocks of 16 words. Once the remaining count
+         * drops below 16, take the fast track to finish up.
+         * 4 * 16, 16 words = 64 byte per loop */
         default:
             *lp++ = value32; *lp++ = value32; *lp++ = value32; *lp++ = value32;
             *lp++ = value32; *lp++ = value32; *lp++ = value32; *lp++ = value32;
@@ -100,32 +104,24 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
         case 12:  *lp++ = value32; /* FALLTHRU */
         case 11:  *lp++ = value32; /* FALLTHRU */
         case 10:  *lp++ = value32; /* FALLTHRU */
-        case 9:  *lp++ = value32;  /* FALLTHRU */
-        case 8:  *lp++ = value32;  /* FALLTHRU */
+        case 9:   *lp++ = value32; /* FALLTHRU */
+        case 8:   *lp++ = value32; /* FALLTHRU */
 
-        case 7:  *lp++ = value32;  /* FALLTHRU */
-        case 6:  *lp++ = value32;  /* FALLTHRU */
-        case 5:  *lp++ = value32;  /* FALLTHRU */
-        case 4:  *lp++ = value32;  /* FALLTHRU */
-        case 3:  *lp++ = value32;  /* FALLTHRU */
-        case 2:  *lp++ = value32;  /* FALLTHRU */
-        case 1:  *lp++ = value32;  /* FALLTHRU */
+        case 7:   *lp++ = value32; /* FALLTHRU */
+        case 6:   *lp++ = value32; /* FALLTHRU */
+        case 5:   *lp++ = value32; /* FALLTHRU */
+        case 4:   *lp++ = value32; /* FALLTHRU */
+        case 3:   *lp++ = value32; /* FALLTHRU */
+        case 2:   *lp++ = value32; /* FALLTHRU */
+        case 1:   *lp++ = value32; /* FALLTHRU */
             lcount = 0;
             break;
         }
-    } /* end while */
+    } /* end 16*word loop */
 
-
+    /* remaining bytes */
     dp = (uint8_t *)lp;
-
-    /*
-     * compute the number of remaining bytes
-     */
     count &= (sizeof(uint32_t)-1);
-
-    /*
-     * remaining bytes
-     */
     for (; count; dp++, count--) {
         *dp = value;
     }
@@ -133,6 +129,88 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
     return;
 }
 
+#else /* __WORDSIZE != 64 */
+
+/* optimized for 64bit words */
+void
+mem_prim_set (void *dest, uint32_t len, uint8_t value)
+{
+    uint8_t *dp;
+    uint64_t count;
+    uint64_t lcount;
+
+    uint64_t *lp;
+    uint64_t value64;
+
+    count = len;
+
+    dp = (uint8_t*) dest;
+
+    value64 = (uint64_t)value;
+    if (value) { /* value is mostly 0 */
+        /* spread the byte 8x over the qword */
+        value64 |= (value64 << 8)  | (value64 << 16) | (value64 << 24) |
+                   (value64 << 32) | (value64 << 40) | (value64 << 48) | (value64 << 52);
+    }
+
+    /* First, do the few bytes to get uint64_t aligned. (rarely needed) */
+    for (; count && ( (uintptr_t)dp & (sizeof(uint64_t)-1) ); count--) {
+        *dp++ = value;
+    }
+
+    /* Then do the uint64_t's, unrolled the loop for performance. */
+    GCC_DIAG_IGNORE(-Wcast-align)
+    lp = (uint64_t *)dp;
+    GCC_DIAG_RESTORE
+
+    lcount = count >> 3; /* div 8 */
+
+    while (lcount != 0) {
+
+        switch (lcount) {
+        /* Here we do blocks of 16.  Once the remaining count
+         * drops below 16, take the fast track to finish up.
+         * 8 * 16, 16 qwords = 128 byte per loop */
+        default:
+            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
+            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
+            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
+            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
+            lcount -= 16;
+            break;
+
+        case 15:  *lp++ = value64; /* FALLTHRU */
+        case 14:  *lp++ = value64; /* FALLTHRU */
+        case 13:  *lp++ = value64; /* FALLTHRU */
+        case 12:  *lp++ = value64; /* FALLTHRU */
+        case 11:  *lp++ = value64; /* FALLTHRU */
+        case 10:  *lp++ = value64; /* FALLTHRU */
+        case 9:   *lp++ = value64; /* FALLTHRU */
+        case 8:   *lp++ = value64; /* FALLTHRU */
+
+        case 7:   *lp++ = value64; /* FALLTHRU */
+        case 6:   *lp++ = value64; /* FALLTHRU */
+        case 5:   *lp++ = value64; /* FALLTHRU */
+        case 4:   *lp++ = value64; /* FALLTHRU */
+        case 3:   *lp++ = value64; /* FALLTHRU */
+        case 2:   *lp++ = value64; /* FALLTHRU */
+        case 1:   *lp++ = value64; /* FALLTHRU */
+            lcount = 0;
+            break;
+        }
+    } /* end 16*qword loop */
+
+    /* remaining bytes */
+    dp = (uint8_t *)lp;
+    count &= (sizeof(uint64_t)-1);
+    for (; count; dp++, count--) {
+        *dp = value;
+    }
+
+    return;
+}
+
+#endif /* __WORDSIZE != 64 */
 
 /**
  * @brief
@@ -153,8 +231,8 @@ mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
 
         switch (len) {
         /*
-         * Here we do blocks of 8.  Once the remaining count
-         * drops below 8, take the fast track to finish up.
+         * Here we do blocks of 16.  Once the remaining count
+         * drops below 16, take the fast track to finish up.
          */
         default:
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
@@ -208,8 +286,8 @@ mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
 
         switch (len) {
         /*
-         * Here we do blocks of 8.  Once the remaining count
-         * drops below 8, take the fast track to finish up.
+         * Here we do blocks of 16.  Once the remaining count
+         * drops below 16, take the fast track to finish up.
          */
         default:
             *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
@@ -243,7 +321,6 @@ mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
     return;
 }
 
-
 /**
  * @brief
  *    Moves at most len of bytes from src to dest.
@@ -254,6 +331,9 @@ mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
  * @param[in]  len      maximum number bytes of src that can be copied
  *
  */
+
+#if __WORDSIZE != 64
+
 void
 mem_prim_move (void *dest, const void *src, uint32_t len)
 {
@@ -402,6 +482,159 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
     return;
 }
 
+#else /* __WORDSIZE != 64 */
+
+/* moves memory, optimized for 64bit words */
+void
+mem_prim_move (void *dest, const void *src, uint32_t len)
+{
+#undef wsize
+#undef wmask
+#define wsize   sizeof(uint64_t)
+#define wmask   (wsize - 1)
+
+    uint8_t *dp = (uint8_t*) dest;
+    const uint8_t *sp = (uint8_t*) src;
+
+    uint64_t tsp;
+
+    /*
+     * Determine if we need to copy forward or backward (overlap)
+     */
+    if ((uintptr_t)dp < (uintptr_t)sp) {
+        /*
+         * Copy forward.
+         */
+
+        /*
+         * get a working copy of src for bit operations
+         */
+        tsp = (uintptr_t)sp;
+
+        /*
+         * Try to align both operands.  This cannot be done
+         * unless the low bits match.
+         */
+        if ((tsp | (uintptr_t)dp) & wmask) {
+            /*
+             * determine how many bytes to copy to align operands
+             */
+            if ((tsp ^ (uintptr_t)dp) & wmask || len < wsize) {
+                tsp = len;
+
+            } else {
+                tsp = wsize - (tsp & wmask);
+            }
+
+            len -= tsp;
+
+            /*
+             * make the alignment
+             */
+            do {
+                *dp++ = *sp++;
+            } while (--tsp);
+        }
+
+        /*
+         * Now copy, then mop up any trailing bytes.
+         */
+        tsp = len / wsize;
+
+        if (tsp > 0) {
+
+            do {
+                GCC_DIAG_IGNORE(-Wcast-align)
+                *(uint64_t *)dp = *(uint64_t *)sp;
+                GCC_DIAG_RESTORE
+
+                sp += wsize;
+                dp += wsize;
+            } while (--tsp);
+        }
+
+        /*
+         * copy over the remaining bytes and we're done
+         */
+        tsp = len & wmask;
+
+        if (tsp > 0) {
+            do {
+                *dp++ = *sp++;
+            } while (--tsp);
+        }
+
+    } else {
+        /*
+         * This section is used to copy backwards, to handle any
+         * overlap.  The alignment requires (tps&wmask) bytes to
+         * align.
+         */
+
+        /*
+         * go to end of the memory to copy
+         */
+        sp += len;
+        dp += len;
+
+        /*
+         * get a working copy of src for bit operations
+         */
+        tsp = (uintptr_t)sp;
+
+        /*
+         * Try to align both operands.
+         */
+        if ((tsp | (uintptr_t)dp) & wmask) {
+
+            if ((tsp ^ (uintptr_t)dp) & wmask || len <= wsize) {
+                tsp = len;
+            } else {
+                tsp &= wmask;
+            }
+
+            len -= tsp;
+
+            /*
+             * make the alignment
+             */
+            do {
+                *--dp = *--sp;
+            } while (--tsp);
+        }
+
+        /*
+         * Now copy in uint64_t units, then mop up any trailing bytes.
+         */
+        tsp = len / wsize;
+
+        if (tsp > 0) {
+            do {
+                sp -= wsize;
+                dp -= wsize;
+
+                GCC_DIAG_IGNORE(-Wcast-align)
+                *(uint64_t *)dp = *(uint64_t *)sp;
+                GCC_DIAG_RESTORE
+            } while (--tsp);
+        }
+
+        /*
+         * copy over the remaining bytes and we're done
+         */
+        tsp = len & wmask;
+        if (tsp > 0) {
+            tsp = len & wmask;
+            do {
+                *--dp = *--sp;
+            } while (--tsp);
+        }
+    }
+
+    return;
+}
+
+#endif /* __WORDSIZE != 64 */
 
 /**
  * @brief
@@ -412,8 +645,8 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
  * @param[in]  src     pointer to the memory that will be copied to dest
  * @param[in]  len     maximum number uint8_t of src that can be copied
  *
- *
  */
+
 void
 mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
 {
@@ -431,8 +664,8 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
 
              switch (len) {
              /*
-              * Here we do blocks of 8.  Once the remaining count
-              * drops below 8, take the fast track to finish up.
+              * Here we do blocks of 16.  Once the remaining count
+              * drops below 16, take the fast track to finish up.
               */
              default:
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
@@ -481,8 +714,8 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
 
             switch (len) {
             /*
-             * Here we do blocks of 8.  Once the remaining count
-             * drops below 8, take the fast track to finish up.
+             * Here we do blocks of 16.  Once the remaining count
+             * drops below 16, take the fast track to finish up.
              */
             default:
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
@@ -545,8 +778,8 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
 
              switch (len) {
              /*
-              * Here we do blocks of 8.  Once the remaining count
-              * drops below 8, take the fast track to finish up.
+              * Here we do blocks of 16.  Once the remaining count
+              * drops below 16, take the fast track to finish up.
               */
              default:
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
@@ -594,8 +827,8 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
 
             switch (len) {
             /*
-             * Here we do blocks of 8.  Once the remaining count
-             * drops below 8, take the fast track to finish up.
+             * Here we do blocks of 16.  Once the remaining count
+             * drops below 16, take the fast track to finish up.
              */
             default:
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
@@ -658,8 +891,8 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t len)
 
              switch (len) {
              /*
-              * Here we do blocks of 8.  Once the remaining count
-              * drops below 8, take the fast track to finish up.
+              * Here we do blocks of 16.  Once the remaining count
+              * drops below 16, take the fast track to finish up.
               */
              default:
                   *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
@@ -706,8 +939,8 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t len)
 
             switch (len) {
             /*
-             * Here we do blocks of 8.  Once the remaining count
-             * drops below 8, take the fast track to finish up.
+             * Here we do blocks of 16.  Once the remaining count
+             * drops below 16, take the fast track to finish up.
              */
             default:
                  *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;

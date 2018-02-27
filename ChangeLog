@@ -8,6 +8,9 @@ Changes in v??032018 3.3.0
           you can bypass RSIZE_MAX_* limits. (GH #40)
           Renamed all functions to _*_chk, with the API as macros.
         - Added run-time libmpx pointer boundary checks if supported. (GH #49)
+        - Improved performance of mem_prim_set/mem_prim_move on 64bit machines by factor 2
+          by using 64bit ops, not 32bit. With clang-4+ memcpy_s is now as fast as
+          memcpy native, with gcc only 77% slower.
         - Added strnatcmp_s, strnatcasecmp_s
         - Added --enable-warn-dmax option to warn when dmax != sizeof(dest),
           and fatalized via --enable-error-dmax.

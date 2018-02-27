@@ -1,5 +1,6 @@
 /*
  * perf_memcpy_s.c
+ * first numbers with old 32bit copy.
  *
  * gcc-7 darwin:
  *   objsize --disable-constraint-handler
@@ -33,6 +34,10 @@
  * gcc-4.8           89% -march=native -Wa,-q --disable-constraint-handler
  * gcc-4.6           89% -march=native -Wa,-q --disable-constraint-handler
  * gcc-4.3           86% -march=native -Wa,-q --disable-constraint-handler
+ *
+ * clang-7 -Ofast    -2% 64bit -march=native --disable-constraint-handler
+ * clang-7 -O2   -2 - 5% 64bit -march=native --disable-constraint-handler
+ * gcc-7             77% 64bit -march=native -Wa,-q --disable-constraint-handler
  */
 
 #include "test_private.h"
@@ -49,7 +54,7 @@
 #   include <time.h>
 #  endif
 # endif
-#else
+#elif !defined(__x86_64__) && !defined(__i386__)
 # error Not supported in Linux kernel space
 #endif
 
