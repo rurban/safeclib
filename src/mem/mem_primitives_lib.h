@@ -36,6 +36,11 @@
 #include "safeclib_private.h"
 #endif
 
+/* e.g. kernel. from <asm/types.h> */
+#ifndef __WORDSIZE
+# define __WORDSIZE BITS_PER_LONG
+#endif
+
 /*
  * These are prototypes for _unguarded_ memory routines.  The caller must
  * validate all parameters prior to invocation.  Useful for diagnostics
