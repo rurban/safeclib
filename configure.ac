@@ -518,6 +518,8 @@ esac
 AX_GCC_BUILTIN(__builtin_object_size)
 dnl against -Werror,-Wgcc-compat fortify errors, only on clang
 INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
+INSERT_WARN_DMAX="#undef HAVE_WARN_DMAX"
+INSERT_ERROR_DMAX="#undef HAVE_ERROR_DMAX"
 if test x$ax_cv_have___builtin_object_size = xyes; then
     AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
         [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
@@ -530,14 +532,11 @@ if test x$ax_cv_have___builtin_object_size = xyes; then
     fi
     INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
     if test "x$enable_warn_dmax" = "xtrue" ; then
-        AC_DEFINE([HAVE_WARN_DMAX], 1,
-                [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
+        INSERT_WARN_DMAX="# define HAVE_WARN_DMAX 1"
     fi
     if test "x$enable_error_dmax" = "xtrue" ; then
-        AC_DEFINE([HAVE_WARN_DMAX], 1,
-                [Define to 1 to enable dmax checks against __builtin_object_size(dest)])
-	AC_DEFINE([HAVE_ERROR_DMAX], 1,
-            [Define to 1 to make HAVE_WARN_DMAX fatal])
+        INSERT_WARN_DMAX="#define HAVE_WARN_DMAX 1"
+        INSERT_ERROR_DMAX="#define HAVE_ERROR_DMAX 1"
     fi
 else
     if test "x$enable_warn_dmax" = "xtrue" ; then
@@ -545,8 +544,9 @@ else
     fi
 fi
 
-
 AC_SUBST(INSERT_OBJECT_SIZE)
+AC_SUBST(INSERT_WARN_DMAX)
+AC_SUBST(INSERT_ERROR_DMAX)
 
 AC_MSG_CHECKING([for diagnose_if attribute])
 old_cflags="$CFLAGS"
@@ -716,6 +716,12 @@ AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
 
 AX_GCC_BUILTIN(__builtin_ctz)
 AX_GCC_BUILTIN(__builtin_constant_p)
+INSERT_CONSTANT_P="#undef HAVE___BUILTIN_CONSTANT_P"
+if test x$ax_cv_have___builtin_constant_p = xyes; then
+  INSERT_CONSTANT_P="#define HAVE___BUILTIN_CONSTANT_P 1"
+fi
+AC_SUBST(INSERT_CONSTANT_P)
+
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf
               vfprintf vfwprintf vsprintf vsnprintf"

@@ -81,7 +81,7 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #endif
 
 #ifndef __has_attribute
-#define __has_attribute(x) 0
+# define __has_attribute(x) 0
 #endif
 #ifndef TEST_BOS
 # define bos_chk_err "error"

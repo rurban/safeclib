@@ -71,29 +71,54 @@ extern "C" {
    for performance, smaller size and less flexibility. */
 @INSERT_CONSTRAINT_HANDLER@
 
-/* Define to 1 to include some additional unsafe C11 functions:
-   snprintf_s, vsnprintf_s, tmpnam_s */
+/* Define to include some additional unsafe C11 functions:
+ * snprintf_s, vsnprintf_s, tmpnam_s
+ */
 @INSERT_UNSAFE@
 
-/* Define to 1 to disable additional functions not defined
-   in the C11 appendix K specification */
+/* Define to disable additional functions not defined
+ * in the C11 appendix K specification
+ */
 @INSERT_EXTS@
 
-/* Define to 1 to disable new multibyte and wchar support */
+/* Define to disable new multibyte and wchar support.
+ * E.g. for the linux kernel
+ */
 @INSERT_DISABLE_WCHAR@
 
-/* Define to 1 to disable linking with dllimport, only relevant to windows.
+/* Define to disable linking with dllimport, only relevant to windows.
  * Defined with a static libsafec.
  */
 @INSERT_DISABLE_DLLIMPORT@
 
-/* Defined by your compiler when __builtin_object_size() is available
-   for compile-time dmax checks. Override when you use a different compiler.
-   E.g. clang-7 and gcc-7 have it.
+/*
+ * Defined by your compiler when __builtin_object_size() is available
+ * for compile-time dmax checks. Override when you use a different compiler.
+ * Available since: clang-3.3+, gcc-4.1+.
  */
 #ifndef HAVE___BUILTIN_OBJECT_SIZE
 @INSERT_OBJECT_SIZE@
 #endif
+
+/*
+ * Defined by your compiler when __builtin_constant_p() is available
+ * for compile-time checks. Override when you use a different compiler.
+ * Available since: clang-3.1+, gcc-3.4+.
+ */
+#ifndef HAVE___BUILTIN_CONSTANT_P
+@INSERT_CONSTANT_P@
+#endif
+
+/*
+ * Defined by --enable-warn-dmax, to enable dmax checks against 
+ *  __builtin_object_size(dest)
+ */
+@INSERT_WARN_DMAX@
+
+/*
+ * Defined by --enable-error-dmax to make HAVE_WARN_DMAX fatal
+ */
+@INSERT_ERROR_DMAX@
 
 /*
  * The spec does not call out a maximum len for the strtok src
