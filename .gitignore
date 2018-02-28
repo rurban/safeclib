@@ -79,8 +79,6 @@ doc/html
 doc/man
 src/gcov.log
 tests/gcov.log
-CaseFolding.txt
-DerivedGeneralCategory.txt
 
 #
 # Debian directory (make deb-pkg)
