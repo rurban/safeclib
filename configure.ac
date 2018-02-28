@@ -274,8 +274,7 @@ AC_SUBST(INSERT_CONSTRAINT_HANDLER)
 
 AC_ARG_ENABLE(unsafe,
 	AS_HELP_STRING([--enable-unsafe],
-                [Include unsafe std C11 functions: snprintf_s, vsnprintf_s,
-                tmpnam_s @<:@default=no@:>@]),
+                [Include unsafe std C11 functions: tmpnam_s @<:@default=no@:>@]),
 	[case "${enableval}" in
 	yes) enable_unsafe=true ;;
 	no)  enable_unsafe=false ;;

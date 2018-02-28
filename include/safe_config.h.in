@@ -72,7 +72,7 @@ extern "C" {
 @INSERT_CONSTRAINT_HANDLER@
 
 /* Define to include some additional unsafe C11 functions:
- * snprintf_s, vsnprintf_s, tmpnam_s
+ * tmpnam_s
  */
 @INSERT_UNSAFE@
 

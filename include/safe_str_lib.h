@@ -175,11 +175,7 @@ _vsprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
 #define vsprintf_s(dest,dmax,fmt,ap) _vsprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
 
 
-/* These 2 functions are defined in the C11 standard Annex K, but are still unsafe.
-   Rather use the 2 non-truncating (without 'n') functions above. */
-#ifdef SAFECLIB_ENABLE_UNSAFE
-
-/* unsafe! use sprintf_s instead */
+/* truncating, no ESNOSPC */
 #if defined(HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int
 _snprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
@@ -203,8 +199,6 @@ int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
                 const char *_Format, va_list _ArgList); */
 #define vsnprintf_s(dest,dmax,fmt,ap) _vsnprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
 #endif
-
-#endif /* SAFECLIB_ENABLE_UNSAFE */
 
 /* Note: there is no __vsscanf_chk yet. Unchecked */
 EXTERN int
@@ -746,9 +740,7 @@ _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
 #define vswprintf_s(dest,dmax,fmt,ap)                   \
     _vswprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
 
-#ifdef SAFECLIB_ENABLE_UNSAFE
-
-/* unsafe! use vswprintf_s instead */
+/* truncating, no ESNOSPC */
 #if defined(HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int
 _snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
@@ -763,15 +755,12 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     BOSW_CHK(dest) BOS_FMT(fmt);
 #endif
 
-/* unsafe! use vswprintf_s instead */
 EXTERN int
 _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
                   const wchar_t *restrict fmt, va_list ap)
     BOSW_CHK(dest) BOS_FMT(fmt);
 #define vsnwprintf_s(dest,dmax,fmt,ap) \
     _vsnwprintf_s_chk(dest,dmax,BOS(dest),fmt,ap)
-
-#endif /* SAFECLIB_ENABLE_UNSAFE */
 
 EXTERN int
 wprintf_s( const wchar_t *restrict fmt, ...)

@@ -44,6 +44,16 @@ int test_snwprintf_s (void)
     EXPECT_BOS("empty dest or dmax")
     rc = snwprintf_s(str1, 0, L"%ls", str2);
     NEGERR(ESZEROL)
+
+    /* only with c99 __VA_ARGS__ we can pass destbos */
+# ifdef HAVE_C99
+    if (_BOS_KNOWN(str1)) {
+        EXPECT_BOS("dest overflow")
+        rc = snwprintf_s(str1, LEN+1, L"%ls", str2);
+        NEGERR(EOVERFLOW);       /* dmax exceeds dest */
+        WCHECK_SLACK(str1, LEN); /* cleared */
+    }
+# endif
 #endif
 
 /*--------------------------------------------------*/

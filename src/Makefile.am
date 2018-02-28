@@ -80,14 +80,13 @@ STD_STR_FILES = \
 	str/strtok_s.c          \
 	str/strerror_s.h        \
 	str/strerror_s.c        \
-	str/vsprintf_s.c
+	str/vsprintf_s.c	\
+	str/snprintf_s.c	\
+	str/vsnprintf_s.c
 
 # but they are in the C11 standard
 STD_UNSAFE_FILES = \
-	io/tmpnam_s.c		\
-	str/snprintf_s.c	\
-	str/vsnprintf_s.c       \
-	wchar/snwprintf_s.c
+	io/tmpnam_s.c
 
 EXT_STR_FILES = \
 	extstr/strcasecmp_s.c        \
@@ -155,7 +154,8 @@ STD_WCHAR_FILES = \
 	wchar/wscanf_s.c	\
 	wchar/vfwscanf_s.c	\
 	wchar/fwscanf_s.c	\
-	wchar/vwscanf_s.c
+	wchar/vwscanf_s.c	\
+	wchar/snwprintf_s.c
 
 if !HAVE_VSNWPRINTF_S
 STD_WCHAR_FILES += \

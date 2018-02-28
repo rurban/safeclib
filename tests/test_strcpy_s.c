@@ -62,13 +62,9 @@ int test_strcpy_s (void)
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = strcpy_s(str1, LEN+1, str2);
-        if (!rc) {
-            printf("%s %u  TODO BOS overflow check\n", __FUNCTION__, __LINE__);
-        } else {
-            ERR(EOVERFLOW);     /* dmax exceeds dest */
-            EXPSTR(str1, ""); /* cleared */
-            CHECK_SLACK(str1, len);
-        }
+        ERR(EOVERFLOW);     /* dmax exceeds dest */
+        EXPSTR(str1, ""); /* cleared */
+        CHECK_SLACK(str1, len);
     } else {
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
         debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);

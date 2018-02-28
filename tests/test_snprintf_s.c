@@ -37,21 +37,37 @@ int test_snprintf_s (void)
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("dest overflow")
-    rc = snprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
-    NEGERR(ESLEMAX)
+    EXPECT_BOS("empty dest")
+    rc = snprintf_s(NULL, LEN, "%s", str2);
+    NEGERR(ESNULLP)
+
+    /* not even with dmax=0, use sprintf_s then */
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    rc = snprintf_s(NULL, 0, "%s", str2);
+    NEGERR(ESNULLP)
+
+    strcpy(str1, "123456");
+    EXPECT_BOS("empty dest or dmax")
+    rc = snprintf_s(str1, 0, "%s", str2);
+    NEGERR(ESZEROL)
 
     EXPECT_BOS("empty fmt")
     rc = snprintf_s(str1, LEN, NULL);
     NEGERR(ESNULLP)
 
-    EXPECT_BOS("empty dest")
-    rc = snprintf_s(NULL, LEN, "%s", str2);
-    NEGERR(ESNULLP)
+    EXPECT_BOS("dest overflow")
+    rc = snprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
+    NEGERR(ESLEMAX)
 
-    EXPECT_BOS("empty dest or dmax")
-    rc = snprintf_s(str1, 0, "%s", str2);
-    NEGERR(ESZEROL)
+    /* only with c99 __VA_ARGS__ we can pass destbos */
+# ifdef HAVE_C99
+    if (_BOS_KNOWN(str1)) {
+        EXPECT_BOS("dest overflow")
+        rc = snprintf_s(str1, LEN+1, "%s", str2);
+        NEGERR(EOVERFLOW);      /* dmax exceeds dest */
+        CHECK_SLACK(str1, LEN); /* cleared */
+    }
+# endif
 #endif
 
 /*--------------------------------------------------*/

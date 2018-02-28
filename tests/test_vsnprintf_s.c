@@ -29,6 +29,11 @@ static char   str2[LEN];
 static inline int vtprintf_s (char *restrict dest, rsize_t dmax,
                               const char *restrict fmt, ...)
     BOS_CHK(dest) BOS_NULL(fmt);
+#ifndef HAVE_CT_BOS_OVR
+static inline int vtprintf_s_chk (char *restrict dest, rsize_t dmax, rsize_t destbos,
+                                  const char *restrict fmt, ...)
+    BOS_CHK(dest) BOS_NULL(fmt);
+#endif
 int test_vsnprintf_s (void);
 
 static inline int
@@ -45,6 +50,24 @@ vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
     va_end(ap);
     return rc;
 }
+
+#ifndef HAVE_CT_BOS_OVR
+static inline int
+vtprintf_s_chk (char *restrict dest, rsize_t dmax, rsize_t destbos,
+                const char *restrict fmt, ...)
+{
+    int rc;
+    va_list ap;
+    va_start(ap, fmt);
+#ifdef USE_MSVCRT
+    rc = vsnprintf_s(dest, dmax, 20, fmt, ap);
+#else
+    rc = _vsnprintf_s_chk(dest, dmax, destbos, fmt, ap);
+#endif
+    va_end(ap);
+    return rc;
+}
+#endif
 
 int test_vsnprintf_s (void)
 {
@@ -80,12 +103,23 @@ int test_vsnprintf_s (void)
     NEGERR_MSVC(ESNULLP, EOF);
 #else
     printf("Using wine\n");
-    have_wine = 1;    
+    have_wine = 1;
 #endif
 
     EXPECT_BOS("dest overflow")
     rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
-    NEGERR_MSVC(ESLEMAX, have_wine?EOF:0);
+    if (have_wine) {
+        ERR(EOF);
+    } else {
+        NEGERR_MSVC(ESLEMAX, 0);
+    }
+
+    if (_BOS_KNOWN(str1)) {
+        EXPECT_BOS("dest overflow")
+        rc = vtprintf_s_chk(str1, LEN+1, _BOS_KNOWN(str1), "%s", str2);
+        NEGERR_MSVC(EOVERFLOW,0); /* dmax exceeds dest */
+        CHECK_SLACK(str1, LEN);   /* cleared */
+    }
 #endif
 
 /*--------------------------------------------------*/

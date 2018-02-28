@@ -17,16 +17,16 @@ matrix:
         apt:
           packages:
             - valgrind
-      env: CONF="--enable-debug --enable-norm-compat" VG=1
+      env: CONF="--enable-debug --enable-unsafe --enable-norm-compat" VG=1
     - compiler: gcc
-      env: CONF="--enable-unsafe"
+      env: CONF="--disable-nullslack --enable-warn-dmax"
     - compiler: g++
-      env: CONF="--enable-unsafe --enable-debug"
+      env: CONF="--enable-debug --enable-unsafe --enable-norm-compat"
     - compiler: gcc
       os: osx
-      env: CONF="--enable-unsafe"
+      env: CONF="--enable-unsafe --enable-norm-compat"
     - compiler: clang
-      env: CONF="--disable-nullslack --enable-warn-dmax"
+      env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" CONF="--disable-constraint-handler"
     - compiler: gcc
       env: CONF="--disable-extensions"
     #- compiler: clang
@@ -37,7 +37,7 @@ matrix:
         apt:
           packages:
             - clang-3.8
-      env: ASAN=1 CONF="--enable-debug"
+      env: ASAN=1 CONF="--enable-debug --enable-unsafe --enable-norm-compat"
   # clang++ does not allow c anymore. gcc is duplicate to cc
   #exclude:
   #  - env: XCC="gcc" TRAVIS_OS_NAME=osx

@@ -2,8 +2,9 @@
  * snwprintf_s.c
  *
  * September 2017, Reini Urban
+ * February 2018, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,8 +38,6 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef SAFECLIB_ENABLE_UNSAFE
-
 /* TODO:
 any of the arguments corresponding to %s is a null pointer.
 */
@@ -54,9 +53,6 @@ any of the arguments corresponding to %s is a null pointer.
  *    terminating null character (if any) written by \c snwprintf_s in the
  *    array of dmax wide characters pointed to by \c dest are nulled when
  *    \c snwprintf_s returns.
- *    Warning: Unlike the safe variant \c swprintf_s, \c snwprintf_s does not
- *    guarantee that the buffer will be null-terminated unless
- *    the buffer size is zero.
  *
  * @note
  *    POSIX specifies that \c errno is set on error. However, the safeclib
@@ -206,7 +202,7 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #ifndef HAVE_VSNWPRINTF_S
     /* check for ESNOSPC or some other error */
     if (unlikely(ret == -1)) {
-        if (likely(dmax < 512)) { /* stacksize 2k */
+        if (likely(dmax < 512)) { /* stacksize 0.5k */
             static wchar_t tmp[512];
             if (unlikely(dmax == 1)) {
                 *dest = L'\0';
@@ -227,17 +223,24 @@ snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     /* manual truncation */
     if (unlikely(ret >= (int)dmax)) {
+#ifdef SAFECLIB_STR_NULL_SLACK
+        /* oops, ret would have been written if dmax was ignored */
+        if ((rsize_t)ret > dmax) {
+            dest[dmax-1] = L'\0';
+        } else {
+            memset(&dest[ret], 0, (dmax-ret)*sizeof(wchar_t));
+        }
+#else
         dest[dmax-1] = L'\0';
+#endif
     } else if (unlikely(ret < 0)) {
+        /* no truncation. some other error */
         char errstr[128] = "snwprintf_s: ";
         strcat(errstr, strerror(errno));
         handle_werror(dest, dmax, errstr, -ret);
-        /* no truncation. a real error */
-        /* dest[dmax-1] = L'\0'; */
+        return ret;
     }
 #endif
 
     return ret;
 }
-
-#endif /* SAFECLIB_ENABLE_UNSAFE */

@@ -2,8 +2,9 @@
  * vsnprintf_s_s.c
  *
  * August 2017, Reini Urban
+ * February 2018, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017, 2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,18 +38,14 @@
 
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
 #else
-#ifdef SAFECLIB_ENABLE_UNSAFE
 
 /**
  * @def vsnprintf_s(dest,dmax,fmt,ap)
  * @brief
- *    The truncating \c vsnprintf_s function composes a string with
- *    same test that would be printed if format was used on \c
- *    printf. Instead of being printed, the content is stored in dest.
- *    Warning: Unlike the safe variant \c vsprintf_s, \c vsnprintf_s does not
- *    guarantee that the buffer will be null-terminated unless
- *    the buffer size is zero.
- *    More than dmax - 1 characters might be written!
+ *    The truncating \c vsnprintf_s function composes a string with same test
+ *    that would be printed if format was used on \c printf. Instead of being
+ *    printed, the content is stored in dest.  At most dmax characters are
+ *    written.  It is guaranteed that dest will be null-terminated.
  *
  * @note
  *    POSIX specifies that \c errno is set on error. However, the safeclib
@@ -59,17 +56,16 @@
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.5.3.12 The vsnprintf_s function (p: 600)
  *    http://en.cppreference.com/w/c/io/vfprintf
- *    * only included in safeclib with \c --enable-unsafe
  *
  * @param[out]  dest  pointer to string that will be written into.
  * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   fmt   format-control string.
  * @param[in]   ap    optional arguments
  *
- * @pre Neither \c dest nor \c fmt shall be a null pointer.
- * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR.
- * @pre \c dmax shall not equal zero.
- * @pre \c dmax shall be greater than <tt>strnlen_s(dest, dmax)</tt>.
+ * @pre \c fmt shall not be a null pointer.
+ * @pre \c dest shall not be a null pointer.
+ * @pre \c dmax shall not be zero.
+ * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR and the size of dest.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
  * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
  * @pre No encoding error shall occur.
@@ -77,22 +73,19 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  On success the total number of characters written is returned.
- * @return  On failure a negative number is returned.
+ * @return  On failure a negative error number is returned.
  * @return  If the buffer \c dest is too small for the formatted text,
- *          including the terminating null, then the buffer is set to an
- *          empty string by placing a null character at \c dest[0], and the
- *          invalid parameter handler is invoked. Unlike \c vsnprintf,
- *          \c vsprintf_s guarantees that the buffer will be null-terminated
- *          unless the buffer size is zero.
+ *          including the terminating null, then the buffer is truncated
+ *          and null terminated.
  *
- * @retval  -ESNULLP when \c dest/fmt is NULL pointer
- * @retval  -ESZEROL when \c dmax = 0
- * @retval  -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- * @retval  -EINVAL  when fmt contains %n
+ * @retval  -ESNULLP    when \c dest/fmt is NULL pointer
+ * @retval  -ESZEROL    when \c dmax == 0
+ * @retval  -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
+ * @retval  -EOVERFLOW  when \c dmax > size of dest
+ * @retval  -EINVAL     when fmt contains %n
  *
  * @see
- *    sprintf_s(), vsprintf_s()
- *
+ *    snprintf_s(), sprintf_s(), vsprintf_s(), vsnwprintf_s()
  */
 
 EXPORT int
@@ -103,30 +96,22 @@ _vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
     int ret = -1;
     const char *p;
 
-    if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dest is null",
+    if (unlikely(dest == NULL || fmt == NULL)) {
+        invoke_safe_str_constraint_handler("vsnprintf_s: dest/fmt is null",
                    NULL, ESNULLP);
         return -(ESNULLP);
     }
-
-    if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: fmt is null",
-                   dest, ESNULLP);
-        return -(ESNULLP);
-    }
-
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is 0",
-                   dest, ESZEROL);
-        return -(ESZEROL);
+        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero",
+                       dest, ESZEROL);
+        return -ESZEROL;
     }
-
-    if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_STR)) {
-            invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
                        dest, ESLEMAX);
-            return -ESLEMAX;
-        }
+        return -ESLEMAX;
+    }
+    if (destbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
@@ -150,11 +135,22 @@ _vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
     if (unlikely(ret < 0)) {
         char errstr[128] = "vsnprintf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, dest, -ret);
+        handle_error(dest, dmax, errstr, -ret);
+        return ret;
     }
+     /* manual truncation */
+# ifdef SAFECLIB_STR_NULL_SLACK
+    /* oops, ret would have been written if dmax was ignored */
+    if ((rsize_t)ret > dmax) {
+        dest[dmax-1] = '\0';
+    } else {
+        memset(&dest[ret], 0, dmax-ret);
+    }
+# else
+    dest[dmax-1] = '\0';
+# endif
 
     return ret;
 }
 
-#endif /* SAFECLIB_ENABLE_UNSAFE */
 #endif /* MINGW64 */

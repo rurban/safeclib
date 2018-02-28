@@ -2,8 +2,9 @@
  * vsnwprintf_s.c
  *
  * September 2017, Reini Urban
+ * February 2018, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017, 2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -36,7 +37,8 @@
 #include "safeclib_private.h"
 #endif
 
-#if !defined(HAVE_VSNWPRINTF_S) && defined(SAFECLIB_ENABLE_UNSAFE)
+/* This file is not compiled when vsnwprintf_s is already defined: mingw */
+#if !defined(HAVE_VSNWPRINTF_S)
 
 /* TODO:
 any of the arguments corresponding to %s is a null pointer.
@@ -49,13 +51,11 @@ any of the arguments corresponding to %s is a null pointer.
  *    with same test that would be printed if format was used on \c
  *    wprintf. Instead of being printed, the content is stored in
  *    dest.
+ *    dest will be terminated with a null character.
  *    With \c SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written by \c vsnwprintf_s in the
  *    array of dmax wide characters pointed to by \c dest are nulled when
  *    \c vsnwprintf_s returns.
- *    Warning: Unlike the safe variant \c vswprintf_s, \c vsnwprintf_s does not
- *    guarantee that the buffer will be null-terminated unless
- *    the buffer size is zero.
  *
  * @note
  *    POSIX specifies that \c errno is set on error. However, the safeclib
@@ -66,7 +66,6 @@ any of the arguments corresponding to %s is a null pointer.
  *    * C11 standard (ISO/IEC 9899:2011):
  *    K.3.9.1.8 The vsnwprintf_s function (p: 634-635)
  *    http://en.cppreference.com/w/c/io/vfwprintf
- *    * only included in safeclib with \c --enable-unsafe
  *
  * @param[out]  dest  pointer to wide string that will be written into.
  * @param[in]   dmax  restricted maximum length of dest
@@ -194,7 +193,7 @@ _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
 
     /* check for ESNOSPC or some other error */
     if (unlikely(ret == -1)) {
-        if (likely(dmax < 512)) { /* stacksize 2k */
+        if (likely(dmax < 512)) { /* stacksize 0.5k */
             static wchar_t tmp[512];
             if (unlikely(dmax == 1)) {
                 *dest = L'\0';
@@ -206,23 +205,32 @@ _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
             ret = vswprintf(tmp, dmax, fmt, ap2);
             free(tmp);
         }
-        va_end(ap2);
         /* this will bump ret to > 0 */
     }
+    va_end(ap2);
 
     /* manual truncation */
     if (unlikely(ret >= (int)dmax)) {
+# ifdef SAFECLIB_STR_NULL_SLACK
+        /* oops, ret would have been written if dmax was ignored */
+        if ((rsize_t)ret > dmax) {
+            dest[dmax-1] = L'\0'; 
+        } else {
+            memset(&dest[ret], 0, (dmax-ret)*sizeof(wchar_t));
+        }
+# else
         dest[dmax-1] = L'\0';
+# endif   
     } else if (unlikely(ret < 0)) {
+        /* no truncation. some other error */
         char errstr[128] = "vsnwprintf_s: ";
         strcat(errstr, strerror(errno));
-        *dest = L'\0';
-        /* dest[dmax-1] = L'\0'; */
-        invoke_safe_str_constraint_handler(errstr, (void*)dest, -ret);
+        handle_werror(dest, dmax, errstr, -ret);
+        return ret;
     }
 #endif
 
     return ret;
 }
 
-#endif /* !defined(HAVE_VSNWPRINTF_S) && defined(SAFECLIB_ENABLE_UNSAFE) */
+#endif /* !defined(HAVE_VSNWPRINTF_S) */
