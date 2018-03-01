@@ -45,6 +45,9 @@
  *    The \b vsprintf_s function composes a string with the same content that
  *    would be printed if format was used on \c printf. Instead of being
  *    printed, the content is stored in dest.
+ *    If dmax is zero, nothing is written and dest may be a null pointer,
+ *    however the return value (number of bytes that would be written) is
+ *    still calculated and returned.
  *
  * @remark SPECIFIED IN
  *    * C11 standard (ISO/IEC 9899:2011):
@@ -56,31 +59,29 @@
  * @param[in]   fmt   format-control string.
  * @param[in]   ap    optional arguments
  *
- * @pre Neither dest nor fmt shall be a null pointer.
- * @pre dmax shall not be greater than RSIZE_MAX_STR or the sizeof(dest).
- * @pre dmax shall not equal zero.
- * @pre dmax shall be greater than strnlen_s(dest, dmax).
+ * @pre fmt shall not be a null pointer.
+ * @pre dmax shall not be greater than RSIZE_MAX_STR or the size of dest.
+ * @pre dmax shall not equal zero if dest is not null.
  * @pre fmt  shall not contain the conversion specifier %n
- * @pre None of the arguments corresponding to %s is a null pointer
+ * @pre None of the arguments corresponding to %s is a null pointer (not yet)
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  On success the total number of characters without the terminating
- *          \0 written is returned.
+ *          \0 is returned.
  * @return  On failure a negative number is returned  (deviating from C11).
- * @return  If the buffer dest is too small for the formatted text,
- *          including the terminating null, then the buffer is set to an
- *          empty string by placing a null character at dest[0], and the
- *          invalid parameter handler is invoked. Unlike vsnprintf,
- *          vsprintf_s guarantees that the buffer will be null-terminated
- *          unless the buffer size is zero.
+ * @return  If dest is valid and too small for the formatted text,
+ *          including the terminating null, then the buffer is cleared, and the
+ *          invalid parameter handler is invoked.
  *
- * @retval  -ESNULLP when \c dest/fmt is NULL pointer
- *          -ESZEROL when \c dmax = 0
- *          -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- *          -ESNOSPC when return value exceeds dmax
- *          -EINVAL  when \c fmt contains \c %n
+ * @retval -ESNULLP when \c fmt is NULL pointer
+ *         -ESNULLP when \c dest is NULL and dmax > 0
+ *         -ESZEROL when \c dmax = 0 and dest is not NULL
+ *         -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
+ *         -EOVERFLOW when \c dmax > size of dest
+ *         -ESNOSPC when return value exceeds dmax unless dmax is zero and dest is NULL
+ *         -EINVAL  when \c fmt contains \c %n
  *
  * @retval -1  if an encoding error or a runtime constraint violation in the
  *             libc function \c vsnprintf occured.
@@ -104,7 +105,7 @@ _vsprintf_s_chk(char *restrict dest, const rsize_t dmax, const size_t destbos,
     int ret = -1;
     const char *p;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(dmax && dest == NULL)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dest is null",
                    NULL, ESNULLP);
         return -ESNULLP;
@@ -116,19 +117,21 @@ _vsprintf_s_chk(char *restrict dest, const rsize_t dmax, const size_t destbos,
         return -ESNULLP;
     }
 
-    if (unlikely(dmax == 0)) {
+    if (unlikely(dest && dmax == 0)) {
         invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0",
                    dest, ESZEROL);
         return -ESZEROL;
     }
 
+    if (unlikely(dmax > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
+                                           dest, ESLEMAX);
+        return -ESLEMAX;
+    }
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_STR)) {
-            invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max",
-                       dest, ESLEMAX);
-            return -ESLEMAX;
+        if (dmax) {
+            BND_CHK_PTR_BOUNDS(dest,dmax);
         }
-        BND_CHK_PTR_BOUNDS(dest,dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             return -(handle_str_bos_overload("vsprintf_s: dmax exceeds dest",
@@ -155,7 +158,7 @@ _vsprintf_s_chk(char *restrict dest, const rsize_t dmax, const size_t destbos,
     ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
 #endif
 
-    if (unlikely(ret >= (int)dmax)
+    if (unlikely(dmax && ret >= (int)dmax)
 #ifdef __MINGW32__
         || (ret == -1 && errno == ERANGE)
 #endif
