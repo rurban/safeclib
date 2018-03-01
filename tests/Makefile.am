@@ -493,7 +493,7 @@ clean-local:
 	rm -rf *.dSYM
 endif
 CLEANFILES  = *~ *.lo *.o *.i t_*.log t_*.trs *.exe test-fc.pl test-upr.pl
-CLEANFILES  += *.gcno *.gcda DerivedGeneralCategory.txt CaseFolding.txt
+CLEANFILES  += *.gcno *.gcda
 if ENABLE_GCOV
 CLEANFILES  += *.gcov gcov.log
 endif
