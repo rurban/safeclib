@@ -206,6 +206,8 @@ SAFEC_TEST_MSVCRT = \
 	test_msvcrt.h \
 	test_msvcrt.c
 
+UNIDATA = CaseFolding.txt DerivedGeneralCategory.txt
+
 # WARNING: tests won't build with -Werror right now. A few minor warnings
 #AM_CFLAGS   += -Werror
 AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
@@ -226,6 +228,11 @@ LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
 TESTS = $(SAFEC_BUILT_TESTS)
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
 noinst_PROGRAMS = $(SAFEC_BUILT_PERFS)
+noinst_DATA = $(UNIDATA)
+DISTCLEANFILES = $(UNIDATA)
+
+# installed on demand by the tests
+$(UNIDATA):
 
 if HAVE_ATTRIBUTE_DIAGNOSE_IF
 # TODO via EXTRA_TESTS. use a specific .bos extension for those test binaries

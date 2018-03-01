@@ -100,7 +100,7 @@ LIBTOOL_DISTCLEAN_FILES = \
 	build-tools/ltmain.sh \
 	build-tools/missing \
 	build-tools/test-driver
-DISTCLEANFILES = .version CaseFolding.txt DerivedGeneralCategory.txt
+DISTCLEANFILES = .version
 
 MAN1_SOURCES = doc/man/man1/check_for_unsafe_apis.1
 dist_man_MANS =
