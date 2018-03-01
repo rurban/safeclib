@@ -234,6 +234,8 @@ DISTCLEANFILES = $(UNIDATA)
 # installed on demand by the tests
 $(UNIDATA):
 
+$(noinst_DATA):
+
 if HAVE_ATTRIBUTE_DIAGNOSE_IF
 # TODO via EXTRA_TESTS. use a specific .bos extension for those test binaries
 tests: tests-bos $(TESTS)

@@ -53,6 +53,8 @@ dist_pkginclude_HEADERS = \
 SAFEC_INFRA = \
 	$(top_srcdir)/README                       \
 	${top_srcdir}/build-tools/autogen.sh       \
+	${top_srcdir}/build-tools/msys2.bat        \
+	${top_srcdir}/build-tools/smoke.sh         \
 	$(top_srcdir)/build-tools/version-gen.sh   \
 	$(top_srcdir)/doc/libc-overview.md     	   \
 	$(top_srcdir)/scripts                      \
@@ -120,6 +122,7 @@ dist_man_MANS += \
 	doc/man/man3/ESLAST.3	\
 	doc/man/man3/ESLEMAX.3	\
 	doc/man/man3/ESLEMIN.3	\
+	doc/man/man3/ESLEWRNG.3	\
 	doc/man/man3/ESNODIFF.3	\
 	doc/man/man3/ESNOSPC.3	\
 	doc/man/man3/ESNOTFND.3	\
@@ -134,6 +137,8 @@ dist_man_MANS += \
 	doc/man/man3/RSIZE_MAX_MEM32.3	\
 	doc/man/man3/RSIZE_MAX_STR.3	\
 	doc/man/man3/RSIZE_MAX_WMEM.3	\
+	doc/man/man3/RSIZE_MAX_WSTR.3	\
+	doc/man/man3/RSIZE_MIN_STR.3	\
 	doc/man/man3/SAFECLIB_STR_NULL_SLACK.3	\
 	doc/man/man3/SAFE_STR_MIN_LOWERCASE.3	\
 	doc/man/man3/SAFE_STR_MIN_NUMBERS.3	\
@@ -144,34 +149,32 @@ dist_man_MANS += \
 	doc/man/man3/STRTOK_DELIM_MAX_LEN.3	\
 	doc/man/man3/TMP_MAX_S.3	\
 	doc/man/man3/abort_handler_s.3	\
-	doc/man/man3/abort_handler_s.c.3	\
+	doc/man/man3/abort_handler_s.c.3\
 	doc/man/man3/asctime_s.3	\
 	doc/man/man3/asctime_s.c.3	\
 	doc/man/man3/bsearch_s.3	\
 	doc/man/man3/bsearch_s.c.3	\
 	doc/man/man3/constraint_handler_t.3	\
-	doc/man/man3/ctime_s.3	\
+	doc/man/man3/ctime_s.3		\
 	doc/man/man3/ctime_s.c.3	\
-	doc/man/man3/fopen_s.3	\
+	doc/man/man3/fopen_s.3		\
 	doc/man/man3/fopen_s.c.3	\
 	doc/man/man3/fprintf_s.3	\
 	doc/man/man3/fprintf_s.c.3	\
 	doc/man/man3/freopen_s.3	\
 	doc/man/man3/freopen_s.c.3	\
-	doc/man/man3/fscanf_s.3	\
+	doc/man/man3/fscanf_s.3		\
 	doc/man/man3/fscanf_s.c.3	\
 	doc/man/man3/fwprintf_s.3	\
 	doc/man/man3/fwprintf_s.c.3	\
 	doc/man/man3/fwscanf_s.3	\
 	doc/man/man3/fwscanf_s.c.3	\
-	doc/man/man3/getenv_s.3	\
+	doc/man/man3/getenv_s.3		\
 	doc/man/man3/getenv_s.c.3	\
-	doc/man/man3/gets_s.3	\
-	doc/man/man3/gets_s.c.3	\
-	doc/man/man3/gmtime_s.3	\
+	doc/man/man3/gets_s.3		\
+	doc/man/man3/gets_s.c.3		\
+	doc/man/man3/gmtime_s.3		\
 	doc/man/man3/gmtime_s.c.3	\
-	doc/man/man3/handle_error.3	\
-	doc/man/man3/handle_werror.3	\
 	doc/man/man3/ignore_handler_s.3	\
 	doc/man/man3/ignore_handler_s.c.3	\
 	doc/man/man3/invoke_safe_mem_constraint_handler.3	\
@@ -180,6 +183,7 @@ dist_man_MANS += \
 	doc/man/man3/localtime_s.c.3	\
 	doc/man/man3/mbsrtowcs_s.3	\
 	doc/man/man3/mbsrtowcs_s.c.3	\
+	doc/man/man3/mbstowcs_s.3	\
 	doc/man/man3/mbstowcs_s.c.3	\
 	doc/man/man3/mem_handler.3	\
 	doc/man/man3/mem_prim_move.3	\
@@ -193,19 +197,19 @@ dist_man_MANS += \
 	doc/man/man3/mem_primitives_lib.h.3	\
 	doc/man/man3/memccpy_s.3	\
 	doc/man/man3/memccpy_s.c.3	\
-	doc/man/man3/memchr_s.3	\
+	doc/man/man3/memchr_s.3		\
 	doc/man/man3/memchr_s.c.3	\
 	doc/man/man3/memcmp16_s.3	\
 	doc/man/man3/memcmp16_s.c.3	\
 	doc/man/man3/memcmp32_s.3	\
 	doc/man/man3/memcmp32_s.c.3	\
-	doc/man/man3/memcmp_s.3	\
+	doc/man/man3/memcmp_s.3		\
 	doc/man/man3/memcmp_s.c.3	\
 	doc/man/man3/memcpy16_s.3	\
 	doc/man/man3/memcpy16_s.c.3	\
 	doc/man/man3/memcpy32_s.3	\
 	doc/man/man3/memcpy32_s.c.3	\
-	doc/man/man3/memcpy_s.3	\
+	doc/man/man3/memcpy_s.3		\
 	doc/man/man3/memcpy_s.c.3	\
 	doc/man/man3/memmove16_s.3	\
 	doc/man/man3/memmove16_s.c.3	\
@@ -219,7 +223,7 @@ dist_man_MANS += \
 	doc/man/man3/memset16_s.c.3	\
 	doc/man/man3/memset32_s.3	\
 	doc/man/man3/memset32_s.c.3	\
-	doc/man/man3/memset_s.3	\
+	doc/man/man3/memset_s.3		\
 	doc/man/man3/memset_s.c.3	\
 	doc/man/man3/memzero16_s.3	\
 	doc/man/man3/memzero16_s.c.3	\
@@ -227,21 +231,23 @@ dist_man_MANS += \
 	doc/man/man3/memzero32_s.c.3	\
 	doc/man/man3/memzero_s.3	\
 	doc/man/man3/memzero_s.c.3	\
-	doc/man/man3/printf_s.3	\
+	doc/man/man3/printf_s.3		\
 	doc/man/man3/printf_s.c.3	\
-	doc/man/man3/qsort_s.3	\
+	doc/man/man3/qsort_s.3		\
 	doc/man/man3/qsort_s.c.3	\
-	doc/man/man3/rsize_t.3	\
+	doc/man/man3/rsize_t.3		\
+	doc/man/man3/safe_compile.h.3	\
 	doc/man/man3/safe_config.h.3	\
 	doc/man/man3/safe_lib.h.3	\
 	doc/man/man3/safe_lib_errno.h.3	\
 	doc/man/man3/safe_mem_constraint.c.3	\
 	doc/man/man3/safe_mem_constraint.h.3	\
-	doc/man/man3/safe_mem_lib.h.3	\
+	doc/man/man3/safe_mem_lib.h.3		\
 	doc/man/man3/safe_str_constraint.c.3	\
 	doc/man/man3/safe_str_constraint.h.3	\
+	doc/man/man3/safe_str_lib.h.3	\
 	doc/man/man3/safe_types.h.3	\
-	doc/man/man3/scanf_s.3	\
+	doc/man/man3/scanf_s.3		\
 	doc/man/man3/scanf_s.c.3	\
 	doc/man/man3/set_mem_constraint_handler_s.3	\
 	doc/man/man3/set_str_constraint_handler_s.3	\
@@ -251,7 +257,7 @@ dist_man_MANS += \
 	doc/man/man3/snwprintf_s.c.3	\
 	doc/man/man3/sprintf_s.3	\
 	doc/man/man3/sprintf_s.c.3	\
-	doc/man/man3/sscanf_s.3	\
+	doc/man/man3/sscanf_s.3		\
 	doc/man/man3/sscanf_s.c.3	\
 	doc/man/man3/str_handler.3	\
 	doc/man/man3/strcasecmp_s.3	\
@@ -298,11 +304,11 @@ dist_man_MANS += \
 	doc/man/man3/strishex_s.c.3	\
 	doc/man/man3/strislowercase_s.3	\
 	doc/man/man3/strislowercase_s.c.3	\
-	doc/man/man3/strismixedcase_s.3	\
+	doc/man/man3/strismixedcase_s.3		\
 	doc/man/man3/strismixedcase_s.c.3	\
-	doc/man/man3/strispassword_s.3	\
+	doc/man/man3/strispassword_s.3		\
 	doc/man/man3/strispassword_s.c.3	\
-	doc/man/man3/strisuppercase_s.3	\
+	doc/man/man3/strisuppercase_s.3		\
 	doc/man/man3/strisuppercase_s.c.3	\
 	doc/man/man3/strlastchar_s.3	\
 	doc/man/man3/strlastchar_s.c.3	\
@@ -312,6 +318,10 @@ dist_man_MANS += \
 	doc/man/man3/strlastsame_s.c.3	\
 	doc/man/man3/strljustify_s.3	\
 	doc/man/man3/strljustify_s.c.3	\
+	doc/man/man3/strlwr_s.3		\
+	doc/man/man3/strnatcasecmp_s.3	\
+	doc/man/man3/strnatcmp_s.3	\
+	doc/man/man3/strnatcmp_s.c.3	\
 	doc/man/man3/strncat_s.3	\
 	doc/man/man3/strncat_s.c.3	\
 	doc/man/man3/strncpy_s.3	\
@@ -330,18 +340,19 @@ dist_man_MANS += \
 	doc/man/man3/strrchr_s.c.3	\
 	doc/man/man3/strremovews_s.3	\
 	doc/man/man3/strremovews_s.c.3	\
-	doc/man/man3/strset_s.3	\
+	doc/man/man3/strset_s.3		\
 	doc/man/man3/strset_s.c.3	\
-	doc/man/man3/strspn_s.3	\
+	doc/man/man3/strspn_s.3		\
 	doc/man/man3/strspn_s.c.3	\
-	doc/man/man3/strstr_s.3	\
+	doc/man/man3/strstr_s.3		\
 	doc/man/man3/strstr_s.c.3	\
-	doc/man/man3/strtok_s.3	\
+	doc/man/man3/strtok_s.3		\
 	doc/man/man3/strtok_s.c.3	\
-	doc/man/man3/strtolowercase_s.3	\
+	doc/man/man3/strtolowercase_s.3		\
 	doc/man/man3/strtolowercase_s.c.3	\
-	doc/man/man3/strtouppercase_s.3	\
+	doc/man/man3/strtouppercase_s.3		\
 	doc/man/man3/strtouppercase_s.c.3	\
+	doc/man/man3/strupr_s.3		\
 	doc/man/man3/strzero_s.3	\
 	doc/man/man3/strzero_s.c.3	\
 	doc/man/man3/swprintf_s.3	\
@@ -354,13 +365,13 @@ dist_man_MANS += \
 	doc/man/man3/timingsafe_memcmp.c.3	\
 	doc/man/man3/tmpfile_s.3	\
 	doc/man/man3/tmpfile_s.c.3	\
-	doc/man/man3/tmpnam_s.3	\
+	doc/man/man3/tmpnam_s.3		\
 	doc/man/man3/tmpnam_s.c.3	\
 	doc/man/man3/towctrans.c.3	\
-	doc/man/man3/towfc_s.3	\
+	doc/man/man3/towfc_s.3		\
 	doc/man/man3/towfc_s.c.3	\
-	doc/man/man3/towlower.3	\
-	doc/man/man3/towupper.3	\
+	doc/man/man3/towlower.3		\
+	doc/man/man3/towupper.3		\
 	doc/man/man3/unw16ifcan.h.3	\
 	doc/man/man3/unw16ifcmb.h.3	\
 	doc/man/man3/unw16ifcmp.h.3	\
@@ -401,20 +412,23 @@ dist_man_MANS += \
 	doc/man/man3/vwscanf_s.c.3	\
 	doc/man/man3/wcrtomb_s.3	\
 	doc/man/man3/wcrtomb_s.c.3	\
-	doc/man/man3/wcscat_s.3	\
+	doc/man/man3/wcscat_s.3		\
 	doc/man/man3/wcscat_s.c.3	\
-	doc/man/man3/wcscmp_s.3	\
+	doc/man/man3/wcscmp_s.3		\
 	doc/man/man3/wcscmp_s.c.3	\
 	doc/man/man3/wcscoll_s.3	\
 	doc/man/man3/wcscoll_s.c.3	\
-	doc/man/man3/wcscpy_s.3	\
+	doc/man/man3/wcscpy_s.3		\
 	doc/man/man3/wcscpy_s.c.3	\
-	doc/man/man3/wcsfc_s.3	\
+	doc/man/man3/wcsfc_s.3		\
 	doc/man/man3/wcsfc_s.c.3	\
 	doc/man/man3/wcsicmp_s.3	\
 	doc/man/man3/wcsicmp_s.c.3	\
-	doc/man/man3/wcslwr_s.3	\
+	doc/man/man3/wcslwr_s.3		\
 	doc/man/man3/wcslwr_s.c.3	\
+	doc/man/man3/wcsnatcmp_s.3	\
+	doc/man/man3/wcsnatcmp_s.c.3	\
+	doc/man/man3/wcsnaticmp_s.3	\
 	doc/man/man3/wcsncat_s.3	\
 	doc/man/man3/wcsncat_s.c.3	\
 	doc/man/man3/wcsncmp_s.3	\
@@ -432,19 +446,19 @@ dist_man_MANS += \
 	doc/man/man3/wcsnset_s.c.3	\
 	doc/man/man3/wcsrtombs_s.3	\
 	doc/man/man3/wcsrtombs_s.c.3	\
-	doc/man/man3/wcsset_s.3	\
+	doc/man/man3/wcsset_s.3		\
 	doc/man/man3/wcsset_s.c.3	\
-	doc/man/man3/wcsstr.3	\
-	doc/man/man3/wcsstr.c.3	\
-	doc/man/man3/wcsstr_s.3	\
+	doc/man/man3/wcsstr.3		\
+	doc/man/man3/wcsstr.c.3		\
+	doc/man/man3/wcsstr_s.3		\
 	doc/man/man3/wcsstr_s.c.3	\
-	doc/man/man3/wcstok_s.3	\
+	doc/man/man3/wcstok_s.3		\
 	doc/man/man3/wcstok_s.c.3	\
 	doc/man/man3/wcstombs_s.3	\
 	doc/man/man3/wcstombs_s.c.3	\
-	doc/man/man3/wcsupr_s.3	\
+	doc/man/man3/wcsupr_s.3		\
 	doc/man/man3/wcsupr_s.c.3	\
-	doc/man/man3/wctomb_s.3	\
+	doc/man/man3/wctomb_s.3		\
 	doc/man/man3/wctomb_s.c.3	\
 	doc/man/man3/wmemcmp_s.3	\
 	doc/man/man3/wmemcmp_s.c.3	\
@@ -454,17 +468,17 @@ dist_man_MANS += \
 	doc/man/man3/wmemmove_s.c.3	\
 	doc/man/man3/wprintf_s.3	\
 	doc/man/man3/wprintf_s.c.3	\
-	doc/man/man3/wscanf_s.3	\
+	doc/man/man3/wscanf_s.3		\
 	doc/man/man3/wscanf_s.c.3
-if ENABLE_WCHAR
-dist_man_MANS += \
-	doc/man/man3/WCSNORM_FCC.3      \
-	doc/man/man3/WCSNORM_FCD.3      \
-	doc/man/man3/WCSNORM_NFC.3      \
-	doc/man/man3/WCSNORM_NFD.3      \
-	doc/man/man3/WCSNORM_NFKC.3     \
-	doc/man/man3/WCSNORM_NFKD.3
-endif
+#if ENABLE_WCHAR
+#dist_man_MANS += \
+#	doc/man/man3/WCSNORM_FCC.3      \
+#	doc/man/man3/WCSNORM_FCD.3      \
+#	doc/man/man3/WCSNORM_NFC.3      \
+#	doc/man/man3/WCSNORM_NFD.3      \
+#	doc/man/man3/WCSNORM_NFKC.3     \
+#	doc/man/man3/WCSNORM_NFKD.3
+#endif
 CLEANFILES += Doxyfile doc/footer README.md
 
 # avoid parallel doxygen
@@ -478,7 +492,12 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm -rf doc/man/man3/d[0-9a-f]
 	-rm doc/man/man3/_*.3
 	-rm doc/man/man3/slk_*.3
-	-rm doc/man/man3/module_*.3
+	-rm doc/man/man3/BOS*.3
+	-rm doc/man/man3/CONSTP.3
+	-rm doc/man/man3/VAL_OVR2*
+	-rm doc/man/man3/HAVE___BUILTIN_CONSTANT_P.3
+	-rm doc/man/man3/HAVE___BUILTIN_OBJECT_SIZE.3
+	-rm doc/man/man3/VAL_OVR2*
 	-rm doc/man/man3/{wmask,wsize,likely,unlikely}.3
 	-rm doc/man/man3/CASE*.3
 	-rm doc/man/man3/DRV*.3
@@ -515,6 +534,7 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/sldebug_printf.3
 	-rm doc/man/man3/slkm_init.c.3
 	-rm doc/man/man3/slprintf.3
+	-rm doc/man/man3/module_{exit,init}.3
 	-rm doc/man/man3/sift.3
 	-rm doc/man/man3/v.3
 	-rm doc/man/man3/trinkle.3
@@ -528,6 +548,12 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/lower{,1,2,3}.3
 	-rm doc/man/man3/uint64_t.3
 	-rm doc/man/man3/{cc,cp,cycle,cmpfun,composite,a_ctz_l,a_ctz_64,TBL}.3
+	-rm doc/man/man3/compare_{left,right}.3
+	-rm doc/man/man3/bos_chk_err.3
+	-rm doc/man/man3/{size,slen,smax,src,dest,dlen,dmax,name}.3
+	-rm doc/man/man3/handle_{,w,mem_}error.3
+	-rm doc/man/man3/handle_{str,mem}_bos_*.3
+	-rm doc/man/man3/handle_str_src_bos_*.3
 README.md: README
 	cp $(srcdir)/README README.md
 all-local: Doxyfile doc/footer

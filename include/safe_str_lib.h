@@ -64,15 +64,15 @@ extern "C" {
 # define EXTERN extern
 #endif
 
-/*
+/**
  * The shortest string is a null string!!
  */
 #define RSIZE_MIN_STR      ( 1 )
 
-/* wide chars */
+/** wide chars */
 #define RSIZE_MAX_WSTR    ( RSIZE_MAX_STR/sizeof(wchar_t) )
 
-/* The makeup of a password */
+/** The makeup of a password */
 #define SAFE_STR_MIN_LOWERCASE     ( 2 )
 #define SAFE_STR_MIN_UPPERCASE     ( 2 )
 #define SAFE_STR_MIN_NUMBERS       ( 1 )
@@ -193,7 +193,6 @@ snprintf_s(char *restrict dest, rsize_t dmax,
     BOS_CHK(dest) BOS_FMT(fmt);
 #endif
 
-/* unsafe! use vsprintf_s instead */
 EXTERN int
 _vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
                  const char *restrict fmt, va_list ap)

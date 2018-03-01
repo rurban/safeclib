@@ -291,6 +291,19 @@ autoreconf
     fi
     $make clean
 git clean -dxf src tests
+echo build from outside
+rm config.status config.log
+mkdir .build && cd .build && \
+    ../configure && $make check-log || exit
+rm -rf .build
+# if all clean, try distcheck
+if [ -z "`git status --porcelain`" ]; then
+    echo make distcheck
+    build-tools/autogen.sh && \
+        ./configure && $make all distcheck
+else
+    echo "make distcheck not possible" `git status --short`
+fi
 autoreconf    
 ./configure --enable-unsafe --enable-debug && \
     $make -s -j4 check-log || exit

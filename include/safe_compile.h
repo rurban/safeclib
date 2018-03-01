@@ -38,9 +38,10 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
                                       void *restrict       /* ptr */,
                                       errno_t              /* error */);
 
-/* Since clang-5 most constraints can be caught at compile-time.
+/**
+ * Since clang-5 most constraints can be caught at compile-time.
  *
- * For pointer sizes we need __builtin_object_size(),
+ * For pointer sizes we need BOS/__builtin_object_size(),
  * for diagnostics __attribute__((diagnose_if()))
  * gcc violations might be caught with _Static_assert, but this is limited.
  */
