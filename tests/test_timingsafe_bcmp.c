@@ -18,8 +18,10 @@ int test_timingsafe_bcmp (void);
 int test_timingsafe_bcmp (void)
 {
     int  ind;
+#ifdef HAVE_BCMP
     int  std_ind;
-    int len;
+#endif
+    int  len;
     errno_t rc = 0;
     int errs = 0;
 
@@ -112,8 +114,8 @@ int test_timingsafe_bcmp (void)
 
     ind = timingsafe_bcmp(mem1, mem2, len);
     if (ind != 0) {
-        debug_printf("%s %u  Ind=%d  Std=%d \n",
-                     __FUNCTION__, __LINE__,  ind, std_ind);
+        debug_printf("%s %u  Ind=%d \n",
+                     __FUNCTION__, __LINE__,  ind);
         errs++;
     }
 /*--------------------------------------------------*/
