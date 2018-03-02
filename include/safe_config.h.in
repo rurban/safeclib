@@ -1,5 +1,6 @@
 /*------------------------------------------------------------------
  * safe_config.h -- Safe C Lib configs
+ * @configure_input@
  *
  * August 2017, Reini Urban
  *

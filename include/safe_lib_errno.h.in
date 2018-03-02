@@ -1,5 +1,6 @@
 /*------------------------------------------------------------------
  * safe_lib_errno.h -- Safe C Lib Error codes
+ * @configure_input@
  *
  * October 2008, Bo Berry
  * Modified 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
