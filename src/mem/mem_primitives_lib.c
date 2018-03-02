@@ -34,6 +34,13 @@
 
 #include "mem/mem_primitives_lib.h"
 
+#if defined(__x86_64__) && defined(__SSE2__)
+# if defined(__SSE4_1__)
+#  include <smmintrin.h>
+# endif
+# include <emmintrin.h>
+#endif
+
 /*
  * mem_primitives_lib.c  provides unguarded memory routines
  * that are used by the safe_mem_library.   These routines
@@ -588,17 +595,28 @@ void mem_prim_move(void *dest, const void *src, uint32_t len) {
     return;
 }
 
-#else /* __WORDSIZE != 64 */
+#else /* __WORDSIZE == 64 */
 
-/* moves memory, optimized for 64bit words */
+/* moves memory, optimized for 64bit words
+   or even Intel SSE2 128bit moves */
 void mem_prim_move(void *dest, const void *src, uint32_t len) {
 #undef wsize
 #undef wmask
 #define wsize sizeof(uint64_t)
 #define wmask (wsize - 1)
 
+    /* TODO: ensure 64 or 128 bit alignment */
     uint8_t *dp = (uint8_t *)dest;
     const uint8_t *sp = (uint8_t *)src;
+
+#if defined(__x86_64__) && defined(__SSE2__)
+#undef wsize
+#undef wmask
+#define wsize   128
+#define wmask   127
+    __m128i *xmms;
+    __m128i *xmmd;
+#endif
 
     uint64_t tsp;
 
@@ -645,14 +663,30 @@ void mem_prim_move(void *dest, const void *src, uint32_t len) {
         tsp = len / wsize;
 
         if (tsp > 0) {
-
+#if defined(__x86_64__) && defined(__SSE2__)
+            GCC_DIAG_IGNORE(-Wcast-align)
+            xmms = (__m128i)(uintptr_t)sp;
+            xmmd = (__m128i)(uintptr_t)dp;
+            GCC_DIAG_RESTORE
+#endif
             do {
+#if defined(__x86_64__) && defined(__SSE2__)
+/* moves aligned memory, optimized for Intel SSE 128bit moves
+ * via 8 xmm registers */
+# if defined(__SSE4_1__)
+                _mm_stream_load_si128(xmms+1); /* prefetchnta / movntdqa xmm, m128 */
+# endif
+                _mm_load_si128(xmms);          /* movdqa xmm, m128 */
+                _mm_stream_si128(xmmd,*xmms);  /* movntdq m128, xmm */
+#else
+/* moves memory in 64bit words */
                 GCC_DIAG_IGNORE(-Wcast-align)
                 *(uint64_t *)dp = *(uint64_t *)sp;
                 GCC_DIAG_RESTORE
-
+#endif
                 sp += wsize;
                 dp += wsize;
+
             } while (--tsp);
         }
 
