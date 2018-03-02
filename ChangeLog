@@ -5,13 +5,22 @@ Changes in v??032018 3.3.0
         - Added compile-time and run-time object_size checks (BOS), resulting
           in EOVERFLOW error codes. Compilers only do this reliably with static
           arrays, less so with literal strings. With known static allocation size
-          you can bypass RSIZE_MAX_* limits. (GH #40)
-          Renamed all functions to _*_chk, with the API as macros.
+          you can bypass RSIZE_MAX_* limits. BOS even knows about malloc sizes
+          on some platforms.
+          Renamed all functions to _*_chk, with the API as macros. (GH #40)
         - Added run-time libmpx pointer boundary checks if supported. (GH #49)
+          gcc-5+ (optional), icc-15+
         - Improved performance of mem_prim_set/mem_prim_move on 64bit machines by factor 2
           by using 64bit ops, not 32bit. With clang-4+ memcpy_s is now as fast as
           memcpy native, with gcc only 77% slower.
+          Added more benchmarks and improved the timing.
+        - Made the unsafe functions snprintf_s, vsnprintf_s, snwprintf_s, vsnwprintf_s
+          safe by guaranteeing null termination. Only tmpnam_s remains unsafe.
         - Added strnatcmp_s, strnatcasecmp_s
+        - Add --disable-constraint-handler option. undef the run-time
+          invoke_safe_{str,mem}_constraint_handler function calls
+          in safe_config.h to avoid the large errormsg strings. No run-time
+          performance improvements, as those calls only happen in the error cases.
         - Added --enable-warn-dmax option to warn when dmax != sizeof(dest),
           and fatalized via --enable-error-dmax.
         - Fixed wrong count max check in memmove32_s
@@ -20,6 +29,7 @@ Changes in v??032018 3.3.0
         - Fixed --disable-shared for Windows.
         - Optimized null-slack clearing of dest, unrolling the memset loop with
           small dest buffers.
+        - truncating funcs {v,}sn{w,}printf_s: clear dest on errors after printing to it
         - Fixed compilation of the linux kernel module (PR #43, Fabrice Fontaine)
         - Fixed c++ strictness when !c99 (e.g. g++ 4.3)
         - Changed retval of sprintf_s/vsprintf_s on all errors from 0 to -1,
@@ -34,6 +44,10 @@ Changes in v??032018 3.3.0
           to reject illegal format specifiers.
         - More hardening with gcc-7.3/clang-7: Probe for -Wl,-z,textonly and
           -Wl,-z,retpolineplt, currently only with lld-7
+        - Fixed wcsnorm_compose_s >RSIZE_MAX_WSTR integer overflow
+        - Fixed overlap checks to be C11 conformant, cast to uintptr_t.
+        - add strnatcmp_s, add strcmp_s src overflow checks,
+          ESUNTERM for src to avoid overflows
         - Reworked C11 compatibility to closer align with the existing Windows+BSD
           sec_api's, esp. with slen=0 cases of the cpy and move functions, while still
           following the spec. (GH #39)
@@ -47,10 +61,12 @@ Changes in v??032018 3.3.0
           wcs{lwr,upr}_s
         - Change dmax to bytes to follow the documentation with:
           mem{cpy,move}{16,32}_s
+        - Change memcmp{16,32} to work with natural sizes, not bytes.
         - strncat_s, wcsncat_s: with slen=0 and dest=NULL and dmax=0, return EOK
         - fwscanf_s: on mingw reset errno when *fmt = L'\0'
         - vfwscanf_s: break early on mingw when *fmt = L'\0'
         - wcstombs_s: clear dest when dest==src (as with msvcrt)
+        - {v,}sprintf_s: allow empty dest/dmax for size calculation
 
 Changes in v15012018 3.2.0
         - Fixed 32bit Windows wchar conversion functions, by changing wint_t to uint32_t
@@ -153,7 +169,7 @@ Changes in v04102017 3.0.0
         - Clarify return values for {str,wcs}tok_s
         - Negative return error values for all printf functions,
           Make clear that errno is not set with _s violations, only the underlying
-        system call sets it. (EINVAL, EOVERFLOW, EILSEQ, EOF)
+          system call sets it. (EINVAL, EOVERFLOW, EILSEQ, EOF)
         - Updated from autoconf 2.68 to 2.69
 
 Changes in v30082017 2.1.1
