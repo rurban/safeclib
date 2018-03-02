@@ -36,9 +36,13 @@
 #include "safeclib_private.h"
 #endif
 
-/* e.g. kernel. from <asm/types.h> */
 #ifndef __WORDSIZE
-# define __WORDSIZE BITS_PER_LONG
+/* e.g. kernel. from <asm/types.h> */
+# ifdef BITS_PER_LONG
+#  define __WORDSIZE BITS_PER_LONG
+# else
+#  define __WORDSIZE (8 * SIZEOF_SIZE_T)
+# endif
 #endif
 
 /*
