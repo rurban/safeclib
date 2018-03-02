@@ -262,25 +262,25 @@ typedef unsigned long uintptr_t;
 #define CHK_DEST_NULL(func)                                             \
     if (unlikely(dest == NULL)) {                                       \
         invoke_safe_str_constraint_handler(func ": dest is null",       \
-                                           (void*)dest, ESNULLP);       \
+                       (void*)dest, ESNULLP);                           \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_DMAX_ZERO(func)                                             \
     if (unlikely(dmax == 0)) {                                          \
         invoke_safe_str_constraint_handler(func ": dmax is 0",          \
-                                           (void*)dest, ESZEROL);       \
+                       (void*)dest, ESZEROL);                           \
         return RCNEGATE(ESZEROL);                                       \
     }
 #define CHK_DEST_MEM_NULL(func)                                         \
     if (unlikely(dest == NULL)) {                                       \
         invoke_safe_mem_constraint_handler(func ": dest is null",       \
-                                           (void*)dest, ESNULLP);       \
+                       (void*)dest, ESNULLP);                           \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_DMAX_MEM_ZERO(func)                                         \
     if (unlikely(dmax == 0)) {                                          \
         invoke_safe_mem_constraint_handler(func ": dmax is 0",          \
-                                           (void*)dest, ESZEROL);       \
+                       (void*)dest, ESZEROL);                           \
         return RCNEGATE(ESZEROL);                                       \
     }
 #define CHK_DMAX_MAX(func, max)                                         \
@@ -337,7 +337,7 @@ typedef unsigned long uintptr_t;
                 return RCNEGATE(ESLEMAX);                               \
             } else {                                                    \
                 invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
-                       (void*)dest, EOVERFLOW);                         \
+                           (void*)dest, EOVERFLOW);                     \
                 return RCNEGATE(EOVERFLOW);                             \
             }                                                           \
         }                                                               \
@@ -347,13 +347,13 @@ typedef unsigned long uintptr_t;
 # define CHK_DESTW_OVR_CLEAR(func,destsz,destbos)                       \
     if (unlikely(destsz != destbos)) {                                  \
         if (unlikely(destsz > destbos)) {                               \
-            if (dmax > RSIZE_MAX_WSTR) {                               \
-                handle_error((char*)(void*)dest, destbos,               \
-                              func": dmax exceeds max", ESLEMAX);       \
+            if (dmax > RSIZE_MAX_WSTR) {                                \
+                handle_werror(dest, destbos/sizeof(wchar_t),            \
+                             func": dmax exceeds max", ESLEMAX);        \
                 return RCNEGATE(ESLEMAX);                               \
             } else {                                                    \
-                handle_error((char*)(void*)dest, destbos,               \
-                              func": dmax exceeds dest", EOVERFLOW);    \
+                handle_werror(dest, destbos/sizeof(wchar_t),            \
+                             func": dmax exceeds dest", EOVERFLOW);     \
                 return RCNEGATE(EOVERFLOW);                             \
             }                                                           \
         }                                                               \
@@ -384,7 +384,7 @@ typedef unsigned long uintptr_t;
                 return RCNEGATE(ESLEMAX);                               \
             } else {                                                    \
                 invoke_safe_mem_constraint_handler(func": dmax exceeds dest",\
-                                               (void*)dest, EOVERFLOW); \
+                           (void*)dest, EOVERFLOW);                     \
                 return RCNEGATE(EOVERFLOW);                             \
             }                                                           \
         }                                                               \
@@ -410,7 +410,7 @@ typedef unsigned long uintptr_t;
             return RCNEGATE(ESLEMAX);                                   \
         } else {                                                        \
             invoke_safe_str_constraint_handler(func": dmax exceeds dest", \
-                                           (void*)dest, EOVERFLOW);     \
+                           (void*)dest, EOVERFLOW);                     \
             return RCNEGATE(EOVERFLOW);                                 \
         }                                                               \
     }
@@ -421,19 +421,19 @@ typedef unsigned long uintptr_t;
                            (void*)dest, ESLEMAX);                       \
             return RCNEGATE(ESLEMAX);                                   \
         } else {                                                        \
-            invoke_safe_str_constraint_handler(func": dmax exceeds dest",\
-                                           (void*)dest, EOVERFLOW);     \
+            invoke_safe_str_constraint_handler(func": dmax exceeds dest", \
+                           (void*)dest, EOVERFLOW);                     \
             return RCNEGATE(EOVERFLOW);                                 \
         }                                                               \
     }
 # define CHK_DESTW_OVR_CLEAR(func,destsz,destbos)                       \
     if (unlikely(destsz > destbos)) {                                   \
-        if (dmax > RSIZE_MAX_WSTR) {                                   \
-            handle_error((char*)(void*)dest, destbos,                   \
+        if (dmax > RSIZE_MAX_WSTR) {                                    \
+            handle_werror(dest, destbos/sizeof(wchar_t),                \
                          func": dmax exceeds max", ESLEMAX);            \
             return RCNEGATE(ESLEMAX);                                   \
         } else {                                                        \
-            handle_error((char*)(void*)dest, destbos,                   \
+            handle_werror(dest, destbos/sizeof(wchar_t),                \
                          func": dmax exceeds dest", EOVERFLOW);         \
             return RCNEGATE(EOVERFLOW);                                 \
         }                                                               \
@@ -457,7 +457,7 @@ typedef unsigned long uintptr_t;
             return RCNEGATE(ESLEMAX);                                   \
         } else {                                                        \
             invoke_safe_mem_constraint_handler(func": dmax exceeds dest", \
-                                           (void*)dest, EOVERFLOW);     \
+                           (void*)dest, EOVERFLOW);                     \
             return RCNEGATE(EOVERFLOW);                                 \
         }                                                               \
     }
@@ -465,14 +465,14 @@ typedef unsigned long uintptr_t;
 #define CHK_SRC_NULL(func, src)                                         \
     if (unlikely(src == NULL)) {                                        \
         invoke_safe_str_constraint_handler(func ": " _XSTR(src) " is null", \
-                                           (void*)src, ESNULLP);        \
+                       (void*)src, ESNULLP);                            \
         return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                   \
     if (unlikely(src == NULL)) {                                        \
         handle_error(dest, _BOS_KNOWN(dest)?BOS(dest):dmax,             \
                      func ": " _XSTR(src) " is null", ESNULLP);         \
-        return RCNEGATE(ESNULLP); \
+        return RCNEGATE(ESNULLP);                                       \
     }
 #define CHK_SRCW_NULL_CLEAR(func, src)                                  \
     if (unlikely(src == NULL)) {                                        \
@@ -491,9 +491,9 @@ typedef unsigned long uintptr_t;
         else if (_BOS_CHK_N(src,slen)) {      \
             handle_str_src_bos_chk_warn(func,(char *)dest,slen, \
                        BOS(src),_XSTR(src),_XSTR(slen)); \
-            return RCNEGATE(ESLEWRNG);         \
-        }                                      \
-        BND_CHK_PTR_BOUNDS(src, slen);         \
+            return RCNEGATE(ESLEWRNG);        \
+        }                                     \
+        BND_CHK_PTR_BOUNDS(src, slen);        \
     }
 #elif defined(HAVE_WARN_DMAX)
 # define CHK_SRC_OVR_CLEAR(func, src, slen, MAX) \
@@ -547,18 +547,18 @@ typedef unsigned long uintptr_t;
 #define CHK_DEST_DMAX_BOOL(func, max)                                   \
     if (unlikely(dest == NULL)) {                                       \
         invoke_safe_str_constraint_handler(func ": dest is null",       \
-                                           NULL, ESNULLP);              \
+                       NULL, ESNULLP);                                  \
         return false;                                                   \
     }                                                                   \
     if (unlikely(dmax == 0)) {                                          \
         invoke_safe_str_constraint_handler(func ": dmax is 0",          \
-                                           (void*)dest, ESZEROL);       \
+                       (void*)dest, ESZEROL);                           \
         return false;                                                   \
     }                                                                   \
     if (destbos == BOS_UNKNOWN) {                                       \
         if (unlikely(dmax > (max))) {                                   \
             invoke_safe_str_constraint_handler(func ": dmax exceeds max", \
-                                               (void*)dest, ESLEMAX);   \
+                           (void*)dest, ESLEMAX);                       \
             return false;                                               \
         }                                                               \
         BND_CHK_PTR_BOUNDS(dest, dmax);                                 \
@@ -568,14 +568,14 @@ typedef unsigned long uintptr_t;
 
 /* Comparing pointers from two separately allocated objects is forbidden
    as per 6.5.8 C11 except when using (in)equality. GH #51 */
-#define CHK_OVRLP(dp,dlen,sp,slen) \
+#define CHK_OVRLP(dp,dlen,sp,slen)              \
     (((uintptr_t)dp >= (uintptr_t)sp) &&        \
      ((uintptr_t)dp < (uintptr_t)(sp+slen))) || \
     (((uintptr_t)dp < (uintptr_t)sp) &&         \
      ((uintptr_t)sp < (uintptr_t)(dp+dlen)))
 /* but allow dp==sp */
-#define CHK_OVRLP_BUTSAME(dp,dlen,sp,slen) \
-    (((uintptr_t)dp > (uintptr_t)sp) &&        \
+#define CHK_OVRLP_BUTSAME(dp,dlen,sp,slen)      \
+    (((uintptr_t)dp > (uintptr_t)sp) &&         \
      ((uintptr_t)dp < (uintptr_t)(sp+slen))) || \
     (((uintptr_t)dp < (uintptr_t)sp) &&         \
      ((uintptr_t)sp < (uintptr_t)(dp+dlen)))

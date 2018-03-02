@@ -364,24 +364,18 @@ void *bnd_chk_malloc (size_t n)
         errs++;                                    \
     }
 #ifdef SAFECLIB_STR_NULL_SLACK
-#define CHECK_SLACK(dest,dmax)                  \
-    {   int i;                                  \
-        for (i=0; i<(int)(dmax); i++) {         \
+# define CHECK_SLACK(dest,dmax)                   \
+    {   int i;                                    \
+        for (i=0; i<(int)(dmax); i++) {           \
           int e = 0;                              \
           if ((dest)[i] != '\0') {                \
             debug_printf("%s %u   Error rc=%u. no slack at dest[%d] %c of %d\n", \
                 __FUNCTION__, __LINE__,  rc, i, (dest)[i], (int)(dmax)); \
-            if (!e) { errs++; e++; }            \
-          } \
-        } \
+            if (!e) { errs++; e++; }              \
+          }                                       \
+        }                                         \
     }
-#else
-#define CHECK_SLACK(dest,dmax) \
-    EXPNULL(dest)
-#endif
-
-#ifdef SAFECLIB_STR_NULL_SLACK
-#define WCHECK_SLACK(dest,dmax)                \
+# define WCHECK_SLACK(dest,dmax)               \
     {  int i;                                  \
        for (i=0; i<(int)(dmax); i++) {         \
          int e = 0;                            \
@@ -393,8 +387,8 @@ void *bnd_chk_malloc (size_t n)
        }                                       \
     }
 #else
-#define WCHECK_SLACK(dest,dmax) \
-    WEXPNULL(dest)
+# define CHECK_SLACK(dest,dmax)  EXPNULL(dest)
+# define WCHECK_SLACK(dest,dmax) WEXPNULL(dest)
 #endif
 
 #define INDZERO()                                  \

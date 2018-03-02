@@ -43,7 +43,7 @@ int main(void)
 
 # ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
-    rc = wcsset_s(str1, LEN+1, 0);
+    rc = wcsnset_s(str1, LEN+1, 0, 5);
     ERR(EOVERFLOW);
     WCHECK_SLACK(str1, LEN);
 # endif
