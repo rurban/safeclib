@@ -10,11 +10,12 @@ From the following tested libc implementations:
 * FreeBSD and DragonFly libc
 * FreeBSD-derived darwin libc
 * OpenBSD libc
-* newlib
+* newlib (Cygwin)
 * dietlibc
 * uClibc
 * minilibc
-* Microsoft Windows w/ secure API
+* Microsoft Windows under wine
+* Microsoft Windows msvcrt and ulibc w/ secure API
 * Android Bionic
 * Embarcadero C++ libc
 
@@ -49,12 +50,9 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 # C11 Annex K/safec caveats
 
-* `snprintf_s`, `vsnprintf_s`, `snwprintf_s`, `vsnwprintf_s`, `tmpnam_s`:
+* `tmpnam_s`:
 
-  They are all considered unsafe. The 4 'n' truncating printf versions
-  don't guarantee null-delimited destination buffers.
-
-* `tmpnam_s` and `tmpnam` are racy.
+  Is considered unsafe. `tmpnam_s` and `tmpnam` are racy.
 
 * `sprintf_s` and `vsprintf_s` retval on errors.
 
@@ -90,14 +88,15 @@ See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
 * no `RSIZE_MAX`
 
-* `memmove_s` does not clear dest with ERANGE when count > dmax and EINVAL when
+* `memmove_s` does not clear dest with ERANGE when `count > dmax` and EINVAL when
   src is a NULL pointer.
 
 * `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
   (Wrong standard)
 
-* With `wcsrtombs` (used by `wcsrtomb_s`) the `*retval` result includes the terminating
-  zero, i.e. the result is `+1` from the spec.
+* With `wcsrtombs` (used by `wcsrtomb_s`) the `*retval` result
+  includes the terminating zero, i.e. the result is `+1` from the
+  spec.
 
 ## safeclib
 
@@ -194,4 +193,4 @@ compile-time known sizes the FORTIFY `_chk` extension secures against
 overflows, but not against dynamically allocated buffers. This library
 was written 2008 under the MIT license, thanks Cisco.
 
-Reini Urban 2017
+Reini Urban 2018

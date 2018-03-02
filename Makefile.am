@@ -620,4 +620,3 @@ release: docs distcheck
 	git commit -m"Update to v`date +%d%m%Y`"
 	git push
 	git checkout master
-	build-tools/autogen.sh

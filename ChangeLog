@@ -1,7 +1,7 @@
 
                 ChangeLog file for safeclib
 
-Changes in v??032018 3.3.0
+Changes in v03032018 3.3.0
         - Added compile-time and run-time object_size checks (BOS), resulting
           in EOVERFLOW error codes. Compilers only do this reliably with static
           arrays, less so with literal strings. With known static allocation size
@@ -15,7 +15,7 @@ Changes in v??032018 3.3.0
           memcpy native, with gcc only 77% slower.
           Added more benchmarks and improved the timing.
         - Made the unsafe functions snprintf_s, vsnprintf_s, snwprintf_s, vsnwprintf_s
-          safe by guaranteeing null termination. Only tmpnam_s remains unsafe.
+          safe by guaranteeing null termination. Only tmpnam_s remains unsafe. (GH #52)
         - Added strnatcmp_s, strnatcasecmp_s
         - Add --disable-constraint-handler option. undef the run-time
           invoke_safe_{str,mem}_constraint_handler function calls
@@ -45,7 +45,7 @@ Changes in v??032018 3.3.0
         - More hardening with gcc-7.3/clang-7: Probe for -Wl,-z,textonly and
           -Wl,-z,retpolineplt, currently only with lld-7
         - Fixed wcsnorm_compose_s >RSIZE_MAX_WSTR integer overflow
-        - Fixed overlap checks to be C11 conformant, cast to uintptr_t.
+        - Fixed overlap checks to be C11 conformant, cast to uintptr_t. (GH #51)
         - add strnatcmp_s, add strcmp_s src overflow checks,
           ESUNTERM for src to avoid overflows
         - Reworked C11 compatibility to closer align with the existing Windows+BSD
