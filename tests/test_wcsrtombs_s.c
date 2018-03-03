@@ -162,7 +162,14 @@ int test_wcsrtombs_s (void)
     rc = wcsrtombs_s(&ind, NULL, LEN, (cs=L"abcdef",&cs), 2, &ps);
     ERR_MSVC(EOK, EINVAL);
     if (!use_msvcrt) {
+#ifdef _WIN32
+        /* older msvcrt's do 2 */
+        /* "On the msvcrt with a NULL dest pointer, the retvalp length is limited
+           by the srcp len. In other libc's len is ignored" */
+        INDCMP(!= 2 && (int)ind != 6);
+#else
         INDCMP(!= 6);
+#endif
     } else if (have_wine) {
         INDCMP(!= 0);
     } else {
