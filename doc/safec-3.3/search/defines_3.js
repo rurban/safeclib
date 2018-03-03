@@ -4,6 +4,5 @@ var searchData=
   ['casemap',['CASEMAP',['../d8/dbe/towctrans_8c.html#a158ea2740f5d15f173f2c42173dd768e',1,'towctrans.c']]],
   ['cc_5fseq_5fsize',['CC_SEQ_SIZE',['../d3/dd5/wcsnorm__s_8c.html#a2cfb32ca0317ddadcbfc328c1e868aa2',1,'wcsnorm_s.c']]],
   ['cc_5fseq_5fstep',['CC_SEQ_STEP',['../d3/dd5/wcsnorm__s_8c.html#a9ade52a2febdaae334c52badc8f3a4d7',1,'wcsnorm_s.c']]],
-  ['constp',['CONSTP',['../df/d0a/safe__compile_8h.html#a163f1a67da81ee0089f4721419d4790a',1,'safe_compile.h']]],
   ['ctime_5fs',['ctime_s',['../db/d69/safe__lib_8h.html#ad300fa14f470e5cca2eb96274f785c8e',1,'safe_lib.h']]]
 ];

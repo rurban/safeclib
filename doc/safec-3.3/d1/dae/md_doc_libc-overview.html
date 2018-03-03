@@ -93,11 +93,12 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <li>FreeBSD and DragonFly libc</li>
 <li>FreeBSD-derived darwin libc</li>
 <li>OpenBSD libc</li>
-<li>newlib</li>
+<li>newlib (Cygwin)</li>
 <li>dietlibc</li>
 <li>uClibc</li>
 <li>minilibc</li>
-<li>Microsoft Windows w/ secure API</li>
+<li>Microsoft Windows under wine</li>
+<li>Microsoft Windows msvcrt and ulibc w/ secure API</li>
 <li>Android Bionic</li>
 <li>Embarcadero C++ libc</li>
 </ul>
@@ -116,10 +117,9 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <p>See also <a href="http://crashcourse.housegordon.org/coreutils-multibyte-support.html">http://crashcourse.housegordon.org/coreutils-multibyte-support.html</a></p>
 <h1>C11 Annex K/safec caveats</h1>
 <ul>
-<li><p class="startli"><code>snprintf_s</code>, <code>vsnprintf_s</code>, <code>snwprintf_s</code>, <code>vsnwprintf_s</code>, <code>tmpnam_s</code>:</p>
-<p class="startli">They are all considered unsafe. The 4 'n' truncating printf versions don't guarantee null-delimited destination buffers.</p>
+<li><p class="startli"><code>tmpnam_s</code>:</p>
+<p class="startli">Is considered unsafe. <code>tmpnam_s</code> and <code>tmpnam</code> are racy.</p>
 </li>
-<li><code>tmpnam_s</code> and <code>tmpnam</code> are racy.</li>
 <li><p class="startli"><code>sprintf_s</code> and <code>vsprintf_s</code> retval on errors.</p>
 <p class="startli">They were revised by the author from Microsoft in <a href="http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf">n1141</a> to return <code>0</code> on most errors (only <code>-1</code> on encoding errors), to allow the often used <code>count += sprintf(buf + count, format_string, args);</code> when no encoding errors could occur, ignoring <code>retval &lt; 0</code> checks. Lateron Microsoft and all other implementors (e.g. Embacadero, safeclib) revised this decision to be consistent, to return <code>-1</code> on all errors, just the standard still contains the <b>n1141</b> revision.</p>
 </li>
@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 <li>reversed argument order for <code>localtime_s</code> and <code>gmtime_s</code>.</li>
 <li>older mingw versions have <code>wchar.h</code> with only 2 functions: <code>wcscmp</code>, <code>wcslen</code></li>
 <li>no <code>RSIZE_MAX</code></li>
-<li><code>memmove_s</code> does not clear dest with ERANGE when count &gt; dmax and EINVAL when src is a NULL pointer.</li>
+<li><code>memmove_s</code> does not clear dest with ERANGE when <code>count &gt; dmax</code> and EINVAL when src is a NULL pointer.</li>
 <li><code>vsprintf_s</code>, <code>sprintf_s</code> return <code>-1</code> on all errors, not just encoding errors. (Wrong standard)</li>
 <li>With <code>wcsrtombs</code> (used by <code>wcsrtomb_s</code>) the <code>*retval</code> result includes the terminating zero, i.e. the result is <code>+1</code> from the spec.</li>
 </ul>
@@ -183,10 +183,10 @@ $(document).ready(function(){initNavTree('d1/dae/md_doc_libc-overview.html','../
 </li>
 </ul>
 <p>It's now 10 years after the secure libc extensions were designed, C11 adopted them, and still almost nobody implements them. Only for compile-time known sizes the FORTIFY <code>_chk</code> extension secures against overflows, but not against dynamically allocated buffers. This library was written 2008 under the MIT license, thanks Cisco.</p>
-<p>Reini Urban 2017 </p>
+<p>Reini Urban 2018 </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 15012018.247-g924dca 3.3
+Generated for Safe C Library 03032018.0-g570fa5 3.3
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
