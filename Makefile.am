@@ -493,7 +493,6 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/_*.3
 	-rm doc/man/man3/slk_*.3
 	-rm doc/man/man3/BOS*.3
-	-rm doc/man/man3/CONSTP.3
 	-rm doc/man/man3/VAL_OVR2*
 	-rm doc/man/man3/HAVE___BUILTIN_CONSTANT_P.3
 	-rm doc/man/man3/HAVE___BUILTIN_OBJECT_SIZE.3

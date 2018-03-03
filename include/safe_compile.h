@@ -49,11 +49,6 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #ifndef __has_attribute
 # define __has_attribute(x) 0
 #endif
-#ifdef HAVE___BUILTIN_CONSTANT_P
-#define CONSTP(ptr) __builtin_constant_p(ptr)
-#else
-#define CONSTP(ptr) 0
-#endif
 
 /* clang-5+ BOS checks */
 #define BOS_UNKNOWN ((size_t)-1)
@@ -90,8 +85,10 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 #else
 # define bos_chk_err "warning"
 #endif
+
 #define _XSTR(s) _STR(s)
 #define _STR(s)  #s
+
 /* diagnose_if compile-time check since clang-5, gcc not yet */
 #if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 # ifdef HAVE_WARN_DMAX
@@ -158,7 +155,7 @@ typedef void (*constraint_handler_t) (const char *restrict /* msg */,
 # endif
 
 /* independent on WARN_DMAX, pure overflow/null/zero checks */
-/* no zero check */
+/* no zero or null checks */
 # define BOS_OVR2(buf,bufsize)                                          \
     __attribute__((diagnose_if(_BOS_OVR(buf,bufsize), _XSTR(buf)" overflow", bos_chk_err))) \
     __attribute__((diagnose_if(_BOS_NULL(buf), "empty "_XSTR(buf), bos_chk_err)))

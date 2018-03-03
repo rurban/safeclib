@@ -40,8 +40,8 @@ int main(void)
     rc = strisuppercase_s("", 2);
     ERR(false)
 
-    /*printf("%u BOS: %d %d/%d %d - %lu/%lu\n", __LINE__, _BOS_KNOWN("test"), CONSTP("test"),
-           _BOS_KNOWN(str), CONSTP(str),
+    /*printf("%u BOS: %d %d/%d %d - %lu/%lu\n", __LINE__, _BOS_KNOWN("test"), SAFEC_CONSTP("test"),
+           _BOS_KNOWN(str), SAFEC_CONSTP(str),
            BOS("test"), BOS(str));*/
     /* once fixed by adding prototypes and const: clang literal string bug */
     EXPECT_BOS_TODO("dest overflow")
