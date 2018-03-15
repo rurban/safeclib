@@ -339,6 +339,16 @@ else
 	AC_MSG_RESULT([no (default)])
 fi
 
+AC_ARG_ENABLE(doc,
+	AS_HELP_STRING([--disable-doc],
+	               [disable documentation @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_doc=true ;;
+	no)  enable_doc=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-doc]) ;;
+	esac], [enable_doc=true])
+AM_CONDITIONAL(ENABLE_DOC, test "x$enable_doc" = "xtrue")
+
 dnl for windows dllimport. checking pic_flag DLL_EXPORT would be better,
 dnl but this is only enabled for the shared objs, and we need it in the config
 dnl for our tests.
