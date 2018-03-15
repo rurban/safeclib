@@ -104,6 +104,7 @@ LIBTOOL_DISTCLEAN_FILES = \
 	build-tools/test-driver
 DISTCLEANFILES = .version
 
+if ENABLE_DOC
 MAN1_SOURCES = doc/man/man1/check_for_unsafe_apis.1
 dist_man_MANS =
 if HAVE_POD2MAN
@@ -559,6 +560,7 @@ all-local: Doxyfile doc/footer
 clean-local:
 	rm -rf $(builddir)/doc/html
 	rm -rf $(builddir)/doc/man
+endif
 endif
 
 if ENABLE_GCOV
