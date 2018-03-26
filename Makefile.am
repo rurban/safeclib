@@ -59,7 +59,7 @@ SAFEC_INFRA = \
 	$(top_srcdir)/doc/libc-overview.md     	   \
 	$(top_srcdir)/scripts                      \
 	$(top_srcdir)/.version                     \
-	$(top_srcdir)/safec.pc.in
+	$(top_srcdir)/libsafec.pc.in
 
 SAFEC_GENHEADERS = \
 	$(top_srcdir)/include/safe_config.h.in     \
@@ -80,15 +80,7 @@ EXTRA_DIST = $(SAFEC_INFRA) $(SAFEC_GENHEADERS) $(SAFEC_SLKM)
 
 BUILT_SOURCES = $(top_srcdir)/.version
 
-# Install the generated pkg-config file (.pc) into the expected location for
-# architecture-dependent package configuration information.  Occasionally,
-# pkg-config files are also used for architecture-independent data packages,
-# in which case the correct install location would be $(datadir)/pkgconfig.
-#      pkgconfigdir = $(libdir)/pkgconfig
-#      pkgconfig_DATA = safec-$(SAFEC_API_VERSION).pc
-# We need to be architecture-dependent:
-pcdatadir = $(libdir)/pkgconfig
-pcdata_DATA = safec-$(SAFEC_API_VERSION).pc
+pkgconfig_DATA = libsafec.pc
 
 CLEANFILES = *~
 LIBTOOL_DISTCLEAN_FILES = \

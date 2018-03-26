@@ -72,6 +72,9 @@ AM_PROG_AR
                     # it out for now
 LT_INIT
 
+# Initialize pkg-config since we are installing a .pc file
+PKG_INSTALLDIR
+
 
 # Global Variable & Defaults
 # ===============================================
@@ -949,11 +952,8 @@ fi
 # This does the #define/#undef magic
 AC_CONFIG_HEADERS([config.h])
 
-# Override the template file name of the generated .pc file, so that there
-# is no need to rename the template file when the API version changes.
-# This does the @MACRO@ expansion
-AC_CONFIG_FILES([safec-${SAFEC_API_VERSION}.pc:safec.pc.in
-		 include/safe_config.h
+AC_CONFIG_FILES([libsafec.pc
+                 include/safe_config.h
                  include/safe_lib_errno.h
                  include/safe_types.h
                  Makefile
