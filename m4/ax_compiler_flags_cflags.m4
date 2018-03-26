@@ -66,12 +66,12 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     ])
 
     # retpoline: clang-7. Note: requires lld-7 linker support
-    AX_APPEND_COMPILE_FLAGS(["-mretpoline -DRETPOLINE"],
+    AX_APPEND_COMPILE_FLAGS(["-mretpoline -DRETPOLINE $lt_prog_compiler_pic"],
         [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
     # or the equivalent gcc-7.3 variant
     if test -z "$RETPOLINE_CFLAGS"; then
         AX_APPEND_COMPILE_FLAGS(
-          ["-mindirect-branch=thunk-extern -mfunction-return=thunk-extern -mindirect-branch-register -DRETPOLINE"],
+          ["-mindirect-branch=thunk-extern -mfunction-return=thunk-extern -mindirect-branch-register $lt_prog_compiler_pic -DRETPOLINE"],
           [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
     fi
 

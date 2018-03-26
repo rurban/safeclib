@@ -66,7 +66,7 @@ AC_DEFUN([AX_COMPILER_FLAGS_LDFLAGS],[
     dnl /usr/bin/ld: warning: -z retpolineplt ignored.
     case $RETPOLINE_CFLAGS in
         *-mretpoline*|*-mindirect-branch=thunk-extern*)
-            AX_APPEND_LINK_FLAGS([-Wl,-z,retpolineplt],
+            AX_APPEND_LINK_FLAGS(["$RETPOLINE_CFLAGS -Wl,-z,retpolineplt"],
                 [RETPOLINE_LDFLAGS],[$ax_compiler_flags_test])
             if test -n "$RETPOLINE_LDFLAGS"; then
                 AM_CFLAGS="$AM_CFLAGS $RETPOLINE_CFLAGS"
