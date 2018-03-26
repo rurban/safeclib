@@ -4,9 +4,9 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: @PACKAGE_TARNAME@
+Name: @PACKAGE@
 Description: A safe coding library for C, ref ISO TR24731, C11 Annex K
 Version: @VERSION@
 URL: @PACKAGE_URL@
 Libs: -L${libdir} -lsafec-@SAFEC_API_VERSION@
-Cflags: -I${includedir}/safec-@SAFEC_API_VERSION@ -I${libdir}/safec-@SAFEC_API_VERSION@/include
+Cflags: -I${includedir}/@PACKAGE@

@@ -59,7 +59,7 @@ SAFEC_INFRA = \
 	$(top_srcdir)/doc/libc-overview.md     	   \
 	$(top_srcdir)/scripts                      \
 	$(top_srcdir)/.version                     \
-	$(top_srcdir)/safec.pc.in
+	$(top_srcdir)/libsafec.pc.in
 
 SAFEC_GENHEADERS = \
 	$(top_srcdir)/include/safe_config.h.in     \
@@ -88,7 +88,7 @@ BUILT_SOURCES = $(top_srcdir)/.version
 #      pkgconfig_DATA = safec-$(SAFEC_API_VERSION).pc
 # We need to be architecture-dependent:
 pcdatadir = $(libdir)/pkgconfig
-pcdata_DATA = safec-$(SAFEC_API_VERSION).pc
+pcdata_DATA = libsafec.pc
 
 CLEANFILES = *~
 LIBTOOL_DISTCLEAN_FILES = \
@@ -102,7 +102,7 @@ LIBTOOL_DISTCLEAN_FILES = \
 	build-aux/ltmain.sh \
 	build-aux/missing \
 	build-aux/test-driver
-DISTCLEANFILES = .version
+DISTCLEANFILES = .version m4/pkg.m4
 
 if ENABLE_DOC
 MAN1_SOURCES = doc/man/man1/check_for_unsafe_apis.1
