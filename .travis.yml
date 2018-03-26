@@ -9,6 +9,7 @@ addons:
   apt:
     packages:
       - libtext-diff-perl
+      - pkg-config
 matrix:
   fast_finish: true
   include:
