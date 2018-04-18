@@ -16,14 +16,18 @@ From the following tested libc implementations:
 * minilibc
 * Microsoft Windows under wine
 * Microsoft Windows msvcrt and ulibc w/ secure API
+* Open Watcom
 * Android Bionic
 * Embarcadero C++ libc
+* slibc
 
-only the last 3 implement the secure C11 extensions:
+only the last 5 implement the secure C11 extensions:
 
 * Microsoft Windows
+* Open Watcom since 1.5
 * Android Bionic w/ stlport
 * Embarcadero C++ libc
+* slibc
 
 # General quirks
 
@@ -129,6 +133,27 @@ also try to use the `alloc_size` extension which looks at a malloc'ed
 pointer into the previous word for its size.  So there's no secure API,
 just the normal POSIX and glibc API with compile-time `_chk` checks as
 in glibc with FORTIFY. Just a bit better than glibc.
+
+## Open Watcom 1.5
+
+Tested by
+http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm#alternatives
+It sets the `__STDC_LIB_EXT1__` macro to `200509L` and can be
+considered a nearly conforming implementation.
+
+## slibc
+
+"Slibc is a complete, open source implementation of Annex K designed
+to be used with GNU C library typically distributed with Linux. The
+implementation claims to be complete and to fully conform to C11. An
+inspection of the implementation reveals that it is quite inefficient
+and thus unsuitable for production use without considerable
+changes. It does provide a good referefence implementation of the
+library. A proposal to incorporate slibc into the GNU C library was
+submitted in 2012 to the GNU C library community and rejected."
+- http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm#alternatives
+
+Available at https://code.google.com/archive/p/slibc/
 
 # Other caveats
 
