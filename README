@@ -87,6 +87,10 @@ https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-function
 DrDobbs review
 http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670
 
+C17 reconsidered safeclib but looked only at the old incomplete Cisco version,
+not our complete and fixed version.
+http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm
+
 * Use of errno
 
 The TR24731 specification says an implementation may set errno for the
