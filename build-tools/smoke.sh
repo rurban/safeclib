@@ -8,30 +8,31 @@ case `uname` in
 Darwin) # macports compilers
     make=gmake
 
-gmake -s clean
+gmake -s -j4 clean
 echo clang-mp-5.0 -fsanitize=address,undefined -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
 CC="clang-mp-5.0 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-gmake -s clean
+gmake -s -j4 clean
 # full optim: failed -O2 in wcsnset_s WCHECK_SLACK, because the word after static str1
 #             was reused. off-by-one
 echo clang-mp-5.0 -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
 CC="clang-mp-5.0 -march=native" \
     ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
+gmake -s -j4 clean
 # disable -DFORTIFY_SOURCE=2, asan set it to 0 already
 echo clang-mp-5.0 -g -O2 -fsanitize=address,undefined -fno-omit-frame-pointer --disable-shared --enable-unsafe --enable-norm-compat
 CC="clang-mp-5.0" \
     CFLAGS="-g -O2 -fsanitize=address,undefined -fno-omit-frame-pointer" \
     ./configure --disable-shared --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-gmake -s clean
+gmake -s -j4 clean
 echo clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
 CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-gmake -s clean
+gmake -s -j4 clean
 # since clang 5 with diagnose_if BOS compile-time checks
 echo clang-mp-5.0 -std=c11 --enable-unsafe --enable-norm-compat
 CC="clang-mp-5.0 -std=c11" \
@@ -40,45 +41,48 @@ CC="clang-mp-5.0 -std=c11" \
     # too many darwin kernel and libc leaks, esp. with locale and time.
     # not getting better, getting worse
     gmake -s -j4 check-valgrind
+gmake -s -j4 clean
 # relax compile-time errors to warnings
 echo clang-mp-devel -DTEST_BOS --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat
 CC="clang-mp-devel -DTEST_BOS" \
     ./configure --enable-debug --enable-warn-dmax --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
-gmake -s clean
+gmake -s -j4 clean
 # also check against BOS compile-time errors
 echo clang-mp-devel --enable-debug --enable-unsafe --enable-norm-compat
 CC="clang-mp-devel" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
-gmake -s clean
-# must error
-echo "clang-mp-devel --enable-error-dmax. MUST error, ignore"
+gmake -s -j4 clean
 CC="clang-mp-devel" ./configure --enable-error-dmax && \
     $make -s -j4 check-log && exit
-# try the BSD/darwin memset_s
-#CFLAGS="-g -DTEST_MSVCRT" ./configure --enable-shared --enable-debug --enable-unsafe && \
-#    make check-log || exit
+gmake -s -j4 clean
 echo clang-mp-4.0 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
 CC="clang-mp-4.0 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
     gmake -s -j4 check-valgrind
+gmake -s -j4 clean
 echo gcc-mp-4.3 -ansi
 CC="gcc-mp-4.3 -ansi" ./configure && \
     gmake -s -j4 check-log || exit
+gmake -s -j4 clean
 echo gcc-mp-4.3 -std=iso9899:199409
 CC="gcc-mp-4.3 -std=iso9899:199409" ./configure && \
     gmake -s -j4 check-log || exit
+gmake -s -j4 clean
 echo "gcc-mp-6"
 CC="gcc-mp-6" ./configure && \
     gmake -s -j4 check-log || exit
+gmake -s -j4 clean
 echo "gcc-mp-7  --enable-unsafe"
 CC="gcc-mp-7" ./configure --enable-unsafe && \
     gmake -s -j4 check-log || exit
+gmake -s -j4 clean
 echo "gcc-mp-7 -march=native -Wa,-q --enable-unsafe"
 CC="gcc-mp-7 -march=native -Wa,-q" ./configure --enable-unsafe && \
     gmake -s -j4 check-log || exit
+gmake -s -j4 clean
 echo "g++-mp-6 -std=c++11 --enable-unsafe --enable-norm-compat"
 CC="g++-mp-6 -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
@@ -87,7 +91,7 @@ CC=gcc-mp-6 \
     ./configure --enable-gcov=gcov-mp-6 --disable-shared --enable-unsafe \
                 --enable-norm-compat && \
     gmake -s -j4 gcov
-gmake clean
+gmake -s -j4 clean
 #clang++ not
 #CC="c++ -std=c++98" ./configure && \
     #    make -s -j4 check-log || exit
@@ -103,6 +107,7 @@ if [ -e /opt/local/bin/arm-elf-gcc-4.7 ]; then
         b=$(basename $t)
         qemu-arm -L /opt/local/arm-elf $t | tee tests/$b.log
     done
+    gmake -s -j4 clean
 fi
 
 ;;
