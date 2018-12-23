@@ -4,9 +4,10 @@
  * October 2008, Bo Berry
  * October 2017, Reini Urban
  * January 2018, Reini Urban
+ * December 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017-2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -41,6 +42,11 @@
 
 #if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
 #else
+
+#ifdef _WIN32
+/* WinBase.h is too large */
+void* SecureZeroMemory(void*, size_t);
+#endif
 
 /**
  * @def memset_s(dest,dmax,value,n)
@@ -121,7 +127,13 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
         n = dmax;
     }
 
+#ifdef _WIN32
+    SecureZeroMemory(dest, n);
+    if (value)
+        mem_prim_set(dest, n, (uint8_t)value);
+#else
     mem_prim_set(dest, n, (uint8_t)value);
+#endif
 
     return (RCNEGATE(err));
 }

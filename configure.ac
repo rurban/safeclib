@@ -794,7 +794,8 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         strnstr strnlen strrchr memrchr strstr wmemchr wmemcmp wcscmp wcsstr \
         vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs iswdigit iswspace \
         towlower towupper towctrans bcmp secure_getenv timingsafe_memcmp \
-        timingsafe_bcmp asctime_r ctime_r gmtime_r localtime_r memccpy ])
+        timingsafe_bcmp explicit_bzero explicit_memset SecureZeroMemory \
+        asctime_r ctime_r gmtime_r localtime_r memccpy ])
 dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
 AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \

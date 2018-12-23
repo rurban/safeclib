@@ -2,8 +2,10 @@
  * memzero_s - zeros memory
  *
  * October 2008, Bo Berry
+ * December 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 Cisco Systems
+ * Copyright (c) 2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -34,6 +36,11 @@
 #else
 #include "safeclib_private.h"
 #include "mem/mem_primitives_lib.h"
+#endif
+
+#ifdef _WIN32
+/* WinBase.h is too large */
+void* SecureZeroMemory(void*, size_t);
 #endif
 
 /**
@@ -83,7 +90,11 @@ _memzero_s_chk (void *dest, rsize_t len, const size_t destbos)
      * mem_prim_set(dest, len, 0xA5);
      * mem_prim_set(dest, len, 0x5A);
      */
+#ifdef _WIN32
+    SecureZeroMemory(dest, len);
+#else
     mem_prim_set(dest, len, 0);
+#endif
 
     return (RCNEGATE(EOK));
 }

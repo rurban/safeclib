@@ -3,6 +3,7 @@
  *
  * February 2005, Bo Berry
  * February 2018, Reini Urban
+ * December 2018, Reini Urban
  *
  * Copyright (c) 2005-2009 Cisco Systems
  * Copyright (c) 2018 Reini Urban
@@ -55,7 +56,9 @@
 void
 mem_prim_set (void *dest, uint32_t len, uint8_t value)
 {
-    uint8_t *dp;
+    /* Avoid possible compiler optimization */
+    /* See https://wiki.sei.cmu.edu/confluence/display/c/MSC06-C.+Beware+of+compiler+optimizations */
+    volatile uint8_t *dp;
     uint32_t count;
     uint32_t lcount;
 
@@ -64,7 +67,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 
     count = len;
 
-    dp = (uint8_t*) dest;
+    dp = (volatile uint8_t*) dest;
 
     value32 = value | (value << 8) | (value << 16) | (value << 24);
 
@@ -135,7 +138,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 void
 mem_prim_set (void *dest, uint32_t len, uint8_t value)
 {
-    uint8_t *dp;
+    volatile uint8_t *dp;
     uint64_t count;
     uint64_t lcount;
 
@@ -144,7 +147,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 
     count = len;
 
-    dp = (uint8_t*) dest;
+    dp = (volatile uint8_t*) dest;
 
     value64 = (uint64_t)value;
     if (value) { /* value is mostly 0 */
@@ -226,7 +229,7 @@ void
 mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
 {
 
-    uint16_t *dp = dest;
+    volatile uint16_t *dp = dest;
     while (len != 0) {
 
         switch (len) {
@@ -281,7 +284,7 @@ mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
 void
 mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
 {
-    uint32_t *dp = dest;
+    volatile uint32_t *dp = dest;
     while (len != 0) {
 
         switch (len) {
