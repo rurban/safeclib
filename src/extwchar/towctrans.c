@@ -3,6 +3,7 @@ musl as a whole is licensed under the following standard MIT license:
 
 ----------------------------------------------------------------------
 Copyright © 2005-2014 Rich Felker, et al.
+Copyright © 2018 Reini Urban
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -37,7 +38,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CASEMAP(u1,u2,l) { (u1), (l)-(u1), (u2)-(u1)+1 }
 #define CASELACE(u1,u2) CASEMAP((u1),(u2),(u1)+1)
 
-/* Unicode 10.0 */
+/* Unicode 11.0 */
 
 /* must be sorted */
 static const struct {
@@ -83,6 +84,7 @@ static const struct {
     /*CASEMAP (0x13a0,0x13ef,0xab70),*/ /* CHEROKEE reverse overflow */
     CASEMAP (0x13f0,0x13f5,0x13f8), /* CHEROKEE reverse */
     CASEMAP (0x13f8,0x13fd,0x13f0), /* CHEROKEE */
+    /*CASEMAP(0x1c90,0x1cbf,0x10d0),*/ /* GEORGIAN MTAVRULI overflow (Unicode 11) */
 
     CASELACE(0x1e00,0x1e94),
     CASELACE(0x1ea0,0x1efe),
@@ -140,11 +142,13 @@ static const struct {
     unsigned short len;
 } casemapsl[] = {
     CASEMAP(0x13a0,0x13ef,0xab70),    /* CHEROKEE reverse */
+    CASEMAP(0x1c90,0x1cbf,0x10d0),    /* GEORGIAN MTAVRULI (Unicode 11) */
     CASEMAP(0xab70,0xabbf,0x13a0),    /* CHEROKEE */
     CASEMAP(0x10400,0x10427,0x10428),
     CASEMAP(0x104b0,0x104d3,0x104d8), /* Unicode 9 */
     CASEMAP(0x10c80,0x10cb2,0x10cc0), /* Unicode 8 */
     CASEMAP(0x118a0,0x118bf,0x118c0), /* Unicode 7 */
+    CASEMAP(0x16e40,0x16e5f,0x16e60), /* MEDEFAIDRIN reverse (Unicode 11) */
     CASEMAP(0x1e900,0x1e921,0x1e922), /* Unicode 9 */
     { 0,0,0 }
 };
@@ -338,6 +342,7 @@ static const unsigned short pairs[][2] = {
     { 0xa7b3, 0xab53 }, /* Unicode 8.0 */
     { 0xa7b4, 0xa7b5 }, /* Unicode 8.0 */
     { 0xa7b6, 0xa7b7 }, /* Unicode 8.0 */
+    { 0xa7b8, 0xa7b9 }, /* Unicode 11.0 */
 
     { 0,0 }
 };
