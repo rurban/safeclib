@@ -129,6 +129,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
         *dp = value;
     }
 
+    asm volatile ("" ::: "memory");
     return;
 }
 
@@ -210,6 +211,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
         *dp = value;
     }
 
+    asm volatile ("" ::: "memory");
     return;
 }
 
@@ -266,6 +268,7 @@ mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
         }
     } /* end while */
 
+    asm volatile ("" ::: "memory");
     return;
 }
 
@@ -321,6 +324,7 @@ mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
         }
     } /* end while */
 
+    asm volatile ("" ::: "memory");
     return;
 }
 
