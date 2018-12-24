@@ -238,8 +238,7 @@ _memrchr_s_chk(const void *restrict dest, rsize_t dmax,
     _memrchr_s_chk(dest,dmax,ch,result,BOS(dest))
 
 /* timing-safe byte sequence comparisons
-   (already in OpenBSD, cygwin, newlib) */
-#if !(defined(__NEWLIB__) || defined(__OpenBSD__))
+   (already in OpenBSD, cygwin, newlib, FreeBSD) */
 EXTERN int
 _timingsafe_bcmp_chk(const void *b1, const void *b2, size_t n,
                      const size_t destbos, const size_t srcbos)
@@ -253,8 +252,6 @@ _timingsafe_memcmp_chk(const void *b1, const void *b2, size_t len,
     BOS_OVR2(b1, len) BOS_OVR2(b2, len);
 #define timingsafe_memcmp(b1,b2,len) \
     _timingsafe_memcmp_chk(b1,b2,len,BOS(b1),BOS(b2))
-
-#endif
 
 /* copy string until character found (FreeBSD) */
 EXTERN errno_t
