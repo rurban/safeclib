@@ -43,11 +43,6 @@
 #if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
 #else
 
-#ifdef _WIN32
-/* WinBase.h is too large */
-void* SecureZeroMemory(void*, size_t);
-#endif
-
 /**
  * @def memset_s(dest,dmax,value,n)
  * @brief
@@ -127,13 +122,7 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
         n = dmax;
     }
 
-#ifdef _WIN32
-    SecureZeroMemory(dest, n);
-    if (value)
-        mem_prim_set(dest, n, (uint8_t)value);
-#else
     mem_prim_set(dest, n, (uint8_t)value);
-#endif
 
     return (RCNEGATE(err));
 }

@@ -38,11 +38,6 @@
 #include "mem/mem_primitives_lib.h"
 #endif
 
-#ifdef _WIN32
-/* WinBase.h is too large */
-void* SecureZeroMemory(void*, size_t);
-#endif
-
 /**
  * @def memzero_s(dest,len)
  * @brief
@@ -90,8 +85,8 @@ _memzero_s_chk (void *dest, rsize_t len, const size_t destbos)
      * mem_prim_set(dest, len, 0xA5);
      * mem_prim_set(dest, len, 0x5A);
      */
-#ifdef _WIN32
-    SecureZeroMemory(dest, len);
+#ifdef HAVE_EXPLICIT_BZERO
+    explicit_bzero(dest, len);
 #else
     mem_prim_set(dest, len, 0);
 #endif
