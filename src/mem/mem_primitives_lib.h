@@ -2,8 +2,10 @@
  * mem_primitives_lib.h - Unguarded Memory Copy Routines
  *
  * October 2008, Bo Berry
+ * December 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2018 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -36,6 +38,60 @@
 #include "safeclib_private.h"
 #endif
 
+#if defined(HAVE_XMMINTRIN_H)
+  /* targeting SSE2 x86/x86-64 or compats */
+  #include <xmmintrin.h>
+  #if defined(__x86_64__) || defined(__i386__) || defined(_ARCH_PWR)
+  /* have mfence */
+  #define HAVE_X86_XMM
+  #else
+  /* only sfence */
+  #define HAVE_COMPAT_XMM
+  #endif
+#elif defined(HAVE_EMMINTRIN_H)
+  #include <emmintrin.h>
+  #if defined(__x86_64__) || defined(__i386__) || defined(_ARCH_PWR)
+  /* have mfence */
+  #define HAVE_X86_XMM
+  #else
+  /* only sfence */
+  #define HAVE_COMPAT_XMM
+  #endif
+#elif defined(_MSC_VER) && defined(HAVE_INTRIN_H)
+  /* Microsoft C/C++-compatible compiler */
+  #include <intrin.h>
+  /* have mfence */
+  #if defined(__x86_64__) || defined(__i686__)
+  #define HAVE_X86_XMM
+  #else /* arm __dmb(type) */
+  #define HAVE_ARM_DMB
+  #endif
+#elif defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__)) && defined(HAVE_X86INTRIN_H)
+  /* GCC-compatible, targeting x86/x86-64 (in emmintrin.h) */
+  #define HAVE_X86_X86
+  #include <x86intrin.h>
+#elif defined(__GNUC__) && defined(__ARM_NEON__) && defined(HAVE_ARM_NEON_H)
+  /* GCC-compatible, targeting ARM with NEON */
+  #define HAVE_ARM_NEON
+  #include <arm_neon.h>
+#elif defined(__GNUC__) && defined(__IWMMXT__) && defined(HAVE_MMINTRIN_H)
+  /* GCC-compatible, targeting ARM with WMMX */
+  #define HAVE_ARM_WMMX
+  #include <mmintrin.h>
+#elif (defined(__GNUC__) || defined(__xlC__)) && (defined(__VEC__) || defined(__ALTIVEC__)) && defined(HAVE_ALTIVEC_H)
+  /* XLC or GCC-compatible, targeting PowerPC with VMX/VSX */
+  #define HAVE_PPC_ALTIVEC
+  #include <altivec.h>
+#elif defined(__GNUC__) && defined(__SPE__)  && defined(HAVE_SPE_H)
+  /* GCC-compatible, targeting PowerPC with SPE */
+  #define HAVE_PPC_SPE
+  #include <spe.h>
+#elif defined(HAVE_MBARRIER_H)
+  /* Solaris */
+  #define HAVE_SOLARIS_MBARRIER
+  #include <mbarrier.h>
+#endif
+
 #ifndef __WORDSIZE
 /* e.g. kernel. from <asm/types.h> */
 # ifdef BITS_PER_LONG
@@ -43,6 +99,41 @@
 # else
 #  define __WORDSIZE (8 * SIZEOF_SIZE_T)
 # endif
+#endif
+
+/* asm volatile ("mfence" ::: "memory") might have been overkill. No need to
+   sync CPU's, just need to spill registers and observe compiler
+   store/load order. glibc explicit_bzero() still just uses a simple COMPILER_BARRIER.
+   But meltdown/spectre seem to require mfence, or even __sync_synchronize with smb.
+   MEMORY_BARRIER should be the same as mb() write memory barrier in linux asm/system.h
+ */
+#define COMPILER_BARRIER asm volatile ("" ::: "memory") /* unused, not good enough */
+
+#if defined(HAVE_X86_XMM) || defined(HAVE_X86_INTRIN) || defined(HAVE_X86_X86)
+# define MEMORY_BARRIER   _mm_mfence()
+#elif defined(HAVE_ARM_DMB) && defined(_MSC_VER)
+# define MEMORY_BARRIER   __dmb(_ARM_BARRIER_OSH)
+#elif defined(HAVE_MBARRIER_H) && (defined(sun) || defined(__sun))
+  /* Solaris 12 (membar) */
+# define MEMORY_BARRIER   __machine_rw_barrier()
+#elif defined(__GNUC__) && defined(HAVE_PPC_ALTIVEC) || defined(HAVE_PPC_SPE)
+# define MEMORY_BARRIER   __asm__ volatile ("lwsync" ::: "memory")
+#elif defined(__GNUC__) && defined(__x86_64__)
+# define MEMORY_BARRIER   __asm__ volatile ("mfence" ::: "memory")
+#elif defined(__GNUC__) && defined(__i386__)
+# define MEMORY_BARRIER   __asm__ volatile ("lock; addl $0,0(%%esp)" ::: "memory")
+#elif defined(HAVE_ARM_NEON) || defined(HAVE_ARM_NEON)
+# define MEMORY_BARRIER   __asm__ volatile ("dmb; dsb; isb" ::: "memory")
+#elif defined(__GNUC__) && __GNUC__ >= 5
+/* new gcc-5 memory_barrier insn for most archs:
+   x86, mips, nios2, riscv, rs6000, s390, ia64, avr, alpha,
+   arc, tilepro, xtensa, ... */
+# define MEMORY_BARRIER   __asm__ volatile ("memory_barrier" ::: "memory")
+#elif defined(HAVE_COMPAT_XMM)
+  /* x86-compat headers (e.g. rs6000, arm, ...) have no mfence */
+# define MEMORY_BARRIER   _mm_sfence()
+#else
+# define MEMORY_BARRIER
 #endif
 
 /*

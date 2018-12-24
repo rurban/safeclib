@@ -650,6 +650,15 @@ AC_CHECK_HEADERS([stdlib.h	\
                   wchar.h	\
                   langinfo.h    \
                   valgrind/valgrind.h \
+                  intrin.h      \
+                  xmmintrin.h   \
+                  emmintrin.h   \
+                  x86intrin.h   \
+                  arm_neon.h    \
+                  mmintrin.h    \
+                  altivec.h     \
+                  spe.h         \
+                  mbarrier.h    \
                   ])
 
 INSERT_SYS_TYPES_H=""
