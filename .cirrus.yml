@@ -1,0 +1,15 @@
+# Build configuration for https://cirrus-ci.org
+
+freebsd_instance:
+  image: freebsd-11-2-release-amd64
+
+task:
+  install_script:
+    - pkg install -y autoconf automake libtool pkgconf git
+  build_script:
+    - build-tools/autogen.sh
+    - CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --enable-unsafe --enable-norm-compat
+    - make
+  test_script:
+    - make check
+    - make distcheck
