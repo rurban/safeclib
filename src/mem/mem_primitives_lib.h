@@ -41,7 +41,7 @@
 #if defined(HAVE_XMMINTRIN_H)
   /* targeting SSE2 x86/x86-64 or compats */
   #include <xmmintrin.h>
-  #if defined(__x86_64__) || defined(__i386__) || defined(_ARCH_PWR)
+  #if defined(__x86_64__) || (defined(__i386__) && defined(__SSE2__)) || defined(_ARCH_PWR)
   /* have mfence */
   #define HAVE_X86_XMM
   #else
@@ -50,7 +50,7 @@
   #endif
 #elif defined(HAVE_EMMINTRIN_H)
   #include <emmintrin.h>
-  #if defined(__x86_64__) || defined(__i386__) || defined(_ARCH_PWR)
+  #if defined(__x86_64__) || (defined(__i386__) && defined(__SSE2__)) || defined(_ARCH_PWR)
   /* have mfence */
   #define HAVE_X86_XMM
   #else
@@ -66,7 +66,7 @@
   #else /* arm __dmb(type) */
   #define HAVE_ARM_DMB
   #endif
-#elif defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__)) && defined(HAVE_X86INTRIN_H)
+#elif defined(__GNUC__) && (defined(__x86_64__) || (defined(__i386__) && defined(__SSE2__))) && defined(HAVE_X86INTRIN_H)
   /* GCC-compatible, targeting x86/x86-64 (in emmintrin.h) */
   #define HAVE_X86_X86
   #include <x86intrin.h>
@@ -118,7 +118,7 @@
 # define MEMORY_BARRIER   __machine_rw_barrier()
 #elif defined(__GNUC__) && defined(HAVE_PPC_ALTIVEC) || defined(HAVE_PPC_SPE)
 # define MEMORY_BARRIER   __asm__ volatile ("lwsync" ::: "memory")
-#elif defined(__GNUC__) && defined(__x86_64__)
+#elif defined(__GNUC__) && (defined(__x86_64__) || defined(__SSE2__))
 # define MEMORY_BARRIER   __asm__ volatile ("mfence" ::: "memory")
 #elif defined(__GNUC__) && defined(__i386__)
 # define MEMORY_BARRIER   __asm__ volatile ("lock; addl $0,0(%%esp)" ::: "memory")

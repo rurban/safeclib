@@ -522,6 +522,10 @@ case $host_os in
     AX_APPEND_COMPILE_FLAGS([-Wno-attributes -Wno-discarded-qualifiers],
                             [WARN_CFLAGS],[$ax_ccf_err])
     dnl AM_LDFLAGS=`echo $AM_LDFLAGS|sed -e"s/-Wl,--as-needed -Wl,--no-as-needed//"`
+    dnl x86 needs that for _mm_mfence
+    AX_CHECK_COMPILE_FLAG([-msse2],
+       [CFLAGS="$CFLAGS -msse2" LDFLAGS="$LDFLAGS -msse2"],
+       [],[$ax_ccf_err])
     ;;
 esac
 AX_GCC_BUILTIN(__builtin_object_size)
