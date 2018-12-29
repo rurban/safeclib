@@ -593,6 +593,8 @@ int myfunc(char *ptr) {
 CFLAGS="$old_cflags"
 AM_CONDITIONAL([HAVE_ATTRIBUTE_DIAGNOSE_IF], [test "x$have_attribute_diagnose_if" = "xyes"])
 
+AX_ASM_INLINE()
+
 
 dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],

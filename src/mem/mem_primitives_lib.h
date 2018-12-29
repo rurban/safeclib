@@ -107,7 +107,13 @@
    But meltdown/spectre seem to require mfence, or even __sync_synchronize with smb.
    MEMORY_BARRIER should be the same as mb() write memory barrier in linux asm/system.h
  */
-#define COMPILER_BARRIER asm volatile ("" ::: "memory") /* the insecure fallback */
+#ifdef ASM_INLINE
+#define ASM_VOLATILE ASM_INLINE volatile
+#define COMPILER_BARRIER ASM_VOLATILE ("" ::: "memory") /* the insecure fallback */
+#else
+#define ASM_VOLATILE //
+#define COMPILER_BARRIER
+#endif
 
 #if defined(HAVE_X86_XMM) || defined(HAVE_X86_INTRIN) || defined(HAVE_X86_X86)
 # define MEMORY_BARRIER   _mm_mfence()
@@ -117,18 +123,18 @@
   /* Solaris 12 (membar) */
 # define MEMORY_BARRIER   __machine_rw_barrier()
 #elif defined(__GNUC__) && defined(HAVE_PPC_ALTIVEC) || defined(HAVE_PPC_SPE)
-# define MEMORY_BARRIER   __asm__ volatile ("lwsync" ::: "memory")
+# define MEMORY_BARRIER   ASM_VOLATILE ("lwsync" ::: "memory")
 #elif defined(__GNUC__) && (defined(__x86_64__) || defined(__SSE2__))
-# define MEMORY_BARRIER   __asm__ volatile ("mfence" ::: "memory")
+# define MEMORY_BARRIER   ASM_VOLATILE ("mfence" ::: "memory")
 #elif defined(__GNUC__) && defined(__i386__)
-# define MEMORY_BARRIER   __asm__ volatile ("lock; addl $0,0(%%esp)" ::: "memory")
+# define MEMORY_BARRIER   ASM_VOLATILE ("lock; addl $0,0(%%esp)" ::: "memory")
 #elif defined(HAVE_ARM_NEON) || defined(HAVE_ARM_NEON)
-# define MEMORY_BARRIER   __asm__ volatile ("dmb; dsb; isb" ::: "memory")
+# define MEMORY_BARRIER   ASM_VOLATILE ("dmb; dsb; isb" ::: "memory")
 #elif defined(__GNUC__) && __GNUC__ >= 5
 /* new gcc-5 memory_barrier insn for most archs:
    x86, mips, nios2, riscv, rs6000, s390, ia64, avr, alpha,
    arc, tilepro, xtensa, ... */
-# define MEMORY_BARRIER   __asm__ volatile ("memory_barrier" ::: "memory")
+# define MEMORY_BARRIER   ASM_VOLATILE ("memory_barrier" ::: "memory")
 #elif defined(HAVE_COMPAT_XMM)
   /* x86-compat headers (e.g. rs6000, arm, ...) have no mfence */
 # define MEMORY_BARRIER   _mm_sfence()
