@@ -107,7 +107,7 @@
    But meltdown/spectre seem to require mfence, or even __sync_synchronize with smb.
    MEMORY_BARRIER should be the same as mb() write memory barrier in linux asm/system.h
  */
-#define COMPILER_BARRIER asm volatile ("" ::: "memory") /* unused, not good enough */
+#define COMPILER_BARRIER asm volatile ("" ::: "memory") /* the insecure fallback */
 
 #if defined(HAVE_X86_XMM) || defined(HAVE_X86_INTRIN) || defined(HAVE_X86_X86)
 # define MEMORY_BARRIER   _mm_mfence()
@@ -133,7 +133,7 @@
   /* x86-compat headers (e.g. rs6000, arm, ...) have no mfence */
 # define MEMORY_BARRIER   _mm_sfence()
 #else
-# define MEMORY_BARRIER
+# define MEMORY_BARRIER  COMPILER_BARRIER
 #endif
 
 /*
