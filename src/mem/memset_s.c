@@ -72,6 +72,9 @@
  *       erroneous value of dmax does not expose the impending buffer
  *       overflow.
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
+ * @note memset_s provides a memory barrier for modern out-of-order CPU's 
+ *       to ensure a cache flush or at least a compiler barrier fallback to
+ *       ensure that is not optimized away by optimizing compilers.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a null
  *          pointer, and if dmax is not too large, then, before

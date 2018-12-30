@@ -54,6 +54,10 @@
  * @pre   dest shall not be a null pointer.
  * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM and size of dest
  *
+ * @note memzero_s provides a memory barrier for modern out-of-order CPU's 
+ *       to ensure a cache flush or at least a compiler barrier fallback to
+ *       ensure that is not optimized away by optimizing compilers.
+ *
  * @return  If there is a runtime constraint, the operation is not performed.
  * @retval  EOK         when operation is successful
  * @retval  ESNULLP     when dest is NULL POINTER

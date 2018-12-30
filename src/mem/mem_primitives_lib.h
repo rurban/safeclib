@@ -111,7 +111,8 @@
 #define ASM_VOLATILE ASM_INLINE volatile
 #define COMPILER_BARRIER ASM_VOLATILE ("" ::: "memory") /* the insecure fallback */
 #else
-#define ASM_VOLATILE //
+/* warning no inline asm */
+#define ASM_VOLATILE
 #define COMPILER_BARRIER
 #endif
 
@@ -122,13 +123,13 @@
 #elif defined(HAVE_MBARRIER_H) && (defined(sun) || defined(__sun))
   /* Solaris 12 (membar) */
 # define MEMORY_BARRIER   __machine_rw_barrier()
-#elif defined(__GNUC__) && defined(HAVE_PPC_ALTIVEC) || defined(HAVE_PPC_SPE)
+#elif defined(__GNUC__) && defined(ASM_INLINE) && (defined(HAVE_PPC_ALTIVEC) || defined(HAVE_PPC_SPE))
 # define MEMORY_BARRIER   ASM_VOLATILE ("lwsync" ::: "memory")
-#elif defined(__GNUC__) && (defined(__x86_64__) || defined(__SSE2__))
+#elif defined(__GNUC__) && defined(ASM_INLINE) && (defined(__x86_64__) || defined(__SSE2__))
 # define MEMORY_BARRIER   ASM_VOLATILE ("mfence" ::: "memory")
-#elif defined(__GNUC__) && defined(__i386__)
+#elif defined(__GNUC__) && defined(ASM_INLINE) && defined(__i386__)
 # define MEMORY_BARRIER   ASM_VOLATILE ("lock; addl $0,0(%%esp)" ::: "memory")
-#elif defined(HAVE_ARM_NEON) || defined(HAVE_ARM_NEON)
+#elif defined(ASM_INLINE) && (defined(HAVE_ARM_NEON) || defined(HAVE_ARM_NEON))
 # define MEMORY_BARRIER   ASM_VOLATILE ("dmb; dsb; isb" ::: "memory")
 #elif defined(__GNUC__) && __GNUC__ >= 5
 /* new gcc-5 memory_barrier insn for most archs:

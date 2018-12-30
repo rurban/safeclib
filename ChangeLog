@@ -1,5 +1,17 @@
 
-                ChangeLog file for safeclib
+        ChangeLog file for safeclib
+
+Changes in v30122018 3.4.0
+        - Updated towctrans case-mappings to Unicode 11.0 (GH #62)
+        - Improved memset_s, memzero_s security by adding a CPU memory barrier,
+          not just a compiler barrier. (GH #63)
+          Check various memory_barrier insns (mfence, sfence, lwsync, membar,
+          lock..., memory_barrier) and use it for the memset primitives
+          to reliably sync memory stores with possibly re-ordered loads.
+          Note that glibc/BSD explicit_bzero or Microsoft SecureZeroMemory only do
+          a simple compiler barrier, which is not Spectre, Meltdown secure.
+        - add pic_flag to RETPOLINE cflags and ldflags (GH #55)
+        - Add --disable-doc option (GH #54)
 
 Changes in v03032018 3.3.0
         - Added compile-time and run-time object_size checks (BOS), resulting

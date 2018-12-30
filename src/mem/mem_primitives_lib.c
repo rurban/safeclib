@@ -42,6 +42,7 @@
  */
 
 /**
+ * @def mem_prim_set(dest,len,value)
  * @brief
  *    Sets len bytes starting at dest to the specified value
  *
@@ -49,6 +50,9 @@
  * @param[in]  len    number of bytes to be set
  * @param[in]  value  byte value
  *
+ * @note mem_prim_set provides a memory barrier for modern out-of-order CPU's 
+ *       to ensure a cache flush or at least a compiler barrier fallback to
+ *       ensure that is not optimized away by optimizing compilers.
  */
 
 #if __WORDSIZE != 64

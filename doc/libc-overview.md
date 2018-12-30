@@ -52,6 +52,12 @@ with julia).
 
 See also http://crashcourse.housegordon.org/coreutils-multibyte-support.html
 
+None of the other libc's (and neither most crypto libraries) provide a secure
+memory barrier for memset/memzero/memset_s/explicit_bzero/SecureZeroMemory/...,
+they only provide a compiler barrier against false compiler optimizations. They
+don't reliably sync memory stores with possibly re-ordered loads by modern
+out-of-order CPU's. Only the linux kernel and safeclib do so.
+
 # C11 Annex K/safec caveats
 
 * `tmpnam_s`:
