@@ -38,7 +38,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CASEMAP(u1,u2,l) { (u1), (l)-(u1), (u2)-(u1)+1 }
 #define CASELACE(u1,u2) CASEMAP((u1),(u2),(u1)+1)
 
-/* Unicode 11.0 */
+/* Unicode 12.0-d1 */
 
 /* must be sorted */
 static const struct {
@@ -128,8 +128,8 @@ static const struct {
     CASELACE(0xa790,0xa792),
     CASELACE(0xa796,0xa79e),
     CASELACE(0xa7a0,0xa7a8),
-
-    CASELACE(0xa7b4,0xa7b6), /* Unicode 8 */
+    CASELACE(0xa7b4,0xa7be), /* Unicode 8,12 */
+    CASELACE(0xa7c2,0xa7c3), /* Unicode 12 */
 
     CASEMAP(0xff21,0xff3a,0xff41),
     { 0,0,0 }
@@ -291,6 +291,16 @@ static const unsigned short pairs[][2] = {
     { 0x10c7, 0x2d27 },
     { 0x10cd, 0x2d2d },
 
+    { 0x1c80, 0x0432 }, /* Unicode 12 */
+    { 0x1c81, 0x0434 }, /* Unicode 12 */
+    { 0x1c82, 0x043e }, /* Unicode 12 */
+    { 0x1c83, 0x0441 }, /* Unicode 12 */
+    { 0x1c84, 0x0442 }, /* Unicode 12 */
+    { 0x1c85, 0x0442 }, /* Unicode 12 */
+    { 0x1c86, 0x044a }, /* Unicode 12 */
+    { 0x1c87, 0x0463 }, /* Unicode 12 */
+    { 0x1c88, 0xa64b }, /* Unicode 12 */
+
     { 0x1e60, 0x1e9b },
     { 0x1e9b, 0x1e61 },
     { 0x1e9e, 0xdf },
@@ -340,9 +350,12 @@ static const unsigned short pairs[][2] = {
     { 0xa7b1, 0x287 }, /* Unicode 7.0 */
     { 0xa7b2, 0x29d }, /* Unicode 7.0 */
     { 0xa7b3, 0xab53 }, /* Unicode 8.0 */
-    { 0xa7b4, 0xa7b5 }, /* Unicode 8.0 */
-    { 0xa7b6, 0xa7b7 }, /* Unicode 8.0 */
-    { 0xa7b8, 0xa7b9 }, /* Unicode 11.0 */
+    /*{ 0xa7b4, 0xa7b5 },  Unicode 8.0 LACE'd
+      { 0xa7b6, 0xa7b7 },  Unicode 8.0
+      { 0xa7b8, 0xa7b9 },  Unicode 11.0 */
+    { 0xa7c4, 0xa794 }, /* Unicode 12.0 */
+    { 0xa7c5, 0x0282 }, /* Unicode 12.0 */
+    { 0xa7c6, 0x1d8e }, /* Unicode 12.0 */
 
     { 0,0 }
 };

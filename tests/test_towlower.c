@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_towlower.c
  *
- * Test our musl-inherited towupper/towlower regarding Unicode 10.0
+ * Test our musl-inherited towupper/towlower regarding Unicode 12.0
  * CaseFolding.txt
  * Some F characters fold to multiples, which cannot be handled here,
  * see test_towcf_s.c instead.
