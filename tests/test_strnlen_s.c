@@ -137,6 +137,35 @@ int test_strnlen_s (void)
     }
 /*--------------------------------------------------*/
 
+    max_len = 7;
+    len = strnlen_s ("testing", max_len);
+
+    if (len != 7) {
+        debug_printf("%s %u   len=%u  \n",
+                     __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
+    }
+/*--------------------------------------------------*/
+
+    max_len = 8;
+    len = strnlen_s ("testing", max_len);
+
+    if (len != 7) {
+        debug_printf("%s %u   len=%u  \n",
+                     __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
+    }
+/*--------------------------------------------------*/
+
+    max_len = 9;
+    len = strnlen_s ("testing", max_len);
+
+    if (len != 7) {
+        debug_printf("%s %u   len=%u  \n",
+                     __FUNCTION__, __LINE__, (unsigned)len);
+        errs++;
+    }
+/*--------------------------------------------------*/
     return (errs);
 }
 
