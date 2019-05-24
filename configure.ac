@@ -35,7 +35,7 @@ AC_PREREQ([2.69])
 
 # information on the package
 AC_INIT([Safe C Library],
-        [m4_esyscmd(build-tools/version-gen.sh .tarball-version)],
+        [m4_esyscmd(build-aux/version-gen.sh .tarball-version)],
         [https://github.com/rurban/safeclib/issues],
         [libsafec],
         [http://github.com/rurban/safeclib/])
@@ -50,7 +50,7 @@ AC_CONFIG_SRCDIR([src/abort_handler_s.c])
 AC_CONFIG_MACRO_DIR([m4])
 
 # place to put some extra build scripts
-AC_CONFIG_AUX_DIR([build-tools])
+AC_CONFIG_AUX_DIR([build-aux])
 
 # Other tool initializations
 # ===============================================

@@ -194,7 +194,7 @@ need additional information see the 'INSTALL' file in the same directory.
 
 .To build you do the following:
 
-    $ ./build-tools/autogen.sh
+    $ ./build-aux/autogen.sh
     $ ./configure
     $ make
 
@@ -260,12 +260,12 @@ Tested Platforms
 - arm-linux-gnueabihf cross-compiled and tested under qemu (under darwin and debian)
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
-with most available compilers. See `build-tools/smoke.sh`.
+with most available compilers. See `build-aux/smoke.sh`.
 
 Known Issues
 ------------
 1. If you are building the library from the git repository you will have to
-   first run `build-tools/autogen.sh` which runs autoreconf to ``install'' the
+   first run `build-aux/autogen.sh` which runs autoreconf to ``install'' the
    autotools files and create the configure script.
 
 [bibliography]

@@ -53,8 +53,8 @@ init:
 build_script:
   #- if "%MINGW%"=="1" set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PATH%;
   - if "%CYGWIN%"=="1" set PATH=%CYGR%\bin;c:\Windows\system32;c:\Windows;c:\Windows\system32\Wbem
-  - if "%MINGW%"=="1" call build-tools\msys2.bat
-  - bash -c "build-tools/autogen.sh"
+  - if "%MINGW%"=="1" call build-aux\msys2.bat
+  - bash -c "build-aux/autogen.sh"
   - bash -c "./configure -enable-unsafe --enable-norm-compat --enable-debug --enable-debug-build"
   - bash -c "make"
 

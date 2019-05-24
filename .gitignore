@@ -65,8 +65,8 @@ TAGS
 /autom4te.cache/
 
 # More generated files
-build-tools/ar-lib
-build-tools/test-driver
+build-aux/ar-lib
+build-aux/test-driver
 tests/test-suite.log
 tests/test-suite*.log
 tests/test-fc.pl

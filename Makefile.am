@@ -52,10 +52,10 @@ dist_pkginclude_HEADERS = \
 # Support files
 SAFEC_INFRA = \
 	$(top_srcdir)/README                       \
-	${top_srcdir}/build-tools/autogen.sh       \
-	${top_srcdir}/build-tools/msys2.bat        \
-	${top_srcdir}/build-tools/smoke.sh         \
-	$(top_srcdir)/build-tools/version-gen.sh   \
+	${top_srcdir}/build-aux/autogen.sh       \
+	${top_srcdir}/build-aux/msys2.bat        \
+	${top_srcdir}/build-aux/smoke.sh         \
+	$(top_srcdir)/build-aux/version-gen.sh   \
 	$(top_srcdir)/doc/libc-overview.md     	   \
 	$(top_srcdir)/scripts                      \
 	$(top_srcdir)/.version                     \
@@ -93,15 +93,15 @@ pcdata_DATA = safec-$(SAFEC_API_VERSION).pc
 CLEANFILES = *~
 LIBTOOL_DISTCLEAN_FILES = \
 	m4/libtool.m4 m4/ltoptions.m4 m4/ltsugar.m4 m4/ltversion.m4 m4/lt~obsolete.m4 \
-	build-tools/ar-lib \
-	build-tools/compile \
-	build-tools/config.guess \
-	build-tools/config.sub \
-	build-tools/depcomp \
-	build-tools/install-sh \
-	build-tools/ltmain.sh \
-	build-tools/missing \
-	build-tools/test-driver
+	build-aux/ar-lib \
+	build-aux/compile \
+	build-aux/config.guess \
+	build-aux/config.sub \
+	build-aux/depcomp \
+	build-aux/install-sh \
+	build-aux/ltmain.sh \
+	build-aux/missing \
+	build-aux/test-driver
 DISTCLEANFILES = .version
 
 if ENABLE_DOC
@@ -569,7 +569,7 @@ gcov: check
 	$(MAKE) -C src gcov
 	gcov2perl src/*.gcov src/*/*.gcov
 	cover -no-gcov
-	build-tools/gcov-upd.pl src/gcov.log
+	build-aux/gcov-upd.pl src/gcov.log
 endif
 
 if HAVE_WINE
@@ -605,13 +605,13 @@ gh-pages: docs
 release: docs distcheck
 	git branch |grep '^* master'
 	git tag -f v`date +%d%m%Y`
-	build-tools/autogen.sh
+	build-aux/autogen.sh
 	./configure
 	$(MAKE)
 	$(MAKE) check
 	$(MAKE) docs
 	$(MAKE) dist
-	build-tools/smoke.sh
+	build-aux/smoke.sh
 	git push
 	git push --tags
 	./configure --enable-unsafe

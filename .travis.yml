@@ -49,7 +49,7 @@ branches:
     - appveyor
 
 install:
-  - build-tools/autogen.sh
+  - build-aux/autogen.sh
 
 script:
   # skip duplicate compilers and overly strict clang++

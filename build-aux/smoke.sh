@@ -299,13 +299,13 @@ git clean -dxf src tests
 # if all clean, try out-of-tree build and distcheck
 if [ -z "`git status --porcelain`" ]; then
     echo build from outside
-    build-tools/autogen.sh
+    build-aux/autogen.sh
     mkdir .build && cd .build && \
     ../configure && $make check-log || exit
     rm -rf .build
     
     echo make distcheck
-    build-tools/autogen.sh && \
+    build-aux/autogen.sh && \
     ./configure && $make distcheck
 else
     echo "not clean srcdir, out-of-tree + make distcheck skipped"
