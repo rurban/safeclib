@@ -18,14 +18,16 @@ From the following tested libc implementations:
 * Microsoft Windows msvcrt and ulibc w/ secure API
 * Open Watcom
 * Android Bionic
+* Huawei securec
 * Embarcadero C++ libc
 * slibc
 
-only the last 5 implement the secure C11 extensions:
+only the last 6 implement the secure C11 extensions:
 
 * Microsoft Windows
 * Open Watcom since 1.5
 * Android Bionic w/ stlport
+* Huawei securec
 * Embarcadero C++ libc
 * slibc
 
@@ -141,6 +143,17 @@ also try to use the `alloc_size` extension which looks at a malloc'ed
 pointer into the previous word for its size.  So there's no secure API,
 just the normal POSIX and glibc API with compile-time `_chk` checks as
 in glibc with FORTIFY. Just a bit better than glibc.
+
+## Huawei securec
+
+This is similar to the secure Android and slibc variant, written in C
+and it is a proper secure libc.
+Their license is restrictive though:
+Copyright @ Huawei Technologies Co., Ltd. 1998-2014. All rights reserved.
+
+Available at https://github.com/UVP-Tools/UVP-Tools/tree/master/uvp-monitor/securec
+There are other variants under the GPL-2 and Apache 2.0 on github
+(e.g. wangguitao/intelligent-protector)
 
 ## Open Watcom 1.5
 
