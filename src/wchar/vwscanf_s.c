@@ -62,7 +62,12 @@ any of the arguments corresponding to %s is a null pointer.
  *      indicating the size of the receiving array, which may be 1
  *      when reading with a \c %lc into a single wide character) and
  *      except that the following errors are detected at runtime and
- *      call the currently installed constraint handler function.
+ *      call the currently installed constraint handler function. (not yet)
+ *
+ * @warning The current implementation just does some basic argument
+ *      checks and then calls the native \c vsscanf() libc
+ *      function. Thus the \c %s null pointer check and the two-arg
+ *      versions of \c %c, \c %s, and \c %[ are not yet implemented.
  *
  * @return Number of receiving arguments successfully assigned, or \c EOF
  *         if read failure occurs before the first receiving argument

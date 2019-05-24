@@ -113,6 +113,8 @@ out-of-order CPU's. Only the linux kernel and safeclib do so.
 * safeclib does not check optional NULL parameters to the vararg
   `scanf_s` and `printf_s` functions. This would need tighter
   integration into the upstream libc.
+  Similarily the 2nd size parameter for `%s`, `%c` and `%[`
+  is not implemented.
 
 * safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
