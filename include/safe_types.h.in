@@ -66,6 +66,8 @@ typedef int errno_t;
 
 #ifndef __cplusplus
 @INSERT_BOOL_SUPPORT@
+#else
+# define restrict __restrict
 #endif
 
 #endif /* __KERNEL__ */
