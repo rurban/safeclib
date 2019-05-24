@@ -114,8 +114,8 @@ fi
 
 Linux)
 make -s clean
-echo clang-3.9 -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-3.9 -fsanitize=address -fno-omit-frame-pointer" \
+echo clang-7 -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
+CC="clang-7 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
 make -s clean
@@ -123,12 +123,20 @@ echo clang-5.0 -march=native --disable-constraint-handler --enable-unsafe --enab
 CC="clang-5.0 -march=native" \
     ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log && make -s -j4 -C tests tests-bos
-echo clang-4.0 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-4.0 -std=c99" \
+echo clang-3.7 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
+CC="clang-3.7 -std=c99" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     make -s -j4 check-log || exit
-    #TODO: valgrind broken with kpti
-    #make -s -j4 check-valgrind
+#    #TODO: valgrind broken with kpti
+#    #make -s -j4 check-valgrind
+echo clang-3.6 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
+CC="clang-3.6 -std=c99" \
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+    make -s -j4 check-log || exit
+echo clang-3.4 --enable-debug --enable-unsafe --enable-norm-compat
+CC="clang-3.4" \
+    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+    make -s -j4 check-log || exit
 echo gcc-4.4 -ansi
 CC="gcc-4.4 -ansi" ./configure && \
     make -s -j4 check-log || exit
