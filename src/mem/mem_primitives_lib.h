@@ -5,7 +5,7 @@
  * December 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * Copyright (c) 2018 Reini Urban
+ * Copyright (c) 2018,2019 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -38,6 +38,7 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef __KERNEL__
 #if defined(HAVE_XMMINTRIN_H)
   /* targeting SSE2 x86/x86-64 or compats */
   #include <xmmintrin.h>
@@ -91,6 +92,7 @@
   #define HAVE_SOLARIS_MBARRIER
   #include <mbarrier.h>
 #endif
+#endif
 
 #ifndef __WORDSIZE
 /* e.g. kernel. from <asm/types.h> */
@@ -116,7 +118,9 @@
 #define COMPILER_BARRIER
 #endif
 
-#if defined(HAVE_X86_XMM) || defined(HAVE_X86_INTRIN) || defined(HAVE_X86_X86)
+#if defined __KERNEL__
+# define MEMORY_BARRIER   mb()
+#elif defined(HAVE_X86_XMM) || defined(HAVE_X86_INTRIN) || defined(HAVE_X86_X86)
 # define MEMORY_BARRIER   _mm_mfence()
 #elif defined(HAVE_ARM_DMB) && defined(_MSC_VER)
 # define MEMORY_BARRIER   __dmb(_ARM_BARRIER_OSH)
