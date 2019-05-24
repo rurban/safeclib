@@ -51,7 +51,7 @@ int test_strnlen_s (void)
     max_len = RSIZE_MAX_STR+1;
     len = strnlen_s("test", max_len);
     if (len != 0) {
-        debug_printf("%s %u   Len=%u \n",
+        debug_printf("%s %u   len=%u \n",
                      __FUNCTION__, __LINE__,  (unsigned)len);
         errs++;
     }
@@ -101,7 +101,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
+        debug_printf("%s %u   std_len=%u  len=%u\n",
                      __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
         errs++;
     }
@@ -111,7 +111,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (len != max_len) {
-        debug_printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u <> 1\n",
                __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -121,7 +121,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (len != max_len) {
-        debug_printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u  <> 2\n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -131,7 +131,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (len != max_len) {
-        debug_printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u <> 3\n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -141,7 +141,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (len != 7) {
-        debug_printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u <> 7\n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -151,7 +151,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (len != 7) {
-        debug_printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u <> 7\n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }
@@ -161,7 +161,7 @@ int test_strnlen_s (void)
     len = strnlen_s ("testing", max_len);
 
     if (len != 7) {
-        debug_printf("%s %u   len=%u  \n",
+        debug_printf("%s %u   len=%u <> 7\n",
                      __FUNCTION__, __LINE__, (unsigned)len);
         errs++;
     }

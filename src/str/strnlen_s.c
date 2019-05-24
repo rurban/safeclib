@@ -2,8 +2,10 @@
  * strnlen_s.c
  *
  * October 2008, Bo Berry
+ * May 2019, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2019 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -67,7 +69,7 @@
  *
  */
 EXPORT rsize_t
-_strnlen_s_chk (const char *str, rsize_t smax, const size_t strbos)
+_strnlen_s_chk (const char *str, rsize_t smax, size_t strbos)
 {
     rsize_t count;
 
@@ -82,20 +84,15 @@ _strnlen_s_chk (const char *str, rsize_t smax, const size_t strbos)
                    (void*)str, ESZEROL);
         return 0;
     }
+    if (unlikely(smax > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("strnlen_s: smax exceeds max",
+                                           (void*)str, ESLEMAX);
+        return 0;
+    }
     if (strbos == BOS_UNKNOWN) {
-        if (unlikely(smax > RSIZE_MAX_STR)) {
-            invoke_safe_str_constraint_handler("strnlen_s: smax exceeds max",
-                       (void*)str, ESLEMAX);
-            return 0;
-        }
         BND_CHK_PTR_BOUNDS(str, smax);
     } else {
         if (unlikely(smax != strbos)) {
-            if (unlikely(smax > strbos)) {
-                invoke_safe_str_constraint_handler("strnlen_s: smax exceeds str",
-                           (void*)str, EOVERFLOW);
-                return 0;
-            }
 #ifdef HAVE_WARN_DMAX
             handle_str_src_bos_chk_warn("strnlen_s", (char*)str,
                                         smax, strbos, "str", "smax");
@@ -111,6 +108,12 @@ _strnlen_s_chk (const char *str, rsize_t smax, const size_t strbos)
         count++;
         smax--;
         str++;
+        /* Dont touch past strbos */
+        if (strbos != BOS_UNKNOWN) {
+            strbos--;
+            if (unlikely(!strbos))
+                return count;
+        }
     }
 
     return count;

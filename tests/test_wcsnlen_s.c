@@ -52,7 +52,7 @@ int test_wcsnlen_s (void)
     wcscpy(str1, L"test");
     EXPECT_BOS("dest overflow")
     len = wcsnlen_s(str1, LEN+1);
-    EXPLEN(0)
+    EXPLEN(4)
 # endif
 
     wcscpy(str1, L"test");
@@ -77,7 +77,7 @@ int test_wcsnlen_s (void)
     /* PS: compile-time check once fixed by adding const'ness and all warnings */
     EXPECT_BOS_TODO("dest overflow")
     len = wcsnlen_s(L"test", 6);
-    EXPLEN(0)
+    EXPLEN(4)
 # endif
 
 #endif
@@ -108,7 +108,7 @@ int test_wcsnlen_s (void)
     wcscpy(str1, L"t");
     max_len = LEN;
 
-    len = wcsnlen_s (str1, max_len); /* static string would overflow */
+    len = wcsnlen_s (str1, max_len);
     STDLEN()
 
     len = wcsnlen_s (L"t", 1); /* static string */

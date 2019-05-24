@@ -2,8 +2,9 @@
  * wcsnlen_s.c
  *
  * September 2017, Reini Urban
+ * May 2019, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2019 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -74,7 +75,7 @@
  */
 
 EXPORT rsize_t
-_wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, const size_t destbos)
+_wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, size_t destbos)
 {
     const wchar_t *z;
     rsize_t orig_dmax = dmax;
@@ -87,23 +88,16 @@ _wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, const size_t destbos)
                    (void*)dest, ESZEROL);
         return RCNEGATE(0);
     }
+    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
+        invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
+                   (void*)dest, ESLEMAX);
+        return RCNEGATE(0);
+    }
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-            invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
-                       (void*)dest, ESLEMAX);
-            return RCNEGATE(0);
-        }
         BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
     } else {
-        /* string literals also have the ending \0 */
-        size_t destsz = dmax * sizeof(wchar_t);
-        if (unlikely(destsz > destbos)) {
-            invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds dest",
-                       (void*)dest, EOVERFLOW);
-            return RCNEGATE(0);
-        }
 #ifdef HAVE_WARN_DMAX
-        if (unlikely(destsz != destbos)) {
+        if (unlikely(dmax*sizeof(wchar_t) != destbos)) {
             handle_str_bos_chk_warn("wcsnlen_s",(char*)dest,dmax,
                                     destbos/sizeof(wchar_t));
             RETURN_ESLEWRNG;
@@ -116,8 +110,17 @@ _wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, const size_t destbos)
     if (z) dmax = z - dest;
     return dmax;
 #else
-    for (z = dest; dmax && *dest != 0; dmax--, dest++)
-        ;
+    if (destbos != BOS_UNKNOWN) {
+        /* Dont touch past destbos */
+        for (z = dest; dmax && *dest != 0; dmax--, dest++) {
+            destbos -= sizeof(wchar_t);
+            if (unlikely(destbos <= 0))
+                return dmax ? (rsize_t)(dest - z) : orig_dmax;
+        }
+    } else {
+        for (z = dest; dmax && *dest != 0; dmax--, dest++)
+            ;
+    }
     return dmax ? (rsize_t)(dest - z) : orig_dmax;
 #endif
 }

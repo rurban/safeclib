@@ -133,8 +133,8 @@ _strncpy_s_chk(char * restrict dest, rsize_t dmax,
 
 /* string length */
 EXTERN rsize_t
-_strnlen_s_chk (const char* str, rsize_t smax, const size_t strbos)
-    BOS_CHK2(str, smax);
+_strnlen_s_chk (const char* str, rsize_t smax, size_t strbos)
+    BOS_OVR2_BUTNULL(str, smax);
 #define strnlen_s(str,smax) _strnlen_s_chk(str,smax,BOS(str))
 
 /* string tokenizer */
@@ -666,7 +666,7 @@ _wctomb_s_chk(int *restrict retvalp, char *restrict dest, rsize_t dmax, wchar_t 
     _wctomb_s_chk(retvalp,dest,dmax,wc,BOS(dest))
 
 EXTERN size_t
-_wcsnlen_s_chk(const wchar_t *dest, size_t dmax, const size_t destbos)
+_wcsnlen_s_chk(const wchar_t *dest, size_t dmax, size_t destbos)
     BOSW_CHK(dest);
 #define wcsnlen_s(dest,dmax)            \
     _wcsnlen_s_chk(dest,dmax,BOS(dest))

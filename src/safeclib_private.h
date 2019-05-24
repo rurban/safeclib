@@ -222,18 +222,12 @@ typedef unsigned long uintptr_t;
 #  define GCC_DIAG_RESTORE
 #endif
 
-#ifdef DEBUG
-#  if defined(HAVE_C99) && defined(__KERNEL__)
-#    define debug_printf(...)  printk(KERN_DEBUG __VA_ARGS__)
-#  else
-#    define debug_printf printf
-#  endif
+#if defined(DEBUG) && defined(HAVE_C99) && defined(__KERNEL__)
+#  define debug_printf(...)  printk(KERN_DEBUG __VA_ARGS__)
+#elif defined(HAVE_C99)
+#  define debug_printf(...) fprintf(STDERR, __VA_ARGS__)
 #else
-# ifdef HAVE_C99
-#   define debug_printf(...)
-# else
-#   define debug_printf printf
-# endif
+#  define debug_printf printf
 #endif
 
 /* TODO: do we need the builtin's? rather just use __bnd... which is defined on CHKP and MPX.
