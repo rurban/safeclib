@@ -1,6 +1,17 @@
 
         ChangeLog file for safeclib
 
+Changes in v07062019 3.5.0
+        - Updated towctrans case-mappings to Unicode 12.1
+        - Unversioned and renamed the libsafec.pc pkg-config file (PR #56)
+        - Fixed strnlen_s and wcsnlen_s for long enough smax arguments.
+          Now you can get the length without knowing the length beforehand. (GH #65)
+        - Fixed various C++ regressions (GH #64, GH #58)
+        - Fixed a linux kernel module regression from 3.4 (GH #67),
+          use the mb() macro.
+        - Added the Huawei securec library to the docs
+        - Renamed internal build-tools to build-aux
+
 Changes in v30122018 3.4.0
         - Updated towctrans case-mappings to Unicode 11.0 (GH #62)
         - Improved memset_s, memzero_s security by adding a CPU memory barrier,
