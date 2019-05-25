@@ -25,7 +25,7 @@ int test_tmpnam_s (void);
 int test_tmpnam_s (void)
 {
     errno_t rc;
-    int len;
+    int len, ind;
     int errs = 0;
 
 /*--------------------------------------------------*/
