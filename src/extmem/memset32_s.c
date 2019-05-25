@@ -59,8 +59,8 @@
  * @pre  n shall not be greater than RSIZE_MAX_MEM32.
  * @pre  4*n may not be greater than dmax.
  *
- * @return  If there is a runtime-constraints violation, and if dest is not a null
- *          pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
+ * @return  If there is a runtime-constraints violation, and if dest is not a
+ * null pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before
  *          reporting the runtime-constraints violation, memset32_s() copies
  *          dmax bytes to the destination.
  * @retval  EOK         when operation is successful or n = 0
@@ -76,10 +76,8 @@
  *    memset_s(), memset16_s()
  *
  */
-EXPORT errno_t
-_memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
-                const size_t destbos)
-{
+EXPORT errno_t _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value,
+                               rsize_t n, const size_t destbos) {
     errno_t err;
 
     CHK_DEST_MEM_NULL("memset32_s")
@@ -97,11 +95,11 @@ _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value, rsize_t n,
 
     err = EOK;
 
-    if (unlikely(n > dmax/4)) {
+    if (unlikely(n > dmax / 4)) {
         err = n > RSIZE_MAX_MEM32 ? ESLEMAX : ESNOSPC;
-        invoke_safe_mem_constraint_handler("memset32_s: n exceeds dmax/4",
-                   dest, err);
-        n = dmax/4;
+        invoke_safe_mem_constraint_handler("memset32_s: n exceeds dmax/4", dest,
+                                           err);
+        n = dmax / 4;
     }
 
     mem_prim_set32(dest, n, value);

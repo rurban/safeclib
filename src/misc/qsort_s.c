@@ -49,7 +49,7 @@
 #include <stdint.h>
 #else
 /* ignored on 32bit, thus safe */
-typedef unsigned long   uint64_t;
+typedef unsigned long uint64_t;
 #endif
 #include <stdlib.h>
 #include <string.h>
@@ -89,7 +89,8 @@ typedef unsigned long   uint64_t;
  * @param[in] context additional information (e.g., collating sequence), passed
  *                   to compar as the third argument
  *
- * @pre  Neither base nor compar shall not be a null pointer (unless nmemb is zero).
+ * @pre  Neither base nor compar shall not be a null pointer (unless nmemb is
+ * zero).
  * @pre  nmemb or size shall not be greater than RSIZE_MAX_MEM.
  *
  *    If comp indicates two elements as equivalent, their order in the
@@ -126,50 +127,44 @@ typedef int (*cmpfun)(const void *, const void *, void *);
 #ifdef HAVE___BUILTIN_CTZ
 #define ntz(x) __builtin_ctz((x))
 #else
-static const char debruijn32[32] = {
-    0, 1, 23, 2, 29, 24, 19, 3, 30, 27, 25, 11, 20, 8, 4, 13,
-    31, 22, 28, 18, 26, 10, 7, 12, 21, 17, 9, 6, 16, 5, 15, 14
-};
-static inline int a_ctz_64(uint64_t x)
-{
+static const char debruijn32[32] = {0,  1,  23, 2,  29, 24, 19, 3,  30, 27, 25,
+                                    11, 20, 8,  4,  13, 31, 22, 28, 18, 26, 10,
+                                    7,  12, 21, 17, 9,  6,  16, 5,  15, 14};
+static inline int a_ctz_64(uint64_t x) {
     static const char debruijn64[64] = {
-        0, 1, 2, 53, 3, 7, 54, 27, 4, 38, 41, 8, 34, 55, 48, 28,
-        62, 5, 39, 46, 44, 42, 22, 9, 24, 35, 59, 56, 49, 18, 29, 11,
-        63, 52, 6, 26, 37, 40, 33, 47, 61, 45, 43, 21, 23, 58, 17, 10,
-        51, 25, 36, 32, 60, 20, 57, 16, 50, 31, 19, 15, 30, 14, 13, 12
-    };
+        0,  1,  2,  53, 3,  7,  54, 27, 4,  38, 41, 8,  34, 55, 48, 28,
+        62, 5,  39, 46, 44, 42, 22, 9,  24, 35, 59, 56, 49, 18, 29, 11,
+        63, 52, 6,  26, 37, 40, 33, 47, 61, 45, 43, 21, 23, 58, 17, 10,
+        51, 25, 36, 32, 60, 20, 57, 16, 50, 31, 19, 15, 30, 14, 13, 12};
     if (sizeof(long) < 8) {
         uint32_t y = x;
         if (!y) {
             y = x >> 32;
-            return 32 + debruijn32[(y&-y)*0x076be629 >> 27];
+            return 32 + debruijn32[(y & -y) * 0x076be629 >> 27];
+        } else {
+            return debruijn32[(y & -y) * 0x076be629 >> 27];
         }
-        else {
-            return debruijn32[(y&-y)*0x076be629 >> 27];
-        }
-    }
-    else {
-        return debruijn64[(x&-x)*0x022fdd63cc95386dull >> 58];
+    } else {
+        return debruijn64[(x & -x) * 0x022fdd63cc95386dull >> 58];
     }
 }
-static inline int a_ctz_l(unsigned long x)
-{
-    if (sizeof(long) == 8) return a_ctz_64(x);
-    return debruijn32[(x&-x)*0x076be629 >> 27];
+static inline int a_ctz_l(unsigned long x) {
+    if (sizeof(long) == 8)
+        return a_ctz_64(x);
+    return debruijn32[(x & -x) * 0x076be629 >> 27];
 }
 #define ntz(x) a_ctz_l((x))
 #endif
 
 static inline int pntz(size_t p[2]) {
     int r = ntz(p[0] - 1);
-    if(r != 0 || (r = 8*sizeof(size_t) + ntz(p[1])) != 8*sizeof(size_t)) {
+    if (r != 0 || (r = 8 * sizeof(size_t) + ntz(p[1])) != 8 * sizeof(size_t)) {
         return r;
     }
     return 0;
 }
 
-static void cycle(size_t width, unsigned char* ar[], int n)
-{
+static void cycle(size_t width, unsigned char *ar[], int n) {
     unsigned char tmp[256];
     size_t l;
     int i;
@@ -191,8 +186,7 @@ static void cycle(size_t width, unsigned char* ar[], int n)
 }
 
 /* shl() and shr() need n > 0 */
-static inline void shl(size_t p[2], int n)
-{
+static inline void shl(size_t p[2], int n) {
     if (n >= (int)(8 * sizeof(size_t))) {
         n -= 8 * sizeof(size_t);
         p[1] = p[0];
@@ -203,8 +197,7 @@ static inline void shl(size_t p[2], int n)
     p[0] <<= n;
 }
 
-static inline void shr(size_t p[2], int n)
-{
+static inline void shr(size_t p[2], int n) {
     if (n >= (int)(8 * sizeof(size_t))) {
         n -= 8 * sizeof(size_t);
         p[0] = p[1];
@@ -216,8 +209,7 @@ static inline void shr(size_t p[2], int n)
 }
 
 static void sift(unsigned char *head, size_t width, cmpfun cmp, int pshift,
-                 size_t lp[], void *ctx)
-{
+                 size_t lp[], void *ctx) {
     unsigned char *rt, *lf;
     unsigned char *ar[14 * sizeof(size_t) + 1];
     int i = 1;
@@ -227,9 +219,7 @@ static void sift(unsigned char *head, size_t width, cmpfun cmp, int pshift,
         rt = head - width;
         lf = head - width - lp[pshift - 2];
 
-        if ( (*cmp)(ar[0], lf, ctx) >= 0 &&
-             (*cmp)(ar[0], rt, ctx) >= 0)
-        {
+        if ((*cmp)(ar[0], lf, ctx) >= 0 && (*cmp)(ar[0], rt, ctx) >= 0) {
             break;
         }
         if ((*cmp)(lf, rt, ctx) >= 0) {
@@ -246,10 +236,8 @@ static void sift(unsigned char *head, size_t width, cmpfun cmp, int pshift,
 }
 
 static void trinkle(unsigned char *head, size_t width, cmpfun cmp, size_t pp[2],
-                    int pshift, int trusty, size_t lp[], void *ctx)
-{
-    unsigned char *stepson,
-        *rt, *lf;
+                    int pshift, int trusty, size_t lp[], void *ctx) {
+    unsigned char *stepson, *rt, *lf;
     size_t p[2];
     unsigned char *ar[14 * sizeof(size_t) + 1];
     int i = 1;
@@ -267,9 +255,8 @@ static void trinkle(unsigned char *head, size_t width, cmpfun cmp, size_t pp[2],
         if (!trusty && pshift > 1) {
             rt = head - width;
             lf = head - width - lp[pshift - 2];
-            if ( (*cmp)(rt, stepson, ctx) >= 0 ||
-                 (*cmp)(lf, stepson, ctx) >= 0)
-            {
+            if ((*cmp)(rt, stepson, ctx) >= 0 ||
+                (*cmp)(lf, stepson, ctx) >= 0) {
                 break;
             }
         }
@@ -287,23 +274,24 @@ static void trinkle(unsigned char *head, size_t width, cmpfun cmp, size_t pp[2],
     }
 }
 
-static void
-qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp, void *ctx)
-{
-    size_t lp[12*sizeof(size_t)];
+static void qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp,
+                       void *ctx) {
+    size_t lp[12 * sizeof(size_t)];
     size_t i, size = width * nel;
     unsigned char *head, *high;
     size_t p[2] = {1, 0};
     int pshift = 1;
     int trail;
 
-    if (!size) return;
+    if (!size)
+        return;
 
     head = (unsigned char *)base;
     high = head + size - width;
 
     /* Precompute Leonardo numbers, scaled by element width */
-    for (lp[0]=lp[1]=width, i=2; (lp[i]=lp[i-2]+lp[i-1]+width) < size; i++)
+    for (lp[0] = lp[1] = width, i = 2;
+         (lp[i] = lp[i - 2] + lp[i - 1] + width) < size; i++)
         ;
 
     while (head < high) {
@@ -343,7 +331,8 @@ qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp, void *ctx)
             pshift -= 2;
             p[0] ^= 7;
             shr(p, 1);
-            trinkle(head - lp[pshift] - width, width, cmp, p, pshift + 1, 1, lp, ctx);
+            trinkle(head - lp[pshift] - width, width, cmp, p, pshift + 1, 1, lp,
+                    ctx);
             shl(p, 1);
             p[0] |= 1;
             trinkle(head - width, width, cmp, p, pshift, 1, lp, ctx);
@@ -352,12 +341,10 @@ qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp, void *ctx)
     }
 }
 
-EXPORT errno_t
-_qsort_s_chk(void *base,
-             rsize_t nmemb, rsize_t size,
-             int (*compar)(const void *k, const void *y, void *context),
-             void *context, const size_t destbos)
-{
+EXPORT errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
+                            int (*compar)(const void *k, const void *y,
+                                          void *context),
+                            void *context, const size_t destbos) {
     if (likely(nmemb != 0)) {
         if (unlikely(base == NULL || compar == NULL)) {
             invoke_safe_str_constraint_handler("qsort_s: base/compar is null",
@@ -368,7 +355,7 @@ _qsort_s_chk(void *base,
 
     if (unlikely(nmemb > RSIZE_MAX_MEM || size > RSIZE_MAX_MEM)) {
         invoke_safe_str_constraint_handler("qsort_s: nmemb/size exceeds max",
-                   NULL, ESLEMAX);
+                                           NULL, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
 

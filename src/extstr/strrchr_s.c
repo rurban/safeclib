@@ -71,11 +71,9 @@
  *    memrchr_s(), strchr_s(), memchr_s(), strspn_s(), strstr_s()
  *
  */
-EXPORT errno_t
-_strrchr_s_chk (const char *restrict dest, rsize_t dmax,
-                const int ch, char **resultp,
-                const size_t destbos)
-{
+EXPORT errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
+                              const int ch, char **resultp,
+                              const size_t destbos) {
     rsize_t len;
 
     CHK_SRC_NULL("strrchr_s", resultp)
@@ -91,13 +89,14 @@ _strrchr_s_chk (const char *restrict dest, rsize_t dmax,
     }
     if (unlikely(ch > 255)) {
         invoke_safe_str_constraint_handler("strrchr_s: ch exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return (ESLEMAX);
     }
 
     len = strnlen_s(dest, dmax);
     if (len)
-        return memrchr_s(dest, dmax == len ? dmax : len + 1, ch, (void**)resultp);
+        return memrchr_s(dest, dmax == len ? dmax : len + 1, ch,
+                         (void **)resultp);
     else
         return (ESZEROL);
 }

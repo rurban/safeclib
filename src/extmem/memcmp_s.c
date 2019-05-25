@@ -69,9 +69,10 @@
  * @retval  ESNULLP     when dst/src is NULL POINTER
  * @retval  ESZEROL     when dmax/slen = ZERO
  * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
- * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the compiler
- *                      knows the object_size statically)
- * @retval  ESLEWRNG    when dmax/slen != size of dest/src and --enable-error-dmax
+ * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax/slen != size of dest/src and
+ * --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  *
  * @see
@@ -79,47 +80,45 @@
  *
  */
 
-EXPORT errno_t
-_memcmp_s_chk (const void *dest, rsize_t dmax,
-               const void *src,  rsize_t slen, int *diff,
-               const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _memcmp_s_chk(const void *dest, rsize_t dmax, const void *src,
+                             rsize_t slen, int *diff, const size_t destbos,
+                             const size_t srcbos) {
     const uint8_t *dp;
     const uint8_t *sp;
 
-    dp = (uint8_t*) dest;
-    sp = (uint8_t*) src;
+    dp = (uint8_t *)dest;
+    sp = (uint8_t *)src;
 
     /* must be able to return the diff */
     if (unlikely(diff == NULL)) {
-        invoke_safe_mem_constraint_handler("memcmp_s: diff is null",
-                   NULL, ESNULLP);
+        invoke_safe_mem_constraint_handler("memcmp_s: diff is null", NULL,
+                                           ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
-    *diff = -1;  /* default diff */
+    *diff = -1; /* default diff */
 
     if (unlikely(dp == NULL)) {
-        invoke_safe_mem_constraint_handler("memcmp_s: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_mem_constraint_handler("memcmp_s: dest is null", NULL,
+                                           ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
     if (unlikely(sp == NULL)) {
         invoke_safe_mem_constraint_handler("memcmp_s: src is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
 
     if (unlikely(dmax == 0)) {
-        invoke_safe_mem_constraint_handler("memcmp_s: dmax is 0",
-                   (void*)dest, ESZEROL);
+        invoke_safe_mem_constraint_handler("memcmp_s: dmax is 0", (void *)dest,
+                                           ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_MEM)) {
             invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds max",
-                       (void*)dest, ESLEMAX);
+                                               (void *)dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
         BND_CHK_PTR_BOUNDS(dest, dmax);
@@ -128,32 +127,32 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
         if (unlikely(dmax > destbos)) {
             if (unlikely(dmax > RSIZE_MAX_MEM)) {
                 invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds max",
-                       (void*)dest, ESLEMAX);
+                                                   (void *)dest, ESLEMAX);
                 return (RCNEGATE(ESLEMAX));
             } else {
-                invoke_safe_mem_constraint_handler("memcmp_s: dmax exceeds dest",
-                       (void*)dest, EOVERFLOW);
+                invoke_safe_mem_constraint_handler(
+                    "memcmp_s: dmax exceeds dest", (void *)dest, EOVERFLOW);
                 return (RCNEGATE(EOVERFLOW));
             }
         }
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
-            handle_mem_bos_chk_warn("memcmp_s", (void*)dest, dmax, destbos);
+            handle_mem_bos_chk_warn("memcmp_s", (void *)dest, dmax, destbos);
             RETURN_ESLEWRNG;
         }
 #endif
     }
 
     if (unlikely(slen == 0)) {
-        invoke_safe_mem_constraint_handler("memcmp_s: slen is 0",
-                   NULL, ESZEROL);
+        invoke_safe_mem_constraint_handler("memcmp_s: slen is 0", NULL,
+                                           ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
 
     if (srcbos == BOS_UNKNOWN) {
         if (unlikely(slen > RSIZE_MAX_MEM)) {
             invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds max",
-                       (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
         BND_CHK_PTR_BOUNDS(src, slen);
@@ -161,11 +160,11 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
         if (unlikely(slen > srcbos)) {
             if (unlikely(slen > RSIZE_MAX_MEM)) {
                 invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds max",
-                       (void*)dest, ESLEMAX);
+                                                   (void *)dest, ESLEMAX);
                 return (RCNEGATE(ESLEMAX));
             } else {
                 invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds src",
-                       (void*)src, EOVERFLOW);
+                                                   (void *)src, EOVERFLOW);
                 return (RCNEGATE(EOVERFLOW));
             }
         }
@@ -173,7 +172,7 @@ _memcmp_s_chk (const void *dest, rsize_t dmax,
 
     if (unlikely(slen > dmax)) {
         invoke_safe_mem_constraint_handler("memcmp_s: slen exceeds dmax",
-                       (void*)dest, ESNOSPC);
+                                           (void *)dest, ESNOSPC);
         return (RCNEGATE(ESNOSPC));
     }
 

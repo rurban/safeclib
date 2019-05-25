@@ -10,32 +10,31 @@
 #include "safe_str_lib.h"
 
 #ifdef HAVE_STRNCAT_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 #if defined(TEST_MSVCRT) && defined(HAVE_STRNCAT_S)
 #undef HAVE_CT_BOS_OVR
 #undef strncat_s
-EXTERN errno_t strncat_s(char * restrict dest, rsize_t dmax, const char * restrict src,
-                         rsize_t slen);
+EXTERN errno_t strncat_s(char *restrict dest, rsize_t dmax,
+                         const char *restrict src, rsize_t slen);
 #endif
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-int test_strncat_s (void);
+static char str1[LEN];
+static char str2[LEN];
+int test_strncat_s(void);
 
-int test_strncat_s (void)
-{
+int test_strncat_s(void) {
     errno_t rc;
     int32_t ind;
     int len;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
 
@@ -49,7 +48,7 @@ int test_strncat_s (void)
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "a");
     strcpy(str2, "bcde");
@@ -73,7 +72,7 @@ int test_strncat_s (void)
     GCC_PUSH_WARN_DMAX
     rc = strncat_s(str1, 1, str2, 0);
     GCC_POP_WARN_DMAX
-    ERR_MSVC(ESZEROL, EINVAL); 
+    ERR_MSVC(ESZEROL, EINVAL);
     EXPSTR(str1, "");
 
     GCC_PUSH_WARN_DMAX
@@ -88,7 +87,7 @@ int test_strncat_s (void)
     ERR(EOK);
     EXPSTR(str1, "");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     strcpy(str1, "a");
@@ -96,38 +95,39 @@ int test_strncat_s (void)
     rc = strncat_s(str1, 0, str2, LEN);
     ERR_MSVC(ESZEROL, EINVAL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "ab");
     if (!use_msvcrt) {
         /* with clang-5 compile-time already checks these errors */
         if (_BOS_KNOWN(str1)) {
             EXPECT_BOS("dest overflow")
-                rc = strncat_s(str1, LEN+1, str2, LEN);
+            rc = strncat_s(str1, LEN + 1, str2, LEN);
             ERR(EOVERFLOW);
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 2);
         } else {
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
-            debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__, __LINE__);
-# endif
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+            debug_printf("%s %u  Warning unknown str1 size\n", __FUNCTION__,
+                         __LINE__);
+#endif
         }
     }
 
     strcpy(str1, "a");
     /* valid with the windows sec_api */
     EXPECT_BOS("dest overflow")
-    rc = strncat_s(str1, (RSIZE_MAX_STR+1), str2, LEN);
+    rc = strncat_s(str1, (RSIZE_MAX_STR + 1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
-        EXPSTR(str1, "");     /* cleared, because BOS is known */
+        EXPSTR(str1, ""); /* cleared, because BOS is known */
     } else {
         EXPSTR(str1, "abcde") /* valid */
     }
 
     strcpy(str1, "a");
     EXPECT_BOS("src overflow or empty")
-    rc = strncat_s(str1, LEN, str2, (RSIZE_MAX_STR+1));
+    rc = strncat_s(str1, LEN, str2, (RSIZE_MAX_STR + 1));
     ERR_MSVC(ESLEMAX, 0);
     if (!use_msvcrt) {
         EXPSTR(str1, ""); /* cleared */
@@ -139,22 +139,23 @@ int test_strncat_s (void)
     if (!use_msvcrt) {
         if (_BOS_KNOWN(str1)) {
             EXPECT_BOS("dest overflow")
-            rc = strncat_s(str1, LEN+1, str2, LEN);
-            ERR(EOVERFLOW);     /* dmax exceeds dest */
+            rc = strncat_s(str1, LEN + 1, str2, LEN);
+            ERR(EOVERFLOW);   /* dmax exceeds dest */
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 4);
 
-            rc = strncat_s(str1, LEN-1, str2, LEN);
+            rc = strncat_s(str1, LEN - 1, str2, LEN);
             ERR(0);
         } else {
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
-            debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+            debug_printf("%s %u  Error unknown str1 object_size\n",
+                         __FUNCTION__, __LINE__);
             errs++;
-# endif
+#endif
         }
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "a");
     EXPECT_BOS("src overflow or empty")
@@ -165,7 +166,7 @@ int test_strncat_s (void)
         CHECK_SLACK(str1, 1);
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -177,7 +178,7 @@ int test_strncat_s (void)
     if (!use_msvcrt)
         CHECK_SLACK(str1, 1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -189,7 +190,7 @@ int test_strncat_s (void)
     if (!use_msvcrt)
         CHECK_SLACK(str1, 2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "a");
     strcpy(str2, "b");
@@ -201,7 +202,7 @@ int test_strncat_s (void)
     if (!use_msvcrt)
         CHECK_SLACK(str1, 2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcd");
 
@@ -223,7 +224,7 @@ int test_strncat_s (void)
     if (!use_msvcrt)
         CHECK_SLACK(str1, 4);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcd");
 
@@ -235,7 +236,7 @@ int test_strncat_s (void)
     if (!use_msvcrt)
         CHECK_SLACK(str1, 3);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcdefgh");
 
@@ -247,7 +248,7 @@ int test_strncat_s (void)
     if (!use_msvcrt)
         CHECK_SLACK(&str1[3], 5);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcdefgh");
 
@@ -262,7 +263,7 @@ int test_strncat_s (void)
         EXPSTR(str1, "abcdefghabcd"); /* Windows appends! */
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "a");
     strcpy(str2, "b");
@@ -273,9 +274,9 @@ int test_strncat_s (void)
     ERR(EOK)
     EXPSTR(str1, "ab");
     if (!use_msvcrt)
-        CHECK_SLACK(&str1[2], 3-2);
+        CHECK_SLACK(&str1[2], 3 - 2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -287,10 +288,10 @@ int test_strncat_s (void)
     EXPSTR(str1, "aaaaaaaaaakeep it simple");
     len = strlen(str1);
     if (!use_msvcrt)
-        CHECK_SLACK(&str1[len], 50-len);
+        CHECK_SLACK(&str1[len], 50 - len);
 
-/*--------------------------------------------------*/
-/* TR example */
+    /*--------------------------------------------------*/
+    /* TR example */
 
     strcpy(str1, "good");
     strcpy(str2, "bye");
@@ -300,10 +301,10 @@ int test_strncat_s (void)
     EXPSTR(str1, "goodbye");
     len = strlen(str1);
     if (!use_msvcrt)
-        CHECK_SLACK(&str1[len], LEN-len);
+        CHECK_SLACK(&str1[len], LEN - len);
 
-/*--------------------------------------------------*/
-/* TR example */
+    /*--------------------------------------------------*/
+    /* TR example */
 
     strcpy(str1, "hello");
 
@@ -314,10 +315,10 @@ int test_strncat_s (void)
     EXPSTR(str1, "hello");
     len = strlen(str1);
     if (!use_msvcrt)
-        CHECK_SLACK(&str1[len], 6-len);
+        CHECK_SLACK(&str1[len], 6 - len);
 
-/*--------------------------------------------------*/
-/* TR example */
+    /*--------------------------------------------------*/
+    /* TR example */
 
     strcpy(str1, "hello");
 
@@ -327,8 +328,8 @@ int test_strncat_s (void)
     ERR_MSVC(ESNOSPC, ERANGE);
     CHECK_SLACK(str1, 6);
 
-/*--------------------------------------------------*/
-/* TR example */
+    /*--------------------------------------------------*/
+    /* TR example */
 
     strcpy(str1, "abc");
 
@@ -339,9 +340,9 @@ int test_strncat_s (void)
     EXPSTR(str1, "abcdef");
     len = strlen(str1);
     if (!use_msvcrt)
-        CHECK_SLACK(&str1[len], 6-len);
+        CHECK_SLACK(&str1[len], 6 - len);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -349,8 +350,5 @@ int test_strncat_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_strncat_s());
-}
+int main(void) { return (test_strncat_s()); }
 #endif

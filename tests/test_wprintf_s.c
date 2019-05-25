@@ -11,26 +11,25 @@
 #include <stdarg.h>
 
 #ifdef HAVE_WPRINTF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static wchar_t   wstr[LEN];
-static char      str[LEN];
-int test_wprintf_s (void);
+static wchar_t wstr[LEN];
+static char str[LEN];
+int test_wprintf_s(void);
 
-int test_wprintf_s (void)
-{
+int test_wprintf_s(void) {
     errno_t rc;
     int32_t ind;
     int errs = 0;
     int have_wine = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
     /* wine msvcrt doesn't check fmt==NULL */
@@ -40,17 +39,17 @@ int test_wprintf_s (void)
     use_msvcrt = 1;
     have_wine = 1;
 #elif !(defined(TEST_MSVCRT) && defined(HAVE_WPRINTF_S))
-# ifndef HAVE_CT_BOS_OVR
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty fmt")
     rc = wprintf_s(NULL);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     NEGERR_MSVC(ESNULLP, 0);
-# endif    
+#endif
 #else
     use_msvcrt = 1;
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wstr[0] = L'\0';
     /* wine msvcrt doesn't check for %n neither */
@@ -60,12 +59,11 @@ int test_wprintf_s (void)
     else
         ERR(1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = wprintf_s(L"%s%%n\n", wstr);
     if (rc < 0) {
-        printf("Failed to open stdout for write: %s\n",
-               strerror(errno));
+        printf("Failed to open stdout for write: %s\n", strerror(errno));
         return errs;
     }
     ERR(3)
@@ -73,14 +71,14 @@ int test_wprintf_s (void)
     rc = wprintf_s(L"%%n\n");
     ERR(3);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* TODO
     rc = wprintf_s(L"%s", NULL);
     NEGERR_MSVC(ESNULLP, EOF);
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(wstr, L"12");
     strcpy(str, "34");
@@ -92,12 +90,9 @@ int test_wprintf_s (void)
         ERR(-1);
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
 
-int main (void)
-{
-    return (test_wprintf_s());
-}
+int main(void) { return (test_wprintf_s()); }

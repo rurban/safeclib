@@ -72,14 +72,14 @@
  *       erroneous value of dmax does not expose the impending buffer
  *       overflow.
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
- * @note memset_s provides a memory barrier for modern out-of-order CPU's 
+ * @note memset_s provides a memory barrier for modern out-of-order CPU's
  *       to ensure a cache flush or at least a compiler barrier fallback to
  *       ensure that is not optimized away by optimizing compilers.
  *
- * @return  If there is a runtime-constraints violation, and if dest is not a null
- *          pointer, and if dmax is not too large, then, before
- *          reporting the runtime-constraints violation, memset_s() copies
- *          dmax bytes to the destination.
+ * @return  If there is a runtime-constraints violation, and if dest is not a
+ * null pointer, and if dmax is not too large, then, before reporting the
+ * runtime-constraints violation, memset_s() copies dmax bytes to the
+ * destination.
  * @retval  EOK         when operation is successful or n = 0
  * @retval  ESNULLP     when dest is NULL pointer
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM or value > 255
@@ -92,10 +92,8 @@
  *    memset16_s(), memset32_s()
  */
 
-EXPORT errno_t
-_memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
-               const size_t destbos)
-{
+EXPORT errno_t _memset_s_chk(void *dest, rsize_t dmax, int value, rsize_t n,
+                             const size_t destbos) {
     errno_t err;
 
     CHK_DEST_MEM_NULL("memset_s")
@@ -111,8 +109,8 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
     }
 
     if (unlikely(value > 255)) {
-        invoke_safe_mem_constraint_handler("memset_s: value exceeds max",
-                   dest, ESLEMAX);
+        invoke_safe_mem_constraint_handler("memset_s: value exceeds max", dest,
+                                           ESLEMAX);
         return (RCNEGATE(ESLEMAX));
     }
 
@@ -120,8 +118,8 @@ _memset_s_chk (void *dest, rsize_t dmax, int value, rsize_t n,
 
     if (unlikely(n > dmax)) {
         err = n > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
-        invoke_safe_mem_constraint_handler("memset_s: n exceeds dmax",
-                                           dest, err);
+        invoke_safe_mem_constraint_handler("memset_s: n exceeds dmax", dest,
+                                           err);
         n = dmax;
     }
 

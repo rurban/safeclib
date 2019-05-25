@@ -70,10 +70,8 @@
  *    strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
  *
  */
-EXPORT errno_t
-_strprefix_s_chk (const char *dest, rsize_t dmax, const char *src,
-                  const size_t destbos)
-{
+EXPORT errno_t _strprefix_s_chk(const char *dest, rsize_t dmax, const char *src,
+                                const size_t destbos) {
     CHK_DEST_NULL("strprefix_s")
     CHK_SRC_NULL("strprefix_s", src)
     CHK_DMAX_ZERO("strprefix_s")

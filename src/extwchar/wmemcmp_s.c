@@ -40,8 +40,8 @@
 /**
  * @def wmemcmp_s(dest,dlen,src,slen,diff)
  * @brief
- *    Compares buffers of wide chars until they differ, and return 0 if the same
- *    or -1 or 1 in diff.
+ *    Compares buffers of wide chars until they differ, and return 0 if the
+ * same or -1 or 1 in diff.
  *
  * @remark EXTENSION TO
  *    ISO/IEC JTC1 SC22 WG14 N1172, Programming languages, environments
@@ -67,8 +67,8 @@
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dlen/slen = ZERO
  * @retval  ESLEMAX     when dlen/slen > RSIZE_MAX_WMEM
- * @retval  EOVERFLOW   when dlen/slen > size of dest/src (optionally, when the compiler
- *                      knows the object_size statically)
+ * @retval  EOVERFLOW   when dlen/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dlen != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when slen > dlen
  *
@@ -77,11 +77,9 @@
  *
  */
 
-EXPORT errno_t
-_wmemcmp_s_chk (const wchar_t *dest, rsize_t dlen,
-                const wchar_t *src,  rsize_t slen, int *diff,
-                const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _wmemcmp_s_chk(const wchar_t *dest, rsize_t dlen,
+                              const wchar_t *src, rsize_t slen, int *diff,
+                              const size_t destbos, const size_t srcbos) {
     const rsize_t dmax = dlen * SIZEOF_WCHAR_T;
     const rsize_t smax = slen * SIZEOF_WCHAR_T;
     const wchar_t *dp;
@@ -89,16 +87,16 @@ _wmemcmp_s_chk (const wchar_t *dest, rsize_t dlen,
 
     /* must be able to return the diff */
     if (unlikely(diff == NULL)) {
-        invoke_safe_mem_constraint_handler("wmemcmp_s: diff is null",
-                   NULL, ESNULLP);
+        invoke_safe_mem_constraint_handler("wmemcmp_s: diff is null", NULL,
+                                           ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
-    *diff = -1;  /* default diff */
+    *diff = -1; /* default diff */
 
     CHK_DEST_MEM_NULL("wmemcmp_s")
     if (unlikely(src == NULL)) {
         invoke_safe_mem_constraint_handler("wmemcmp_s: src is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return (RCNEGATE(ESNULLP));
     }
     CHK_DMAX_MEM_ZERO("wmemcmp_s")
@@ -110,27 +108,27 @@ _wmemcmp_s_chk (const wchar_t *dest, rsize_t dlen,
         CHK_DEST_MEM_OVR("wmemcmp_s", destbos)
     }
     if (unlikely(slen == 0)) {
-        invoke_safe_mem_constraint_handler("wmemcmp_s: slen is 0",
-                   (void*)src, ESZEROL);
+        invoke_safe_mem_constraint_handler("wmemcmp_s: slen is 0", (void *)src,
+                                           ESZEROL);
         return (RCNEGATE(ESZEROL));
     }
     if (srcbos == BOS_UNKNOWN) {
         if (unlikely(slen > RSIZE_MAX_WMEM)) {
             invoke_safe_mem_constraint_handler("wmemcmp_s: slen exceeds max",
-                       (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
         BND_CHK_PTR_BOUNDS(src, smax);
     } else {
         if (unlikely(smax > srcbos)) {
             invoke_safe_mem_constraint_handler("wmemcmp_s: slen exceeds src",
-                       (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
         }
     }
     if (unlikely(slen > dlen)) {
         invoke_safe_mem_constraint_handler("wmemcmp_s: slen exceeds dlen",
-                   (void*)dest, ESNOSPC);
+                                           (void *)dest, ESNOSPC);
         return (RCNEGATE(ESNOSPC));
     }
 
@@ -140,8 +138,8 @@ _wmemcmp_s_chk (const wchar_t *dest, rsize_t dlen,
         return (RCNEGATE(EOK));
     }
 
-    dp = (wchar_t*) dest;
-    sp = (wchar_t*) src;
+    dp = (wchar_t *)dest;
+    sp = (wchar_t *)src;
 
     /* now compare sp to dp */
     *diff = 0;

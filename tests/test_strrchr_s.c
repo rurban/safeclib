@@ -10,15 +10,14 @@
 #include "safe_str_lib.h"
 #include <string.h>
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str[LEN];
-int test_strrchr_s (void);
+static char str[LEN];
+int test_strrchr_s(void);
 
-int test_strrchr_s (void)
-{
+int test_strrchr_s(void) {
     errno_t rc;
-    int  ch;
+    int ch;
     char *sub;
 #ifdef HAVE_STRRCHR
     char *std_sub;
@@ -26,7 +25,7 @@ int test_strrchr_s (void)
     size_t len;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     ch = 0;
 #ifndef HAVE_CT_BOS_OVR
@@ -45,7 +44,7 @@ int test_strrchr_s (void)
     SUBNULL();
 
     EXPECT_BOS("dest overflow")
-    rc = strrchr_s(str, RSIZE_MAX_STR+1, ch, &sub);
+    rc = strrchr_s(str, RSIZE_MAX_STR + 1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
 
@@ -63,11 +62,11 @@ int test_strrchr_s (void)
     strcpy(str, "keep it all together");
     len = strlen(str);
 
-    rc = strrchr_s(str, len+1, 0, &sub);
+    rc = strrchr_s(str, len + 1, 0, &sub);
     ERR(EOK);
     PTREQ(sub, &str[len]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* at beginning */
     rc = strrchr_s(str, len, 'k', &sub);
@@ -84,8 +83,8 @@ int test_strrchr_s (void)
     ERR(EOK)
     PTREQ(sub, &str[13]);
 
-/*--------------------------------------------------*/
-              /* 012345678901234567890 */
+    /*--------------------------------------------------*/
+    /* 012345678901234567890 */
     strcpy(str, "keep it all together");
     len = strlen(str);
 
@@ -97,7 +96,7 @@ int test_strrchr_s (void)
     ERR(EOK)
     PTREQ(sub, &str[19]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = strrchr_s(str, 3, 'i', &sub);
     ERR(ESNOTFND)
@@ -106,7 +105,7 @@ int test_strrchr_s (void)
     rc = strrchr_s(str, len, 'i', &sub);
     ERR(EOK)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str, "keep it all together");
 
@@ -126,7 +125,7 @@ int test_strrchr_s (void)
     PTREQ(sub, std_sub);
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -134,8 +133,5 @@ int test_strrchr_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_strrchr_s());
-}
+int main(void) { return (test_strrchr_s()); }
 #endif

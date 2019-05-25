@@ -62,9 +62,8 @@
  *    strishex_s(), strislowercase_s(), strismixedcase_s(),
  */
 
-EXPORT bool
-_strisuppercase_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT bool _strisuppercase_s_chk(const char *dest, rsize_t dmax,
+                                  const size_t destbos) {
     CHK_DEST_DMAX_BOOL("strisuppercase_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {

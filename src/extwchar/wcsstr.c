@@ -57,20 +57,18 @@
  *     wcsstr_s(), strstr_s(), memcmp32_s()
  *
  */
-wchar_t*
-wcsstr (wchar_t *restrict dest, const wchar_t *restrict src)
-{
+wchar_t *wcsstr(wchar_t *restrict dest, const wchar_t *restrict src) {
     int i;
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("wcsstr: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("wcsstr: dest is null", NULL,
+                                           ESNULLP);
         return NULL;
     }
 
     if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("wcsstr: src is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("wcsstr: src is null", NULL,
+                                           ESNULLP);
         return NULL;
     }
 

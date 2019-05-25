@@ -74,11 +74,9 @@
  *    strspn_s(), strpbrk_s(), strstr_s()
  *
  */
-EXPORT errno_t
-_strcspn_s_chk (const char *dest, rsize_t dmax,
-                const char *src,  rsize_t slen, rsize_t *countp,
-                const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
+                              rsize_t slen, rsize_t *countp,
+                              const size_t destbos, const size_t srcbos) {
     const char *scan2;
     rsize_t smax;
 
@@ -95,22 +93,22 @@ _strcspn_s_chk (const char *dest, rsize_t dmax,
         CHK_DEST_OVR("strcspn_s", destbos)
     }
 
-    if (unlikely(slen == 0 )) {
-        invoke_safe_str_constraint_handler("strcspn_s: slen is 0",
-                   NULL, ESZEROL);
+    if (unlikely(slen == 0)) {
+        invoke_safe_str_constraint_handler("strcspn_s: slen is 0", NULL,
+                                           ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
     if (unlikely(slen > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("strcspn_s: slen exceeds max",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler("strcspn_s: slen exceeds max", NULL,
+                                           ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
         invoke_safe_mem_constraint_handler("memcpy_s: slen exceeds src",
-                   (void*)src, EOVERFLOW);
+                                           (void *)src, EOVERFLOW);
         return (RCNEGATE(EOVERFLOW));
     }
 
@@ -124,11 +122,11 @@ _strcspn_s_chk (const char *dest, rsize_t dmax,
         scan2 = src;
         while (*scan2 && smax) {
 
-             if (*dest == *scan2) {
-                 return RCNEGATE(EOK);
-             }
-             scan2++;
-             smax--;
+            if (*dest == *scan2) {
+                return RCNEGATE(EOK);
+            }
+            scan2++;
+            smax--;
         }
 
         (*countp)++;

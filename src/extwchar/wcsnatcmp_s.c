@@ -62,7 +62,8 @@
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   resultp shall not be a null pointer.
  * @pre   dmax/smax shall not be 0
- * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of dest/src
+ * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of
+ * dest/src
  *
  * @return  resultp (when the return code is OK)
  *            >0 when dest greater than src
@@ -75,8 +76,8 @@
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESZEROL    when dmax/smax = 0
  * @retval  ESLEMAX    when dmax/smax > RSIZE_MAX_WSTR
- * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the compiler
- *                     knows the object_size statically)
+ * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  *
  * @see
@@ -84,9 +85,7 @@
  */
 
 /* TODO: bounds check */
-static int
-compare_right(wchar_t const *a, wchar_t const *b)
-{
+static int compare_right(wchar_t const *a, wchar_t const *b) {
     int bias = 0;
 
     /* The longest run of digits wins.  That aside, the greatest
@@ -94,7 +93,7 @@ compare_right(wchar_t const *a, wchar_t const *b)
        both numbers to know that they have the same magnitude, so we
        remember it in BIAS. */
     for (;; a++, b++) {
-        if (!iswdigit((wint_t)*a)  &&  !iswdigit((wint_t)*b))
+        if (!iswdigit((wint_t)*a) && !iswdigit((wint_t)*b))
             return bias;
         if (!iswdigit((wint_t)*a))
             return -1;
@@ -106,22 +105,19 @@ compare_right(wchar_t const *a, wchar_t const *b)
         } else if (*a > *b) {
             if (!bias)
                 bias = +1;
-        } else if (!*a  &&  !*b)
+        } else if (!*a && !*b)
             return bias;
     }
 
     return 0;
 }
 
-
 /* TODO: bounds check */
-static int
-compare_left(wchar_t const *a, wchar_t const *b)
-{
+static int compare_left(wchar_t const *a, wchar_t const *b) {
     /* Compare two left-aligned numbers: the first to have a
        different value wins. */
     for (;; a++, b++) {
-        if (!iswdigit((wint_t)*a)  &&  !iswdigit((wint_t)*b))
+        if (!iswdigit((wint_t)*a) && !iswdigit((wint_t)*b))
             return 0;
         if (!iswdigit((wint_t)*a))
             return -1;
@@ -135,16 +131,14 @@ compare_left(wchar_t const *a, wchar_t const *b)
     return 0;
 }
 
-EXPORT errno_t
-_wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
-                  const wchar_t *src, rsize_t smax,
-                  const int fold_case, int *resultp,
-                  const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _wcsnatcmp_s_chk(const wchar_t *dest, rsize_t dmax,
+                                const wchar_t *src, rsize_t smax,
+                                const int fold_case, int *resultp,
+                                const size_t destbos, const size_t srcbos) {
     wchar_t *d1 = NULL, *d2 = NULL;
     size_t ai, bi;
     const size_t destsz = dmax * sizeof(wchar_t);
-    const size_t srcsz  = smax * sizeof(wchar_t);
+    const size_t srcsz = smax * sizeof(wchar_t);
 
     CHK_SRC_NULL("wcsnatcmp_s", resultp)
     *resultp = 0;
@@ -154,7 +148,7 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
     CHK_DMAX_ZERO("wcsnatcmp_s")
     if (unlikely(dmax == 0 || smax == 0)) {
         invoke_safe_str_constraint_handler("wcsnatcmp_s: dmax/smax is 0",
-                   (void*)dest, ESZEROL);
+                                           (void *)dest, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
     if (destbos == BOS_UNKNOWN) {
@@ -164,16 +158,18 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
         CHK_DESTW_OVR("wcsnatcmp_s", destsz, destbos)
     }
     if (unlikely(smax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsnatcmp_s" ": smax exceeds max",
-                   (void*)src, ESLEMAX);
+        invoke_safe_str_constraint_handler("wcsnatcmp_s"
+                                           ": smax exceeds max",
+                                           (void *)src, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, srcsz);
     } else {
         if (unlikely(srcsz > srcbos)) {
-            invoke_safe_str_constraint_handler("wcsnatcmp_s" ": smax exceeds src",
-                       (void*)src, EOVERFLOW);
+            invoke_safe_str_constraint_handler("wcsnatcmp_s"
+                                               ": smax exceeds src",
+                                               (void *)src, EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
     }
@@ -182,15 +178,15 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
         rsize_t l1, l2;
         errno_t rc;
 
-        d1 = (wchar_t*)malloc(2*destsz);
-        rc = wcsfc_s(d1, dmax*2, (wchar_t *restrict)dest, &l1);
+        d1 = (wchar_t *)malloc(2 * destsz);
+        rc = wcsfc_s(d1, dmax * 2, (wchar_t * restrict) dest, &l1);
         if (rc != EOK) {
             free(d1);
             return rc;
         }
 
-        d2 = (wchar_t*)malloc(2*srcsz);
-        rc = wcsfc_s(d2, smax*2, (wchar_t *restrict)src, &l2);
+        d2 = (wchar_t *)malloc(2 * srcsz);
+        rc = wcsfc_s(d2, smax * 2, (wchar_t * restrict) src, &l2);
         if (rc != EOK) {
             free(d1);
             free(d2);
@@ -204,7 +200,7 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
 
     ai = bi = 0;
     while (ai < dmax) {
-        int  fractional;
+        int fractional;
         wchar_t ca = dest[ai];
         wchar_t cb = src[bi];
 
@@ -220,10 +216,10 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
             fractional = (ca == L'0' || cb == L'0');
 
             if (fractional) {
-                if ((*resultp = compare_left(dest+ai, src+bi)) != 0) {
+                if ((*resultp = compare_left(dest + ai, src + bi)) != 0) {
                     goto eok;
                 }
-            } else if ((*resultp = compare_right(dest+ai, src+bi)) != 0) {
+            } else if ((*resultp = compare_right(dest + ai, src + bi)) != 0) {
                 goto eok;
             }
         }
@@ -244,11 +240,13 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
             *resultp = 1;
             goto eok;
         }
-        ++ai; ++bi;
+        ++ai;
+        ++bi;
 
         if (unlikely(bi >= smax)) {
             invoke_safe_str_constraint_handler("wcsnatcmp_s"
-                       ": src unterminated", (void*)src, ESUNTERM);
+                                               ": src unterminated",
+                                               (void *)src, ESUNTERM);
             if (fold_case) {
                 free(d1);
                 free(d2);
@@ -256,7 +254,7 @@ _wcsnatcmp_s_chk (const wchar_t *dest, rsize_t dmax,
             return RCNEGATE(ESUNTERM);
         }
     }
-  eok:
+eok:
     if (fold_case) {
         free(d1);
         free(d2);

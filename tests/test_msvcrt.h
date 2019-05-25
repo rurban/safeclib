@@ -46,7 +46,7 @@
    With shared linkage we always get native msvcrt.
  */
 #if defined(TEST_MSVCRT) && (HAVE_NATIVE)
-# define USE_MSVCRT
+#define USE_MSVCRT
 #endif
 
 #ifndef __TEST_MSVCRT_C__
@@ -55,31 +55,32 @@ extern bool use_msvcrt;
 
 void init_msvcrt(bool is_msvcrt, bool *msvcrtp);
 void print_msvcrt(bool use_msvcrt);
-void _err_msvc(int rc, const int n, const int winerr, int *errp,
-               const char *f, const unsigned l);
-void _errno_msvc(const int n, const int winerr, int *errp,
-                 const char *f, const unsigned l);
+void _err_msvc(int rc, const int n, const int winerr, int *errp, const char *f,
+               const unsigned l);
+void _errno_msvc(const int n, const int winerr, int *errp, const char *f,
+                 const unsigned l);
 
-#define ERR_MSVC(n, winerr)   \
+#define ERR_MSVC(n, winerr)                                                    \
     _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
-#define NEGERR_MSVC(n, winerr)   \
-    _err_msvc((int)rc, -(n), (winerr==EOF)?EOF:-(winerr), &errs, __FUNCTION__, __LINE__)
+#define NEGERR_MSVC(n, winerr)                                                 \
+    _err_msvc((int)rc, -(n), (winerr == EOF) ? EOF : -(winerr), &errs,         \
+              __FUNCTION__, __LINE__)
 
 #ifdef __KERNEL__
 #define ERRNO_MSVC(n, winerr)
 #define ERREOF_MSVC(n, winerr)
 #else
-#define ERRNO_MSVC(n, winerr) \
+#define ERRNO_MSVC(n, winerr)                                                  \
     _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
-#define ERREOF_MSVC(n, winerr) \
-    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__); \
+#define ERREOF_MSVC(n, winerr)                                                 \
+    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__);                     \
     ERR(EOF)
 #endif
 
 #ifdef USE_MSVCRT
 #undef CHECK_SLACK
-#define CHECK_SLACK(a,b)  EXPSTR(a, "")
-#define CHECK_WSLACK(a,b) WEXPSTR(a, L"")
+#define CHECK_SLACK(a, b) EXPSTR(a, "")
+#define CHECK_WSLACK(a, b) WEXPSTR(a, L"")
 #endif
 
 #ifdef USE_MSVCRT

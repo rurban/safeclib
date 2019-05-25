@@ -65,9 +65,11 @@
  * @pre \c fmt shall not be a null pointer.
  * @pre \c dest shall not be a null pointer.
  * @pre \c dmax shall not be zero.
- * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR and the size of dest.
+ * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR and the size of
+ * dest.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not
+ * yet)
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
@@ -88,31 +90,30 @@
  *    snprintf_s(), sprintf_s(), vsprintf_s(), vsnwprintf_s()
  */
 
-EXPORT int
-_vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
-                 const char *restrict fmt, va_list ap)
-{
+EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
+                            const size_t destbos, const char *restrict fmt,
+                            va_list ap) {
 
     int ret = -1;
     const char *p;
 
     if (unlikely(dest == NULL || fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dest/fmt is null",
-                   NULL, ESNULLP);
+                                           NULL, ESNULLP);
         return -(ESNULLP);
     }
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero",
-                       dest, ESZEROL);
+        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero", dest,
+                                           ESZEROL);
         return -ESZEROL;
     }
     if (unlikely(dmax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max",
-                       dest, ESLEMAX);
+                                           dest, ESLEMAX);
         return -ESLEMAX;
     }
     if (destbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(dest,dmax);
+        BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             return -(handle_str_bos_overload("vsnprintf_s: dmax exceeds dest",
@@ -122,9 +123,9 @@ _vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
-        if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler("vsnprintf_s: illegal %n",
-                       dest, EINVAL);
+        if ((p - fmt == 0) || *(p - 1) != '%') {
+            invoke_safe_str_constraint_handler("vsnprintf_s: illegal %n", dest,
+                                               EINVAL);
             return -(EINVAL);
         }
     }
@@ -138,17 +139,17 @@ _vsnprintf_s_chk(char *restrict dest, rsize_t dmax, const size_t destbos,
         handle_error(dest, dmax, errstr, -ret);
         return ret;
     }
-     /* manual truncation */
-# ifdef SAFECLIB_STR_NULL_SLACK
+    /* manual truncation */
+#ifdef SAFECLIB_STR_NULL_SLACK
     /* oops, ret would have been written if dmax was ignored */
     if ((rsize_t)ret > dmax) {
-        dest[dmax-1] = '\0';
+        dest[dmax - 1] = '\0';
     } else {
-        memset(&dest[ret], 0, dmax-ret);
+        memset(&dest[ret], 0, dmax - ret);
     }
-# else
-    dest[dmax-1] = '\0';
-# endif
+#else
+    dest[dmax - 1] = '\0';
+#endif
 
     return ret;
 }

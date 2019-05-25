@@ -10,26 +10,25 @@
 #include "safe_lib.h"
 
 #if defined(HAVE_CTIME_S) || defined(HAVE_ASCTIME_S)
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-int test_ctime_s (void);
+static char str1[LEN];
+int test_ctime_s(void);
 
-int test_ctime_s (void)
-{
+int test_ctime_s(void) {
     errno_t rc;
     int errs = 0;
     time_t timer;
 
     timer = time(NULL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
     /* even static we will use the native forceinline ctime_s */
 #if defined(_WIN32) && (HAVE_NATIVE)
     use_msvcrt = true;
@@ -39,28 +38,28 @@ int test_ctime_s (void)
     EXPECT_BOS("empty dest")
     rc = ctime_s(NULL, LEN, &timer);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
-    ERR_MSVC(ESNULLP,EINVAL);
+    ERR_MSVC(ESNULLP, EINVAL);
 
     EXPECT_BOS("empty timer")
     rc = ctime_s(str1, LEN, NULL);
-    ERR_MSVC(ESNULLP,EINVAL);
+    ERR_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("dmax underflow")
-    rc = ctime_s(str1, 0, &timer);
-    ERR_MSVC(ESLEMIN,EINVAL);
+    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("dmax underflow") rc = ctime_s(str1, 0, &timer);
+    ERR_MSVC(ESLEMIN, EINVAL);
 
     EXPECT_BOS("dmax underflow")
     rc = ctime_s(str1, 25, &timer);
-    ERR_MSVC(ESLEMIN,EINVAL);
+    ERR_MSVC(ESLEMIN, EINVAL);
 
     EXPECT_BOS("dest overflow")
-    rc = ctime_s(str1, RSIZE_MAX_STR+1, &timer);
-    ERR_MSVC(ESLEMAX,0);
+    rc = ctime_s(str1, RSIZE_MAX_STR + 1, &timer);
+    ERR_MSVC(ESLEMAX, 0);
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     timer = 0;
     rc = ctime_s(str1, LEN, &timer);
@@ -72,13 +71,13 @@ int test_ctime_s (void)
 
     timer = -1;
     rc = ctime_s(str1, LEN, &timer);
-    ERR_MSVC(ESLEMIN,EINVAL);
+    ERR_MSVC(ESLEMIN, EINVAL);
 
     {
         struct tm *tm = gmtime(&timer);
         if (!tm) {
             printf("gmtime() failed\n");
-            return errs+1;
+            return errs + 1;
         }
         /* memset(tm, 0, sizeof(struct tm)); */
 #if SIZEOF_TIME_T < 8
@@ -103,20 +102,17 @@ int test_ctime_s (void)
     } else {
         ERR_MSVC(ESLEMAX, 0);
     }
-/*
-#ifndef __MINGW32__
-    ERR(ESLEMAX);
-#else
-    ERR(0);
-#endif
-*/
+    /*
+    #ifndef __MINGW32__
+        ERR(ESLEMAX);
+    #else
+        ERR(0);
+    #endif
+    */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
 
-int main (void)
-{
-    return (test_ctime_s());
-}
+int main(void) { return (test_ctime_s()); }

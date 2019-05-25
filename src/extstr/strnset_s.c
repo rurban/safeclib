@@ -75,12 +75,10 @@
  *    strzero_s(), strset_s(), wcsnset_s(), strispassword_s()
  */
 
-EXPORT errno_t
-_strnset_s_chk (char *restrict dest, rsize_t dmax, int value, rsize_t n,
-                const size_t destbos)
-{
+EXPORT errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value,
+                              rsize_t n, const size_t destbos) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-    char * orig_dest;
+    char *orig_dest;
 #endif
 
     CHK_DEST_NULL("strnset_s")
@@ -93,12 +91,12 @@ _strnset_s_chk (char *restrict dest, rsize_t dmax, int value, rsize_t n,
     }
     if (unlikely((unsigned)value > 255)) {
         invoke_safe_str_constraint_handler("strnset_s: value exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return (ESLEMAX);
     }
     if (unlikely(n > dmax)) {
-        invoke_safe_str_constraint_handler("strnset_s: n exceeds dmax",
-                   NULL, ESNOSPC);
+        invoke_safe_str_constraint_handler("strnset_s: n exceeds dmax", NULL,
+                                           ESNOSPC);
         return (ESNOSPC);
     }
 
@@ -113,7 +111,7 @@ _strnset_s_chk (char *restrict dest, rsize_t dmax, int value, rsize_t n,
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null slack to clear any data */
     if (!*dest)
-        memset(dest, 0, dmax-(dest-orig_dest));
+        memset(dest, 0, dmax - (dest - orig_dest));
 #endif
 
     return (EOK);

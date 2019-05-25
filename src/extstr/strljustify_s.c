@@ -72,9 +72,8 @@
  *    strremovews_s(),
  *
  */
-EXPORT errno_t
-_strljustify_s_chk (char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT errno_t _strljustify_s_chk(char *dest, rsize_t dmax,
+                                  const size_t destbos) {
     char *orig_dest;
     rsize_t orig_dmax;
 
@@ -106,11 +105,13 @@ _strljustify_s_chk (char *dest, rsize_t dmax, const size_t destbos)
      */
     while (*dest) {
         if (unlikely(dmax == 0)) {
-            while (orig_dmax) { *orig_dest++ = '\0';  orig_dmax--; }
+            while (orig_dmax) {
+                *orig_dest++ = '\0';
+                orig_dmax--;
+            }
 
             invoke_safe_str_constraint_handler(
-                      "strljustify_s: dest is unterminated",
-                       NULL, ESUNTERM);
+                "strljustify_s: dest is unterminated", NULL, ESUNTERM);
             return (ESUNTERM);
         }
         dmax--;

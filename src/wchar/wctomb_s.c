@@ -42,7 +42,6 @@
 #define wctomb(dest, wc) wcrtomb((dest), (wc), &st)
 #endif
 
-
 /**
  * @def wctomb_s(retvalp,dest,dmax,wc)
  * @brief
@@ -85,7 +84,8 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retvalp  pointer to a \c size_t object where the result will be stored
+ * @param[out]  retvalp  pointer to a \c size_t object where the result will be
+ * stored
  * @param[out]  dest     pointer to bytes where the result will be stored
  * @param[in]   dmax     restricted maximum length of \c dest
  * @param[in]   wc       the wide character to convert
@@ -99,8 +99,8 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return Returns zero on success and non-zero on failure, in which
- *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is invalid)
- *         and \c *retvalp is set to (size_t)-1 (unless retvalp is null).
+ *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is
+ * invalid) and \c *retvalp is set to (size_t)-1 (unless retvalp is null).
  *
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retvalp is a NULL pointer
@@ -115,11 +115,8 @@
  * @see
  *    wcrtomb_s()
  */
-EXPORT errno_t
-_wctomb_s_chk(int *restrict retvalp,
-              char *restrict dest, rsize_t dmax,
-              wchar_t wc, const size_t destbos)
-{
+EXPORT errno_t _wctomb_s_chk(int *restrict retvalp, char *restrict dest,
+                             rsize_t dmax, wchar_t wc, const size_t destbos) {
     int len;
     errno_t rc;
 #if defined(__CYGWIN__) && defined(__x86_64)
@@ -139,8 +136,8 @@ _wctomb_s_chk(int *restrict retvalp,
     } else {
         if (unlikely(dmax != 0)) {
             invoke_safe_str_constraint_handler("wctomb_s"
-                       ": dmax is not 0",
-                       (void*)dest, ESNULLP);
+                                               ": dmax is not 0",
+                                               (void *)dest, ESNULLP);
             return RCNEGATE(ESNULLP);
         }
     }
@@ -150,7 +147,7 @@ _wctomb_s_chk(int *restrict retvalp,
     if (likely(len > 0 && (rsize_t)len < dmax)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
         if (dest)
-            memset(&dest[len], 0, dmax-len);
+            memset(&dest[len], 0, dmax - len);
 #endif
         rc = EOK;
     } else {

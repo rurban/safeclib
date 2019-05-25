@@ -70,7 +70,8 @@ any of the arguments corresponding to %s is a null pointer
  * @pre \c dmax shall not be zero.
  * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR and size of dest.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not
+ * yet)
  * @pre No encoding error shall occur.
  *
  * @return  If the buffer \c dest is too small for the formatted text,
@@ -91,13 +92,11 @@ any of the arguments corresponding to %s is a null pointer
  */
 
 #ifdef HAVE_C99
-EXPORT int
-_snprintf_s_chk(char * restrict dest, rsize_t dmax, const size_t destbos,
-                const char * restrict fmt, ...)
+EXPORT int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
+                           const size_t destbos, const char *restrict fmt, ...)
 #else
-EXPORT int
-snprintf_s     (char * restrict dest, rsize_t dmax,
-               const char * restrict fmt, ...)
+EXPORT int snprintf_s(char *restrict dest, rsize_t dmax,
+                      const char *restrict fmt, ...)
 #endif
 {
     va_list ap;
@@ -107,23 +106,24 @@ snprintf_s     (char * restrict dest, rsize_t dmax,
     const size_t destbos = BOS_UNKNOWN;
 #endif
 
-    if (unlikely(dest == NULL || fmt == NULL)) { /* for !dmax size-calc use sprintf_s */
-        invoke_safe_str_constraint_handler("snprintf_s: dest/fmt is null",
-                   NULL, ESNULLP);
+    if (unlikely(dest == NULL ||
+                 fmt == NULL)) { /* for !dmax size-calc use sprintf_s */
+        invoke_safe_str_constraint_handler("snprintf_s: dest/fmt is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero",
-                       dest, ESZEROL);
+        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero", dest,
+                                           ESZEROL);
         return -ESZEROL;
     }
     if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max",
-                                           dest, ESLEMAX);
+        invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max", dest,
+                                           ESLEMAX);
         return -ESLEMAX;
     }
     if (destbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(dest,dmax);
+        BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             return -(handle_str_bos_overload("snprintf_s: dmax exceeds dest",
@@ -133,9 +133,9 @@ snprintf_s     (char * restrict dest, rsize_t dmax,
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
-        if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler("snprintf_s: illegal %n",
-                       dest, EINVAL);
+        if ((p - fmt == 0) || *(p - 1) != '%') {
+            invoke_safe_str_constraint_handler("snprintf_s: illegal %n", dest,
+                                               EINVAL);
             return -(EINVAL);
         }
     }
@@ -157,16 +157,16 @@ snprintf_s     (char * restrict dest, rsize_t dmax,
         return ret;
     }
     /* manual truncation */
-# ifdef SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
     /* oops, ret would have been written if dmax was ignored */
     if ((rsize_t)ret > dmax) {
-        dest[dmax-1] = '\0';
+        dest[dmax - 1] = '\0';
     } else {
-        memset(&dest[ret], 0, dmax-ret);
+        memset(&dest[ret], 0, dmax - ret);
     }
-# else
-    dest[dmax-1] = '\0';
-# endif
+#else
+    dest[dmax - 1] = '\0';
+#endif
 
     return ret;
 }

@@ -41,9 +41,9 @@
  * @def strncpyfld_s(dest,dmax,src,slen)
  * @brief
  *    The \b strcpyfld_s function copies \c slen characters from the character
- *    array pointed to by \c src into the character array pointed to by \c dest.
- *    The copy operation does not stop on the null character as the
- *    function copies \c slen characters.
+ *    array pointed to by \c src into the character array pointed to by \c
+ * dest. The copy operation does not stop on the null character as the function
+ * copies \c slen characters.
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731-1, Programming languages, environments
@@ -52,7 +52,8 @@
  *
  * @param[out]  dest  pointer to string that will be replaced by src.
  * @param[in]   dmax  restricted maximum length of dest
- * @param[in]   src   pointer to the character array that will be copied to dest
+ * @param[in]   src   pointer to the character array that will be copied to
+ * dest
  * @param[in]   slen  number of bytes to be copied
  *
  * @pre  Neither dest nor src shall be a null pointer.
@@ -74,10 +75,8 @@
  *    strcpyfldin_s(), strcpyfldout_s()
  *
  */
-EXPORT errno_t
-_strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
-                  const size_t destbos)
-{
+EXPORT errno_t _strcpyfld_s_chk(char *dest, rsize_t dmax, const char *src,
+                                rsize_t slen, const size_t destbos) {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
@@ -106,8 +105,8 @@ _strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
         while (slen > 0) {
 
             if (unlikely(dest == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax, "strcpyfld_s: overlapping objects",
-                             ESOVRLP);
+                handle_error(orig_dest, orig_dmax,
+                             "strcpyfld_s: overlapping objects", ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -115,15 +114,14 @@ _strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
             slen--;
             dmax--;
         }
-
     } else {
         overlap_bumper = dest;
 
         while (slen > 0) {
 
             if (unlikely(src == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax, "strcpyfld_s: overlapping objects",
-                             ESOVRLP);
+                handle_error(orig_dest, orig_dmax,
+                             "strcpyfld_s: overlapping objects", ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -137,7 +135,11 @@ _strcpyfld_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
     if (dmax > 0x20)
         memset(dest, 0, dmax);
     else {
-        while (dmax) { *dest = '\0'; dmax--; dest++; }
+        while (dmax) {
+            *dest = '\0';
+            dmax--;
+            dest++;
+        }
     }
     return (EOK);
 }

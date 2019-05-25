@@ -11,23 +11,22 @@
 #include <unistd.h>
 
 #ifdef HAVE_VFWPRINTF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define TMP   "tmpvfwp"
-#define LEN   ( 128 )
+#define TMP "tmpvfwp"
+#define LEN (128)
 
-static FILE* out;
-static wchar_t   wstr[LEN];
-static char      str[LEN];
-int vtwprintf_s (FILE *restrict stream, const wchar_t *restrict fmt, ...);
-int test_vfwprintf_s (void);
+static FILE *out;
+static wchar_t wstr[LEN];
+static char str[LEN];
+int vtwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...);
+int test_vfwprintf_s(void);
 
-int vtwprintf_s (FILE *restrict stream,
-                const wchar_t *restrict fmt, ...) {
+int vtwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -36,15 +35,14 @@ int vtwprintf_s (FILE *restrict stream,
     return rc;
 }
 
-int test_vfwprintf_s (void)
-{
+int test_vfwprintf_s(void) {
     errno_t rc;
     int32_t ind;
     int errs = 0;
 
     out = fopen(TMP, "w");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
     rc = vtwprintf_s(out, NULL);
@@ -62,19 +60,18 @@ int test_vfwprintf_s (void)
     NEGERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wstr[0] = L'\0';
     rc = vtwprintf_s(out, L"%s%n\n", wstr, &ind);
     NEGERR(EINVAL)
 
     if (!out) {
-        printf("Failed to open file %s for write: %s\n",
-               TMP, strerror(errno));
+        printf("Failed to open file %s for write: %s\n", TMP, strerror(errno));
         return errs;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = vtwprintf_s(out, L"%s%%n\n", wstr);
     ERR(3)
@@ -82,7 +79,7 @@ int test_vfwprintf_s (void)
     rc = vtwprintf_s(out, L"%%n\n");
     ERR(3);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(wstr, L"12");
     strcpy(str, "34");
@@ -90,14 +87,11 @@ int test_vfwprintf_s (void)
     rc = vtwprintf_s(out, L"%ls%s", wstr, str);
     ERRWCHAR(4)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
     fclose(out);
     unlink(TMP);
 
     return (errs);
 }
 
-int main (void)
-{
-    return (test_vfwprintf_s());
-}
+int main(void) { return (test_vfwprintf_s()); }

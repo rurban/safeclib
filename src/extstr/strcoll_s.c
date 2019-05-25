@@ -77,19 +77,17 @@
  * @retval  ESNULLP      when dest/src/resultp is NULL pointer
  * @retval  ESZEROL      when dmax = 0
  * @retval  ESLEMAX      when dmax > RSIZE_MAX_STR
- * @retval  EOVERFLOW    when dmax > size of dest (optionally, when the compiler
- *                       knows the object_size statically)
+ * @retval  EOVERFLOW    when dmax > size of dest (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG     when dmax != sizeof(dest) and --enable-error-dmax
  *
  * @see
  *    wcscoll_s(), strcmp_s(), strcasecmp_s()
  */
 
-EXPORT errno_t
-_strcoll_s_chk (const char *restrict dest, rsize_t dmax,
-                const char *restrict src, int *resultp,
-                const size_t destbos)
-{
+EXPORT errno_t _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
+                              const char *restrict src, int *resultp,
+                              const size_t destbos) {
     CHK_SRC_NULL("strcoll_s", resultp)
     *resultp = 0;
 

@@ -11,14 +11,13 @@
 
 #define LEN 64
 
-int main(void)
-{
+int main(void) {
     bool rc;
     uint32_t len;
-    char   str[LEN];
+    char str[LEN];
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
@@ -47,62 +46,62 @@ int main(void)
     ERR(false)
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "Test4You*123");
+    strcpy(str, "Test4You*123");
     len = 8;
 
     rc = strispassword_s(str, len);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "Test4You*");
+    strcpy(str, "Test4You*");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(true)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "Test4You*Test4You*Test4You*");
+    strcpy(str, "Test4You*Test4You*Test4You*");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(true)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "Eest!22/");
+    strcpy(str, "Eest!22/");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "pa$$W0rD");
+    strcpy(str, "pa$$W0rD");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(true)
 
-    strcpy (str, "<a]$b}0X_D");
+    strcpy(str, "<a]$b}0X_D");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(true)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "pa$$W0rD f");
+    strcpy(str, "pa$$W0rD f");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(false)
 
-    strcpy (str, "Test");
+    strcpy(str, "Test");
     len = strlen(str);
 
     rc = strispassword_s(str, len);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }

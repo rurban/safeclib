@@ -40,7 +40,7 @@ any of the arguments corresponding to %s is a null pointer.
 */
 
 /**
- * @def 
+ * @def
  * @brief
  *    The \c swprintf_s function composes a wide string
  *    with same test that would be printed if format was used on \c
@@ -71,7 +71,8 @@ any of the arguments corresponding to %s is a null pointer.
  * @pre \c dmax shall not equal zero.
  * @pre \c dmax shall be greater than <tt>wcsnlen_s(dest, dmax)</tt>.
  * @pre \c fmt shall not contain the conversion specifier \c %n
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not
+ * yet)
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
@@ -90,8 +91,8 @@ any of the arguments corresponding to %s is a null pointer.
  *          requested to be written, swprintf_s returns a negative value.
  * @return  If the buffer \c dest is too small for the formatted text,
  *          including the terminating null, then the buffer is set to an
- *          empty string by placing a null wide character at \c dest[0], and the
- *          invalid parameter handler is invoked.
+ *          empty string by placing a null wide character at \c dest[0], and
+ * the invalid parameter handler is invoked.
  *
  * @retval  >0         on success
  * @retval  -ESNULLP   when \c dest/fmt is NULL pointer
@@ -100,8 +101,8 @@ any of the arguments corresponding to %s is a null pointer.
  * @retval  -EOVERFLOW when \c dmax > size of dest
  * @retval  -ESNOSPC   when return value exceeds dmax
  * @retval  -EINVAL    when \c fmt contains \c %n
- * @retval  -1         if an encoding error occurred or if n or more wide characters
- *                     are requested to be written.
+ * @retval  -1         if an encoding error occurred or if n or more wide
+ * characters are requested to be written.
  * @retval  0          on some other error
  *
  * @see
@@ -109,13 +110,12 @@ any of the arguments corresponding to %s is a null pointer.
  */
 
 #if defined(HAVE_C99) && !defined(TEST_MSVCRT)
-EXPORT int
-_swprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
-            const wchar_t *restrict fmt, ...)
+EXPORT int _swprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                           const size_t destbos, const wchar_t *restrict fmt,
+                           ...)
 #else
-EXPORT int
-swprintf_s(wchar_t *restrict dest, rsize_t dmax,
-            const wchar_t *restrict fmt, ...)
+EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
+                      const wchar_t *restrict fmt, ...)
 #endif
 {
     va_list ap, ap2;
@@ -127,33 +127,33 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #endif
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("swprintf_s: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("swprintf_s: dest is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("swprintf_s: dmax exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return -(ESLEMAX);
     }
     if (destbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(dest,destsz);
+        BND_CHK_PTR_BOUNDS(dest, destsz);
     } else {
         if (unlikely(destsz > destbos)) {
             invoke_safe_str_constraint_handler("swprintf_s: dmax exceeds dest",
-                       (void*)dest, EOVERFLOW);
+                                               (void *)dest, EOVERFLOW);
             return -(EOVERFLOW);
         }
     }
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("swprintf_s: fmt is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return -(ESNULLP);
     }
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("swprintf_s: dmax is 0",
-                   (void*)dest, ESZEROL);
+                                           (void *)dest, ESZEROL);
         return -(ESZEROL);
     }
 
@@ -166,25 +166,25 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     }*/
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
-    if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
-        if ((p-fmt == 0) || *(p-1) != L'%') {
+    if (unlikely((p = wcsstr((wchar_t *)fmt, L"%n")))) {
+        if ((p - fmt == 0) || *(p - 1) != L'%') {
             invoke_safe_str_constraint_handler("swprintf_s: illegal %n",
-                       (void*)dest, EINVAL);
+                                               (void *)dest, EINVAL);
             return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
     if (unlikely((p = wcschr(fmt, flen, L'n')))) {
         /* at the beginning or if inside, not %%n */
-        if (((p-fmt >= 1) && *(p-1) == L'%') &&
-            ((p-fmt == 1) || *(p-2) != L'%')) {
+        if (((p - fmt >= 1) && *(p - 1) == L'%') &&
+            ((p - fmt == 1) || *(p - 2) != L'%')) {
             invoke_safe_str_constraint_handler("swprintf_s: illegal %n",
-                       (void*)dest, EINVAL);
+                                               (void *)dest, EINVAL);
             return -(EINVAL);
         }
     }
 #else
-    #error need wcsstr or wcschr
+#error need wcsstr or wcschr
 #endif
 
     errno = 0;
@@ -194,7 +194,7 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     va_end(ap);
 
     /* check for ESNOSPC or some other error */
-    if (unlikely(ret ==  -1)) {
+    if (unlikely(ret == -1)) {
         if (unlikely(dmax == 1))
             goto nospc;
         errno = 0;
@@ -211,10 +211,9 @@ swprintf_s(wchar_t *restrict dest, rsize_t dmax,
             free(tmp);
         }
         if (ret > 0) {
-          nospc:
+        nospc:
             errno = 0; /* EOVERFLOW */
-            handle_werror(dest, dmax, "swprintf_s: len exceeds dmax",
-                          ESNOSPC);
+            handle_werror(dest, dmax, "swprintf_s: len exceeds dmax", ESNOSPC);
             return -(ESNOSPC);
         }
     }

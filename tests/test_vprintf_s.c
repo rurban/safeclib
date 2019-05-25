@@ -10,14 +10,14 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-int vtprintf_s (const char *restrict fmt, ...);
-int test_vprintf_s (void);
+static char str1[LEN];
+static char str2[LEN];
+int vtprintf_s(const char *restrict fmt, ...);
+int test_vprintf_s(void);
 
-int vtprintf_s (const char *restrict fmt, ...) {
+int vtprintf_s(const char *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -26,18 +26,17 @@ int vtprintf_s (const char *restrict fmt, ...) {
     return rc;
 }
 
-int test_vprintf_s (void)
-{
+int test_vprintf_s(void) {
     errno_t rc;
     int32_t ind;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = vtprintf_s(NULL, NULL);
     NEGERR(ESNULLP)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = vtprintf_s("");
     NEGERR(EOK)
@@ -47,18 +46,17 @@ int test_vprintf_s (void)
     NEGERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     rc = vtprintf_s("%s%n\n", str1, &ind);
     NEGERR(EINVAL)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = vtprintf_s("%s%%n\n", str1);
     if (rc < 0) {
-        printf("Failed to open stdout for write: %s\n",
-               strerror(errno));
+        printf("Failed to open stdout for write: %s\n", strerror(errno));
         return errs;
     }
     ERR(3)
@@ -66,7 +64,7 @@ int test_vprintf_s (void)
     rc = vtprintf_s("%%n\n");
     ERR(3);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12");
     strcpy(str2, "34");
@@ -74,12 +72,9 @@ int test_vprintf_s (void)
     rc = vtprintf_s("%s%s", str1, str2);
     ERR(4)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
 
-int main (void)
-{
-    return (test_vprintf_s());
-}
+int main(void) { return (test_vprintf_s()); }

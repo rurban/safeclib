@@ -66,13 +66,12 @@
  *    strchr_s(), strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
  *
  */
-EXPORT errno_t
-_memchr_s_chk (const void *restrict dest, rsize_t dmax,
-               const int ch, void **result, const size_t destbos)
-{
+EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
+                             const int ch, void **result,
+                             const size_t destbos) {
     if (unlikely(result == NULL)) {
         invoke_safe_mem_constraint_handler("memchr_s: result is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return (ESNULLP);
     }
     *result = NULL;
@@ -85,13 +84,13 @@ _memchr_s_chk (const void *restrict dest, rsize_t dmax,
         CHK_DEST_MEM_OVR("memchr_s", destbos)
     }
     if (unlikely(ch > 255)) {
-        invoke_safe_str_constraint_handler("memchr_s: ch exceeds max",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler("memchr_s: ch exceeds max", NULL,
+                                           ESLEMAX);
         return (ESLEMAX);
     }
 
     /* compares wordwise */
-    *result = memchr((void*)dest, ch, (size_t)dmax);
+    *result = memchr((void *)dest, ch, (size_t)dmax);
 
     if (!*result)
         return (ESNOTFND);

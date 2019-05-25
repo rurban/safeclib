@@ -83,8 +83,10 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retvalp pointer to a \c size_t object where the result will be stored
- * @param[out]  dest  pointer to character array where the result will be stored
+ * @param[out]  retvalp pointer to a \c size_t object where the result will be
+ * stored
+ * @param[out]  dest  pointer to character array where the result will be
+ * stored
  * @param[in]   dmax  restricted maximum length of \c dest
  * @param[in]   srcp  pointer to the wide string that will be copied to \c dest
  * @param[in]   len   maximum number of bytes to be written to \c dest
@@ -112,8 +114,8 @@
  * @retval  ESNULLP    when retvalp, ps, srcp or *srcp are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
- * @retval  EOVERFLOW  when dmax or len > size of dest (optionally, when the compiler
- *                     knows the object_size statically), unless dest is NULL
+ * @retval  EOVERFLOW  when dmax or len > size of dest (optionally, when the
+ * compiler knows the object_size statically), unless dest is NULL
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when *srcp and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
@@ -125,13 +127,10 @@
  *    wcrtomb_s(), wcstombs_s()
  */
 
-EXPORT errno_t
-_wcsrtombs_s_chk (size_t *restrict retvalp,
-                  char *restrict dest, rsize_t dmax,
-                  const wchar_t **restrict srcp, rsize_t len,
-                  mbstate_t *restrict ps,
-                  const size_t destbos)
-{
+EXPORT errno_t _wcsrtombs_s_chk(size_t *restrict retvalp, char *restrict dest,
+                                rsize_t dmax, const wchar_t **restrict srcp,
+                                rsize_t len, mbstate_t *restrict ps,
+                                const size_t destbos) {
     size_t l;
     errno_t rc;
 
@@ -139,32 +138,37 @@ _wcsrtombs_s_chk (size_t *restrict retvalp,
     *retvalp = 0;
     CHK_SRC_NULL("wcsrtombs_s", ps)
 
-    /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine. 
+    /* GLIBC asserts with len=0 and wrong state. darwin and musl is fine.
        wine returns 0 early. */
     if (dest) {
         CHK_DMAX_ZERO("wcsrtombs_s")
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                invoke_safe_str_constraint_handler("wcsrtombs_s" ": dmax/len exceeds max",
-                           (void*)dest, ESLEMAX);
+                invoke_safe_str_constraint_handler("wcsrtombs_s"
+                                                   ": dmax/len exceeds max",
+                                                   (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             BND_CHK_PTR_BOUNDS(dest, destbos);
         } else {
             if (unlikely(dmax > destbos || len > destbos)) {
                 if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                    handle_error(dest,destbos,"wcsrtombs_s" ": dmax/len exceeds max",
+                    handle_error(dest, destbos,
+                                 "wcsrtombs_s"
+                                 ": dmax/len exceeds max",
                                  ESLEMAX);
                     return RCNEGATE(ESLEMAX);
                 } else {
-                    handle_error(dest,destbos,"wcsrtombs_s" ": dmax/len exceeds dest",
+                    handle_error(dest, destbos,
+                                 "wcsrtombs_s"
+                                 ": dmax/len exceeds dest",
                                  EOVERFLOW);
                     return RCNEGATE(EOVERFLOW);
                 }
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(dmax != destbos)) {
-                handle_str_bos_chk_warn("wcsrtombs_s",(char*)dest,dmax,
+                handle_str_bos_chk_warn("wcsrtombs_s", (char *)dest, dmax,
                                         destbos);
                 RETURN_ESLEWRNG;
             }
@@ -180,13 +184,13 @@ _wcsrtombs_s_chk (size_t *restrict retvalp,
 #endif
         }
         invoke_safe_str_constraint_handler("wcsrtombs_s: srcp/*srcp is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
 
-    if (unlikely(dest == (char*)srcp)) {
-        invoke_safe_str_constraint_handler("wcsrtombs_s: dest overlapping objects",
-                   (void*)dest, ESOVRLP);
+    if (unlikely(dest == (char *)srcp)) {
+        invoke_safe_str_constraint_handler(
+            "wcsrtombs_s: dest overlapping objects", (void *)dest, ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 
@@ -195,7 +199,7 @@ _wcsrtombs_s_chk (size_t *restrict retvalp,
     if (likely(l > 0 && l < dmax)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
         if (dest) {
-            memset(&dest[l], 0, dmax-l);
+            memset(&dest[l], 0, dmax - l);
         }
 #endif
         rc = EOK;

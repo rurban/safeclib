@@ -80,10 +80,8 @@
  *    strcpyfld_s(), strcpyfldout_s(),
  *
  */
-EXPORT errno_t
-_strcpyfldin_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
-                    const size_t destbos)
-{
+EXPORT errno_t _strcpyfldin_s_chk(char *dest, rsize_t dmax, const char *src,
+                                  rsize_t slen, const size_t destbos) {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
@@ -112,23 +110,22 @@ _strcpyfldin_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
         while (dmax > 0 && *src) {
 
             if (unlikely(dest == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax, "strcpyfldin_s: overlapping objects",
-                             ESOVRLP);
+                handle_error(orig_dest, orig_dmax,
+                             "strcpyfldin_s: overlapping objects", ESOVRLP);
                 return (ESOVRLP);
             }
 
             dmax--;
             *dest++ = *src++;
         }
-
     } else {
         overlap_bumper = dest;
 
         while (dmax > 0 && *src) {
 
             if (unlikely(src == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax, "strcpyfldin_s: overlapping objects",
-                             ESOVRLP);
+                handle_error(orig_dest, orig_dmax,
+                             "strcpyfldin_s: overlapping objects", ESOVRLP);
                 return (ESOVRLP);
             }
 
@@ -143,7 +140,11 @@ _strcpyfldin_s_chk (char *dest, rsize_t dmax, const char *src, rsize_t slen,
     if (dmax > 0x20)
         memset(dest, 0, dmax);
     else {
-        while (dmax) { *dest = '\0'; dmax--; dest++; }
+        while (dmax) {
+            *dest = '\0';
+            dmax--;
+            dest++;
+        }
     }
 
     return (EOK);

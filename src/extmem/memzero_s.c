@@ -54,7 +54,7 @@
  * @pre   dest shall not be a null pointer.
  * @pre   len shall not be 0 nor greater than RSIZE_MAX_MEM and size of dest
  *
- * @note memzero_s provides a memory barrier for modern out-of-order CPU's 
+ * @note memzero_s provides a memory barrier for modern out-of-order CPU's
  *       to ensure a cache flush or at least a compiler barrier fallback to
  *       ensure that is not optimized away by optimizing compilers.
  *
@@ -71,9 +71,7 @@
  *    memzero16_s(), memzero32_s()
  *
  */
-EXPORT errno_t
-_memzero_s_chk (void *dest, rsize_t len, const size_t destbos)
-{
+EXPORT errno_t _memzero_s_chk(void *dest, rsize_t len, const size_t destbos) {
     rsize_t dmax = len;
     CHK_DEST_MEM_NULL("memzero_s")
     CHK_DMAX_MEM_ZERO("memzero_s")

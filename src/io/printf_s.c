@@ -65,24 +65,22 @@
  * @retval  -1       on some other error. errno is set then.
  */
 
-EXPORT int
-printf_s(const char *restrict fmt, ...)
-{
+EXPORT int printf_s(const char *restrict fmt, ...) {
     va_list ap;
     int ret;
     const char *p;
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("printf_s: fmt is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("printf_s: fmt is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
-        if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler("printf_s: illegal %n",
-                                               NULL, EINVAL);
+        if ((p - fmt == 0) || *(p - 1) != '%') {
+            invoke_safe_str_constraint_handler("printf_s: illegal %n", NULL,
+                                               EINVAL);
             return -(EINVAL);
         }
     }

@@ -66,8 +66,7 @@ static constraint_handler_t mem_handler = NULL;
  *    set_str_constraint_handler_s()
  */
 EXPORT constraint_handler_t
-set_mem_constraint_handler_s (constraint_handler_t handler)
-{
+set_mem_constraint_handler_s(constraint_handler_t handler) {
     constraint_handler_t prev_handler = mem_handler;
     if (NULL == handler) {
         mem_handler = sl_default_handler;
@@ -94,11 +93,8 @@ EXPORT_SYMBOL(set_mem_constraint_handler_s);
  * @param error   The error code encountered.
  *
  */
-EXPORT void
-invoke_safe_mem_constraint_handler (const char *msg,
-                                    void *ptr,
-                                    errno_t error)
-{
+EXPORT void invoke_safe_mem_constraint_handler(const char *msg, void *ptr,
+                                               errno_t error) {
     if (NULL != mem_handler) {
         mem_handler(msg, ptr, error);
     } else {
@@ -114,13 +110,11 @@ EXPORT_SYMBOL(invoke_safe_mem_constraint_handler);
 #define invoke_safe_mem_constraint_handler(msg, ptr, error)
 #else
 
-void
-handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
-                        const rsize_t dmax, const size_t destbos)
-{
+void handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
+                             const rsize_t dmax, const size_t destbos) {
     char msg[128];
-    sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
-            func, (unsigned long)dmax, (unsigned long)destbos);
+    sprintf(msg, "%s: wrong dmax %lu, dest has size %lu", func,
+            (unsigned long)dmax, (unsigned long)destbos);
     invoke_safe_mem_constraint_handler(msg, dest, ESLEWRNG);
 }
 

@@ -11,34 +11,34 @@
 #include <stdarg.h>
 
 #ifdef HAVE_VSNPRINTF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
 #define USE_MSVCRT
-int vsnprintf_s(char *dest, size_t dmax, size_t maxcount,const char *fmt, va_list arglist);
+int vsnprintf_s(char *dest, size_t dmax, size_t maxcount, const char *fmt,
+                va_list arglist);
 #endif
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-static inline int vtprintf_s (char *restrict dest, rsize_t dmax,
-                              const char *restrict fmt, ...)
-    BOS_CHK(dest) BOS_NULL(fmt);
+static char str1[LEN];
+static char str2[LEN];
+static inline int vtprintf_s(char *restrict dest, rsize_t dmax,
+                             const char *restrict fmt, ...) BOS_CHK(dest)
+    BOS_NULL(fmt);
 #ifndef HAVE_CT_BOS_OVR
-static inline int vtprintf_s_chk (char *restrict dest, rsize_t dmax, rsize_t destbos,
-                                  const char *restrict fmt, ...)
+static inline int vtprintf_s_chk(char *restrict dest, rsize_t dmax,
+                                 rsize_t destbos, const char *restrict fmt, ...)
     BOS_CHK(dest) BOS_NULL(fmt);
 #endif
-int test_vsnprintf_s (void);
+int test_vsnprintf_s(void);
 
-static inline int
-vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
-{
+static inline int vtprintf_s(char *restrict dest, rsize_t dmax,
+                             const char *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -52,10 +52,9 @@ vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
 }
 
 #ifndef HAVE_CT_BOS_OVR
-static inline int
-vtprintf_s_chk (char *restrict dest, rsize_t dmax, rsize_t destbos,
-                const char *restrict fmt, ...)
-{
+static inline int vtprintf_s_chk(char *restrict dest, rsize_t dmax,
+                                 rsize_t destbos, const char *restrict fmt,
+                                 ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -69,25 +68,24 @@ vtprintf_s_chk (char *restrict dest, rsize_t dmax, rsize_t destbos,
 }
 #endif
 
-int test_vsnprintf_s (void)
-{
+int test_vsnprintf_s(void) {
     errno_t rc;
-    int32_t  ind;
-    int32_t  len2;
-    int32_t  len3;
+    int32_t ind;
+    int32_t len2;
+    int32_t len3;
     int errs = 0;
 #ifndef HAVE_CT_BOS_OVR
     int have_wine = 0;
 #endif
-    
-/*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
 
     /* not testable
       rc = vtprintf_s(str1, LEN, "%s", NULL);
       NEGERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
@@ -97,7 +95,8 @@ int test_vsnprintf_s (void)
     NEGERR_MSVC(ESZEROL, EOF);
 
     /* wine msvcrt doesn't check fmt==NULL */
-#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSNPRINTF_S))
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) &&                         \
+      defined(HAVE_VSNPRINTF_S))
     EXPECT_BOS("empty fmt")
     rc = vtprintf_s(str1, LEN, NULL);
     NEGERR_MSVC(ESNULLP, EOF);
@@ -107,7 +106,7 @@ int test_vsnprintf_s (void)
 #endif
 
     EXPECT_BOS("dest overflow")
-    rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
+    rc = vtprintf_s(str1, (RSIZE_MAX_STR + 1), "%s", str2);
     if (have_wine) {
         ERR(EOF);
     } else {
@@ -116,13 +115,13 @@ int test_vsnprintf_s (void)
 
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
-        rc = vtprintf_s_chk(str1, LEN+1, _BOS_KNOWN(str1), "%s", str2);
-        NEGERR_MSVC(EOVERFLOW,0); /* dmax exceeds dest */
-        CHECK_SLACK(str1, LEN);   /* cleared */
+        rc = vtprintf_s_chk(str1, LEN + 1, _BOS_KNOWN(str1), "%s", str2);
+        NEGERR_MSVC(EOVERFLOW, 0); /* dmax exceeds dest */
+        CHECK_SLACK(str1, LEN);    /* cleared */
     }
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -135,7 +134,7 @@ int test_vsnprintf_s (void)
     }
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -147,7 +146,7 @@ int test_vsnprintf_s (void)
         ERR(-1);
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -160,13 +159,13 @@ int test_vsnprintf_s (void)
     if (len3 != len2) {
 #ifdef DEBUG
         int len1 = strlen(str1);
-        debug_printf("%s %u lengths wrong: %d  %u  %u \n",
-                     __FUNCTION__, __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %u  %u \n", __FUNCTION__,
+                     __LINE__, len1, len2, len3);
 #endif
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -180,7 +179,7 @@ int test_vsnprintf_s (void)
     EXPSTR(str1, "")
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -194,7 +193,7 @@ int test_vsnprintf_s (void)
     EXPSTR(str1, "")
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -203,7 +202,7 @@ int test_vsnprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     str2[0] = '\0';
@@ -212,7 +211,7 @@ int test_vsnprintf_s (void)
     ERR(0)
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -221,7 +220,7 @@ int test_vsnprintf_s (void)
     NOERR()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
@@ -230,7 +229,7 @@ int test_vsnprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -243,7 +242,7 @@ int test_vsnprintf_s (void)
     EXPSTR(str1, "")
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -252,7 +251,7 @@ int test_vsnprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
 
@@ -264,7 +263,7 @@ int test_vsnprintf_s (void)
     EXPSTR(str1, "")
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "123456789");
 
@@ -272,7 +271,7 @@ int test_vsnprintf_s (void)
     ERR(1) /* overlapping allowed */
     EXPSTR(str1, "9")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
@@ -281,7 +280,7 @@ int test_vsnprintf_s (void)
     NOERRNULL()
     EXPSTR(str2, "keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "1234");
     strcpy(str1, "56789");
@@ -290,7 +289,7 @@ int test_vsnprintf_s (void)
     NOERRNULL()
     EXPSTR(str2, "56789")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -298,8 +297,5 @@ int test_vsnprintf_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_vsnprintf_s());
-}
+int main(void) { return (test_vsnprintf_s()); }
 #endif

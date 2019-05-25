@@ -56,14 +56,15 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  Neither dmax nor slen shall equal zero.
- * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of
+ * dest/src
  *
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dst/src/substring is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
- * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
- *                     knows the object_size statically)
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOTFND   when substring not found
  *
@@ -71,11 +72,9 @@
  *    strstr_s(), strprefix_s()
  *
  */
-EXPORT errno_t
-_strcasestr_s_chk (char *dest, rsize_t dmax,
-                   const char *src, rsize_t slen, char **substring,
-                   const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
+                                 rsize_t slen, char **substring,
+                                 const size_t destbos, const size_t srcbos) {
     rsize_t len;
     rsize_t dlen;
     int i;
@@ -97,7 +96,7 @@ _strcasestr_s_chk (char *dest, rsize_t dmax,
     if (unlikely(slen > dmax)) {
         errno_t rc = slen > RSIZE_MAX_STR ? ESLEMAX : ESNOTFND;
         invoke_safe_str_constraint_handler("strcasestr_s: slen exceeds dmax",
-                                           (void*)dest, rc);
+                                           (void *)dest, rc);
         return RCNEGATE(rc);
     }
     if (srcbos == BOS_UNKNOWN) {
@@ -105,13 +104,13 @@ _strcasestr_s_chk (char *dest, rsize_t dmax,
     } else {
         if (unlikely(slen > srcbos)) {
             invoke_safe_str_constraint_handler("strcasestr_s: slen exceeds src",
-                                               (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
     }
     if (unlikely(slen == 0)) {
         invoke_safe_str_constraint_handler("strcasestr_s: slen is 0",
-                                           (void*)dest, ESZEROL);
+                                           (void *)dest, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 
@@ -132,7 +131,8 @@ _strcasestr_s_chk (char *dest, rsize_t dmax,
         while (dest[i] && dlen) {
 
             /* not a match, not a substring */
-            if (toupper((unsigned char)dest[i]) != toupper((unsigned char)src[i])) {
+            if (toupper((unsigned char)dest[i]) !=
+                toupper((unsigned char)src[i])) {
                 break;
             }
 

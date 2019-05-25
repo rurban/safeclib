@@ -50,9 +50,9 @@ char *ctime_r(const time_t *, char *);
  * @brief
  *    The \c ctime_s function converts the given time since epoch to a
  *    calendar local time and then to a textual representation, as if by
- *    calling <tt>asctime_s(buffer, bufsz, localtime_s(time, &(struct tm){0}))</tt>.
- *    The message is copied into the user-provided \c dest buffer, which is
- *    guaranteed to be null-terminated.
+ *    calling <tt>asctime_s(buffer, bufsz, localtime_s(time, &(struct
+ * tm){0}))</tt>. The message is copied into the user-provided \c dest buffer,
+ * which is guaranteed to be null-terminated.
  *
  * @details
  *    No more than dmax-1 bytes are written, the buffer is always
@@ -90,9 +90,9 @@ char *ctime_r(const time_t *, char *);
  * @retval  -1         when ctime_r or ctime returned NULL
  *
  * @note
- *    ctime returns a pointer to static data and is not thread-safe. In addition,
- *    it modifies the static tm object which may be shared with gmtime and
- *    localtime. POSIX marks this function obsolete and recommends strftime
+ *    ctime returns a pointer to static data and is not thread-safe. In
+ * addition, it modifies the static tm object which may be shared with gmtime
+ * and localtime. POSIX marks this function obsolete and recommends strftime
  *    instead. The C standard also recommends strftime instead of ctime and
  *    ctime_s because strftime is more flexible and locale-sensitive.  The
  *    behavior of ctime may be undefined for the values of time_t that result
@@ -102,16 +102,15 @@ char *ctime_r(const time_t *, char *);
  *    asctime_s()
  */
 
-EXPORT errno_t
-_ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer, const size_t destbos)
-{
-    const char* buf;
+EXPORT errno_t _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer,
+                            const size_t destbos) {
+    const char *buf;
     size_t len;
 
     CHK_DEST_NULL("ctime_s")
     if (unlikely(dmax < 26)) {
-        invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
-                   dest, ESLEMIN);
+        invoke_safe_str_constraint_handler("ctime_s: dmax is too small", dest,
+                                           ESLEMIN);
         return ESLEMIN;
     }
     if (destbos == BOS_UNKNOWN) {
@@ -121,25 +120,25 @@ _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer, const size_t destbos
         CHK_DEST_OVR("ctime_s", destbos)
         if (unlikely(destbos < 26)) {
             invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
-                   dest, ESLEMIN);
+                                               dest, ESLEMIN);
             return ESLEMIN;
         }
     }
 
     if (unlikely(timer == NULL)) {
-        invoke_safe_str_constraint_handler("ctime_s: timer is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("ctime_s: timer is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
     if (unlikely(*timer < 0)) {
-        invoke_safe_str_constraint_handler("ctime_s: timer is <0",
-                   NULL, ESLEMIN);
+        invoke_safe_str_constraint_handler("ctime_s: timer is <0", NULL,
+                                           ESLEMIN);
         return ESLEMIN;
     }
     /* 32bit have a lower limit: -Werror=type-limits (long) */
     if (unlikely(*timer >= MAX_TIME_T_STR)) { /* year 10000 */
-        invoke_safe_str_constraint_handler("ctime_s: timer is too large",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler("ctime_s: timer is too large", NULL,
+                                           ESLEMAX);
         return ESLEMAX;
     }
 
@@ -147,15 +146,14 @@ _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer, const size_t destbos
     if (dmax >= 120) { /* glibc reserves 114 */
         buf = ctime_r(timer, dest);
         if (!buf) {
-# ifdef SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
             memset(dest, 0, dmax);
-# else
+#else
             *dest = '\0';
-# endif
+#endif
             return -1;
         }
-    }
-    else {
+    } else {
         static char tmp[120];
         buf = ctime_r(timer, (char *)&tmp);
         if (!buf)
@@ -170,7 +168,8 @@ _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer, const size_t destbos
     }
 #else
     buf = ctime(timer);
-    if (0) goto esnospc;
+    if (0)
+        goto esnospc;
 #endif
     if (!buf) {
         return -1;
@@ -180,9 +179,9 @@ _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer, const size_t destbos
     if (likely(len < dmax)) {
         strcpy_s(dest, dmax, buf);
     } else {
-      esnospc:
-        invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
-                   dest, ESNOSPC);
+    esnospc:
+        invoke_safe_str_constraint_handler("ctime_s: dmax is too small", dest,
+                                           ESNOSPC);
         return ESNOSPC;
     }
 

@@ -29,30 +29,30 @@
  *------------------------------------------------------------------
  */
 
-static const char* errmsgs_s[] = {
-    "null ptr",       	     /* ESNULLP */
-    "length is zero",         /* ESZEROL */
-    "length is below min",    /* ESLEMIN */
-    "length exceeds RSIZE_MAX",/* ESLEMAX */
-    "overlap undefined",      /* ESOVRLP */
-    "empty string",           /* ESEMPTY */
-    "not enough space",       /* ESNOSPC */
-    "unterminated string",    /* ESUNTERM */
-    "no difference",          /* ESNODIFF */
-    "not found",              /* ESNOTFND */
-    "wrong size",             /* ESLEWRNG */
+static const char *errmsgs_s[] = {
+    "null ptr",                 /* ESNULLP */
+    "length is zero",           /* ESZEROL */
+    "length is below min",      /* ESLEMIN */
+    "length exceeds RSIZE_MAX", /* ESLEMAX */
+    "overlap undefined",        /* ESOVRLP */
+    "empty string",             /* ESEMPTY */
+    "not enough space",         /* ESNOSPC */
+    "unterminated string",      /* ESUNTERM */
+    "no difference",            /* ESNODIFF */
+    "not found",                /* ESNOTFND */
+    "wrong size",               /* ESLEWRNG */
 };
 
 static const int len_errmsgs_s[] = {
-    sizeof "null ptr",       	     /* ESNULLP */
-    sizeof "length is zero",         /* ESZEROL */
-    sizeof "length is below min",    /* ESLEMIN */
-    sizeof "length exceeds RSIZE_MAX",/* ESLEMAX */
-    sizeof "overlap undefined",      /* ESOVRLP */
-    sizeof "empty string",           /* ESEMPTY */
-    sizeof "not enough space",       /* ESNOSPC */
-    sizeof "unterminated string",    /* ESUNTERM */
-    sizeof "no difference",          /* ESNODIFF */
-    sizeof "not found",              /* ESNOTFND */
-    sizeof "wrong size",             /* ESLEWRNG */
+    sizeof "null ptr",                 /* ESNULLP */
+    sizeof "length is zero",           /* ESZEROL */
+    sizeof "length is below min",      /* ESLEMIN */
+    sizeof "length exceeds RSIZE_MAX", /* ESLEMAX */
+    sizeof "overlap undefined",        /* ESOVRLP */
+    sizeof "empty string",             /* ESEMPTY */
+    sizeof "not enough space",         /* ESNOSPC */
+    sizeof "unterminated string",      /* ESUNTERM */
+    sizeof "no difference",            /* ESNODIFF */
+    sizeof "not found",                /* ESNOTFND */
+    sizeof "wrong size",               /* ESLEWRNG */
 };

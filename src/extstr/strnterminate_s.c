@@ -63,32 +63,31 @@
  *    strnlen_s()
  *
  */
-EXPORT rsize_t
-_strnterminate_s_chk (char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT rsize_t _strnterminate_s_chk(char *dest, rsize_t dmax,
+                                    const size_t destbos) {
     rsize_t count;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strnterminate_s: dest is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return (0);
     }
     if (unlikely(dmax == 0)) {
         invoke_safe_str_constraint_handler("strnterminate_s: dmax is 0",
-                   (void*)dest, ESZEROL);
+                                           (void *)dest, ESZEROL);
         return (0);
     }
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
-            invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds max",
-                       (void*)dest, ESLEMAX);
+            invoke_safe_str_constraint_handler(
+                "strnterminate_s: dmax exceeds max", (void *)dest, ESLEMAX);
             return (0);
         }
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         if (unlikely(dmax > destbos)) {
-            invoke_safe_str_constraint_handler("strnterminate_s: dmax exceeds dest",
-                       (void*)dest, EOVERFLOW);
+            invoke_safe_str_constraint_handler(
+                "strnterminate_s: dmax exceeds dest", (void *)dest, EOVERFLOW);
             return (0);
         }
     }

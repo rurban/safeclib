@@ -37,7 +37,7 @@
 
 #ifdef HAVE_MEMRCHR
 #ifndef _ISOC11_SOURCE
-extern void* memrchr(const void *, int, size_t);
+extern void *memrchr(const void *, int, size_t);
 #endif
 #endif
 
@@ -76,13 +76,12 @@ extern void* memrchr(const void *, int, size_t);
  *    memrchr_s(), strchr_s(), memchr_s(), strspn_s(), strstr_s()
  *
  */
-EXPORT errno_t
-_memrchr_s_chk (const void *restrict dest, rsize_t dmax,
-                const int ch, void **result, const size_t destbos)
-{
+EXPORT errno_t _memrchr_s_chk(const void *restrict dest, rsize_t dmax,
+                              const int ch, void **result,
+                              const size_t destbos) {
     if (unlikely(result == NULL)) {
-        invoke_safe_str_constraint_handler("memrchr_s: result is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("memrchr_s: result is null", NULL,
+                                           ESNULLP);
         return (ESNULLP);
     }
     *result = NULL;
@@ -96,14 +95,14 @@ _memrchr_s_chk (const void *restrict dest, rsize_t dmax,
         CHK_DEST_MEM_OVR("memrchr_s", destbos)
     }
     if (unlikely(ch > 255)) {
-        invoke_safe_str_constraint_handler("memrchr_s: ch exceeds max",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler("memrchr_s: ch exceeds max", NULL,
+                                           ESLEMAX);
         return (ESLEMAX);
     }
 
 #ifdef HAVE_MEMRCHR
     /* compares wordwise */
-    *result = (void*)memrchr((const void *)dest, ch, (size_t)dmax);
+    *result = (void *)memrchr((const void *)dest, ch, (size_t)dmax);
 
     if (!*result)
         return (ESNOTFND);
@@ -114,7 +113,7 @@ _memrchr_s_chk (const void *restrict dest, rsize_t dmax,
         uint8_t u8 = (uint8_t)ch;
         while (dmax--) {
             if (s[dmax] == u8) {
-                *result = (void*)&s[dmax];
+                *result = (void *)&s[dmax];
                 return (EOK);
             }
         }

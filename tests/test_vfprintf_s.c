@@ -11,22 +11,22 @@
 #include <unistd.h>
 
 #ifdef HAVE_VFPRINTF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define TMP   "tmpvfp"
-#define LEN   ( 128 )
+#define TMP "tmpvfp"
+#define LEN (128)
 
-static FILE* out;
-static char   str1[LEN];
-static char   str2[LEN];
-int vtfprintf_s (FILE *restrict stream, const char *restrict fmt, ...);
-int test_vfprintf_s (void);
+static FILE *out;
+static char str1[LEN];
+static char str2[LEN];
+int vtfprintf_s(FILE *restrict stream, const char *restrict fmt, ...);
+int test_vfprintf_s(void);
 
-int vtfprintf_s (FILE *restrict stream, const char *restrict fmt, ...) {
+int vtfprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -35,15 +35,14 @@ int vtfprintf_s (FILE *restrict stream, const char *restrict fmt, ...) {
     return rc;
 }
 
-int test_vfprintf_s (void)
-{
+int test_vfprintf_s(void) {
     errno_t rc;
     int32_t ind;
     int errs = 0;
 
     out = fopen(TMP, "w");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
     rc = vtfprintf_s(out, NULL);
@@ -61,18 +60,17 @@ int test_vfprintf_s (void)
     NEGERR(ESNULLP);
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     rc = vtfprintf_s(out, "%s%n\n", str1, &ind);
     NEGERR_MSVC(EINVAL, EOF);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = vtfprintf_s(out, "%s%%n\n", str1);
     if (rc < 0) {
-        printf("Failed to open stdout for write: %s\n",
-               strerror(errno));
+        printf("Failed to open stdout for write: %s\n", strerror(errno));
         return errs;
     }
     ERR(3)
@@ -80,14 +78,14 @@ int test_vfprintf_s (void)
     rc = vtfprintf_s(out, "%%n\n");
     ERR(3);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* TODO
     rc = vtfprintf_s(out, "%s", NULL);
     NEGERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12");
     strcpy(str2, "34");
@@ -95,7 +93,7 @@ int test_vfprintf_s (void)
     rc = vtfprintf_s(out, "%s%s", str1, str2);
     ERR(4);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #if 0
     /* 0x7fffffff + 1 >INT_MAX */
@@ -110,14 +108,14 @@ int test_vfprintf_s (void)
     ANYERR();
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     fclose(out);
 
     /* print to closed stream: unportable, and not valgrind-safe */
 #ifndef __GLIBC__
     rc = vtfprintf_s(out, "%s", str1);
-# if defined(__GLIBC__)
+#if defined(__GLIBC__)
     if (rc < 0) {
         ERR(-1);
         ERRNO(EBADF);
@@ -126,11 +124,11 @@ int test_vfprintf_s (void)
         NOERR();
         ERRNO(0);
     }
-# elif defined BSD_ALL_LIKE
+#elif defined BSD_ALL_LIKE
     ERR(-1);
-# else
+#else
     /* musl throws no error */
-# endif
+#endif
 #endif
 
     unlink(TMP);
@@ -138,7 +136,4 @@ int test_vfprintf_s (void)
     return (errs);
 }
 
-int main (void)
-{
-    return (test_vfprintf_s());
-}
+int main(void) { return (test_vfprintf_s()); }

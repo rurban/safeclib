@@ -56,7 +56,8 @@
  * @pre   Neither dest nor src shall be a null pointer.
  * @pre   resultp shall not be a null pointer.
  * @pre   dmax/smax shall not be 0
- * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of dest/src
+ * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of
+ * dest/src
  *
  * @return  *resultp, when the return code is OK:
  *            >0 when dest greater than src
@@ -67,22 +68,20 @@
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
  * @retval  ESZEROL    when dmax/smax = 0
  * @retval  ESLEMAX    when dmax/smax > RSIZE_MAX_WSTR
- * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the compiler
- *                     knows the object_size statically)
+ * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  *
  * @see
  *    strcmp_s(), wcsncmp_s(), wcsicmp_s()
  */
 
-EXPORT errno_t
-_wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
-              const wchar_t *restrict src, rsize_t smax,
-              int *resultp,
-              const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
+                             const wchar_t *restrict src, rsize_t smax,
+                             int *resultp, const size_t destbos,
+                             const size_t srcbos) {
     const size_t destsz = dmax * sizeof(wchar_t);
-    const size_t srcsz  = smax * sizeof(wchar_t);
+    const size_t srcsz = smax * sizeof(wchar_t);
 
     CHK_SRC_NULL("wcscmp_s", resultp)
     *resultp = 0;
@@ -90,7 +89,7 @@ _wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
     CHK_SRC_NULL("wcscmp_s", src)
     if (unlikely(dmax == 0 || smax == 0)) {
         invoke_safe_str_constraint_handler("wcscmp_s: dmax/smax is 0",
-                   (void*)dest, ESZEROL);
+                                           (void *)dest, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
     if (destbos == BOS_UNKNOWN) {
@@ -100,16 +99,18 @@ _wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
         CHK_DESTW_OVR("wcscmp_s", destsz, destbos)
     }
     if (unlikely(smax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcscmp_s" ": smax exceeds max",
-                   (void*)src, ESLEMAX);
+        invoke_safe_str_constraint_handler("wcscmp_s"
+                                           ": smax exceeds max",
+                                           (void *)src, ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, srcsz);
     } else {
         if (unlikely(srcsz > srcbos)) {
-            invoke_safe_str_constraint_handler("wcscmp_s" ": smax exceeds src",
-                       (void*)src, EOVERFLOW);
+            invoke_safe_str_constraint_handler("wcscmp_s"
+                                               ": smax exceeds src",
+                                               (void *)src, EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
     }

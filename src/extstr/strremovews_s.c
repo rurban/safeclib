@@ -73,9 +73,8 @@
  *    strljustify_s(),
  *
  */
-EXPORT errno_t
-_strremovews_s_chk (char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT errno_t _strremovews_s_chk(char *dest, rsize_t dmax,
+                                  const size_t destbos) {
     char *orig_dest;
     char *orig_end;
     rsize_t orig_dmax;
@@ -100,16 +99,18 @@ _strremovews_s_chk (char *dest, rsize_t dmax, const size_t destbos)
     orig_dest = dest;
     orig_dmax = dmax;
 
-     /*
-      * scan the string to be sure it is properly terminated
-      */
-     while (*dest) {
+    /*
+     * scan the string to be sure it is properly terminated
+     */
+    while (*dest) {
         if (unlikely(dmax == 0)) {
-            while (orig_dmax) { *orig_dest++ = '\0';  orig_dmax--; }
+            while (orig_dmax) {
+                *orig_dest++ = '\0';
+                orig_dmax--;
+            }
 
             invoke_safe_str_constraint_handler(
-                      "strremovews_s: dest is unterminated",
-                       NULL, ESUNTERM);
+                "strremovews_s: dest is unterminated", NULL, ESUNTERM);
             return (ESUNTERM);
         }
         dmax--;
@@ -119,7 +120,7 @@ _strremovews_s_chk (char *dest, rsize_t dmax, const size_t destbos)
     /*
      * find first non-white space char
      */
-    orig_end = dest-1;
+    orig_end = dest - 1;
     dest = orig_dest;
     while ((*dest == ' ') || (*dest == '\t')) {
         dest++;
@@ -134,7 +135,7 @@ _strremovews_s_chk (char *dest, rsize_t dmax, const size_t destbos)
             *dest++ = ' ';
         }
         *dest = '\0';
-     }
+    }
 
     /*
      * strip trailing whitespace

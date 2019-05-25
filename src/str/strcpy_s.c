@@ -36,8 +36,8 @@
 #endif
 
 /* With mingw shared with sec_api and -DTEST_MSVCRT skip it */
-#if defined(TEST_MSVCRT) && defined(_WIN32) && \
-    !defined(DISABLE_DLLIMPORT) && defined(HAVE_STRCPY_S)
+#if defined(TEST_MSVCRT) && defined(_WIN32) && !defined(DISABLE_DLLIMPORT) &&  \
+    defined(HAVE_STRCPY_S)
 #else
 
 /* not via the naive byte copy, but aligned long word copy
@@ -99,10 +99,8 @@
  *    strcat_s(), strncat_s(), strncpy_s()
  *
  */
-EXPORT errno_t
-_strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
-               const size_t destbos)
-{
+EXPORT errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
+                             const char *restrict src, const size_t destbos) {
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
@@ -130,7 +128,8 @@ _strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax, "strcpy_s: "
+                handle_error(orig_dest, orig_dmax,
+                             "strcpy_s: "
                              "overlapping objects",
                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
@@ -143,7 +142,11 @@ _strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
                 if (dmax > 0x20)
                     memset(dest, 0, dmax);
                 else {
-                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = '\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -153,15 +156,15 @@ _strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
             dest++;
             src++;
         }
-
     } else {
         overlap_bumper = dest;
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax, "strcpy_s: "
-                      "overlapping objects",
-                      ESOVRLP);
+                handle_error(orig_dest, orig_dmax,
+                             "strcpy_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -172,7 +175,11 @@ _strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
                 if (dmax > 0x20)
                     memset(dest, 0, dmax);
                 else {
-                    while (dmax) { *dest = '\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = '\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -188,7 +195,8 @@ _strcpy_s_chk (char * restrict dest, rsize_t dmax, const char * restrict src,
      * the entire src must have been copied, if not reset dest
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
-    handle_error(orig_dest, orig_dmax, "strcpy_s: not "
+    handle_error(orig_dest, orig_dmax,
+                 "strcpy_s: not "
                  "enough space for src",
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);

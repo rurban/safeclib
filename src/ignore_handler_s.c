@@ -48,22 +48,21 @@
  * @param[in] ptr    Pointer to aassociated data.  Can be NULL.
  * @param[in] error  The error code encountered.
  *
- * @see 
+ * @see
  *    abort_handler_s()
  *
  */
 
-EXPORT void
-ignore_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
-{
-	(void)ptr;
+EXPORT void ignore_handler_s(const char *restrict msg, void *restrict ptr,
+                             errno_t error) {
+    (void)ptr;
 #ifndef DEBUG
-	(void)msg;
-	(void)error;
+    (void)msg;
+    (void)error;
 #endif
-	sldebug_printf("IGNORE CONSTRAINT HANDLER: (%d) %s\n", (int)error,
-		       (msg) ? msg : "Null message");
-	return;
+    sldebug_printf("IGNORE CONSTRAINT HANDLER: (%d) %s\n", (int)error,
+                   (msg) ? msg : "Null message");
+    return;
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(ignore_handler_s);

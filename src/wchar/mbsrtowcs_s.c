@@ -41,12 +41,11 @@
 /**
  * @def mbsrtowcs_s(retvalp,dest,dmax,srcp,len,ps)
  * @brief
- *    Does not permit the \c ps parameter (the pointer to the conversion state) to
- *    be a null pointer.
- *    The restartable \c mbsrtowcs_s function converts a null-terminated
- *    multibyte character sequence from the current LC_CTYPE locale to wchar,
- *    which begins in the conversion state described by \c *ps, from the
- *    array whose first element is pointed to by \c *srcp to its wide
+ *    Does not permit the \c ps parameter (the pointer to the conversion state)
+ * to be a null pointer. The restartable \c mbsrtowcs_s function converts a
+ * null-terminated multibyte character sequence from the current LC_CTYPE
+ * locale to wchar, which begins in the conversion state described by \c *ps,
+ * from the array whose first element is pointed to by \c *srcp to its wide
  *    character representation. If dest is not null, converted
  *    characters are stored in the successive elements of the
  *    \c wchar_t array pointed to by \c dest. No more than \c len wide
@@ -80,11 +79,14 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retvalp pointer to a \c size_t object where the result will be stored
- * @param[out]  dest    pointer to wide character array where the results will be stored
+ * @param[out]  retvalp pointer to a \c size_t object where the result will be
+ * stored
+ * @param[out]  dest    pointer to wide character array where the results will
+ * be stored
  * @param[in]   dmax    restricted maximum length of \c dest
  * @param[in]   srcp    pointer to the string that will be copied to \c dest
- * @param[in]   len     maximal number of wide characters to be copied to \c dest
+ * @param[in]   len     maximal number of wide characters to be copied to \c
+ * dest
  * @param[in]   ps      pointer to the conversion state object
  *
  * @pre retvalp, ps, srcp, or *srcp shall not be a null pointer.
@@ -107,7 +109,8 @@
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR, unless dest is NULL
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
- * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and dest != NULL
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and
+ * dest != NULL
  * @retval  ESOVRLP    when *srcp and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the *srcp array and len is
@@ -117,13 +120,10 @@
  *    mbstowc_s()
  */
 
-EXPORT errno_t
-_mbsrtowcs_s_chk (size_t *restrict retvalp,
-                  wchar_t *restrict dest, rsize_t dmax,
-                  const char **restrict srcp, rsize_t len,
-                  mbstate_t *restrict ps,
-                  const size_t destbos)
-{
+EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
+                                wchar_t *restrict dest, rsize_t dmax,
+                                const char **restrict srcp, rsize_t len,
+                                mbstate_t *restrict ps, const size_t destbos) {
     wchar_t *orig_dest;
     mbstate_t orig_ps;
     errno_t rc;
@@ -138,35 +138,38 @@ _mbsrtowcs_s_chk (size_t *restrict retvalp,
         CHK_DMAX_ZERO("mbstowcs_s")
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                invoke_safe_str_constraint_handler("mbstowcs" ": dmax/len exceeds max",
-                           (void*)dest, ESLEMAX);
+                invoke_safe_str_constraint_handler("mbstowcs"
+                                                   ": dmax/len exceeds max",
+                                                   (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             BND_CHK_PTR_BOUNDS(dest, destsz);
         } else {
-            if (unlikely(destsz > destbos || len*sizeof(wchar_t) > destbos)) {
+            if (unlikely(destsz > destbos || len * sizeof(wchar_t) > destbos)) {
                 if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
                     invoke_safe_str_constraint_handler("mbstowcs"
-                               ": dmax/len exceeds max",
-                               (void*)dest, ESLEMAX);
+                                                       ": dmax/len exceeds max",
+                                                       (void *)dest, ESLEMAX);
                     return RCNEGATE(ESLEMAX);
                 } else {
-                    invoke_safe_str_constraint_handler("mbstowcs"
-                               ": dmax/len exceeds destsz",
-                               (void*)dest, EOVERFLOW);
+                    invoke_safe_str_constraint_handler(
+                        "mbstowcs"
+                        ": dmax/len exceeds destsz",
+                        (void *)dest, EOVERFLOW);
                     return RCNEGATE(EOVERFLOW);
                 }
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(destsz != destbos)) {
-                handle_str_bos_chk_warn("mbstowcs",(char*)dest,dmax,
-                                        destbos/sizeof(wchar_t));
+                handle_str_bos_chk_warn("mbstowcs", (char *)dest, dmax,
+                                        destbos / sizeof(wchar_t));
                 RETURN_ESLEWRNG;
             }
 #endif
         }
     }
-    if (unlikely((char*)dest == (char*)srcp || (char*)dest == (char*)*srcp)) {
+    if (unlikely((char *)dest == (char *)srcp ||
+                 (char *)dest == (char *)*srcp)) {
         return RCNEGATE(ESOVRLP);
     }
 
@@ -179,7 +182,7 @@ _mbsrtowcs_s_chk (size_t *restrict retvalp,
     if (likely(*retvalp < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(&dest[*retvalp], 0, (dmax-*retvalp)*sizeof(wchar_t));
+            memset(&dest[*retvalp], 0, (dmax - *retvalp) * sizeof(wchar_t));
 #else
             dest[*retvalp] = L'\0';
 #endif
@@ -197,11 +200,10 @@ _mbsrtowcs_s_chk (size_t *restrict retvalp,
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK) */
             handle_werror(orig_dest, dmax,
-                         !tmp ? "mbsrtowcs_s: not enough space for src"
-                              : "mbsrtowcs_s: illegal sequence",
-                         rc);
-        }
-        else {
+                          !tmp ? "mbsrtowcs_s: not enough space for src"
+                               : "mbsrtowcs_s: illegal sequence",
+                          rc);
+        } else {
             rc = ((size_t)*retvalp == 0) ? EOK : errno;
         }
     }

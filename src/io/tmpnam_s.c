@@ -91,12 +91,11 @@
  *   to the optionally defined macro P_tmpdir).
  */
 
-EXPORT errno_t
-_tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT errno_t _tmpnam_s_chk(const char *dest, rsize_t dmax,
+                             const size_t destbos) {
     static int count = 0;
-    char* result = NULL;
-    char* dp = (char*)dest;
+    char *result = NULL;
+    char *dp = (char *)dest;
 
     CHK_DEST_NULL("tmpnam_s")
     CHK_DMAX_ZERO("tmpnam_s")
@@ -109,7 +108,7 @@ _tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
 #endif
     if (unlikely(dmax > RSIZE_MAX_STR || dmax > L_tmpnam_s)) {
         invoke_safe_str_constraint_handler("tmpnam_s: dmax exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return ESLEMAX;
     }
     if (destbos == BOS_UNKNOWN) {
@@ -117,7 +116,7 @@ _tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_str_constraint_handler("tmpnam_s: dmax exceeds dest",
-                       (void*)dest, EOVERFLOW);
+                                               (void *)dest, EOVERFLOW);
             return EOVERFLOW;
         }
     }
@@ -125,54 +124,54 @@ _tmpnam_s_chk(const char *dest, rsize_t dmax, const size_t destbos)
     ++count;
     if (unlikely(count > TMP_MAX_S)) {
         invoke_safe_str_constraint_handler("tmpnam_s: count exceeds TMP_MAX_S",
-                   NULL, ESLEMAX);
+                                           NULL, ESLEMAX);
         return ESLEMAX;
     }
 
 #if !defined HAVE_C99 && defined HAVE_CXX
     result = tmpnam(dp);
 #else
-# ifdef __clang
-#  pragma clang diagnostic push
-#  pragma clang diagnostic warning "-Wdeprecated-declarations"
-# elif defined(__GNUC__)
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic warning "-Wdeprecated-declarations"
-# endif
+#ifdef __clang
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#endif
 
     result = tmpnam(dp);
 
-# ifdef __clang
-#  pragma clang diagnostic pop
-# elif defined(__GNUC__)
-#  pragma GCC diagnostic pop
-# endif
+#ifdef __clang
+#pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 #endif
 
     if (result) {
         size_t len = strlen(result);
 
         if (unlikely(len > dmax)) {
-            *(char*)dest = '\0';
+            *(char *)dest = '\0';
             invoke_safe_str_constraint_handler("tmpnam_s: length exceeds size",
-                           (void*)dest, ESNOSPC);
+                                               (void *)dest, ESNOSPC);
             return ESNOSPC;
         }
 
         if (unlikely(len > L_tmpnam_s)) {
-            *(char*)dest = '\0';
-            invoke_safe_str_constraint_handler("tmpnam_s: length exceeds L_tmpnam_s",
-                           (void*)dest, ESLEMAX);
+            *(char *)dest = '\0';
+            invoke_safe_str_constraint_handler(
+                "tmpnam_s: length exceeds L_tmpnam_s", (void *)dest, ESLEMAX);
             return ESLEMAX;
         }
-        strncpy_s((char*)dest, dmax, result, len);
+        strncpy_s((char *)dest, dmax, result, len);
 #ifdef SAFECLIB_STR_NULL_SLACK
-        memset_s((void*)&dest[len], dmax, 0, dmax-len);
+        memset_s((void *)&dest[len], dmax, 0, dmax - len);
 #endif
         return EOK;
     } else {
         invoke_safe_str_constraint_handler("tmpnam_s: tmpnam() failed",
-                   (void*)dest, ESNOTFND);
+                                           (void *)dest, ESNOTFND);
         return errno;
     }
 }

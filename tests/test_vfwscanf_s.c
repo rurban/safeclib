@@ -16,25 +16,24 @@
 #undef USE_PIPE
 
 #ifdef HAVE_VFWSCANF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static wchar_t   wstr1[LEN];
-static wchar_t   wstr2[LEN];
-static char      str3[LEN];
-#define TMP   "tmpvfwscanf"
-static FILE* stream = NULL;
+static wchar_t wstr1[LEN];
+static wchar_t wstr2[LEN];
+static char str3[LEN];
+#define TMP "tmpvfwscanf"
+static FILE *stream = NULL;
 static void win_stuff_stream(const wchar_t *dest);
-static int vtwscanf_s (FILE *stream, const wchar_t *restrict fmt, ...);
-static int test_vfwscanf_s (void);
+static int vtwscanf_s(FILE *stream, const wchar_t *restrict fmt, ...);
+static int test_vfwscanf_s(void);
 
-static void win_stuff_stream(const wchar_t *dest)
-{
+static void win_stuff_stream(const wchar_t *dest) {
     if (!stream)
         stream = fopen(TMP, "w+");
     else
@@ -44,18 +43,17 @@ static void win_stuff_stream(const wchar_t *dest)
 }
 
 #ifndef USE_PIPE
-# define stuff_stream(s) \
-    wcscpy(wstr1, s); \
+#define stuff_stream(s)                                                        \
+    wcscpy(wstr1, s);                                                          \
     win_stuff_stream(s);
 #else
-# define stuff_stream(s) \
-    wcscpy(wstr1, s); \
-    write(p[1], (s), sizeof(s)-1); \
-    write(p[1], L"\n", sizeof(L"\n")-1);
+#define stuff_stream(s)                                                        \
+    wcscpy(wstr1, s);                                                          \
+    write(p[1], (s), sizeof(s) - 1);                                           \
+    write(p[1], L"\n", sizeof(L"\n") - 1);
 #endif
 
-static int vtwscanf_s (FILE *restrict f, const wchar_t *restrict fmt, ...)
-{
+static int vtwscanf_s(FILE *restrict f, const wchar_t *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -64,19 +62,18 @@ static int vtwscanf_s (FILE *restrict f, const wchar_t *restrict fmt, ...)
     return rc;
 }
 
-static int test_vfwscanf_s (void)
-{
+static int test_vfwscanf_s(void) {
     errno_t rc;
-    int32_t  ind;
-    size_t  len1;
-    size_t  len2;
-    size_t  len3;
+    int32_t ind;
+    size_t len1;
+    size_t len2;
+    size_t len3;
     int errs = 0;
 #ifdef USE_PIPE
     int p[2];
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
 
@@ -116,7 +113,7 @@ static int test_vfwscanf_s (void)
     ERREOF(ESNULLP);
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
     stuff_stream(L"      24");
     rc = vtwscanf_s(stream, L"%ls %n", wstr2, LEN, &ind);
     ERREOF(EINVAL);
@@ -125,11 +122,11 @@ static int test_vfwscanf_s (void)
     rc = vtwscanf_s(stream, L"%ls %%n", wstr2, LEN);
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
-        printf("%s %u wrong vfwscanf(\"\",L\"%%n\"): %d\n",
-                     __FUNCTION__, __LINE__, (int)rc);
+        printf("%s %u wrong vfwscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
+               __LINE__, (int)rc);
     } else
 #endif
-    ERR(1);
+        ERR(1);
     ERRNO(0);
 
     stuff_stream(L"      24");
@@ -152,12 +149,12 @@ static int test_vfwscanf_s (void)
     ERR(1);
     ERRNO(0);
     if ((int)len1 != 24) {
-        debug_printf("%s %u wrong arg: %d\n",
-                     __FUNCTION__, __LINE__, (int)len1);
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
+                     (int)len1);
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     stuff_stream(L"aaaaaaaaaa");
 
@@ -169,12 +166,12 @@ static int test_vfwscanf_s (void)
 #ifdef DEBUG
         len1 = wcslen(wstr1);
 #endif
-        debug_printf("%s %u lengths wrong: %d  %d  %d \n",
-                     __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
+        debug_printf("%s %u lengths wrong: %d  %d  %d \n", __FUNCTION__,
+                     __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     stuff_stream(L"keep it simple");
 
@@ -182,7 +179,7 @@ static int test_vfwscanf_s (void)
     ERR(1);
     WEXPSTR(wstr1, L"keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(wstr2, L"keep it simple");
     stuff_stream(L"qqweqq");
@@ -191,7 +188,7 @@ static int test_vfwscanf_s (void)
     NOERR()
     WEXPSTR(wstr1, wstr2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wstr1[0] = '\0';
     wstr2[0] = '\0';
@@ -201,7 +198,7 @@ static int test_vfwscanf_s (void)
     ERR(1)
     WEXPNULL(wstr1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wstr1[0] = '\0';
     wcscpy(wstr2, L"keep it simple");
@@ -211,7 +208,7 @@ static int test_vfwscanf_s (void)
     ERR(1)
     WEXPSTR(wstr1, L"")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* overlapping works fine on darwin, different on linux glibc */
     /*
@@ -228,7 +225,7 @@ static int test_vfwscanf_s (void)
     WEXPSTR(wstr1, L"12345678123456789");
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* TODO: we want to test a vfwscanf error propagated through vfwscanf_s.
        The only error is EOF(stream), but this is blocking.
@@ -257,7 +254,7 @@ static int test_vfwscanf_s (void)
     /*WEXPNULL(wstr2); TODO zero the output args */
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     unlink(TMP);
 
@@ -267,8 +264,5 @@ static int test_vfwscanf_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_vfwscanf_s());
-}
+int main(void) { return (test_vfwscanf_s()); }
 #endif

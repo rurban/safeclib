@@ -35,14 +35,13 @@
 bool use_msvcrt;
 void print_msvcrt(bool is_msvcrt) {
 #if defined(_WIN32) || defined(TEST_MSVCRT)
-    printf("Using %s, %s...\n",
-        is_msvcrt ? "msvcrt" : "safec",
-# ifdef DISABLE_DLLIMPORT
-        "static"
-# else
-        "shared"
-# endif
-        );
+    printf("Using %s, %s...\n", is_msvcrt ? "msvcrt" : "safec",
+#ifdef DISABLE_DLLIMPORT
+           "static"
+#else
+           "shared"
+#endif
+    );
 #else
     (void)is_msvcrt;
 #endif
@@ -50,7 +49,7 @@ void print_msvcrt(bool is_msvcrt) {
 
 void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
 #if defined(_WIN32) || defined(TEST_MSVCRT)
-    if ( is_msvcrt ) {
+    if (is_msvcrt) {
         if (*msvcrtp)
             printf("No, safec.dll overriding msvcrt.dll\n");
         *msvcrtp = false;
@@ -65,12 +64,11 @@ void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
 #endif
 }
 
-#define ERR_MSVC(n, winerr)   \
+#define ERR_MSVC(n, winerr)                                                    \
     _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
 
-void _err_msvc(int rc, const int n, const int winerr, int *errp,
-               const char *f, const unsigned l)
-{
+void _err_msvc(int rc, const int n, const int winerr, int *errp, const char *f,
+               const unsigned l) {
     const int chk = use_msvcrt ? winerr : n;
 #ifndef DEBUG
     (void)f;
@@ -85,11 +83,10 @@ void _err_msvc(int rc, const int n, const int winerr, int *errp,
 #ifdef __KERNEL__
 #define ERRNO_MSVC(n, winerr)
 #else
-#define ERRNO_MSVC(n, winerr) \
+#define ERRNO_MSVC(n, winerr)                                                  \
     _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
-void _errno_msvc(const int n, const int winerr, int *errp,
-                 const char *f, const unsigned l)
-{
+void _errno_msvc(const int n, const int winerr, int *errp, const char *f,
+                 const unsigned l) {
     const int chk = use_msvcrt ? winerr : n;
 #ifndef DEBUG
     (void)f;

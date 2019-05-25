@@ -172,11 +172,9 @@
  * @endcode
  */
 
-EXPORT char *
-_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
-              const char *restrict delim, char **restrict ptr,
-              const size_t destbos)
-{
+EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
+                           const char *restrict delim, char **restrict ptr,
+                           const size_t destbos) {
     const char *pt;
     char *ptoken;
     rsize_t dlen;
@@ -185,27 +183,27 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
     const char *orig_dest = dest;
 
     if (unlikely(dmaxp == NULL)) {
-        invoke_safe_str_constraint_handler("strtok_s: dmax is NULL",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("strtok_s: dmax is NULL", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }
     if (unlikely(*dmaxp == 0)) {
-        invoke_safe_str_constraint_handler("strtok_s: *dmaxp is 0",
-                   dest, ESZEROL);
+        invoke_safe_str_constraint_handler("strtok_s: *dmaxp is 0", dest,
+                                           ESZEROL);
         errno = ESZEROL;
         return (NULL);
     }
     dmax = *dmaxp;
     if (unlikely(delim == NULL)) {
-        invoke_safe_str_constraint_handler("strtok_s: delim is null",
-                   dest, ESNULLP);
+        invoke_safe_str_constraint_handler("strtok_s: delim is null", dest,
+                                           ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }
     if (unlikely(ptr == NULL)) {
-        invoke_safe_str_constraint_handler("strtok_s: ptr is null",
-                   dest, ESNULLP);
+        invoke_safe_str_constraint_handler("strtok_s: ptr is null", dest,
+                                           ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }
@@ -225,25 +223,25 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
     if (destbos == BOS_UNKNOWN || !orig_dest) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("strtok_s: *dmaxp exceeds max",
-                       dest, ESLEMAX);
+                                               dest, ESLEMAX);
             errno = ESLEMAX;
             return (NULL);
         }
-        BND_CHK_PTR_BOUNDS(dest,dmax);
+        BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         if (unlikely(dmax > destbos)) {
             invoke_safe_str_constraint_handler("strtok_s: *dmaxp exceeds dest",
-                       dest, EOVERFLOW);
+                                               dest, EOVERFLOW);
             errno = EOVERFLOW;
             return (NULL);
         }
 #ifdef HAVE_WARN_DMAX
         if (unlikely(dmax != destbos)) {
             handle_str_bos_chk_warn("strtok_s", dest, dmax, destbos);
-# ifdef HAVE_ERROR_DMAX
+#ifdef HAVE_ERROR_DMAX
             errno = ESLEWRNG;
             return (NULL);
-# endif
+#endif
         }
 #endif
     }
@@ -258,9 +256,8 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
 
         if (unlikely(dlen == 0)) {
             *ptr = NULL;
-            invoke_safe_str_constraint_handler(
-                      "strtok_s: dest is unterminated",
-                       dest, ESUNTERM);
+            invoke_safe_str_constraint_handler("strtok_s: dest is unterminated",
+                                               dest, ESUNTERM);
             errno = ESUNTERM;
             return (NULL);
         }
@@ -278,8 +275,7 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
                 *dmaxp = 0;
                 *dest = '\0';
                 invoke_safe_str_constraint_handler(
-                          "strtok_s: delim is unterminated",
-                           dest, ESUNTERM);
+                    "strtok_s: delim is unterminated", dest, ESUNTERM);
                 errno = ESUNTERM;
                 return (NULL);
             }
@@ -315,9 +311,8 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
             *ptr = NULL;
             *dmaxp = 0;
             *dest = '\0';
-            invoke_safe_str_constraint_handler(
-                      "strtok_s: dest is unterminated",
-                       dest, ESUNTERM);
+            invoke_safe_str_constraint_handler("strtok_s: dest is unterminated",
+                                               dest, ESUNTERM);
             errno = ESUNTERM;
             return (NULL);
         }
@@ -331,8 +326,7 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
                 *dmaxp = 0;
                 *dest = '\0';
                 invoke_safe_str_constraint_handler(
-                          "strtok_s: delim is unterminated",
-                           dest, ESUNTERM);
+                    "strtok_s: delim is unterminated", dest, ESUNTERM);
                 errno = ESUNTERM;
                 return (NULL);
             }
@@ -344,8 +338,8 @@ _strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
                  * and return context ptr to next char
                  */
                 *dest = '\0';
-                *ptr = (dest + 1);  /* return pointer for next scan */
-                *dmaxp = dlen - 1;   /* account for the nulled delimiter */
+                *ptr = (dest + 1); /* return pointer for next scan */
+                *dmaxp = dlen - 1; /* account for the nulled delimiter */
                 return (ptoken);
             } else {
                 /*

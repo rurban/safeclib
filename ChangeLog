@@ -11,6 +11,7 @@ Changes in v07062019 3.5.0
           use the mb() macro.
         - Added the Huawei securec library to the docs
         - Renamed internal build-tools to build-aux
+        - Reformat all source code with clang-format
 
 Changes in v30122018 3.4.0
         - Updated towctrans case-mappings to Unicode 11.0 (GH #62)

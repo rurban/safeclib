@@ -37,7 +37,7 @@
 
 /* i386-mingw32-gcc */
 #ifndef HAVE_STRNLEN
-#define strnlen(s,smax) strlen(s)
+#define strnlen(s, smax) strlen(s)
 #endif
 
 /**
@@ -84,7 +84,8 @@
  *          not a null pointer and dmax is greater than zero and not
  *          greater than RSIZE_MAX_STR, then gets_s nulls dest.
  * @retval  >0         when successful operation, all the characters from src
- *                     were appended to dest and the result in dest is null terminated.
+ *                     were appended to dest and the result in dest is null
+ terminated.
  * @retval  0 + errno=ESNULLP    when dest is a NULL pointer
  * @retval  0 + errno=ESZEROL    when dmax = 0
  * @retval  0 + errno=ESLEMAX    when dmax > RSIZE_MAX_STR
@@ -96,27 +97,25 @@
  *    scanf_s()
  */
 
-EXPORT char *
-_gets_s_chk (char *restrict dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT char *_gets_s_chk(char *restrict dest, rsize_t dmax,
+                         const size_t destbos) {
     char *ret;
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("gets_s: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("gets_s: dest is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return NULL;
     }
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("gets_s: dmax is 0",
-                   NULL, ESZEROL);
+        invoke_safe_str_constraint_handler("gets_s: dmax is 0", NULL, ESZEROL);
         errno = ESZEROL;
         return NULL;
     }
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
-            invoke_safe_str_constraint_handler("gets_s: dmax exceeds max",
-                       dest, ESLEMAX);
+            invoke_safe_str_constraint_handler("gets_s: dmax exceeds max", dest,
+                                               ESLEMAX);
             errno = ESLEMAX;
             return NULL;
         }
@@ -125,12 +124,12 @@ _gets_s_chk (char *restrict dest, rsize_t dmax, const size_t destbos)
         if (unlikely(dmax > destbos)) {
             if (unlikely(dmax > RSIZE_MAX_STR)) {
                 invoke_safe_str_constraint_handler("gets_s: dmax exceeds max",
-                       dest, ESLEMAX);
+                                                   dest, ESLEMAX);
                 errno = ESLEMAX;
                 return NULL;
             } else {
                 invoke_safe_str_constraint_handler("gets_s: dmax exceeds dest",
-                       dest, EOVERFLOW);
+                                                   dest, EOVERFLOW);
                 errno = EOVERFLOW;
                 return NULL;
             }
@@ -138,28 +137,25 @@ _gets_s_chk (char *restrict dest, rsize_t dmax, const size_t destbos)
     }
 
     errno = 0;
-    ret = fgets(dest, dmax+1, stdin);
+    ret = fgets(dest, dmax + 1, stdin);
 
     if (likely(ret)) {
         rsize_t len = (rsize_t)strnlen(dest, dmax);
-        if (len > 0 && dest[len-1] == '\n') {
-            dest[len-1] = 0;
-        } else if (len > (rsize_t)(dmax-1)) {
+        if (len > 0 && dest[len - 1] == '\n') {
+            dest[len - 1] = 0;
+        } else if (len > (rsize_t)(dmax - 1)) {
             ret = NULL;
             goto nospc;
-        }
-        else if (feof(stdin)) /* dead code: feof returns NULL */
+        } else if (feof(stdin)) /* dead code: feof returns NULL */
             ;
-        else if (len == (rsize_t)(dmax-1) && dest[len] == '\0') {
+        else if (len == (rsize_t)(dmax - 1) && dest[len] == '\0') {
             ret = NULL;
             goto nospc;
         }
-    }
-    else {
+    } else {
         if (!feof(stdin) && errno == 0) { /* closed? */
-          nospc:
-            handle_error(dest, dmax, "gets_s: length exceeds dmax",
-                         ESNOSPC);
+        nospc:
+            handle_error(dest, dmax, "gets_s: length exceeds dmax", ESNOSPC);
             errno = ESNOSPC;
 #ifdef SAFECLIB_STR_NULL_SLACK
             memset(dest, 0, dmax);

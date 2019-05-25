@@ -61,8 +61,8 @@
  *
  * @param[out] len    pointer to a size_t where getenv_s will store the length
  *                    of the found environment variable. Might be NULL.
- * @param[out] dest   pointer to a string where getenv_s will store the contents
- *                    of the found environment variable.
+ * @param[out] dest   pointer to a string where getenv_s will store the
+ * contents of the found environment variable.
  * @param[in]  dmax   maximum number of characters that getenv_s is allowed
  *                    to write to dest (size of the buffer).
  * @param[in]  name   null-terminated character string identifying the name of
@@ -88,11 +88,10 @@
  * @retval  -1         when not found
  */
 
-EXPORT errno_t
-_getenv_s_chk(size_t *restrict len, char *restrict dest, rsize_t dmax,
-              const char *restrict name, const size_t destbos)
-{
-    const char* buf;
+EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
+                             rsize_t dmax, const char *restrict name,
+                             const size_t destbos) {
+    const char *buf;
     int len1;
 
     CHK_DEST_NULL("getenv_s")
@@ -102,10 +101,9 @@ _getenv_s_chk(size_t *restrict len, char *restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         CHK_DEST_OVR("ctime_s", destbos)
-    }        
+    }
     if (unlikely(name == NULL)) {
-        handle_error(dest, dmax, "getenv_s: name is null",
-                     ESNULLP);
+        handle_error(dest, dmax, "getenv_s: name is null", ESNULLP);
         return ESNULLP;
     }
 
@@ -129,8 +127,7 @@ _getenv_s_chk(size_t *restrict len, char *restrict dest, rsize_t dmax,
     if (unlikely((rsize_t)len1 >= dmax)) {
         if (len)
             *len = 0;
-        handle_error(dest, dmax, "getenv_s: dmax is too small",
-                     ESNOSPC);
+        handle_error(dest, dmax, "getenv_s: dmax is too small", ESNOSPC);
         return RCNEGATE(ESNOSPC);
     } else {
         if (len)

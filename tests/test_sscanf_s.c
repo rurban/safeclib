@@ -11,46 +11,45 @@
 #include <stdarg.h>
 
 #ifdef HAVE_SSCANF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-static char   str3[LEN];
-int test_sscanf_s (void);
+static char str1[LEN];
+static char str2[LEN];
+static char str3[LEN];
+int test_sscanf_s(void);
 
-int test_sscanf_s (void)
-{
+int test_sscanf_s(void) {
     errno_t rc;
-    int32_t  ind;
-    size_t  len1;
-    size_t  len2;
-    size_t  len3;
+    int32_t ind;
+    size_t len1;
+    size_t len2;
+    size_t len3;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty fmt")
     rc = sscanf_s(str1, NULL, NULL);
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
-    ERREOF_MSVC(ESNULLP,EINVAL);
+    ERREOF_MSVC(ESNULLP, EINVAL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str2[0] = '\0';
     EXPECT_BOS("empty buffer")
     rc = sscanf_s(NULL, "%s", str2);
-    ERREOF_MSVC(ESNULLP,EINVAL);
+    ERREOF_MSVC(ESNULLP, EINVAL);
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "      24");
     rc = sscanf_s(str1, "%s %n", str2, LEN, &ind);
@@ -81,19 +80,19 @@ int test_sscanf_s (void)
     ERR(1);
     ERRNO(0);
     if ((int)len1 != 24) {
-        debug_printf("%s %u wrong arg: %d\n",
-                     __FUNCTION__, __LINE__, (int)len1);
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
+                     (int)len1);
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* TODO
     rc = sscanf_s(str1, "%s", NULL);
     ERR(ESNULLP)
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     len1 = strlen(str1);
@@ -106,12 +105,12 @@ int test_sscanf_s (void)
 #ifdef DEBUG
         len1 = strlen(str1);
 #endif
-        debug_printf("%s %u lengths wrong: %d  %d  %d \n",
-                     __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
+        debug_printf("%s %u lengths wrong: %d  %d  %d \n", __FUNCTION__,
+                     __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it simple");
 
@@ -119,7 +118,7 @@ int test_sscanf_s (void)
     ERR(1);
     EXPSTR(str1, "keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     str2[0] = '\0';
@@ -128,7 +127,7 @@ int test_sscanf_s (void)
     ERR(-1)
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -137,7 +136,7 @@ int test_sscanf_s (void)
     ERR(-1)
     EXPSTR(str1, "")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
@@ -146,7 +145,7 @@ int test_sscanf_s (void)
     NOERR()
     EXPSTR(str1, str2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* overlapping works fine on darwin, different on linux glibc */
     /*
@@ -163,12 +162,9 @@ int test_sscanf_s (void)
     EXPSTR(str1, "12345678123456789");
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
 
-int main (void)
-{
-    return (test_sscanf_s());
-}
+int main(void) { return (test_sscanf_s()); }

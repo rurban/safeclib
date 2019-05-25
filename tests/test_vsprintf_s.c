@@ -11,28 +11,27 @@
 #include <stdarg.h>
 #if defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S)
 #undef vsprintf_s
-EXTERN int vsprintf_s(char * restrict dest, rsize_t dmax,
-                      const char * restrict fmt, va_list ap);
+EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
+                      const char *restrict fmt, va_list ap);
 #endif
 
 #ifdef HAVE_VSPRINTF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-static inline int vtprintf_s (char *restrict dest, rsize_t dmax,
-                              const char *restrict fmt, ...);
-int test_vsprintf_s (void);
+static char str1[LEN];
+static char str2[LEN];
+static inline int vtprintf_s(char *restrict dest, rsize_t dmax,
+                             const char *restrict fmt, ...);
+int test_vsprintf_s(void);
 
-static inline int
-vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
-{
+static inline int vtprintf_s(char *restrict dest, rsize_t dmax,
+                             const char *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);
@@ -41,15 +40,14 @@ vtprintf_s (char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
     return rc;
 }
 
-int test_vsprintf_s (void)
-{
+int test_vsprintf_s(void) {
     errno_t rc;
-    int32_t  ind;
-    int32_t  len2;
-    int32_t  len3;
+    int32_t ind;
+    int32_t len2;
+    int32_t len3;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* not testable, and not implemented.
       rc = vtprintf_s(str1, LEN, "%s", NULL);
@@ -57,7 +55,7 @@ int test_vsprintf_s (void)
       ERRNO(ESNULLP);
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
     /* wine msvcrt doesn't check fmt==NULL */
@@ -68,7 +66,7 @@ int test_vsprintf_s (void)
     ERRNO_MSVC(0, EINVAL);
 #else
     use_msvcrt = 1;
-#endif    
+#endif
     /* Unknown error: 400 */
     /* debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */
@@ -77,7 +75,7 @@ int test_vsprintf_s (void)
     ERR_MSVC(-ESNULLP, -1);
     ERRNO_MSVC(0, EINVAL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
     ERR_MSVC(-ESZEROL, -1);
@@ -86,13 +84,13 @@ int test_vsprintf_s (void)
     /* debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    rc = vtprintf_s(str1, (RSIZE_MAX_STR+1), "%s", str2);
+    rc = vtprintf_s(str1, (RSIZE_MAX_STR + 1), "%s", str2);
     ERR_MSVC(-ESLEMAX, 0);
     ERRNO(0);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str2[0] = '\0';
     /* wine msvcrt doesn't check %n neither */
@@ -108,7 +106,7 @@ int test_vsprintf_s (void)
     rc = vtprintf_s(str1, LEN, "%%n");
     ERR(2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -118,7 +116,7 @@ int test_vsprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -128,7 +126,7 @@ int test_vsprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -141,13 +139,13 @@ int test_vsprintf_s (void)
     if (len3 != len2) {
 #ifdef DEBUG
         int len1 = strlen(str1);
-        debug_printf("%s %u lengths wrong: %d  %u  %u \n",
-                     __FUNCTION__, __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %u  %u \n", __FUNCTION__,
+                     __LINE__, len1, len2, len3);
 #endif
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -157,7 +155,7 @@ int test_vsprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -167,7 +165,7 @@ int test_vsprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -176,7 +174,7 @@ int test_vsprintf_s (void)
     NOERR()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     str2[0] = '\0';
@@ -185,7 +183,7 @@ int test_vsprintf_s (void)
     ERR(0)
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -194,7 +192,7 @@ int test_vsprintf_s (void)
     NOERR()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
@@ -203,7 +201,7 @@ int test_vsprintf_s (void)
     NOERR()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -212,7 +210,7 @@ int test_vsprintf_s (void)
     ERR_MSVC(-ESNOSPC, -1);
     ERRNO_MSVC(0, ERANGE);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -221,7 +219,7 @@ int test_vsprintf_s (void)
     NOERR()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
 
@@ -230,7 +228,7 @@ int test_vsprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "123456789");
 
@@ -238,7 +236,7 @@ int test_vsprintf_s (void)
     ERR(1) /* overlapping allowed */
     EXPSTR(str1, "9")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
@@ -247,7 +245,7 @@ int test_vsprintf_s (void)
     NOERR()
     EXPSTR(str2, "keep it simple");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "1234");
     strcpy(str1, "56789");
@@ -256,21 +254,23 @@ int test_vsprintf_s (void)
     NOERR();
     EXPSTR(str2, "56789");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* everybody incorrectly accepts illegal % specifiers, only musl not. */
     rc = vtprintf_s(str1, LEN, "%y");
     /* TODO: dietlibc, uClibc, minilibc */
-#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions */
+#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions    \
+                                                 */
     /* they print unknown formats verbatim */
     NOERR();
 #else
-    /* only musl and msvcrt sec_api correctly rejects illegal format specifiers */
+    /* only musl and msvcrt sec_api correctly rejects illegal format specifiers
+     */
     ERR(-1);
     EXPNULL(str1)
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -278,8 +278,5 @@ int test_vsprintf_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_vsprintf_s());
-}
+int main(void) { return (test_vsprintf_s()); }
 #endif

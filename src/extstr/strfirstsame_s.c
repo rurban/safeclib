@@ -72,11 +72,9 @@
  *    strlastdiff_s(), strlastsame_s()
  *
  */
-EXPORT errno_t
-_strfirstsame_s_chk (const char *dest, rsize_t dmax,
-                     const char *src,  rsize_t *resultp,
-                     const size_t destbos)
-{
+EXPORT errno_t _strfirstsame_s_chk(const char *dest, rsize_t dmax,
+                                   const char *src, rsize_t *resultp,
+                                   const size_t destbos) {
     const char *rp = 0;
 
     CHK_SRC_NULL("strfirstsame_s", resultp)

@@ -63,9 +63,8 @@
  *    strisuppercase_s()
  */
 
-EXPORT bool
-_strismixedcase_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT bool _strismixedcase_s_chk(const char *dest, rsize_t dmax,
+                                  const size_t destbos) {
     CHK_DEST_DMAX_BOOL("strismixedcase_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {
@@ -74,7 +73,7 @@ _strismixedcase_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 
     while (*dest) {
 
-        if (((*dest >= 'a') && (*dest <= 'z'))  ||
+        if (((*dest >= 'a') && (*dest <= 'z')) ||
             ((*dest >= 'A') && (*dest <= 'Z'))) {
             dest++;
             dmax--;

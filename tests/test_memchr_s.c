@@ -9,16 +9,15 @@
 #include "test_private.h"
 #include "safe_mem_lib.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
 static uint8_t mem[LEN];
-int test_memchr_s (void);
+int test_memchr_s(void);
 
-int test_memchr_s (void)
-{
+int test_memchr_s(void) {
     errno_t rc;
 #ifndef HAVE_CT_BOS_OVR
-    int  ch;
+    int ch;
 #endif
     void *sub;
     void *std_sub;
@@ -26,7 +25,7 @@ int test_memchr_s (void)
     size_t len;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     ch = 0;
@@ -39,26 +38,26 @@ int test_memchr_s (void)
     rc = memchr_s(mem, LEN, ch, NULL);
     ERR(ESNULLP);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     EXPECT_BOS("empty dest or dmax")
     rc = memchr_s(mem, 0, ch, &sub);
     ERR(ESZEROL)
     SUBNULL();
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
-    rc = memchr_s(mem, RSIZE_MAX_MEM+1, ch, &sub);
+    rc = memchr_s(mem, RSIZE_MAX_MEM + 1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
 
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
-    rc = memchr_s(mem, LEN+1, ch, &sub);
+    rc = memchr_s(mem, LEN + 1, ch, &sub);
     ERR(EOVERFLOW)
     SUBNULL();
-# endif
+#endif
 
     EXPECT_BOS("ch overflow >255")
     rc = memchr_s(mem, LEN, 256, &sub);
@@ -66,24 +65,24 @@ int test_memchr_s (void)
     SUBNULL();
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     *mem = '\0';
     rc = memchr_s(mem, LEN, 0, &sub);
     ERR(EOK);
     PTREQ(sub, mem);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     len = 20;
-              /* 012345678901234567890 */
+    /* 012345678901234567890 */
     memcpy(mem, "keep it all together", len);
 
     rc = memchr_s(mem, LEN, 0, &sub);
     ERR(EOK);
     PTREQ(sub, &mem[len]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* at beginning */
     rc = memchr_s(mem, LEN, 'k', &sub);
@@ -100,7 +99,7 @@ int test_memchr_s (void)
     ERR(EOK)
     PTREQ(sub, &mem[13]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = memchr_s(mem, len, 'h', &sub);
     ERR(EOK)
@@ -110,7 +109,7 @@ int test_memchr_s (void)
     ERR(EOK)
     PTREQ(sub, &mem[19]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = memchr_s(mem, 3, 'i', &sub);
     ERR(ESNOTFND)
@@ -119,7 +118,7 @@ int test_memchr_s (void)
     rc = memchr_s(mem, LEN, 'i', &sub);
     ERR(EOK)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = memchr_s(mem, len, 1, &sub);
     ERR(ESNOTFND);
@@ -132,7 +131,7 @@ int test_memchr_s (void)
     std_sub = memchr(mem, 'e', LEN);
     PTREQ(sub, std_sub);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -140,8 +139,5 @@ int test_memchr_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_memchr_s());
-}
+int main(void) { return (test_memchr_s()); }
 #endif

@@ -33,10 +33,10 @@
 #include <linux/kernel.h>
 #include "../safeclib_private.h"
 
-#define DRV_NAME        "slk"
-#define DRV_VERSION     "0.0"
+#define DRV_NAME "slk"
+#define DRV_VERSION "0.0"
 #define DRV_DESCRIPTION "Safe C Library Kernel Module"
-#define DRV_COPYRIGHT   "Copyright(c) 2012 cisco Systems, Inc."
+#define DRV_COPYRIGHT "Copyright(c) 2012 cisco Systems, Inc."
 
 MODULE_DESCRIPTION(DRV_DESCRIPTION);
 MODULE_AUTHOR(DRV_COPYRIGHT);
@@ -56,28 +56,23 @@ MODULE_ALIAS("slk");
  *MODULE_DEVICE_TABLE(of, _match);
  */
 
-
 /**
  * @brief Module initialization function.
  *
  * @return 0 on success; < 0 on failure
  */
-static int __init slk_init(void)
-{
-        printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
-               DRV_COPYRIGHT);
-        (void) set_mem_constraint_handler_s(abort_handler_s);
-        (void) set_str_constraint_handler_s(abort_handler_s);
-        return 0;
+static int __init slk_init(void) {
+    printk(KERN_INFO "%s, v%s - %s\n", DRV_DESCRIPTION, DRV_VERSION,
+           DRV_COPYRIGHT);
+    (void)set_mem_constraint_handler_s(abort_handler_s);
+    (void)set_str_constraint_handler_s(abort_handler_s);
+    return 0;
 }
 
 /**
  * @brief Module exit function.
  */
-static void __exit slk_exit(void)
-{
-        printk(KERN_INFO "%s called\n", __func__);
-}
+static void __exit slk_exit(void) { printk(KERN_INFO "%s called\n", __func__); }
 
 /* Module entry and exit points */
 module_init(slk_init);

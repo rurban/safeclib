@@ -62,9 +62,8 @@
  *    strismixedcase_s(), strisuppercase_s()
  *
  */
-bool
-_strisalphanumeric_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
-{
+bool _strisalphanumeric_s_chk(const char *dest, rsize_t dmax,
+                              const size_t destbos) {
     CHK_DEST_DMAX_BOOL("strisalphanumeric_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {
@@ -73,9 +72,9 @@ _strisalphanumeric_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 
     while (*dest && dmax) {
 
-        if (( (*dest >= '0') && (*dest <= '9') )  ||
-            ( (*dest >= 'a') && (*dest <= 'z') )  ||
-            ( (*dest >= 'A') && (*dest <= 'Z') )) {
+        if (((*dest >= '0') && (*dest <= '9')) ||
+            ((*dest >= 'a') && (*dest <= 'z')) ||
+            ((*dest >= 'A') && (*dest <= 'Z'))) {
             dest++;
             dmax--;
         } else {

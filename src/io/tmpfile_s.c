@@ -65,9 +65,8 @@
  * @return The tmpfile_s function returns zero if it created the
  *         file. If it did not create the file or there was a
  *         runtime-constraint violation, tmpfile_s returns a nonzero value.
- *         If there is a runtime-constraint violation, tmpfile_s does not attempt
- *         to create a file.
- *         Sets the streamptr on success.
+ *         If there is a runtime-constraint violation, tmpfile_s does not
+ * attempt to create a file. Sets the streamptr on success.
  *
  * @retval  EOK        on success
  * @retval  ESNULLP    when streamptr is a NULL pointer
@@ -75,22 +74,20 @@
  * @retval  errno()    when tmpfile() failed, typically ENOENT or EACCES
  */
 
-EXPORT errno_t
-tmpfile_s(FILE * restrict * restrict streamptr)
-{
+EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
     static int count = 0;
 
     if (unlikely(streamptr == NULL)) {
-        invoke_safe_str_constraint_handler("tmpfile_s: streamptr is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("tmpfile_s: streamptr is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 
     ++count;
     if (unlikely(count > TMP_MAX_S)) {
         *streamptr = NULL;
-        invoke_safe_str_constraint_handler("tmpfile_s: exceeds TMP_MAX_S",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler("tmpfile_s: exceeds TMP_MAX_S", NULL,
+                                           ESLEMAX);
         return ESLEMAX;
     }
 

@@ -9,16 +9,15 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-int main(void)
-{
+int main(void) {
     errno_t rc;
     rsize_t len;
     wchar_t str[LEN];
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"untouched");
 #ifndef HAVE_CT_BOS_OVR
@@ -29,20 +28,20 @@ int main(void)
 
     wcscpy(str, L"untouched");
     EXPECT_BOS("src overflow or empty")
-    rc = wcsupr_s(str, RSIZE_MAX_WSTR+1);
+    rc = wcsupr_s(str, RSIZE_MAX_WSTR + 1);
     ERR(ESLEMAX);
     WEXPSTR(str, L"untouched");
 
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     wcscpy(str, L"untouched");
     EXPECT_BOS("src overflow or empty")
-    rc = wcsupr_s(str, LEN+1);
+    rc = wcsupr_s(str, LEN + 1);
     ERR(EOVERFLOW);
     WEXPSTR(str, L"untouched");
-# endif
+#endif
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"untouched");
     rc = wcsupr_s(str, 0);
@@ -53,7 +52,7 @@ int main(void)
     ERR(EOK); /* and untouched */
     WEXPSTR(str, L"untouched");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"n");
     len = wcslen(str);
@@ -62,7 +61,7 @@ int main(void)
     ERR(EOK);
     WEXPSTR(str, L"N");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"N");
     len = wcslen(str);
@@ -71,7 +70,7 @@ int main(void)
     ERR(EOK)
     WEXPSTR(str, L"N");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"nowisthetim3");
 
@@ -79,7 +78,7 @@ int main(void)
     ERR(EOK)
     WEXPSTR(str, L"NOWISTHETIM3");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"nowisthetime");
     len = wcslen(str);
@@ -88,7 +87,7 @@ int main(void)
     ERR(EOK)
     WEXPSTR(str, L"NOWISTHETIME");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"qqeRo");
     len = wcslen(str);
@@ -97,7 +96,7 @@ int main(void)
     ERR(EOK)
     WEXPSTR(str, L"QQERO");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wcscpy(str, L"1234");
     len = wcslen(str);
@@ -106,7 +105,7 @@ int main(void)
     ERR(EOK)
     WEXPSTR(str, L"1234");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }

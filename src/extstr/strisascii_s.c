@@ -56,16 +56,16 @@
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
  * @return  true   when string is ascii
- * @return  false  when string contains one or more non-ascii or an error occurred
+ * @return  false  when string contains one or more non-ascii or an error
+ * occurred
  *
  * @see
  *    strisalphanumeric_s(), strisdigit_s(), strishex_s(),
  *    strislowercase_s(), strismixedcase_s(), strisuppercase_s()
  */
 
-EXPORT bool
-_strisascii_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT bool _strisascii_s_chk(const char *dest, rsize_t dmax,
+                              const size_t destbos) {
     CHK_DEST_DMAX_BOOL("strisascii_s", RSIZE_MAX_STR)
 
     while (*dest && dmax) {

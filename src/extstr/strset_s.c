@@ -72,9 +72,8 @@
  *    strzero_s(), strnset_s(), strispassword_s()
  */
 
-EXPORT errno_t
-_strset_s_chk (char *restrict dest, rsize_t dmax, int value, const size_t destbos)
-{
+EXPORT errno_t _strset_s_chk(char *restrict dest, rsize_t dmax, int value,
+                             const size_t destbos) {
     CHK_DEST_NULL("strset_s")
     CHK_DMAX_ZERO("strset_s")
     if (destbos == BOS_UNKNOWN) {
@@ -85,7 +84,7 @@ _strset_s_chk (char *restrict dest, rsize_t dmax, int value, const size_t destbo
     }
     if (unlikely((unsigned)value > 255)) {
         invoke_safe_str_constraint_handler("strset_s: value exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return (ESLEMAX);
     }
 

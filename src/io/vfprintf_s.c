@@ -67,29 +67,28 @@
  *
  */
 
-EXPORT int
-vfprintf_s(FILE *restrict stream, const char *restrict fmt, va_list ap)
-{
+EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
+                      va_list ap) {
     int ret;
     const char *p;
 
     if (unlikely(stream == NULL)) {
-        invoke_safe_str_constraint_handler("vfprintf_s: stream is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vfprintf_s: stream is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vfprintf_s: fmt is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vfprintf_s: fmt is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
-        if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler("vfprintf_s: illegal %n",
-                                               NULL, EINVAL);
+        if ((p - fmt == 0) || *(p - 1) != '%') {
+            invoke_safe_str_constraint_handler("vfprintf_s: illegal %n", NULL,
+                                               EINVAL);
             return -(EINVAL);
         }
     }

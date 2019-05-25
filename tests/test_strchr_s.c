@@ -9,22 +9,21 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str[LEN];
-int test_strchr_s (void);
+static char str[LEN];
+int test_strchr_s(void);
 
-int test_strchr_s (void)
-{
+int test_strchr_s(void) {
     errno_t rc;
-    int  ch;
+    int ch;
     char *sub;
     char *std_sub;
 
     size_t len;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     ch = 0;
 #ifndef HAVE_CT_BOS_OVR
@@ -43,7 +42,7 @@ int test_strchr_s (void)
     SUBNULL();
 
     EXPECT_BOS("dest overflow")
-    rc = strchr_s(str, RSIZE_MAX_STR+1, ch, &sub);
+    rc = strchr_s(str, RSIZE_MAX_STR + 1, ch, &sub);
     ERR(ESLEMAX)
     SUBNULL();
 
@@ -53,14 +52,14 @@ int test_strchr_s (void)
     SUBNULL();
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     *str = '\0';
     rc = strchr_s(str, LEN, 0, &sub);
     ERR(EOK);
     PTREQ(sub, str);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str, "keep it all together");
     len = strlen(str);
@@ -69,7 +68,7 @@ int test_strchr_s (void)
     ERR(EOK);
     PTREQ(sub, &str[len]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* at beginning */
     rc = strchr_s(str, LEN, 'k', &sub);
@@ -86,8 +85,8 @@ int test_strchr_s (void)
     ERR(EOK)
     PTREQ(sub, &str[13]);
 
-/*--------------------------------------------------*/
-              /* 012345678901234567890 */
+    /*--------------------------------------------------*/
+    /* 012345678901234567890 */
     strcpy(str, "keep it all together");
     len = strlen(str);
 
@@ -99,7 +98,7 @@ int test_strchr_s (void)
     ERR(EOK)
     PTREQ(sub, &str[19]);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = strchr_s(str, 3, 'i', &sub);
     ERR(ESNOTFND)
@@ -108,7 +107,7 @@ int test_strchr_s (void)
     rc = strchr_s(str, LEN, 'i', &sub);
     ERR(EOK)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str, "keep it all together");
 
@@ -123,7 +122,7 @@ int test_strchr_s (void)
     std_sub = strchr(str, 'e');
     PTREQ(sub, std_sub);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -131,8 +130,5 @@ int test_strchr_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_strchr_s());
-}
+int main(void) { return (test_strchr_s()); }
 #endif

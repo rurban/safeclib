@@ -36,7 +36,7 @@
 #endif
 
 /**
- * @def strtolowercase_s(dest, dmax) 
+ * @def strtolowercase_s(dest, dmax)
  * @brief
  *    Converts all uppercase characters to
  *    lowercase, leaving all other characters unchanged.
@@ -67,9 +67,8 @@
  *    strtouppercase_s()
  *
  */
-EXPORT errno_t
-_strtolowercase_s_chk (char * restrict dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT errno_t _strtolowercase_s_chk(char *restrict dest, rsize_t dmax,
+                                     const size_t destbos) {
     CHK_DEST_NULL("strtolowercase_s")
     CHK_DMAX_ZERO("strtolowercase_s")
     if (destbos == BOS_UNKNOWN) {
@@ -81,8 +80,8 @@ _strtolowercase_s_chk (char * restrict dest, rsize_t dmax, const size_t destbos)
 
     while (*dest && dmax) {
 
-        if ( (*dest >= 'A') && (*dest <= 'Z')) {
-              *dest = (char)(*dest + (char)32);
+        if ((*dest >= 'A') && (*dest <= 'Z')) {
+            *dest = (char)(*dest + (char)32);
         }
         dest++;
         dmax--;

@@ -76,9 +76,8 @@ EXTERN wint_t towlower(wint_t wc);
  *    wcsfc_s(), strtolowercase_s(), strlwr_s(), wcsupr_s()
  */
 
-EXPORT errno_t
-_wcslwr_s_chk(wchar_t *restrict src, rsize_t slen, const size_t srcbos)
-{
+EXPORT errno_t _wcslwr_s_chk(wchar_t *restrict src, rsize_t slen,
+                             const size_t srcbos) {
     const size_t srcsz = slen * sizeof(wchar_t);
 
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
@@ -87,16 +86,17 @@ _wcslwr_s_chk(wchar_t *restrict src, rsize_t slen, const size_t srcbos)
     CHK_SRC_NULL("wcsupr_s", src)
     if (unlikely(slen > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcslwr_s: "
-                   "slen exceeds max",
-                   (void*)src, ESLEMAX);
+                                           "slen exceeds max",
+                                           (void *)src, ESLEMAX);
         return (ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, srcsz);
     } else {
         if (unlikely(srcsz > srcbos)) {
-            invoke_safe_str_constraint_handler("wcsupr_s" ": smax exceeds src",
-                       (void*)src, EOVERFLOW);
+            invoke_safe_str_constraint_handler("wcsupr_s"
+                                               ": smax exceeds src",
+                                               (void *)src, EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
     }

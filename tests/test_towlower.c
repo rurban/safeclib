@@ -14,14 +14,13 @@
 #include <ctype.h>
 
 EXTERN uint32_t _towcase(uint32_t wc, int lower);
-int test_towlower (void);
+int test_towlower(void);
 
 #define CFOLD "CaseFolding.txt"
 
 int ignore_f = 1;
 
-int test_towlower (void)
-{
+int test_towlower(void) {
     int errs = 0;
     int c;
     char s[128];
@@ -33,14 +32,15 @@ int test_towlower (void)
 
     uint32_t wc, lwr;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     f = fopen(CFOLD, "r");
     if (!f) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
         system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt")
-            ? printf(" done\n") : printf(" failed\n");
+            ? printf(" done\n")
+            : printf(" failed\n");
         printf(" done\n");
         f = fopen(CFOLD, "r");
     }
@@ -50,17 +50,17 @@ int test_towlower (void)
         char *p1;
         if (p && *p && s[0] != '#' && s[0] != '\n') {
             p = strstr(s, "; ");
-            l = p-s;
+            l = p - s;
             memcpy(code, s, l);
             code[l] = 0;
             *status = p[2];
             status[1] = 0;
             p1 = strstr(&p[5], "; ");
-            l = p1-p-5;
+            l = p1 - p - 5;
             memcpy(mapping, &p[5], l); /* the other cases */
             mapping[l] = 0;
             strcpy(name, &p1[4]);
-            name[strlen(name)-1] = 0;
+            name[strlen(name) - 1] = 0;
 
             c = sscanf(code, "%X", &wc);
             if (c) {
@@ -70,27 +70,29 @@ int test_towlower (void)
                 if (*status == 'T')
                     mp = lwr;
                 /* we have 104 unhandled F multi-char mappings */
-                else if (*status == 'F') { /* lower is bigger than upper, ignored */
+                else if (*status ==
+                         'F') { /* lower is bigger than upper, ignored */
                     if (!ignore_f) {
                         if (lwr != wc)
-                            printf("U+%04X => U+%04X lower=(%s) F %s\n",
-                                   wc, lwr, mapping, name);
+                            printf("U+%04X => U+%04X lower=(%s) F %s\n", wc,
+                                   lwr, mapping, name);
                         else
-                            printf("U+%04X lower=(%s) F %s\n", wc, mapping, name);
+                            printf("U+%04X lower=(%s) F %s\n", wc, mapping,
+                                   name);
                     }
-                }
-                else if (mp != lwr) {
+                } else if (mp != lwr) {
                     lwr = _towcase(wc, 1);
                     if (wc != lwr)
-                        printf("Error U+%04X => U+%04X lower=%s status=%s name=%s\n",
+                        printf("Error U+%04X => U+%04X lower=%s status=%s "
+                               "name=%s\n",
                                wc, lwr, mapping, status, name);
                     else
-                        printf("Error U+%04X lower=%s status=%s name=%s\n",
-                               wc, mapping, status, name);
+                        printf("Error U+%04X lower=%s status=%s name=%s\n", wc,
+                               mapping, status, name);
                 }
             } else {
-                printf("Error code=%s status=%s lower=%s name=%s\n",
-                       code, status, mapping, name);
+                printf("Error code=%s status=%s lower=%s name=%s\n", code,
+                       status, mapping, name);
             }
         }
     }
@@ -98,7 +100,4 @@ int test_towlower (void)
     return (errs);
 }
 
-int main (void)
-{
-    return (test_towlower());
-}
+int main(void) { return (test_towlower()); }

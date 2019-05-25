@@ -86,34 +86,33 @@ struct tm *gmtime_r(const time_t * __restrict, struct tm * __restrict);
  *    localtime_s(), ctime_s()
  */
 
-EXPORT struct tm *
-gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
-{
+EXPORT struct tm *gmtime_s(const time_t *restrict timer,
+                           struct tm *restrict dest) {
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("gmtime_s: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("gmtime_s: dest is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return NULL;
     }
 
     if (unlikely(timer == NULL)) {
-        invoke_safe_str_constraint_handler("gmtime_s: timer is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("gmtime_s: timer is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return NULL;
     }
 
     if (unlikely(*timer < 0)) {
-        invoke_safe_str_constraint_handler("gmtime_s: timer is < 0",
-                   NULL, ESLEMIN);
+        invoke_safe_str_constraint_handler("gmtime_s: timer is < 0", NULL,
+                                           ESLEMIN);
         errno = EOVERFLOW;
         return NULL;
     }
 
     if (unlikely(*timer >= MAX_TIME_T_STR)) { /* year 10000 */
-        invoke_safe_str_constraint_handler("gmtime_s: timer is too large",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler("gmtime_s: timer is too large", NULL,
+                                           ESLEMAX);
         errno = EOVERFLOW;
         return NULL;
     }

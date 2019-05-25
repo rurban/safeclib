@@ -58,25 +58,25 @@
  *       (inc. final null).
  *
  * @note   On mingw with \c MINGW_HAS_SECURE_API this API is forceinline'd
- *         and the native \c wcsnlen_s with the msvcrt has a different dmax limit:
- *         \c INT_MAX.
- * @note   Unlike specified in the C11 spec the runtime-constraint handlers are called.
+ *         and the native \c wcsnlen_s with the msvcrt has a different dmax
+ * limit: \c INT_MAX.
+ * @note   Unlike specified in the C11 spec the runtime-constraint handlers are
+ * called.
  *
- * @return The function returns the wide string length, excluding the terminating
- *         null character.  If \c dest is NULL, then \c wcsnlen_s returns 0.
- *         Otherwise, the \c wcsnlen_s function returns the number of wide characters
- *         that precede the terminating null character. If there is no null
- *         character in the first \c dmax characters of dest then \c wcsnlen_s returns
- *         \c dmax. At most the first \c dmax characters of dest are accessed
+ * @return The function returns the wide string length, excluding the
+ * terminating null character.  If \c dest is NULL, then \c wcsnlen_s returns
+ * 0. Otherwise, the \c wcsnlen_s function returns the number of wide
+ * characters that precede the terminating null character. If there is no null
+ *         character in the first \c dmax characters of dest then \c wcsnlen_s
+ * returns \c dmax. At most the first \c dmax characters of dest are accessed
  *         by \c wcsnlen_s.
  *
  * @see
  *    strnlen_s(), strnterminate_s()
  */
 
-EXPORT rsize_t
-_wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, size_t destbos)
-{
+EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *dest, rsize_t dmax,
+                              size_t destbos) {
     const wchar_t *z;
     rsize_t orig_dmax = dmax;
 
@@ -84,22 +84,22 @@ _wcsnlen_s_chk (const wchar_t *dest, rsize_t dmax, size_t destbos)
         return RCNEGATE(0);
     }
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsnlen_s: dmax is 0",
-                   (void*)dest, ESZEROL);
+        invoke_safe_str_constraint_handler("wcsnlen_s: dmax is 0", (void *)dest,
+                                           ESZEROL);
         return RCNEGATE(0);
     }
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return RCNEGATE(0);
     }
     if (destbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
     } else {
 #ifdef HAVE_WARN_DMAX
-        if (unlikely(dmax*sizeof(wchar_t) != destbos)) {
-            handle_str_bos_chk_warn("wcsnlen_s",(char*)dest,dmax,
-                                    destbos/sizeof(wchar_t));
+        if (unlikely(dmax * sizeof(wchar_t) != destbos)) {
+            handle_str_bos_chk_warn("wcsnlen_s", (char *)dest, dmax,
+                                    destbos / sizeof(wchar_t));
             RETURN_ESLEWRNG;
         }
 #endif

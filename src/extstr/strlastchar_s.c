@@ -70,10 +70,8 @@
  *    strlastdiff_s(), strlastsame_s()
  *
  */
-EXPORT errno_t
-_strlastchar_s_chk(char *dest, rsize_t dmax, char c, char **lastp,
-                   const size_t destbos)
-{
+EXPORT errno_t _strlastchar_s_chk(char *dest, rsize_t dmax, char c,
+                                  char **lastp, const size_t destbos) {
     CHK_SRC_NULL("strlastchar_s", lastp)
     *lastp = NULL;
 

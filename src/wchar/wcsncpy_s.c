@@ -74,13 +74,13 @@
  *
  * @return  If there is a runtime-constraint violation, then if dest and
  *          dmax are valid, then wcsncpy_s nulls dest.
- * @retval  EOK        successful operation, when slen == 0 or the wide characters in
- *                     src were copied into dest and the result is null terminated.
+ * @retval  EOK        successful operation, when slen == 0 or the wide
+ * characters in src were copied into dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
- * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
- *                     knows the object_size statically)
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when buffers overlap
  * @retval  ESNOSPC    when src > dest
@@ -89,11 +89,9 @@
  *    wcscpy_s(), strncpy_s(), wmemcpy_s(), wmemmove_s()
  */
 
-EXPORT errno_t
-_wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
-                const wchar_t * restrict src, rsize_t slen,
-                const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _wcsncpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                              const wchar_t *restrict src, rsize_t slen,
+                              const size_t destbos, const size_t srcbos) {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
@@ -122,8 +120,7 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
     } else {
         if (unlikely(slen * sizeof(wchar_t) > srcbos)) {
             handle_werror(dest, wcsnlen_s(dest, dmax),
-                          "wcsncpy_s: slen exceeds src",
-                          EOVERFLOW);
+                          "wcsncpy_s: slen exceeds src", EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
     }
@@ -137,9 +134,10 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-              handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
-                             "overlapping objects",
-                             ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncpy_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -149,9 +147,13 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #else
                 *dest = L'\0';
@@ -164,9 +166,13 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -177,27 +183,31 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
             dest++;
             src++;
         }
-
     } else {
         overlap_bumper = dest;
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_werror(orig_dest, orig_dmax, "wcsncpy_s: "
-                      "overlapping objects",
-                      ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncpy_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
-	    if (unlikely(slen == 0)) {
+            if (unlikely(slen == 0)) {
                 /* Copying truncated to slen chars.  Note that the TR says to
                  * copy slen chars plus the null char.  We null the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #else
                 *dest = L'\0';
@@ -210,9 +220,13 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -229,9 +243,10 @@ _wcsncpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
      * the entire src must have been copied, if not reset dest
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
-    handle_werror(orig_dest, orig_dmax, "wcsncpy_s: not "
-                 "enough space for src",
-                 ESNOSPC);
+    handle_werror(orig_dest, orig_dmax,
+                  "wcsncpy_s: not "
+                  "enough space for src",
+                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
 

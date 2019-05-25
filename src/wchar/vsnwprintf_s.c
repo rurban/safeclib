@@ -113,10 +113,9 @@ any of the arguments corresponding to %s is a null pointer.
  *    vswprintf_s(), snwprintf_s(), vsnprintf_s()
  */
 
-EXPORT int
-_vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
-                  const wchar_t *restrict fmt, va_list ap)
-{
+EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                             const size_t destbos, const wchar_t *restrict fmt,
+                             va_list ap) {
     wchar_t *p;
     int ret = -1;
     const size_t destsz = dmax * sizeof(wchar_t);
@@ -125,62 +124,62 @@ _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
 #endif
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("vsnwprintf_s: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vsnwprintf_s: dest is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(dmax > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dmax exceeds max",
-                   NULL, ESLEMAX);
+                                           NULL, ESLEMAX);
         return -(ESLEMAX);
     }
     if (destbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(dest,destsz);
+        BND_CHK_PTR_BOUNDS(dest, destsz);
     } else {
         if (unlikely(destsz > destbos)) {
-            invoke_safe_str_constraint_handler("vsnwprintf_s: dmax exceeds dest",
-                       (void*)dest, EOVERFLOW);
+            invoke_safe_str_constraint_handler(
+                "vsnwprintf_s: dmax exceeds dest", (void *)dest, EOVERFLOW);
             return -(EOVERFLOW);
         }
     }
 
     if (unlikely(fmt == NULL)) {
         *dest = L'\0';
-        invoke_safe_str_constraint_handler("vsnwprintf_s: fmt is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vsnwprintf_s: fmt is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(dmax == 0)) {
         *dest = L'\0';
-        invoke_safe_str_constraint_handler("vsnwprintf_s: dmax is 0",
-                   NULL, ESZEROL);
+        invoke_safe_str_constraint_handler("vsnwprintf_s: dmax is 0", NULL,
+                                           ESZEROL);
         return -(ESZEROL);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
-    if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
-        if ((p-fmt == 0) || *(p-1) != L'%') {
+    if (unlikely((p = wcsstr((wchar_t *)fmt, L"%n")))) {
+        if ((p - fmt == 0) || *(p - 1) != L'%') {
             *dest = L'\0';
-            invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n",
-                   NULL, EINVAL);
+            invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n", NULL,
+                                               EINVAL);
             return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
     if (unlikely((p = wcschr(fmt, flen, L'n')))) {
         /* at the beginning or if inside, not %%n */
-        if (((p-fmt >= 1) && *(p-1) == L'%') &&
-            ((p-fmt == 1) || *(p-2) != L'%')) {
+        if (((p - fmt >= 1) && *(p - 1) == L'%') &&
+            ((p - fmt == 1) || *(p - 2) != L'%')) {
             *dest = L'\0';
-            invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n",
-                                               NULL, EINVAL);
+            invoke_safe_str_constraint_handler("vsnwprintf_s: illegal %n", NULL,
+                                               EINVAL);
             return -(EINVAL);
         }
     }
 #else
-    #error need wcsstr or wcschr
+#error need wcsstr or wcschr
 #endif
 
     errno = 0;
@@ -211,16 +210,16 @@ _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
 
     /* manual truncation */
     if (unlikely(ret >= (int)dmax)) {
-# ifdef SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
         /* oops, ret would have been written if dmax was ignored */
         if ((rsize_t)ret > dmax) {
-            dest[dmax-1] = L'\0'; 
+            dest[dmax - 1] = L'\0';
         } else {
-            memset(&dest[ret], 0, (dmax-ret)*sizeof(wchar_t));
+            memset(&dest[ret], 0, (dmax - ret) * sizeof(wchar_t));
         }
-# else
-        dest[dmax-1] = L'\0';
-# endif   
+#else
+        dest[dmax - 1] = L'\0';
+#endif
     } else if (unlikely(ret < 0)) {
         /* no truncation. some other error */
         char errstr[128] = "vsnwprintf_s: ";

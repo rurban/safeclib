@@ -70,11 +70,9 @@
  *    memchr_s(), strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
  *
  */
-EXPORT errno_t
-_strchr_s_chk (const char *restrict dest, rsize_t dmax,
-               const int ch, char **restrict resultp,
-               const size_t destbos)
-{
+EXPORT errno_t _strchr_s_chk(const char *restrict dest, rsize_t dmax,
+                             const int ch, char **restrict resultp,
+                             const size_t destbos) {
     CHK_SRC_NULL("strchr_s", resultp)
     *resultp = NULL;
 
@@ -89,7 +87,7 @@ _strchr_s_chk (const char *restrict dest, rsize_t dmax,
 
     if (unlikely(ch > 255)) {
         invoke_safe_str_constraint_handler("strchr_s: ch exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         return (ESLEMAX);
     }
 
@@ -101,10 +99,10 @@ _strchr_s_chk (const char *restrict dest, rsize_t dmax,
           ? (char *) __rawmemchr ((const char *)dest, ch)
           : __builtin_strchr ((const char *)dest, ch)));
     */
-#if defined( __GNUC__) && (((__GNUC__ * 100) + __GNUC_MINOR__) == 404)
-    *resultp = (char*) __builtin_strchr((const char *)dest, ch);
+#if defined(__GNUC__) && (((__GNUC__ * 100) + __GNUC_MINOR__) == 404)
+    *resultp = (char *)__builtin_strchr((const char *)dest, ch);
 #else
-    *resultp = (char*)strchr((const char *)dest, ch);
+    *resultp = (char *)strchr((const char *)dest, ch);
 #endif
 
     if (!*resultp)

@@ -11,11 +11,10 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define LEN   ( 128 )
-#define SHORT_LEN  ( 5 )
+#define LEN (128)
+#define SHORT_LEN (5)
 
-int main(void)
-{
+int main(void) {
     errno_t rc;
     char *sub;
 #ifdef HAVE_STRCASESTR
@@ -25,11 +24,11 @@ int main(void)
     rsize_t len1;
     rsize_t len2;
 
-    char   str1[LEN];
-    char   str2[LEN];
+    char str1[LEN];
+    char str2[LEN];
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
@@ -52,12 +51,12 @@ int main(void)
     SUBNULL()
 
     EXPECT_BOS("dest overflow")
-    rc = strcasestr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
+    rc = strcasestr_s(str1, RSIZE_MAX_STR + 1, str2, LEN, &sub);
     ERR(ESLEMAX)
     SUBNULL()
 
     EXPECT_BOS("src overflow")
-    rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
+    rc = strcasestr_s(str1, LEN, str2, RSIZE_MAX_STR + 1, &sub);
     ERR(ESLEMAX)
     SUBNULL()
 
@@ -66,7 +65,7 @@ int main(void)
     ERR(ESZEROL)
     SUBNULL()
 #endif
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     *str1 = '\0';
     *str2 = '\0';
@@ -79,12 +78,12 @@ int main(void)
 #ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
-        debug_printf("%s %u  Legacy difference rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
+        debug_printf("%s %u  Legacy difference rc=%u \n", __FUNCTION__,
+                     __LINE__, rc);
     }
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     *str1 = '\0';
     strcpy(str1, "key");
@@ -99,7 +98,7 @@ int main(void)
     PTREQ(sub, std_sub)
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     *str2 = '\0';
@@ -115,7 +114,7 @@ int main(void)
     PTREQ(sub, std_sub)
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "kee");
@@ -125,7 +124,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[0])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "eep it");
@@ -135,7 +134,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[1])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "ethe");
@@ -145,7 +144,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[15])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "er");
@@ -163,7 +162,7 @@ int main(void)
     PTREQ(sub, std_sub)
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "er");
@@ -181,7 +180,7 @@ int main(void)
     PTREQ(sub, std_sub)
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
@@ -190,7 +189,7 @@ int main(void)
     ERR(ESNOTFND)
     SUBNULL()
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
@@ -199,7 +198,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[5])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
@@ -208,7 +207,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[5])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
@@ -217,7 +216,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[5])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "1234");
@@ -227,7 +226,7 @@ int main(void)
     ERR(ESNOTFND)
     SUBNULL()
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "IT ALL");
@@ -236,7 +235,7 @@ int main(void)
     ERR(EOK)
     PTREQ(sub, &str1[5])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "EEP");
@@ -250,12 +249,12 @@ int main(void)
 #ifdef HAVE_STRCASESTR
     std_sub = strcasestr(str1, str2);
     if (sub != std_sub) {
-        debug_printf("%s %u  Legacy difference rc=%u \n",
-                     __FUNCTION__, __LINE__, rc);
+        debug_printf("%s %u  Legacy difference rc=%u \n", __FUNCTION__,
+                     __LINE__, rc);
     }
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }

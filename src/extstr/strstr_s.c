@@ -56,14 +56,15 @@
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall not be 0.
  * @pre  slen shall not be 0, when *src != 0 and src != dest
- * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src.
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of
+ * dest/src.
  *
  * @retval  EOK        when successful operation, substring found.
  * @retval  ESNULLP    when dest/src/substring is NULL pointer
  * @retval  ESZEROL    when dmax/slen = 0, unless *src = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
- * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
- *                     knows the object_size statically)
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOTFND   when substring not found
  *
@@ -71,11 +72,9 @@
  *     strprefix_s(), strspn_s(), strcspn_s(), strpbrk_s()
  *
  */
-EXPORT errno_t
-_strstr_s_chk (char *dest, rsize_t dmax,
-               const char *src, rsize_t slen, char **substringp,
-               const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
+                             rsize_t slen, char **substringp,
+                             const size_t destbos, const size_t srcbos) {
     rsize_t len;
     rsize_t dlen;
     int i;
@@ -97,19 +96,19 @@ _strstr_s_chk (char *dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         if (unlikely(slen > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("strstr_s: slen exceeds dmax",
-                       (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
             if (unlikely(slen > RSIZE_MAX_STR)) {
-                invoke_safe_str_constraint_handler("strstr_s: slen exceeds dmax",
-                       (void*)src, ESLEMAX);
+                invoke_safe_str_constraint_handler(
+                    "strstr_s: slen exceeds dmax", (void *)src, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             } else {
                 invoke_safe_str_constraint_handler("strstr_s: slen exceeds src",
-                       (void*)src, EOVERFLOW);
+                                                   (void *)src, EOVERFLOW);
                 return RCNEGATE(EOVERFLOW);
             }
         }
@@ -131,8 +130,8 @@ _strstr_s_chk (char *dest, rsize_t dmax,
     }
     /* Since 3.3 allow slen=0 with src="" */
     if (unlikely(slen == 0)) {
-        invoke_safe_str_constraint_handler("strstr_s: slen is 0",
-                   (void*)src, ESZEROL);
+        invoke_safe_str_constraint_handler("strstr_s: slen is 0", (void *)src,
+                                           ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 

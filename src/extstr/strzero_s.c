@@ -39,11 +39,10 @@
  * @def strzero_s(dest,dmax)
  * @brief
  *    Nulls maximal dmax characters of dest.  This function can be used
- *    to clear strings that contained sensitive data, until the terminating NULL
- *    character.
- *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written in the
- *    array of dmax characters pointed to by dest are nulled.
+ *    to clear strings that contained sensitive data, until the terminating
+ * NULL character. With SAFECLIB_STR_NULL_SLACK defined all elements following
+ * the terminating null character (if any) written in the array of dmax
+ * characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -65,9 +64,7 @@
  *    strispassword_s()
  */
 
-EXPORT errno_t
-_strzero_s_chk (char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT errno_t _strzero_s_chk(char *dest, rsize_t dmax, const size_t destbos) {
     CHK_DEST_NULL("strzero_s")
     CHK_DMAX_ZERO("strzero_s")
     if (destbos == BOS_UNKNOWN) {

@@ -86,7 +86,8 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retvalp  pointer to a \c size_t object where the result will be stored
+ * @param[out]  retvalp  pointer to a \c size_t object where the result will be
+ * stored
  * @param[out]  dest     pointer to bytes where the result will be stored
  * @param[in]   dmax     restricted maximum length of \c dest
  * @param[in]   wc       the wide character to convert
@@ -101,8 +102,8 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return Returns zero on success and non-zero on failure, in which
- *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is invalid)
- *         and \c *retvalp is set to (size_t)-1 (unless retvalp is null).
+ *         case, \c dest[0] is set to '\0' (unless dest is null or dmax is
+ * invalid) and \c *retvalp is set to (size_t)-1 (unless retvalp is null).
  *
  * @retval  EOK        on successful conversion.
  * @retval  ESNULLP    when retvalp or ps are a NULL pointer
@@ -112,19 +113,17 @@
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
- * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and dest != NULL
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and
+ * dest != NULL
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
  *
  * @see
  *    wctomb_s()
  */
 
-EXPORT errno_t
-_wcrtomb_s_chk(size_t *restrict retvalp,
-               char *restrict dest, rsize_t dmax,
-               wchar_t wc, mbstate_t *restrict ps,
-               const size_t destbos)
-{
+EXPORT errno_t _wcrtomb_s_chk(size_t *restrict retvalp, char *restrict dest,
+                              rsize_t dmax, wchar_t wc, mbstate_t *restrict ps,
+                              const size_t destbos) {
     size_t len;
     errno_t rc;
 
@@ -142,8 +141,8 @@ _wcrtomb_s_chk(size_t *restrict retvalp,
     } else {
         if (unlikely(dmax != 0)) {
             invoke_safe_str_constraint_handler("wcrtomb_s"
-                       ": dmax is not 0",
-                       (void*)dest, ESNULLP);
+                                               ": dmax is not 0",
+                                               (void *)dest, ESNULLP);
             return RCNEGATE(ESNULLP);
         }
     }

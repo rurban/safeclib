@@ -37,7 +37,8 @@
 #endif
 
 /* conflicting API */
-#if (defined(TEST_MSVCRT) && defined(HAVE_ASCTIME_S)) || defined(MINGW_HAS_SECURE_API)
+#if (defined(TEST_MSVCRT) && defined(HAVE_ASCTIME_S)) ||                       \
+    defined(MINGW_HAS_SECURE_API)
 #else
 
 /*#if defined(HAVE_ASCTIME_R)
@@ -50,8 +51,9 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
  * @brief
  *    The \c asctime_s function converts the given calendar time \c tm to a
  *    textual representation of the following fixed 25-character form:
- *    \c "Www Mmm dd hh:mm:ss yyyy\n", as with asctime. The message is copied into
- *    user-provided \c dest buffer, which is guaranteed to be null-terminated.
+ *    \c "Www Mmm dd hh:mm:ss yyyy\n", as with asctime. The message is copied
+ * into user-provided \c dest buffer, which is guaranteed to be
+ * null-terminated.
  *
  * @details
  *    No more than dmax-1 bytes are written, the buffer is always
@@ -102,16 +104,15 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
  *    ctime_s()
  */
 
-EXPORT errno_t
-_asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destbos)
-{
-    const char* buf;
+EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
+                              const size_t destbos) {
+    const char *buf;
     size_t len;
 
     CHK_DEST_NULL("asctime_s")
     if (unlikely(dmax < 26)) {
-        invoke_safe_str_constraint_handler("asctime_s: dmax is too small",
-                   NULL, ESLEMIN);
+        invoke_safe_str_constraint_handler("asctime_s: dmax is too small", NULL,
+                                           ESLEMIN);
         return ESLEMIN;
     }
     if (destbos == BOS_UNKNOWN) {
@@ -121,53 +122,39 @@ _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destb
         CHK_DEST_OVR("asctime_s", destbos)
         if (unlikely(destbos < 26)) {
             invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
-                   dest, ESLEMIN);
+                                               dest, ESLEMIN);
             return ESLEMIN;
         }
     }
 
     if (unlikely(tm == NULL)) {
-        invoke_safe_str_constraint_handler("asctime_s: tm is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("asctime_s: tm is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 
-    if (tm->tm_year < 0 ||
-        tm->tm_mon  < 0 ||
-        tm->tm_yday < 0 ||
-        tm->tm_mday < 1 ||
-        tm->tm_wday < 0 ||
-        tm->tm_hour < 0 ||
-        tm->tm_min  < 0 ||
-        tm->tm_sec  < 0 ||
-        tm->tm_isdst < 0
+    if (tm->tm_year < 0 || tm->tm_mon < 0 || tm->tm_yday < 0 ||
+        tm->tm_mday < 1 || tm->tm_wday < 0 || tm->tm_hour < 0 ||
+        tm->tm_min < 0 || tm->tm_sec < 0 || tm->tm_isdst < 0
 #ifdef HAVE_TM_GMTOFF
         || tm->tm_gmtoff < -1036800 /* 12*86400 */
 #endif
-        )
-    {
-        invoke_safe_str_constraint_handler("asctime_s: a tm member is too small",
-                   NULL, ESLEMIN);
+    ) {
+        invoke_safe_str_constraint_handler(
+            "asctime_s: a tm member is too small", NULL, ESLEMIN);
         return ESLEMIN;
     }
 
-    if (tm->tm_year > 8099 ||
-        tm->tm_mon  > 11   ||
-        tm->tm_yday > 365  ||
-        tm->tm_mday > 31   ||
-        tm->tm_wday > 6    ||
-        tm->tm_hour > 23   ||
-        tm->tm_min  > 59   ||
-        tm->tm_sec  > 60   ||
-        tm->tm_isdst > 1
+    if (tm->tm_year > 8099 || tm->tm_mon > 11 || tm->tm_yday > 365 ||
+        tm->tm_mday > 31 || tm->tm_wday > 6 || tm->tm_hour > 23 ||
+        tm->tm_min > 59 || tm->tm_sec > 60 || tm->tm_isdst > 1
 #ifdef HAVE_TM_GMTOFF
         || tm->tm_gmtoff > 1036800 /* 12*86400 */
 #endif
-        )
-    {
+    ) {
         /* does EOVERFLOW in asctime() */
-        invoke_safe_str_constraint_handler("asctime_s: a tm member is too large",
-                   NULL, ESLEMAX);
+        invoke_safe_str_constraint_handler(
+            "asctime_s: a tm member is too large", NULL, ESLEMAX);
         return ESLEMAX;
     }
 
@@ -175,15 +162,14 @@ _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destb
     if (dmax >= 120) { /* glibc reserves 114 */
         buf = asctime_r(tm, dest);
         if (!buf) {
-# ifdef SAFECLIB_STR_NULL_SLACK
+#ifdef SAFECLIB_STR_NULL_SLACK
             memset(dest, 0, dmax);
-# else
+#else
             *dest = '\0';
-# endif
+#endif
             return -1;
         }
-    }
-    else {
+    } else {
         static char tmp[120];
         buf = asctime_r(tm, (char *)&tmp);
         if (!buf)
@@ -198,7 +184,8 @@ _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destb
     }
 #else
     buf = asctime(tm);
-    if (0) goto esnospc;
+    if (0)
+        goto esnospc;
 #endif
     if (!buf)
         return -1;
@@ -207,9 +194,9 @@ _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm, const size_t destb
     if (likely(len < dmax)) {
         strcpy_s(dest, dmax, buf);
     } else {
-      esnospc:
-        invoke_safe_str_constraint_handler("asctime_s: dmax is too small",
-                   dest, ESNOSPC);
+    esnospc:
+        invoke_safe_str_constraint_handler("asctime_s: dmax is too small", dest,
+                                           ESNOSPC);
         return ESNOSPC;
     }
 

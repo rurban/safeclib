@@ -72,8 +72,7 @@ static constraint_handler_t str_handler = NULL;
  *    set_str_constraint_handler_s()
  */
 EXPORT constraint_handler_t
-set_str_constraint_handler_s (constraint_handler_t handler)
-{
+set_str_constraint_handler_s(constraint_handler_t handler) {
     constraint_handler_t prev_handler = str_handler;
     if (NULL == handler) {
         str_handler = sl_default_handler;
@@ -101,11 +100,9 @@ EXPORT_SYMBOL(set_str_constraint_handler_s);
  * @param error   The error code encountered.
  *
  */
-EXPORT void
-invoke_safe_str_constraint_handler (const char *restrict msg,
-                                     void *restrict ptr,
-                                     errno_t error)
-{
+EXPORT void invoke_safe_str_constraint_handler(const char *restrict msg,
+                                               void *restrict ptr,
+                                               errno_t error) {
     if (NULL != str_handler) {
         str_handler(msg, ptr, error);
     } else {
@@ -121,11 +118,10 @@ EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
 #define invoke_safe_str_constraint_handler(msg, ptr, error)
 #endif
 
-int
-handle_str_bos_overload(const char *restrict msg, char *restrict dest,
-                        const rsize_t dmax)
-{
-    size_t len = strnlen_s(dest, dmax); /* clear the min of strlen and dmax(=destbos) */
+int handle_str_bos_overload(const char *restrict msg, char *restrict dest,
+                            const rsize_t dmax) {
+    size_t len =
+        strnlen_s(dest, dmax); /* clear the min of strlen and dmax(=destbos) */
     errno_t err = EOVERFLOW;
     if (unlikely(len > RSIZE_MAX_STR)) {
         len = 1;
@@ -137,24 +133,20 @@ handle_str_bos_overload(const char *restrict msg, char *restrict dest,
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 
-void
-handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
-                         const rsize_t dmax, const size_t destbos)
-{
+void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
+                             const rsize_t dmax, const size_t destbos) {
     char msg[128];
-    sprintf(msg, "%s: wrong dmax %lu, dest has size %lu",
-            func, (unsigned long)dmax, (unsigned long)destbos);
+    sprintf(msg, "%s: wrong dmax %lu, dest has size %lu", func,
+            (unsigned long)dmax, (unsigned long)destbos);
     invoke_safe_str_constraint_handler(msg, (void *)dest, ESLEWRNG);
 }
 
-void
-handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
-                            const rsize_t smax, const size_t srcbos,
-                            const char* srcname, const char* smaxname)
-{
+void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
+                                 const rsize_t smax, const size_t srcbos,
+                                 const char *srcname, const char *smaxname) {
     char msg[128];
-    sprintf(msg, "%s: wrong %s %lu, %s has size %lu",
-            func, smaxname, (unsigned long)smax, srcname, (unsigned long)srcbos);
+    sprintf(msg, "%s: wrong %s %lu, %s has size %lu", func, smaxname,
+            (unsigned long)smax, srcname, (unsigned long)srcbos);
     invoke_safe_str_constraint_handler(msg, (void *)dest, ESLEWRNG);
 }
 

@@ -54,15 +54,16 @@
  *
  * @pre  Neither dest nor src shall be a null pointer.
  * @pre  dmax shall be sizeof(dest)
- * @pre  dmax shall not be 0, not be greater than RSIZE_MAX_MEM and sizeof(dest)
+ * @pre  dmax shall not be 0, not be greater than RSIZE_MAX_MEM and
+ * sizeof(dest)
  * @pre  n shall not be greater than dmax.
  * @pre  Copying shall not take place between regions that overlap.
  *
  * @note memccpy from BSD, Windows sec_api, glibc, newlib and everywhere else.
  *
  * @return  The memccpy() function returns a pointer to the next character in
- *          dest after c, or NULL if c was not found in the first n characters of
- *          src. If there is a runtime-constraint violation, the memccpy_s function
+ *          dest after c, or NULL if c was not found in the first n characters
+ * of src. If there is a runtime-constraint violation, the memccpy_s function
  *          stores zeros in the first dmax bytes of the region pointed to
  *          by dest if dest is not a null pointer and n is valid.
  *          With n=0, dest[0] is set to '\0', as with \c memccpy().
@@ -70,8 +71,8 @@
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO.
  * @retval  ESLEMAX     when dmax/n > RSIZE_MAX_MEM
- * @retval  EOVERFLOW   when dmax/n > size of dest (optionally, when the compiler
- *                      knows the object_size statically)
+ * @retval  EOVERFLOW   when dmax/n > size of dest (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when n > dmax
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -79,17 +80,15 @@
  * @see
  *    memcpy_s(), strncpy_s()
  */
-EXPORT errno_t
-_memccpy_s_chk(void *restrict dest, rsize_t dmax, const void *restrict src,
-               int c, rsize_t n,
-               const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
+                              const void *restrict src, int c, rsize_t n,
+                              const size_t destbos, const size_t srcbos) {
     uint8_t *dp;
-    const uint8_t  *sp;
+    const uint8_t *sp;
     rsize_t orig_dmax = dmax;
 
-    dp = (uint8_t*) dest;
-    sp = (uint8_t*) src;
+    dp = (uint8_t *)dest;
+    sp = (uint8_t *)src;
 
     CHK_DEST_MEM_NULL("memccpy_s")
     CHK_DMAX_MEM_ZERO("memccpy_s")
@@ -108,10 +107,10 @@ _memccpy_s_chk(void *restrict dest, rsize_t dmax, const void *restrict src,
     CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memccpy_s", n, RSIZE_MAX_MEM)
 
     /* overlap is disallowed */
-    if (unlikely(CHK_OVRLP(dp,dmax,sp,n))) {
+    if (unlikely(CHK_OVRLP(dp, dmax, sp, n))) {
         mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memccpy_s: overlap undefined",
-                   NULL, ESOVRLP);
+        invoke_safe_mem_constraint_handler("memccpy_s: overlap undefined", NULL,
+                                           ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 
@@ -136,7 +135,8 @@ _memccpy_s_chk(void *restrict dest, rsize_t dmax, const void *restrict src,
     }
 
     /* the entire src was not copied, so zero the whole buffer */
-    handle_error((char*)dest, orig_dmax, "memccpy_s: not enough "
+    handle_error((char *)dest, orig_dmax,
+                 "memccpy_s: not enough "
                  "space for src",
                  ESNOSPC);
     return RCNEGATE(ESNOSPC);

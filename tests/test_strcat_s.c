@@ -11,33 +11,32 @@
 #if defined(TEST_MSVCRT) && defined(HAVE_STRCAT_S)
 #undef HAVE_CT_BOS_OVR
 #undef strcat_s
-EXTERN errno_t
-strcat_s(char * restrict dest, rsize_t dmax, const char * restrict src);
+EXTERN errno_t strcat_s(char *restrict dest, rsize_t dmax,
+                        const char *restrict src);
 #endif
 
 #ifdef HAVE_STRCAT_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-int test_strcat_s (void);
+static char str1[LEN];
+static char str2[LEN];
+int test_strcat_s(void);
 
-int test_strcat_s (void)
-{
+int test_strcat_s(void) {
     errno_t rc;
-    int32_t  ind;
-    int32_t  len1;
-    int32_t  len2;
-    int32_t  len3;
+    int32_t ind;
+    int32_t len1;
+    int32_t len2;
+    int32_t len3;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "");
     strcpy(str2, "aaaa");
@@ -53,7 +52,7 @@ int test_strcat_s (void)
     ERR_MSVC(ESNULLP, EINVAL);
     EXPSTR(str1, "");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaa");
     EXPECT_BOS("empty src")
@@ -62,7 +61,7 @@ int test_strcat_s (void)
     EXPSTR(str1, "");
     CHECK_SLACK(str1, LEN);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaa");
     EXPECT_BOS("empty dest or dmax")
@@ -70,14 +69,14 @@ int test_strcat_s (void)
     ERR_MSVC(ESZEROL, EINVAL);
     EXPSTR(str1, "aaaa");
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abc");
     /*printf("** bos(str1) %ld [%s:%u]\n", BOS(str1), __FUNCTION__, __LINE__);*/
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
-        rc = strcat_s(str1, LEN+1, str2);
-        ERR(EOVERFLOW);     /* dmax exceeds dest */
+        rc = strcat_s(str1, LEN + 1, str2);
+        ERR(EOVERFLOW); /* dmax exceeds dest */
         if (!use_msvcrt) {
             EXPSTR(str1, ""); /* cleared */
             CHECK_SLACK(str1, 4);
@@ -86,20 +85,22 @@ int test_strcat_s (void)
         rc = strcat_s(str1, LEN, str2);
         ERR(0);
     } else {
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
-        debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__, __LINE__);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+        debug_printf("%s %u  Error unknown str1 object_size\n", __FUNCTION__,
+                     __LINE__);
         errs++;
-# endif
+#endif
     }
 
     strcpy(str1, "a");
     EXPECT_BOS("dest overflow")
-    rc = strcat_s(str1, (RSIZE_MAX_STR+1), str2);
+    rc = strcat_s(str1, (RSIZE_MAX_STR + 1), str2);
     ERR_MSVC(ESLEMAX, 0);
-    EXPSTR(str1, !use_msvcrt ? "" : "aaaaa"); /* cleared, because BOS is known */
+    EXPSTR(str1,
+           !use_msvcrt ? "" : "aaaaa"); /* cleared, because BOS is known */
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -114,7 +115,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -126,7 +127,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcd");
 
@@ -146,7 +147,7 @@ int test_strcat_s (void)
     EXPNULL(str1);
     CHECK_SLACK(str1, 4);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcdefgh");
 
@@ -157,7 +158,7 @@ int test_strcat_s (void)
     EXPNULL(&str1[3])
     CHECK_SLACK(&str1[3], 5);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "abcdefgh");
 
@@ -168,7 +169,7 @@ int test_strcat_s (void)
     EXPNULL(&str1[3]);
     CHECK_SLACK(&str1[3], 12);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(&str1[0], "aaaaaaaaaa");
     strcpy(&str2[0], "keep it simple");
@@ -179,14 +180,14 @@ int test_strcat_s (void)
     rc = strcat_s(str1, LEN, str2);
     ERR(EOK)
     len3 = strlen(str1);
-    if (len3 != (len1+len2)) {
-        debug_printf("%s %u lengths wrong: %u  %u  %u \n",
-                     __FUNCTION__, __LINE__, len1, len2, len3);
+    if (len3 != (len1 + len2)) {
+        debug_printf("%s %u lengths wrong: %u  %u  %u \n", __FUNCTION__,
+                     __LINE__, len1, len2, len3);
         errs++;
     }
-    CHECK_SLACK(&str1[len3], LEN-len3);
+    CHECK_SLACK(&str1[len3], LEN - len3);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -198,7 +199,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -210,7 +211,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -219,9 +220,9 @@ int test_strcat_s (void)
     ERR(EOK)
     EXPSTR(str1, str2)
     len1 = strlen(str1);
-    CHECK_SLACK(&str1[len1], LEN-len1);
+    CHECK_SLACK(&str1[len1], LEN - len1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     str2[0] = '\0';
@@ -231,7 +232,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, LEN);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -240,9 +241,9 @@ int test_strcat_s (void)
     ERR(EOK)
     EXPSTR(str1, str2)
     len1 = strlen(str1);
-    CHECK_SLACK(&str1[len1], LEN-len1);
+    CHECK_SLACK(&str1[len1], LEN - len1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
@@ -251,9 +252,9 @@ int test_strcat_s (void)
     ERR(EOK)
     EXPSTR(str1, "qqweqqkeep it simple")
     len1 = strlen(str1);
-    CHECK_SLACK(&str1[len1], LEN-len1);
+    CHECK_SLACK(&str1[len1], LEN - len1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -265,7 +266,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 12);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -274,9 +275,9 @@ int test_strcat_s (void)
     ERR(EOK)
     EXPSTR(str1, "1234keep it simple")
     len1 = strlen(str1);
-    CHECK_SLACK(&str1[len1], LEN-len1);
+    CHECK_SLACK(&str1[len1], LEN - len1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
 
@@ -287,7 +288,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 8);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "123456789");
 
@@ -298,7 +299,7 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, 9);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
 
@@ -307,17 +308,17 @@ int test_strcat_s (void)
     EXPNULL(str1)
     CHECK_SLACK(str1, LEN);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
     len1 = strlen(str1);
 
-    rc = strcat_s(&str1[5], LEN-5, &str1[4]);
+    rc = strcat_s(&str1[5], LEN - 5, &str1[4]);
     ERR_MSVC(ESOVRLP, ERANGE);
     EXPNULL(&str1[5])
-    CHECK_SLACK(&str1[5], LEN-5);
+    CHECK_SLACK(&str1[5], LEN - 5);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
@@ -326,9 +327,9 @@ int test_strcat_s (void)
     ERR(EOK)
     EXPSTR(str2, "123keep it simple")
     len2 = strlen(str2);
-    CHECK_SLACK(&str2[len2], LEN-len2);
+    CHECK_SLACK(&str2[len2], LEN - len2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "1234");
     strcpy(str1, "56789");
@@ -339,9 +340,9 @@ int test_strcat_s (void)
     ERR(EOK)
     EXPSTR(str2, "123456789")
     len2 = strlen(str2);
-    CHECK_SLACK(&str2[len2], 10-len2);
+    CHECK_SLACK(&str2[len2], 10 - len2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -349,8 +350,5 @@ int test_strcat_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_strcat_s());
-}
+int main(void) { return (test_strcat_s()); }
 #endif

@@ -56,7 +56,8 @@ any of the arguments corresponding to %s is a null pointer.
  *
  * @pre Neither \c src nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not
+ * yet)
  * @pre No encoding error shall occur.
  * @pre \c %c, \c %s, and \c %[ conversion specifiers each expect two
  *      arguments (the usual pointer and a value of type \c rsize_t
@@ -83,15 +84,14 @@ any of the arguments corresponding to %s is a null pointer.
  *
  */
 
-EXPORT int
-vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, va_list ap)
-{
+EXPORT int vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
+                      va_list ap) {
     wchar_t *p;
     int ret;
 
     if (unlikely(src == NULL)) {
-        invoke_safe_str_constraint_handler("vswscanf_s: src is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vswscanf_s: src is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return EOF;
     }
@@ -103,16 +103,16 @@ vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, va_list ap)
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vswscanf_s: fmt is null",
-                   (void*)src, ESNULLP);
+                                           (void *)src, ESNULLP);
         errno = ESNULLP;
         return EOF;
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
-    if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
-        if ((p-fmt == 0) || *(p-1) != L'%') {
+    if (unlikely((p = wcsstr((wchar_t *)fmt, L"%n")))) {
+        if ((p - fmt == 0) || *(p - 1) != L'%') {
             invoke_safe_str_constraint_handler("vswscanf_s: illegal %n",
-                   (void*)src, EINVAL);
+                                               (void *)src, EINVAL);
             errno = EINVAL;
             return EOF;
         }
@@ -120,16 +120,16 @@ vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, va_list ap)
 #elif defined(HAVE_WCSCHR)
     if (unlikely((p = wcschr(fmt, flen, L'n')))) {
         /* at the beginning or if inside, not %%n */
-        if (((p-fmt >= 1) && *(p-1) == L'%') &&
-            ((p-fmt == 1) || *(p-2) != L'%')) {
+        if (((p - fmt >= 1) && *(p - 1) == L'%') &&
+            ((p - fmt == 1) || *(p - 2) != L'%')) {
             invoke_safe_str_constraint_handler("vswscanf_s: illegal %n",
-                       (void*)src, EINVAL);
+                                               (void *)src, EINVAL);
             errno = EINVAL;
             return EOF;
         }
     }
 #else
-    #error need wcsstr or wcschr
+#error need wcsstr or wcschr
 #endif
 
     errno = 0;
@@ -138,7 +138,7 @@ vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt, va_list ap)
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vswscanf_s: ";
         strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, (void*)src, errno);
+        invoke_safe_str_constraint_handler(errstr, (void *)src, errno);
     }
 
     return ret;

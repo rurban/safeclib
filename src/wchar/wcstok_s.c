@@ -38,7 +38,8 @@
 #endif
 
 /* conflicting API, sec_api has no restrict */
-#if (defined(TEST_MSVCRT) || defined(MINGW_HAS_SECURE_API)) && defined(HAVE_WCSTOK_S)
+#if (defined(TEST_MSVCRT) || defined(MINGW_HAS_SECURE_API)) &&                 \
+    defined(HAVE_WCSTOK_S)
 #else
 
 /**
@@ -124,11 +125,11 @@
  * @return  The wcstok_s function returns a pointer to the first character
  *          of a token; or a null pointer if there is no token or there
  *          is a runtime-constraint violation.
- *          Each call modifies dest by substituting a wide NULL character for the
- *          first delimiter that occurs after the returned token.
- *          If there is a runtime-constraint violation, the strtok_s function
- *          does not indirect through the dest/delim pointers, and does not
- *          store a value in the object pointed to by ptr.
+ *          Each call modifies dest by substituting a wide NULL character for
+ * the first delimiter that occurs after the returned token. If there is a
+ * runtime-constraint violation, the strtok_s function does not indirect
+ * through the dest/delim pointers, and does not store a value in the object
+ * pointed to by ptr.
  *
  * errno is set to:
  *          ESNULLP     when dest/delim/ptr is NULL pointer
@@ -174,11 +175,9 @@
  * @endcode
  */
 
-EXPORT wchar_t *
-_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
-              const wchar_t *restrict delim, wchar_t **restrict ptr,
-              const size_t destbos)
-{
+EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
+                              const wchar_t *restrict delim,
+                              wchar_t **restrict ptr, const size_t destbos) {
     const wchar_t *pt;
     wchar_t *ptoken;
     rsize_t dlen;
@@ -188,7 +187,7 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
 
     if (unlikely(dmaxp == NULL)) {
         invoke_safe_str_constraint_handler("wcstok_s: dmaxp is NULL",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }
@@ -196,28 +195,28 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
     dlen = *dmaxp;
     if (unlikely(dlen == 0)) {
         invoke_safe_str_constraint_handler("wcstok_s: *dmaxp is 0",
-                   (void*)dest, ESZEROL);
+                                           (void *)dest, ESZEROL);
         errno = ESZEROL;
         return (NULL);
     }
 
     if (unlikely(dlen > RSIZE_MAX_WSTR)) {
         invoke_safe_str_constraint_handler("wcstok_s: *dmaxp exceeds max",
-                   (void*)dest, ESLEMAX);
+                                           (void *)dest, ESLEMAX);
         errno = ESLEMAX;
         return (NULL);
     }
 
     if (unlikely(delim == NULL)) {
         invoke_safe_str_constraint_handler("wcstok_s: delim is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }
 
     if (unlikely(ptr == NULL)) {
         invoke_safe_str_constraint_handler("wcstok_s: ptr is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }
@@ -227,7 +226,7 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
         dest = *ptr;
         if (unlikely(dest == NULL)) {
             invoke_safe_str_constraint_handler("wcstok_s: dest/*ptr is null",
-                       NULL, ESNULLP);
+                                               NULL, ESNULLP);
             errno = ESNULLP;
             return (NULL);
         }
@@ -236,22 +235,22 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
     destsz = dlen * sizeof(wchar_t);
     /* on dest == NULL, destbos is known and 0. skip that */
     if (destbos == BOS_UNKNOWN || !orig_dest) {
-        BND_CHK_PTR_BOUNDS(dest,destsz);
+        BND_CHK_PTR_BOUNDS(dest, destsz);
     } else {
         if (unlikely(destsz > destbos)) {
             invoke_safe_str_constraint_handler("wcstok_s: *dmaxp exceeds dest",
-                       (void*)dest, EOVERFLOW);
+                                               (void *)dest, EOVERFLOW);
             errno = EOVERFLOW;
             return (NULL);
         }
 #ifdef HAVE_WARN_DMAX
         if (unlikely(destsz != destbos)) {
-            handle_str_bos_chk_warn("wcstok_s", (char*)dest, dlen,
-                                    destbos/sizeof(wchar_t));
-# ifdef HAVE_ERROR_DMAX
+            handle_str_bos_chk_warn("wcstok_s", (char *)dest, dlen,
+                                    destbos / sizeof(wchar_t));
+#ifdef HAVE_ERROR_DMAX
             errno = ESLEWRNG;
             return (NULL);
-# endif
+#endif
         }
 #endif
     }
@@ -267,9 +266,8 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
             *ptr = NULL;
             *dmaxp = 0;
             *dest = L'\0';
-            invoke_safe_str_constraint_handler(
-                      "wcstok_s: dest is unterminated",
-                      (void*)orig_dest, ESUNTERM);
+            invoke_safe_str_constraint_handler("wcstok_s: dest is unterminated",
+                                               (void *)orig_dest, ESUNTERM);
             errno = ESUNTERM;
             return (NULL);
         }
@@ -287,8 +285,7 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
                 *dmaxp = 0;
                 *dest = L'\0';
                 invoke_safe_str_constraint_handler(
-                          "wcstok_s: delim is unterminated",
-                          (void*)delim, ESUNTERM);
+                    "wcstok_s: delim is unterminated", (void *)delim, ESUNTERM);
                 errno = ESUNTERM;
                 return (NULL);
             }
@@ -324,9 +321,8 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
             *ptr = NULL;
             *dmaxp = 0;
             *dest = L'\0';
-            invoke_safe_str_constraint_handler(
-                      "wcstok_s: dest is unterminated",
-                      (void*)orig_dest, ESUNTERM);
+            invoke_safe_str_constraint_handler("wcstok_s: dest is unterminated",
+                                               (void *)orig_dest, ESUNTERM);
             errno = ESUNTERM;
             return (NULL);
         }
@@ -340,8 +336,7 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
                 *dmaxp = 0;
                 *dest = L'\0';
                 invoke_safe_str_constraint_handler(
-                          "wcstok_s: delim is unterminated",
-                          (void*)delim, ESUNTERM);
+                    "wcstok_s: delim is unterminated", (void *)delim, ESUNTERM);
                 errno = ESUNTERM;
                 return (NULL);
             }
@@ -353,8 +348,8 @@ _wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
                  * and return context ptr to next char
                  */
                 *dest = L'\0';
-                *ptr = (dest + 1);  /* return pointer for next scan */
-                *dmaxp = dlen - 1;   /* account for the nulled delimiter */
+                *ptr = (dest + 1); /* return pointer for next scan */
+                *dmaxp = dlen - 1; /* account for the nulled delimiter */
                 return (ptoken);
             } else {
                 /*

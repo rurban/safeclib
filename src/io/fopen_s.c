@@ -36,7 +36,8 @@
 #endif
 
 /* conflicting API */
-#if (defined(TEST_MSVCRT) && defined(HAVE_FOPEN_S)) || defined(MINGW_HAS_SECURE_API)
+#if (defined(TEST_MSVCRT) && defined(HAVE_FOPEN_S)) ||                         \
+    defined(MINGW_HAS_SECURE_API)
 #else
 
 /**
@@ -74,27 +75,25 @@
  * @retval  > 0        any other errno
  */
 
-EXPORT errno_t
-fopen_s(FILE *restrict *restrict streamptr,
-        const char *restrict filename,
-        const char *restrict mode)
-{
+EXPORT errno_t fopen_s(FILE *restrict *restrict streamptr,
+                       const char *restrict filename,
+                       const char *restrict mode) {
 
     if (unlikely(streamptr == NULL)) {
-        invoke_safe_str_constraint_handler("fopen_s: streamptr is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("fopen_s: streamptr is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 
     if (unlikely(filename == NULL)) {
-        invoke_safe_str_constraint_handler("fopen_s: filename is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("fopen_s: filename is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 
     if (unlikely(mode == NULL)) {
-        invoke_safe_str_constraint_handler("fopen_s: mode is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("fopen_s: mode is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 

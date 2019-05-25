@@ -22,19 +22,19 @@ EXTERN uint32_t _towupper(uint32_t wc);
 
 EXTERN uint32_t _towcase(uint32_t wc, int lower);
 int check_casefolding(uint32_t lwr, uint32_t upr);
-int check(uint32_t wc, const char* status, const char* name);
-int test_towupper (void);
+int check(uint32_t wc, const char *status, const char *name);
+int test_towupper(void);
 
-#define GENCAT  "DerivedGeneralCategory.txt"
-#define CFOLD   "CaseFolding.txt"
+#define GENCAT "DerivedGeneralCategory.txt"
+#define CFOLD "CaseFolding.txt"
 #ifndef PERL
 /* Must have the same Unicode version 9.0, at least 5.26.
    Better 5.27.3 with Unicode 10. */
 /*# define PERL "perl" */
 /*# define PERL "cperl5.27.2"*/
-# define PERL "perl5.27.3"
+#define PERL "perl5.27.3"
 #endif
-#define TESTPL  "test-upr.pl"
+#define TESTPL "test-upr.pl"
 
 char s[128];
 char code[16];
@@ -57,17 +57,17 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
         int c;
         if (p && *p && s[0] != '#' && s[0] != '\n') {
             p = strstr(s, "; ");
-            l = p-s;
+            l = p - s;
             memcpy(code, s, l);
             code[l] = 0;
             *status = p[2];
             status[1] = 0;
             p1 = strstr(&p[5], "; ");
-            l = p1-p-5;
+            l = p1 - p - 5;
             memcpy(mapping, &p[5], l); /* the other cases */
             mapping[l] = 0;
             strcpy(name, &p1[4]);
-            name[strlen(name)-1] = 0;
+            name[strlen(name) - 1] = 0;
 
             c = sscanf(code, "%X", &wc);
             if (!c)
@@ -80,8 +80,9 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
             if (lwr != mp) {
                 if (*status != 'F') {
                     /* false positives */
-                    debug_printf("%u U+%04X: U+%04X != U+%04X status=%s, name=%s\n",
-                           __LINE__, wc, lwr, mp, status, name);
+                    debug_printf(
+                        "%u U+%04X: U+%04X != U+%04X status=%s, name=%s\n",
+                        __LINE__, wc, lwr, mp, status, name);
                     /* cross-check with perl */
                     if (!init) {
                         fprintf(pl, "use v5.26;\n");
@@ -93,9 +94,10 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
                             "unpack(\"W*\",$u) if $u ne $got;\n",
                             lwr, lwr, upr, upr);
                     return 1;
-              /*} else {
-                    printf("%u U+%04X: U+%04X != U+%04X status=F, name=%s\n",
-                    __LINE__, wc, lwr, mp, name);*/
+                    /*} else {
+                          printf("%u U+%04X: U+%04X != U+%04X status=F,
+                       name=%s\n",
+                          __LINE__, wc, lwr, mp, name);*/
                 }
             }
             return 0;
@@ -107,7 +109,7 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
 }
 
 /* checks a lower case letter from DerivedGeneralCategory */
-int check(uint32_t wc, const char* _status, const char* _name) {
+int check(uint32_t wc, const char *_status, const char *_name) {
     int errs = 0;
     uint32_t upr;
     upr = wc < 128 ? (uint32_t)toupper(wc) : _towcase(wc, 0);
@@ -135,21 +137,22 @@ int check(uint32_t wc, const char* _status, const char* _name) {
     return errs;
 }
 
-int test_towupper (void)
-{
+int test_towupper(void) {
     int errs = 0;
     int lowfound = 0;
     uint32_t wc;
     struct stat st;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     pl = fopen(TESTPL, "w");
-    f  = fopen(GENCAT, "r");
+    f = fopen(GENCAT, "r");
     if (!f) {
         printf("downloading %s ...", GENCAT);
         fflush(stdout);
-        if (system("wget ftp://ftp.unicode.org/Public/UNIDATA/extracted/DerivedGeneralCategory.txt"))
+        if (system("wget "
+                   "ftp://ftp.unicode.org/Public/UNIDATA/extracted/"
+                   "DerivedGeneralCategory.txt"))
             printf(" done\n");
         else
             printf(" failed\n");
@@ -190,21 +193,21 @@ int test_towupper (void)
             p = strstr(s, "; ");
             if (!p)
                 continue;
-            l = p-s;
+            l = p - s;
             memcpy(code, s, l);
             code[l] = 0; /* uppercase only */
             status[0] = p[2];
             status[1] = p[3];
             status[2] = 0;
             p1 = strstr(&p[5], "# ");
-            l = p1-p-5;
+            l = p1 - p - 5;
             strncpy(name, &p1[3], 79);
-            name[strlen(name)-1] = 0;
+            name[strlen(name) - 1] = 0;
             strremovews_s(name, 80);
 
             c = sscanf(code, "%X..%X", &from, &to);
             if (c) {
-                for (wc=from; wc<=to; wc++) {
+                for (wc = from; wc <= to; wc++) {
                     check(wc, status, name);
                 }
             } else {
@@ -212,8 +215,7 @@ int test_towupper (void)
             }
             if (c) {
                 errs += check(wc, status, name);
-            }
-            else {
+            } else {
                 printf("!code=%s status=%s name=%s\n", code, status, name);
             }
         }
@@ -249,8 +251,5 @@ int test_towupper (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_towupper());
-}
+int main(void) { return (test_towupper()); }
 #endif

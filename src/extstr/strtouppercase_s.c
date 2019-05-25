@@ -36,7 +36,7 @@
 #endif
 
 /**
- * @def strtouppercase_s(dest, dmax) 
+ * @def strtouppercase_s(dest, dmax)
  * @brief
  *    Converts all lowercase characters to uppercase, leaving all
  *    other characters unchanged.
@@ -67,9 +67,8 @@
  *    strtolowercase_s()
  *
  */
-EXPORT errno_t
-_strtouppercase_s_chk (char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT errno_t _strtouppercase_s_chk(char *dest, rsize_t dmax,
+                                     const size_t destbos) {
     CHK_DEST_NULL("strtouppercase_s")
     CHK_DMAX_ZERO("strtouppercase_s")
     if (destbos == BOS_UNKNOWN) {
@@ -82,7 +81,7 @@ _strtouppercase_s_chk (char *dest, rsize_t dmax, const size_t destbos)
     while (*dest && dmax) {
 
         if ((*dest >= 'a') && (*dest <= 'z')) {
-             *dest = (char)(*dest - 32);
+            *dest = (char)(*dest - 32);
         }
         dest++;
         dmax--;

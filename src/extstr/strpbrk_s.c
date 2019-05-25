@@ -54,7 +54,8 @@
  *
  * @pre  Neither dest, src nor firstp shall be a null pointer.
  * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of dest/src
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of
+ * dest/src
  *
  * @return  pointer to the first ocurrence of any character contained in src
  * @retval  EOK         when successful operation
@@ -70,11 +71,9 @@
  *    strfirstsame_s(), strlastdiff_s(), strlastsame_s()
  *
  */
-EXPORT errno_t
-_strpbrk_s_chk (char *dest, rsize_t dmax,
-                char *src,  rsize_t slen, char **firstp,
-                const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
+                              char **firstp, const size_t destbos,
+                              const size_t srcbos) {
     char *ps;
     rsize_t len;
 
@@ -95,20 +94,20 @@ _strpbrk_s_chk (char *dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         if (unlikely(slen > RSIZE_MAX_STR)) {
             invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds dmax",
-                       (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
             invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds src",
-                       (void*)src, ESLEMAX);
+                                               (void *)src, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
     }
-    if (unlikely(slen == 0 )) {
-        invoke_safe_str_constraint_handler("strpbrk_s: slen is 0",
-                   (void*)src, ESZEROL);
+    if (unlikely(slen == 0)) {
+        invoke_safe_str_constraint_handler("strpbrk_s: slen is 0", (void *)src,
+                                           ESZEROL);
         return RCNEGATE(ESZEROL);
     }
 

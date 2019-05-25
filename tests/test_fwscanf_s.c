@@ -20,24 +20,23 @@
 */
 
 #ifdef HAVE_FWSCANF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static wchar_t   wstr1[LEN];
-static wchar_t   wstr2[LEN];
-static char      str3[LEN];
-#define TMP   "tmpfwscanf"
-static FILE* stream = NULL;
+static wchar_t wstr1[LEN];
+static wchar_t wstr2[LEN];
+static char str3[LEN];
+#define TMP "tmpfwscanf"
+static FILE *stream = NULL;
 void win_stuff_stream(const wchar_t *dest);
-int test_fwscanf_s (void);
+int test_fwscanf_s(void);
 
-void win_stuff_stream(const wchar_t *dest)
-{
+void win_stuff_stream(const wchar_t *dest) {
     if (!stream)
         stream = fopen(TMP, "w+");
     else
@@ -47,31 +46,30 @@ void win_stuff_stream(const wchar_t *dest)
 }
 
 #ifndef USE_PIPE
-# define stuff_stream(s) \
-    wcscpy(wstr1, s); \
-    len1 = wcslen(s); \
+#define stuff_stream(s)                                                        \
+    wcscpy(wstr1, s);                                                          \
+    len1 = wcslen(s);                                                          \
     win_stuff_stream(s);
 #else
-# define stuff_stream(s) \
-    wcscpy(wstr1, s); \
-    len1 = wcslen(s); \
-    write(p[1], (s), sizeof(s)-1); \
-    write(p[1], L"\n", sizeof(L"\n")-1);
+#define stuff_stream(s)                                                        \
+    wcscpy(wstr1, s);                                                          \
+    len1 = wcslen(s);                                                          \
+    write(p[1], (s), sizeof(s) - 1);                                           \
+    write(p[1], L"\n", sizeof(L"\n") - 1);
 #endif
 
-int test_fwscanf_s (void)
-{
+int test_fwscanf_s(void) {
     errno_t rc;
-    int32_t  ind;
-    size_t  len1;
-    size_t  len2;
-    size_t  len3;
+    int32_t ind;
+    size_t len1;
+    size_t len2;
+    size_t len3;
     int errs = 0;
 #ifdef USE_PIPE
     int p[2];
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
 /* This pipe does not work on windows */
@@ -112,7 +110,7 @@ int test_fwscanf_s (void)
       ERR(-1); or 0
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     stuff_stream(L"      24");
     rc = fwscanf_s(stream, L"%ls %n", wstr2, LEN, &ind);
@@ -122,11 +120,11 @@ int test_fwscanf_s (void)
     rc = fwscanf_s(stream, L"%ls %%n", wstr2);
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
-        printf("%s %u wrong fwscanf(\"\",L\"%%n\"): %d\n",
-                     __FUNCTION__, __LINE__, (int)rc);
+        printf("%s %u wrong fwscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
+               __LINE__, (int)rc);
     } else
 #endif
-    ERR(1);
+        ERR(1);
     ERRNO(0);
 
     stuff_stream(L"      24");
@@ -149,12 +147,12 @@ int test_fwscanf_s (void)
     ERR(1);
     ERRNO(0);
     if ((int)len1 != 24) {
-        debug_printf("%s %u wrong arg: %d\n",
-                     __FUNCTION__, __LINE__, (int)len1);
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
+                     (int)len1);
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     stuff_stream(L"aaaaaaaaaa");
 
@@ -163,12 +161,12 @@ int test_fwscanf_s (void)
     len2 = wcslen(wstr2);
     len3 = wcslen(wstr1);
     if (len3 != len2) {
-        debug_printf("%s %u lengths wrong: %d  %d  %d \n",
-                     __FUNCTION__, __LINE__, (int)len1, (int)len2, (int)len3);
+        debug_printf("%s %u lengths wrong: %d  %d  %d \n", __FUNCTION__,
+                     __LINE__, (int)len1, (int)len2, (int)len3);
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     stuff_stream(L"keep it simple");
 
@@ -176,7 +174,7 @@ int test_fwscanf_s (void)
     ERR(1);
     WEXPSTR(wstr1, L"keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     stuff_stream(L"qqweqq");
 
@@ -184,7 +182,7 @@ int test_fwscanf_s (void)
     NOERR()
     WEXPSTR(wstr2, wstr1);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     wstr1[0] = L'\0';
     stuff_stream(L"");
@@ -193,7 +191,7 @@ int test_fwscanf_s (void)
     ERR(1);
     /*WEXPNULL(str2) TODO. Got "eep" */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* overlapping works fine on darwin, different on linux glibc */
     /*
@@ -210,7 +208,7 @@ int test_fwscanf_s (void)
     WEXPSTR(wstr1, L"12345678123456789");
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* TODO: we want to test a vfwscanf error propagated through vfwscanf_s.
        The only error is EOF(stream), but this is blocking.
@@ -242,7 +240,7 @@ int test_fwscanf_s (void)
     /*WEXPNULL(wstr2); TODO zero the output args */
 #endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     unlink(TMP);
 
@@ -252,8 +250,5 @@ int test_fwscanf_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_fwscanf_s());
-}
+int main(void) { return (test_fwscanf_s()); }
 #endif

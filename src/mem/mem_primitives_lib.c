@@ -50,18 +50,18 @@
  * @param[in]  len    number of bytes to be set
  * @param[in]  value  byte value
  *
- * @note mem_prim_set provides a memory barrier for modern out-of-order CPU's 
+ * @note mem_prim_set provides a memory barrier for modern out-of-order CPU's
  *       to ensure a cache flush or at least a compiler barrier fallback to
  *       ensure that is not optimized away by optimizing compilers.
  */
 
 #if __WORDSIZE != 64
 
-void
-mem_prim_set (void *dest, uint32_t len, uint8_t value)
-{
+void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
     /* Avoid possible compiler optimization */
-    /* See https://wiki.sei.cmu.edu/confluence/display/c/MSC06-C.+Beware+of+compiler+optimizations */
+    /* See
+     * https://wiki.sei.cmu.edu/confluence/display/c/MSC06-C.+Beware+of+compiler+optimizations
+     */
     volatile uint8_t *dp;
     uint32_t count;
     uint32_t lcount;
@@ -71,14 +71,14 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 
     count = len;
 
-    dp = (volatile uint8_t*) dest;
+    dp = (volatile uint8_t *)dest;
 
     value32 = value | (value << 8) | (value << 16) | (value << 24);
 
     /*
      * First, do the few bytes to get uint32_t aligned.
      */
-    for (; count && ( (uintptr_t)dp & (sizeof(uint32_t)-1) ); count--) {
+    for (; count && ((uintptr_t)dp & (sizeof(uint32_t) - 1)); count--) {
         *dp++ = value;
     }
 
@@ -98,29 +98,56 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
          * drops below 16, take the fast track to finish up.
          * 4 * 16, 16 words = 64 byte per loop */
         default:
-            *lp++ = value32; *lp++ = value32; *lp++ = value32; *lp++ = value32;
-            *lp++ = value32; *lp++ = value32; *lp++ = value32; *lp++ = value32;
-            *lp++ = value32; *lp++ = value32; *lp++ = value32; *lp++ = value32;
-            *lp++ = value32; *lp++ = value32; *lp++ = value32; *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
+            *lp++ = value32;
             lcount -= 16;
             break;
 
-        case 15:  *lp++ = value32; /* FALLTHRU */
-        case 14:  *lp++ = value32; /* FALLTHRU */
-        case 13:  *lp++ = value32; /* FALLTHRU */
-        case 12:  *lp++ = value32; /* FALLTHRU */
-        case 11:  *lp++ = value32; /* FALLTHRU */
-        case 10:  *lp++ = value32; /* FALLTHRU */
-        case 9:   *lp++ = value32; /* FALLTHRU */
-        case 8:   *lp++ = value32; /* FALLTHRU */
+        case 15:
+            *lp++ = value32; /* FALLTHRU */
+        case 14:
+            *lp++ = value32; /* FALLTHRU */
+        case 13:
+            *lp++ = value32; /* FALLTHRU */
+        case 12:
+            *lp++ = value32; /* FALLTHRU */
+        case 11:
+            *lp++ = value32; /* FALLTHRU */
+        case 10:
+            *lp++ = value32; /* FALLTHRU */
+        case 9:
+            *lp++ = value32; /* FALLTHRU */
+        case 8:
+            *lp++ = value32; /* FALLTHRU */
 
-        case 7:   *lp++ = value32; /* FALLTHRU */
-        case 6:   *lp++ = value32; /* FALLTHRU */
-        case 5:   *lp++ = value32; /* FALLTHRU */
-        case 4:   *lp++ = value32; /* FALLTHRU */
-        case 3:   *lp++ = value32; /* FALLTHRU */
-        case 2:   *lp++ = value32; /* FALLTHRU */
-        case 1:   *lp++ = value32; /* FALLTHRU */
+        case 7:
+            *lp++ = value32; /* FALLTHRU */
+        case 6:
+            *lp++ = value32; /* FALLTHRU */
+        case 5:
+            *lp++ = value32; /* FALLTHRU */
+        case 4:
+            *lp++ = value32; /* FALLTHRU */
+        case 3:
+            *lp++ = value32; /* FALLTHRU */
+        case 2:
+            *lp++ = value32; /* FALLTHRU */
+        case 1:
+            *lp++ = value32; /* FALLTHRU */
             lcount = 0;
             break;
         }
@@ -128,7 +155,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 
     /* remaining bytes */
     dp = (uint8_t *)lp;
-    count &= (sizeof(uint32_t)-1);
+    count &= (sizeof(uint32_t) - 1);
     for (; count; dp++, count--) {
         *dp = value;
     }
@@ -140,9 +167,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 #else /* __WORDSIZE != 64 */
 
 /* optimized for 64bit words */
-void
-mem_prim_set (void *dest, uint32_t len, uint8_t value)
-{
+void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
     volatile uint8_t *dp;
     uint64_t count;
     uint64_t lcount;
@@ -152,17 +177,18 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 
     count = len;
 
-    dp = (volatile uint8_t*) dest;
+    dp = (volatile uint8_t *)dest;
 
     value64 = (uint64_t)value;
     if (value) { /* value is mostly 0 */
         /* spread the byte 8x over the qword */
-        value64 |= (value64 << 8)  | (value64 << 16) | (value64 << 24) |
-                   (value64 << 32) | (value64 << 40) | (value64 << 48) | (value64 << 52);
+        value64 |= (value64 << 8) | (value64 << 16) | (value64 << 24) |
+                   (value64 << 32) | (value64 << 40) | (value64 << 48) |
+                   (value64 << 52);
     }
 
     /* First, do the few bytes to get uint64_t aligned. (rarely needed) */
-    for (; count && ( (uintptr_t)dp & (sizeof(uint64_t)-1) ); count--) {
+    for (; count && ((uintptr_t)dp & (sizeof(uint64_t) - 1)); count--) {
         *dp++ = value;
     }
 
@@ -180,29 +206,56 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
          * drops below 16, take the fast track to finish up.
          * 8 * 16, 16 qwords = 128 byte per loop */
         default:
-            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
-            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
-            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
-            *lp++ = value64; *lp++ = value64; *lp++ = value64; *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
+            *lp++ = value64;
             lcount -= 16;
             break;
 
-        case 15:  *lp++ = value64; /* FALLTHRU */
-        case 14:  *lp++ = value64; /* FALLTHRU */
-        case 13:  *lp++ = value64; /* FALLTHRU */
-        case 12:  *lp++ = value64; /* FALLTHRU */
-        case 11:  *lp++ = value64; /* FALLTHRU */
-        case 10:  *lp++ = value64; /* FALLTHRU */
-        case 9:   *lp++ = value64; /* FALLTHRU */
-        case 8:   *lp++ = value64; /* FALLTHRU */
+        case 15:
+            *lp++ = value64; /* FALLTHRU */
+        case 14:
+            *lp++ = value64; /* FALLTHRU */
+        case 13:
+            *lp++ = value64; /* FALLTHRU */
+        case 12:
+            *lp++ = value64; /* FALLTHRU */
+        case 11:
+            *lp++ = value64; /* FALLTHRU */
+        case 10:
+            *lp++ = value64; /* FALLTHRU */
+        case 9:
+            *lp++ = value64; /* FALLTHRU */
+        case 8:
+            *lp++ = value64; /* FALLTHRU */
 
-        case 7:   *lp++ = value64; /* FALLTHRU */
-        case 6:   *lp++ = value64; /* FALLTHRU */
-        case 5:   *lp++ = value64; /* FALLTHRU */
-        case 4:   *lp++ = value64; /* FALLTHRU */
-        case 3:   *lp++ = value64; /* FALLTHRU */
-        case 2:   *lp++ = value64; /* FALLTHRU */
-        case 1:   *lp++ = value64; /* FALLTHRU */
+        case 7:
+            *lp++ = value64; /* FALLTHRU */
+        case 6:
+            *lp++ = value64; /* FALLTHRU */
+        case 5:
+            *lp++ = value64; /* FALLTHRU */
+        case 4:
+            *lp++ = value64; /* FALLTHRU */
+        case 3:
+            *lp++ = value64; /* FALLTHRU */
+        case 2:
+            *lp++ = value64; /* FALLTHRU */
+        case 1:
+            *lp++ = value64; /* FALLTHRU */
             lcount = 0;
             break;
         }
@@ -210,7 +263,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
 
     /* remaining bytes */
     dp = (uint8_t *)lp;
-    count &= (sizeof(uint64_t)-1);
+    count &= (sizeof(uint64_t) - 1);
     for (; count; dp++, count--) {
         *dp = value;
     }
@@ -231,9 +284,7 @@ mem_prim_set (void *dest, uint32_t len, uint8_t value)
  * @param[in]  value uint16_t value
  *
  */
-void
-mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
-{
+void mem_prim_set16(uint16_t *dest, uint32_t len, uint16_t value) {
 
     volatile uint16_t *dp = dest;
     while (len != 0) {
@@ -244,29 +295,56 @@ mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
          * drops below 16, take the fast track to finish up.
          */
         default:
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
             len -= 16;
             break;
 
-        case 15:  *dp++ = value; /* FALLTHRU */
-        case 14:  *dp++ = value; /* FALLTHRU */
-        case 13:  *dp++ = value; /* FALLTHRU */
-        case 12:  *dp++ = value; /* FALLTHRU */
-        case 11:  *dp++ = value; /* FALLTHRU */
-        case 10:  *dp++ = value; /* FALLTHRU */
-        case 9:   *dp++ = value; /* FALLTHRU */
-        case 8:   *dp++ = value; /* FALLTHRU */
+        case 15:
+            *dp++ = value; /* FALLTHRU */
+        case 14:
+            *dp++ = value; /* FALLTHRU */
+        case 13:
+            *dp++ = value; /* FALLTHRU */
+        case 12:
+            *dp++ = value; /* FALLTHRU */
+        case 11:
+            *dp++ = value; /* FALLTHRU */
+        case 10:
+            *dp++ = value; /* FALLTHRU */
+        case 9:
+            *dp++ = value; /* FALLTHRU */
+        case 8:
+            *dp++ = value; /* FALLTHRU */
 
-        case 7:   *dp++ = value; /* FALLTHRU */
-        case 6:   *dp++ = value; /* FALLTHRU */
-        case 5:   *dp++ = value; /* FALLTHRU */
-        case 4:   *dp++ = value; /* FALLTHRU */
-        case 3:   *dp++ = value; /* FALLTHRU */
-        case 2:   *dp++ = value; /* FALLTHRU */
-        case 1:   *dp++ = value; /* FALLTHRU */
+        case 7:
+            *dp++ = value; /* FALLTHRU */
+        case 6:
+            *dp++ = value; /* FALLTHRU */
+        case 5:
+            *dp++ = value; /* FALLTHRU */
+        case 4:
+            *dp++ = value; /* FALLTHRU */
+        case 3:
+            *dp++ = value; /* FALLTHRU */
+        case 2:
+            *dp++ = value; /* FALLTHRU */
+        case 1:
+            *dp++ = value; /* FALLTHRU */
             len = 0;
             break;
         }
@@ -275,7 +353,6 @@ mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
     MEMORY_BARRIER;
     return;
 }
-
 
 /**
  * @brief
@@ -288,9 +365,7 @@ mem_prim_set16 (uint16_t *dest, uint32_t len, uint16_t value)
  *
  *
  */
-void
-mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
-{
+void mem_prim_set32(uint32_t *dest, uint32_t len, uint32_t value) {
     volatile uint32_t *dp = dest;
     while (len != 0) {
 
@@ -300,29 +375,56 @@ mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
          * drops below 16, take the fast track to finish up.
          */
         default:
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
-            *dp++ = value; *dp++ = value; *dp++ = value; *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
+            *dp++ = value;
             len -= 16;
             break;
 
-        case 15:  *dp++ = value; /* FALLTHRU */
-        case 14:  *dp++ = value; /* FALLTHRU */
-        case 13:  *dp++ = value; /* FALLTHRU */
-        case 12:  *dp++ = value; /* FALLTHRU */
-        case 11:  *dp++ = value; /* FALLTHRU */
-        case 10:  *dp++ = value; /* FALLTHRU */
-        case 9:   *dp++ = value; /* FALLTHRU */
-        case 8:   *dp++ = value; /* FALLTHRU */
+        case 15:
+            *dp++ = value; /* FALLTHRU */
+        case 14:
+            *dp++ = value; /* FALLTHRU */
+        case 13:
+            *dp++ = value; /* FALLTHRU */
+        case 12:
+            *dp++ = value; /* FALLTHRU */
+        case 11:
+            *dp++ = value; /* FALLTHRU */
+        case 10:
+            *dp++ = value; /* FALLTHRU */
+        case 9:
+            *dp++ = value; /* FALLTHRU */
+        case 8:
+            *dp++ = value; /* FALLTHRU */
 
-        case 7:   *dp++ = value; /* FALLTHRU */
-        case 6:   *dp++ = value; /* FALLTHRU */
-        case 5:   *dp++ = value; /* FALLTHRU */
-        case 4:   *dp++ = value; /* FALLTHRU */
-        case 3:   *dp++ = value; /* FALLTHRU */
-        case 2:   *dp++ = value; /* FALLTHRU */
-        case 1:   *dp++ = value; /* FALLTHRU */
+        case 7:
+            *dp++ = value; /* FALLTHRU */
+        case 6:
+            *dp++ = value; /* FALLTHRU */
+        case 5:
+            *dp++ = value; /* FALLTHRU */
+        case 4:
+            *dp++ = value; /* FALLTHRU */
+        case 3:
+            *dp++ = value; /* FALLTHRU */
+        case 2:
+            *dp++ = value; /* FALLTHRU */
+        case 1:
+            *dp++ = value; /* FALLTHRU */
             len = 0;
             break;
         }
@@ -345,15 +447,13 @@ mem_prim_set32 (uint32_t *dest, uint32_t len, uint32_t value)
 
 #if __WORDSIZE != 64
 
-void
-mem_prim_move (void *dest, const void *src, uint32_t len)
-{
+void mem_prim_move(void *dest, const void *src, uint32_t len) {
 
-#define wsize   sizeof(uint32_t)
-#define wmask   (wsize - 1)
+#define wsize sizeof(uint32_t)
+#define wmask (wsize - 1)
 
-    uint8_t *dp = (uint8_t*) dest;
-    const uint8_t *sp = (uint8_t*) src;
+    uint8_t *dp = (uint8_t *)dest;
+    const uint8_t *sp = (uint8_t *)src;
 
     uint32_t tsp;
 
@@ -380,7 +480,6 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
              */
             if ((tsp ^ (uintptr_t)dp) & wmask || len < wsize) {
                 tsp = len;
-
             } else {
                 tsp = wsize - (tsp & wmask);
             }
@@ -422,7 +521,6 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
                 *dp++ = *sp++;
             } while (--tsp);
         }
-
     } else {
         /*
          * This section is used to copy backwards, to handle any
@@ -496,16 +594,14 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
 #else /* __WORDSIZE != 64 */
 
 /* moves memory, optimized for 64bit words */
-void
-mem_prim_move (void *dest, const void *src, uint32_t len)
-{
+void mem_prim_move(void *dest, const void *src, uint32_t len) {
 #undef wsize
 #undef wmask
-#define wsize   sizeof(uint64_t)
-#define wmask   (wsize - 1)
+#define wsize sizeof(uint64_t)
+#define wmask (wsize - 1)
 
-    uint8_t *dp = (uint8_t*) dest;
-    const uint8_t *sp = (uint8_t*) src;
+    uint8_t *dp = (uint8_t *)dest;
+    const uint8_t *sp = (uint8_t *)src;
 
     uint64_t tsp;
 
@@ -532,7 +628,6 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
              */
             if ((tsp ^ (uintptr_t)dp) & wmask || len < wsize) {
                 tsp = len;
-
             } else {
                 tsp = wsize - (tsp & wmask);
             }
@@ -574,7 +669,6 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
                 *dp++ = *sp++;
             } while (--tsp);
         }
-
     } else {
         /*
          * This section is used to copy backwards, to handle any
@@ -658,11 +752,9 @@ mem_prim_move (void *dest, const void *src, uint32_t len)
  *
  */
 
-void
-mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
-{
+void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len) {
     uint8_t *dp = dest;
-        const uint8_t *sp = src;
+    const uint8_t *sp = src;
     /*
      * Determine if we need to copy forward or backward (overlap)
      */
@@ -671,49 +763,74 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
          * Copy forward.
          */
 
-         while (len != 0) {
+        while (len != 0) {
 
-             switch (len) {
-             /*
-              * Here we do blocks of 16.  Once the remaining count
-              * drops below 16, take the fast track to finish up.
-              */
-             default:
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  len -= 16;
-                  break;
+            switch (len) {
+            /*
+             * Here we do blocks of 16.  Once the remaining count
+             * drops below 16, take the fast track to finish up.
+             */
+            default:
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                len -= 16;
+                break;
 
-             case 15:  *dp++ = *sp++; /* FALLTHRU */
-             case 14:  *dp++ = *sp++; /* FALLTHRU */
-             case 13:  *dp++ = *sp++; /* FALLTHRU */
-             case 12:  *dp++ = *sp++; /* FALLTHRU */
-             case 11:  *dp++ = *sp++; /* FALLTHRU */
-             case 10:  *dp++ = *sp++; /* FALLTHRU */
-             case 9:   *dp++ = *sp++; /* FALLTHRU */
-             case 8:   *dp++ = *sp++; /* FALLTHRU */
+            case 15:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 14:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 13:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 12:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 11:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 10:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 9:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 8:
+                *dp++ = *sp++; /* FALLTHRU */
 
-             case 7:   *dp++ = *sp++; /* FALLTHRU */
-             case 6:   *dp++ = *sp++; /* FALLTHRU */
-             case 5:   *dp++ = *sp++; /* FALLTHRU */
-             case 4:   *dp++ = *sp++; /* FALLTHRU */
-             case 3:   *dp++ = *sp++; /* FALLTHRU */
-             case 2:   *dp++ = *sp++; /* FALLTHRU */
-             case 1:   *dp++ = *sp++; /* FALLTHRU */
-                 len = 0;
-                 break;
-             }
-         } /* end while */
-
+            case 7:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 6:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 5:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 4:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 3:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 2:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 1:
+                *dp++ = *sp++; /* FALLTHRU */
+                len = 0;
+                break;
+            }
+        } /* end while */
     } else {
         /*
          * This section is used to copy backwards, to handle any
          * overlap.  The alignment requires (tps&wmask) bytes to
          * align.
          */
-
 
         /*
          * go to end of the memory to copy
@@ -729,29 +846,56 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
              * drops below 16, take the fast track to finish up.
              */
             default:
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 len -= 16;
-                 break;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                len -= 16;
+                break;
 
-            case 15:  *--dp = *--sp; /* FALLTHRU */
-            case 14:  *--dp = *--sp; /* FALLTHRU */
-            case 13:  *--dp = *--sp; /* FALLTHRU */
-            case 12:  *--dp = *--sp; /* FALLTHRU */
-            case 11:  *--dp = *--sp; /* FALLTHRU */
-            case 10:  *--dp = *--sp; /* FALLTHRU */
-            case 9:   *--dp = *--sp; /* FALLTHRU */
-            case 8:   *--dp = *--sp; /* FALLTHRU */
+            case 15:
+                *--dp = *--sp; /* FALLTHRU */
+            case 14:
+                *--dp = *--sp; /* FALLTHRU */
+            case 13:
+                *--dp = *--sp; /* FALLTHRU */
+            case 12:
+                *--dp = *--sp; /* FALLTHRU */
+            case 11:
+                *--dp = *--sp; /* FALLTHRU */
+            case 10:
+                *--dp = *--sp; /* FALLTHRU */
+            case 9:
+                *--dp = *--sp; /* FALLTHRU */
+            case 8:
+                *--dp = *--sp; /* FALLTHRU */
 
-            case 7:   *--dp = *--sp; /* FALLTHRU */
-            case 6:   *--dp = *--sp; /* FALLTHRU */
-            case 5:   *--dp = *--sp; /* FALLTHRU */
-            case 4:   *--dp = *--sp; /* FALLTHRU */
-            case 3:   *--dp = *--sp; /* FALLTHRU */
-            case 2:   *--dp = *--sp; /* FALLTHRU */
-            case 1:   *--dp = *--sp; /* FALLTHRU */
+            case 7:
+                *--dp = *--sp; /* FALLTHRU */
+            case 6:
+                *--dp = *--sp; /* FALLTHRU */
+            case 5:
+                *--dp = *--sp; /* FALLTHRU */
+            case 4:
+                *--dp = *--sp; /* FALLTHRU */
+            case 3:
+                *--dp = *--sp; /* FALLTHRU */
+            case 2:
+                *--dp = *--sp; /* FALLTHRU */
+            case 1:
+                *--dp = *--sp; /* FALLTHRU */
                 len = 0;
                 break;
             }
@@ -760,7 +904,6 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
 
     return;
 }
-
 
 /**
  * @brief
@@ -772,9 +915,7 @@ mem_prim_move8 (uint8_t *dest, const uint8_t *src, uint32_t len)
  * @param[in]  len     maximum number uint16_t of src that can be copied
  *
  */
-void
-mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
-{
+void mem_prim_move16(uint16_t *dest, const uint16_t *src, uint32_t len) {
     uint16_t *dp = dest;
     const uint16_t *sp = src;
     /*
@@ -785,42 +926,68 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
          * Copy forward.
          */
 
-         while (len != 0) {
+        while (len != 0) {
 
-             switch (len) {
-             /*
-              * Here we do blocks of 16.  Once the remaining count
-              * drops below 16, take the fast track to finish up.
-              */
-             default:
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  len -= 16;
-                  break;
+            switch (len) {
+            /*
+             * Here we do blocks of 16.  Once the remaining count
+             * drops below 16, take the fast track to finish up.
+             */
+            default:
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                len -= 16;
+                break;
 
-             case 15:  *dp++ = *sp++; /* FALLTHRU */
-             case 14:  *dp++ = *sp++; /* FALLTHRU */
-             case 13:  *dp++ = *sp++; /* FALLTHRU */
-             case 12:  *dp++ = *sp++; /* FALLTHRU */
-             case 11:  *dp++ = *sp++; /* FALLTHRU */
-             case 10:  *dp++ = *sp++; /* FALLTHRU */
-             case 9:   *dp++ = *sp++; /* FALLTHRU */
-             case 8:   *dp++ = *sp++; /* FALLTHRU */
+            case 15:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 14:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 13:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 12:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 11:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 10:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 9:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 8:
+                *dp++ = *sp++; /* FALLTHRU */
 
-             case 7:   *dp++ = *sp++; /* FALLTHRU */
-             case 6:   *dp++ = *sp++; /* FALLTHRU */
-             case 5:   *dp++ = *sp++; /* FALLTHRU */
-             case 4:   *dp++ = *sp++; /* FALLTHRU */
-             case 3:   *dp++ = *sp++; /* FALLTHRU */
-             case 2:   *dp++ = *sp++; /* FALLTHRU */
-             case 1:   *dp++ = *sp++; /* FALLTHRU */
-                 len = 0;
-                 break;
-             }
-         } /* end while */
-
+            case 7:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 6:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 5:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 4:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 3:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 2:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 1:
+                *dp++ = *sp++; /* FALLTHRU */
+                len = 0;
+                break;
+            }
+        } /* end while */
     } else {
         /*
          * This section is used to copy backwards, to handle any
@@ -842,29 +1009,56 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
              * drops below 16, take the fast track to finish up.
              */
             default:
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 len -= 16;
-                 break;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                len -= 16;
+                break;
 
-            case 15:  *--dp = *--sp; /* FALLTHRU */
-            case 14:  *--dp = *--sp; /* FALLTHRU */
-            case 13:  *--dp = *--sp; /* FALLTHRU */
-            case 12:  *--dp = *--sp; /* FALLTHRU */
-            case 11:  *--dp = *--sp; /* FALLTHRU */
-            case 10:  *--dp = *--sp; /* FALLTHRU */
-            case 9:   *--dp = *--sp; /* FALLTHRU */
-            case 8:   *--dp = *--sp; /* FALLTHRU */
+            case 15:
+                *--dp = *--sp; /* FALLTHRU */
+            case 14:
+                *--dp = *--sp; /* FALLTHRU */
+            case 13:
+                *--dp = *--sp; /* FALLTHRU */
+            case 12:
+                *--dp = *--sp; /* FALLTHRU */
+            case 11:
+                *--dp = *--sp; /* FALLTHRU */
+            case 10:
+                *--dp = *--sp; /* FALLTHRU */
+            case 9:
+                *--dp = *--sp; /* FALLTHRU */
+            case 8:
+                *--dp = *--sp; /* FALLTHRU */
 
-            case 7:   *--dp = *--sp; /* FALLTHRU */
-            case 6:   *--dp = *--sp; /* FALLTHRU */
-            case 5:   *--dp = *--sp; /* FALLTHRU */
-            case 4:   *--dp = *--sp; /* FALLTHRU */
-            case 3:   *--dp = *--sp; /* FALLTHRU */
-            case 2:   *--dp = *--sp; /* FALLTHRU */
-            case 1:   *--dp = *--sp; /* FALLTHRU */
+            case 7:
+                *--dp = *--sp; /* FALLTHRU */
+            case 6:
+                *--dp = *--sp; /* FALLTHRU */
+            case 5:
+                *--dp = *--sp; /* FALLTHRU */
+            case 4:
+                *--dp = *--sp; /* FALLTHRU */
+            case 3:
+                *--dp = *--sp; /* FALLTHRU */
+            case 2:
+                *--dp = *--sp; /* FALLTHRU */
+            case 1:
+                *--dp = *--sp; /* FALLTHRU */
                 len = 0;
                 break;
             }
@@ -873,7 +1067,6 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
 
     return;
 }
-
 
 /**
  * @brief
@@ -885,9 +1078,7 @@ mem_prim_move16 (uint16_t *dest, const uint16_t *src, uint32_t len)
  * @param[in]  len     maximum number uint32_t of sp that can be copied
  *
  */
-void
-mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t len)
-{
+void mem_prim_move32(uint32_t *dest, const uint32_t *src, uint32_t len) {
     uint32_t *dp = dest;
     const uint32_t *sp = src;
     /*
@@ -898,42 +1089,68 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t len)
          * Copy forward.
          */
 
-         while (len != 0) {
+        while (len != 0) {
 
-             switch (len) {
-             /*
-              * Here we do blocks of 16.  Once the remaining count
-              * drops below 16, take the fast track to finish up.
-              */
-             default:
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++; *dp++ = *sp++;
-                  len -= 16;
-                  break;
+            switch (len) {
+            /*
+             * Here we do blocks of 16.  Once the remaining count
+             * drops below 16, take the fast track to finish up.
+             */
+            default:
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                *dp++ = *sp++;
+                len -= 16;
+                break;
 
-             case 15:  *dp++ = *sp++; /* FALLTHRU */
-             case 14:  *dp++ = *sp++; /* FALLTHRU */
-             case 13:  *dp++ = *sp++; /* FALLTHRU */
-             case 12:  *dp++ = *sp++; /* FALLTHRU */
-             case 11:  *dp++ = *sp++; /* FALLTHRU */
-             case 10:  *dp++ = *sp++; /* FALLTHRU */
-             case 9:   *dp++ = *sp++; /* FALLTHRU */
-             case 8:   *dp++ = *sp++; /* FALLTHRU */
+            case 15:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 14:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 13:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 12:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 11:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 10:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 9:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 8:
+                *dp++ = *sp++; /* FALLTHRU */
 
-             case 7:   *dp++ = *sp++; /* FALLTHRU */
-             case 6:   *dp++ = *sp++; /* FALLTHRU */
-             case 5:   *dp++ = *sp++; /* FALLTHRU */
-             case 4:   *dp++ = *sp++; /* FALLTHRU */
-             case 3:   *dp++ = *sp++; /* FALLTHRU */
-             case 2:   *dp++ = *sp++; /* FALLTHRU */
-             case 1:   *dp++ = *sp++; /* FALLTHRU */
-                 len = 0;
-                 break;
-             }
-         } /* end while */
-
+            case 7:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 6:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 5:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 4:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 3:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 2:
+                *dp++ = *sp++; /* FALLTHRU */
+            case 1:
+                *dp++ = *sp++; /* FALLTHRU */
+                len = 0;
+                break;
+            }
+        } /* end while */
     } else {
         /*
          * This section is used to copy backwards, to handle any
@@ -954,29 +1171,56 @@ mem_prim_move32 (uint32_t *dest, const uint32_t *src, uint32_t len)
              * drops below 16, take the fast track to finish up.
              */
             default:
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 *--dp = *--sp; *--dp = *--sp; *--dp = *--sp; *--dp = *--sp;
-                 len -= 16;
-                 break;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                *--dp = *--sp;
+                len -= 16;
+                break;
 
-            case 15:  *--dp = *--sp; /* FALLTHRU */
-            case 14:  *--dp = *--sp; /* FALLTHRU */
-            case 13:  *--dp = *--sp; /* FALLTHRU */
-            case 12:  *--dp = *--sp; /* FALLTHRU */
-            case 11:  *--dp = *--sp; /* FALLTHRU */
-            case 10:  *--dp = *--sp; /* FALLTHRU */
-            case 9:   *--dp = *--sp; /* FALLTHRU */
-            case 8:   *--dp = *--sp; /* FALLTHRU */
+            case 15:
+                *--dp = *--sp; /* FALLTHRU */
+            case 14:
+                *--dp = *--sp; /* FALLTHRU */
+            case 13:
+                *--dp = *--sp; /* FALLTHRU */
+            case 12:
+                *--dp = *--sp; /* FALLTHRU */
+            case 11:
+                *--dp = *--sp; /* FALLTHRU */
+            case 10:
+                *--dp = *--sp; /* FALLTHRU */
+            case 9:
+                *--dp = *--sp; /* FALLTHRU */
+            case 8:
+                *--dp = *--sp; /* FALLTHRU */
 
-            case 7:   *--dp = *--sp; /* FALLTHRU */
-            case 6:   *--dp = *--sp; /* FALLTHRU */
-            case 5:   *--dp = *--sp; /* FALLTHRU */
-            case 4:   *--dp = *--sp; /* FALLTHRU */
-            case 3:   *--dp = *--sp; /* FALLTHRU */
-            case 2:   *--dp = *--sp; /* FALLTHRU */
-            case 1:   *--dp = *--sp; /* FALLTHRU */
+            case 7:
+                *--dp = *--sp; /* FALLTHRU */
+            case 6:
+                *--dp = *--sp; /* FALLTHRU */
+            case 5:
+                *--dp = *--sp; /* FALLTHRU */
+            case 4:
+                *--dp = *--sp; /* FALLTHRU */
+            case 3:
+                *--dp = *--sp; /* FALLTHRU */
+            case 2:
+                *--dp = *--sp; /* FALLTHRU */
+            case 1:
+                *--dp = *--sp; /* FALLTHRU */
                 len = 0;
                 break;
             }

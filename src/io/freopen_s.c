@@ -36,7 +36,8 @@
 #endif
 
 /* conflicting API */
-#if (defined(TEST_MSVCRT) && defined(HAVE_FREOPEN_S)) || defined(MINGW_HAS_SECURE_API)
+#if (defined(TEST_MSVCRT) && defined(HAVE_FREOPEN_S)) ||                       \
+    defined(MINGW_HAS_SECURE_API)
 #else
 
 /**
@@ -54,8 +55,8 @@
  *    K.3.5.2.2 The freopen_s function (p: 590)
  *    http://en.cppreference.com/w/c/io/freopen
  *
- * @param[out] newstreamptr pointer to a FILE stream that will be updated by this
- *                          function call
+ * @param[out] newstreamptr pointer to a FILE stream that will be updated by
+ * this function call
  * @param[in]  filename     file name to associate the file stream to
  * @param[in]  mode         as in fopen
  * @param[in]  stream       the file stream to modify
@@ -69,38 +70,34 @@
  *
  * @return The freopen_s function returns zero if it reopened the
  *         file. If not or there was a
- *         runtime-constraint violation, freopen_s returns a nonzero error code,
- *         and sets newstreamptr to NULL.
- *         If there is a runtime-constraint violation, freopen_s does not attempt
- *         to reopen the file.
- *         Sets the newstreamptr on success.
+ *         runtime-constraint violation, freopen_s returns a nonzero error
+ * code, and sets newstreamptr to NULL. If there is a runtime-constraint
+ * violation, freopen_s does not attempt to reopen the file. Sets the
+ * newstreamptr on success.
  * @retval  EOK        on success
  * @retval  ESNULLP    when any argument is a NULL pointer
  * @retval  > 0        any other errno
  */
 
-EXPORT errno_t
-freopen_s(FILE *restrict *restrict newstreamptr,
-          const char *restrict filename,
-          const char *restrict mode,
-          FILE *restrict stream)
-{
+EXPORT errno_t freopen_s(FILE *restrict *restrict newstreamptr,
+                         const char *restrict filename,
+                         const char *restrict mode, FILE *restrict stream) {
 
     if (unlikely(newstreamptr == NULL)) {
         invoke_safe_str_constraint_handler("freopen_s: newstreamptr is null",
-                   NULL, ESNULLP);
+                                           NULL, ESNULLP);
         return ESNULLP;
     }
 
     if (unlikely(mode == NULL)) {
-        invoke_safe_str_constraint_handler("freopen_s: mode is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("freopen_s: mode is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 
     if (unlikely(stream == NULL)) {
-        invoke_safe_str_constraint_handler("freopen_s: stream is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("freopen_s: stream is null", NULL,
+                                           ESNULLP);
         return ESNULLP;
     }
 

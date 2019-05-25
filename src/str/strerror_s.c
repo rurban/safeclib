@@ -87,9 +87,8 @@
  *    strerrorlen_s()
  */
 
-EXPORT errno_t
-_strerror_s_chk(char *dest, rsize_t dmax,  errno_t errnum, const size_t destbos)
-{
+EXPORT errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
+                               const size_t destbos) {
     size_t len;
 
     CHK_DEST_NULL("strerror_s")
@@ -112,17 +111,17 @@ _strerror_s_chk(char *dest, rsize_t dmax,  errno_t errnum, const size_t destbos)
         }
     } else if (dmax > 3) { /* truncate */
         const char *tmpbuf = (errnum >= ESNULLP && errnum <= ESLAST)
-            ? errmsgs_s[errnum - ESNULLP]
-            : strerror(errnum);
+                                 ? errmsgs_s[errnum - ESNULLP]
+                                 : strerror(errnum);
 #if defined(TEST_MSVCRT) && defined(HAVE_STRNCPY_S)
-        strncpy(dest, tmpbuf, dmax-4);
+        strncpy(dest, tmpbuf, dmax - 4);
 #else
-        strncpy_s(dest, dmax, tmpbuf, dmax-4);
+        strncpy_s(dest, dmax, tmpbuf, dmax - 4);
 #endif
         strcat_s(dest, dmax, "...");
     } else {
         invoke_safe_str_constraint_handler("strerror_s: dmax is too small",
-                   dest, ESLEMIN);
+                                           dest, ESLEMIN);
         return ESLEMIN;
     }
 
@@ -151,11 +150,9 @@ _strerror_s_chk(char *dest, rsize_t dmax,  errno_t errnum, const size_t destbos)
  *    strerror_s()
  */
 
-EXPORT size_t
-strerrorlen_s(errno_t errnum)
-{
+EXPORT size_t strerrorlen_s(errno_t errnum) {
     if (errnum >= ESNULLP && errnum <= ESLAST) {
-        return len_errmsgs_s[errnum-ESNULLP]-1;
+        return len_errmsgs_s[errnum - ESNULLP] - 1;
     } else {
         const char *buf = strerror(errnum);
         return buf ? strlen(buf) : 0;

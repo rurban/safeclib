@@ -68,25 +68,23 @@
  *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  *
  */
-EXPORT rsize_t
-_strnlen_s_chk (const char *str, rsize_t smax, size_t strbos)
-{
+EXPORT rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos) {
     rsize_t count;
 
     if (unlikely(str == NULL)) {
-        invoke_safe_str_constraint_handler("strnlen_s: str is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("strnlen_s: str is null", NULL,
+                                           ESNULLP);
         return 0;
     }
 
     if (unlikely(smax == 0)) {
-        invoke_safe_str_constraint_handler("strnlen_s: smax is 0",
-                   (void*)str, ESZEROL);
+        invoke_safe_str_constraint_handler("strnlen_s: smax is 0", (void *)str,
+                                           ESZEROL);
         return 0;
     }
     if (unlikely(smax > RSIZE_MAX_STR)) {
         invoke_safe_str_constraint_handler("strnlen_s: smax exceeds max",
-                                           (void*)str, ESLEMAX);
+                                           (void *)str, ESLEMAX);
         return 0;
     }
     if (strbos == BOS_UNKNOWN) {
@@ -94,11 +92,11 @@ _strnlen_s_chk (const char *str, rsize_t smax, size_t strbos)
     } else {
         if (unlikely(smax != strbos)) {
 #ifdef HAVE_WARN_DMAX
-            handle_str_src_bos_chk_warn("strnlen_s", (char*)str,
-                                        smax, strbos, "str", "smax");
-# ifdef HAVE_ERROR_DMAX
+            handle_str_src_bos_chk_warn("strnlen_s", (char *)str, smax, strbos,
+                                        "str", "smax");
+#ifdef HAVE_ERROR_DMAX
             return 0;
-# endif
+#endif
 #endif
         }
     }

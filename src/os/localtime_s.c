@@ -77,8 +77,9 @@ struct tm *localtime_r(const time_t * __restrict, struct tm * __restrict);
  *
  *    POSIX requires that this function sets errno to EOVERFLOW if it fails
  *    because the argument is too large.  POSIX defines a thread-safe
- *    alternative localtime_r, which is similar to the C11 function localtime_s,
- *    except that it does not check the validity of its input parameters.
+ *    alternative localtime_r, which is similar to the C11 function
+ * localtime_s, except that it does not check the validity of its input
+ * parameters.
  *
  *    This function is available under windows with a different API, reversed
  *    argument order, and is not available with safeclib.
@@ -87,34 +88,33 @@ struct tm *localtime_r(const time_t * __restrict, struct tm * __restrict);
  *    gmtime_s(), ctime_s()
  */
 
-EXPORT struct tm *
-localtime_s(const time_t *restrict timer, struct tm *restrict dest)
-{
+EXPORT struct tm *localtime_s(const time_t *restrict timer,
+                              struct tm *restrict dest) {
 
     if (unlikely(dest == NULL)) {
-        invoke_safe_str_constraint_handler("localtime_s: dest is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("localtime_s: dest is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return NULL;
     }
 
     if (unlikely(timer == NULL)) {
-        invoke_safe_str_constraint_handler("localtime_s: timer is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("localtime_s: timer is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return NULL;
     }
 
     if (unlikely(*timer < 0)) {
-        invoke_safe_str_constraint_handler("localtime_s: timer is < 0",
-                   NULL, ESLEMIN);
+        invoke_safe_str_constraint_handler("localtime_s: timer is < 0", NULL,
+                                           ESLEMIN);
         errno = EOVERFLOW;
         return NULL;
     }
 
     if (unlikely(*timer >= MAX_TIME_T_STR)) { /* year 10000 */
         invoke_safe_str_constraint_handler("localtime_s: timer is too large",
-                   NULL, ESLEMAX);
+                                           NULL, ESLEMAX);
         errno = EOVERFLOW;
         return NULL;
     }

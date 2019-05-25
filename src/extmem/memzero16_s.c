@@ -57,7 +57,8 @@
  * @retval  ESNULLP     when dest is NULL POINTER
  * @retval  ESZEROL     when len = ZERO
  * @retval  ESLEMAX     when len > RSIZE_MAX_MEM16
- * @retval  EOVERFLOW   when 2*dmax > size of dest (optionally, when the compiler
+ * @retval  EOVERFLOW   when 2*dmax > size of dest (optionally, when the
+ compiler
  *                      knows the object_size statically)
  * @retval  ESLEWRNG    when len != sizeof(dest)/2 and --enable-error-dmax
  *
@@ -65,10 +66,9 @@
  *    memzero_s(), memzero32_s()
  *
  */
-EXPORT errno_t
-_memzero16_s_chk (uint16_t *dest, rsize_t len, const size_t destbos)
-{
-    rsize_t dmax = len*2;
+EXPORT errno_t _memzero16_s_chk(uint16_t *dest, rsize_t len,
+                                const size_t destbos) {
+    rsize_t dmax = len * 2;
     CHK_DEST_MEM_NULL("memzero16_s")
     CHK_DMAX_MEM_ZERO("memzero16_s")
 

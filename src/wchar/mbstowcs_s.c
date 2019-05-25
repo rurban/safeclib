@@ -35,16 +35,16 @@
 #include "safeclib_private.h"
 #endif
 
-#if (defined(TEST_MSVCRT) && defined(HAVE_MBSRTOWC_S)) || !defined(HAVE_WCHAR_H) \
-    || !defined(HAVE_MBSTOWCS)
+#if (defined(TEST_MSVCRT) && defined(HAVE_MBSRTOWC_S)) ||                      \
+    !defined(HAVE_WCHAR_H) || !defined(HAVE_MBSTOWCS)
 #else
 
 /* newlib, cygwin64 has no STDC_HEADERS!
    more importantly it has but does not declare mbstowcs.
  */
 #ifdef HAVE_CYGWIN64
-#define mbstowcs(dest, src, len) \
-    mbsrtowcs((dest), (const char ** restrict)&(src), (len), &st)
+#define mbstowcs(dest, src, len)                                               \
+    mbsrtowcs((dest), (const char **restrict) & (src), (len), &st)
 #endif
 
 /**
@@ -82,12 +82,13 @@
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param[out]  retvalp pointer to a \c size_t object where the result will be stored
+ * @param[out]  retvalp pointer to a \c size_t object where the result will be
+ * stored
  * @param[out]  dest    NULL or pointer to wide character array for the result
  * @param[in]   dmax    restricted maximum length of \c dest
  * @param[in]   src     string that will be converted to \c dest
- * @param[in]   len     maximal number of wide characters to be written to \c dest
- *                      (exclusive the final L'\0' when needed)
+ * @param[in]   len     maximal number of wide characters to be written to \c
+ * dest (exclusive the final L'\0' when needed)
  *
  * @pre retvalp and src shall not be a null pointer.
  * @pre dmax and len shall not be greater than \c RSIZE_MAX_WSTR,
@@ -107,7 +108,8 @@
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR, unless dest is NULL
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
- * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and dest != NULL
+ * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and
+ * dest != NULL
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
  *                     multibyte characters in the src array and len is
@@ -116,12 +118,9 @@
  *    mbsrtowc_s()
  *
  */
-EXPORT errno_t
-_mbstowcs_s_chk(size_t *restrict retvalp,
-                wchar_t *restrict dest, rsize_t dmax,
-                const char *restrict src, rsize_t len,
-                const size_t destbos)
-{
+EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
+                               rsize_t dmax, const char *restrict src,
+                               rsize_t len, const size_t destbos) {
     wchar_t *orig_dest;
     errno_t rc;
 #ifdef HAVE_CYGWIN64
@@ -138,35 +137,37 @@ _mbstowcs_s_chk(size_t *restrict retvalp,
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
                 invoke_safe_str_constraint_handler("mbstowcs"
-                           ": dmax/len exceeds max",
-                           (void*)dest, ESLEMAX);
+                                                   ": dmax/len exceeds max",
+                                                   (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             BND_CHK_PTR_BOUNDS(dest, destsz);
         } else {
-            if (unlikely(destsz > destbos || len*sizeof(wchar_t) > destbos)) {
+            if (unlikely(destsz > destbos || len * sizeof(wchar_t) > destbos)) {
                 if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                    handle_error((char*)(void*)dest, destbos, "mbstowcs"
-                                  ": dmax/len exceeds max",
-                                  ESLEMAX);
+                    handle_error((char *)(void *)dest, destbos,
+                                 "mbstowcs"
+                                 ": dmax/len exceeds max",
+                                 ESLEMAX);
                     return RCNEGATE(ESLEMAX);
                 } else {
-                    handle_error((char*)(void*)dest, destbos, "mbstowcs"
-                                  ": dmax/len exceeds destsz",
-                                  EOVERFLOW);
+                    handle_error((char *)(void *)dest, destbos,
+                                 "mbstowcs"
+                                 ": dmax/len exceeds destsz",
+                                 EOVERFLOW);
                     return RCNEGATE(EOVERFLOW);
                 }
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(destsz != destbos)) {
-                handle_str_bos_chk_warn("mbstowcs",(char*)dest,dmax,
-                                        destbos/sizeof(wchar_t));
+                handle_str_bos_chk_warn("mbstowcs", (char *)dest, dmax,
+                                        destbos / sizeof(wchar_t));
                 RETURN_ESLEWRNG;
             }
 #endif
         }
     }
-    if (unlikely((char*)dest == src)) {
+    if (unlikely((char *)dest == src)) {
         return RCNEGATE(ESOVRLP);
     }
 
@@ -179,7 +180,7 @@ _mbstowcs_s_chk(size_t *restrict retvalp,
     if (likely(*retvalp < dmax)) {
         if (dest) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(&dest[*retvalp], 0, (dmax-*retvalp) * sizeof(wchar_t));
+            memset(&dest[*retvalp], 0, (dmax - *retvalp) * sizeof(wchar_t));
 #else
             dest[*retvalp] = L'\0';
 #endif
@@ -197,11 +198,10 @@ _mbstowcs_s_chk(size_t *restrict retvalp,
             /* the entire src must have been copied, if not reset dest
              * to null the string. (only with SAFECLIB_STR_NULL_SLACK) */
             handle_werror(orig_dest, dmax,
-                         !tmp ? "mbstowcs_s: not enough space for src"
-                              : "mbstowcs_s: illegal sequence",
-                         rc);
-        }
-        else {
+                          !tmp ? "mbstowcs_s: not enough space for src"
+                               : "mbstowcs_s: illegal sequence",
+                          rc);
+        } else {
             rc = ((size_t)*retvalp == 0) ? EOK : errno;
         }
     }

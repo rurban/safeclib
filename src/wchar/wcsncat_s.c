@@ -85,15 +85,15 @@
  * @returns  If there is a runtime-constraint violation, then if dest is
  *           not a null pointer and dmax is greater than zero and not
  *           greater than RSIZE_MAX_WSTR, then wcsncat_s nulls dest.
- * @retval  EOK        successful operation, when slen == 0 or all the wide characters
- *                     are copied from src and dest is null terminated.
- *          As special case, analog to msvcrt: when slen == 0 and dmax is big
- *          enough for dest, also return EOK, but clear dest.
+ * @retval  EOK        successful operation, when slen == 0 or all the wide
+ * characters are copied from src and dest is null terminated. As special case,
+ * analog to msvcrt: when slen == 0 and dmax is big enough for dest, also
+ * return EOK, but clear dest.
  * @retval  ESNULLP    when dest/src is NULL pointer and slen > 0
  * @retval  ESZEROL    when dmax = 0 and slen > 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_WSTR and slen > 0
- * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the compiler
- *                     knows the object_size statically)
+ * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESUNTERM   when dest not terminated and slen > 0
  * @retval  ESOVRLP    when src overlaps with dest and slen > 0
@@ -102,17 +102,16 @@
  *    wcscat_s(), strncat_s()
  */
 
-EXPORT errno_t
-_wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
-               const wchar_t *restrict src, rsize_t slen,
-               const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                              const wchar_t *restrict src, rsize_t slen,
+                              const size_t destbos, const size_t srcbos) {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
     const size_t destsz = dmax * sizeof(wchar_t);
 
-    if (unlikely(slen == 0 && !dest && !dmax)) { /* silent ok as in the msvcrt */
+    if (unlikely(slen == 0 && !dest &&
+                 !dmax)) { /* silent ok as in the msvcrt */
         return EOK;
     }
     CHK_DEST_NULL("wcsncat_s")
@@ -126,8 +125,7 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
     CHK_SRCW_NULL_CLEAR("wcsncat_s", src)
     if (unlikely(slen > RSIZE_MAX_WSTR)) {
         handle_werror(dest, wcsnlen_s(dest, dmax),
-                      "wcsncat_s: slen exceeds max",
-                      ESLEMAX);
+                      "wcsncat_s: slen exceeds max", ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {
@@ -135,8 +133,7 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
     } else {
         if (unlikely(slen * sizeof(wchar_t) > srcbos)) {
             handle_werror(dest, wcsnlen_s(dest, dmax),
-                          "wcsncat_s: slen exceeds src",
-                          EOVERFLOW);
+                          "wcsncat_s: slen exceeds src", EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
     }
@@ -145,8 +142,7 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
         /* Special case, analog to msvcrt: when dest is big enough
            return EOK, but clear dest. */
         errno_t error = (wcsnlen_s(dest, dmax) < dmax) ? EOK : ESZEROL;
-        handle_werror(dest, dmax, "wcsncat_s: slen is 0",
-                     error);
+        handle_werror(dest, dmax, "wcsncat_s: slen is 0", error);
         return RCNEGATE(error);
     }
 
@@ -161,27 +157,30 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
         while (*dest != L'\0') {
 
             if (unlikely(dest == overlap_bumper)) {
-                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
-                        "overlapping objects",
-                        ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncat_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
-                       "dest unterminated",
-                       ESUNTERM);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncat_s: "
+                              "dest unterminated",
+                              ESUNTERM);
                 return RCNEGATE(ESUNTERM);
             }
         }
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
-                       "overlapping objects",
-                       ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncat_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -192,9 +191,13 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #else
                 *dest = L'\0';
@@ -207,9 +210,13 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear data */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -220,7 +227,6 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
             dest++;
             src++;
         }
-
     } else {
         overlap_bumper = dest;
 
@@ -234,18 +240,20 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
-                       "dest unterminated",
-                       ESUNTERM);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncat_s: "
+                              "dest unterminated",
+                              ESUNTERM);
                 return RCNEGATE(ESUNTERM);
             }
         }
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_werror(orig_dest, orig_dmax, "wcsncat_s: "
-                        "overlapping objects",
-                        ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcsncat_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -256,9 +264,13 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null remaining string */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #else
                 *dest = L'\0';
@@ -271,9 +283,13 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -289,9 +305,10 @@ _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
     /*
      * the entire src was not copied, so the string will be nulled.
      */
-    handle_werror(orig_dest, orig_dmax, "wcsncat_s: not enough "
-                 "space for src",
-                 ESNOSPC);
+    handle_werror(orig_dest, orig_dmax,
+                  "wcsncat_s: not enough "
+                  "space for src",
+                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
 

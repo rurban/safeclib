@@ -51,17 +51,16 @@
  * @param[in] ptr    Pointer to aassociated data.  Can be NULL.
  * @param[in] error  The error code encountered.
  *
- * @see 
+ * @see
  * ignore_handler_s()
  */
 
-EXPORT void
-abort_handler_s(const char * restrict msg, void * restrict ptr, errno_t error)
-{
-	(void)ptr;
-	slprintf("ABORT CONSTRAINT HANDLER: (%u) %s\n", error,
-		 (msg) ? msg : "Null message");
-	slabort();
+EXPORT void abort_handler_s(const char *restrict msg, void *restrict ptr,
+                            errno_t error) {
+    (void)ptr;
+    slprintf("ABORT CONSTRAINT HANDLER: (%u) %s\n", error,
+             (msg) ? msg : "Null message");
+    slabort();
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(abort_handler_s);

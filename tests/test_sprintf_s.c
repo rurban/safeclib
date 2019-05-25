@@ -11,32 +11,32 @@
 #if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
 #ifdef HAVE_C99
 #undef sprintf_s
-EXTERN int sprintf_s(char * restrict dest, rsize_t dmax, const char * restrict fmt, ...);
+EXTERN int sprintf_s(char *restrict dest, rsize_t dmax,
+                     const char *restrict fmt, ...);
 #endif
 #endif
 
 #ifdef HAVE_SPRINTF_S
-# define HAVE_NATIVE 1
+#define HAVE_NATIVE 1
 #else
-# define HAVE_NATIVE 0
+#define HAVE_NATIVE 0
 #endif
 #include "test_msvcrt.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-static char   str1[LEN];
-static char   str2[LEN];
-int test_sprintf_s (void);
+static char str1[LEN];
+static char str2[LEN];
+int test_sprintf_s(void);
 
-int test_sprintf_s (void)
-{
+int test_sprintf_s(void) {
     errno_t rc;
-    int  ind;
-    int  len2;
-    int  len3;
-    int  errs = 0;
+    int ind;
+    int len2;
+    int len3;
+    int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str2[0] = '\0';
 
@@ -49,31 +49,31 @@ int test_sprintf_s (void)
     ERR_MSVC(-ESNULLP, -1);
     ERRNO_MSVC(0, EINVAL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
-    rc = sprintf_s(str1, RSIZE_MAX_STR+1, "%s", str2);
-    ERR_MSVC(-ESLEMAX,0);
+    rc = sprintf_s(str1, RSIZE_MAX_STR + 1, "%s", str2);
+    ERR_MSVC(-ESLEMAX, 0);
     ERRNO(0);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* wine msvcrt doesn't check fmt==NULL */
-# if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S))
+#if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S))
     EXPECT_BOS("empty fmt")
     rc = sprintf_s(str1, LEN, NULL);
     ERR_MSVC(-ESNULLP, -1);
     ERRNO_MSVC(0, EINVAL);
-# endif
+#endif
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     EXPECT_BOS("empty dest or dmax")
     rc = sprintf_s(str1, 0, "%s", str2);
     ERR_MSVC(-ESZEROL, -1);
     ERRNO_MSVC(0, EINVAL);
 #endif
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
     ERR(-1); /* EINVAL */
@@ -85,7 +85,7 @@ int test_sprintf_s (void)
     rc = sprintf_s(str1, LEN, "%%n");
     ERR(2);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     /* TODO not yet implemented
     rc = sprintf_s(str1, LEN, "%p", NULL);
@@ -93,7 +93,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(ESNULLP, EINVAL);
     */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -107,7 +107,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -117,7 +117,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
@@ -130,13 +130,13 @@ int test_sprintf_s (void)
     if (len3 != len2) {
 #ifdef DEBUG
         int len1 = strlen(str1);
-        debug_printf("%s %u lengths wrong: %d  %d  %d \n",
-                     __FUNCTION__, __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %d  %d \n", __FUNCTION__,
+                     __LINE__, len1, len2, len3);
 #endif
         errs++;
     }
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -146,7 +146,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -156,7 +156,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -165,7 +165,7 @@ int test_sprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     str2[0] = '\0';
@@ -174,7 +174,7 @@ int test_sprintf_s (void)
     ERR(0)
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
@@ -183,7 +183,7 @@ int test_sprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, str2)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
@@ -192,7 +192,7 @@ int test_sprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, "keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -201,7 +201,7 @@ int test_sprintf_s (void)
     ERR_MSVC(-ESNOSPC, -1);
     ERRNO_MSVC(0, ERANGE);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "1234");
     strcpy(str2, "keep it simple");
@@ -210,7 +210,7 @@ int test_sprintf_s (void)
     NOERRNULL()
     EXPSTR(str1, "keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "12345678901234567890");
 
@@ -219,7 +219,7 @@ int test_sprintf_s (void)
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "123456789");
 
@@ -227,7 +227,7 @@ int test_sprintf_s (void)
     ERR(1) /* overlapping allowed */
     EXPSTR(str1, "9")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "123");
     strcpy(str1, "keep it simple");
@@ -236,7 +236,7 @@ int test_sprintf_s (void)
     NOERRNULL()
     EXPSTR(str2, "keep it simple")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "1234");
     strcpy(str1, "56789");
@@ -245,7 +245,7 @@ int test_sprintf_s (void)
     NOERRNULL()
     EXPSTR(str2, "56789")
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -253,8 +253,5 @@ int test_sprintf_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_sprintf_s());
-}
+int main(void) { return (test_sprintf_s()); }
 #endif

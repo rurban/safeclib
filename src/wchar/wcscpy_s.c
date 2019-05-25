@@ -71,8 +71,8 @@
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
  *          not greater than RSIZE_MAX_WSTR, then wcscpy_s nulls dest.
- * @retval  EOK         when successful operation, the wide characters in src were
- *                      copied into dest and the result is null terminated.
+ * @retval  EOK         when successful operation, the wide characters in src
+ * were copied into dest and the result is null terminated.
  * @retval  -ESNULLP    when dest or src is a NULL pointer
  * @retval  -ESZEROL    when dmax = 0
  * @retval  -ESLEMAX    when dmax > RSIZE_MAX_WSTR
@@ -83,10 +83,9 @@
  *    wcsncpy(), wmemcpy(), wmemmove(), strncpy_s()
  */
 
-EXPORT errno_t
-_wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
-               const wchar_t * restrict src, const size_t destbos)
-{
+EXPORT errno_t _wcscpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                             const wchar_t *restrict src,
+                             const size_t destbos) {
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;
@@ -115,9 +114,10 @@ _wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_werror(orig_dest, orig_dmax, "wcscpy_s: "
-                             "overlapping objects",
-                             ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcscpy_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -126,9 +126,13 @@ _wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -138,15 +142,15 @@ _wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
             dest++;
             src++;
         }
-
     } else {
         overlap_bumper = dest;
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_werror(orig_dest, orig_dmax, "wcscpy_s: "
-                      "overlapping objects",
-                      ESOVRLP);
+                handle_werror(orig_dest, orig_dmax,
+                              "wcscpy_s: "
+                              "overlapping objects",
+                              ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -155,9 +159,13 @@ _wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
-                    memset(dest, 0, dmax*sizeof(wchar_t));
+                    memset(dest, 0, dmax * sizeof(wchar_t));
                 else {
-                    while (dmax) { *dest = L'\0'; dmax--; dest++; }
+                    while (dmax) {
+                        *dest = L'\0';
+                        dmax--;
+                        dest++;
+                    }
                 }
 #endif
                 return RCNEGATE(EOK);
@@ -173,9 +181,10 @@ _wcscpy_s_chk (wchar_t * restrict dest, rsize_t dmax,
      * the entire src must have been copied, if not reset dest
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
-    handle_werror(orig_dest, orig_dmax, "wcscpy_s: not "
-                 "enough space for src",
-                 ESNOSPC);
+    handle_werror(orig_dest, orig_dmax,
+                  "wcscpy_s: not "
+                  "enough space for src",
+                  ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }
 

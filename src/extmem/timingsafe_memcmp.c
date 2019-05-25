@@ -50,25 +50,26 @@
  *    memcmp_s(), timingsafe_bcmp()
  */
 
-EXPORT int
-_timingsafe_memcmp_chk (const void *b1, const void *b2, size_t len,
-                        const size_t destbos, const size_t srcbos)
-{
-    const unsigned char *p1 = (const unsigned char *)b1, *p2 = (const unsigned char *)b2;
+EXPORT int _timingsafe_memcmp_chk(const void *b1, const void *b2, size_t len,
+                                  const size_t destbos, const size_t srcbos) {
+    const unsigned char *p1 = (const unsigned char *)b1,
+                        *p2 = (const unsigned char *)b2;
     size_t i;
     int res = 0, done = 0;
 
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(len > RSIZE_MAX_MEM)) {
-            invoke_safe_mem_constraint_handler("timingsafe_memcmp" ": n exceeds max",
-                                               (void*)b1, ESLEMAX);
+            invoke_safe_mem_constraint_handler("timingsafe_memcmp"
+                                               ": n exceeds max",
+                                               (void *)b1, ESLEMAX);
             return -ESLEMAX;
         }
         BND_CHK_PTR_BOUNDS(b1, len);
     } else {
         if (unlikely(len > destbos)) {
-            invoke_safe_mem_constraint_handler("timingsafe_memcmp" ": n exceeds b1",
-                                               (void*)b1, ESLEMAX);
+            invoke_safe_mem_constraint_handler("timingsafe_memcmp"
+                                               ": n exceeds b1",
+                                               (void *)b1, ESLEMAX);
             return -ESLEMAX;
         }
     }
@@ -76,8 +77,9 @@ _timingsafe_memcmp_chk (const void *b1, const void *b2, size_t len,
         BND_CHK_PTR_BOUNDS(b2, len);
     } else {
         if (unlikely(len > srcbos)) {
-            invoke_safe_mem_constraint_handler("timingsafe_memcmp" ": n exceeds b2",
-                                               (void*)b2, ESLEMAX);
+            invoke_safe_mem_constraint_handler("timingsafe_memcmp"
+                                               ": n exceeds b2",
+                                               (void *)b2, ESLEMAX);
             return -ESLEMAX;
         }
     }

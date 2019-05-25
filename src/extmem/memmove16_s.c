@@ -82,11 +82,9 @@
  *    memmove_s(), memmove32_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
-EXPORT errno_t
-_memmove16_s_chk (uint16_t *dest, rsize_t dmax,
-                  const uint16_t *src, rsize_t slen,
-                  const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _memmove16_s_chk(uint16_t *dest, rsize_t dmax,
+                                const uint16_t *src, rsize_t slen,
+                                const size_t destbos, const size_t srcbos) {
     size_t smax; /* in bytes */
 
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
@@ -95,7 +93,7 @@ _memmove16_s_chk (uint16_t *dest, rsize_t dmax,
 
     CHK_DEST_MEM_NULL("memmove16_s")
     CHK_DMAX_MEM_ZERO("memmove16_s")
-    smax = slen*2;
+    smax = slen * 2;
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MEM_MAX("memmove16_s", RSIZE_MAX_MEM)
         BND_CHK_PTR_BOUNDS(dest, dmax);
@@ -112,7 +110,7 @@ _memmove16_s_chk (uint16_t *dest, rsize_t dmax,
     } else {
         if (unlikely(smax > srcbos)) {
             invoke_safe_mem_constraint_handler("memmove16_s: slen exceeds src",
-                       (void*)src, EOVERFLOW);
+                                               (void *)src, EOVERFLOW);
             return (RCNEGATE(EOVERFLOW));
         }
     }

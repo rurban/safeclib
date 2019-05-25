@@ -78,8 +78,8 @@
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
- * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the compiler
- *                      knows the object_size statically)
+ * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -88,21 +88,19 @@
  *    memcpy16_s(), memcpy32_s(), memmove_s(), memmove16_s(), memmove32_s()
  *
  */
-EXPORT errno_t
-_memcpy_s_chk (void * restrict dest, rsize_t dmax,
-               const void * restrict src, rsize_t slen,
-               const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
+                             const void *restrict src, rsize_t slen,
+                             const size_t destbos, const size_t srcbos) {
     uint8_t *dp;
-    const uint8_t  *sp;
+    const uint8_t *sp;
 
     /* Note that MSVC checks this at very first. We do also now */
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */
         return EOK;
     }
 
-    dp = (uint8_t*) dest;
-    sp = (uint8_t*) src;
+    dp = (uint8_t *)dest;
+    sp = (uint8_t *)src;
 
     CHK_DEST_MEM_NULL("memcpy_s")
     CHK_DMAX_MEM_ZERO("memcpy_s")
@@ -122,15 +120,15 @@ _memcpy_s_chk (void * restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
         invoke_safe_mem_constraint_handler("memcpy_s: slen exceeds src",
-                   (void*)src, EOVERFLOW);
+                                           (void *)src, EOVERFLOW);
         return (RCNEGATE(EOVERFLOW));
     }
 
     /* overlap is disallowed, but allow dest==src */
-    if (unlikely(CHK_OVRLP_BUTSAME(dp,dmax,sp,slen))) {
+    if (unlikely(CHK_OVRLP_BUTSAME(dp, dmax, sp, slen))) {
         mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memcpy_s: overlap undefined",
-                   dest, ESOVRLP);
+        invoke_safe_mem_constraint_handler("memcpy_s: overlap undefined", dest,
+                                           ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 

@@ -72,9 +72,7 @@
  */
 
 /* TODO: bounds check */
-static int
-compare_right(char const *a, char const *b)
-{
+static int compare_right(char const *a, char const *b) {
     int bias = 0;
 
     /* The longest run of digits wins.  That aside, the greatest
@@ -94,18 +92,15 @@ compare_right(char const *a, char const *b)
         } else if (*a > *b) {
             if (!bias)
                 bias = +1;
-        } else if (!*a  &&  !*b)
+        } else if (!*a && !*b)
             return bias;
     }
 
     return 0;
 }
 
-
 /* TODO: bounds check */
-static int
-compare_left(char const *a, char const *b)
-{
+static int compare_left(char const *a, char const *b) {
     /* Compare two left-aligned numbers: the first to have a
        different value wins. */
     for (;; a++, b++) {
@@ -123,14 +118,12 @@ compare_left(char const *a, char const *b)
     return 0;
 }
 
-EXPORT errno_t
-_strnatcmp_s_chk (const char *dest, rsize_t dmax,
-                  const char *src, const int fold_case, int *resultp,
-                  const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _strnatcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
+                                const int fold_case, int *resultp,
+                                const size_t destbos, const size_t srcbos) {
     size_t ai, bi;
     char ca, cb;
-    int  fractional;
+    int fractional;
 
     CHK_SRC_NULL("strnatcmp_s", resultp)
     *resultp = 0;
@@ -162,11 +155,11 @@ _strnatcmp_s_chk (const char *dest, rsize_t dmax,
             fractional = (ca == '0' || cb == '0');
 
             if (fractional) {
-                if ((*resultp = compare_left(dest+ai, src+bi)) != 0) {
+                if ((*resultp = compare_left(dest + ai, src + bi)) != 0) {
                     return RCNEGATE(EOK);
                 }
             } else {
-                if ((*resultp = compare_right(dest+ai, src+bi)) != 0)
+                if ((*resultp = compare_right(dest + ai, src + bi)) != 0)
                     return RCNEGATE(EOK);
             }
         }
@@ -192,12 +185,14 @@ _strnatcmp_s_chk (const char *dest, rsize_t dmax,
             *resultp = 1;
             return RCNEGATE(EOK);
         }
-        ++ai; ++bi;
+        ++ai;
+        ++bi;
 
         /* sentinel srcbos -1 = ULONG_MAX */
         if (unlikely(bi >= srcbos)) {
             invoke_safe_str_constraint_handler("strnatcmp_s"
-                       ": src unterminated", (void*)src, ESUNTERM);
+                                               ": src unterminated",
+                                               (void *)src, ESUNTERM);
             return RCNEGATE(ESUNTERM);
         }
     }

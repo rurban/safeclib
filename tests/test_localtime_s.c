@@ -11,10 +11,9 @@
 
 /* conflicting API */
 #ifndef HAVE_MINGW64
-int test_localtime_s (void);
+int test_localtime_s(void);
 
-int test_localtime_s (void)
-{
+int test_localtime_s(void) {
     int errs = 0;
     time_t timer;
     struct tm tm;
@@ -22,7 +21,7 @@ int test_localtime_s (void)
 
     timer = time(NULL);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
@@ -35,7 +34,7 @@ int test_localtime_s (void)
     ERRNO(ESNULLP);
     PTRNULL(tmptr);
 #endif
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     timer = 0;
     tmptr = localtime_s(&timer, &tm);
@@ -51,7 +50,7 @@ int test_localtime_s (void)
     PTRNULL(tmptr);
 
     tmptr = localtime(&timer); /* leaks */
-    /* memset(&tm, 0, sizeof(struct tm)); */
+                               /* memset(&tm, 0, sizeof(struct tm)); */
 #if SIZEOF_TIME_T < 8
     /* year 10000, ie 313392063599L would overflow on 32bit */
     timer = MAX_TIME_T_STR;
@@ -70,7 +69,7 @@ int test_localtime_s (void)
     ERRNO(EOVERFLOW);
     PTRNULL(tmptr);
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -78,14 +77,10 @@ int test_localtime_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_localtime_s());
-}
+int main(void) { return (test_localtime_s()); }
 #endif
 #else
-int main (void)
-{
+int main(void) {
     printf("skipped under windows sec_api: reversed arguments\n");
     return 0;
 }

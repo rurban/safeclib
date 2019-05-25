@@ -55,7 +55,8 @@ any of the arguments corresponding to %s is a null pointer.
  *
  * @pre Neither \c stream nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer. (not
+ * yet)
  * @pre No encoding error shall occur.
  * @pre \c %c, \c %s, and \c %[ conversion specifiers each expect two
  *      arguments (the usual pointer and a value of type \c rsize_t
@@ -82,33 +83,32 @@ any of the arguments corresponding to %s is a null pointer.
  *
  */
 
-EXPORT int
-vfscanf_s(FILE *restrict stream, const char *restrict fmt, va_list ap)
-{
+EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
+                     va_list ap) {
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
     int ret;
 
     if (unlikely(stream == NULL)) {
-        invoke_safe_str_constraint_handler("vfscanf_s: stream is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vfscanf_s: stream is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return EOF;
     }
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vfscanf_s: fmt is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vfscanf_s: fmt is null", NULL,
+                                           ESNULLP);
         errno = ESNULLP;
         return EOF;
     }
 
 #if defined(HAVE_STRSTR)
-    if (unlikely((p = strstr((char*)fmt, "%n")))) {
-        if ((p-fmt == 0) || *(p-1) != '%') {
-            invoke_safe_str_constraint_handler("vfscanf_s: illegal %n",
-                   NULL, EINVAL);
+    if (unlikely((p = strstr((char *)fmt, "%n")))) {
+        if ((p - fmt == 0) || *(p - 1) != '%') {
+            invoke_safe_str_constraint_handler("vfscanf_s: illegal %n", NULL,
+                                               EINVAL);
             errno = EINVAL;
             return EOF;
         }
@@ -116,10 +116,10 @@ vfscanf_s(FILE *restrict stream, const char *restrict fmt, va_list ap)
 #elif defined(HAVE_STRCHR)
     if (unlikely((p = strchr(fmt, flen, 'n')))) {
         /* at the beginning or if inside, not %%n */
-        if (((p-fmt >= 1) && *(p-1) == '%') &&
-            ((p-fmt == 1) || *(p-2) != '%')) {
-            invoke_safe_str_constraint_handler("vfscanf_s: illegal %n",
-                                               NULL, EINVAL);
+        if (((p - fmt >= 1) && *(p - 1) == '%') &&
+            ((p - fmt == 1) || *(p - 2) != '%')) {
+            invoke_safe_str_constraint_handler("vfscanf_s: illegal %n", NULL,
+                                               EINVAL);
             errno = EINVAL;
             return EOF;
         }

@@ -74,11 +74,9 @@
  *    strcasecmp_s()
  *
  */
-EXPORT errno_t
-_strcmp_s_chk (const char *dest, rsize_t dmax,
-               const char *src, int *resultp,
-               const size_t destbos, size_t srcbos)
-{
+EXPORT errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
+                             int *resultp, const size_t destbos,
+                             size_t srcbos) {
     size_t slen;
     CHK_SRC_NULL("strcmp_s", resultp)
     *resultp = 0;
@@ -107,7 +105,8 @@ _strcmp_s_chk (const char *dest, rsize_t dmax,
         /* sentinel srcbos -1 = ULONG_MAX */
         if (unlikely(slen >= srcbos)) {
             invoke_safe_str_constraint_handler("strcmp_s"
-                       ": src unterminated", (void*)src, ESUNTERM);
+                                               ": src unterminated",
+                                               (void *)src, ESUNTERM);
             return RCNEGATE(ESUNTERM);
         }
     }

@@ -9,15 +9,14 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define LEN   ( 128 )
-#define SHORT_LEN  ( 5 )
+#define LEN (128)
+#define SHORT_LEN (5)
 
-static char   str1[LEN];
-static char   str2[LEN];
-int test_strstr_s (void);
+static char str1[LEN];
+static char str2[LEN];
+int test_strstr_s(void);
 
-int test_strstr_s (void)
-{
+int test_strstr_s(void) {
     errno_t rc;
     char *sub;
     char *std_sub;
@@ -26,7 +25,7 @@ int test_strstr_s (void)
     rsize_t len2;
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
@@ -49,36 +48,35 @@ int test_strstr_s (void)
     SUBNULL()
 
     EXPECT_BOS("dest overflow")
-    rc = strstr_s(str1, RSIZE_MAX_STR+1, str2, LEN, &sub);
+    rc = strstr_s(str1, RSIZE_MAX_STR + 1, str2, LEN, &sub);
     ERR(ESLEMAX)
     SUBNULL()
 
     EXPECT_BOS("src overflow")
-    rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR+1, &sub);
+    rc = strstr_s(str1, LEN, str2, RSIZE_MAX_STR + 1, &sub);
     ERR(ESLEMAX)
     SUBNULL()
 
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
-    rc = strstr_s(str1, LEN+1, str2, LEN, &sub);
+    rc = strstr_s(str1, LEN + 1, str2, LEN, &sub);
     ERR(EOVERFLOW)
     SUBNULL()
 
     EXPECT_BOS("src overflow")
-    rc = strstr_s(str1, LEN, str2, LEN+1, &sub);
+    rc = strstr_s(str1, LEN, str2, LEN + 1, &sub);
     ERR(EOVERFLOW)
     SUBNULL()
-# endif    
+#endif
 
 #endif /* HAVE_CT_BOS_OVR */
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str2, "a");
     rc = strstr_s(str1, LEN, str2, 0, &sub);
     ERR(ESZEROL)
     SUBNULL()
-
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "keep");
@@ -88,7 +86,7 @@ int test_strstr_s (void)
     ERR(ESNOTFND)
     SUBNULL()
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     *str1 = '\0';
     *str2 = '\0';
@@ -97,7 +95,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     *str2 = '\0';
@@ -106,7 +104,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "kee");
@@ -116,7 +114,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "");
@@ -126,7 +124,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, str1)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "eep it");
@@ -136,7 +134,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, &str1[1])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "ethe");
@@ -146,8 +144,8 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, &str1[15])
 
-/*--------------------------------------------------*/
-               // 012345678901234567890
+    /*--------------------------------------------------*/
+    // 012345678901234567890
     strcpy(str1, "keep it all together");
     strcpy(str2, "he");
 
@@ -158,7 +156,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, &str1[17])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "er");
@@ -170,7 +168,7 @@ int test_strstr_s (void)
     ERR(EOK)
     PTREQ(sub, &str1[18])
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
@@ -179,7 +177,7 @@ int test_strstr_s (void)
     ERR(ESNOTFND)
     SUBNULL()
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
@@ -187,14 +185,14 @@ int test_strstr_s (void)
     rc = strstr_s(str1, 45, str2, LEN, &sub);
     ERR(EOK)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strstr_s(str1, LEN, str2, 5, &sub);
     ERR(EOK)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "1234");
@@ -205,14 +203,14 @@ int test_strstr_s (void)
     ERR(ESNOTFND)
     SUBNULL()
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "it all");
 
     rc = strstr_s(str1, LEN, str2, 2, &sub);
     ERR(EOK)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     strcpy(str1, "keep it all together");
     strcpy(str2, "eep");
@@ -225,7 +223,7 @@ int test_strstr_s (void)
     std_sub = strstr(str1, str2);
     PTREQ(sub, std_sub)
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }
@@ -233,8 +231,5 @@ int test_strstr_s (void)
 #ifndef __KERNEL__
 /* simple hack to get this to work for both userspace and Linux kernel,
    until a better solution can be created. */
-int main (void)
-{
-    return (test_strstr_s());
-}
+int main(void) { return (test_strstr_s()); }
 #endif

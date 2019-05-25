@@ -75,13 +75,11 @@
  *    strcmp_s()
  *
  */
-EXPORT errno_t
-_strcasecmp_s_chk (const char *dest, rsize_t dmax,
-                   const char *src, int *resultp,
-                   const size_t destbos)
-{
-    const unsigned char *udest = (const unsigned char *) dest;
-    const unsigned char *usrc  = (const unsigned char *) src;
+EXPORT errno_t _strcasecmp_s_chk(const char *dest, rsize_t dmax,
+                                 const char *src, int *resultp,
+                                 const size_t destbos) {
+    const unsigned char *udest = (const unsigned char *)dest;
+    const unsigned char *usrc = (const unsigned char *)src;
     int result = 0;
 
     CHK_SRC_NULL("strcasecmp_s", resultp)

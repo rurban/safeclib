@@ -39,8 +39,8 @@
 #else
 
 #if defined(__CYGWIN__) && defined(__x86_64)
-#define wcstombs(dest, src, len) \
-    wcsrtombs((dest), (const wchar_t ** restrict)&(src), (len), &st)
+#define wcstombs(dest, src, len)                                               \
+    wcsrtombs((dest), (const wchar_t **restrict) & (src), (len), &st)
 #endif
 
 /**
@@ -108,8 +108,8 @@
  * @retval  ESNULLP    when retvalp or src are a NULL pointer
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
- * @retval  EOVERFLOW  when dmax or len > size of dest (optionally, when the compiler
- *                     knows the object_size statically), unless dest is NULL
+ * @retval  EOVERFLOW  when dmax or len > size of dest (optionally, when the
+ * compiler knows the object_size statically), unless dest is NULL
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when src and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax
@@ -120,12 +120,9 @@
  * @see
  *    mbstowc_s()
  */
-EXPORT errno_t
-_wcstombs_s_chk (size_t *restrict retvalp,
-                 char *restrict dest, rsize_t dmax,
-                 const wchar_t *restrict src, rsize_t len,
-                 const size_t destbos)
-{
+EXPORT errno_t _wcstombs_s_chk(size_t *restrict retvalp, char *restrict dest,
+                               rsize_t dmax, const wchar_t *restrict src,
+                               rsize_t len, const size_t destbos) {
     size_t l;
     errno_t rc;
 #if defined(__CYGWIN__) && defined(__x86_64)
@@ -138,26 +135,31 @@ _wcstombs_s_chk (size_t *restrict retvalp,
         CHK_DMAX_ZERO("wcstombs_s")
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                invoke_safe_str_constraint_handler("wcstombs_s" ": dmax/len exceeds max",
-                           (void*)dest, ESLEMAX);
+                invoke_safe_str_constraint_handler("wcstombs_s"
+                                                   ": dmax/len exceeds max",
+                                                   (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             BND_CHK_PTR_BOUNDS(dest, destsz);
         } else {
             if (unlikely(dmax > destbos || len > destbos)) {
                 if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                    handle_error(dest,destbos,"wcstombs_s" ": dmax/len exceeds max",
+                    handle_error(dest, destbos,
+                                 "wcstombs_s"
+                                 ": dmax/len exceeds max",
                                  ESLEMAX);
                     return RCNEGATE(ESLEMAX);
                 } else {
-                    handle_error(dest,destbos,"wcstombs_s" ": dmax/len exceeds dest",
+                    handle_error(dest, destbos,
+                                 "wcstombs_s"
+                                 ": dmax/len exceeds dest",
                                  EOVERFLOW);
                     return RCNEGATE(EOVERFLOW);
                 }
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(dmax != destbos)) {
-                handle_str_bos_chk_warn("wcstombs_s",(char*)dest,dmax,
+                handle_str_bos_chk_warn("wcstombs_s", (char *)dest, dmax,
                                         destbos);
                 RETURN_ESLEWRNG;
             }
@@ -173,12 +175,12 @@ _wcstombs_s_chk (size_t *restrict retvalp,
 #endif
         }
         invoke_safe_str_constraint_handler("wcsrtombs_s: src is null",
-                   (void*)dest, ESNULLP);
+                                           (void *)dest, ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-    if (unlikely(dest == (char*)src)) {
-        invoke_safe_str_constraint_handler("wcsrtombs_s: dest overlapping objects",
-                   (void*)dest, ESOVRLP);
+    if (unlikely(dest == (char *)src)) {
+        invoke_safe_str_constraint_handler(
+            "wcsrtombs_s: dest overlapping objects", (void *)dest, ESOVRLP);
         return RCNEGATE(ESOVRLP);
     }
 

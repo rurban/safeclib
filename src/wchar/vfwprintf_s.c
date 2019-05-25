@@ -59,7 +59,8 @@ any of the arguments corresponding to %s is a null pointer
  *
  * @pre Neither stream nor fmt shall be a null pointer.
  * @pre fmt shall not contain the conversion specifier \c %n
- * @pre None of the arguments corresponding to \c %s is a null pointer (not yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer (not
+ * yet)
  * @pre No encoding error shall occur.
  *
  * @return  On success the total number of wide characters written is returned.
@@ -75,44 +76,43 @@ any of the arguments corresponding to %s is a null pointer
  *
  */
 
-EXPORT int
-vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, va_list ap)
-{
+EXPORT int vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt,
+                       va_list ap) {
     wchar_t *p;
     int ret;
 
     if (unlikely(stream == NULL)) {
-        invoke_safe_str_constraint_handler("vfprintf_s: stream is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vfprintf_s: stream is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vfwprintf_s: fmt is null",
-                   NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vfwprintf_s: fmt is null", NULL,
+                                           ESNULLP);
         return -(ESNULLP);
     }
 
 #if defined(HAVE_WCSSTR) || !defined(SAFECLIB_DISABLE_EXTENSIONS)
-    if (unlikely((p = wcsstr((wchar_t*)fmt, L"%n")))) {
-        if ((p-fmt == 0) || *(p-1) != L'%') {
-            invoke_safe_str_constraint_handler("vfwprintf_s: illegal %n",
-                   NULL, EINVAL);
+    if (unlikely((p = wcsstr((wchar_t *)fmt, L"%n")))) {
+        if ((p - fmt == 0) || *(p - 1) != L'%') {
+            invoke_safe_str_constraint_handler("vfwprintf_s: illegal %n", NULL,
+                                               EINVAL);
             return -(EINVAL);
         }
     }
 #elif defined(HAVE_WCSCHR)
     if (unlikely((p = wcschr(fmt, flen, L'n')))) {
         /* at the beginning or if inside, not %%n */
-        if (((p-fmt >= 1) && *(p-1) == L'%') &&
-            ((p-fmt == 1) || *(p-2) != L'%')) {
-            invoke_safe_str_constraint_handler("vfwprintf_s: illegal %n",
-                                               NULL, EINVAL);
+        if (((p - fmt >= 1) && *(p - 1) == L'%') &&
+            ((p - fmt == 1) || *(p - 2) != L'%')) {
+            invoke_safe_str_constraint_handler("vfwprintf_s: illegal %n", NULL,
+                                               EINVAL);
             return -(EINVAL);
         }
     }
 #else
-    #error need wcsstr or wcschr
+#error need wcsstr or wcschr
 #endif
 
     errno = 0;

@@ -44,9 +44,9 @@
 /**
  * @def memmove_s(dest,dmax,src,slen)
  * @brief
- *    The \b memmove_s function copies \c slen bytes from the region pointed to by
- *    \c src into the region pointed to by \c dest.
- *    If slen is zero, the function does nothing.
+ *    The \b memmove_s function copies \c slen bytes from the region pointed to
+ * by \c src into the region pointed to by \c dest. If slen is zero, the
+ * function does nothing.
  * @details
  *    This copying takes place as if the slen bytes from the region pointed
  *    to by src are first copied into a temporary array of slen bytes that does
@@ -82,8 +82,8 @@
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
- * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the compiler
- *                      knows the object_size statically)
+ * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the
+ * compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  *
@@ -92,16 +92,14 @@
  *
  */
 
-EXPORT errno_t
-_memmove_s_chk (void *dest, rsize_t dmax,
-               const void *src, rsize_t slen,
-               const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _memmove_s_chk(void *dest, rsize_t dmax, const void *src,
+                              rsize_t slen, const size_t destbos,
+                              const size_t srcbos) {
     uint8_t *dp;
-    const uint8_t  *sp;
+    const uint8_t *sp;
 
-    dp = (uint8_t*) dest;
-    sp = (uint8_t*) src;
+    dp = (uint8_t *)dest;
+    sp = (uint8_t *)src;
 
     /* Note that MSVC checks this at very first. We do also now */
     if (unlikely(slen == 0)) { /* Since C11 n=0 is allowed */
@@ -121,20 +119,20 @@ _memmove_s_chk (void *dest, rsize_t dmax,
 
     CHK_SRC_MEM_NULL_CLEAR("memmove_s", src)
     CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memmove_s", slen, RSIZE_MAX_MEM)
-/*
-    if (unlikely(slen > dmax)) {
-        errno_t rc = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
-        mem_prim_set(dp, dmax, 0);
-        invoke_safe_mem_constraint_handler("memmove_s: slen exceeds max",
-                   dest, rc);
-        return (RCNEGATE(rc));
-    }
-*/
+    /*
+        if (unlikely(slen > dmax)) {
+            errno_t rc = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
+            mem_prim_set(dp, dmax, 0);
+            invoke_safe_mem_constraint_handler("memmove_s: slen exceeds max",
+                       dest, rc);
+            return (RCNEGATE(rc));
+        }
+    */
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
         invoke_safe_mem_constraint_handler("memmove_s: slen exceeds src",
-                   (void*)src, EOVERFLOW);
+                                           (void *)src, EOVERFLOW);
         return (RCNEGATE(EOVERFLOW));
     }
 

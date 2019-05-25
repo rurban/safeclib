@@ -9,16 +9,15 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 
-#define LEN   ( 128 )
+#define LEN (128)
 
-int main(void)
-{
+int main(void) {
     bool rc;
     uint32_t len;
-    char   str[LEN];
+    char str[LEN];
     int errs = 0;
 
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     len = 5;
 #ifndef HAVE_CT_BOS_OVR
@@ -35,65 +34,63 @@ int main(void)
     rc = strisuppercase_s(str, 99999);
     ERR(false)
 
-# ifdef HAVE___BUILTIN_OBJECT_SIZE
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS_TODO("dest overflow") /* but see test_strtouppercase_s.c */
     rc = strisuppercase_s("", 2);
     ERR(false)
 
-    /*printf("%u BOS: %d %d/%d %d - %lu/%lu\n", __LINE__, _BOS_KNOWN("test"), SAFEC_CONSTP("test"),
-           _BOS_KNOWN(str), SAFEC_CONSTP(str),
-           BOS("test"), BOS(str));*/
+    /*printf("%u BOS: %d %d/%d %d - %lu/%lu\n", __LINE__, _BOS_KNOWN("test"),
+       SAFEC_CONSTP("test"), _BOS_KNOWN(str), SAFEC_CONSTP(str), BOS("test"),
+       BOS(str));*/
     /* once fixed by adding prototypes and const: clang literal string bug */
     EXPECT_BOS_TODO("dest overflow")
     rc = strisuppercase_s("test", 99999);
     ERR(false)
-# endif
+#endif
 
 #endif
 
-
-
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     str[0] = '\0';
     rc = strisuppercase_s(str, 5);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "ABCDEFGHIGHIJ");
+    strcpy(str, "ABCDEFGHIGHIJ");
     len = 7;
 
     rc = strisuppercase_s(str, len);
     ERR(true)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "ABCDEFGHIGHIJ");
+    strcpy(str, "ABCDEFGHIGHIJ");
     len = strlen(str);
 
     rc = strisuppercase_s(str, len);
     ERR(true)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "qqWe go");
+    strcpy(str, "qqWe go");
     len = strlen(str);
 
     rc = strisuppercase_s(str, len);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "1234");
+    strcpy(str, "1234");
     len = strlen(str);
 
     rc = strisuppercase_s(str, len);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-    strcpy (str, "!@#$%^&*()");
+    strcpy(str, "!@#$%^&*()");
     len = strlen(str);
 
     rc = strisuppercase_s(str, len);
     ERR(false)
-/*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
     return (errs);
 }

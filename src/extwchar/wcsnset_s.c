@@ -74,12 +74,10 @@
  *    wcsset_s(), wmemset_s(), strzero_s(), strnset_s(), strispassword_s()
  *
  */
-EXPORT errno_t
-_wcsnset_s_chk (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n,
-                const size_t destbos)
-{
+EXPORT errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                              wchar_t value, rsize_t n, const size_t destbos) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-    wchar_t * orig_dest;
+    wchar_t *orig_dest;
 #endif
     const size_t destsz = dmax * sizeof(wchar_t);
 
@@ -88,7 +86,7 @@ _wcsnset_s_chk (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n,
 #if SIZEOF_WCHAR_T > 2
     if (unlikely(value > _UNICODE_MAX)) {
         invoke_safe_str_constraint_handler("wcsnset_s: value exceeds max",
-                   (void*)&value, ESLEMAX);
+                                           (void *)&value, ESLEMAX);
         return (ESLEMAX);
     }
 #endif
@@ -99,8 +97,7 @@ _wcsnset_s_chk (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n,
         CHK_DESTW_OVR_CLEAR("wcsnset_s", destsz, destbos)
     }
     if (unlikely(n > dmax)) {
-        handle_werror(dest, dmax, "wcsnset_s: n exceeds dmax",
-                      ESNOSPC);
+        handle_werror(dest, dmax, "wcsnset_s: n exceeds dmax", ESNOSPC);
         return (ESNOSPC);
     }
 
@@ -115,7 +112,7 @@ _wcsnset_s_chk (wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n,
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null slack to clear any data */
     if (!*dest)
-        memset(dest, 0, (dmax-(dest-orig_dest))*sizeof(wchar_t));
+        memset(dest, 0, (dmax - (dest - orig_dest)) * sizeof(wchar_t));
 #endif
 
     return (EOK);

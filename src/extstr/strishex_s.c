@@ -64,9 +64,8 @@
  *    strisuppercase_s()
  */
 
-EXPORT bool
-_strishex_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT bool _strishex_s_chk(const char *dest, rsize_t dmax,
+                            const size_t destbos) {
     CHK_DEST_DMAX_BOOL("strishex_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {
@@ -80,7 +79,6 @@ _strishex_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
             ((*dest >= 'A') && (*dest <= 'F'))) {
             dest++;
             dmax--;
-
         } else {
             return (false);
         }

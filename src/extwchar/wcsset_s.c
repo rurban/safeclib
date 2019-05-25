@@ -71,10 +71,8 @@
  *    wcsnset_s(), wmemset_s(), strzero_s(), strnset_s(), strispassword_s()
  *
  */
-EXPORT errno_t
-_wcsset_s_chk (wchar_t *restrict dest, rsize_t dmax, const wchar_t value,
-               const size_t destbos)
-{
+EXPORT errno_t _wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                             const wchar_t value, const size_t destbos) {
     const size_t destsz = dmax * sizeof(wchar_t);
 
     CHK_DEST_NULL("wcsset_s")
@@ -82,7 +80,7 @@ _wcsset_s_chk (wchar_t *restrict dest, rsize_t dmax, const wchar_t value,
 #if SIZEOF_WCHAR_T > 2
     if (unlikely(value > _UNICODE_MAX)) {
         invoke_safe_str_constraint_handler("wcsnset_s: value exceeds max",
-                   (void*)&value, ESLEMAX);
+                                           (void *)&value, ESLEMAX);
         return (ESLEMAX);
     }
 #endif
@@ -101,7 +99,7 @@ _wcsset_s_chk (wchar_t *restrict dest, rsize_t dmax, const wchar_t value,
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null slack to clear any data */
     if (!*dest)
-        memset(dest, 0, dmax*sizeof(wchar_t));
+        memset(dest, 0, dmax * sizeof(wchar_t));
 #endif
 
     return (EOK);

@@ -42,10 +42,10 @@
  * @details
  *       -Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters
  *    \n -Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters
- *    \n -Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters
- *    \n -Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters
- *    \n -Password must have at least SAFE_STR_MIN_NUMBERS numbers
- *    \n -Password must have at least SAFE_STR_MIN_SPECIALS special characters
+ *    \n -Password must have at least SAFE_STR_MIN_LOWERCASE lower case
+ * characters \n -Password must have at least SAFE_STR_MIN_UPPERCASE upper case
+ * characters \n -Password must have at least SAFE_STR_MIN_NUMBERS numbers \n
+ * -Password must have at least SAFE_STR_MIN_SPECIALS special characters
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
@@ -66,9 +66,8 @@
  * @see
  *    strzero_s()
  */
-EXPORT bool
-_strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
-{
+EXPORT bool _strispassword_s_chk(const char *dest, rsize_t dmax,
+                                 const size_t destbos) {
     uint32_t cnt_all;
     uint32_t cnt_lowercase;
     uint32_t cnt_uppercase;
@@ -79,8 +78,8 @@ _strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 
     if (unlikely(dmax < SAFE_STR_PASSWORD_MIN_LENGTH)) {
         invoke_safe_str_constraint_handler("strispassword_s: "
-                   "dest is too short",
-                   (void*)dest, ESLEMIN);
+                                           "dest is too short",
+                                           (void *)dest, ESLEMIN);
         return (false);
     }
 
@@ -95,8 +94,8 @@ _strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 
         if (unlikely(dmax == 0)) {
             invoke_safe_str_constraint_handler(
-                      "strispassword_s: dest is unterminated",
-                       (void*)dest, ESUNTERM);
+                "strispassword_s: dest is unterminated", (void *)dest,
+                ESUNTERM);
             return (false);
         }
         dmax--;
@@ -105,14 +104,12 @@ _strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
 
         if ((*dest >= '0') && (*dest <= '9')) {
             cnt_numbers++;
-
         } else if ((*dest >= 'a') && (*dest <= 'z')) {
             cnt_lowercase++;
-
         } else if ((*dest >= 'A') && (*dest <= 'Z')) {
             cnt_uppercase++;
 
-        /* allow all specials */
+            /* allow all specials */
         } else if ((*dest >= 33) && (*dest <= 47)) {
             cnt_specials++;
         } else if ((*dest >= 58) && (*dest <= 64)) {
@@ -123,7 +120,6 @@ _strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
             cnt_specials++;
         } else if ((*dest >= 123) && (*dest <= 126)) {
             cnt_specials++;
-
         } else {
             /* illegal char in password string */
             return (false);
@@ -132,10 +128,10 @@ _strispassword_s_chk (const char *dest, rsize_t dmax, const size_t destbos)
     }
 
     if (cnt_all < SAFE_STR_PASSWORD_MAX_LENGTH &&
-        cnt_numbers >=  SAFE_STR_MIN_NUMBERS &&
+        cnt_numbers >= SAFE_STR_MIN_NUMBERS &&
         cnt_lowercase >= SAFE_STR_MIN_LOWERCASE &&
         cnt_uppercase >= SAFE_STR_MIN_UPPERCASE &&
-        cnt_specials >= SAFE_STR_MIN_SPECIALS ) {
+        cnt_specials >= SAFE_STR_MIN_SPECIALS) {
         return (true);
     } else {
         return (false);

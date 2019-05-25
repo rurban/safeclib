@@ -72,11 +72,9 @@
  *    strlastchar_s(), strlastsame_s()
  *
  */
-EXPORT errno_t
-_strlastdiff_s_chk(const char *dest, rsize_t dmax,
-                   const char *src, rsize_t *resultp,
-                   const size_t destbos)
-{
+EXPORT errno_t _strlastdiff_s_chk(const char *dest, rsize_t dmax,
+                                  const char *src, rsize_t *resultp,
+                                  const size_t destbos) {
     const char *rp;
     bool there_is_a_diff = false;
 

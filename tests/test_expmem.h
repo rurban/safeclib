@@ -41,42 +41,41 @@
 #else
 
 #ifdef HAVE_STDLIB_H
-# include <stdlib.h>
+#include <stdlib.h>
 #endif
 
-void _expmem(char* mem, int from, int to, int what, int size,
-             int *errp, const char *f, const unsigned l);
-#define EXPMEM(mem, from, to, what, size) \
-    _expmem((char*)mem, (from), (to), (what), (size), &errs, __FUNCTION__, __LINE__)
+void _expmem(char *mem, int from, int to, int what, int size, int *errp,
+             const char *f, const unsigned l);
+#define EXPMEM(mem, from, to, what, size)                                      \
+    _expmem((char *)mem, (from), (to), (what), (size), &errs, __FUNCTION__,    \
+            __LINE__)
 
-void _expmem(char* mem, int from, int to, int what, int size,
-             int *errp, const char *f, const unsigned l) {
-    int len = (to-from)*size;
-    void* mem2 = calloc(len, 1);
+void _expmem(char *mem, int from, int to, int what, int size, int *errp,
+             const char *f, const unsigned l) {
+    int len = (to - from) * size;
+    void *mem2 = calloc(len, 1);
     if (what != 0) {
         if (size == 1) {
             memset(mem2, what, len);
         } else if (size == 2) {
             int i;
-            uint16_t* mem16 = (uint16_t*)mem2;
-            for (i=0; i<to-from; i++) {
+            uint16_t *mem16 = (uint16_t *)mem2;
+            for (i = 0; i < to - from; i++) {
                 mem16[i] = (uint16_t)what;
             }
-        }
-        else if (size == 4) {
+        } else if (size == 4) {
             int i;
-            uint32_t* mem32 = (uint32_t*)mem2;
-            for (i=0; i<to-from; i++) {
+            uint32_t *mem32 = (uint32_t *)mem2;
+            for (i = 0; i < to - from; i++) {
                 mem32[i] = (uint32_t)what;
             }
-        }
-        else {
+        } else {
             printf("%s %u  Invalid size %d - Error\n", f, l, size);
         }
     }
-    if (memcmp(&mem[from*size], mem2, size) != 0) {
-        debug_printf("%s %u  Expected \"%s\", got \"%s\" \n", 
-                     f, l, (char*)mem2, (char*)&mem[from*size]);
+    if (memcmp(&mem[from * size], mem2, size) != 0) {
+        debug_printf("%s %u  Expected \"%s\", got \"%s\" \n", f, l,
+                     (char *)mem2, (char *)&mem[from * size]);
         (*errp)++;
     }
     free(mem2);

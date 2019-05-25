@@ -43,11 +43,11 @@
 
 #if SIZEOF_WCHAR_T == 2
 #define wmem_type uint16_t
-#define wmem_set  mem_prim_set16
+#define wmem_set mem_prim_set16
 #define wmem_move mem_prim_move16
 #elif SIZEOF_WCHAR_T == 4
 #define wmem_type uint32_t
-#define wmem_set  mem_prim_set32
+#define wmem_set mem_prim_set32
 #define wmem_move mem_prim_move32
 #else
 #error sizeof(wchar_t)?
@@ -88,8 +88,8 @@
  * @retval  ESNULLP     when dest or src is a NULL POINTER
  * @retval  ESZEROL     when dlen = ZERO
  * @retval  ESLEMAX     when dlen/count > RSIZE_MAX_WMEM
- * @retval  EOVERFLOW   when dlen/count > size of dest/src (optionally, when the compiler
- *                      knows the object_size statically)
+ * @retval  EOVERFLOW   when dlen/count > size of dest/src (optionally, when
+ * the compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dlen != sizeof(dest) and --enable-error-dmax
  * @retval  ESNOSPC     when dlen < count
  * @retval  ESOVRLP     when src memory overlaps dst
@@ -99,10 +99,9 @@
  *
  */
 
-EXPORT errno_t
-_wmemcpy_s_chk (wchar_t *dest, rsize_t dlen, const wchar_t *src, rsize_t count,
-                 const size_t destbos, const size_t srcbos)
-{
+EXPORT errno_t _wmemcpy_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
+                              rsize_t count, const size_t destbos,
+                              const size_t srcbos) {
     const rsize_t dmax = dlen * SIZEOF_WCHAR_T;
     const rsize_t smax = count * SIZEOF_WCHAR_T;
 
@@ -126,25 +125,25 @@ _wmemcpy_s_chk (wchar_t *dest, rsize_t dlen, const wchar_t *src, rsize_t count,
         BND_CHK_PTR_BOUNDS(src, smax);
     } else {
         if (unlikely(smax > srcbos)) {
-            wmem_set((wmem_type*)dest, (uint32_t)dlen, 0);
+            wmem_set((wmem_type *)dest, (uint32_t)dlen, 0);
             invoke_safe_mem_constraint_handler("wmemmove_s: slen exceeds src",
-                       (void*)src, EOVERFLOW);
+                                               (void *)src, EOVERFLOW);
             return (RCNEGATE(EOVERFLOW));
         }
     }
 
     /* overlap is disallowed, but allow dest==src */
-    if (unlikely(CHK_OVRLP_BUTSAME(dest,dlen,src,count))) {
-        wmem_set((wmem_type*)dest, (uint32_t)dlen, 0);
+    if (unlikely(CHK_OVRLP_BUTSAME(dest, dlen, src, count))) {
+        wmem_set((wmem_type *)dest, (uint32_t)dlen, 0);
         invoke_safe_mem_constraint_handler("wmemcpy_s: overlap undefined",
-                   (void*)dest, ESOVRLP);
+                                           (void *)dest, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
     }
 
     /*
      * now perform the copy
      */
-    wmem_move((wmem_type*)dest, (wmem_type*)src, (uint32_t)count);
+    wmem_move((wmem_type *)dest, (wmem_type *)src, (uint32_t)count);
 
     return (RCNEGATE(EOK));
 }
