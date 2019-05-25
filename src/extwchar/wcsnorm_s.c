@@ -2,6 +2,7 @@
  * wcsnorm_s.c
  *
  * September 2017, Reini Urban
+ * May 2019, Reini Urban
  *
  * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
@@ -37,13 +38,13 @@
 #include <assert.h>
 #endif
 
-bool isExclusion(uint32_t uv);
-bool isSingleton(uint32_t uv);
-bool isNonStDecomp(uint32_t uv);
-bool isComp2nd(uint32_t uv);
+bool isExclusion(wint_t uv);
+bool isSingleton(wint_t uv);
+bool isNonStDecomp(wint_t uv);
+bool isComp2nd(wint_t uv);
 
 #if SIZEOF_WCHAR_T > 2
-/* generated via cperl Unicode-Normalize/mkheader -uni -ind */
+/* generated via cperl dist/Unicode-Normalize/mkheader -uni -ind -std */
 #include "unwifcan.h" /* for NFD Canonical Decomposition */
 #include "unwifcmb.h" /* for reorder Canonical_Combining_Class_Values */
 #include "unwifcmp.h" /* for NFC Canonical Composition lists */
@@ -52,6 +53,7 @@ bool isComp2nd(uint32_t uv);
 #include "unwifcpt.h" /* for NFKD/NFKC Compat. Decomposition. */
 #endif
 #else                   /* with UTF-16 surrogate pairs */
+/* generated via cperl dist/Unicode-Normalize/mkheader -uni -ind -utf16 -std */
 #include "unw16ifcan.h" /* for NFD Canonical Decomposition */
 #include "unw16ifcmb.h" /* for reorder Canonical_Combining_Class_Values */
 #include "unw16ifcmp.h" /* for NFC Canonical Composition lists */

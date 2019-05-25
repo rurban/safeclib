@@ -2,7 +2,7 @@
         ChangeLog file for safeclib
 
 Changes in v07062019 3.5.0
-        - Updated towctrans case-mappings to Unicode 12.1
+        - Updated towctrans case-mappings and normalization to Unicode 12.1
         - Unversioned and renamed the libsafec.pc pkg-config file (PR #56)
         - Fixed strnlen_s and wcsnlen_s for long enough smax arguments.
           Now you can get the length without knowing the length beforehand. (GH #65)
