@@ -58,10 +58,10 @@ The C11 Standard adopted many of these points, and added some secure
 `_s` variants in the Annex K.  The Microsoft Windows/MINGW secure API
 did the same, but deviated in some functions from the standard.
 Besides Windows (with its msvcrt, ucrt, reactos msvcrt and wine msvcrt
-variants) only the unused stlport, Android's Bionic and Embarcadero
-implemented this C11 secure Annex K API so far.  They are still
-missing from glibc, musl, FreeBSD, darwin and DragonFly libc, OpenBSD
-libc, newlib, dietlibc, uClibc, minilibc.
+variants) only the unused stlport, Android's Bionic, Huawei securec
+and Embarcadero implemented this C11 secure Annex K API so far.  They
+are still missing from glibc, musl, FreeBSD, darwin and DragonFly
+libc, OpenBSD libc, newlib, dietlibc, uClibc, minilibc.
 
 Design Considerations
 ---------------------
@@ -167,8 +167,7 @@ header. There are also the internal `safe_compile.h`, `safe_config.h`
 `safe_lib_errno.h` and `safe_types.h` headers, but they do not need to
 be included.
 
-The make file builds a single library `libsafec-VERSION.a` and `.so` in the
-`src/.libs` directory.
+The make file builds a single library `libsafec-VERSION.a` and `.so`.
 Built but not installed are also libmemprims, libsafeccore and libstdunsafe.
 
 It is possible to split the make such that a separate `safe_mem_lib.so` and
@@ -248,7 +247,7 @@ Tested Platforms
 
 .The library has been tested on the following systems:
 - Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc's + clang's)
-- Linux Debian 9-11 amd64/i386 glibc 2.24 + 2.25 (all gcc's + clang's)
+- Linux Debian 9-11 amd64/i386 glibc 2.24 - 2.28 (all gcc's + clang's)
 - Linux centos 7 amd64
 - Linux Void amd64 musl-1.1.16
 - x86_64-w64-mingw32 native and cross-compiled
@@ -256,7 +255,7 @@ Tested Platforms
 - i386-mingw32 cross-compiled
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
-- freebsd 10.3 amd64
+- freebsd 10 - 12 amd64
 - arm-linux-gnueabihf cross-compiled and tested under qemu (under darwin and debian)
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
