@@ -17,6 +17,18 @@
 static char   str1[LEN];
 int test_strnlen_s (void);
 
+#define EXPLEN(n) \
+    if (len != n) { \
+        debug_printf("%s %u   Len=%u \n", __FUNCTION__, __LINE__,  (unsigned)len); \
+        errs++; \
+    }
+#define STDLEN() \
+    if (std_len != len) { \
+        debug_printf("%s %u   std_len=%u  len=%u  \n", __FUNCTION__, __LINE__, \
+                     (unsigned)std_len, (unsigned)len);                 \
+        errs++; \
+    }
+
 int test_strnlen_s (void)
 {
     rsize_t len;
@@ -28,33 +40,23 @@ int test_strnlen_s (void)
 
     max_len = 3;
 #ifndef HAVE_CT_BOS_OVR
-    /* EXPECT_BOS("empty str") */
+    EXPECT_BOS("empty dest")
     len = strnlen_s(NULL, max_len);
-    if (len != 0) {
-        debug_printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  (unsigned)len);
-        errs++;
-    }
+    EXPLEN(0)
 #endif
 /*--------------------------------------------------*/
 
     max_len = 0;
-    len = strnlen_s("test", max_len);
-    if (len != 0) {
-        debug_printf("%s %u   Len=%u \n",
-                     __FUNCTION__, __LINE__,  (unsigned)len);
-        errs++;
-    }
+    EXPECT_BOS("empty str or smax") 
+    len = strnlen_s("test", 0);
+    EXPLEN(0)
 /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
     max_len = RSIZE_MAX_STR+1;
-    len = strnlen_s("test", max_len);
-    if (len != 0) {
-        debug_printf("%s %u   len=%u \n",
-                     __FUNCTION__, __LINE__,  (unsigned)len);
-        errs++;
-    }
+    EXPECT_BOS("str overflow")
+    len = strnlen_s("test", RSIZE_MAX_STR+1);
+    EXPLEN(0)
 #endif
 /*--------------------------------------------------*/
 
@@ -63,108 +65,58 @@ int test_strnlen_s (void)
     max_len = LEN;
 
     len = strnlen_s (str1, max_len);
-
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
 
     strcpy(str1, "t");
     std_len = strlen(str1);
-
     len = strnlen_s (str1, LEN);
-
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
 
     strcpy(str1, "to");
     std_len = strlen(str1);
 
     len = strnlen_s (str1, LEN);
-
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u  \n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
 
     std_len = strlen("testing");
     max_len = std_len;
 
     len = strnlen_s ("testing", max_len);
-
-    if (std_len != len) {
-        debug_printf("%s %u   std_len=%u  len=%u\n",
-                     __FUNCTION__, __LINE__,  (unsigned)std_len, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
 
     max_len = 1;
     len = strnlen_s ("testing", max_len);
-
-    if (len != max_len) {
-        debug_printf("%s %u   len=%u <> 1\n",
-               __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+    EXPLEN(max_len)
 /*--------------------------------------------------*/
 
     max_len = 2;
     len = strnlen_s ("testing", max_len);
-
-    if (len != max_len) {
-        debug_printf("%s %u   len=%u  <> 2\n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+    EXPLEN(max_len)
 /*--------------------------------------------------*/
 
     max_len = 3;
     len = strnlen_s ("testing", max_len);
-
-    if (len != max_len) {
-        debug_printf("%s %u   len=%u <> 3\n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+    EXPLEN(max_len)
 /*--------------------------------------------------*/
 
     max_len = 7;
     len = strnlen_s ("testing", max_len);
-
-    if (len != 7) {
-        debug_printf("%s %u   len=%u <> 7\n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
 
     max_len = 8;
     len = strnlen_s ("testing", max_len);
-
-    if (len != 7) {
-        debug_printf("%s %u   len=%u <> 7\n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
 
     max_len = 9;
+    EXPECT_BOS("str overflow")
     len = strnlen_s ("testing", max_len);
-
-    if (len != 7) {
-        debug_printf("%s %u   len=%u <> 7\n",
-                     __FUNCTION__, __LINE__, (unsigned)len);
-        errs++;
-    }
+    STDLEN()
 /*--------------------------------------------------*/
     return (errs);
 }
