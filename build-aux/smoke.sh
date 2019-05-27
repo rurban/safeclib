@@ -201,9 +201,9 @@ if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
     ./configure --enable-unsafe --enable-debug --host=arm-linux-gnueabihf && \
         make -s -j4 || exit;
     # $make -s -j4 check-log
-    if [ ! -e /usr/arm-linux-gnueabihf/lib/libsafec-3.4.so.3 ]; then
+    if [ ! -e /usr/arm-linux-gnueabihf/lib/libsafec-3.5.so.3 ]; then
         cd /usr/arm-linux-gnueabihf/lib/;
-        sudo ln -s $OLDPWD/src/.libs/libsafec-3.4.so.3;
+        sudo ln -s $OLDPWD/src/.libs/libsafec-3.5.so.3;
         cd -
     fi
     make -s -j4 -C tests tests;

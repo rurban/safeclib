@@ -144,11 +144,12 @@
 #define MEMORY_BARRIER ASM_VOLATILE("lock; addl $0,0(%%esp)" ::: "memory")
 #elif defined(ASM_INLINE) && (defined(HAVE_ARM_NEON) || defined(HAVE_ARM_NEON))
 #define MEMORY_BARRIER ASM_VOLATILE("dmb; dsb; isb" ::: "memory")
-#elif defined(__GNUC__) && __GNUC__ >= 5
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#define MEMORY_BARRIER __sync_synchronize()
 /* new gcc-5 memory_barrier insn for most archs:
    x86, mips, nios2, riscv, rs6000, s390, ia64, avr, alpha,
-   arc, tilepro, xtensa, ... */
-#define MEMORY_BARRIER ASM_VOLATILE("memory_barrier" ::: "memory")
+   arc, tilepro, xtensa, ..., but not in the arm-linux-gnueabihf-gcc 8.3 cross compiler */
+/* #define MEMORY_BARRIER ASM_VOLATILE("memory_barrier" ::: "memory") */
 #elif defined(HAVE_COMPAT_XMM)
 /* x86-compat headers (e.g. rs6000, arm, ...) have no mfence */
 #define MEMORY_BARRIER _mm_sfence()

@@ -9,6 +9,8 @@ Changes in v07062019 3.5.0
         - Fixed various C++ regressions (GH #64, GH #58)
         - Fixed a linux kernel module regression from 3.4 (GH #67),
           use the mb() macro.
+        - Fixed MEMORY_BARRIER on exotic compilers: replace
+          asm("memory_barrier" ::: "memory") with __sync_synchronize()
         - Added the Huawei securec library to the docs
         - Renamed internal build-tools to build-aux
         - Reformat all source code with clang-format

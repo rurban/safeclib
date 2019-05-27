@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsncat_s
  * File 'wchar/wcsncat_s.c'
- * Lines executed:92.59% of 81
+ * Lines executed:93.55% of 93
  *
  * wine tested with wine-2.0.4
  * msvcrt.dll 7.0.9200.16384 (win8 64bit default)
