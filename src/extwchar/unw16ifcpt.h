@@ -487,7 +487,7 @@ static const wchar_t UNWIF_compat_tbl_5 [16][5] = {
  /*   8 */  {L'\x30d8',L'\x309a',L'\x30fc',L'\x30b7',L'\x3099'}, {L'\x30d8',L'\x30af',L'\x30bf',L'\x30fc',L'\x30eb'}, {L'\x30db',L'\x309a',L'\x30a4',L'\x30f3',L'\x30c8'}, {L'\x30db',L'\x309a',L'\x30f3',L'\x30c8',L'\x3099'}, {L'\x30de',L'\x30f3',L'\x30b7',L'\x30e7',L'\x30f3'}, {L'\x30e1',L'\x30ab',L'\x3099',L'\x30c8',L'\x30f3'}, {L'\x30eb',L'\x30fc',L'\x30d5',L'\x3099',L'\x30eb'}, {L'r',L'a',L'd',L'\x2215',L's'}};
 
 /* the special-cased overlong entries */
-typedef struct { const wint_t cp; const wchar_t* v; } UNWIF_compat_exc_t;
+typedef struct { const uint32_t cp; const wchar_t* v; } UNWIF_compat_exc_t;
 /* sorted for binary search */
 #define UNWIF_compat_exc_size 26
 static const UNWIF_compat_exc_t UNWIF_compat_exc [26] = {

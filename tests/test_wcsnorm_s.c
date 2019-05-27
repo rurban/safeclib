@@ -27,9 +27,9 @@ int test_wcsnorm_s(void);
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
 #ifndef PERL
-/*# define PERL "perl"*/
-/*# define PERL "cperl5.27.2"*/
-#define PERL "perl5.27.3"
+/*# define PERL "perl" */
+/*# define PERL "cperl5.29.2" */
+#define PERL "perl5.30"
 #endif
 #define TESTPL "test-norm.pl"
 

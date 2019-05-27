@@ -279,7 +279,7 @@ static const wchar_t UNWIF_canon_tbl_6 [9][6] = {
  /*   8 */  {L'\xd834',L'\xddba',L'\xd834',L'\xdd65',L'\xd834',L'\xdd6f'}};
 
 /* the special-cased overlong entries */
-typedef struct { const wint_t cp; const wchar_t* v; } UNWIF_canon_exc_t;
+typedef struct { const uint32_t cp; const wchar_t* v; } UNWIF_canon_exc_t;
 /* sorted for binary search */
 #define UNWIF_canon_exc_size 9
 static const UNWIF_canon_exc_t UNWIF_canon_exc [9] = {

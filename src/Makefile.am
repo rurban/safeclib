@@ -181,9 +181,9 @@ STD_WCHAR_FILES += \
 	extwchar/wcsfc_s.c	\
 	extwchar/hangul.h	\
 	extwchar/unw16ifcan.h	\
+	extwchar/unw16ifcpt.h	\
 	extwchar/unw16ifcmb.h	\
 	extwchar/unw16ifcmp.h	\
-	extwchar/unw16ifcpt.h	\
 	extwchar/unw16ifexc.h	\
 	extwchar/unwifcan.h	\
 	extwchar/unwifcmb.h	\

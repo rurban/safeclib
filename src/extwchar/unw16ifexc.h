@@ -7,7 +7,9 @@
  * Any changes here will be lost!
  */
 /* Composite exclusions */
-bool isExclusion (wint_t uv)
+bool isExclusion (uint32_t uv);
+
+bool isExclusion (uint32_t uv)
 {
   return
 	(2392 <= uv && uv <= 2399)
@@ -47,7 +49,9 @@ bool isExclusion (wint_t uv)
 }
 
 /* Singletons */
-bool isSingleton (wint_t uv)
+bool isSingleton (uint32_t uv);
+
+bool isSingleton (uint32_t uv)
 {
   return
 	(832 <= uv && uv <= 833)
@@ -92,7 +96,9 @@ bool isSingleton (wint_t uv)
 }
 
 /* non-starter decompositions */
-bool isNonStDecomp (wint_t uv)
+bool isNonStDecomp (uint32_t uv);
+
+bool isNonStDecomp (uint32_t uv)
 {
   return
 	uv == 836
@@ -103,7 +109,9 @@ bool isNonStDecomp (wint_t uv)
 }
 
 /* may be composed with a prev char */
-bool isComp2nd (wint_t uv)
+bool isComp2nd (uint32_t uv);
+
+bool isComp2nd (uint32_t uv)
 {
   return
 	(768 <= uv && uv <= 772)

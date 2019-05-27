@@ -3,6 +3,8 @@
 
 Changes in v07062019 3.5.0
         - Updated towctrans case-mappings and normalization to Unicode 12.1
+          Even the canon tables on windows need now a special bsearch in an
+          exception list, previously only the compat tables.
         - Unversioned and renamed the libsafec.pc pkg-config file (PR #56)
         - Fixed strnlen_s and wcsnlen_s for long enough smax arguments.
           Now you can get the length without knowing the length beforehand. (GH #65)

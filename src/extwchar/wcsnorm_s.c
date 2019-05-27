@@ -38,11 +38,6 @@
 #include <assert.h>
 #endif
 
-bool isExclusion(wint_t uv);
-bool isSingleton(wint_t uv);
-bool isNonStDecomp(wint_t uv);
-bool isComp2nd(wint_t uv);
-
 #if SIZEOF_WCHAR_T > 2
 /* generated via cperl dist/Unicode-Normalize/mkheader -uni -ind -std */
 #include "unwifcan.h" /* for NFD Canonical Decomposition */
@@ -54,6 +49,7 @@ bool isComp2nd(wint_t uv);
 #endif
 #else                   /* with UTF-16 surrogate pairs */
 /* generated via cperl dist/Unicode-Normalize/mkheader -uni -ind -utf16 -std */
+/* since Unicode 12 can also overflows to _exc lists */
 #include "unw16ifcan.h" /* for NFD Canonical Decomposition */
 #include "unw16ifcmb.h" /* for reorder Canonical_Combining_Class_Values */
 #include "unw16ifcmp.h" /* for NFC Canonical Composition lists */
@@ -102,6 +98,22 @@ EXPORT uint32_t _dec_w16(wchar_t *src) {
 }
 #endif
 
+#if defined(HAVE_NORM_COMPAT) || UNWIF_canon_exc_size > 0
+
+#ifndef HAVE_NORM_COMPAT
+/* They may have different structs (16 or 32 bit cp), but not together.
+   Either unw16ifcan+cpt (32) or unwifcpt (16) */
+#define UNWIF_compat_exc_t UNWIF_canon_exc_t
+#endif
+
+static int _bsearch_exc(const void *ptr1, const void *ptr2) {
+    UNWIF_compat_exc_t *e1 = (UNWIF_compat_exc_t *)ptr1;
+    UNWIF_compat_exc_t *e2 = (UNWIF_compat_exc_t *)ptr2;
+    return e1->cp > e2->cp ? 1 : e1->cp == e2->cp ? 0 : -1;
+}
+
+#endif
+
 /* Note that we can generate two versions of the tables.  The old format as
  * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
  * variant, as used here and in cperl core since 5.27.2.
@@ -112,7 +124,7 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
     if (unlikely(dmax < 5)) {
         return -ESNOSPC;
     } else {
-        const wchar_t ***plane = UNWIF_canon[cp >> 16];
+        const wchar_t ***plane = UNWF_canon[cp >> 16];
         if (!plane) {
             return 0;
         } else {
@@ -150,6 +162,22 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         const UNWIF_canon_PLANE_T vi = row[cp & 0xff];
         if (!vi)
             return 0;
+#if UNWIF_canon_exc_size > 0
+        else if (unlikely(vi ==
+                          (uint16_t)-1)) { /* overlong: search in extra list */
+            UNWIF_canon_exc_t *e;
+            assert(UNWIF_canon_exc_size);
+            e = (UNWIF_canon_exc_t *)bsearch(
+                &cp, &UNWIF_canon_exc, UNWIF_canon_exc_size,
+                sizeof(UNWIF_canon_exc[0]), _bsearch_exc);
+            if (e) {
+                size_t l = wcslen(e->v);
+                memcpy(dest, e->v, (l + 1) * sizeof(wchar_t)); /* incl \0 */
+                return (int)l;
+            }
+            return 0;
+        }
+#endif
         else {
             /* value => length-index and offset */
             const int l = UNWIF_canon_LEN(vi);
@@ -182,12 +210,6 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
 }
 
 #ifdef HAVE_NORM_COMPAT
-
-static int _bsearch_exc(const void *ptr1, const void *ptr2) {
-    UNWIF_compat_exc_t *e1 = (UNWIF_compat_exc_t *)ptr1;
-    UNWIF_compat_exc_t *e2 = (UNWIF_compat_exc_t *)ptr2;
-    return e1->cp > e2->cp ? 1 : e1->cp == e2->cp ? 0 : -1;
-}
 
 static int _decomp_compat_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
 #ifndef NORMALIZE_IND_TBL
@@ -231,7 +253,9 @@ static int _decomp_compat_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         const UNWIF_compat_PLANE_T vi = row[cp & 0xff];
         if (!vi)
             return 0;
-        else if (unlikely(vi == (uint16_t)-1)) { /* overlong */
+#if UNWIF_compat_exc_size > 0
+        else if (unlikely(vi ==
+                          (uint16_t)-1)) { /* overlong: search in extra list */
             UNWIF_compat_exc_t *e;
             assert(UNWIF_compat_exc_size);
 #if 1
@@ -259,6 +283,7 @@ static int _decomp_compat_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
             }
 #endif
             return 0;
+#endif
         } else {
             /* value => length and index */
             const int l = UNWIF_compat_LEN(vi);
