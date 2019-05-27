@@ -11,5 +11,5 @@ task:
     - CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --enable-unsafe --enable-norm-compat
     - make
   test_script:
-    - make check
+    - make check-log
     - make distcheck
