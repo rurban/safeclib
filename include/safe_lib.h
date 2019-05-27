@@ -132,17 +132,19 @@ EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
                          const char *restrict mode, FILE *restrict stream);
 #endif /* __KERNEL__ */
+#define asctime_s(dest, dmax, tm) _asctime_s_chk(dest, dmax, tm, BOS(dest))
+#define ctime_s(dest, dmax, timer) _ctime_s_chk(dest, dmax, timer, BOS(dest))
+#endif
 
 EXTERN errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
                               const size_t destbos) BOS_CHK(dest)
     BOS_ATTR(dmax < 26, "dmax underflow") BOS_NULL(tm);
-#define asctime_s(dest, dmax, tm) _asctime_s_chk(dest, dmax, tm, BOS(dest))
 
 EXTERN errno_t _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer,
                             const size_t destbos) BOS_CHK(dest)
     BOS_ATTR(dmax < 26, "dmax underflow") BOS_NULL(timer);
-#define ctime_s(dest, dmax, timer) _ctime_s_chk(dest, dmax, timer, BOS(dest))
 
+#ifndef MINGW_HAS_SECURE_API
 /* Beware: These return errno_t on the MINGW64 windows sec_api,
    and switched its args:
 
