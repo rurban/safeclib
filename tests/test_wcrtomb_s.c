@@ -49,8 +49,8 @@ int test_wcrtomb_s(void) {
     wc = L'a';
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty retvalp")
-    EXPECT_BOS("empty dest") rc = wcrtomb_s(NULL, NULL, LEN, wc, &ps);
+    EXPECT_BOS("empty retvalp") EXPECT_BOS("empty dest")
+    rc = wcrtomb_s(NULL, NULL, LEN, wc, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     CLRPS;

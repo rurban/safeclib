@@ -37,11 +37,10 @@ int main(void) {
     EXPMEM(mem1, 0, LEN, 33, 4);
     /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     rc = memmove32_s(mem1, RSIZE_MAX_MEM + 1, mem2, count);
     ERR(ESLEMAX); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 4);
-#endif
+
     /*--------------------------------------------------*/
 
     for (i = 0; i < LEN; i++) {
@@ -62,8 +61,7 @@ int main(void) {
     /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("src overflow or empty")
-    EXPECT_BOS("slen overflow >dmax/4")
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax / 4")
     rc = memmove32_s(mem1, MAX, mem2, RSIZE_MAX_MEM32 + 1);
     ERR(ESLEMAX); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 2);

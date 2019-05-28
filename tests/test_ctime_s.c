@@ -46,8 +46,8 @@ int test_ctime_s(void) {
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax")
-    EXPECT_BOS("dmax underflow") rc = ctime_s(str1, 0, &timer);
+    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("dmax underflow")
+    rc = ctime_s(str1, 0, &timer);
     ERR_MSVC(ESLEMIN, EINVAL);
 
     EXPECT_BOS("dmax underflow")

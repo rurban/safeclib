@@ -38,8 +38,8 @@ int test_snwprintf_s(void) {
     rc = snwprintf_s(str1, LEN, NULL);
     NEGERR(ESNULLP)
 
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("empty dest or dmax") rc = snwprintf_s(NULL, 0, L"%ls", str2);
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    rc = snwprintf_s(NULL, 0, L"%ls", str2);
     NEGERR(ESNULLP)
 
     EXPECT_BOS("empty dest or dmax")

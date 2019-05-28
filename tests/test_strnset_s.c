@@ -22,12 +22,12 @@ int main(void) {
     /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("dest overflow or empty") rc = strnset_s(NULL, 5, value, 5);
+    EXPECT_BOS("empty dest") EXPECT_BOS("dest overflow or empty")
+    rc = strnset_s(NULL, 5, value, 5);
     ERR(ESNULLP)
 
-    EXPECT_BOS("empty dest or dmax")
-    EXPECT_BOS("n overflow >dmax") rc = strnset_s(str1, 0, 0, 5);
+    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("n overflow >dmax")
+    rc = strnset_s(str1, 0, 0, 5);
     ERR(ESZEROL)
 
     EXPECT_BOS("dest overflow")

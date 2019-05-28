@@ -50,8 +50,8 @@ int test_memcpy_s(void) {
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("dest overflow or empty")
-    EXPECT_BOS("slen overflow >dmax") rc = memcpy_s(mem1, 0, mem2, LEN);
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = memcpy_s(mem1, 0, mem2, LEN);
     ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
 
@@ -97,8 +97,7 @@ int test_memcpy_s(void) {
     ERR_MSVC(ESNULLP, EINVAL); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
 
-    EXPECT_BOS("src overflow or empty")
-    EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memcpy_s(mem1, LEN, mem2, RSIZE_MAX_MEM + 1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     EXPMEM(mem1, 0, LEN, 0, 1);
@@ -127,8 +126,7 @@ int test_memcpy_s(void) {
     }
 
     len = LEN / 2;
-    EXPECT_BOS("src overflow or empty")
-    EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memcpy_s(mem1, LEN / 2, mem2, LEN + 3);
     ERR_MSVC(ESNOSPC, ERANGE);
 

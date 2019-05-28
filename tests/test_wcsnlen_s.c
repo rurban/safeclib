@@ -76,7 +76,7 @@ int test_wcsnlen_s(void) {
     /* overflow: sizeof = 5 */
     /* PS: compile-time check once fixed by adding const'ness and all warnings
      */
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     len = wcsnlen_s(L"test", 6);
     EXPLEN(4)
 #endif

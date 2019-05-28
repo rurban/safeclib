@@ -51,8 +51,8 @@ int test_asctime_s(void) {
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax")
-    EXPECT_BOS("dmax underflow") rc = asctime_s(str1, 0, tm);
+    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("dmax underflow")
+    rc = asctime_s(str1, 0, tm);
     ERR_MSVC(ESLEMIN, EINVAL);
 
     EXPECT_BOS("dmax underflow")

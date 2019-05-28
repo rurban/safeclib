@@ -46,8 +46,8 @@ int test_wcstombs_s(void) {
     cs = L"a";
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty retvalp")
-    EXPECT_BOS("empty dest") rc = wcstombs_s(NULL, NULL, LEN, cs, 1);
+    EXPECT_BOS("empty retvalp") EXPECT_BOS("empty dest")
+    rc = wcstombs_s(NULL, NULL, LEN, cs, 1);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
@@ -59,8 +59,8 @@ int test_wcstombs_s(void) {
     }
     ERR_MSVC(ESZEROL, have_wine ? 0 : EINVAL);
 
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("empty dest or dmax") rc = wcstombs_s(&ind, NULL, 0, cs, 1);
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    rc = wcstombs_s(&ind, NULL, 0, cs, 1);
     ERR_MSVC(ESNOSPC, 0);
 
     EXPECT_BOS("dest overflow")
@@ -87,8 +87,8 @@ int test_wcstombs_s(void) {
     }
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty src")
-    EXPECT_BOS("empty src or len") rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
+    EXPECT_BOS("empty src") EXPECT_BOS("empty src or len")
+    rc = wcstombs_s(&ind, dest, LEN, NULL, 0);
     ERR_MSVC(ESNULLP, have_wine ? EINVAL : 0);
     CHECK_SLACK(dest, LEN);
 #endif

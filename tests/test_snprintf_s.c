@@ -44,8 +44,8 @@ int test_snprintf_s(void) {
     NEGERR(ESNULLP)
 
     /* not even with dmax=0, use sprintf_s then */
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("empty dest or dmax") rc = snprintf_s(NULL, 0, "%s", str2);
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    rc = snprintf_s(NULL, 0, "%s", str2);
     NEGERR(ESNULLP)
 
     strcpy(str1, "123456");

@@ -43,8 +43,8 @@ int main(void) {
     print_msvcrt(use_msvcrt);
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("empty dest or dmax") rc = swprintf_s(NULL, 0, L"%ls", str2);
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    rc = swprintf_s(NULL, 0, L"%ls", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     ERRNO_MSVC(-ESNULLP, EINVAL);
 

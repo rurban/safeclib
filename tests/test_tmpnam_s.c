@@ -61,7 +61,7 @@ int test_tmpnam_s(void) {
     ERR_MSVC(L_tmpnam_s > LEN ? EOVERFLOW : ESLEMAX, 0);
 
     /* literal check worked once with const dest */
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     rc = tmpnam_s("aaa", 5);
     ERR_MSVC(EOVERFLOW, 0);
 #endif

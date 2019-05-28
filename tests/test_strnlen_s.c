@@ -39,11 +39,10 @@ int test_strnlen_s(void) {
     /*--------------------------------------------------*/
 
     max_len = 3;
-#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
     len = strnlen_s(NULL, max_len);
     EXPLEN(0)
-#endif
+
     /*--------------------------------------------------*/
 
     max_len = 0;

@@ -52,8 +52,8 @@ int test_memmove_s(void) {
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("dest overflow or empty")
-    EXPECT_BOS("slen overflow >dmax") rc = memmove_s(mem1, 0, mem2, LEN);
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = memmove_s(mem1, 0, mem2, LEN);
     ERR_MSVC(ESZEROL, ERANGE); /* and untouched */
     EXPMEM(mem1, 0, LEN, 33, 1);
 
@@ -104,8 +104,7 @@ int test_memmove_s(void) {
     for (i = 0; i < LEN; i++) {
         mem1[i] = 33;
     }
-    EXPECT_BOS("src overflow or empty")
-    EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax")
     rc = memmove_s(mem1, LEN, mem2, RSIZE_MAX_MEM + 1);
     ERR_MSVC(ESLEMAX, ERANGE); /* and cleared */
     if (!use_msvcrt) {

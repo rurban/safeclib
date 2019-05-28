@@ -45,13 +45,13 @@ int test_mbstowcs_s(void) {
     strcpy(src, "abc");
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty retvalp")
-    EXPECT_BOS("empty src or len") rc = mbstowcs_s(NULL, NULL, LEN, cs, 0);
+    EXPECT_BOS("empty retvalp") EXPECT_BOS("empty src or len")
+    rc = mbstowcs_s(NULL, NULL, LEN, cs, 0);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
 
-    EXPECT_BOS("empty src")
-    EXPECT_BOS("empty src or len") rc = mbstowcs_s(&ind, dest, LEN, NULL, 0);
+    EXPECT_BOS("empty src") EXPECT_BOS("empty src or len")
+    rc = mbstowcs_s(&ind, dest, LEN, NULL, 0);
     ERR_MSVC(ESNULLP, EINVAL);
 
     src[0] = '\0';

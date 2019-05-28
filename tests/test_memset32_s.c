@@ -36,8 +36,7 @@ int main(void) {
     value = 34;
 
     /* first check dest, then n */
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("dest overflow or empty")
+    EXPECT_BOS("empty dest") EXPECT_BOS("dest overflow or empty")
     rc = memset32_s(NULL, MAX, value, LEN);
     ERR(ESNULLP);
 

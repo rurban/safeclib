@@ -33,8 +33,8 @@ int main(void) {
     rc = strcpyfld_s(NULL, LEN, str2, LEN);
     ERR(ESNULLP);
 
-    EXPECT_BOS("dest overflow or empty")
-    EXPECT_BOS("slen overflow >dmax") rc = strcpyfld_s(str1, 0, str2, 5);
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = strcpyfld_s(str1, 0, str2, 5);
     ERR(ESZEROL); /* and untouched */
     EXPSTR(str1, "aaaaa");
 

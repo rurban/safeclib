@@ -38,12 +38,11 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dlen*4")
-    EXPECT_BOS("slen overflow >dlen")
+    EXPECT_BOS("empty dest or dlen * 4") EXPECT_BOS("slen overflow >dlen")
     rc = memcmp32_s(mem1, 0, mem2, LEN, &ind);
     ERR(ESZEROL);
 
-    EXPECT_BOS("empty src or slen*4")
+    EXPECT_BOS("empty src or slen * 4")
     rc = memcmp32_s(mem1, LEN, mem2, 0, &ind);
     ERR(ESZEROL);
 
@@ -53,14 +52,12 @@ int main(void) {
     rc = memcmp32_s(mem1, RSIZE_MAX_MEM + 1, mem2, LEN, &ind);
     ERR(ESLEMAX);
 
-    EXPECT_BOS("src overflow")
-    EXPECT_BOS("slen overflow >dlen")
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
     rc = memcmp32_s(mem1, LEN, mem2, RSIZE_MAX_MEM + 1, &ind);
     ERR(ESLEMAX);
 
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
-    EXPECT_BOS("src overflow")
-    EXPECT_BOS("slen overflow >dlen")
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
     rc = memcmp32_s(mem1, LEN, mem2, LEN + 1, &ind);
     ERR(EOVERFLOW);
 #endif

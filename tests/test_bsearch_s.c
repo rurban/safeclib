@@ -50,6 +50,7 @@ int test_bsearch_s(void) {
     /*--------------------------------------------------*/
 
     print_msvcrt(use_msvcrt);
+
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty buf or bufsize")
     vitem = bsearch_s(NULL, array, LEN, 0, comp, NULL);
@@ -68,16 +69,14 @@ int test_bsearch_s(void) {
         PTRNULL(vitem);
 
     EXPECT_BOS("empty compar")
-    vitem =
-        bsearch_s(&key, (const void *)array, LEN, sizeof(array[0]), NULL, NULL);
+    vitem = bsearch_s(&key, (const void *)array, LEN, sizeof(array[0]), NULL, NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
     PTRNULL(vitem);
 
     /*--------------------------------------------------*/
 
     EXPECT_BOS("base overflow")
-    vitem =
-        bsearch_s(&key, array, RSIZE_MAX_MEM + 1, sizeof(array[0]), comp, NULL);
+    vitem = bsearch_s(&key, array, RSIZE_MAX_MEM + 1, sizeof(array[0]), comp, NULL);
     ERRNO_MSVC(ESLEMAX, EOF);
     if (!use_msvcrt)
         PTRNULL(vitem);
@@ -88,7 +87,6 @@ int test_bsearch_s(void) {
     if (!use_msvcrt)
         PTRNULL(vitem);
 #endif
-
     /*--------------------------------------------------*/
 
     /* allow empty array? msvcrt disallows it */

@@ -31,8 +31,8 @@ int main(void) {
     ERR(ESNULLP);
 
     strcpy(str1, "aaaaa");
-    EXPECT_BOS("dest overflow or empty")
-    EXPECT_BOS("slen overflow >dmax") rc = strcpyfldin_s(str1, 0, str2, LEN);
+    EXPECT_BOS("dest overflow or empty") EXPECT_BOS("slen overflow >dmax")
+    rc = strcpyfldin_s(str1, 0, str2, LEN);
     ERR(ESZEROL); /* and untouched */
     EXPSTR(str1, "aaaaa");
 

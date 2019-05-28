@@ -39,8 +39,8 @@ int test_memcmp_s(void) {
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax")
-    EXPECT_BOS("slen overflow >dmax") rc = memcmp_s(mem1, 0, mem2, LEN, &ind);
+    EXPECT_BOS("empty dest or dmax") EXPECT_BOS("slen overflow >dmax")
+    rc = memcmp_s(mem1, 0, mem2, LEN, &ind);
     ERR(ESZEROL);
 
     EXPECT_BOS("empty slen")
@@ -53,8 +53,7 @@ int test_memcmp_s(void) {
     rc = memcmp_s(mem1, RSIZE_MAX_MEM + 1, mem2, LEN, &ind);
     ERR(ESLEMAX);
 
-    EXPECT_BOS("src overflow")
-    EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dmax")
     rc = memcmp_s(mem1, LEN, mem2, RSIZE_MAX_MEM + 1, &ind);
     ERR(ESLEMAX);
 
@@ -63,8 +62,7 @@ int test_memcmp_s(void) {
     rc = memcmp_s(mem1, LEN + 1, mem2, LEN, &ind);
     ERR(EOVERFLOW);
 
-    EXPECT_BOS("src overflow")
-    EXPECT_BOS("slen overflow >dmax")
+    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dmax")
     rc = memcmp_s(mem1, LEN, mem2, LEN + 1, &ind);
     ERR(EOVERFLOW);
 #endif

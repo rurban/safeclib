@@ -17,14 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function usage {
-    echo "Usage: $0 DIR..."
-    exit 1
-}
-
-if [ $# -eq 0 ]; then
-    usage
-fi
+# call with bash build-aux/clang-format-all.sh
+dirs="src include tests"
 
 # Variable that will hold the name of the clang-format command
 FMT=""
@@ -46,14 +40,6 @@ if [ -z "$FMT" ]; then
     exit 1
 fi
 
-# Check all of the arguments first to make sure they're all directories
-for dir in "$@"; do
-    if [ ! -d "${dir}" ]; then
-        echo "${dir} is not a directory"
-        usage
-    fi
-done
-
 # Find a dominating file, starting from a given directory and going up.
 find-dominating-file() {
     if [ -r "$1"/"$2" ]; then
@@ -66,26 +52,31 @@ find-dominating-file() {
     return $?
 }
 
+pushd tests; grep -l ' EXPECT_BOS.* EXPECT_BOS' test_*.c > .format-ignore; popd
+
 # Run clang-format -i on all of the things
-for dir in "$@"; do
-    #if [ X$dir = Xbindings ]; then
-    #    echo skip bindings
-    #    continue
-    #fi
+for dir in $dirs; do
     pushd "${dir}"
     if ! find-dominating-file . .clang-format; then
         echo "Failed to find dominating .clang-format starting at $PWD"
         continue
     fi
+    # skip tests/.format-ignore (no spaces in filenames allowed)
+    ign=
+    if [ -f .format-ignore ]; then
+        ign=`perl -n00 -e'print q(-o ),join(q( -o ),split/\n/,$_)' .format-ignore`
+    fi
     find . \
          \( -name '*.c' \
          -o -name '*.h' \) \
          -a \! \( -name 'unw*.h' \
-               -o -name 'hangul.h' \) \
+               -o -name 'hangul.h' $ign \) \
          -exec "${FMT}" -i -verbose '{}' \;
     echo "post clang-format fixups (clang-format bugs)"
     sed -i -e's,IGNORE(-Wcast - align),IGNORE(-Wcast-align),;' \
            -e's,IGNORE(-Wuser - defined - warnings),IGNORE(-Wuser-defined-warnings),;' \
-        `git grep -l 'DIAG_IGNORE' $dir | grep -v all.sh`
+        `git grep -l 'DIAG_IGNORE' . | grep -v all.sh`
     popd &>/dev/null
 done
+
+rm tests/.format-ignore

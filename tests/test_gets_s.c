@@ -39,8 +39,8 @@ int test_gets_s(void) {
 
     /* tests reading from stdin */
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty dest")
-    EXPECT_BOS("empty dest or dmax") sub = gets_s(NULL, 0);
+    EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
+    sub = gets_s(NULL, 0);
     SUBNULL();
     ERRNO(ESNULLP);
 

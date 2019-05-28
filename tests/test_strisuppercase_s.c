@@ -35,7 +35,7 @@ int main(void) {
     ERR(false)
 
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
-    EXPECT_BOS_TODO("dest overflow") /* but see test_strtouppercase_s.c */
+    EXPECT_BOS("dest overflow") /* but see test_strtouppercase_s.c */
     rc = strisuppercase_s("", 2);
     ERR(false)
 
@@ -43,7 +43,7 @@ int main(void) {
        SAFEC_CONSTP("test"), _BOS_KNOWN(str), SAFEC_CONSTP(str), BOS("test"),
        BOS(str));*/
     /* once fixed by adding prototypes and const: clang literal string bug */
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     rc = strisuppercase_s("test", 99999);
     ERR(false)
 #endif

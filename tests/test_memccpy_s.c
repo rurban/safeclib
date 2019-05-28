@@ -57,6 +57,7 @@ int test_memccpy_s(void) {
         SUBNULL();
     }
 #endif
+#endif
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     str2[0] = '\0';
@@ -74,7 +75,7 @@ int test_memccpy_s(void) {
 #endif
     }
 #endif
-#endif
+
     /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
@@ -86,7 +87,7 @@ int test_memccpy_s(void) {
     /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
-    rc = memccpy_s(str1, (RSIZE_MAX_MEM + 1), str2, 0, nlen);
+    rc = memccpy_s(str1, RSIZE_MAX_MEM + 1, str2, 0, nlen);
     ERR(ESLEMAX)
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -100,9 +101,8 @@ int test_memccpy_s(void) {
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     strcpy(str2, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
-    EXPECT_BOS("src overflow")
-    EXPECT_BOS("n overflow >dmax")
-    rc = memccpy_s(str1, 5, str2, 0, (RSIZE_MAX_MEM + 1));
+    EXPECT_BOS("src overflow") EXPECT_BOS("n overflow >dmax")
+    rc = memccpy_s(str1, 5, str2, 0, RSIZE_MAX_MEM + 1);
     ERR(ESLEMAX)
     CHECK_SLACK(str1, 5);
 #endif

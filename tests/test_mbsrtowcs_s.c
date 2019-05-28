@@ -50,20 +50,17 @@ int test_mbsrtowcs_s(void) {
     cs = "a";
 #ifndef HAVE_CT_BOS_OVR
     print_msvcrt(use_msvcrt);
-    EXPECT_BOS("empty retvalp")
-    EXPECT_BOS("empty *srcp or len")
+    EXPECT_BOS("empty retvalp") EXPECT_BOS("empty *srcp or len")
     rc = mbsrtowcs_s(NULL, NULL, LEN, &cs, 0, &ps);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
     ERR_MSVC(ESNULLP, EINVAL);
     CLRPS;
 
-    EXPECT_BOS("empty ps")
-    EXPECT_BOS("empty *srcp or len")
+    EXPECT_BOS("empty ps") EXPECT_BOS("empty *srcp or len")
     rc = mbsrtowcs_s(&ind, NULL, LEN, &cs, 0, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
 
-    EXPECT_BOS("empty srcp")
-    EXPECT_BOS("empty *srcp or len")
+    EXPECT_BOS("empty srcp") EXPECT_BOS("empty *srcp or len")
     rc = mbsrtowcs_s(&ind, dest, LEN, NULL, 0, &ps);
     ERR_MSVC(ESNULLP, EINVAL);
     CLRPS;
@@ -99,7 +96,7 @@ int test_mbsrtowcs_s(void) {
         void *p1;
         cs = "abcdef";
         p1 = &cs;
-        EXPECT_BOS_TODO("dest overlap")
+        EXPECT_BOS("dest overlap")
         rc = mbsrtowcs_s(&ind, (wchar_t *)p1, 1, &cs, 1, &ps);
         ERR_MSVC(ESOVRLP, ERANGE);
         CLRPS;
