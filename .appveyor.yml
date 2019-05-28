@@ -1,4 +1,4 @@
-version: 3.2.{build}
+version: 3.5.{build}
 max_jobs: 4
 environment:
   matrix:
@@ -14,9 +14,9 @@ environment:
       PLATFORM: x86
     - CYGWIN: 1
       PLATFORM: x64
-#matrix:
-#  allow_failures:
-#    - MINGW: 1
+matrix:
+  allow_failures:
+    - CYGWIN: 1
 clone_depth: 1
 #branches:
 #  only:
