@@ -844,8 +844,12 @@ if test "x$ac_cv_func_towupper" = "xyes"; then
 #include <wctype.h>
 ]],
 dnl musl fails on this CYRILLIC SMALL LETTER ROUNDED VE, need at least Unicode 9
+dnl windows has not yet updated to 12.1: the micro sign
 		[[
-return (towupper(0x1C80) == 0x412) ? 0 : 1;
+return (towupper(0x1C80) == 0x412
+     && towupper(0xB5) == 0x3BC
+     && towupper(0x432) == 0x1C80)
+       ? 0 : 1;
 ]])],
         [ AC_MSG_RESULT([yes])
           ac_cv_towupper_ok=yes
