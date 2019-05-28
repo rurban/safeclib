@@ -518,15 +518,6 @@ if test x$ac_compiler_gnu = xno -a -n "$ax_ccf_err"; then
     #   [CFLAGS],[$ax_ccf_err])
 fi
 
-dnl identical destbos branches are not ignored with
-dnl arm-linux-gnueabihf-gcc 8.3
-case $host in
-  arm*)
-    AX_APPEND_COMPILE_FLAGS([-Wno-error=duplicated-branches],
-                            [WARN_CFLAGS],[$ax_ccf_err])
-    ;;
-esac
-
 dnl windows mult. decl are not properly sorted out yet
 case $host_os in
   mingw*|cygwin*|msys*)

@@ -93,10 +93,12 @@ EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *dest, rsize_t dmax,
                                            (void *)dest, ESLEMAX);
         return RCNEGATE(0);
     }
+#if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX) ||                     \
+    defined(HAVE___BND_CHK_PTR_BOUNDS)
     if (destbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
+#if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX)
     } else {
-#ifdef HAVE_WARN_DMAX
         if (unlikely(dmax * sizeof(wchar_t) != destbos)) {
             handle_str_bos_chk_warn("wcsnlen_s", (char *)dest, dmax,
                                     destbos / sizeof(wchar_t));
@@ -104,6 +106,7 @@ EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *dest, rsize_t dmax,
         }
 #endif
     }
+#endif
 
 #if 0 && defined(HAVE_WMEMCHR) /* rather inline it */
     z = wmemchr(dest, 0, dmax);
