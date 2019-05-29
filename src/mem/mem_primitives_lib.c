@@ -600,38 +600,32 @@ void mem_prim_move(void *dest, const void *src, uint32_t len) {
 /* moves memory, optimized for 64bit words
    or even Intel SSE2 128bit moves */
 void mem_prim_move(void *dest, const void *src, uint32_t len) {
+
+    uint8_t *dp;
+    uint8_t *sp;
+
 #undef wsize
 #undef wmask
-#define wsize sizeof(uint64_t)
-#define wmask (wsize - 1)
-
-    /* TODO: ensure 64 or 128 bit alignment */
-    uint8_t *dp = (uint8_t *)dest;
-    const uint8_t *sp = (uint8_t *)src;
-
 #if defined(__x86_64__) && defined(__SSE2__)
-#undef wsize
-#undef wmask
 #define wsize   128
 #define wmask   127
     __m128i *xmms;
     __m128i *xmmd;
+#else
+#define wsize sizeof(uint64_t)
+#define wmask (wsize - 1)
 #endif
-
-    uint64_t tsp;
 
     /*
      * Determine if we need to copy forward or backward (overlap)
      */
-    if ((uintptr_t)dp < (uintptr_t)sp) {
-        /*
-         * Copy forward.
-         */
+    if ((uintptr_t)dest < (uintptr_t)src) {
+        /* Copy forward */
 
-        /*
-         * get a working copy of src for bit operations
-         */
-        tsp = (uintptr_t)sp;
+        /* get a working copy of src for bit operations */
+        uint64_t tsp = (uintptr_t)src;
+        dp = (uint8_t *)dest;
+        sp = (uint8_t *)src;
 
         /*
          * Try to align both operands.  This cannot be done
@@ -664,9 +658,12 @@ void mem_prim_move(void *dest, const void *src, uint32_t len) {
 
         if (tsp > 0) {
 #if defined(__x86_64__) && defined(__SSE2__)
+            /* Both ar properly aligned now */
+            const uint64_t xsp = (uint64_t)sp;
+            const uint64_t xdp = (uint64_t)dp;
             GCC_DIAG_IGNORE(-Wcast-align)
-            xmms = (__m128i)(uintptr_t)sp;
-            xmmd = (__m128i)(uintptr_t)dp;
+            xmms = (__m128i)xsp;
+            xmmd = (__m128i)xdp;
             GCC_DIAG_RESTORE
 #endif
             do {
