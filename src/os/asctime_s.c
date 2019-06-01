@@ -38,7 +38,7 @@
 
 /* conflicting API */
 #if (defined(TEST_MSVCRT) && defined(HAVE_ASCTIME_S)) ||                       \
-    defined(MINGW_HAS_SECURE_API)
+  (defined(MINGW_HAS_SECURE_API) && __MINGW64_VERSION_MAJOR < 7)
 #else
 
 /*#if defined(HAVE_ASCTIME_R)

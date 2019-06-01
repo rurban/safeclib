@@ -43,7 +43,8 @@
 #endif
 
 /* conflicting API */
-#ifndef MINGW_HAS_SECURE_API
+#if defined(MINGW_HAS_SECURE_API) && __MINGW64_VERSION_MAJOR < 7
+#else
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>

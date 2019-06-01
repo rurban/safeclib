@@ -13,6 +13,7 @@ Changes in v07062019 3.5.0
           use the mb() macro.
         - Fixed MEMORY_BARRIER on exotic compilers: replace
           asm("memory_barrier" ::: "memory") with __sync_synchronize()
+        - Fixed headers and linkage for the latest msys2-w32api-headers-7
         - Added the Huawei securec library to the docs
         - Renamed internal build-tools to build-aux
         - Reformat all source code with clang-format

@@ -63,6 +63,9 @@
 #undef _SECIMP
 #define _SECIMP
 #undef MINGW_HAS_SECURE_API
+/* needed since msys2-w32api-headers-7 */
+#define _INC_STDLIB_S
+#define _STDIO_S_DEFINED
 #endif
 
 /* for glibc use the GNU extensions: strcasestr */
