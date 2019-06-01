@@ -53,11 +53,11 @@ int main(void);
 
 static inline clock_t rdtsc() {
 #ifdef __x86_64__
-    unsigned int a, d;
+    uint32_t a, d;
     __asm__ volatile("rdtsc" : "=a"(a), "=d"(d));
-    return (unsigned long)a | ((unsigned long)d << 32);
+    return (clock_t)(a | (d << 32));
 #elif defined(__i386__)
-    unsigned long long int x;
+    clock_t x;
     __asm__ volatile("rdtsc" : "=A"(x));
     return x;
 #else
