@@ -79,6 +79,14 @@ echo "gcc-mp-7  --enable-unsafe"
 CC="gcc-mp-7" ./configure --enable-unsafe && \
     gmake -s -j4 check-log || exit
 gmake -s -j4 clean
+echo "gcc-mp-8 -march=native --enable-unsafe"
+CC="gcc-mp-8 -march=native" ./configure --enable-unsafe && \
+    gmake -s -j4 check-log || exit
+gmake -s -j4 clean
+echo "gcc-mp-9  --enable-unsafe"
+CC="gcc-mp-9 -march=native" ./configure --enable-unsafe && \
+    gmake -s -j4 check-log || exit
+gmake -s -j4 clean
 echo "gcc-mp-7 -march=native -Wa,-q --enable-unsafe"
 CC="gcc-mp-7 -march=native -Wa,-q" ./configure --enable-unsafe && \
     gmake -s -j4 check-log || exit

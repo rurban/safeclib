@@ -326,11 +326,13 @@ static inline void *bnd_chk_malloc(size_t n) {
         errs++;                                                                \
     }
 #define EXPSTR(s1, s2)                                                         \
-    ind = strcmp((s1), (s2));                                                  \
-    if (ind != 0) {                                                            \
-        debug_printf("%s %u  Expected \"%s\", got \"%s\" \n", __FUNCTION__,    \
-                     __LINE__, (s2), s1);                                      \
-        errs++;                                                                \
+    {                                                                          \
+        ind = strcmp((s1), (s2));                                              \
+        if (ind != 0) {                                                        \
+            debug_printf("%s %u  Expected \"%s\", got \"%s\" \n",              \
+                         __FUNCTION__, __LINE__, (s2), s1);                    \
+            errs++;                                                            \
+        }                                                                      \
     }
 #define WEXPNULL(s1)                                                           \
     if ((s1)[0] != L'\0') {                                                    \
