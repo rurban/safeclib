@@ -16,7 +16,8 @@ Changes in v07062019 3.5.0
         - Fixed headers and linkage for the latest msys2-w32api-headers-7
         - Added the Huawei securec library to the docs
         - Renamed internal build-tools to build-aux
-        - Reformat all source code with clang-format
+        - Reformat all source code with clang-format, added
+          build-aux/clang-format-all.sh
 
 Changes in v30122018 3.4.0
         - Updated towctrans case-mappings to Unicode 11.0 (GH #62)
