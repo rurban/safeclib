@@ -31,7 +31,6 @@ int test_strcpy_s(void);
 
 int test_strcpy_s(void) {
     errno_t rc;
-    int32_t ind;
     int len;
     int errs = 0;
 
@@ -104,7 +103,9 @@ int test_strcpy_s(void) {
     strcpy(str1, "aaaaa");
     len = strlen(str1);
 
+    GCC_PUSH_WARN_RESTRICT
     rc = strcpy_s(str1, LEN, str1);
+    GCC_POP_WARN_RESTRICT
     ERR(EOK);
     EXPSTR(str1, "aaaaa");
 

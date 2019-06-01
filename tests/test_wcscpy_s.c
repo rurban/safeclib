@@ -88,7 +88,9 @@ int test_wcscpy_s(void) {
 
     wcscpy(str1, L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
+    GCC_PUSH_WARN_RESTRICT
     rc = wcscpy_s(str1, LEN, str1);
+    GCC_POP_WARN_RESTRICT
     ERR(EOK)
 
     /*--------------------------------------------------*/

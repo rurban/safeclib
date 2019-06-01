@@ -145,7 +145,9 @@ int test_wcsncpy_s(void) {
     nlen = 5;
 
     /* test overlap */
+    GCC_PUSH_WARN_RESTRICT
     rc = wcsncpy_s(str1, LEN, str1, nlen);
+    GCC_POP_WARN_RESTRICT
     ERR_MSVC(ESOVRLP, 0);
     if (!use_msvcrt) {
         WCHECK_SLACK(str1, LEN);

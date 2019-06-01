@@ -42,7 +42,6 @@ static inline int vtprintf_s(char *restrict dest, rsize_t dmax,
 
 int test_vsprintf_s(void) {
     errno_t rc;
-    int32_t ind;
     int32_t len2;
     int32_t len3;
     int errs = 0;

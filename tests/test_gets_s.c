@@ -20,7 +20,6 @@ int test_gets_s(void);
 
 int test_gets_s(void) {
     errno_t rc = 0;
-    int ind = 0;
     int errs = 0;
     char *sub;
 

@@ -30,7 +30,6 @@ int test_strncat_s(void);
 
 int test_strncat_s(void) {
     errno_t rc;
-    int32_t ind;
     int len;
     int errs = 0;
 

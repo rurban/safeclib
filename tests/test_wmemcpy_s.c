@@ -178,7 +178,9 @@ int main(void) {
     }
 
     /* same ptr - no move */
+    GCC_PUSH_WARN_RESTRICT
     rc = wmemcpy_s(mem1, LEN, mem1, LEN);
+    GCC_POP_WARN_RESTRICT
     ERR(EOK); /* and untouched */
     EXPMEM(mem1, 0, LEN, 55, sizeof(wchar_t));
     /*--------------------------------------------------*/

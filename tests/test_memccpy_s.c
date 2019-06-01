@@ -22,7 +22,6 @@ int test_memccpy_s(void);
 int test_memccpy_s(void) {
     errno_t rc;
     rsize_t nlen;
-    int32_t ind;
     int errs = 0;
 
     /*--------------------------------------------------*/
@@ -138,7 +137,9 @@ int test_memccpy_s(void) {
          * an darwin/bsd fails the __memccpy_chk().
          * fails also since valgrind 3.13, 3.12 was ok.
          */
+        GCC_PUSH_WARN_RESTRICT
         char *sub = (char *)memccpy(str1, str1, 0, nlen);
+        GCC_POP_WARN_RESTRICT
         printf("memccpy overlap: %p <=> %p\n", (void *)sub, (void *)str1);
     }
 #endif

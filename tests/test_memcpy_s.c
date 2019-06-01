@@ -237,7 +237,9 @@ int test_memcpy_s(void) {
     }
 
     /* same ptr - no move */
+    GCC_PUSH_WARN_RESTRICT
     rc = memcpy_s(mem1, LEN, mem1, LEN);
+    GCC_POP_WARN_RESTRICT
     ERR(EOK);
 
     /*--------------------------------------------------*/

@@ -33,7 +33,6 @@ int test_strncpy_s(void);
 int test_strncpy_s(void) {
     errno_t rc;
     rsize_t nlen;
-    int32_t ind;
     int errs = 0;
 
     /*--------------------------------------------------*/
@@ -170,7 +169,9 @@ int test_strncpy_s(void) {
     nlen = 5;
 
     /* test overlap */
+    GCC_PUSH_WARN_RESTRICT
     rc = strncpy_s(str1, LEN, str1, nlen);
+    GCC_POP_WARN_RESTRICT
     ERR_MSVC(ESOVRLP, 0); /* and cleared/mangled */
 #ifdef HAVE_CT_BOS_OVR
     init_msvcrt(rc == ESOVRLP, &use_msvcrt);

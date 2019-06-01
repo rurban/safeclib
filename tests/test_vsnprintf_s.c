@@ -70,7 +70,6 @@ static inline int vtprintf_s_chk(char *restrict dest, rsize_t dmax,
 
 int test_vsnprintf_s(void) {
     errno_t rc;
-    int32_t ind;
     int32_t len2;
     int32_t len3;
     int errs = 0;

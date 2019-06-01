@@ -196,6 +196,14 @@
 #endif
 #endif
 
+#ifdef HAVE_WARNING_RESTRICT
+#define GCC_PUSH_WARN_RESTRICT GCC_DIAG_IGNORE(-Wrestrict)
+#define GCC_POP_WARN_RESTRICT GCC_DIAG_RESTORE
+#else
+#define GCC_PUSH_WARN_RESTRICT
+#define GCC_POP_WARN_RESTRICT
+#endif
+
 /* ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
    rc = strtolowercase_s("test", len); */
 #ifdef __cplusplus
@@ -330,8 +338,8 @@ static inline void *bnd_chk_malloc(size_t n) {
     }
 #define EXPSTR(s1, s2)                                                         \
     {                                                                          \
-        ind = strcmp((s1), (s2));                                              \
-        if (ind != 0) {                                                        \
+        int _ind = strcmp((s1), (s2));                                         \
+        if (_ind != 0) {                                                       \
             debug_printf("%s %u  Expected \"%s\", got \"%s\" \n",              \
                          __FUNCTION__, __LINE__, (s2), s1);                    \
             errs++;                                                            \

@@ -120,8 +120,10 @@ int test_wcsrtombs_s(void) {
     }
 
     if (!use_msvcrt) { /* segfaults */
+        GCC_PUSH_WARN_RESTRICT
         EXPECT_BOS("dest overlap")
         rc = wcsrtombs_s(&ind, (char *)&cs, 3, &cs, 3, &ps);
+        GCC_POP_WARN_RESTRICT
         ERR_MSVC(ESOVRLP, have_wine ? EILSEQ : 0);
         CLRPS;
     }

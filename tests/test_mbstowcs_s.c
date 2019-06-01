@@ -81,15 +81,19 @@ int test_mbstowcs_s(void) {
 #endif
 
     dest[0] = L'a';
+    GCC_PUSH_WARN_RESTRICT
     EXPECT_BOS("dest overlap")
     rc = mbstowcs_s(&ind, dest, LEN, (const char *)dest, 1);
+    GCC_POP_WARN_RESTRICT
     ERR_MSVC(ESOVRLP, ERANGE);
 
     {
         void *p1;
         cs = "abcdef";
+        GCC_PUSH_WARN_RESTRICT
         EXPECT_BOS("dest overlap")
         rc = mbstowcs_s(&ind, (wchar_t *)&p1, 1, (const char *)&p1, 1);
+        GCC_POP_WARN_RESTRICT
         ERR_MSVC(ESOVRLP, ERANGE);
     }
 #endif

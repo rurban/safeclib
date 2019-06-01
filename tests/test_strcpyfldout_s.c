@@ -17,7 +17,6 @@ int main(void) {
     uint32_t j;
     rsize_t len;
     rsize_t slen;
-    int ind;
 
     char str1[LEN];
     char str2[LEN];

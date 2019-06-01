@@ -531,6 +531,9 @@ case $host_os in
        [],[$ax_ccf_err])
     ;;
 esac
+if test x$ax_cv_check_cflags__Wrestrict = xyes; then
+   AC_DEFINE([HAVE_WARNING_RESTRICT], 1, [Have -Wrestrict])
+fi
 AX_GCC_BUILTIN(__builtin_object_size)
 dnl against -Werror,-Wgcc-compat fortify errors, only on clang
 INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
