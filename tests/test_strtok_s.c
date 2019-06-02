@@ -71,7 +71,7 @@ int main(void) {
     ERRPTR(NULL);
     ERRNO_MSVC(EOVERFLOW, 0);
 #else
-    rc = strtok_s(str1, (len = RSIZE_MAX_LEN + 1, &len), str2, &p2str);
+    rc = strtok_s(str1, (len = RSIZE_MAX_STR + 1, &len), str2, &p2str);
     ERRPTR(NULL);
     ERRNO_MSVC(ESLEMAX, 0);
 #endif
