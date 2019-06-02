@@ -31,8 +31,13 @@ END {
     if ($todo) {
       $expected =~ s/EXPECT_BOS_TODO test_$t\.c:\d+\t.*?\n//gs;
     }
-    if ($got ne $expected) {
-      print "FAIL $t\n";
+    if (($got ne $expected)) {
+      if ($todo) {
+        print "PASS $t #TODO $todo\n";
+      } else {
+        print "FAIL $t\n";
+       $errs++;
+     }
       if ( eval { require Text::Diff } ) {
         import Text::Diff;
         print diff(\$expected, \$got, { STYLE => "MyUni" });
@@ -40,7 +45,6 @@ END {
         print "expected:\n$expected";
         print "got:\n$got\n";
       }
-      $errs++;
     } else {
       if ($todo) {
         print "PASS $t #TODO $todo\n";

@@ -41,6 +41,7 @@ int main(void) {
     rc = strisalphanumeric_s("", 2);
     ERR(false)
 #endif
+
 #endif
     /*--------------------------------------------------*/
 

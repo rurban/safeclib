@@ -96,7 +96,7 @@ int test_mbsrtowcs_s(void) {
         void *p1;
         cs = "abcdef";
         p1 = &cs;
-        EXPECT_BOS("dest overlap")
+        EXPECT_BOS_TODO("dest overlap")
         rc = mbsrtowcs_s(&ind, (wchar_t *)p1, 1, &cs, 1, &ps);
         ERR_MSVC(ESOVRLP, ERANGE);
         CLRPS;

@@ -19,7 +19,7 @@ gmake -s -j4 clean
 echo clang-mp-5.0 -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
 CC="clang-mp-5.0 -march=native" \
     ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
-    gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
+    gmake -s -j4 check-log || exit
 gmake -s -j4 clean
 # disable -DFORTIFY_SOURCE=2, asan set it to 0 already
 echo clang-mp-5.0 -g -O2 -fsanitize=address,undefined -fno-omit-frame-pointer --disable-shared --enable-unsafe --enable-norm-compat
