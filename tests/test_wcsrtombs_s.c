@@ -182,11 +182,8 @@ int test_wcsrtombs_s(void) {
     CHKLOCALE_C;
 
     /* no-breaking space illegal in ASCII, but legal in C */
-    rc = wcsrtombs_s(&ind, dest, LEN,
-                     (cs = L"\x00a0"
-                           "abc",
-                      &cs),
-                     32, &ps);
+    cs = L"\x00a0abc";
+    rc = wcsrtombs_s(&ind, dest, LEN, &cs, 32, &ps);
     if (rc == 0) { /* legal */
         ERR(EOK);
         if (!use_msvcrt) {
