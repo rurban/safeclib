@@ -39,69 +39,69 @@
 #ifdef HAVE_WCHAR_H
 
 /**
- * @def wcsnlen_s(dest,dmax)
+ * @def wcsnlen_s(str,smax)
  * @brief
  *    The wcsnlen_s function computes the length of the wide string pointed
- *    to by dest, providing limited support for non-null terminated strings.
+ *    to by str, providing limited support for non-null terminated strings.
  *
  * @remark SPECIFIED IN
  *    ISO/IEC TR 24731-1, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param  dest  pointer to wide string
- * @param  dmax  maximum length of wide string, incl. the final null
+ * @param  str   pointer to wide string
+ * @param  smax  maximum length of wide string, incl. the final null
  *
- * @pre  dest shall not be a null pointer.
- * @pre  dmax shall not equal zero.
- * @pre  dmax shall not be greater than RSIZE_MAX_WSTR and size of dest
+ * @pre  str shall not be a null pointer.
+ * @pre  smax shall not equal zero.
+ * @pre  smax shall not be greater than RSIZE_MAX_WSTR and size of str
  *       (inc. final null).
  *
  * @note   On mingw with \c MINGW_HAS_SECURE_API this API is forceinline'd
- *         and the native \c wcsnlen_s with the msvcrt has a different dmax
- * limit: \c INT_MAX.
+ *         and the native \c wcsnlen_s with the msvcrt has a different smax
+ *         limit: \c INT_MAX.
  * @note   Unlike specified in the C11 spec the runtime-constraint handlers are
- * called.
+ *         called.
  *
  * @return The function returns the wide string length, excluding the
- * terminating null character.  If \c dest is NULL, then \c wcsnlen_s returns
+ * terminating null character.  If \c str is NULL, then \c wcsnlen_s returns
  * 0. Otherwise, the \c wcsnlen_s function returns the number of wide
  * characters that precede the terminating null character. If there is no null
- *         character in the first \c dmax characters of dest then \c wcsnlen_s
- * returns \c dmax. At most the first \c dmax characters of dest are accessed
- *         by \c wcsnlen_s.
+ * character in the first \c smax characters of str then \c wcsnlen_s
+ * returns \c smax. At most the first \c smax characters of str are accessed
+ * by \c wcsnlen_s.
  *
  * @see
  *    strnlen_s(), strnterminate_s()
  */
 
-EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *dest, rsize_t dmax,
-                              size_t destbos) {
+EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax,
+                              size_t strbos) {
     const wchar_t *z;
-    rsize_t orig_dmax = dmax;
+    rsize_t orig_smax = smax;
 
-    if (unlikely(dest == NULL)) {
+    if (unlikely(str == NULL)) {
         return RCNEGATE(0);
     }
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("wcsnlen_s: dmax is 0", (void *)dest,
+    if (unlikely(smax == 0)) {
+        invoke_safe_str_constraint_handler("wcsnlen_s: smax is 0", (void *)str,
                                            ESZEROL);
         return RCNEGATE(0);
     }
-    if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcsnlen_s: dmax exceeds max",
-                                           (void *)dest, ESLEMAX);
+    if (unlikely(smax > RSIZE_MAX_WSTR)) {
+        invoke_safe_str_constraint_handler("wcsnlen_s: smax exceeds max",
+                                           (void *)str, ESLEMAX);
         return RCNEGATE(0);
     }
 #if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX) ||                     \
     defined(HAVE___BND_CHK_PTR_BOUNDS)
-    if (destbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
+    if (strbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(str, smax * sizeof(wchar_t));
 #if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX)
     } else {
-        if (unlikely(dmax * sizeof(wchar_t) != destbos)) {
-            handle_str_bos_chk_warn("wcsnlen_s", (char *)dest, dmax,
-                                    destbos / sizeof(wchar_t));
+        if (unlikely(smax * sizeof(wchar_t) != strbos)) {
+            handle_str_bos_chk_warn("wcsnlen_s", (char *)str, smax,
+                                    strbos / sizeof(wchar_t));
             RETURN_ESLEWRNG;
         }
 #endif
@@ -109,22 +109,22 @@ EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *dest, rsize_t dmax,
 #endif
 
 #if 0 && defined(HAVE_WMEMCHR) /* rather inline it */
-    z = wmemchr(dest, 0, dmax);
-    if (z) dmax = z - dest;
-    return dmax;
+    z = wmemchr(str, 0, smax);
+    if (z) smax = z - str;
+    return smax;
 #else
-    if (destbos != BOS_UNKNOWN) {
-        /* Dont touch past destbos */
-        for (z = dest; dmax && *dest != 0; dmax--, dest++) {
-            destbos -= sizeof(wchar_t);
-            if (unlikely(destbos <= 0))
-                return dmax ? (rsize_t)(dest - z) : orig_dmax;
+    if (strbos != BOS_UNKNOWN) {
+        /* Dont touch past strbos */
+        for (z = str; smax && *str != 0; smax--, str++) {
+            strbos -= sizeof(wchar_t);
+            if (unlikely(strbos <= 0))
+                return smax ? (rsize_t)(str - z) : orig_smax;
         }
     } else {
-        for (z = dest; dmax && *dest != 0; dmax--, dest++)
+        for (z = str; smax && *str != 0; smax--, str++)
             ;
     }
-    return dmax ? (rsize_t)(dest - z) : orig_dmax;
+    return smax ? (rsize_t)(str - z) : orig_smax;
 #endif
 }
 

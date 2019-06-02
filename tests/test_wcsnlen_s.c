@@ -37,27 +37,27 @@ int test_wcsnlen_s(void) {
 
 #ifndef HAVE_CT_BOS_OVR
     max_len = 3;
-    EXPECT_BOS("empty dest")
+    EXPECT_BOS("empty str")
     len = wcsnlen_s(NULL, max_len);
     EXPLEN(0)
     /*--------------------------------------------------*/
 
     max_len = 0;
-    EXPECT_BOS("empty dest or dmax")
+    EXPECT_BOS("empty str or smax")
     len = wcsnlen_s(L"test", 0);
     EXPLEN(0)
     /*--------------------------------------------------*/
 
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
     wcscpy(str1, L"test");
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS("str overflow")
     len = wcsnlen_s(str1, LEN + 1);
     EXPLEN(4)
 #endif
 
     wcscpy(str1, L"test");
     max_len = RSIZE_MAX_WSTR + 1;
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS("str overflow")
     len = wcsnlen_s(str1, RSIZE_MAX_WSTR + 1);
     /* They allow more */
 #if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
@@ -72,18 +72,21 @@ int test_wcsnlen_s(void) {
     }
 #endif
 
-#ifdef HAVE___BUILTIN_OBJECT_SIZE
     /* overflow: sizeof = 5 */
     /* PS: compile-time check once fixed by adding const'ness and all warnings
      */
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS("str overflow")
     len = wcsnlen_s(L"test", 6);
     EXPLEN(4)
-#endif
+    EXPECT_BOS("str overflow")
+    len = wcsnlen_s(L"test", 7);
+    EXPLEN(4)
+    EXPECT_BOS("str overflow")
+    len = wcsnlen_s(L"test", 21);
+    EXPLEN(4)
 
 #endif
 
-#ifdef HAVE___BUILTIN_OBJECT_SIZE
     /* no overflow: sizeof = 5 */
     len = wcsnlen_s(L"test", 4);
     EXPLEN(4)
@@ -91,12 +94,11 @@ int test_wcsnlen_s(void) {
     /* no overflow: sizeof = 5 */
     len = wcsnlen_s(L"test", 5);
     EXPLEN(4)
-#endif
 
-    return errs;
+    //return errs;
     /*--------------------------------------------------*/
 
-    std_len = strlen("");
+    std_len = 0;
     wcscpy(str1, L"");
     max_len = LEN;
 
@@ -105,7 +107,7 @@ int test_wcsnlen_s(void) {
 
     /*--------------------------------------------------*/
 
-    std_len = strlen("t");
+    std_len = 1;
     wcscpy(str1, L"t");
     max_len = LEN;
 
@@ -117,7 +119,7 @@ int test_wcsnlen_s(void) {
 
     /*--------------------------------------------------*/
 
-    std_len = strlen("to");
+    std_len = 2;
     wcscpy(str1, L"to");
     max_len = LEN;
 
