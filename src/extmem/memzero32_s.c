@@ -83,6 +83,7 @@ EXPORT errno_t _memzero32_s_chk(uint32_t *dest, rsize_t len,
      * mem_prim_set32(dest, len, 0xBA5EBA11);
      */
     mem_prim_set32(dest, len, 0);
+    MEMORY_BARRIER;
 
     return (RCNEGATE(EOK));
 }

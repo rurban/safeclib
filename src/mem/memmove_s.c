@@ -123,6 +123,7 @@ EXPORT errno_t _memmove_s_chk(void *dest, rsize_t dmax, const void *src,
         if (unlikely(slen > dmax)) {
             errno_t rc = slen > RSIZE_MAX_MEM ? ESLEMAX : ESNOSPC;
             mem_prim_set(dp, dmax, 0);
+            MEMORY_BARRIER;
             invoke_safe_mem_constraint_handler("memmove_s: slen exceeds max",
                        dest, rc);
             return (RCNEGATE(rc));

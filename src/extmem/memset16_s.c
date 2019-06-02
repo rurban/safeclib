@@ -102,6 +102,7 @@ EXPORT errno_t _memset16_s_chk(uint16_t *dest, rsize_t dmax, uint16_t value,
     }
 
     mem_prim_set16(dest, n, value);
+    MEMORY_BARRIER;
 
     return (RCNEGATE(err));
 }

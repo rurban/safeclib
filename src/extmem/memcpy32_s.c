@@ -114,6 +114,7 @@ EXPORT errno_t _memcpy32_s_chk(uint32_t *dest, rsize_t dmax,
     /* overlap is disallowed, but allow dest==src */
     if (unlikely(CHK_OVRLP_BUTSAME(dest, dmax / 4, src, slen))) {
         mem_prim_set(dest, dmax, 0);
+        MEMORY_BARRIER;
         invoke_safe_mem_constraint_handler("memcpy32_s: overlap undefined",
                                            (void *)dest, ESOVRLP);
         return (RCNEGATE(ESOVRLP));

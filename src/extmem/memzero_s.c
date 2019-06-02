@@ -92,6 +92,7 @@ EXPORT errno_t _memzero_s_chk(void *dest, rsize_t len, const size_t destbos) {
 #else
     mem_prim_set(dest, len, 0);
 #endif
+    MEMORY_BARRIER;
 
     return (RCNEGATE(EOK));
 }

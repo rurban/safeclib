@@ -103,6 +103,7 @@ EXPORT errno_t _memset32_s_chk(uint32_t *dest, rsize_t dmax, uint32_t value,
     }
 
     mem_prim_set32(dest, n, value);
+    MEMORY_BARRIER;
 
     return (RCNEGATE(err));
 }

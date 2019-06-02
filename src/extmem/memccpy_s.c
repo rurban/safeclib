@@ -109,6 +109,7 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
     /* overlap is disallowed */
     if (unlikely(CHK_OVRLP(dp, dmax, sp, n))) {
         mem_prim_set(dp, dmax, 0);
+        MEMORY_BARRIER;
         invoke_safe_mem_constraint_handler("memccpy_s: overlap undefined", NULL,
                                            ESOVRLP);
         return RCNEGATE(ESOVRLP);
@@ -123,7 +124,8 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
         *dp = *sp;
         if (*dp == c) { /* found */
 #ifdef SAFECLIB_STR_NULL_SLACK
-            memset(dp, 0, n);
+            mem_prim_set(dp, n, 0);
+            MEMORY_BARRIER;
 #endif
             return RCNEGATE(EOK);
         }

@@ -131,6 +131,7 @@ EXPORT errno_t _wmemmove_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
     } else {
         if (unlikely(smax > srcbos)) {
             wmem_set((wmem_type *)dest, (uint32_t)dlen, 0);
+            MEMORY_BARRIER;
             invoke_safe_mem_constraint_handler("wmemmove_s: slen exceeds src",
                                                (void *)src, EOVERFLOW);
             return (RCNEGATE(EOVERFLOW));

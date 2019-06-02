@@ -84,6 +84,7 @@ EXPORT errno_t _memzero16_s_chk(uint16_t *dest, rsize_t len,
      * mem_prim_set16(dest, len, 0xBEEF);
      */
     mem_prim_set16(dest, len, 0);
+    MEMORY_BARRIER;
 
     return (RCNEGATE(EOK));
 }

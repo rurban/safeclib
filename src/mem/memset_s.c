@@ -124,6 +124,7 @@ EXPORT errno_t _memset_s_chk(void *dest, rsize_t dmax, int value, rsize_t n,
     }
 
     mem_prim_set(dest, n, (uint8_t)value);
+    MEMORY_BARRIER;
 
     return (RCNEGATE(err));
 }

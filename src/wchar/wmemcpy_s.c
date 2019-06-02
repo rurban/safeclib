@@ -126,6 +126,7 @@ EXPORT errno_t _wmemcpy_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
     } else {
         if (unlikely(smax > srcbos)) {
             wmem_set((wmem_type *)dest, (uint32_t)dlen, 0);
+            MEMORY_BARRIER;
             invoke_safe_mem_constraint_handler("wmemmove_s: slen exceeds src",
                                                (void *)src, EOVERFLOW);
             return (RCNEGATE(EOVERFLOW));
@@ -135,6 +136,7 @@ EXPORT errno_t _wmemcpy_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
     /* overlap is disallowed, but allow dest==src */
     if (unlikely(CHK_OVRLP_BUTSAME(dest, dlen, src, count))) {
         wmem_set((wmem_type *)dest, (uint32_t)dlen, 0);
+        MEMORY_BARRIER;
         invoke_safe_mem_constraint_handler("wmemcpy_s: overlap undefined",
                                            (void *)dest, ESOVRLP);
         return (RCNEGATE(ESOVRLP));
