@@ -818,11 +818,6 @@ AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
         __vsscanf_chk __vswscanf_chk
         ])
 #done
-dnl native safec shadowing functions (should be none)
-AC_CHECK_FUNCS([_memcpy_s_chk _memmove_s_chk _memset_s_chk _memcmp_s_chk \
-        _strcpy_s_chk _strncpy_s_chk _strcat_s_chk _strncat_s_chk _strnlen_s_chk \
-        _printf_s_chk _sprintf_s_chk _snprintf_s_chk _swprintf_s_chk \
-        _vfprintf_s_chk _vfwprintf_s_chk _vsprintf_s_chk _vsnprintf_s_chk ])
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
@@ -832,9 +827,18 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         towlower towupper towctrans bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy ])
+
+dnl add the extensions, pretending we want them
+$as_echo '#define __STDC_WANT_LIB_EXT1__  1' >>confdefs.h
+dnl native safec shadowing functions (should be none)
+AC_CHECK_FUNCS([_memcpy_s_chk _memmove_s_chk _memset_s_chk _memcmp_s_chk \
+        _strcpy_s_chk _strncpy_s_chk _strcat_s_chk _strncat_s_chk _strnlen_s_chk \
+        _printf_s_chk _sprintf_s_chk _snprintf_s_chk _swprintf_s_chk \
+        _vfprintf_s_chk _vfwprintf_s_chk _vsprintf_s_chk _vsnprintf_s_chk ])
 dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
-AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
+AC_CHECK_FUNCS(
+      [ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccpy_s \
         sprintf_s strcat_s strcpy_s strncat_s strncpy_s \
         strnlen_s strtok_s strerror_s vsprintf_s tmpnam_s snprintf_s \
         vsnprintf_s snwprintf_s \
@@ -849,6 +853,10 @@ AC_CHECK_FUNCS([ memset_s memcpy_s memmove_s memzero_s memchr_s memrchr_s memccp
         vsscanf_s vscanf_s printf_s fprintf_s tmpfile_s vfprintf_s vprintf_s \
         fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
         asctime_s ctime_s getenv_s ])
+dnl but delete it, because we override it case by case
+$GREP -v '__STDC_WANT_LIB_EXT1__' confdefs.h > confdefs.h.tmp
+mv confdefs.h.tmp confdefs.h
+        
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
