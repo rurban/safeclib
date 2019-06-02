@@ -33,6 +33,7 @@ int test_wcsncpy_s(void) {
 
     nlen = 5;
     print_msvcrt(use_msvcrt);
+
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
     rc = wcsncpy_s(NULL, LEN, str2, nlen);
@@ -57,6 +58,7 @@ int test_wcsncpy_s(void) {
     ERR_MSVC(ESZEROL, EINVAL);
     WEXPSTR(str1, L"untouched");
 
+#ifndef __PGI_XC_VER__
     EXPECT_BOS("dest overflow")
     rc = wcsncpy_s(str1, (RSIZE_MAX_STR + 1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
@@ -69,6 +71,7 @@ int test_wcsncpy_s(void) {
         WEXPSTR(str1, L"untouched");
 #endif
     }
+#endif /* PGI */
 
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
     wcscpy(str1, L"untouched");
@@ -101,7 +104,6 @@ int test_wcsncpy_s(void) {
 #endif
 
     /*--------------------------------------------------*/
-
     wcscpy(str1, L"aaaa");
     str2[0] = L'\0';
 
