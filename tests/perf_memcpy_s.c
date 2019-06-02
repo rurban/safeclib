@@ -10,6 +10,7 @@
  *
  *   Speed overhead: 88% --disable-constraint-handler
  *                   88% default
+ * gcc-8 linux: 53% overhead
  *
  * clang-7 darwin:
  *   objsize --disable-constraint-handler
@@ -28,6 +29,7 @@
  * clang-3.4         89% -march=native --disable-constraint-handler
  * clang-3.3         88% -march=native --disable-constraint-handler
  * Apple/cc          87% -march=native --disable-constraint-handler
+ * gcc-8             89% -march=native -Wa,-q --disable-constraint-handler
  * gcc-7             89% -march=native -Wa,-q --disable-constraint-handler
  * gcc-5             88% -march=native -Wa,-q --disable-constraint-handler
  * gcc-4.9           86% -march=native -Wa,-q --disable-constraint-handler
