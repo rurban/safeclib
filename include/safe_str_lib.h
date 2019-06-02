@@ -133,7 +133,7 @@ EXTERN errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
 
 /* string length */
 EXTERN rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos)
-    BOS_OVR2_BUTNULL(str, smax);
+    BOS_CHK2(str, smax);
 #define strnlen_s(str, smax) _strnlen_s_chk(str, smax, BOS(str))
 
 /* string tokenizer */

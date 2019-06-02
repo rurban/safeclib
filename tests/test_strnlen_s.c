@@ -3,7 +3,6 @@
  * File 'str/strnlen_s.c'
  * Lines executed:95.45% of 22
  *
- *
  *------------------------------------------------------------------
  */
 
@@ -38,8 +37,9 @@ int test_strnlen_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     max_len = 3;
-    EXPECT_BOS("empty dest")
+    EXPECT_BOS("empty str")
     len = strnlen_s(NULL, max_len);
     EXPLEN(0)
 
@@ -51,7 +51,6 @@ int test_strnlen_s(void) {
     EXPLEN(0)
     /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
     max_len = RSIZE_MAX_STR + 1;
     EXPECT_BOS("str overflow")
     len = strnlen_s("test", RSIZE_MAX_STR + 1);
@@ -113,9 +112,14 @@ int test_strnlen_s(void) {
     /*--------------------------------------------------*/
 
     max_len = 9;
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("str overflow")
-    len = strnlen_s("testing", max_len);
+    len = strnlen_s("testing", 9);
+#else
+    len = strnlen_s("testing", max_len); /* depends on optimizer's var-tracking */
+#endif
     STDLEN()
+
     /*--------------------------------------------------*/
     return (errs);
 }
