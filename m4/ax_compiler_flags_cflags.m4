@@ -26,7 +26,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 17
+#serial 18
 
 AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     AC_REQUIRE([AC_PROG_SED])
@@ -59,15 +59,24 @@ AC_DEFUN([AX_COMPILER_FLAGS_CFLAGS],[
     ])
 
     # Check that -Wno-suggest-attribute=format is supported
-    AX_CHECK_COMPILE_FLAG([-Wsuggest-attribute=format],[
+    AX_CHECK_COMPILE_FLAG([-Wno-suggest-attribute=format],[
         ax_compiler_no_suggest_attribute_flags="-Wno-suggest-attribute=format"
     ],[
         ax_compiler_no_suggest_attribute_flags=""
     ])
 
-    # retpoline: clang-7. Note: requires lld-7 linker support
-    AX_APPEND_COMPILE_FLAGS(["-mretpoline -DRETPOLINE $lt_prog_compiler_pic"],
-        [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
+    # retpoline: gcc-8/clang-? Note: requires lld-7 or gold linker support
+    if test -z "$RETPOLINE_CFLAGS"; then
+        AX_APPEND_COMPILE_FLAGS(
+          ["-mcet -fcf-protection=full $lt_prog_compiler_pic -DRETPOLINE"],
+          [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
+    fi
+    # clang-7. Also requires lld-7 linker support
+    if test -z "$RETPOLINE_CFLAGS"; then
+        AX_APPEND_COMPILE_FLAGS(
+          ["-mretpoline -DRETPOLINE $lt_prog_compiler_pic"],
+          [RETPOLINE_CFLAGS],[$ax_compiler_flags_test])
+    fi
     # or the equivalent gcc-7.3 variant
     if test -z "$RETPOLINE_CFLAGS"; then
         AX_APPEND_COMPILE_FLAGS(

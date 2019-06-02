@@ -720,8 +720,8 @@ if test "x$ac_cv_header_stdbool_h" = "xno"; then
 # define true 1
 # define __bool_true_false_are_defined 1
 "
-	if test "x$ac_cv_type__bool" = "xno"; then
-		INSERT_BOOL_SUPPORT="
+if test "x$ac_cv_type__bool" = "xno"; then
+	INSERT_BOOL_SUPPORT="
 #ifdef __cplusplus
 typedef bool _Bool;
 #else
