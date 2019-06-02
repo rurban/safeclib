@@ -37,9 +37,9 @@ gmake -s -j4 clean
 echo clang-mp-5.0 -std=c11 --enable-unsafe --enable-norm-compat
 CC="clang-mp-5.0 -std=c11" \
     ./configure --enable-unsafe --enable-norm-compat && \
-    gmake -s -j4 check-log && make -s -j4 -C tests tests-bos || exit
-    # too many darwin kernel and libc leaks, esp. with locale and time.
-    # not getting better, getting worse
+    gmake -s -j4 check-log || exit
+    gmake -s -j4 -C tests tests-bos
+    # many darwin kernel and libc leaks, esp. with locale and time.
     gmake -s -j4 check-valgrind
 gmake -s -j4 clean
 # relax compile-time errors to warnings
