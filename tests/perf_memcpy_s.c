@@ -74,7 +74,7 @@ int main(void);
 
 static inline clock_t rdtsc() {
 #ifdef __x86_64__
-    uint32_t a, d;
+    uint64_t a, d;
     __asm__ volatile("rdtsc" : "=a"(a), "=d"(d));
     return (clock_t)(a | (d << 32));
 #elif defined(__i386__)
