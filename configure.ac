@@ -4,7 +4,7 @@
 # 2017  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017, 2018 Reini Urban
+# Copyright (c) 2017, 2018, 2019 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -534,6 +534,19 @@ esac
 if test x$ax_cv_check_cflags__Wrestrict = xyes; then
    AC_DEFINE([HAVE_WARNING_RESTRICT], 1, [Have -Wrestrict])
 fi
+PEDANTIC="-pedantic"
+WARN_CFLAGS_TEST="-Wall -Wextra"
+if test x$ac_compiler_gnu = xno; then
+    AX_CHECK_COMPILE_FLAG([-pedantic],
+       [PEDANTIC="-pedantic"],
+       [PEDANTIC=""
+        WARN_CFLAGS_TEST=""],[$ax_ccf_err])
+    AX_CHECK_COMPILE_FLAG([-Werror],
+       [],
+       [WARN_CFLAGS=""
+        WARN_CFLAGS_TEST=""],[$ax_ccf_err])
+fi
+AC_SUBST(PEDANTIC, $PEDANTIC)
 AX_GCC_BUILTIN(__builtin_object_size)
 dnl against -Werror,-Wgcc-compat fortify errors, only on clang
 INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
@@ -587,6 +600,7 @@ int myfunc(char *ptr) {
     )],
     [ AC_MSG_RESULT([yes])
       have_attribute_diagnose_if=yes
+      WARN_CFLAGS_TESTS="$WARN_CFLAGS_TESTS -Wno-gcc-compat"
       AC_DEFINE([HAVE_ATTRIBUTE_DIAGNOSE_IF], 1,
                 [Defined to 1 when the compiler supports attribute diagnose_if, since clang-5])
     ],
@@ -598,6 +612,7 @@ int myfunc(char *ptr) {
     ])
 CFLAGS="$old_cflags"
 AM_CONDITIONAL([HAVE_ATTRIBUTE_DIAGNOSE_IF], [test "x$have_attribute_diagnose_if" = "xyes"])
+AC_SUBST(WARN_CFLAGS_TEST, $WARN_CFLAGS_TEST)
 
 AX_ASM_INLINE()
 
@@ -964,6 +979,8 @@ if test "x$enable_debug_build" = "xtrue"; then
 	AC_MSG_RESULT([AM_LDFLAGS = $AM_LDFLAGS])
 	AC_MSG_RESULT([CFLAGS = $CFLAGS])
 	AC_MSG_RESULT([WARN_CFLAGS = $WARN_CFLAGS])
+	AC_MSG_RESULT([WARN_CFLAGS_TESTS = $WARN_CFLAGS_TESTS])
+	AC_MSG_RESULT([PEDANTIC = $PEDANTIC])
 fi
 
 # Output files

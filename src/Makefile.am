@@ -4,7 +4,7 @@
 # 2017-2018 Reini Urban
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017 Reini Urban
+# Copyright (c) 2017, 2019 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -235,7 +235,7 @@ ALL_SRC_FILES =
 # wcsnorm_CFLAGS = -fbracket-depth=512
 AM_CFLAGS += -I$(top_builddir)/include -I$(srcdir)
 if !HAVE_MINGW
-AM_CFLAGS += -pedantic
+AM_CFLAGS += @PEDANTIC@
 endif
 AM_CFLAGS += $(WARN_CFLAGS)
 
