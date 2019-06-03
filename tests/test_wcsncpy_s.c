@@ -58,7 +58,8 @@ int test_wcsncpy_s(void) {
     ERR_MSVC(ESZEROL, EINVAL);
     WEXPSTR(str1, L"untouched");
 
-#ifndef __PGI_XC_VER__
+    /* PGI pgcc 17.4 and 19.4 crash here */
+#ifndef __PGI
     EXPECT_BOS("dest overflow")
     rc = wcsncpy_s(str1, (RSIZE_MAX_STR + 1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
