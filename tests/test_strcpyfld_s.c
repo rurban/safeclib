@@ -40,16 +40,20 @@ int main(void) {
     EXPECT_BOS("dest overflow or empty")
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR + 1), str2, 5);
     ERR(ESLEMAX); /* and cleared */
-    EXPSTR(str1, "");
-    CHECK_SLACK(str1, 5);
+    if (_BOS_KNOWN(str1)) {
+      EXPSTR(str1, "");
+      CHECK_SLACK(str1, 5);
+    }
 
     strcpy(str1, "aaaaa");
     slen = len + 1; /* ESLEMAX over ESNOSPC */
     EXPECT_BOS("dest overflow or empty")
     rc = strcpyfld_s(str1, (RSIZE_MAX_STR + 1), str2, 6);
     ERR(ESLEMAX); /* and cleared */
-    EXPSTR(str1, "");
-    CHECK_SLACK(str1, 5);
+    if (_BOS_KNOWN(str1)) {
+      EXPSTR(str1, "");
+      CHECK_SLACK(str1, 5);
+    }
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     EXPECT_BOS("src overflow or empty")

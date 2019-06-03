@@ -58,9 +58,11 @@ int main(void) {
     rc = memcmp16_s(mem1, LEN, mem2, RSIZE_MAX_MEM16 + 1, &ind);
     ERR(ESLEMAX);
 
-    EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
-    rc = memcmp16_s(mem1, LEN, mem2, LEN + 1, &ind);
-    ERR(EOVERFLOW);
+    if (_BOS_KNOWN(mem2)) {
+        EXPECT_BOS("src overflow") EXPECT_BOS("slen overflow >dlen")
+        rc = memcmp16_s(mem1, LEN, mem2, LEN + 1, &ind);
+        ERR(EOVERFLOW);
+    }
 
     /*--------------------------------------------------*/
 

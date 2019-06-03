@@ -88,8 +88,10 @@ int test_vswprintf_s(void) {
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR + 1), BOS(str1), L"%ls", str2);
     ERRNO_MSVC(-ESLEMAX, 0);
 
-    rc = vtwprintf_s(str1, (LEN + 1), BOS(str1), L"%ls", str2);
-    ERRNO_MSVC(-EOVERFLOW, 0);
+    if (_BOS_KNOWN(str1)) {
+      rc = vtwprintf_s(str1, (LEN + 1), BOS(str1), L"%ls", str2);
+      ERRNO_MSVC(-EOVERFLOW, 0);
+    }
 
     /*--------------------------------------------------*/
 

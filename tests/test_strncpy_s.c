@@ -132,10 +132,12 @@ int test_strncpy_s(void) {
     EXPECT_BOS("dest overflow")
     rc = strncpy_s(str1, (RSIZE_MAX_STR + 1), str2, nlen);
     ERR_MSVC(ESLEMAX, 0); /* different MAX */
-    if (!use_msvcrt) {
-        EXPSTR(str1, ""); /* cleared */
+    if (!_BOS_KNOWN(str1)) {
+        EXPSTR(str1, "aa")
+    } else if (!use_msvcrt) {
+        EXPSTR(str1, "") /* cleared */
     } else {
-        EXPSTR(str1, "b");
+        EXPSTR(str1, "b")
     }
 
     /*--------------------------------------------------*/

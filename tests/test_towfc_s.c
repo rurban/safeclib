@@ -187,7 +187,9 @@ int test_towfc_s(void) {
                          * locale */
                         if (wc == 0x130) {
                             INDCMP(!= 2);
-                            WEXPSTR(result, L"i̇");
+                            if (_BOS_KNOWN(result)) {
+                              WEXPSTR(result, L"i̇");
+                            }
                         } else {
                             INDCMP(!= 1);
                             WEXPSTR(result, L"i");

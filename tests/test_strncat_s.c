@@ -118,8 +118,10 @@ int test_strncat_s(void) {
     EXPECT_BOS("dest overflow")
     rc = strncat_s(str1, (RSIZE_MAX_STR + 1), str2, LEN);
     ERR_MSVC(ESLEMAX, 0);
-    if (!use_msvcrt) {
-        EXPSTR(str1, ""); /* cleared, because BOS is known */
+    if (!_BOS_KNOWN(str1)) {
+        EXPSTR(str1, "a")
+    } else if (!use_msvcrt) { /* cleared, because BOS is known */
+        EXPSTR(str1, "")
     } else {
         EXPSTR(str1, "abcde") /* valid */
     }

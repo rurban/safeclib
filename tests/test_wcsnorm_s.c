@@ -162,11 +162,13 @@ int test_wcsnorm_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifndef __PGI
     rc = wcsnorm_s(str, LEN, L"Café", WCSNORM_NFD, &ind);
     ERR(EOK)
     WEXPSTR(str, L"Cafe\x301");
     INDCMP(!= 5);
     WCHECK_SLACK(&str[5], LEN - 5);
+#endif
 
     rc = wcsnorm_s(str, LEN, L"Cafe\x301", WCSNORM_NFC, &ind);
     ERR(EOK)

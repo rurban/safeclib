@@ -95,8 +95,10 @@ int test_strcat_s(void) {
     EXPECT_BOS("dest overflow")
     rc = strcat_s(str1, (RSIZE_MAX_STR + 1), str2);
     ERR_MSVC(ESLEMAX, 0);
-    EXPSTR(str1,
-           !use_msvcrt ? "" : "aaaaa"); /* cleared, because BOS is known */
+    /* some not so good compilers have destbos == BOS_UNKNOWN, like pgcc.
+       hence they do just CHK_DMAX_MAX, and don't clear str1 at all */
+    if (_BOS_KNOWN(str1))
+      EXPSTR(str1, !use_msvcrt ? "" : "aaaaa")
 #endif
 
     /*--------------------------------------------------*/
