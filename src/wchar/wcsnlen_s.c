@@ -75,8 +75,7 @@
  *    strnlen_s(), strnterminate_s()
  */
 
-EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax,
-                              size_t strbos) {
+EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax, size_t strbos) {
     const wchar_t *z;
     rsize_t orig_smax = smax;
 
