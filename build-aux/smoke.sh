@@ -328,6 +328,9 @@ else
     echo "not clean srcdir, out-of-tree + make distcheck skipped"
     echo `git status --short`
 fi
+rm .slkm.ko.cmd .testslkm.ko.cmd  CaseFolding.txt test-upr.pl \
+   tmpfopen tmpvwscanf tmpwscanf
+rm -rf .tmp_versions/
 
 autoreconf    
 ./configure --enable-unsafe --enable-debug && \
