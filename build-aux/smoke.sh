@@ -117,6 +117,13 @@ if [ -e /opt/local/bin/arm-elf-gcc-4.7 ]; then
     done
     gmake -s -j4 clean
 fi
+if [ -e /opt/pgi/osx86-64/2019/bin/pgcc ]; then
+    echo /opt/pgi/osx86-64/2019/bin/pgcc --enable-unsafe --enable-debug
+    CC=/opt/pgi/osx86-64/2019/bin/pgcc ./configure --enable-unsafe --enable-debug && \
+        gmake -s j4 && gmake check-log
+        # fails on several not null slack wirh >RMAX
+    gmake -s -j4 clean
+fi
 
 ;;
 
@@ -220,6 +227,15 @@ if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
         qemu-arm -L /usr/arm-linux-gnueabihf $t | tee tests/$b.log
     done
 fi
+
+if [ -e /opt/pgi/linux86-64/2019/pgcc ]; then
+    echo /opt/pgi/linux86-64/2019/bin/pgcc --enable-unsafe --enable-debug
+    CC=/opt/pgi/linux86-64/2019/bin/pgcc ./configure --enable-unsafe --enable-debug && \
+        make -s j4 && make check-log
+        # fails on several not null slack wirh >RMAX
+    make clean
+fi
+
 ;;
 
 MSYS_NT*)
