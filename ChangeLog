@@ -1,7 +1,7 @@
 
         ChangeLog file for safeclib
 
-Changes in v07062019 3.5.0
+Changes in v04062019 3.5.0
         - Updated towctrans case-mappings and normalization to Unicode 12.1
           Even the canon tables on windows need now a special bsearch in an
           exception list, previously only the compat tables.

@@ -815,9 +815,12 @@ AC_CHECK_FUNCS([__memcpy_chk __memmove_chk __memset_chk \
         __strcpy_chk __strncpy_chk __strcat_chk __strncat_chk \
         __printf_chk __sprintf_chk __snprintf_chk __swprintf_chk \
         __vfprintf_chk __vfwprintf_chk __vsprintf_chk __vsnprintf_chk \
-        __vsscanf_chk __vswscanf_chk
-        ])
+        __vsscanf_chk __vswscanf_chk ])
 #done
+dnl They need to include the relevant intrin header first
+dnl TODO: probe for MEMORY_BARRIER and COMPILER_BARRIER here
+dnl AC_CHECK_FUNCS([ __sync_synchronize MemoryBarrier _mm_mfence _mm_sfence \
+dnl        __machine_rw_barrier ])
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
 dnl mbstowcs missing on cygwin64
