@@ -33,7 +33,7 @@ var searchData=
   ['slk_5fexit',['slk_exit',['../d4/d6a/slkm__init_8c.html#a4697453c839303891a47a9b443bcae26',1,'slkm_init.c']]],
   ['slk_5finit',['slk_init',['../d4/d6a/slkm__init_8c.html#af27c6fcdadb4c452114d7eae1605b60e',1,'slkm_init.c']]],
   ['slkm_5finit_2ec',['slkm_init.c',['../d4/d6a/slkm__init_8c.html',1,'']]],
-  ['smax',['smax',['../d8/dff/safe__str__lib_8h.html#a2b8c9a50d91a20b35d3386a10fa31028',1,'safe_str_lib.h']]],
+  ['smax',['smax',['../d8/dff/safe__str__lib_8h.html#a914b43f06324fa80ea3666a8af7954e8',1,'safe_str_lib.h']]],
   ['snprintf_5fs',['snprintf_s',['../d8/d3c/snprintf__s_8c.html#af7832c757ae26fafa1a0f129c6c55e51',1,'snprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,...):&#160;snprintf_s.c'],['../d8/dff/safe__str__lib_8h.html#a6f40a5b87f9e51c4c59d3666dd565ee7',1,'snprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt,...) BOS_CHK(dest) BOS_FMT(fmt):&#160;snprintf_s.c']]],
   ['snprintf_5fs_2ec',['snprintf_s.c',['../d8/d3c/snprintf__s_8c.html',1,'']]],
   ['snwprintf_5fs',['snwprintf_s',['../d6/d6b/snwprintf__s_8c.html#a2994a6a76b2853b7bd59f48d02609eef',1,'snwprintf_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict fmt,...):&#160;snwprintf_s.c'],['../d8/dff/safe__str__lib_8h.html#ad430f70743e3b210902dcc28106cf73d',1,'snwprintf_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict fmt,...) BOSW_CHK(dest) BOS_FMT(fmt):&#160;snwprintf_s.c']]],
