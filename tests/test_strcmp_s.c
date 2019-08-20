@@ -18,9 +18,9 @@
     if (ind != std_ind) {                                                      \
         printf("%s %u  ind=%d  relaxed strcmp()=%d  rc=%d \n", __FUNCTION__,   \
                __LINE__, ind, std_ind, rc);                                    \
-        if (sgn(ind) != std_ind) {                                             \
-            printf("%s %u  sgn(ind)=%d  std_ind=%d  rc=%d \n", __FUNCTION__,   \
-                   __LINE__, sgn(ind), std_ind, rc);                           \
+        if (sgn(ind) != sgn(std_ind)) {                                             \
+            printf("%s %u  sgn(ind)=%d  sgn(std_ind)=%d  rc=%d \n", __FUNCTION__,   \
+                   __LINE__, sgn(ind), sgn(std_ind), rc);                           \
             errs++;                                                            \
         }                                                                      \
     }
