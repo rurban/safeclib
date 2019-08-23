@@ -56,7 +56,7 @@ int main(void) {
     }
     rc = memmove32_s(mem1, 10, mem2, 0);
     ERR(EOK); /* and untouched */
-    EXPMEM(mem1, 0, 10, 33, 2);
+    EXPMEM(mem1, 0, 10, 33, 4);
 
     /*--------------------------------------------------*/
 
@@ -64,7 +64,7 @@ int main(void) {
     EXPECT_BOS("src overflow or empty") EXPECT_BOS("slen overflow >dmax / 4")
     rc = memmove32_s(mem1, MAX, mem2, RSIZE_MAX_MEM32 + 1);
     ERR(ESLEMAX); /* and cleared */
-    EXPMEM(mem1, 0, LEN, 0, 2);
+    EXPMEM(mem1, 0, LEN, 0, 4);
 #endif
     /*--------------------------------------------------*/
 
