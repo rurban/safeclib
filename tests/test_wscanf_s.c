@@ -43,6 +43,7 @@ int test_wscanf_s(void) {
     size_t len1;
     size_t len2;
     size_t len3;
+    int num = 0;
     int errs = 0;
     int have_wine = 0;
 
@@ -108,12 +109,11 @@ int test_wscanf_s(void) {
 #endif
 
     stuff_stdin(L"      24");
-    rc = wscanf_s(L" %d", &len1);
+    rc = wscanf_s(L" %d", &num);
     ERR(1);
     ERRNO_MSVC(0, have_wine ? 0 : EINVAL);
-    if ((int)len1 != 24) {
-        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
-                     (int)len1);
+    if (num != 24) {
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__, num);
         errs++;
     }
 

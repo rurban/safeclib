@@ -30,6 +30,7 @@ int test_sscanf_s(void) {
     size_t len1;
     size_t len2;
     size_t len3;
+    int num = 0;
     int errs = 0;
 
     /*--------------------------------------------------*/
@@ -76,12 +77,11 @@ int test_sscanf_s(void) {
     ERR(0);
     ERRNO(0);
 
-    rc = sscanf_s(str1, " %d", &len1);
+    rc = sscanf_s(str1, " %d", &num);
     ERR(1);
     ERRNO(0);
-    if ((int)len1 != 24) {
-        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
-                     (int)len1);
+    if (num != 24) {
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__, num);
         errs++;
     }
 
