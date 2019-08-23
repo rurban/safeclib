@@ -165,7 +165,6 @@ void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
 }
 
 #else /* __WORDSIZE != 64 */
-
 /* optimized for 64bit words */
 void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
     volatile uint8_t *dp;
@@ -184,7 +183,7 @@ void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
         /* spread the byte 8x over the qword */
         value64 |= (value64 << 8) | (value64 << 16) | (value64 << 24) |
                    (value64 << 32) | (value64 << 40) | (value64 << 48) |
-                   (value64 << 52);
+                   (value64 << 56);
     }
 
     /* First, do the few bytes to get uint64_t aligned. (rarely needed) */
