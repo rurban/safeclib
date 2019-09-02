@@ -183,6 +183,8 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
             ret = vswprintf(tmp, 512, fmt, ap2);
         } else {
             wchar_t *tmp = (wchar_t *)malloc(RSIZE_MAX_WSTR * sizeof(wchar_t));
+            if (!tmp)
+                return -(ESNOSPC);
             ret = vswprintf(tmp, RSIZE_MAX_WSTR, fmt, ap2);
             free(tmp);
         }
