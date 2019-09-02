@@ -4,9 +4,10 @@
  * October 2008, Bo Berry
  * October 2017, Reini Urban
  * January 2018, Reini Urban
+ * October 2019, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * Copyright (c) 2017, 2018 Reini Urban
+ * Copyright (c) 2017-2019 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -75,14 +76,14 @@
  *                    to string dest
  * @param[in]   slen  maximum characters to append
  *
- * @pre  Neither dest nor src shall be a null pointer
+ * @pre  Neither dest nor src shall be a null pointer.
  * @pre  With --enable-warn-dmax dmax should be the exact object size of dest.
  * @pre  dmax and slen should not be greater than RSIZE_MAX_STR.
  * @pre  dmax and slen should not be greater than the object sizes of dest and
  * src.
- * @pre  dmax shall not equal zero
+ * @pre  dmax shall not equal zero.
  * @pre  dmax shall be greater than strnlen_s(src,dmax).
- * @pre  Copying shall not take place between objects that overlap
+ * @pre  Copying shall not take place between objects that overlap.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
@@ -91,11 +92,11 @@
  * Windows appends the result, when dest < src ERANGE or EINVAL is returned.
  *
  * @returns  If there is a runtime-constraint violation, and if dest and dmax
- *           are valid, then strncat_s nulls dest.
+ *           are valid, then strncat_s clears dest.
  * @retval  EOK        successful operation, when slen == 0 or all the
  * characters are copied from src and dest is null terminated. As special case,
  * analog to msvcrt: when slen == 0 and dmax is big enough for dest, also
- * return EOK, but clear dest.
+ * return EOK, but clear the rest of dest.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
@@ -147,10 +148,9 @@ EXPORT errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
-    } else {
-        if (unlikely(slen > srcbos)) {
-            return handle_str_bos_overload("strncat_s", dest, destbos);
-        }
+    } else if (unlikely(slen > srcbos)) {
+        return handle_str_bos_overload("strncat_s: slen exceeds src",
+                                       dest, destbos);
     }
 
     /* hold base of dest in case src was not copied */

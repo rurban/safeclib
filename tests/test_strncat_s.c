@@ -158,6 +158,18 @@ int test_strncat_s(void) {
 
     /*--------------------------------------------------*/
 
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    EXPECT_BOS("slen exceeds src")
+    rc = strncat_s(str1, 32, "ROString", 31);
+    ERR_MSVC(EOVERFLOW, EINVAL);
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, 32);
+    } else {
+        EXPSTR(str1, "");
+    }
+
+    /*--------------------------------------------------*/
+
     strcpy(str1, "a");
     EXPECT_BOS("src overflow or empty")
     rc = strncat_s(str1, LEN, NULL, LEN);
@@ -165,6 +177,7 @@ int test_strncat_s(void) {
     /*EXPSTR(str1, ""); */
     if (!use_msvcrt)
         CHECK_SLACK(str1, 1);
+
 #endif
 
     /*--------------------------------------------------*/

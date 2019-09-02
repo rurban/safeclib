@@ -120,8 +120,8 @@ EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
 
 int handle_str_bos_overload(const char *restrict msg, char *restrict dest,
                             const rsize_t dmax) {
-    size_t len =
-        strnlen_s(dest, dmax); /* clear the min of strlen and dmax(=destbos) */
+    /* clear the min of strlen and dmax(=destbos) */
+    size_t len = strnlen_s(dest, dmax);
     errno_t err = EOVERFLOW;
     if (unlikely(len > RSIZE_MAX_STR)) {
         len = 1;

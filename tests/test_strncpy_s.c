@@ -149,6 +149,19 @@ int test_strncpy_s(void) {
     rc = strncpy_s(str1, 5, str2, (RSIZE_MAX_STR + 1));
     ERR_MSVC(ESLEMAX, EINVAL); /* and cleared */
     EXPSTR(str1, "");
+
+    /*--------------------------------------------------*/
+
+    // dont clear the const string, but dest.
+    strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    EXPECT_BOS("slen exceeds src")
+    rc = strncpy_s(str1, 32, "ROString", 31);
+    ERR(EOVERFLOW); /* slen exceeds src */
+    if (!use_msvcrt) {
+        CHECK_SLACK(str1, 32);
+    } else {
+        EXPSTR(str1, "");
+    }
 #endif
 
     /*--------------------------------------------------*/
