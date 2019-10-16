@@ -1,6 +1,13 @@
 
         ChangeLog file for safeclib
 
+Changes in v16102019 3.5.1
+        - Fixed memset_s for the upper 4 bits of 64 bit words (GH #73)
+        - Fixed strncat_s error handling for slen exceeds src.
+          clear dest, not src (GH #73)
+        - Fixed vswprintf_s by checking for failing malloc (GH #78)
+        - Several minor test improvements
+
 Changes in v04062019 3.5.0
         - Updated towctrans case-mappings and normalization to Unicode 12.1
           Even the canon tables on windows need now a special bsearch in an
