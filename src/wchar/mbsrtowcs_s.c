@@ -128,17 +128,17 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
     mbstate_t orig_ps;
     errno_t rc;
 
-    CHK_SRC_NULL("mbstowcs_s", retvalp)
+    CHK_SRC_NULL("mbsrtowcs_s", retvalp)
     *retvalp = 0;
-    CHK_SRC_NULL("mbstowcs_s", ps)
-    CHK_SRCW_NULL_CLEAR("mbstowcs_s", srcp)
-    CHK_SRC_NULL("mbstowcs_s", *srcp)
+    CHK_SRC_NULL("mbsrtowcs_s", ps)
+    CHK_SRCW_NULL_CLEAR("mbsrtowcs_s", srcp)
+    CHK_SRC_NULL("mbsrtowcs_s", *srcp)
     if (dest) {
         size_t destsz = dmax * sizeof(wchar_t);
-        CHK_DMAX_ZERO("mbstowcs_s")
+        CHK_DMAX_ZERO("mbsrtowcs_s")
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                invoke_safe_str_constraint_handler("mbstowcs"
+                invoke_safe_str_constraint_handler("mbsrtowcs_s"
                                                    ": dmax/len exceeds max",
                                                    (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
@@ -147,13 +147,13 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
         } else {
             if (unlikely(destsz > destbos || len * sizeof(wchar_t) > destbos)) {
                 if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
-                    invoke_safe_str_constraint_handler("mbstowcs"
+                    invoke_safe_str_constraint_handler("mbsrtowcs_s"
                                                        ": dmax/len exceeds max",
                                                        (void *)dest, ESLEMAX);
                     return RCNEGATE(ESLEMAX);
                 } else {
                     invoke_safe_str_constraint_handler(
-                        "mbstowcs"
+                        "mbsrtowcs_s"
                         ": dmax/len exceeds destsz",
                         (void *)dest, EOVERFLOW);
                     return RCNEGATE(EOVERFLOW);
@@ -161,7 +161,7 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
             }
 #ifdef HAVE_WARN_DMAX
             if (unlikely(destsz != destbos)) {
-                handle_str_bos_chk_warn("mbstowcs", (char *)dest, dmax,
+                handle_str_bos_chk_warn("mbsrtowcs_s", (char *)dest, dmax,
                                         destbos / sizeof(wchar_t));
                 RETURN_ESLEWRNG;
             }
