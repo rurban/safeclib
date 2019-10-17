@@ -28,8 +28,8 @@ CC="clang-mp-5.0" \
     ./configure --disable-shared --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 gmake -s -j4 clean
-echo clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-mp-3.9 -fsanitize=address -fno-omit-frame-pointer" \
+echo clang-mp-8.0 -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
+CC="clang-mp-8.0 -fsanitize=address -fno-omit-frame-pointer" \
     ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
     gmake -s -j4 check-log || exit
 gmake -s -j4 clean

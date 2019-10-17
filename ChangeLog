@@ -1,6 +1,10 @@
 
         ChangeLog file for safeclib
 
+Changes in v17102019 3.5.2
+        - Fixed mbsrtowcs_s error message prefix.
+        - Fixed t_mbsrtowcs_s.exe compilation under newer mingw gcc.
+
 Changes in v16102019 3.5.1
         - Fixed memset_s for the upper 4 bits of 64 bit words (GH #73)
         - Fixed strncat_s error handling for slen exceeds src.

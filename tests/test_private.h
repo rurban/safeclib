@@ -73,10 +73,8 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
-
-/* for malloc/free */
-#if defined(HAVE_STDLIB_H) && (defined(HAVE___BND_CHK_PTR_BOUNDS) ||           \
-                               defined(HAVE___BUILTIN___BND_SET_PTR_BOUNDS))
+/* for malloc/free and mingw BOS */
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 
