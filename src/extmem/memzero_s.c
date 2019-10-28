@@ -31,6 +31,8 @@
  *------------------------------------------------------------------
  */
 
+#define _GNU_SOURCE
+
 #ifdef FOR_DOXYGEN
 #include "safe_mem_lib.h"
 #else
