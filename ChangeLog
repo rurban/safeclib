@@ -1,6 +1,10 @@
 
         ChangeLog file for safeclib
 
+Changes in v29102019 3.5.2
+        - Fixed musl compilation by adding some _GNU_SOURCE
+          (PR #82, Fabrice Fontaine)
+
 Changes in v17102019 3.5.2
         - Fixed mbsrtowcs_s error message prefix.
         - Fixed t_mbsrtowcs_s.exe compilation under newer mingw gcc.
