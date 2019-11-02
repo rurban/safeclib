@@ -77,10 +77,12 @@
 #ifdef STDC_HEADERS
 #include <ctype.h>
 #include <stdlib.h>
+#if defined(HAVE_SECURE_GETENV)
 #ifndef _GNU_SOURCE_WAS_DEFINED
 #undef _GNU_SOURCE
 #else
 #undef _GNU_SOURCE_WAS_DEFINED
+#endif
 #endif
 #include <stddef.h>
 #include <stdarg.h>
