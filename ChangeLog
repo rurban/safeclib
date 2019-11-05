@@ -1,6 +1,10 @@
 
         ChangeLog file for safeclib
 
+Changes in v05112019 3.5.2
+        - Fixed musl compilation by don't undefining _GNU_SOURCE
+          with getenv_s (PR #83, Fabrice Fontaine)
+
 Changes in v29102019 3.5.2
         - Fixed musl compilation by adding some _GNU_SOURCE
           (PR #82, Fabrice Fontaine)
