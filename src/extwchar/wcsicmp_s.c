@@ -99,7 +99,7 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
         CHK_DESTW_OVR("wcsicmp_s", destsz, destbos)
     }
     if (unlikely(smax > RSIZE_MAX_WSTR)) {
-        invoke_safe_str_constraint_handler("wcscmp_s"
+        invoke_safe_str_constraint_handler("wcsicmp_s"
                                            ": smax exceeds max",
                                            (void *)src, ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -108,7 +108,7 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, srcsz);
     } else {
         if (unlikely(srcsz > srcbos)) {
-            invoke_safe_str_constraint_handler("wcscmp_s"
+            invoke_safe_str_constraint_handler("wcsicmp_s"
                                                ": smax exceeds src",
                                                (void *)src, EOVERFLOW);
             return RCNEGATE(EOVERFLOW);

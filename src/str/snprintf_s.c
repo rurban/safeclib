@@ -113,7 +113,7 @@ EXPORT int snprintf_s(char *restrict dest, rsize_t dmax,
         return -(ESNULLP);
     }
     if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero", dest,
+        invoke_safe_str_constraint_handler("snprintf_s: dmax is zero", dest,
                                            ESZEROL);
         return -ESZEROL;
     }

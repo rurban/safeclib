@@ -80,7 +80,7 @@ EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
     const char *scan2;
     rsize_t smax;
 
-    CHK_SRC_NULL("strcmp_s", countp)
+    CHK_SRC_NULL("strcspn_s", countp)
     *countp = 0;
 
     CHK_DEST_NULL("strcspn_s")
@@ -107,7 +107,7 @@ EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
-        invoke_safe_mem_constraint_handler("memcpy_s: slen exceeds src",
+        invoke_safe_mem_constraint_handler("strcspn_s: slen exceeds src",
                                            (void *)src, EOVERFLOW);
         return (RCNEGATE(EOVERFLOW));
     }

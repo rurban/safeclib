@@ -514,7 +514,7 @@ EXPORT errno_t _wcsnorm_decompose_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
     if (lenp)
         *lenp = 0;
-    CHK_DEST_NULL("wcsfc_s")
+    CHK_DEST_NULL("wcsnorm_s")
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("wcsnorm_s: "
                                            "src is null",

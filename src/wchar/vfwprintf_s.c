@@ -82,7 +82,7 @@ EXPORT int vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt,
     int ret;
 
     if (unlikely(stream == NULL)) {
-        invoke_safe_str_constraint_handler("vfprintf_s: stream is null", NULL,
+        invoke_safe_str_constraint_handler("vfwprintf_s: stream is null", NULL,
                                            ESNULLP);
         return -(ESNULLP);
     }
