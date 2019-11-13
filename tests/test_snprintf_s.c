@@ -9,7 +9,7 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 #if defined(TEST_MSVCRT) && defined(HAVE_SNPRINTF_S)
-#ifdef HAVE_C99
+#ifdef SAFECLIB_HAVE_C99
 #undef snprintf_s
 EXTERN int snprintf_s(char *restrict dest, rsize_t dmax,
                       const char *restrict fmt, ...);
@@ -62,7 +62,7 @@ int test_snprintf_s(void) {
     NEGERR(ESLEMAX)
 
     /* only with c99 __VA_ARGS__ we can pass destbos */
-#ifdef HAVE_C99
+#ifdef SAFECLIB_HAVE_C99
     if (_BOS_KNOWN(str1)) {
         EXPECT_BOS("dest overflow")
         rc = snprintf_s(str1, LEN + 1, "%s", str2);
