@@ -122,6 +122,11 @@ extern "C" {
 @INSERT_ERROR_DMAX@
 
 /*
+ * Set if libsafec3 was compiled with C99 support.
+ */
+@INSERT_SAFECLIB_HAVE_C99@
+
+/*
  * The spec does not call out a maximum len for the strtok src
  * string (the max delims size), so one is defined here.
  */

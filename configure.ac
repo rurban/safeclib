@@ -387,6 +387,7 @@ AC_PROG_CC_C11
 if test "x$ac_cv_prog_cc_c99" = "xno"; then
    dnl we really should ERROR, lets see how far can come without
    AC_MSG_WARN([This compiler ${CC} has no c99 support])
+   INSERT_SAFECLIB_HAVE_C99="#undef SAFECLIB_HAVE_C99"
 else
    AC_DEFINE([SAFECLIB_HAVE_C99], 1,
         [Defined to 1 when the compiler supports c99, mostly (...) macros])
@@ -394,9 +395,11 @@ else
       AC_MSG_RESULT([added $ac_cv_prog_cc_c99 to CFLAGS])
       AM_CFLAGS="$AM_CFLAGS $ac_cv_prog_cc_c99"
    fi
+   INSERT_SAFECLIB_HAVE_C99="#define SAFECLIB_HAVE_C99 1"
 fi
 dnl AM_CONDITIONAL([SAFECLIB_HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
 AC_SUBST(SAFECLIB_HAVE_C99)
+AC_SUBST(INSERT_SAFECLIB_HAVE_C99)
 
 if test "x$ac_cv_prog_cc_c11" != "xno"; then
    AC_DEFINE([HAVE_C11], 1,
