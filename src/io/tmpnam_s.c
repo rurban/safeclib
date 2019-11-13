@@ -128,7 +128,7 @@ EXPORT errno_t _tmpnam_s_chk(const char *dest, rsize_t dmax,
         return ESLEMAX;
     }
 
-#if !defined HAVE_C99 && defined HAVE_CXX
+#if !defined SAFECLIB_HAVE_C99 && defined HAVE_CXX
     result = tmpnam(dp);
 #else
 #ifdef __clang

@@ -60,7 +60,7 @@ int main(void) {
     rc = swprintf_s(str1, RSIZE_MAX_STR + 1, L"%ls", str2);
     ERRNO_MSVC(-ESLEMAX, 0);
 
-#if defined HAVE___BUILTIN_OBJECT_SIZE && defined HAVE_C99
+#if defined HAVE___BUILTIN_OBJECT_SIZE && defined SAFECLIB_HAVE_C99
     EXPECT_BOS("dest overflow")
     rc = swprintf_s(str1, LEN + 1, L"%ls", str2);
     ERRNO_MSVC(-EOVERFLOW, 0);

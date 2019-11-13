@@ -91,7 +91,7 @@ any of the arguments corresponding to %s is a null pointer
  *    sprintf_s(), vsnprintf_s(), snwprintf_s()
  */
 
-#ifdef HAVE_C99
+#ifdef SAFECLIB_HAVE_C99
 EXPORT int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
 #else
@@ -102,7 +102,7 @@ EXPORT int snprintf_s(char *restrict dest, rsize_t dmax,
     va_list ap;
     const char *p;
     int ret = -1;
-#ifndef HAVE_C99
+#ifndef SAFECLIB_HAVE_C99
     const size_t destbos = BOS_UNKNOWN;
 #endif
 

@@ -153,7 +153,7 @@ char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 
 /* safe sprintf_s */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-#ifdef HAVE_C99
+#ifdef SAFECLIB_HAVE_C99
 EXTERN int _sprintf_s_chk(char *restrict dest, const rsize_t dmax,
                           const size_t destbos, const char *restrict fmt, ...)
     BOS_CHK(dest) BOS_FMT(fmt);
@@ -171,7 +171,7 @@ EXTERN int _vsprintf_s_chk(char *restrict dest, rsize_t dmax,
     _vsprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 
 /* truncating, no ESNOSPC */
-#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
+#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
     BOS_CHK(dest) BOS_FMT(fmt);
@@ -621,7 +621,7 @@ wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
     _wcstok_s_chk(dest, dmaxp, delim, ptr, BOS(dest))
 #endif
 
-#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
+#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int _swprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                            const size_t destbos, const wchar_t *restrict fmt,
                            ...) BOSW_CHK(dest) BOS_FMT(fmt);
@@ -640,7 +640,7 @@ EXTERN int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
     _vswprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 
 /* truncating, no ESNOSPC */
-#if defined(HAVE_C99) && !defined(TEST_MSVCRT)
+#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int _snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                             const size_t destbos, const wchar_t *restrict fmt,
                             ...) BOSW_CHK(dest) BOS_FMT(fmt);

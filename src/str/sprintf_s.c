@@ -97,7 +97,7 @@
  *    vsprintf_s(), snprintf_s()
  */
 
-#ifdef HAVE_C99
+#ifdef SAFECLIB_HAVE_C99
 EXPORT int _sprintf_s_chk(char *restrict dest, const rsize_t dmax,
                           const size_t destbos, const char *restrict fmt, ...)
 #else
@@ -108,7 +108,7 @@ EXPORT int sprintf_s(char *restrict dest, rsize_t dmax,
     int ret = -1;
     va_list ap;
     const char *p;
-#ifndef HAVE_C99
+#ifndef SAFECLIB_HAVE_C99
     const size_t destbos = BOS_UNKNOWN;
 #endif
 
