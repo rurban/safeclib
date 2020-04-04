@@ -534,6 +534,11 @@ case $host_os in
        [],[$ax_ccf_err])
     ;;
 esac
+AX_APPEND_COMPILE_FLAGS([-fstack-protector-strong -fstack-clash-protection -fcf-protection],
+                         [WARN_CFLAGS],[$ax_ccf_err])
+AX_APPEND_LINK_FLAGS([-fstack-protector-strong -fstack-clash-protection -fcf-protection],
+                         [WARN_LDFLAGS],[$ax_ccf_err])
+
 if test x$ax_cv_check_cflags__Wrestrict = xyes; then
    AC_DEFINE([HAVE_WARNING_RESTRICT], 1, [Have -Wrestrict])
 fi
