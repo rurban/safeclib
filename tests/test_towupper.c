@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_towupper.c
  *
- * Test the musl-inherited towupper regarding Unicode 12.0
+ * Test the musl-inherited towupper regarding latest Unicode 13.0
  * Unicode has no explicit lower->upper mapping document.
  *
  *------------------------------------------------------------------
@@ -29,10 +29,11 @@ int test_towupper(void);
 #define CFOLD "CaseFolding.txt"
 #ifndef PERL
 /* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10. */
+   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0
+ */
 /*# define PERL "perl" */
 /*# define PERL "cperl5.27.2"*/
-#define PERL "perl5.27.3"
+#define PERL "perl5.32"
 #endif
 #define TESTPL "test-upr.pl"
 
@@ -85,7 +86,10 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
                         __LINE__, wc, lwr, mp, status, name);
                     /* cross-check with perl */
                     if (!init) {
-                        fprintf(pl, "use v5.26;\n");
+                        fprintf(pl, "use v5.31.8;\n");
+                        fprintf(pl, "use Unicode::UCD;\n");
+                        fprintf(pl, "print Unicode::UCD::UnicodeVersion(), \" must be 13.0.0\\n\";\n");
+                        fprintf(pl, "my ($l,$u,$got);\n");
                         init = 1;
                     }
                     fprintf(pl,
@@ -123,7 +127,7 @@ int check(uint32_t wc, const char *_status, const char *_name) {
             errs++;
             /* else system libc agrees with us.
                which says nothing. system wctype functions are generally
-               extremely unreliable.
+               extremely unreliable and outdated.
              */
         }
 #elif defined HAVE_TOWUPPER

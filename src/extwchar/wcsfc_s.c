@@ -324,7 +324,7 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
         }
     }
     /* write the length even if too small,
-       so the client knows how mush is needed */
+       so the client knows how much is needed */
     if (lenp)
         *lenp = orig_dmax - dmax;
     if (unlikely(dmax <= 0)) {

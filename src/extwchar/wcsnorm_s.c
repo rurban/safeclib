@@ -146,7 +146,7 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         }
     }
 #else
-    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind
+    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
      */
     const UNWIF_canon_PLANE_T **plane, *row;
     if (unlikely(dmax < 5)) {
@@ -163,8 +163,8 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         if (!vi)
             return 0;
 #if UNWIF_canon_exc_size > 0
-        else if (unlikely(vi ==
-                          (uint16_t)-1)) { /* overlong: search in extra list */
+        /* overlong: search in extra list */
+        else if (unlikely(vi == (uint16_t)-1)) {
             UNWIF_canon_exc_t *e;
             assert(UNWIF_canon_exc_size);
             e = (UNWIF_canon_exc_t *)bsearch(
@@ -186,16 +186,17 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
 #if SIZEOF_WCHAR_T > 2
             const int len = l;
 #else
-            /* unw16ifcan.h needs TBL(5) for len 6 */
+            /* unw16ifcan.h needs TBL(5) for len 6. UNWIF_canon_MAXLEN */
             const int len = (l == 5) ? 6 : l;
 #endif
-#if 0 && defined(DEBUG)
+#if defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
 #if SIZEOF_WCHAR_T > 2
             assert(l > 0 && l <= 4);
-            /* (917,762,227,36) */
-            assert((l == 1 && i < 917) || (l == 2 && i < 762) ||
+            /* 13.0: tbl sizes: (917,763,227,36) */
+            /* l: 1-4 */
+            assert((l == 1 && i < 917) || (l == 2 && i < 763) ||
                    (l == 3 && i < 227) || (l == 4 && i < 36) || 0);
             assert(dmax > 4);
 #endif
@@ -241,7 +242,7 @@ static int _decomp_compat_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         }
     }
 #else
-    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind
+    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
      */
     const UNWIF_compat_PLANE_T **plane, *row;
     plane = UNWIF_compat[cp >> 16];
