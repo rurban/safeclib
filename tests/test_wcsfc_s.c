@@ -18,13 +18,13 @@ int test_wcsfc_s(void);
 
 #define PERL_TEST
 /* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, or now 5.30 with 12.1
+   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
 #ifndef PERL
 /*# define PERL "perl"*/
 /*# define PERL "cperl5.29.2"*/
-#define PERL "perl5.30.0-nt"
+#define PERL "perl5.30"
 #endif
 #define TESTPL "test-fc.pl"
 
