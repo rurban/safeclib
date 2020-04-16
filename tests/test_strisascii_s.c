@@ -42,7 +42,7 @@ int main(void) {
 
     /* literal strings once fixed via const decl. fragile */
     EXPECT_BOS_TODO("dest overflow")
-    rc = strisascii_s("test", 99999);
+    rc = strisascii_s("test", RSIZE_MAX_STR + 1);
     ERR(false)
 
     EXPECT_BOS_TODO("dest overflow")

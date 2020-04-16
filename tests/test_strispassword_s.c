@@ -30,11 +30,11 @@ int main(void) {
 
     strcpy(str, "Test4You&");
     EXPECT_BOS("dest overflow")
-    rc = strispassword_s(str, 999);
+    rc = strispassword_s(str, RSIZE_MAX_STR + 1);
     ERR(false)
 
     EXPECT_BOS("dest overflow")
-    rc = strispassword_s("Test4You&", 999);
+    rc = strispassword_s("Test4You&", SAFE_STR_PASSWORD_MAX_LENGTH + 1);
     ERR(false)
 
     EXPECT_BOS("dest overflow")
@@ -44,9 +44,14 @@ int main(void) {
     EXPECT_BOS("dest overflow")
     rc = strispassword_s("", LEN);
     ERR(false)
+
 #endif
 
     /*--------------------------------------------------*/
+
+    //EXPECT_BOS("dest is too short")
+    rc = strispassword_s("a", 1);
+    ERR(false)
 
     strcpy(str, "Test4You*123");
     len = 8;

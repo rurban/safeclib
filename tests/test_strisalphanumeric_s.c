@@ -51,7 +51,7 @@ int main(void) {
     /*--------------------------------------------------*/
 
     /* exceeds max */
-    len = 99999;
+    len = RSIZE_MAX_STR + 1;
     rc = strisalphanumeric_s("test", len);
     ERR(false)
 

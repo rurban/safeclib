@@ -30,7 +30,7 @@ int main(void) {
     ERR(ESZEROL)
 
     EXPECT_BOS("dest overflow")
-    rc = strtouppercase_s(str, 99999);
+    rc = strtouppercase_s(str, RSIZE_MAX_STR + 1);
     ERR(ESLEMAX)
 
 #ifdef HAVE___BUILTIN_OBJECT_SIZE

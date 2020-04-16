@@ -40,19 +40,19 @@
  * @brief
  *    This function validates the make-up of a password string.
  * @details
- *       -Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters
- *    \n -Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters
- *    \n -Password must have at least SAFE_STR_MIN_LOWERCASE lower case
- * characters \n -Password must have at least SAFE_STR_MIN_UPPERCASE upper case
- * characters \n -Password must have at least SAFE_STR_MIN_NUMBERS numbers \n
- * -Password must have at least SAFE_STR_MIN_SPECIALS special characters
+ *  - Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters \n
+ *  - Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters \n
+ *  - Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters \n
+ *  - Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters \n
+ *  - Password must have at least SAFE_STR_MIN_NUMBERS numbers \n
+ *  - Password must have at least SAFE_STR_MIN_SPECIALS special characters
  *
  * @remark EXTENSION TO
  *    ISO/IEC TR 24731, Programming languages, environments
  *    and system software interfaces, Extensions to the C Library,
  *    Part I: Bounds-checking interfaces
  *
- * @param  dest  pointer to string
+ * @param  dest  pointer to password string
  * @param  dmax  maximum length of password string
  *
  * @pre  dest shall not be a null pointer.
@@ -60,7 +60,7 @@
  * @pre  dmax < SAFE_STR_PASSWORD_MAX_LENGTH
  * @pre  dest shall not be unterminated
  *
- * @return  true   when string has valid password makeup
+ * @return  true   when string iss valid password
  * @return  false  when string does not meet requirements or an error occurred
  *
  * @see
@@ -109,7 +109,7 @@ EXPORT bool _strispassword_s_chk(const char *dest, rsize_t dmax,
         } else if ((*dest >= 'A') && (*dest <= 'Z')) {
             cnt_uppercase++;
 
-            /* allow all specials */
+        /* allow all specials */
         } else if ((*dest >= 33) && (*dest <= 47)) {
             cnt_specials++;
         } else if ((*dest >= 58) && (*dest <= 64)) {
