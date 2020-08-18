@@ -93,7 +93,7 @@ EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap) {
         errno = ESNULLP;
         return EOF;
     }
-#ifdef __MINGW32__
+#ifdef HAVE_MINGW32
     if (unlikely(!*fmt)) {
         return EOF;
     }

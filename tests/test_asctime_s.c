@@ -84,7 +84,7 @@ int test_asctime_s(void) {
     tm->tm_##memb = old;                                                       \
     ERR(EOK)
 
-#ifndef __MINGW32__
+#ifndef HAVE_MINGW32
     TM_RANGE(sec, 0, 60);
 #endif
     TM_RANGE(min, 0, 59);

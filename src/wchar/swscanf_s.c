@@ -97,7 +97,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
         errno = ESNULLP;
         return EOF;
     }
-#ifdef __MINGW32__
+#ifdef HAVE_MINGW32
     if (unlikely(!*src)) {
         return EOF;
     }

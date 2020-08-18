@@ -95,7 +95,7 @@ int test_gets_s(void) {
     SUBNULL();
     /* musl does not return EBADF when fgets from the closed fd */
     if (errno && errno != EBADF) {
-#ifndef __MINGW32__
+#ifndef HAVE_MINGW32
         ERRNO(EBADF);
 #else
         ERRNO(ESNOSPC);

@@ -147,7 +147,7 @@ EXPORT int snprintf_s(char *restrict dest, rsize_t dmax,
 
     if (unlikely(ret < 0)) {
         char errstr[128] = "snprintf_s: ";
-#ifdef __MINGW32__
+#ifdef HAVE_MINGW32
         if (errno == ERANGE)
             strcat(errstr, "len exceeds dmax");
         else

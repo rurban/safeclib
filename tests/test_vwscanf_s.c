@@ -85,7 +85,7 @@ int test_vwscanf_s(void) {
     rc = vtwscanf_s(wstr1, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     EXPSTR(str3, "24");
 #else
     EXPSTR(str3, "2");
@@ -135,7 +135,7 @@ int test_vwscanf_s(void) {
     wstr2[0] = '\0';
 
     rc = vtwscanf_s(wstr1, L"%ls", wstr2, LEN);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(-1)
 #else
     ERR(0)
@@ -148,7 +148,7 @@ int test_vwscanf_s(void) {
     wcscpy(wstr2, L"keep it simple");
 
     rc = vtwscanf_s(wstr1, L"%ls", wstr2, LEN);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(-1)
 #else
     ERR(0)

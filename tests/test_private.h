@@ -270,7 +270,7 @@ static inline void *bnd_chk_malloc(size_t n) {
         errs++;                                                                \
     }
 /* msvcrt wprintf prints one byte less. cygwin not */
-#ifdef __MINGW32__
+#if defined(HAVE_MINGW32) && !defined(HAVE_MINGW64)
 #define ERRWCHAR(n)                                                            \
     if (rc != (n)-1) {                                                         \
         debug_printf("%s %u  Error rc=%d \n", __FUNCTION__, __LINE__,          \

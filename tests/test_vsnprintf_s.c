@@ -170,7 +170,7 @@ int test_vsnprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 5, "%s", str2);
-#ifndef __MINGW32__
+#ifndef HAVE_MINGW32
     NOERRNULL() /* no ENOSPC */
     EXPSTR(str1, "keep")
 #else
@@ -184,7 +184,7 @@ int test_vsnprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-#ifndef __MINGW32__
+#ifndef HAVE_MINGW32
     ERR(14) /* sic! unsafe */
     EXPSTR(str1, "k")
 #else
@@ -234,7 +234,7 @@ int test_vsnprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 12, "%s", str2);
-#ifndef __MINGW32__
+#ifndef HAVE_MINGW32
     ERR(14) /* sic! unsafe */
 #else
     ERR(-1);
@@ -255,7 +255,7 @@ int test_vsnprintf_s(void) {
     strcpy(str1, "12345678901234567890");
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
-#ifndef __MINGW32__
+#ifndef HAVE_MINGW32
     ERR(13) /* sic! unsafe */
 #else
     ERR(-1);

@@ -102,7 +102,7 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
         errno = ESNULLP;
         return EOF;
     }
-#ifdef __MINGW32__
+#ifdef HAVE_MINGW32
     if (unlikely(!*fmt)) {
         errno = 0;
         return EOF;

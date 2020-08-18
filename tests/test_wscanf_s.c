@@ -102,7 +102,7 @@ int test_wscanf_s(void) {
     rc = wscanf_s(L"%s %%n", str3, 6);
     ERR(1);
     ERRNO_MSVC(0, have_wine ? 0 : EINVAL);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     EXPSTR(str3, "24");
 #else
     EXPSTR(str3, "2");
@@ -149,7 +149,7 @@ int test_wscanf_s(void) {
     stuff_stdin(wstr1);
 
     rc = wscanf_s(L"%ls", wstr2, LEN);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(-1);
 #else
     ERR(0);
@@ -162,7 +162,7 @@ int test_wscanf_s(void) {
     stuff_stdin(wstr1);
 
     rc = wscanf_s(L"%ls", wstr2, LEN);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(-1);
 #else
     ERR(0);

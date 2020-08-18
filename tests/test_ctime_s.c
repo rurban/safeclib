@@ -103,7 +103,7 @@ int test_ctime_s(void) {
         ERR_MSVC(ESLEMAX, 0);
     }
     /*
-    #ifndef __MINGW32__
+    #ifndef HAVE_MINGW32
         ERR(ESLEMAX);
     #else
         ERR(0);

@@ -139,7 +139,7 @@ static int test_vfwscanf_s(void) {
     rc = vtwscanf_s(stream, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
-#ifndef _WIN32
+#if !defined(_WIN32) || defined(HAVE_MINGW64)
     EXPSTR(str3, "24");
 #else
     EXPSTR(str3, "2");

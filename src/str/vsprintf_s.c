@@ -157,12 +157,12 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
 #endif
 
     if (unlikely(dmax && ret >= (int)dmax)
-#ifdef __MINGW32__
+#ifdef HAVE_MINGW32
         || (ret == -1 && errno == ERANGE)
 #endif
     ) {
         handle_error(dest, dmax, "vsprintf_s: len exceeds dmax", ESNOSPC);
-#ifdef __MINGW32__
+#ifdef HAVE_MINGW32
         errno = 0;
 #endif
         return -ESNOSPC; /* different to the standard (=0),

@@ -113,7 +113,7 @@ int main(void) {
     rc = swscanf_s(wstr1, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
-#ifndef __MINGW32__
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     EXPSTR(str3, "24");
 #else
     EXPSTR(str3, "2");
