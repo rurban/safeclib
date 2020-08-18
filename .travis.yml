@@ -61,5 +61,5 @@ script:
   - ./configure $CONF
   - make -j4
   - if test x$ASAN = x1; then make -C tests tests; else true; fi
-  - make check-log
-  - if [ "$VG" = "1" ]; then make check-valgrind && make distcheck ; fi
+  - travis_wait make -j4 check-log
+  - if [ "$VG" = "1" ]; then travis_wait make -j4 check-valgrind && travis_wait make -j4 distcheck ; fi
