@@ -63,8 +63,10 @@ int test_vsprintf_s(void) {
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     ERR_MSVC(-ESNULLP, -1);
     ERRNO_MSVC(0, EINVAL);
-#else
+#elif defined(_MSC_VER)
     use_msvcrt = 1;
+#else
+    use_msvcrt = 0;
 #endif
     /* Unknown error: 400 */
     /* debug_printf("%s %u  strerror(ESNULLP): %s\n", __FUNCTION__, __LINE__,
@@ -111,6 +113,9 @@ int test_vsprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
+#ifdef _WIN32
+    init_msvcrt(rc == -ESNOSPC, &use_msvcrt);
+#endif
     ERR_MSVC(-ESNOSPC, -1);
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)

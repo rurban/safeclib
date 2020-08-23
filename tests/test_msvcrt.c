@@ -64,9 +64,6 @@ void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
 #endif
 }
 
-#define ERR_MSVC(n, winerr)                                                    \
-    _err_msvc((int)rc, n, winerr, &errs, __FUNCTION__, __LINE__)
-
 void _err_msvc(int rc, const int n, const int winerr, int *errp, const char *f,
                const unsigned l) {
     const int chk = use_msvcrt ? winerr : n;
@@ -80,11 +77,7 @@ void _err_msvc(int rc, const int n, const int winerr, int *errp, const char *f,
     }
 }
 
-#ifdef __KERNEL__
-#define ERRNO_MSVC(n, winerr)
-#else
-#define ERRNO_MSVC(n, winerr)                                                  \
-    _errno_msvc(n, winerr, &errs, __FUNCTION__, __LINE__)
+#ifndef __KERNEL__
 void _errno_msvc(const int n, const int winerr, int *errp, const char *f,
                  const unsigned l) {
     const int chk = use_msvcrt ? winerr : n;

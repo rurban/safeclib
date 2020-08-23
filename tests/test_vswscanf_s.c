@@ -40,7 +40,7 @@ int test_vswscanf_s(void) {
     /*--------------------------------------------------*/
 
     rc = vtwscanf_s(wstr1, NULL, NULL);
-#ifndef HAVE_MINGW32
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERREOF(ESNULLP);
 #else
     ERRNO(0);
@@ -75,7 +75,7 @@ int test_vswscanf_s(void) {
     rc = vtwscanf_s(wstr1, L"%s %%n", str3, 6);
     ERR(1);
     ERRNO(0);
-#ifndef HAVE_MINGW32
+#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     EXPSTR(str3, "24");
 #else
     EXPSTR(str3, "2");

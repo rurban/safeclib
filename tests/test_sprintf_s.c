@@ -101,8 +101,8 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str1, 1, "%s", str2);
 #ifdef HAVE_CT_BOS_OVR
     print_msvcrt(use_msvcrt);
-    init_msvcrt(rc == -ESNOSPC, &use_msvcrt);
 #endif
+    init_msvcrt(rc == -ESNOSPC, &use_msvcrt);
     ERR_MSVC(-ESNOSPC, -1); /* ERANGE */
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
