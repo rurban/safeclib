@@ -4,7 +4,7 @@
 # 2017  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017, 2018, 2019 Reini Urban
+# Copyright (c) 2017, 2018, 2019, 2020 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -981,7 +981,7 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_SUBST([SAFEC_SO_VERSION], [3:6:0])
-AC_SUBST([SAFEC_API_VERSION], [3.5.1])
+AC_SUBST([SAFEC_API_VERSION], [3.6.0])
 
 # Automake variables, these variables get automagically included at the top
 # of all automake generated make files. This is why you don't see them

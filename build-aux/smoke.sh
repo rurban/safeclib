@@ -128,62 +128,81 @@ fi
 ;;
 
 Linux)
-make -s clean
-echo clang-7 -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-7 -fsanitize=address -fno-omit-frame-pointer" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log || exit
-make -s clean
-echo clang-5.0 -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
-CC="clang-5.0 -march=native" \
-    ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log && make -s -j4 -C tests tests-bos
-echo clang-3.7 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-3.7 -std=c99" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log || exit
-#    #TODO: valgrind broken with kpti
-#    #make -s -j4 check-valgrind
-echo clang-3.6 -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-3.6 -std=c99" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log || exit
-echo clang-3.4 --enable-debug --enable-unsafe --enable-norm-compat
-CC="clang-3.4" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log || exit
-echo gcc-4.4 -ansi
-CC="gcc-4.4 -ansi" ./configure && \
-    make -s -j4 check-log || exit
-echo gcc-4.4 -std=iso9899:199409
-CC="gcc-4.4 -std=iso9899:199409" ./configure && \
-    make -s -j4 check-log || exit
-#CC="g++-6 -std=c++11" ./configure && \
-#    make -s -j4 check-log || exit
-CC="gcc-6" ./configure && \
-    make -s -j4 check-log || exit
-CC="gcc-7" ./configure && \
-    make -s -j4 check-log || exit
-# since clang 5 with diagnose_if BOS compile-time checks, but on linux it is flappy
-CC="clang-5.0" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log && make -s -j4 -C tests tests-bos
-CC="clang-7 -fsanitize=address,undefined -fno-omit-frame-pointer" \
-    ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-    make -s -j4 check-log || exit
-# retpoline and diagnose_if, skip compile-time errors
-CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure && \
-    make -s -j4 check-log
-make -s clean
-# warn on compile-time errors and checks, but on linux it is flappy
-CC="clang-7" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
-    make -s -j4 check-log && make -s -j4 -C tests tests-bos
-make -s clean
-# must error
-echo "clang-7 -DTEST_BOS --enable-error-dmax. MUST error, ignore"
-CC="clang-7 -DTEST_BOS" ./configure --enable-error-dmax && \
-    make -s -j4 check-log && exit
-make -s clean
+    make -s clean
+    for clang in clang clang-10 clang-7 clang-5.0
+    do
+        if test -n "`which clang`"; then
+            echo $clang -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
+            CC="clang -fsanitize=address -fno-omit-frame-pointer" \
+              ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+                make -s -j4 check-log || exit
+            make -s clean
+        fi
+        if test -n `which $clang`; then
+            echo $clang -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
+            CC="$clang -march=native" \
+              ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
+                make -s -j4 check-log && make -s -j4 -C tests tests-bos
+        fi
+    done
+    for clang in clang-3.7 clang-3.6 clang-3.5 clang-3.4
+    do
+        if test -n "`which $clang`"; then
+            echo $clang -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
+            if CC="#clang -std=c99" \
+                 ./configure --enable-debug --enable-unsafe --enable-norm-compat; then
+                make -s -j4 check-log || exit
+            fi
+            #    #TODO: valgrind broken with kpti
+            #    #make -s -j4 check-valgrind
+        fi
+    done
+    if test -n "`which gcc-4.4`"; then
+        echo gcc-4.4 -ansi
+        if CC="gcc-4.4 -ansi" ./configure; then
+            make -s -j4 check-log || exit
+        fi
+        echo gcc-4.4 -std=iso9899:199409
+        if CC="gcc-4.4 -std=iso9899:199409" ./configure; then
+            make -s -j4 check-log || exit
+        fi
+    fi
+    #CC="g++-6 -std=c++11" ./configure && \
+        #    make -s -j4 check-log || exit
+    for gcc in gcc-{10,9,8,7,6,5}
+    do
+        if test -n "`which $gcc`"; then
+            if CC="$gcc" ./configure; then
+                make -s -j4 check-log || exit
+            fi
+        fi
+    done
+    if test -n "`which clang-5.0`"; then
+        # since clang 5 with diagnose_if BOS compile-time checks, but on linux it is flappy
+        if CC="clang-5.0" \
+          ./configure --enable-debug --enable-unsafe --enable-norm-compat; then
+            make -s -j4 check-log && make -s -j4 -C tests tests-bos
+        fi
+    fi
+    if test -n "`which clang`"; then
+        if CC="clang -fsanitize=address,undefined -fno-omit-frame-pointer" \
+          ./configure --enable-debug --enable-unsafe --enable-norm-compat; then
+            make -s -j4 check-log || exit
+        fi
+        # retpoline and diagnose_if, skip compile-time errors
+        CC="clang" LDFLAGS="-fuse-ld=lld" ./configure && \
+            make -s -j4 check-log
+        make -s clean
+        # warn on compile-time errors and checks, but on linux it is flappy
+        CC="clang" LDFLAGS="-fuse-ld=lld-7" ./configure --enable-warn-dmax && \
+            make -s -j4 check-log && make -s -j4 -C tests tests-bos
+        make -s clean
+        # must error
+        echo "clang -DTEST_BOS --enable-error-dmax. MUST error, ignore"
+        CC="clang -DTEST_BOS" ./configure --enable-error-dmax && \
+            make -s -j4 check-log && exit
+        make -s clean
+    fi
 git clean -dxf src tests
 autoreconf
 echo "--disable-wchar -f Makefile.kernel"
@@ -193,15 +212,17 @@ make -s clean
 git clean -dxf src tests
 autoreconf
 echo gcc gcov
-./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat && \
+if ./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat; then
     $make -s -j4 gcov
-#    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
-#    gcov2perl src/*/*.gcov src/*.gcov && \
-#    cover -no-gcov
+    #    perl -pi -e's{Source:(\w+)/}{Source:}' src/*/*.gcov src/*.gcov && \
+    #    gcov2perl src/*/*.gcov src/*.gcov && \
+    #    cover -no-gcov
+fi
 make -s clean
 echo c++ -std=c++11 --enable-unsafe --enable-norm-compat
-CC="c++ -std=c++11" ./configure --enable-unsafe --enable-norm-compat && \
+if CC="c++ -std=c++11" ./configure --enable-unsafe --enable-norm-compat; then
     $make -s -j4 check-log || exit
+fi
 #CC="c++ -std=c++98" ./configure && \
 #    make -s -j4 check-log || exit
 
@@ -285,9 +306,10 @@ echo configure --enable-error-dmax must fail
 
 # different .deps format
 git clean -dxf src tests
-autoreconf    
-#CC="x86_64-w64-mingw32-gcc"
-./configure --enable-unsafe --host=x86_64-w64-mingw32 && \
+autoreconf
+if test -n "`which x86_64-w64-mingw32-gcc`"; then
+    #CC="x86_64-w64-mingw32-gcc"
+    ./configure --enable-unsafe --host=x86_64-w64-mingw32 && \
     $make -s -j4 && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
@@ -295,9 +317,11 @@ autoreconf
             b=$(basename $t); wine $t | tee tests/$b.log; done
         rm *.dll
     fi
-git clean -dxf src tests
-autoreconf
-./configure --enable-unsafe --host=i686-w64-mingw32 && \
+    git clean -dxf src tests
+    autoreconf
+fi
+if test -n "`which i686-w64-mingw32-gcc`"; then
+    ./configure --enable-unsafe --host=i686-w64-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
@@ -307,7 +331,7 @@ autoreconf
         rm *.dll
     fi
     $make clean
-CFLAGS="-g -gdwarf-2 -DTEST_MSVCRT" \
+    CFLAGS="-g -gdwarf-2 -DTEST_MSVCRT" \
     ./configure --enable-unsafe --enable-debug --host=i686-w64-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     cp src/.libs/*.dll . && \
@@ -315,10 +339,12 @@ CFLAGS="-g -gdwarf-2 -DTEST_MSVCRT" \
         b=$(basename $t .exe); wine $t | tee tests/$b.log;
     done
     $make clean
-git clean -dxf src tests
-autoreconf    
-#CC="i386-mingw32-gcc"
-./configure --enable-unsafe --host=i386-mingw32 && \
+    git clean -dxf src tests
+    autoreconf
+fi
+if test -n "`i386-mingw32-gcc`"; then
+    #CC="i386-mingw32-gcc"
+    ./configure --enable-unsafe --host=i386-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
         cp src/.libs/*.dll . && \
@@ -327,6 +353,7 @@ autoreconf
         rm *.dll
     fi
     $make clean
+fi
 git clean -dxf src tests
 # if all clean, try out-of-tree build and distcheck
 if [ -z "`git status --porcelain`" ]; then
