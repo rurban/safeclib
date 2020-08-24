@@ -14,6 +14,8 @@ matrix:
   fast_finish: true
   include:
     - compiler: gcc
+      env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
+    - compiler: gcc
       addons:
         apt:
           packages:
@@ -61,5 +63,6 @@ script:
   - ./configure $CONF
   - make -j4
   - if test x$ASAN = x1; then make -C tests tests; else true; fi
-  - travis_wait make -j4 check-log
-  - if [ "$VG" = "1" ]; then travis_wait make -j4 check-valgrind && travis_wait make -j4 distcheck ; fi
+  - make -j4 check-log
+  - if [ "$VG" = "1" ]; then travis_wait 30 make -j4 check-valgrind; else true; fi
+  - if [ "$DISTCHECK" = "1" ]; then travis_wait 30 make -j4 distcheck; else true; fi
