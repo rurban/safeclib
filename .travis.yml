@@ -13,8 +13,7 @@ addons:
 matrix:
   fast_finish: true
   include:
-    - compiler: gcc
-      env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
+    - env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
     - compiler: gcc
       addons:
         apt:
@@ -41,6 +40,8 @@ matrix:
           packages:
             - clang-3.8
       env: ASAN=1 CONF="--enable-debug --enable-unsafe --enable-norm-compat"
+  allow_failures:
+    - env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
   # clang++ does not allow c anymore. gcc is duplicate to cc
   #exclude:
   #  - env: XCC="gcc" TRAVIS_OS_NAME=osx
@@ -65,4 +66,4 @@ script:
   - if test x$ASAN = x1; then make -C tests tests; else true; fi
   - make -j4 check-log
   - if [ "$VG" = "1" ]; then travis_wait 30 make -j4 check-valgrind; else true; fi
-  - if [ "$DISTCHECK" = "1" ]; then travis_wait 30 make -j4 distcheck; else true; fi
+  - if [ "$DISTCHECK" = "1" ]; then travis_wait 40 make -j4 distcheck; else true; fi
