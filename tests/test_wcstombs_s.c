@@ -114,7 +114,9 @@ int test_wcstombs_s(void) {
     }
     CHECK_SLACK(&dest[6], LEN - 6);
 
+#ifndef HAVE_CT_BOS_OVR
     memset(dest, 'x', LEN);
+    EXPECT_BOS("empty dest")
     rc = wcstombs_s(&ind, NULL, LEN, (cs = L"abcdef", cs), 2);
     ERR_MSVC(EOK, EINVAL);
     if (!use_msvcrt) {
@@ -122,6 +124,7 @@ int test_wcstombs_s(void) {
     } else if (use_msvcrt) {
         INDCMP(!= 0);
     }
+#endif
 
     SETLOCALE_C;
     SETLANG("C");

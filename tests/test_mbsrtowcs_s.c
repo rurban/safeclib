@@ -266,11 +266,14 @@ int test_mbsrtowcs_s(void) {
     WCHECK_SLACK(dest, 6);
     CLRPS;
 
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("len overflow >dmax")
     rc = mbsrtowcs_s(&ind, dest, 3, (cs = "\xf0\x8f\xbf\xbd", &cs), 4, &ps);
     ERR(EILSEQ);
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
     CLRPS;
+#endif
 
     rc = mbsrtowcs_s(&ind, dest, LEN, (cs = "\x80\xbf\x80", &cs), 3, &ps);
     ERR(EILSEQ);
