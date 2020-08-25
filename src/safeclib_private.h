@@ -47,6 +47,11 @@
 #include <linux/module.h>
 #include <linux/ctype.h>
 
+/* Needed since the switch to time64_t */
+#if defined CONFIG_COMPAT_32BIT_TIME && defined _LINUX_TIME64_H && defined __VDSO_TIME32_H
+#define time_t old_time32_t
+#endif
+
 #define RCNEGATE(x) (-(x))
 
 #ifndef SAFECLIB_HAVE_C99

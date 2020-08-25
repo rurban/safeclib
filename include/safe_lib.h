@@ -140,6 +140,8 @@ EXTERN errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
                               const size_t destbos) BOS_CHK(dest)
     BOS_ATTR(dmax < 26, "dmax underflow") BOS_NULL(tm);
 
+/* TODO time64_t
+   https://www.gnu.org/software/libc/manual/html_node/64_002dbit-time-symbol-handling.html */
 EXTERN errno_t _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer,
                             const size_t destbos) BOS_CHK(dest)
     BOS_ATTR(dmax < 26, "dmax underflow") BOS_NULL(timer);

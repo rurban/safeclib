@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * slk_init.c - example kernel module skeleton
+ * slkm_init.c - Safe C Library Kernel Module
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
  *
@@ -29,8 +29,8 @@
  *------------------------------------------------------------------
  */
 
-#include <linux/module.h>
 #include <linux/kernel.h>
+#include <linux/module.h>
 #include "../safeclib_private.h"
 
 #define DRV_NAME "slk"
@@ -45,7 +45,7 @@ MODULE_VERSION(DRV_VERSION);
 MODULE_ALIAS("slk");
 
 /*
- * // example match table... show how to properally mark the table
+ * // example match table... show how to properly mark the table
  *static const struct of_device_id _match[] __devinitconst = {
  *        {
  *                .compatible = "blah",
