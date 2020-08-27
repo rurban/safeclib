@@ -563,6 +563,7 @@ dnl against -Werror,-Wgcc-compat fortify errors, only on clang
 INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
 INSERT_WARN_DMAX="#undef HAVE_WARN_DMAX"
 INSERT_ERROR_DMAX="#undef HAVE_ERROR_DMAX"
+
 if test x$ax_cv_have___builtin_object_size = xyes; then
     AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
         [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
@@ -781,11 +782,11 @@ fi
 AC_SUBST(INSERT_CONSTANT_P)
 
 AX_GCC_FUNC_ATTRIBUTE(format)
+AX_GCC_FUNC_ATTRIBUTE(malloc)
+AX_GCC_FUNC_ATTRIBUTE(returns_nonnull)
 #not yet supported, planned since 2008
 AX_GCC_FUNC_ATTRIBUTE(format_wprintf)
 AX_GCC_FUNC_ATTRIBUTE(format_wscanf)
-AX_GCC_FUNC_ATTRIBUTE(malloc)
-AX_GCC_FUNC_ATTRIBUTE(returns_nonnull)
 
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf

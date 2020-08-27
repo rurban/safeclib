@@ -63,6 +63,21 @@ typedef int errno_t;
 # define restrict __restrict
 #endif
 
+#ifdef __GNUC__ /* also clang and icc */
+#define __attribute_format__(type, index, check)                               \
+    __attribute__((format(type, index, check)))
+/* stalled since 2008 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=64862 
+   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=38308 */
+#define __attribute_format_wprintf(index, check)                               \
+  /* __attribute__((format(__wprintf__, index, check))) */
+#define __attribute_format_wscanf(index, check)                                \
+  /* __attribute__((format(__wscanf__, index, check))) */
+#else
+#define __attribute_format__(type, index, check)
+#define __attribute_format_wprintf(index, check)
+#define __attribute_format_wscanf(index, check)
+#endif
+
 #endif /* __KERNEL__ */
 
 /* C11 appendix K types - specific for bounds checking */

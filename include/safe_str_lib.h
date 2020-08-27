@@ -156,12 +156,13 @@ char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 #ifdef SAFECLIB_HAVE_C99
 EXTERN int _sprintf_s_chk(char *restrict dest, const rsize_t dmax,
                           const size_t destbos, const char *restrict fmt, ...)
-    BOS_CHK(dest) BOS_FMT(fmt);
+   __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
 #define sprintf_s(dest, dmax, ...)                                             \
     _sprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
 #else
 EXTERN int sprintf_s(char *restrict dest, rsize_t dmax,
-                     const char *restrict fmt, ...) BOS_CHK(dest) BOS_FMT(fmt);
+                     const char *restrict fmt, ...)
+  __attribute_format__(printf,3,4) BOS_CHK(dest) BOS_FMT(fmt);
 #endif
 
 EXTERN int _vsprintf_s_chk(char *restrict dest, rsize_t dmax,
@@ -174,12 +175,13 @@ EXTERN int _vsprintf_s_chk(char *restrict dest, rsize_t dmax,
 #if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
-    BOS_CHK(dest) BOS_FMT(fmt);
+  __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
 #define snprintf_s(dest, dmax, ...)                                            \
     _snprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
 #else
 EXTERN int snprintf_s(char *restrict dest, rsize_t dmax,
-                      const char *restrict fmt, ...) BOS_CHK(dest) BOS_FMT(fmt);
+                      const char *restrict fmt, ...)
+  __attribute_format__(printf,3,4) BOS_CHK(dest) BOS_FMT(fmt);
 #endif
 
 EXTERN int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
@@ -195,14 +197,15 @@ int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
 
 /* Note: there is no __vsscanf_chk yet. Unchecked */
 EXTERN int sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
-    BOS_NULL(buffer) BOS_FMT(fmt);
+    __attribute_format__(scanf,2,3) BOS_NULL(buffer) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...)
-    BOS_NULL(stream) BOS_FMT(fmt);
+  __attribute_format__(scanf,2,3) BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
-EXTERN int scanf_s(const char *restrict fmt, ...) BOS_FMT(fmt);
+EXTERN int scanf_s(const char *restrict fmt, ...)
+  __attribute_format__(scanf,1,2) BOS_FMT(fmt);
 
 EXTERN int vscanf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
 
@@ -214,14 +217,15 @@ EXTERN int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
 EXTERN int vsscanf_s(const char *restrict dest, const char *restrict fmt,
                      va_list ap) BOS_NULL(dest) BOS_FMT(fmt);
 
-EXTERN int printf_s(const char *restrict fmt, ...) BOS_FMT(fmt);
+EXTERN int printf_s(const char *restrict fmt, ...)
+  __attribute_format__(printf,1,2) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
-    BOS_FMT(fmt);
+  __attribute_format__(printf,2,3) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
-EXTERN int vprintf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
+  EXTERN int vprintf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
@@ -624,13 +628,14 @@ wchar_t* wcstok_s(wchar_t *_Str, const wchar_t *_Delim, wchar_t **_Context); */
 #if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int _swprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                            const size_t destbos, const wchar_t *restrict fmt,
-                           ...) BOSW_CHK(dest) BOS_FMT(fmt);
+                           ...)
+  __attribute_format_wprintf(4,5) BOSW_CHK(dest) BOS_FMT(fmt);
 #define swprintf_s(dest, dmax, ...)                                            \
     _swprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
 #else
 EXTERN int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
-                      const wchar_t *restrict fmt, ...) BOSW_CHK(dest)
-    BOS_FMT(fmt);
+                      const wchar_t *restrict fmt, ...)
+  __attribute_format_wprintf(3,4) BOSW_CHK(dest) BOS_FMT(fmt);
 #endif
 
 EXTERN int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
@@ -643,46 +648,49 @@ EXTERN int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
 EXTERN int _snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                             const size_t destbos, const wchar_t *restrict fmt,
-                            ...) BOSW_CHK(dest) BOS_FMT(fmt);
-#define snwprintf_s(dest, dmax, ...)                                           \
+                            ...)
+  __attribute_format_wprintf(4,5) BOSW_CHK(dest) BOS_FMT(fmt);
+#define snwprintf_s(dest, dmax, ...)                            \
     _snwprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
 #else
 EXTERN int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
-                       const wchar_t *restrict fmt, ...) BOSW_CHK(dest)
-    BOS_FMT(fmt);
+                       const wchar_t *restrict fmt, ...)
+  __attribute_format_wprintf(3,4) BOSW_CHK(dest) BOS_FMT(fmt);
 #endif
 
 EXTERN int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                              const size_t destbos, const wchar_t *restrict fmt,
                              va_list ap) BOSW_CHK(dest) BOS_FMT(fmt);
-#define vsnwprintf_s(dest, dmax, fmt, ap)                                      \
+#define vsnwprintf_s(dest, dmax, fmt, ap)               \
     _vsnwprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 
-EXTERN int wprintf_s(const wchar_t *restrict fmt, ...) BOS_FMT(fmt);
+EXTERN int wprintf_s(const wchar_t *restrict fmt, ...)
+  __attribute_format_wprintf(1,2) BOS_FMT(fmt);
 
 EXTERN int vwprintf_s(const wchar_t *restrict fmt, va_list ap) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
-    BOS_NULL(stream) BOS_FMT(fmt);
+  __attribute_format_wprintf(2,3) BOS_NULL(stream) BOS_FMT(fmt);
 
 EXTERN int vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt,
                        va_list ap) BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
 EXTERN int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
-                     ...) BOS_NULL(src) BOS_FMT(fmt);
+                     ...) __attribute_format_wscanf(2,3) BOS_NULL(src) BOS_FMT(fmt);
 
 EXTERN int vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
                       va_list ap) BOS_NULL(src) BOS_FMT(fmt);
 
-EXTERN int wscanf_s(const wchar_t *restrict fmt, ...) BOS_FMT(fmt);
+EXTERN int wscanf_s(const wchar_t *restrict fmt, ...)
+  __attribute_format_wscanf(1,2) BOS_FMT(fmt);
 
-EXTERN int vwscanf_s(const wchar_t *restrict fmt, va_list ap) BOS_FMT(fmt);
+  EXTERN int vwscanf_s(const wchar_t *restrict fmt, va_list ap) BOS_FMT(fmt);
 
 #ifndef __KERNEL__
 EXTERN int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
-    BOS_NULL(stream) BOS_FMT(fmt);
+  __attribute_format_wscanf(2,3) BOS_NULL(stream) BOS_FMT(fmt);
 
 EXTERN int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
                       va_list ap) BOS_NULL(stream) BOS_FMT(fmt);
