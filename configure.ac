@@ -64,8 +64,11 @@ AM_INIT_AUTOMAKE([1.10 no-define foreign subdir-objects dist-bzip2 dist-xz])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # this is missing with mingw 1.0
-m4_pattern_allow([AM_PROG_AR])
-AM_PROG_AR
+# m4_pattern_allow([AM_PROG_AR])
+# AM_PROG_AR
+AC_CHECK_TOOLS([AR], [gcc-ar ar])
+AC_CHECK_TOOLS([RANLIB], [gcc-ranlib ranlib])
+AC_CHECK_TOOLS([NM], [gcc-nm nm])
 
 # Enable LibTool as we are building a library
 #LT_PREREQ([2.2.6]) # TODO: don't really know what to put here so leave
