@@ -777,6 +777,13 @@ if test x$ax_cv_have___builtin_constant_p = xyes; then
 fi
 AC_SUBST(INSERT_CONSTANT_P)
 
+AX_GCC_FUNC_ATTRIBUTE(format)
+#not yet supported, planned since 2008
+AX_GCC_FUNC_ATTRIBUTE(format_wprintf)
+AX_GCC_FUNC_ATTRIBUTE(format_wscanf)
+AX_GCC_FUNC_ATTRIBUTE(malloc)
+AX_GCC_FUNC_ATTRIBUTE(returns_nonnull)
+
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf
               vfprintf vfwprintf vsprintf vsnprintf"
