@@ -37,15 +37,6 @@
 extern "C" {
 #endif
 
-/* C11 appendix K types - specific for bounds checking */
-#ifndef _RSIZE_T /* PGI */
-typedef size_t  rsize_t;
-#endif
-
-#ifndef RSIZE_MAX
-#define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
-#endif
-
 #ifdef __KERNEL__
 /* linux kernel environment */
 
@@ -73,6 +64,15 @@ typedef int errno_t;
 #endif
 
 #endif /* __KERNEL__ */
+
+/* C11 appendix K types - specific for bounds checking */
+#ifndef _RSIZE_T /* PGI */
+typedef size_t  rsize_t;
+#endif
+
+#ifndef RSIZE_MAX
+#define RSIZE_MAX (~(rsize_t)0)  /* leave here for completeness */
+#endif
 
 #ifdef __cplusplus
 }
