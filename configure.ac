@@ -1023,12 +1023,12 @@ fi
 AC_CONFIG_HEADERS([config.h])
 
 AC_CONFIG_FILES([libsafec.pc
-                 include/safe_config.h
-                 include/safe_lib_errno.h
-                 include/safe_types.h
                  Makefile
                  src/Makefile
                  tests/Makefile])
+AC_CONFIG_FILES([include/safe_config.h], [chmod -w include/safe_config.h])
+AC_CONFIG_FILES([include/safe_lib_errno.h], [chmod -w include/safe_lib_errno.h])
+AC_CONFIG_FILES([include/safe_types.h], [chmod -w include/safe_types.h])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_CONDITIONAL([HAVE_POD2MAN], [test -n "POD2MAN"])
