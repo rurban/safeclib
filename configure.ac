@@ -788,6 +788,19 @@ AX_GCC_FUNC_ATTRIBUTE(returns_nonnull)
 AX_GCC_FUNC_ATTRIBUTE(format_wprintf)
 AX_GCC_FUNC_ATTRIBUTE(format_wscanf)
 
+if test x$ax_cv_have_func_attribute_format_wprintf = xyes; then
+  HAVE_ATTRIBUTE_FORMAT_WPRINTF=1
+else
+  HAVE_ATTRIBUTE_FORMAT_WPRINTF=0
+fi
+if test x$ax_cv_have_func_attribute_format_wscanf = xyes; then
+  HAVE_ATTRIBUTE_FORMAT_WSCANF=1
+else
+  HAVE_ATTRIBUTE_FORMAT_WSCANF=0
+fi
+AC_SUBST(HAVE_ATTRIBUTE_FORMAT_WPRINTF)
+AC_SUBST(HAVE_ATTRIBUTE_FORMAT_WSCANF)
+
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf
               vfprintf vfwprintf vsprintf vsnprintf"

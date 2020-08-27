@@ -3,9 +3,10 @@
  *
  * October 2008, Bo Berry
  * September 2017, Reini Urban
+ * August 2020, Reini Urban
  *
  * Copyright (c) 2008-2011, 2013 by Cisco Systems, Inc.
- * Copyright (c) 2017-2018 by Reini Urban
+ * Copyright (c) 2017-2018, 2020 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -155,7 +156,7 @@ char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
 #ifdef SAFECLIB_HAVE_C99
 EXTERN int _sprintf_s_chk(char *restrict dest, const rsize_t dmax,
-                          const size_t destbos, const char *restrict fmt, ...)
+                   const size_t destbos, const char *restrict fmt, ...)
    __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
 #define sprintf_s(dest, dmax, ...)                                             \
     _sprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
