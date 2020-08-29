@@ -6,7 +6,6 @@ os: linux
 #  - linux
 #  - osx
 dist: xenial
-services: docker
 
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/5FH2DUYXQEOJQZPDA7KSHVBRANKXV3X2/
 # https://github.com/junaruga/ci-multi-arch-test/blob/master/.travis.yml
@@ -18,6 +17,7 @@ services: docker
   - &test_in_container
     # language: bash or generic is good to run container.
     language: bash
+    services: docker
     install:
       - ls /proc/sys/fs/binfmt_misc/
       - |
@@ -31,10 +31,11 @@ services: docker
           -f Dockerfile-${OS_NAME} \
           .
     script:
-      - docker run --rm -t sample build-aux/check-in-docker.sh
+      - docker run --rm -t sample build-aux/conf-make-check.sh
   # A case to check only "uname"'s result without building a container.
   - &test_uname_in_container
     language: bash
+    services: docker
     install:
       - ls /proc/sys/fs/binfmt_misc/
       - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
@@ -45,6 +46,7 @@ services: docker
   # It uses multiarch/qemu-user-static:$arch container in Dockerfile.
   - &test_in_container_qemu
     language: bash
+    services: docker
     install:
       - ls /proc/sys/fs/binfmt_misc/
       - docker run --rm --privileged multiarch/qemu-user-static:register --reset
@@ -56,11 +58,12 @@ services: docker
           -f Dockerfile-${OS_NAME} \
           .
     script:
-      - docker run --rm -t sample build-aux/check-in-docker.sh
+      - docker run --rm -t sample build-aux/conf-make-check.sh
   # The way to use compatible os images (multiarch's ubuntu image etc) is deprecated.
   # But it might be faster than above recommended ways.
   - &test_in_container_compatible_image
     language: bash
+    services: docker
     install:
       - ls /proc/sys/fs/binfmt_misc/
       - docker run --rm --privileged multiarch/qemu-user-static:register --reset
@@ -83,6 +86,7 @@ services: docker
         packages:
           - jq
           - skopeo
+    services: docker
     before_install:
       - BASE_IMAGE="$BASE_IMAGE@$(script/print-manifest-arch-digest.sh "$BASE_IMAGE" "$MANIFEST_ARCH")"
   - &test_native
@@ -271,7 +275,7 @@ matrix:
         - BASE_IMAGE=ppc64le/fedora
         - OS_NAME=fedora
       <<: *test_in_container
-    # PowerPC, 64-bit, Big-endian
+    # IBM Z, 64-bit, Big-endian
     - name: fedora-s390x-linux
       env:
         - BASE_IMAGE=s390x/fedora
@@ -345,3 +349,5 @@ branches:
 
 install:
   - build-aux/autogen.sh
+script:
+  - build-aux/conf-make-check.sh

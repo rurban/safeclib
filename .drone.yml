@@ -1,0 +1,44 @@
+---
+kind: pipeline
+type: docker
+name: arm64
+platform:
+  os: linux
+  arch: arm64
+steps:
+  - name: ubuntu-bionic
+    image: ubuntu:bionic
+    commands:
+      - uname -m
+      - apt-get -yq update
+      - apt-get -yq install gcc make file git autotools-dev automake autoconf
+                            libtool libtext-diff-perl pkg-config
+      - build-aux/autogen.sh
+      - build-aux/conf-make-check.sh
+# https://docker-runner.docs.drone.io/configuration/trigger/
+trigger:
+  branch:
+    - archs
+    - master
+
+---
+kind: pipeline
+type: docker
+name: arm32
+platform:
+  os: linux
+  arch: arm
+steps:
+  - name: ubuntu-bionic
+    image: ubuntu:bionic
+    commands:
+      - uname -m
+      - apt-get -yq update
+      - apt-get -yq install gcc make file git autotools-dev automake autoconf
+                            libtool libtext-diff-perl pkg-config
+      - build-aux/autogen.sh
+      - build-aux/conf-make-check.sh
+trigger:
+  branch:
+    - archs
+    - master
