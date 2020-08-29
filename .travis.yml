@@ -40,6 +40,12 @@ matrix:
           packages:
             - clang-3.8
       env: ASAN=1 CONF="--enable-debug --enable-unsafe --enable-norm-compat"
+    - os: linux
+      arch: s390x
+    - os: linux
+      arch: ppc64le
+    - os: linux
+      arch: arm64
   allow_failures:
     - env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
   # clang++ does not allow c anymore. gcc is duplicate to cc
