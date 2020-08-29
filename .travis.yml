@@ -1,10 +1,104 @@
 language: c
-sudo: false
+#sudo: false
 #cache:
 #  ccache: true
-os:
-  - linux
-  - osx
+os: linux
+#  - linux
+#  - osx
+dist: xenial
+services: docker
+
+# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/5FH2DUYXQEOJQZPDA7KSHVBRANKXV3X2/
+# https://github.com/junaruga/ci-multi-arch-test/blob/master/.travis.yml
+# Definitions using YAML's anchor (&) and reference (*).
+.com.github.junaruga.ci-multi-arch-test.matrix-definitions:
+  # Recommended way 1. It's easy to implement.
+  # But the way using "-p yes" (binfmt_misc persistent option)
+  # might be slower than below alternative ways.
+  - &test_in_container
+    # language: bash or generic is good to run container.
+    language: bash
+    install:
+      - ls /proc/sys/fs/binfmt_misc/
+      - |
+        if [ "$(uname -m)" = x86_64 ]; then
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        fi
+      - ls /proc/sys/fs/binfmt_misc/
+      - |
+        travis_retry docker build --rm -t sample \
+          --build-arg BASE_IMAGE=${BASE_IMAGE} \
+          -f Dockerfile-${OS_NAME} \
+          .
+    script:
+      - docker run --rm -t sample build-aux/check-in-docker.sh
+  # A case to check only "uname"'s result without building a container.
+  - &test_uname_in_container
+    language: bash
+    install:
+      - ls /proc/sys/fs/binfmt_misc/
+      - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      - ls /proc/sys/fs/binfmt_misc/
+    script:
+      - docker run --rm -t "${BASE_IMAGE}" uname -a
+  # Recommended way 2. This way does not use binfmt_misc persistent option.
+  # It uses multiarch/qemu-user-static:$arch container in Dockerfile.
+  - &test_in_container_qemu
+    language: bash
+    install:
+      - ls /proc/sys/fs/binfmt_misc/
+      - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      - ls /proc/sys/fs/binfmt_misc/
+      - |
+        travis_retry docker build --rm -t sample \
+          --build-arg ARCH=${ARCH} \
+          --build-arg BASE_IMAGE=${BASE_IMAGE} \
+          -f Dockerfile-${OS_NAME} \
+          .
+    script:
+      - docker run --rm -t sample build-aux/check-in-docker.sh
+  # The way to use compatible os images (multiarch's ubuntu image etc) is deprecated.
+  # But it might be faster than above recommended ways.
+  - &test_in_container_compatible_image
+    language: bash
+    install:
+      - ls /proc/sys/fs/binfmt_misc/
+      - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      - ls /proc/sys/fs/binfmt_misc/
+      - |
+        travis_retry docker build --rm -t sample \
+          --build-arg BASE_IMAGE=${BASE_IMAGE} \
+          -f Dockerfile-${OS_NAME} \
+          .
+    script:
+      - docker run --rm -t sample build-aux/conf-make-check.sh
+  - &inspect_image
+    addons:
+      apt:
+        config:
+          retries: true
+        update: true
+        sources:
+          - sourceline: 'ppa:projectatomic/ppa'
+        packages:
+          - jq
+          - skopeo
+    before_install:
+      - BASE_IMAGE="$BASE_IMAGE@$(script/print-manifest-arch-digest.sh "$BASE_IMAGE" "$MANIFEST_ARCH")"
+  - &test_native
+    script:
+      # skip duplicate compilers and overly strict clang++
+      #- if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
+      # ruby swallows the space as in CC="clang -fsanitize=address", and overrides
+      # CC after the env matrix
+      - if test x$ASAN = x1; then CC="clang-3.8 -fsanitize=address"; else true; fi
+      - ./configure $CONF
+      - make -j4
+      - if test x$ASAN = x1; then make -C tests tests; else true; fi
+      - make -j4 check-log
+      - if [ "$VG" = "1" ]; then travis_wait 30 make -j4 check-valgrind; else true; fi
+      - if [ "$DISTCHECK" = "1" ]; then travis_wait 40 make -j4 distcheck; else true; fi
+
 addons:
   apt:
     packages:
@@ -13,41 +107,232 @@ addons:
 matrix:
   fast_finish: true
   include:
-    - env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
-    - compiler: gcc
+    - name: x86_64-distcheck
+      env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
+      <<: *test_native
+    - name: x86_64-valgrind
+      compiler: gcc
       addons:
         apt:
           packages:
             - valgrind
       env: CONF="--enable-debug --enable-unsafe --enable-norm-compat" VG=1
-    - compiler: gcc
+      <<: *test_native
+    - name: x86_64-warn-dmax
+      compiler: gcc
       env: CONF="--disable-nullslack --enable-warn-dmax"
-    - compiler: g++
+      <<: *test_native
+    - name: x86_64-g++
+      compiler: g++
       env: CONF="--enable-debug --enable-unsafe --enable-norm-compat"
-    - compiler: gcc
+      <<: *test_native
+    - name: x86_64-osx
+      compiler: gcc
       os: osx
       env: CONF="--enable-unsafe --enable-norm-compat"
-    - compiler: clang
+      <<: *test_native
+    - name: x86_64-clang
+      compiler: clang
       env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" CONF="--disable-constraint-handler"
-    - compiler: gcc
+      <<: *test_native
+    - name: x86_64-disable-extensions
+      compiler: gcc
       env: CONF="--disable-extensions"
-    #- compiler: clang
+      <<: *test_native
+    #- name: x86_64-osx-disable-extensions
+    #  compiler: clang
     #  os: osx
     #  env: CONF="--disable-extensions"
-    - compiler: clang
+    - name: x86_64-clang-asan
+      compiler: clang
       addons:
         apt:
           packages:
             - clang-3.8
       env: ASAN=1 CONF="--enable-debug --enable-unsafe --enable-norm-compat"
-    - os: linux
-      arch: s390x
-    - os: linux
-      arch: ppc64le
-    - os: linux
+      <<: *test_native
+      # ---------------------------
+      # ARM, 64-bit, Little-endian
+    - name: ubuntu-aarch64-linux-native
       arch: arm64
+    - name: ubuntu-aarch64-linux
+      env:
+        - BASE_IMAGE=arm64v8/ubuntu
+      <<: *test_in_container
+    - name: ubuntu-aarch64-linux-qemu
+      env:
+        - ARCH=aarch64
+        - BASE_IMAGE=arm64v8/ubuntu
+        - OS_NAME=ubuntu-qemu
+      <<: *test_in_container_qemu
+    - name: ubuntu-aarch64-linux-compatible-image
+      env:
+        - BASE_IMAGE=multiarch/ubuntu-debootstrap:arm64-bionic
+      <<: *test_in_container_compatible_image
+    # ARM, 32-bit, Little-endian
+    - name: ubuntu-arm32-linux
+      env:
+        - BASE_IMAGE=arm32v7/ubuntu
+      <<: *test_in_container
+    - name: ubuntu-arm32-linux-qemu
+      env:
+        - ARCH=arm
+        - BASE_IMAGE=arm32v7/ubuntu
+        - OS_NAME=ubuntu-qemu
+      <<: *test_in_container_qemu
+    - name: ubuntu-arm32-linux-compatible-image
+      env:
+        - BASE_IMAGE=multiarch/ubuntu-debootstrap:armhf-bionic
+      <<: *test_in_container_compatible_image
+    # PowerPC, 64-bit, Little-endian
+    - name: ubuntu-ppc64le-linux
+      env:
+        - BASE_IMAGE=ppc64le/ubuntu
+      <<: *test_in_container
+    - name: ubuntu-ppc64le-linux-native
+      os: linux-ppc64le
+    # IBM Z and LinuxONE, 64-bit, Big-endian
+    - name: ubuntu-s390x-linux-uname
+      env:
+        - BASE_IMAGE=s390x/ubuntu
+      <<: *test_uname_in_container
+    - name: ubuntu-s390x-linux
+      env:
+        - BASE_IMAGE=s390x/ubuntu
+      <<: *test_in_container
+    - name: ubuntu-s390x-linux-qemu
+      env:
+        - ARCH=s390x
+        - BASE_IMAGE=s390x/ubuntu
+        - OS_NAME=ubuntu-qemu
+      <<: *test_in_container_qemu
+    # PowerPC, 64-bit, Big-endian
+    - name: ubuntu-ppc64-linux-compatible-image
+      env:
+        - BASE_IMAGE=multiarch/ubuntu-debootstrap:powerpc-xenial
+      <<: *test_in_container_compatible_image
+    # Intel, 32-bit, Little-endian
+    - name: debian-i386-linux
+      env:
+        - BASE_IMAGE=i386/debian
+        - OS_NAME=debian
+      <<: *test_in_container
+    # ARM, 64-bit, Little-endian
+    - name: debian-aarch64-linux
+      env:
+        - BASE_IMAGE=arm64v8/debian
+        - OS_NAME=debian
+      <<: *test_in_container
+    # ARM, 32-bit, Little-endian
+    - name: debian-arm32-linux
+      env:
+        - BASE_IMAGE=arm32v7/debian
+        - OS_NAME=debian
+      <<: *test_in_container
+    # PowerPC, 64-bit, Little-endian
+    - name: debian-ppc64le-linux
+      env:
+        - BASE_IMAGE=ppc64le/debian
+        - OS_NAME=debian
+      <<: *test_in_container
+    # IBM Z and LinuxONE, 64-bit, Big-endian
+    - name: debian-s390x-linux
+      env:
+        - BASE_IMAGE=s390x/debian
+        - OS_NAME=debian
+      <<: *test_in_container
+    # Intel, 32-bit, Little-endian
+    - name: centos-i386-linux
+      env:
+        - BASE_IMAGE=i386/centos
+        - OS_NAME=centos
+      <<: *test_in_container
+    # ARM, 64-bit, Little-endian
+    - name: centos-aarch64-linux
+      env:
+        - BASE_IMAGE=arm64v8/centos
+        - OS_NAME=centos
+      <<: *test_in_container
+    # PowerPC, 64-bit, Little-endian
+    - name: centos-ppc64le-linux
+      env:
+        - BASE_IMAGE=ppc64le/centos
+        - OS_NAME=centos
+      <<: *test_in_container
+    # ARM, 64-bit, Little-endian
+    - name: fedora-aarch64-linux
+      env:
+        - BASE_IMAGE=arm64v8/fedora
+        - OS_NAME=fedora
+      <<: *test_in_container
+    # PowerPC, 64-bit, Little-endian
+    - name: fedora-ppc64le-linux
+      env:
+        - BASE_IMAGE=ppc64le/fedora
+        - OS_NAME=fedora
+      <<: *test_in_container
+    # PowerPC, 64-bit, Big-endian
+    - name: fedora-s390x-linux
+      env:
+        - BASE_IMAGE=s390x/fedora
+        - OS_NAME=fedora
+      <<: *test_in_container
+    # Intel, 64-bit, Little-endian
+    - name: rhel-x86_64-linux-native
+      env:
+        - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+        - OS_NAME=rhel
+      <<: *test_in_container
+    # ARM, 64-bit, Little-endian
+    - name: rhel-aarch64-linux
+      env:
+        - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+        - OS_NAME=rhel
+        - MANIFEST_ARCH=arm64
+      <<: *inspect_image
+      <<: *test_in_container
+    # PowerPC, 64-bit, Little-endian
+    - name: rhel-ppc64le-linux-native
+      os: linux-ppc64le
+      env:
+        - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+        - OS_NAME=rhel
+      <<: *test_in_container
+    # "dnf -y update" outputs an error:
+    # "qemu: uncaught target signal 11 (Segmentation fault) - core dumped"
+    # - name: rhel-ppc64le-linux
+    #   env:
+    #     - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+    #     - OS_NAME=rhel
+    #     - MANIFEST_ARCH=ppc64le
+    #   <<: *inspect_image
+    #   <<: *test_in_container
+    # IBM Z and LinuxONE, 64-bit, Big-endian
+    - name: rhel-s390x-linux
+      env:
+        - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+        - OS_NAME=rhel
+        - MANIFEST_ARCH=s390x
+      <<: *inspect_image
+      <<: *test_in_container
+    #- os: linux
+    #  arch: arm64
+    #- os: linux
+    #  arch: s390x
+    #- os: linux
+    #  arch: ppc64le
+    #- os: linux
+    #  arch: ppc64
+    #- os: linux
+    #  arch: sparc64
+    #- os: linux
+    #  arch: powerpc
+    #- os: linux
+    #  arch: hppa
+    #- os: linux
+    #  arch: m68k
   allow_failures:
-    - env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" DISTCHECK=1
+    - name: x86_64-distcheck
   # clang++ does not allow c anymore. gcc is duplicate to cc
   #exclude:
   #  - env: XCC="gcc" TRAVIS_OS_NAME=osx
@@ -60,16 +345,3 @@ branches:
 
 install:
   - build-aux/autogen.sh
-
-script:
-  # skip duplicate compilers and overly strict clang++
-  #- if [ "$TRAVIS_OS_NAME" = "osx" -a "$XCC" = "gcc" ]; then exit 0; fi
-  # ruby swallows the space as in CC="clang -fsanitize=address", and overrides
-  # CC after the env matrix
-  - if test x$ASAN = x1; then CC="clang-3.8 -fsanitize=address"; else true; fi
-  - ./configure $CONF
-  - make -j4
-  - if test x$ASAN = x1; then make -C tests tests; else true; fi
-  - make -j4 check-log
-  - if [ "$VG" = "1" ]; then travis_wait 30 make -j4 check-valgrind; else true; fi
-  - if [ "$DISTCHECK" = "1" ]; then travis_wait 40 make -j4 distcheck; else true; fi
