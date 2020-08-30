@@ -4,6 +4,8 @@
  * Lines executed:100.00% of 20
  *
  *------------------------------------------------------------------
+ * fails: ubuntu-arm32-linux{,-qemu} (arm32v7), ubuntu-s390x-linux-qemu
+ * but passes: debian-arm32-linux, {debian,fedoar}-s390x-linux
  */
 
 #include "test_private.h"

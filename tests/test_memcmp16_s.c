@@ -4,6 +4,8 @@
  * Lines executed:85.45% of 55
  *
  *------------------------------------------------------------------
+ * fails: ubuntu-aarch64-linux-native and aarch64-fedora-docker,
+ * but passes {debian,centos,fedora}-aarch64-linux
  */
 
 #include "test_private.h"

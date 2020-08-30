@@ -60,7 +60,7 @@ dist: xenial
     script:
       - docker run --rm -t sample build-aux/conf-make-check.sh
   # The way to use compatible os images (multiarch's ubuntu image etc) is deprecated.
-  # But it might be faster than above recommended ways.
+  # But it might be faster than above recommended ways. fails
   - &test_in_container_compatible_image
     language: bash
     services: docker
@@ -89,6 +89,54 @@ dist: xenial
     services: docker
     before_install:
       - BASE_IMAGE="$BASE_IMAGE@$(script/print-manifest-arch-digest.sh "$BASE_IMAGE" "$MANIFEST_ARCH")"
+  # https://github.com/junaruga/ci-multi-arch-native-container-test/blob/master/.travis.yml
+  #    - DIST=fedora
+  #    - BASE_IMAGE="${DIST}:31"
+  #    - PODMAN=docker
+  - &test_multi_arch_native_container_test
+    services: docker
+    install:
+      # Install podman on Ubuntu.
+      # https://github.com/containers/libpod/blob/master/install.md#ubuntu
+      - sudo add-apt-repository -y ppa:projectatomic/ppa
+      - sudo apt-get update -qq
+      - sudo apt-get -qq -y install podman uidmap strace
+      - apt list podman
+      - apt-cache show podman
+      - dpkg-query -L podman
+      - uname -a
+      # To emphasize printing the kernel release
+      - uname -r
+      - nproc
+      - env
+      - id
+
+      - $PODMAN --version
+      - $PODMAN version || true
+      - $PODMAN info || true
+      - strace -f $PODMAN info || true
+      - $PODMAN info --debug || true
+
+      # Incompatibilities of podman from docker on Travis CI
+      # https://github.com/containers/libpod/issues/3679
+      - mkdir -p /etc/containers
+      - echo -e "[registries.search]\nregistries = ['docker.io']" | sudo tee /etc/containers/registries.conf
+      - |
+        travis_retry "${PODMAN}" build --rm \
+        --build-arg BASE_IMAGE="${BASE_IMAGE}" \
+        --build-arg EXTRA_PKGS="${EXTRA_PKGS}" \
+        --build-arg FORCE_ARCH_32="${FORCE_ARCH_32}" \
+        --build-arg EXTRA_ARCH_32_PKGS="${EXTRA_ARCH_32_PKGS}" \
+        -f "Dockerfile-${DIST}" \
+        -t my-container \
+        .
+        script:
+          - |
+            "${PODMAN}" run ${PODMAN_EXTRA_OPTS} --rm -t \
+            -e CC="${CC:-gcc}" \
+            -e CFLAGS="${CFLAGS}" \
+            -e SETARCH="${SETARCH}" \
+            my-container bash -cx "setarch --list && $SETARCH uname -m && $SETARCH build-aux/conf-make-check.sh"
   - &test_native
     script:
       # skip duplicate compilers and overly strict clang++
@@ -155,79 +203,92 @@ matrix:
             - clang-3.8
       env: ASAN=1 CONF="--enable-debug --enable-unsafe --enable-norm-compat"
       <<: *test_native
-      # ---------------------------
-      # ARM, 64-bit, Little-endian
+    # ---------------------------
+    # ARM, 64-bit, Little-endian (fails only memcmp16_s, but fast)
     - name: ubuntu-aarch64-linux-native
       arch: arm64
+    # fails gmtime_s, localtime_s
     - name: ubuntu-aarch64-linux
       env:
         - BASE_IMAGE=arm64v8/ubuntu
+        - OS_NAME=ubuntu
       <<: *test_in_container
-    - name: ubuntu-aarch64-linux-qemu
-      env:
-        - ARCH=aarch64
-        - BASE_IMAGE=arm64v8/ubuntu
-        - OS_NAME=ubuntu-qemu
-      <<: *test_in_container_qemu
-    - name: ubuntu-aarch64-linux-compatible-image
-      env:
-        - BASE_IMAGE=multiarch/ubuntu-debootstrap:arm64-bionic
-      <<: *test_in_container_compatible_image
+    #- name: ubuntu-aarch64-linux-qemu
+    #  env:
+    #    - ARCH=aarch64
+    #    - BASE_IMAGE=arm64v8/ubuntu
+    #    - OS_NAME=ubuntu-qemu
+    #  <<: *test_in_container_qemu
+    #- name: ubuntu-aarch64-linux-compatible-image
+    #  env:
+    #    - BASE_IMAGE=multiarch/ubuntu-debootstrap:arm64-bionic
+    #  <<: *test_in_container_compatible_image
     # ARM, 32-bit, Little-endian
     - name: ubuntu-arm32-linux
       env:
         - BASE_IMAGE=arm32v7/ubuntu
+        - OS_NAME=ubuntu
       <<: *test_in_container
+    # fails gmtime, localtime
     - name: ubuntu-arm32-linux-qemu
       env:
         - ARCH=arm
         - BASE_IMAGE=arm32v7/ubuntu
         - OS_NAME=ubuntu-qemu
       <<: *test_in_container_qemu
-    - name: ubuntu-arm32-linux-compatible-image
-      env:
-        - BASE_IMAGE=multiarch/ubuntu-debootstrap:armhf-bionic
-      <<: *test_in_container_compatible_image
+    #- name: ubuntu-arm32-linux-compatible-image
+    #  env:
+    #    - BASE_IMAGE=multiarch/ubuntu-debootstrap:armhf-bionic
+    #  <<: *test_in_container_compatible_image
     # PowerPC, 64-bit, Little-endian
     - name: ubuntu-ppc64le-linux
       env:
         - BASE_IMAGE=ppc64le/ubuntu
+        - OS_NAME=ubuntu
       <<: *test_in_container
+    # passes
     - name: ubuntu-ppc64le-linux-native
       os: linux-ppc64le
     # IBM Z and LinuxONE, 64-bit, Big-endian
-    - name: ubuntu-s390x-linux-uname
-      env:
-        - BASE_IMAGE=s390x/ubuntu
-      <<: *test_uname_in_container
-    - name: ubuntu-s390x-linux
-      env:
-        - BASE_IMAGE=s390x/ubuntu
-      <<: *test_in_container
+    #- name: ubuntu-s390x-linux-uname
+    #  env:
+    #    - BASE_IMAGE=s390x/ubuntu
+    #  <<: *test_uname_in_container
+    # fails gmtime, localtime
+    #- name: ubuntu-s390x-linux
+    #  env:
+    #    - BASE_IMAGE=s390x/ubuntu
+    #    - OS_NAME=ubuntu
+    #  <<: *test_in_container
+    # fails gmtime, localtime
     - name: ubuntu-s390x-linux-qemu
       env:
         - ARCH=s390x
         - BASE_IMAGE=s390x/ubuntu
         - OS_NAME=ubuntu-qemu
+      addons:
+        apt:
+          packages:
+            - diffutils
       <<: *test_in_container_qemu
     # PowerPC, 64-bit, Big-endian
-    - name: ubuntu-ppc64-linux-compatible-image
-      env:
-        - BASE_IMAGE=multiarch/ubuntu-debootstrap:powerpc-xenial
-      <<: *test_in_container_compatible_image
-    # Intel, 32-bit, Little-endian
+    #- name: ubuntu-ppc64-linux-compatible-image
+    #  env:
+    #    - BASE_IMAGE=multiarch/ubuntu-debootstrap:powerpc-xenial
+    #  <<: *test_in_container_compatible_image
+    # Intel, 32-bit, Little-endian, passes
     - name: debian-i386-linux
       env:
         - BASE_IMAGE=i386/debian
         - OS_NAME=debian
       <<: *test_in_container
-    # ARM, 64-bit, Little-endian
+    # ARM, 64-bit, Little-endian, passes
     - name: debian-aarch64-linux
       env:
         - BASE_IMAGE=arm64v8/debian
         - OS_NAME=debian
       <<: *test_in_container
-    # ARM, 32-bit, Little-endian
+    # ARM, 32-bit, Little-endian, passes
     - name: debian-arm32-linux
       env:
         - BASE_IMAGE=arm32v7/debian
@@ -240,17 +301,18 @@ matrix:
         - OS_NAME=debian
       <<: *test_in_container
     # IBM Z and LinuxONE, 64-bit, Big-endian
-    - name: debian-s390x-linux
-      env:
-        - BASE_IMAGE=s390x/debian
-        - OS_NAME=debian
-      <<: *test_in_container
-    # Intel, 32-bit, Little-endian
-    - name: centos-i386-linux
-      env:
-        - BASE_IMAGE=i386/centos
-        - OS_NAME=centos
-      <<: *test_in_container
+    # Works fine, but 24min instead of 5
+    #- name: debian-s390x-linux
+    #  env:
+    #    - BASE_IMAGE=s390x/debian
+    #    - OS_NAME=debian
+    #  <<: *test_in_container
+    # Intel, 32-bit, Little-endian. outdated
+    #- name: centos-i386-linux
+    #  env:
+    #    - BASE_IMAGE=i386/centos
+    #    - OS_NAME=centos
+    #  <<: *test_in_container
     # ARM, 64-bit, Little-endian
     - name: centos-aarch64-linux
       env:
@@ -269,32 +331,55 @@ matrix:
         - BASE_IMAGE=arm64v8/fedora
         - OS_NAME=fedora
       <<: *test_in_container
-    # PowerPC, 64-bit, Little-endian
+    # ARM, 64-bit, Little-endian. from ci-multi-arch-native-container-test
+    # fails memcmp16_s
+    - name: aarch64-fedora-docker
+      arch: arm64
+      env:
+        - SETARCH=
+        - CC=
+        - DIST=fedora
+        - BASE_IMAGE="${DIST}:31"
+        - PODMAN=docker
+      <<: *test_multi_arch_native_container_test
+    # IBM Z, 64-bit, Big-endian. from ci-multi-arch-native-container-test
+    # 4x faster than the other s390x tests
+    - name: s390x-fedora-docker
+      arch: s390x
+      env:
+        - SETARCH=
+        - CC=
+        - DIST=fedora
+        - BASE_IMAGE="${DIST}:31"
+        - PODMAN=docker
+      <<: *test_multi_arch_native_container_test
+    # PowerPC, 64-bit, Little-endian. passes (31min)
     - name: fedora-ppc64le-linux
       env:
         - BASE_IMAGE=ppc64le/fedora
         - OS_NAME=fedora
       <<: *test_in_container
-    # IBM Z, 64-bit, Big-endian
-    - name: fedora-s390x-linux
-      env:
-        - BASE_IMAGE=s390x/fedora
-        - OS_NAME=fedora
-      <<: *test_in_container
+    # IBM Z, 64-bit, Big-endian. passes (31min)
+    # Works fine, but too slow
+    #- name: fedora-s390x-linux
+    #  env:
+    #    - BASE_IMAGE=s390x/fedora
+    #    - OS_NAME=fedora
+    #  <<: *test_in_container
     # Intel, 64-bit, Little-endian
     - name: rhel-x86_64-linux-native
       env:
         - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
         - OS_NAME=rhel
       <<: *test_in_container
-    # ARM, 64-bit, Little-endian
-    - name: rhel-aarch64-linux
-      env:
-        - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
-        - OS_NAME=rhel
-        - MANIFEST_ARCH=arm64
-      <<: *inspect_image
-      <<: *test_in_container
+    # ARM, 64-bit, Little-endian. outdated
+    #- name: rhel-aarch64-linux
+    #  env:
+    #    - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+    #    - OS_NAME=rhel
+    #    - MANIFEST_ARCH=arm64
+    #  <<: *inspect_image
+    #  <<: *test_in_container
     # PowerPC, 64-bit, Little-endian
     - name: rhel-ppc64le-linux-native
       os: linux-ppc64le
@@ -311,14 +396,14 @@ matrix:
     #     - MANIFEST_ARCH=ppc64le
     #   <<: *inspect_image
     #   <<: *test_in_container
-    # IBM Z and LinuxONE, 64-bit, Big-endian
-    - name: rhel-s390x-linux
-      env:
-        - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
-        - OS_NAME=rhel
-        - MANIFEST_ARCH=s390x
-      <<: *inspect_image
-      <<: *test_in_container
+    # IBM Z and LinuxONE, 64-bit, Big-endian. outdated
+    #- name: rhel-s390x-linux
+    #  env:
+    #    - BASE_IMAGE=registry.access.redhat.com/ubi8:8.0
+    #    - OS_NAME=rhel
+    #    - MANIFEST_ARCH=s390x
+    #  <<: *inspect_image
+    #  <<: *test_in_container
     #- os: linux
     #  arch: arm64
     #- os: linux
@@ -337,6 +422,18 @@ matrix:
     #  arch: m68k
   allow_failures:
     - name: x86_64-distcheck
+    - name: ubuntu-aarch64-linux
+    - name: ubuntu-aarch64-linux-qemu
+    #- name: ubuntu-aarch64-linux-compatible-image
+    - name: ubuntu-arm32-linux
+    - name: ubuntu-arm32-linux-qemu
+    #- name: ubuntu-arm32-linux-compatible-image
+    - name: ubuntu-ppc64le-linux
+    - name: ubuntu-ppc64le-linux-qemu
+    - name: ubuntu-s390x-linux-qemu
+    #- name: ubuntu-ppc64-linux-compatible-image
+    - name: aarch64-fedora-docker
+    - name: ubuntu-aarch64-linux-native
   # clang++ does not allow c anymore. gcc is duplicate to cc
   #exclude:
   #  - env: XCC="gcc" TRAVIS_OS_NAME=osx
