@@ -6,13 +6,12 @@ platform:
   os: linux
   arch: arm64
 steps:
-  - name: ubuntu-bionic
-    image: ubuntu:bionic
+  - name: arm64v8-fedora
+    image: arm64v8/fedora
     commands:
-      - uname -m
-      - apt-get -yq update
-      - apt-get -yq install gcc make file git autotools-dev automake autoconf
-                            libtool libtext-diff-perl pkg-config
+      - uname -a
+      - dnf install -y --repo fedora gcc make file git automake autoconf which
+                                     libtool perl-Text-Diff pkgconf-pkg-config
       - build-aux/autogen.sh
       - build-aux/conf-make-check.sh
 # https://docker-runner.docs.drone.io/configuration/trigger/
@@ -29,13 +28,12 @@ platform:
   os: linux
   arch: arm
 steps:
-  - name: ubuntu-bionic
-    image: ubuntu:bionic
+  - name: arm32v7-fedora
+    image: arm32v7/fedora
     commands:
-      - uname -m
-      - apt-get -yq update
-      - apt-get -yq install gcc make file git autotools-dev automake autoconf
-                            libtool libtext-diff-perl pkg-config
+      - uname -a
+      - dnf install -y gcc make file git automake autoconf which
+                       libtool perl-Text-Diff pkgconf-pkg-config
       - build-aux/autogen.sh
       - build-aux/conf-make-check.sh
 trigger:
