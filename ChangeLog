@@ -1,6 +1,28 @@
 
         ChangeLog file for safeclib
 
+Changes in v31082020 3.6.0
+        - Added smokers for more architectures and distros:
+          ubuntu, debian, centos, fedora, rhel /
+          x86_64, i386, arm32, aarch64, s390x, ppc64le on travis and drone.
+          just ubuntu arm32, arm64 and s390x are broken. (GH #81)
+          Big-endian works.
+        - Updated Unicode to version 13. Very few changes only.
+        - Use __attribute__format printf and scanf checks, and prepared for the
+          eventual wprintf and wscanf formats which are waiting to be added into gcc
+          since 2008. (GH #85)
+        - favor gcc-{ar,ranlib,nm} to find the plugin paths (e.g. for lto)
+        - move typedef rsize_t below def. of size_t (GH #89)
+        - kernel module: detect new time64_t and use old_time32_t for our API.
+          We didn't add the new time64_t API's yet.
+        - tests: add 2 missing HAVE_CT_BOS_OVR comptime overflows
+        - tests: fixes for latest msys2, new HAVE_MINGW64 now also defines __MINGW32__
+        - travis: improve distchecks timeouts.
+        - hardened compiler flags: -fstack-protector-strong -fstack-clash-protection
+          -fcf-protection
+        - Move SAFECLIB_HAVE_C99 to public safe_config.h (Hauke Mehrtens)
+        - Fix wcslwr_s error msg prefixes.
+
 Changes in v05112019 3.5.2
         - Fixed musl compilation by don't undefining _GNU_SOURCE
           with getenv_s (PR #83, Fabrice Fontaine)
