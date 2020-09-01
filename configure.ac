@@ -212,6 +212,26 @@ fi
 AC_SUBST(INSERT_EXTS)
 AM_CONDITIONAL(ENABLE_EXTS, test "x$enable_extensions" = "xtrue")
 
+AC_ARG_ENABLE(u8,
+	AS_HELP_STRING([--enable-u8],
+          [Add an additional utf-8 string library.
+	   @<:@default=no@:>@]),
+       [case "${enableval}" in
+	yes) enable_u8=true ;;
+	no)  enable_u8=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-u8]) ;;
+	esac], [enable_u8=false])
+AC_MSG_CHECKING([for --enable-u8])
+if test "x$enable_u8" = "xtrue" ; then
+	AC_MSG_RESULT([yes])
+	INSERT_U8="#define SAFECLIB_ENABLE_U8 1"
+else
+	AC_MSG_RESULT([no (default)])
+	INSERT_U8="#undef SAFECLIB_ENABLE_U8"
+fi
+AM_CONDITIONAL(ENABLE_U8, test "x$enable_u8" = "xtrue")
+AC_SUBST(INSERT_U8)
+
 AC_ARG_ENABLE(memmax,
 	AS_HELP_STRING([--enable-memmax],
 		       [specify the largest object size allowed for the

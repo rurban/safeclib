@@ -49,6 +49,11 @@ dist_pkginclude_HEADERS = \
 	include/safe_types.h   \
 	include/safe_lib_errno.h
 
+if ENABLE_U8
+pkginclude_HEADERS    += \
+	include/safe_u8_lib.h
+endif
+
 # Support files
 SAFEC_INFRA = \
 	$(top_srcdir)/README.md                  \
