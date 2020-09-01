@@ -72,9 +72,15 @@
  *    strlastchar_s(), strlastdiff_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strlastsame_s(const char *dest, rsize_t dmax,
+                      const char *src, rsize_t *resultp)
+#else
 EXPORT errno_t _strlastsame_s_chk(const char *dest, rsize_t dmax,
                                   const char *src, rsize_t *resultp,
-                                  const size_t destbos) {
+                                  const size_t destbos)
+#endif
+{
     const char *rp;
     bool found;
 

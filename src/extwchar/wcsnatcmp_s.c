@@ -131,10 +131,17 @@ static int compare_left(wchar_t const *a, wchar_t const *b) {
     return 0;
 }
 
+#ifdef FOR_DOXYGEN
+errno_t wcsnatcmp_s(const wchar_t *dest, rsize_t dmax,
+                    const wchar_t *src, rsize_t smax,
+                    const int fold_case, int *resultp)
+#else
 EXPORT errno_t _wcsnatcmp_s_chk(const wchar_t *dest, rsize_t dmax,
                                 const wchar_t *src, rsize_t smax,
                                 const int fold_case, int *resultp,
-                                const size_t destbos, const size_t srcbos) {
+                                const size_t destbos, const size_t srcbos)
+#endif
+{
     wchar_t *d1 = NULL, *d2 = NULL;
     size_t ai, bi;
     const size_t destsz = dmax * sizeof(wchar_t);

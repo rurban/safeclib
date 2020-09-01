@@ -88,8 +88,8 @@ struct tm *gmtime_r(const time_t * __restrict, struct tm * __restrict);
  *    localtime_s(), ctime_s()
  */
 
-EXPORT struct tm *gmtime_s(const time_t *restrict timer,
-                           struct tm *restrict dest) {
+EXPORT struct tm *gmtime_s(const time_t *restrict timer, struct tm *restrict dest)
+{
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("gmtime_s: dest is null", NULL,

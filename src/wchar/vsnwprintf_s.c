@@ -112,10 +112,15 @@ any of the arguments corresponding to %s is a null pointer.
  * @see
  *    vswprintf_s(), snwprintf_s(), vsnprintf_s()
  */
-
+#ifdef FOR_DOXYGEN
+int vsnwprintf_s(wchar_t *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict fmt, va_list ap)
+#else
 EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                              const size_t destbos, const wchar_t *restrict fmt,
-                             va_list ap) {
+                             va_list ap)
+#endif
+{
     wchar_t *p;
     int ret = -1;
     const size_t destsz = dmax * sizeof(wchar_t);

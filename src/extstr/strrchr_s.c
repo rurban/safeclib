@@ -71,9 +71,14 @@
  *    memrchr_s(), strchr_s(), memchr_s(), strspn_s(), strstr_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strrchr_s(const char *restrict dest, rsize_t dmax, const int ch, char **resultp)
+#else
 EXPORT errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
                               const int ch, char **resultp,
-                              const size_t destbos) {
+                              const size_t destbos)
+#endif
+{
     rsize_t len;
 
     CHK_SRC_NULL("strrchr_s", resultp)

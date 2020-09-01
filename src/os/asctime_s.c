@@ -106,8 +106,13 @@ char *asctime_r(const struct tm * __restrict, char * __restrict);
  *    ctime_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t asctime_s(char *dest, rsize_t dmax, const struct tm *tm)
+#else
 EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
-                              const size_t destbos) {
+                              const size_t destbos)
+#endif
+{
     const char *buf;
     size_t len;
 

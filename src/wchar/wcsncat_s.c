@@ -101,10 +101,15 @@
  * @see
  *    wcscat_s(), strncat_s()
  */
-
+#ifdef FOR_DOXYGEN
+errno_t wcsncat_s(wchar_t *restrict dest, rsize_t dmax,
+                  const wchar_t *restrict src, rsize_t slen)
+#else
 EXPORT errno_t _wcsncat_s_chk(wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict src, rsize_t slen,
-                              const size_t destbos, const size_t srcbos) {
+                              const size_t destbos, const size_t srcbos)
+#endif
+{
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;

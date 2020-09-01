@@ -89,10 +89,15 @@
  * @see
  *    snprintf_s(), sprintf_s(), vsprintf_s(), vsnwprintf_s()
  */
-
+#ifdef FOR_DOXYGEN
+int vsnprintf_s(char *restrict dest, rsize_t dmax,
+                const char *restrict fmt, va_list ap)
+#else
 EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
                             const size_t destbos, const char *restrict fmt,
-                            va_list ap) {
+                            va_list ap)
+#endif
+{
 
     int ret = -1;
     const char *p;

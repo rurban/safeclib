@@ -75,8 +75,14 @@
  *    strcpyfld_s(), strcpyfldin_s(), strcpyfldout_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t strcmpfld_s(const char *dest, rsize_t dmax, const char *src,
+                    int *resultp)
+#else
 EXPORT errno_t _strcmpfld_s_chk(const char *dest, rsize_t dmax, const char *src,
-                                int *resultp, const size_t destbos) {
+                                int *resultp, const size_t destbos)
+#endif
+{
     CHK_SRC_NULL("strcmpfld_s", resultp)
     *resultp = 0;
 

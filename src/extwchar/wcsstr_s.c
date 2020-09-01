@@ -72,11 +72,17 @@
  * @see
  *     wcsstr(), strstr_s(), memcmp32_s()
  */
-
+#ifdef FOR_DOXYGEN
+errno_t wcsstr_s(wchar_t *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict src, rsize_t slen,
+                 wchar_t **restrict substringp)
+#else
 EXPORT errno_t _wcsstr_s_chk(wchar_t *restrict dest, rsize_t dmax,
                              const wchar_t *restrict src, rsize_t slen,
                              wchar_t **restrict substringp,
-                             const size_t destbos, const size_t srcbos) {
+                             const size_t destbos, const size_t srcbos)
+#endif
+{
     rsize_t len;
     rsize_t dlen;
     const size_t destsz = dmax * sizeof(wchar_t);

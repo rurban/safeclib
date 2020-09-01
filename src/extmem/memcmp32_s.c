@@ -79,9 +79,15 @@
  *    memcmp_s(), memcmp16_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t memcmp32_s(const uint32_t *dest, rsize_t dlen,
+                   const uint32_t *src, rsize_t slen, int *diff)
+#else
 EXPORT errno_t _memcmp32_s_chk(const uint32_t *dest, rsize_t dlen,
                                const uint32_t *src, rsize_t slen, int *diff,
-                               const size_t destbos, const size_t srcbos) {
+                               const size_t destbos, const size_t srcbos)
+#endif
+{
     uint32_t smax; /* in bytes */
     uint32_t dmax; /* in bytes */
 

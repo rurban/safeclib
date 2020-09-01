@@ -73,7 +73,12 @@
  *    memzero16_s(), memzero32_s()
  *
  */
-EXPORT errno_t _memzero_s_chk(void *dest, rsize_t len, const size_t destbos) {
+#ifdef FOR_DOXYGEN
+errno_t memzero_s(void *dest, rsize_t len)
+#else
+EXPORT errno_t _memzero_s_chk(void *dest, rsize_t len, const size_t destbos)
+#endif
+{
     rsize_t dmax = len;
     CHK_DEST_MEM_NULL("memzero_s")
     CHK_DMAX_MEM_ZERO("memzero_s")

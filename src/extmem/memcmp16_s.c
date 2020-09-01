@@ -80,9 +80,15 @@
  *
  */
 
+#ifdef FOR_DOXYGEN
+errno_t memcmp16_s(const uint16_t *dest, rsize_t dlen,
+                   const uint16_t *src, rsize_t slen, int *diff)
+#else
 EXPORT errno_t _memcmp16_s_chk(const uint16_t *dest, rsize_t dlen,
                                const uint16_t *src, rsize_t slen, int *diff,
-                               const size_t destbos, const size_t srcbos) {
+                               const size_t destbos, const size_t srcbos)
+#endif
+{
     size_t dmax; /* in bytes */
     size_t smax; /* in bytes */
 

@@ -120,9 +120,16 @@
  * @see
  *    mbstowc_s()
  */
+#ifdef FOR_DOXYGEN
+errno_t wcstombs_s(size_t *restrict retvalp, char *restrict dest,
+                   rsize_t dmax, const wchar_t *restrict src,
+                   rsize_t len)
+#else
 EXPORT errno_t _wcstombs_s_chk(size_t *restrict retvalp, char *restrict dest,
                                rsize_t dmax, const wchar_t *restrict src,
-                               rsize_t len, const size_t destbos) {
+                               rsize_t len, const size_t destbos)
+#endif
+{
     size_t l;
     errno_t rc;
 #if defined(__CYGWIN__) && defined(__x86_64)

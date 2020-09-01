@@ -63,8 +63,13 @@
  *    strnlen_s()
  *
  */
+#ifdef FOR_DOXYGEN
+rsize_t strnterminate_s(char *dest, rsize_t dmax)
+#else
 EXPORT rsize_t _strnterminate_s_chk(char *dest, rsize_t dmax,
-                                    const size_t destbos) {
+                                    const size_t destbos)
+#endif
+{
     rsize_t count;
 
     if (unlikely(dest == NULL)) {

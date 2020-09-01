@@ -64,7 +64,13 @@
  *    strispassword_s()
  */
 
-EXPORT errno_t _strzero_s_chk(char *dest, rsize_t dmax, const size_t destbos) {
+#ifdef FOR_DOXYGEN
+errno_t strzero_s(char *dest, rsize_t dmax)
+#else
+EXPORT errno_t _strzero_s_chk(char *dest, rsize_t dmax,
+                              const size_t destbos)
+#endif
+{
     CHK_DEST_NULL("strzero_s")
     CHK_DMAX_ZERO("strzero_s")
     if (destbos == BOS_UNKNOWN) {

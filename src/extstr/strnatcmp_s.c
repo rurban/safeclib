@@ -118,9 +118,15 @@ static int compare_left(char const *a, char const *b) {
     return 0;
 }
 
+#ifdef FOR_DOXYGEN
+errno_t strnatcmp_s(const char *dest, rsize_t dmax, const char *src,
+                    const int fold_case, int *resultp)
+#else
 EXPORT errno_t _strnatcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
                                 const int fold_case, int *resultp,
-                                const size_t destbos, const size_t srcbos) {
+                                const size_t destbos, const size_t srcbos)
+#endif
+{
     size_t ai, bi;
     char ca, cb;
     int fractional;

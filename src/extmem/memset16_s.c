@@ -76,8 +76,13 @@
  *    memset_s(), memset32_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t memset16_s(uint16_t *dest, rsize_t dmax, uint16_t value, rsize_t n)
+#else
 EXPORT errno_t _memset16_s_chk(uint16_t *dest, rsize_t dmax, uint16_t value,
-                               rsize_t n, const size_t destbos) {
+                               rsize_t n, const size_t destbos)
+#endif
+{
     errno_t err;
 
     CHK_DEST_MEM_NULL("memset16_s")

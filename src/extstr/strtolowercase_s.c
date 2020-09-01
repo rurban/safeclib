@@ -67,8 +67,13 @@
  *    strtouppercase_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strtolowercase_s(char *restrict dest, rsize_t dmax)
+#else
 EXPORT errno_t _strtolowercase_s_chk(char *restrict dest, rsize_t dmax,
-                                     const size_t destbos) {
+                                     const size_t destbos)
+#endif
+{
     CHK_DEST_NULL("strtolowercase_s")
     CHK_DMAX_ZERO("strtolowercase_s")
     if (destbos == BOS_UNKNOWN) {

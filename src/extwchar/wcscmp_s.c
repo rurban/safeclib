@@ -76,10 +76,17 @@
  *    strcmp_s(), wcsncmp_s(), wcsicmp_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t wcscmp_s(const wchar_t *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict src, rsize_t smax,
+                 int *resultp)
+#else
 EXPORT errno_t _wcscmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                              const wchar_t *restrict src, rsize_t smax,
                              int *resultp, const size_t destbos,
-                             const size_t srcbos) {
+                             const size_t srcbos)
+#endif
+{
     const size_t destsz = dmax * sizeof(wchar_t);
     const size_t srcsz = smax * sizeof(wchar_t);
 

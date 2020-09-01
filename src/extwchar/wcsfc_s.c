@@ -110,10 +110,15 @@ static inline int _is_lt_accented(uint32_t wc) {
  *    iswfc(), towfc_s(), towupper(), wcslwr_s(), wcsupr_s()
  *
  */
-
+#ifdef FOR_DOXYGEN
+errno_t wcsfc_s(wchar_t *restrict dest, rsize_t dmax,
+                const wchar_t *restrict src, rsize_t *restrict lenp)
+#else
 EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
                             const wchar_t *restrict src, rsize_t *restrict lenp,
-                            const size_t destbos) {
+                            const size_t destbos)
+#endif
+{
     wchar_t *orig_dest;
     rsize_t orig_dmax;
     int is_lithuanian = 0;

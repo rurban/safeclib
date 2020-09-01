@@ -50,8 +50,13 @@
  *    memcmp_s(), timingsafe_bcmp()
  */
 
+#ifdef FOR_DOXYGEN
+int timingsafe_memcmp(const void *b1, const void *b2, size_t len)
+#else
 EXPORT int _timingsafe_memcmp_chk(const void *b1, const void *b2, size_t len,
-                                  const size_t destbos, const size_t srcbos) {
+                                  const size_t destbos, const size_t srcbos)
+#endif
+{
     const unsigned char *p1 = (const unsigned char *)b1,
                         *p2 = (const unsigned char *)b2;
     size_t i;

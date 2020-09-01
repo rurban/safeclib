@@ -85,9 +85,15 @@
  *    wcscoll_s(), strcmp_s(), strcasecmp_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t strcoll_s(const char *restrict dest, rsize_t dmax,
+                  const char *restrict src, int *resultp)
+#else
 EXPORT errno_t _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
                               const char *restrict src, int *resultp,
-                              const size_t destbos) {
+                              const size_t destbos)
+#endif
+{
     CHK_SRC_NULL("strcoll_s", resultp)
     *resultp = 0;
 

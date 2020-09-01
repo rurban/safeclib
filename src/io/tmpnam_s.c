@@ -91,8 +91,13 @@
  *   to the optionally defined macro P_tmpdir).
  */
 
+#ifdef FOR_DOXYGEN
+errno_t tmpnam_s(const char *dest, rsize_t dmax)
+#else
 EXPORT errno_t _tmpnam_s_chk(const char *dest, rsize_t dmax,
-                             const size_t destbos) {
+                             const size_t destbos)
+#endif
+{
     static int count = 0;
     char *result = NULL;
     char *dp = (char *)dest;

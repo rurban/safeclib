@@ -99,8 +99,13 @@
  *    scanf_s()
  */
 
+#ifdef FOR_DOXYGEN
+char *gets_s(char *restrict dest, rsize_t dmax)
+#else
 EXPORT char *_gets_s_chk(char *restrict dest, rsize_t dmax,
-                         const size_t destbos) {
+                         const size_t destbos)
+#endif
+{
     char *ret;
 
     if (unlikely(dest == NULL)) {

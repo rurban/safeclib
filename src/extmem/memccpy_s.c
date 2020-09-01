@@ -80,9 +80,15 @@
  * @see
  *    memcpy_s(), strncpy_s()
  */
+#ifdef FOR_DOXYGEN
+errno_t memccpy_s(void *restrict dest, rsize_t dmax,
+                  const void *restrict src, int c, rsize_t n)
+#else
 EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
                               const void *restrict src, int c, rsize_t n,
-                              const size_t destbos, const size_t srcbos) {
+                              const size_t destbos, const size_t srcbos)
+#endif
+{
     uint8_t *dp;
     const uint8_t *sp;
     rsize_t orig_dmax = dmax;

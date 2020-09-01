@@ -96,9 +96,14 @@
  *    wcscat_s(), strcpy_s(), strncpy_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t wcscat_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
+#else
 EXPORT errno_t _wcscat_s_chk(wchar_t *restrict dest, rsize_t dmax,
                              const wchar_t *restrict src,
-                             const size_t destbos) {
+                             const size_t destbos)
+#endif
+{
     rsize_t orig_dmax;
     wchar_t *orig_dest;
     const wchar_t *overlap_bumper;

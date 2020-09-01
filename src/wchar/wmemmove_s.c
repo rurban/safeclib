@@ -104,9 +104,14 @@
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t wmemmove_s(wchar_t *dest, rsize_t dlen, const wchar_t *src, rsize_t count)
+#else
 EXPORT errno_t _wmemmove_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
                                rsize_t count, const size_t destbos,
-                               const size_t srcbos) {
+                               const size_t srcbos)
+#endif
+{
     const rsize_t dmax = dlen * SIZEOF_WCHAR_T;
     const rsize_t smax = count * SIZEOF_WCHAR_T;
 

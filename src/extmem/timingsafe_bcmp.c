@@ -51,8 +51,13 @@
  *
  */
 
+#ifdef FOR_DOXYGEN
+int timingsafe_bcmp(const void *b1, const void *b2, size_t n)
+#else
 EXPORT int _timingsafe_bcmp_chk(const void *b1, const void *b2, size_t n,
-                                const size_t destbos, const size_t srcbos) {
+                                const size_t destbos, const size_t srcbos)
+#endif
+{
     const unsigned char *p1 = (const unsigned char *)b1,
                         *p2 = (const unsigned char *)b2;
     int ret = 0;

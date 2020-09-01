@@ -77,9 +77,15 @@
  *
  */
 
+#ifdef FOR_DOXYGEN
+errno_t wmemcmp_s(const wchar_t *dest, rsize_t dlen,
+                  const wchar_t *src, rsize_t slen, int *diff)
+#else
 EXPORT errno_t _wmemcmp_s_chk(const wchar_t *dest, rsize_t dlen,
                               const wchar_t *src, rsize_t slen, int *diff,
-                              const size_t destbos, const size_t srcbos) {
+                              const size_t destbos, const size_t srcbos)
+#endif
+{
     const rsize_t dmax = dlen * SIZEOF_WCHAR_T;
     const rsize_t smax = slen * SIZEOF_WCHAR_T;
     const wchar_t *dp;

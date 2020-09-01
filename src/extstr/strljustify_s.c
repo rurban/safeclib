@@ -72,8 +72,13 @@
  *    strremovews_s(),
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strljustify_s(char *dest, rsize_t dmax)
+#else
 EXPORT errno_t _strljustify_s_chk(char *dest, rsize_t dmax,
-                                  const size_t destbos) {
+                                  const size_t destbos)
+#endif
+{
     char *orig_dest;
     rsize_t orig_dmax;
 

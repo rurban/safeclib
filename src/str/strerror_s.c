@@ -86,9 +86,13 @@
  * @see
  *    strerrorlen_s()
  */
-
+#ifdef FOR_DOXYGEN
+errno_t strerror_s(char *dest, rsize_t dmax, errno_t errnum)
+#else
 EXPORT errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
-                               const size_t destbos) {
+                               const size_t destbos)
+#endif
+{
     size_t len;
 
     CHK_DEST_NULL("strerror_s")

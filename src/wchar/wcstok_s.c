@@ -174,10 +174,15 @@
  *    }
  * @endcode
  */
-
+#ifdef FOR_DOXYGEN
+wchar_t *wcstok_s(wchar_t *restrict dest, rsize_t *restrict dmaxp,
+                  const wchar_t *restrict delim, wchar_t **restrict ptr)
+#else
 EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
                               const wchar_t *restrict delim,
-                              wchar_t **restrict ptr, const size_t destbos) {
+                              wchar_t **restrict ptr, const size_t destbos)
+#endif
+{
     const wchar_t *pt;
     wchar_t *ptoken;
     rsize_t dlen;

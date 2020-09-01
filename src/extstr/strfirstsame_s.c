@@ -72,9 +72,16 @@
  *    strlastdiff_s(), strlastsame_s()
  *
  */
+
+#ifdef FOR_DOXYGEN
+errno_t strfirstsame_s(const char *dest, rsize_t dmax,
+                       const char *src, rsize_t *resultp)
+#else
 EXPORT errno_t _strfirstsame_s_chk(const char *dest, rsize_t dmax,
                                    const char *src, rsize_t *resultp,
-                                   const size_t destbos) {
+                                   const size_t destbos)
+#endif
+{
     const char *rp = 0;
 
     CHK_SRC_NULL("strfirstsame_s", resultp)

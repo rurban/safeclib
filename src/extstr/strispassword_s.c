@@ -66,8 +66,13 @@
  * @see
  *    strzero_s()
  */
+#ifdef FOR_DOXYGEN
+bool strispassword_s(const char *dest, rsize_t dmax)
+#else
 EXPORT bool _strispassword_s_chk(const char *dest, rsize_t dmax,
-                                 const size_t destbos) {
+                                 const size_t destbos)
+#endif
+{
     uint32_t cnt_all;
     uint32_t cnt_lowercase;
     uint32_t cnt_uppercase;

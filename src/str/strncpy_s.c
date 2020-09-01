@@ -106,9 +106,15 @@
  *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strncpy_s(char *restrict dest, rsize_t dmax,
+                  const char *restrict src, rsize_t slen)
+#else
 EXPORT errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
                               const char *restrict src, rsize_t slen,
-                              const size_t destbos, const size_t srcbos) {
+                              const size_t destbos, const size_t srcbos)
+#endif
+{
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;

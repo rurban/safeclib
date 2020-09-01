@@ -84,9 +84,14 @@
  *    memmove_s(), memmove16_s(), memcpy_s(), memcpy16_s() memcpy32_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t memmove32_s(uint32_t *dest, rsize_t dmax, const uint32_t *src, rsize_t slen)
+#else
 EXPORT errno_t _memmove32_s_chk(uint32_t *dest, rsize_t dmax,
                                 const uint32_t *src, rsize_t slen,
-                                const size_t destbos, const size_t srcbos) {
+                                const size_t destbos, const size_t srcbos)
+#endif
+{
     size_t smax; /* in bytes */
 
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */

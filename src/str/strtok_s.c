@@ -171,10 +171,15 @@
  *    }
  * @endcode
  */
-
+#ifdef FOR_DOXYGEN
+char *strtok_s(char *restrict dest, rsize_t *restrict dmaxp,
+               const char *restrict delim, char **restrict ptr)
+#else
 EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
                            const char *restrict delim, char **restrict ptr,
-                           const size_t destbos) {
+                           const size_t destbos)
+#endif
+{
     const char *pt;
     char *ptoken;
     rsize_t dlen;

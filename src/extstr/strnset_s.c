@@ -75,8 +75,13 @@
  *    strzero_s(), strset_s(), wcsnset_s(), strispassword_s()
  */
 
-EXPORT errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value,
-                              rsize_t n, const size_t destbos) {
+#ifdef FOR_DOXYGEN
+errno_t strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n)
+#else
+EXPORT errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value, rsize_t n,
+                              const size_t destbos)
+#endif
+{
 #ifdef SAFECLIB_STR_NULL_SLACK
     char *orig_dest;
 #endif

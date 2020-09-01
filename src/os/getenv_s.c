@@ -88,9 +88,15 @@
  * @retval  -1         when not found
  */
 
+#ifdef FOR_DOXYGEN
+errno_t getenv_s(size_t *restrict len, char *restrict dest,
+                     rsize_t dmax, const char *restrict name)
+#else
 EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
                              rsize_t dmax, const char *restrict name,
-                             const size_t destbos) {
+                             const size_t destbos)
+#endif
+{
     const char *buf;
     int len1;
 

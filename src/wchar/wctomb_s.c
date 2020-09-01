@@ -115,8 +115,14 @@
  * @see
  *    wcrtomb_s()
  */
+#ifdef FOR_DOXYGEN
+errno_t wctomb_s(int *restrict retvalp, char *restrict dest,
+                 rsize_t dmax, wchar_t wc)
+#else
 EXPORT errno_t _wctomb_s_chk(int *restrict retvalp, char *restrict dest,
-                             rsize_t dmax, wchar_t wc, const size_t destbos) {
+                             rsize_t dmax, wchar_t wc, const size_t destbos)
+#endif
+{
     int len;
     errno_t rc;
 #if defined(__CYGWIN__) && defined(__x86_64)

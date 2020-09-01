@@ -70,8 +70,13 @@
  *    strlastdiff_s(), strlastsame_s(),
  */
 
+#ifdef FOR_DOXYGEN
+errno_t strfirstchar_s(char *dest, rsize_t dmax, char c, char **firstp)
+#else
 EXPORT errno_t _strfirstchar_s_chk(char *dest, rsize_t dmax, char c,
-                                   char **firstp, const size_t destbos) {
+                                   char **firstp, const size_t destbos)
+#endif
+{
     CHK_SRC_NULL("strfirstchar_s", firstp)
     *firstp = NULL;
 

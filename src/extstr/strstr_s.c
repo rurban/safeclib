@@ -72,9 +72,16 @@
  *     strprefix_s(), strspn_s(), strcspn_s(), strpbrk_s()
  *
  */
+
+#ifdef FOR_DOXYGEN
+errno_t strstr_s(char *dest, rsize_t dmax, const char *src,
+                 rsize_t slen, char **substringp)
+#else
 EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
                              rsize_t slen, char **substringp,
-                             const size_t destbos, const size_t srcbos) {
+                             const size_t destbos, const size_t srcbos)
+#endif
+{
     rsize_t len;
     rsize_t dlen;
     int i;

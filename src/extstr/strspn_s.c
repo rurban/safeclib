@@ -71,9 +71,15 @@
  *    strcspn_s(), strpbrk_s(), strstr_s(), strprefix_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t strspn_s(const char *dest, rsize_t dmax, const char *src,
+                 rsize_t slen, rsize_t *countp)
+#else
 EXPORT errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                              rsize_t slen, rsize_t *countp,
-                             const size_t destbos, const size_t srcbos) {
+                             const size_t destbos, const size_t srcbos)
+#endif
+{
     const char *scan2;
     rsize_t smax;
     bool match_found;

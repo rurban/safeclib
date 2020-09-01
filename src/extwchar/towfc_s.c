@@ -513,8 +513,13 @@ single:
    Returns the number of replaced wide characters, or -ESNOTFND if not
    replaced.
 */
-EXPORT int _towfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
-                        const uint32_t src, const size_t destbos) {
+#ifdef FOR_DOXYGEN
+int towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src)
+#else
+EXPORT int _towfc_s_chk(wchar_t *restrict dest, rsize_t dmax, const uint32_t src,
+                        const size_t destbos)
+#endif
+{
     int i;
     const size_t destsz = dmax * sizeof(wchar_t);
 

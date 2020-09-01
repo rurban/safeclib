@@ -72,9 +72,15 @@
  *    strstr_s(), strprefix_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strcasestr_s(char *dest, rsize_t dmax, const char *src,
+                     rsize_t slen, char **substring)
+#else
 EXPORT errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
                                  rsize_t slen, char **substring,
-                                 const size_t destbos, const size_t srcbos) {
+                                 const size_t destbos, const size_t srcbos)
+#endif
+{
     rsize_t len;
     rsize_t dlen;
     int i;

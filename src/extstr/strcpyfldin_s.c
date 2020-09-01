@@ -80,8 +80,13 @@
  *    strcpyfld_s(), strcpyfldout_s(),
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t strcpyfldin_s(char *dest, rsize_t dmax, const char *src, rsize_t slen)
+#else
 EXPORT errno_t _strcpyfldin_s_chk(char *dest, rsize_t dmax, const char *src,
-                                  rsize_t slen, const size_t destbos) {
+                                  rsize_t slen, const size_t destbos)
+#endif
+{
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;

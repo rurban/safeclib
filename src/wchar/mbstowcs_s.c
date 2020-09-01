@@ -118,9 +118,16 @@
  *    mbsrtowc_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t mbstowcs_s(size_t *restrict retvalp, wchar_t *restrict dest,
+                   rsize_t dmax, const char *restrict src,
+                   rsize_t len)
+#else
 EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
                                rsize_t dmax, const char *restrict src,
-                               rsize_t len, const size_t destbos) {
+                               rsize_t len, const size_t destbos)
+#endif
+{
     wchar_t *orig_dest;
     errno_t rc;
 #ifdef HAVE_CYGWIN64

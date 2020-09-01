@@ -62,8 +62,13 @@
  *    strishex_s(), strislowercase_s(), strismixedcase_s(),
  */
 
+#ifdef FOR_DOXYGEN
+bool strisuppercase_s(const char *dest, rsize_t dmax)
+#else
 EXPORT bool _strisuppercase_s_chk(const char *dest, rsize_t dmax,
-                                  const size_t destbos) {
+                                  const size_t destbos)
+#endif
+{
     CHK_DEST_DMAX_BOOL("strisuppercase_s", RSIZE_MAX_STR)
 
     if (unlikely(*dest == '\0')) {

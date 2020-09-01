@@ -68,7 +68,12 @@
  *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  *
  */
-EXPORT rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos) {
+#ifdef FOR_DOXYGEN
+rsize_t strnlen_s(const char *str, rsize_t smax, size_t strbos)
+#else
+EXPORT rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos)
+#endif
+{
     rsize_t count;
 
     if (unlikely(str == NULL)) {

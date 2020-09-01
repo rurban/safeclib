@@ -71,9 +71,13 @@
  * @see
  *    strtouppercase_s(), strlwr_s(), wcslwr_s()
  */
-
+#ifdef FOR_DOXYGEN
+errno_t wcsupr_s(wchar_t *restrict src, rsize_t slen)
+#else
 EXPORT errno_t _wcsupr_s_chk(wchar_t *restrict src, rsize_t slen,
-                             const size_t srcbos) {
+                             const size_t srcbos)
+#endif
+{
     const size_t srcsz = slen * sizeof(wchar_t);
 
     if (unlikely(slen == 0)) { /* Since C11 slen=0 is allowed */

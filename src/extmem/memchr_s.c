@@ -66,9 +66,15 @@
  *    strchr_s(), strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
  *
  */
+#ifdef FOR_DOXYGEN
+errno_t memchr_s(const void *restrict dest, rsize_t dmax,
+                 const int ch, void **result)
+#else
 EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
                              const int ch, void **result,
-                             const size_t destbos) {
+                             const size_t destbos)
+#endif
+{
     if (unlikely(result == NULL)) {
         invoke_safe_mem_constraint_handler("memchr_s: result is null",
                                            (void *)dest, ESNULLP);

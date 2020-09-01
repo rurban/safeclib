@@ -105,10 +105,18 @@
  *    qsort_s()
  */
 
+#ifdef FOR_DOXYGEN
+void *
+bsearch_s(const void *key, const void *base, rsize_t nmemb, rsize_t size,
+               int (*compar)(const void *k, const void *y, void *context),
+               void *context)
+#else
 EXPORT void *
 _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
                int (*compar)(const void *k, const void *y, void *context),
-               void *context, const size_t basebos) {
+               void *context, const size_t basebos)
+#endif
+{
     if (likely(nmemb != 0)) {
         if (unlikely(key == NULL || base == NULL || compar == NULL)) {
             invoke_safe_mem_constraint_handler(

@@ -74,8 +74,12 @@
  * @see
  *    strnlen_s(), strnterminate_s()
  */
-
-EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax, size_t strbos) {
+#ifdef FOR_DOXYGEN
+rsize_t wcsnlen_s(const wchar_t *str, rsize_t smax)
+#else
+EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax, size_t strbos)
+#endif
+{
     const wchar_t *z;
     rsize_t orig_smax = smax;
 

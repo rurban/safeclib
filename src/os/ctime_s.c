@@ -104,8 +104,13 @@ char *ctime_r(const time_t *, char *);
  *    asctime_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t ctime_s(char *dest, rsize_t dmax, const time_t *timer)
+#else
 EXPORT errno_t _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer,
-                            const size_t destbos) {
+                            const size_t destbos)
+#endif
+{
     const char *buf;
     size_t len;
 

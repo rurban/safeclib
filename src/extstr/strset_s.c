@@ -72,8 +72,13 @@
  *    strzero_s(), strnset_s(), strispassword_s()
  */
 
+#ifdef FOR_DOXYGEN
+errno_t strset_s(char *restrict dest, rsize_t dmax, int value)
+#else
 EXPORT errno_t _strset_s_chk(char *restrict dest, rsize_t dmax, int value,
-                             const size_t destbos) {
+                             const size_t destbos)
+#endif
+{
     CHK_DEST_NULL("strset_s")
     CHK_DMAX_ZERO("strset_s")
     if (destbos == BOS_UNKNOWN) {

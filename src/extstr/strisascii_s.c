@@ -64,8 +64,13 @@
  *    strislowercase_s(), strismixedcase_s(), strisuppercase_s()
  */
 
+#ifdef FOR_DOXYGEN
+bool strisascii_s(const char *dest, rsize_t dmax)
+#else
 EXPORT bool _strisascii_s_chk(const char *dest, rsize_t dmax,
-                              const size_t destbos) {
+                              const size_t destbos)
+#endif
+{
     CHK_DEST_DMAX_BOOL("strisascii_s", RSIZE_MAX_STR)
 
     while (*dest && dmax) {

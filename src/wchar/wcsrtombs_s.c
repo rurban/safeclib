@@ -126,11 +126,17 @@
  * @see
  *    wcrtomb_s(), wcstombs_s()
  */
-
+#ifdef FOR_DOXYGEN
+errno_t wcsrtombs_s(size_t *restrict retvalp, char *restrict dest,
+                    rsize_t dmax, const wchar_t **restrict srcp,
+                    rsize_t len, mbstate_t *restrict ps)
+#else
 EXPORT errno_t _wcsrtombs_s_chk(size_t *restrict retvalp, char *restrict dest,
                                 rsize_t dmax, const wchar_t **restrict srcp,
                                 rsize_t len, mbstate_t *restrict ps,
-                                const size_t destbos) {
+                                const size_t destbos)
+#endif
+{
     size_t l;
     errno_t rc;
 

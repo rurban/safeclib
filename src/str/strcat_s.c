@@ -106,8 +106,15 @@
  *    strncat_s(), strcpy_s(), strncpy_s()
  *
  */
+
+#ifdef FOR_DOXYGEN
+errno_t strcat_s(char *restrict dest, rsize_t dmax,
+                 const char *restrict src)
+#else
 EXPORT errno_t _strcat_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src, size_t destbos) {
+                             const char *restrict src, size_t destbos)
+#endif
+{
     rsize_t orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;

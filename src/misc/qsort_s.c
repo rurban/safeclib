@@ -342,10 +342,18 @@ static void qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp,
     }
 }
 
+#ifdef FOR_DOXYGEN
+errno_t qsort_s(void *base, rsize_t nmemb, rsize_t size,
+                int (*compar)(const void *k, const void *y,
+                              void *context),
+                void *context)
+#else
 EXPORT errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
                             int (*compar)(const void *k, const void *y,
                                           void *context),
-                            void *context, const size_t destbos) {
+                            void *context, const size_t destbos)
+#endif
+{
     if (likely(nmemb != 0)) {
         if (unlikely(base == NULL || compar == NULL)) {
             invoke_safe_str_constraint_handler("qsort_s: base/compar is null",
