@@ -502,6 +502,18 @@ AC_PROG_INSTALL
 AM_PROG_CC_C_O
 #AC_PROG_CC_C99
 #AC_PROG_CC_C11
+AC_PROG_CXX
+#AC_PROG_CXX_C14
+AX_COMPILER_FLAGS_CXXFLAGS
+
+if test "x$ac_cv_prog_cxx" = "xno"; then
+   dnl check if we have libfmt
+   AC_MSG_WARN([Missing C++ compiler, require libfmt from fmtlib])
+   LIBS=-lfmt
+else
+   AC_MSG_NOTICE([Using embedded libfmt])
+fi
+AM_CONDITIONAL(EMBED_FMT, test "x$ac_cv_prog_cxx" = "xtrue")
 
 if test "$ac_cv_prog_cc_c99" = "no"; then
    dnl we really should ERROR, lets see how far can come without

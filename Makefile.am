@@ -1,8 +1,10 @@
 # Makefile.am - Process with automake to produce Makefile.in
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+# 2018-2020, Reini Urban
 #
 # Copyright (c) 2012, 2013 Cisco Systems
+# Copyright (c) 2018-2020 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -77,8 +79,31 @@ SAFEC_SLKM = \
 bin_SCRIPTS = \
 	$(top_srcdir)/scripts/check_for_unsafe_apis
 
+if EMBED_FMT
+FMT_H = \
+	fmt/include/fmt/chrono.h \
+	fmt/include/fmt/color.h \
+	fmt/include/fmt/compile.h \
+	fmt/include/fmt/core.h \
+	fmt/include/fmt/format.h \
+	fmt/include/fmt/format-inl.h \
+	fmt/include/fmt/locale.h \
+	fmt/include/fmt/os.h \
+	fmt/include/fmt/ostream.h \
+	fmt/include/fmt/posix.h \
+	fmt/include/fmt/printf.h \
+	fmt/include/fmt/ranges.h
+FMT_SRC = \
+	fmt/src/os.cc \
+	fmt/src/format.cc
+noinst_LTLIBRARIES = \
+	libfmt.la
+libfmt_la_SOURCES = $(FMT_SRC)
+libfmt_la_CXXFLAGS = -Ifmt/include -std=c++14
+endif
+
 # Additional things to distribute
-EXTRA_DIST = $(SAFEC_INFRA) $(SAFEC_GENHEADERS) $(SAFEC_SLKM)
+EXTRA_DIST = $(SAFEC_INFRA) $(SAFEC_GENHEADERS) $(SAFEC_SLKM) $(FMT_H) $(FMT_SRC)
 
 BUILT_SOURCES = $(top_srcdir)/.version
 
