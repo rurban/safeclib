@@ -643,7 +643,6 @@ EXTERN wint_t towlower(wint_t wc);
 /* from wcsnorm_s.c */
 EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
                      const bool iscompat);
-
 #endif /* SAFECLIB_DISABLE_WCHAR */
 
 // internal helpers for the *printf_s functions:
@@ -714,5 +713,11 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
 // mingw has a _vsnprintf_s. we use our own.
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
+
+#ifdef SAFECLIB_ENABLE_U8
+/* from u8norm_s.c */
+EXTERN int _u8decomp_s(char *restrict dest, rsize_t dmax, const uint32_t cp,
+                       const bool iscompat);
+#endif
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

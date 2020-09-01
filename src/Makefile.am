@@ -195,6 +195,17 @@ STD_WCHAR_FILES += \
 	extwchar/wcsnorm_s.c
 endif
 
+if ENABLE_U8
+EXT_U8_FILES = \
+	extu8/u8cat_s.c        \
+	extu8/u8icat_s.c       \
+	extu8/u8norm_s.c       \
+	extu8/u8cpy_s.c        \
+	extu8/u8icpy_s.c       \
+	extu8/u8ncpy_s.c       \
+	extu8/u8nlen_s.c
+endif
+
 STD_IO_FILES = \
 	io/sscanf_s.c	\
 	io/fscanf_s.c	\
@@ -227,6 +238,7 @@ ALL_SRC_FILES =
 	$(STD_STR_FILES)    \
 	$(EXT_MEM_FILES)    \
 	$(EXT_STR_FILES)    \
+	$(EXT_U8_FILES)     \
 	$(STD_WCHAR_FILES)  \
 	$(STD_IO_FILES)     \
 	$(STD_OS_FILES)     \
@@ -282,6 +294,12 @@ if ENABLE_EXTS
 libsafec_la_SOURCES += \
 	$(EXT_MEM_FILES) \
 	$(EXT_STR_FILES)
+endif
+if ENABLE_U8
+libsafec_la_SOURCES += \
+	$(EXT_U8_FILES)
+lib_LTLIBRARIES += libsafecu8.la
+libsafecu8_la_SOURCES = $(EXT_U8_FILES)
 endif
 
 libsafec_la_LIBADD = \
