@@ -867,6 +867,10 @@ EXTERN errno_t _wcsnorm_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
 
+#ifdef SAFECLIB_ENABLE_U8
+#include "safe_u8_lib.h"
+#endif  
+  
 #ifdef __cplusplus
 }
 #endif
