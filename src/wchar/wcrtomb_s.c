@@ -111,10 +111,8 @@
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically), unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
- * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
- *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and
- * dest != NULL
+ *                     dest != NULL
  * @retval  ESNOSPC    when dmax is smaller than the number of required bytes
  *
  * @see

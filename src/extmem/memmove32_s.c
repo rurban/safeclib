@@ -71,13 +71,12 @@
  * @retval  EOK         when operation is successful or slen = 0
  * @retval  ESNULLP     when dest/src is NULL POINTER
  * @retval  ESZEROL     when dmax = ZERO
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_MEM or slen > RSIZE_MAX_MEM32
  * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the
+ *                      compiler knows the object_size statically).
+ *                      Or when 4*slen > size of src (optionally, when the
  *                      compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESLEMAX     when slen > RSIZE_MAX_MEM32
- * @retval  EOVERFLOW   when 4*slen > size of src (optionally, when the
- *                      compiler knows the object_size statically)
  * @retval  ESNOSPC     when 4*slen > dmax
  *
  * @see

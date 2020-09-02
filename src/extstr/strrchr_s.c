@@ -60,11 +60,10 @@
  * @retval  EOK        when successfully character found.
  * @retval  ESNULLP    when dest/resultp is a NULL pointer
  * @retval  ESZEROL    when dmax = 0 or strnlen_s = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or ch > 255
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
- * @retval  ESLEMAX    when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *
  * @see

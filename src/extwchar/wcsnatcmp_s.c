@@ -73,11 +73,10 @@
  * @retval  EOK        when comparison is complete
  * @retval  ESUNTERM   when dest or src is unterminated, or dmax is too small.
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
- * @retval  ESZEROL    when dmax = 0
  * @retval  ESZEROL    when dmax/smax = 0
  * @retval  ESLEMAX    when dmax/smax > RSIZE_MAX_WSTR
  * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the
- * compiler knows the object_size statically)
+ *                     compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  *
  * @see

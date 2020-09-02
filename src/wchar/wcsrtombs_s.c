@@ -115,7 +115,8 @@
  * @retval  ESZEROL    when dmax = 0, unless dest is NULL
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, unless dest is NULL
  * @retval  EOVERFLOW  when dmax or len > size of dest (optionally, when the
- * compiler knows the object_size statically), unless dest is NULL
+ *                     compiler knows the object_size statically), unless dest
+ *                     is NULL
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when *srcp and dest overlap
  * @retval  ESNOSPC    when there is no null character in the first dmax

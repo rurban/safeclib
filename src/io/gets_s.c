@@ -85,9 +85,9 @@
  * @return  If there is a runtime-constraint violation, then if dest is
  *          not a null pointer and dmax is greater than zero and not
  *          greater than RSIZE_MAX_STR, then gets_s nulls dest.
- * @retval  >0         when successful operation, all the characters from src
+ * @retval  int >0     when on successful operation, all the characters from src
  *                     were appended to dest and the result in dest is null
- terminated.
+ *                     terminated.
  * @retval  0 + errno=ESNULLP    when dest is a NULL pointer
  * @retval  0 + errno=ESZEROL    when dmax = 0
  * @retval  0 + errno=ESLEMAX    when dmax > RSIZE_MAX_STR

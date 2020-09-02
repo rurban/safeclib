@@ -55,11 +55,11 @@
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest)
  * @pre  ch shall not be greater than 255
  *
- * @retval  EOK        when successfully character found.
+ * @retval  EOK        when the character was successfully found.
  * @retval  ESNULLP    when dest/result is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_MEM or > sizeof(dest)
- * @retval  ESLEMAX    when ch > 255
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_MEM or > sizeof(dest).
+ *                     Or when ch > 255
  * @retval  ESNOTFND   when ch not found in dest
  *
  * @see

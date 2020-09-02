@@ -75,7 +75,7 @@ any of the arguments corresponding to %s is a null pointer.
  *         was assigned or if there is a runtime constraint
  *         violation.
  *
- * @retval  > 0  on success, the number of arguments assigned
+ * @retval  int >0  on success, the number of arguments assigned
  * @retval  EOF  on error
  *
  * @see
@@ -83,7 +83,8 @@ any of the arguments corresponding to %s is a null pointer.
  *
  */
 
-EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap) {
+EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap)
+{
     wchar_t *p;
     int ret;
 

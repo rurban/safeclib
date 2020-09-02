@@ -83,7 +83,7 @@
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_MEM
  * @retval  EOVERFLOW   when dmax/slen > size of dest/src (optionally, when the
- * compiler knows the object_size statically)
+ *                      compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax < slen
  *
