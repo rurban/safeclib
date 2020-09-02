@@ -1,6 +1,10 @@
 
         ChangeLog file for safeclib
 
+Changes in v02092020 3.6.0
+        - Improved generated man pages. Describe not the private _chk functions,
+          but the public _s functions. Merge duplicate return values.
+
 Changes in v31082020 3.6.0
         - Added smokers for more architectures and distros:
           ubuntu, debian, centos, fedora, rhel /
