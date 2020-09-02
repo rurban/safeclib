@@ -1,4 +1,4 @@
 var memcmp32__s_8c =
 [
-    [ "_memcmp32_s_chk", "de/df0/memcmp32__s_8c.html#aa3014c369f25de08f0d375533dffe159", null ]
+    [ "memcmp32_s", "de/df0/memcmp32__s_8c.html#a1fed13e136255a3432e0c7087e934502", null ]
 ];

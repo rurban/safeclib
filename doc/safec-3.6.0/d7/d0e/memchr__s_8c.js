@@ -1,4 +1,4 @@
 var memchr__s_8c =
 [
-    [ "_memchr_s_chk", "d7/d0e/memchr__s_8c.html#a4b5a0a95ffc446b87458778741789b09", null ]
+    [ "memchr_s", "d7/d0e/memchr__s_8c.html#a739d9d53208a1d7e0e9a3b972cc3d90e", null ]
 ];

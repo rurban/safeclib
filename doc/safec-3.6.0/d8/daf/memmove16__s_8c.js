@@ -1,4 +1,4 @@
 var memmove16__s_8c =
 [
-    [ "_memmove16_s_chk", "d8/daf/memmove16__s_8c.html#ab109eea362dc12fb293b9e747b325061", null ]
+    [ "memmove16_s", "d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7", null ]
 ];

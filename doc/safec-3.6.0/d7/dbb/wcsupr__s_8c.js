@@ -1,4 +1,4 @@
 var wcsupr__s_8c =
 [
-    [ "_wcsupr_s_chk", "d7/dbb/wcsupr__s_8c.html#ab97838498c295bdcbba2f1dfcabb8d79", null ]
+    [ "wcsupr_s", "d7/dbb/wcsupr__s_8c.html#a79c5d0585e3fe5a041b307e2cef4a885", null ]
 ];

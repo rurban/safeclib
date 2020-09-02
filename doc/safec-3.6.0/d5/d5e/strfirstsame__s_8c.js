@@ -1,4 +1,4 @@
 var strfirstsame__s_8c =
 [
-    [ "_strfirstsame_s_chk", "d5/d5e/strfirstsame__s_8c.html#a89e0c13d4b00f3e64dc754edd8be5ef8", null ]
+    [ "strfirstsame_s", "d5/d5e/strfirstsame__s_8c.html#ab8801b691013f5d8db71bc37b450e6f1", null ]
 ];

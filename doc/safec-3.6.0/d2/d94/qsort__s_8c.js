@@ -12,6 +12,6 @@ var qsort__s_8c =
     [ "sift", "d2/d94/qsort__s_8c.html#a6d039899d0bdbb153dd833b6673f954e", null ],
     [ "trinkle", "d2/d94/qsort__s_8c.html#a2b5791f02963a5e9623a5c62d13614b3", null ],
     [ "qsort_musl", "d2/d94/qsort__s_8c.html#aa65f344bd9be46ff911be29b0295ac9e", null ],
-    [ "_qsort_s_chk", "d2/d94/qsort__s_8c.html#ac129a05f12a7ef085510c5621c9797de", null ],
+    [ "qsort_s", "d2/d94/qsort__s_8c.html#a8d632acf5d7ab180985b145c4dfbd524", null ],
     [ "debruijn32", "d2/d94/qsort__s_8c.html#ac7a8110c07a881787ba36b9e915b2eb6", null ]
 ];

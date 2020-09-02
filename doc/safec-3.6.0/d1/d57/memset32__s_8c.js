@@ -1,4 +1,4 @@
 var memset32__s_8c =
 [
-    [ "_memset32_s_chk", "d1/d57/memset32__s_8c.html#a146fbc42204636fbb6af69b79dc08d89", null ]
+    [ "memset32_s", "d1/d57/memset32__s_8c.html#afaf75522fa44fc58a5d99d3d3625ba4c", null ]
 ];

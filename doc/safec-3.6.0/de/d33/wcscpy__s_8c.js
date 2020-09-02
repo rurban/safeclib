@@ -1,4 +1,4 @@
 var wcscpy__s_8c =
 [
-    [ "_wcscpy_s_chk", "de/d33/wcscpy__s_8c.html#a8aa67a23a3e8a346491407d517ecc2ec", null ]
+    [ "wcscpy_s", "de/d33/wcscpy__s_8c.html#aa7d0593805422c799372e3664875024b", null ]
 ];

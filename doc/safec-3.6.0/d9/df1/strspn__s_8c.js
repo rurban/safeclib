@@ -1,4 +1,4 @@
 var strspn__s_8c =
 [
-    [ "_strspn_s_chk", "d9/df1/strspn__s_8c.html#afd69e2020daea4b4fc210c015b7f5dca", null ]
+    [ "strspn_s", "d9/df1/strspn__s_8c.html#aa54dec4844c29f3d58e6b2e96454dae9", null ]
 ];

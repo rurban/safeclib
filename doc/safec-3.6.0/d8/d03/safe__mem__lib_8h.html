@@ -415,7 +415,7 @@ Copying shall not take place between regions that overlap.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#af5e21f96bca3b36c5aeab42a73a00b18" title="This function copies at most slen uint32_t&#39;s from src to dest, up to dmax.">memcpy32_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a74919ed4590cfca746d084277dfc82a3" title="The memmove_s function copies slen bytes from the region pointed to by src into the region pointed to...">memmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4959a5a5a34f9a7010069abe69bbd59c" title="The memmove32_s function copies slen uint32_t&#39;s from the region pointed to by src into the region poi...">memmove32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a>, <a class="el" href="../../db/dc0/memcpy32__s_8c.html#a862babe08b849d9077feca60ccf1dbbd">memcpy32_s()</a>, <a class="el" href="../../d8/d56/memmove__s_8c.html#af7b65774eb2a18fe835aa0bb819c634b">memmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a>, <a class="el" href="../../d0/d50/memmove32__s_8c.html#aeeaaac9dd8e3f8a7aaa7d1bbf5d6a5a7">memmove32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -496,7 +496,7 @@ slen shall not be greater than dmax.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4959a5a5a34f9a7010069abe69bbd59c" title="The memmove32_s function copies slen uint32_t&#39;s from the region pointed to by src into the region poi...">memmove32_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a> <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#af5e21f96bca3b36c5aeab42a73a00b18" title="This function copies at most slen uint32_t&#39;s from src to dest, up to dmax.">memcpy32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a>, <a class="el" href="../../d0/d50/memmove32__s_8c.html#aeeaaac9dd8e3f8a7aaa7d1bbf5d6a5a7">memmove32_s()</a>, <a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a> <a class="el" href="../../db/dc0/memcpy32__s_8c.html#a862babe08b849d9077feca60ccf1dbbd">memcpy32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -565,7 +565,7 @@ dmax may not be smaller than n.</dd></dl>
 C11 uses RSIZE_MAX, not RSIZE_MAX_MEM. </dd>
 <dd>
 memset_s provides a memory barrier for modern out-of-order CPU's to ensure a cache flush or at least a compiler barrier fallback to ensure that is not optimized away by optimizing compilers.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not too large, then, before reporting the runtime-constraints violation, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4549b07293f368ed41634cc62a2061f0" title="Sets the first n bytes starting at dest to the specified value, but maximal dmax bytes.">memset_s()</a> copies dmax bytes to the destination. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not too large, then, before reporting the runtime-constraints violation, <a class="el" href="../../de/d25/memset__s_8c.html#a7c82181e3c8438288be61cbd90b9a9b2">memset_s()</a> copies dmax bytes to the destination. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>when operation is successful or n = 0 </td></tr>
@@ -577,7 +577,7 @@ memset_s provides a memory barrier for modern out-of-order CPU's to ensure a cac
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a1c73d51703dd4f3180765939166499f8" title="Sets the first n uint16_t values starting at dest to the specified value, but maximal dmax bytes.">memset16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a1ab2890cd3d25a2cf87571a844ca5791" title="Sets n uint32_t values starting at dest to the specified value, but maximal dmax bytes.">memset32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../da/d22/memset16__s_8c.html#ac072835cc1ce6fef0f50e75cd9a1a178">memset16_s()</a>, <a class="el" href="../../d1/d57/memset32__s_8c.html#afaf75522fa44fc58a5d99d3d3625ba4c">memset32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -639,20 +639,19 @@ dmax shall not be greater than RSIZE_MAX_MEM or size of dest. </dd>
 n shall not be greater than RSIZE_MAX_MEM16. </dd>
 <dd>
 2*n may not be greater than dmax</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before reporting the runtime-constraints violation, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a1c73d51703dd4f3180765939166499f8" title="Sets the first n uint16_t values starting at dest to the specified value, but maximal dmax bytes.">memset16_s()</a> copies dmax bytes to the destination. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before reporting the runtime-constraints violation, <a class="el" href="../../da/d22/memset16__s_8c.html#ac072835cc1ce6fef0f50e75cd9a1a178">memset16_s()</a> copies dmax bytes to the destination. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>when operation is successful or n = 0 </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest is NULL POINTER </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or n &gt; RSIZE_MAX_MEM16 </td></tr>
     <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != size of dest and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when n &gt; RSIZE_MAX_MEM16 </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when 2*n &gt; dmax</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4549b07293f368ed41634cc62a2061f0" title="Sets the first n bytes starting at dest to the specified value, but maximal dmax bytes.">memset_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a1ab2890cd3d25a2cf87571a844ca5791" title="Sets n uint32_t values starting at dest to the specified value, but maximal dmax bytes.">memset32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/d25/memset__s_8c.html#a7c82181e3c8438288be61cbd90b9a9b2">memset_s()</a>, <a class="el" href="../../d1/d57/memset32__s_8c.html#afaf75522fa44fc58a5d99d3d3625ba4c">memset32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -714,20 +713,19 @@ dmax shall not be greater than RSIZE_MAX_MEM or size of dest. </dd>
 n shall not be greater than RSIZE_MAX_MEM32. </dd>
 <dd>
 4*n may not be greater than dmax.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before reporting the runtime-constraints violation, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a1ab2890cd3d25a2cf87571a844ca5791" title="Sets n uint32_t values starting at dest to the specified value, but maximal dmax bytes.">memset32_s()</a> copies dmax bytes to the destination. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraints violation, and if dest is not a null pointer, and if dmax is not larger than RSIZE_MAX_MEM, then, before reporting the runtime-constraints violation, <a class="el" href="../../d1/d57/memset32__s_8c.html#afaf75522fa44fc58a5d99d3d3625ba4c">memset32_s()</a> copies dmax bytes to the destination. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">EOK</td><td>when operation is successful or n = 0 </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest is NULL POINTER </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or n &gt; RSIZE_MAX_MEM32 </td></tr>
     <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != size of dest and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when n &gt; RSIZE_MAX_MEM32 </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when 4*n &gt; dmax</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4549b07293f368ed41634cc62a2061f0" title="Sets the first n bytes starting at dest to the specified value, but maximal dmax bytes.">memset_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a1c73d51703dd4f3180765939166499f8" title="Sets the first n uint16_t values starting at dest to the specified value, but maximal dmax bytes.">memset16_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/d25/memset__s_8c.html#a7c82181e3c8438288be61cbd90b9a9b2">memset_s()</a>, <a class="el" href="../../da/d22/memset16__s_8c.html#ac072835cc1ce6fef0f50e75cd9a1a178">memset16_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -806,7 +804,7 @@ slen shall not be greater than dmax or size of src</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#ad9c4c6bd61544bc39605062a0a5e9de5" title="Compares memory in uint16_t slices until they differ, and their difference is returned in diff....">memcmp16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a800e32e08b41834c740ed970928a201b" title="Compares memory in uint32_t slices until they differ, and their difference is returned in diff....">memcmp32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d2/df8/memcmp16__s_8c.html#a85a86974a274e17fdf6c6bb48c62e659">memcmp16_s()</a>, <a class="el" href="../../de/df0/memcmp32__s_8c.html#a1fed13e136255a3432e0c7087e934502">memcmp32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -887,7 +885,7 @@ slen shall not be greater than dlen and sizeof(dest)/2</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a20f032d094e4ed3d3ebc69673acf1e1c" title="Compares memory until they differ, and their difference sign (-1,0,1) is returned in diff....">memcmp_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a800e32e08b41834c740ed970928a201b" title="Compares memory in uint32_t slices until they differ, and their difference is returned in diff....">memcmp32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d4d/memcmp__s_8c.html#abb3ee5aeb10026d8abc6754e1d4a007f">memcmp_s()</a>, <a class="el" href="../../de/df0/memcmp32__s_8c.html#a1fed13e136255a3432e0c7087e934502">memcmp32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -966,7 +964,7 @@ slen shall not be greater than dlen/4.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a20f032d094e4ed3d3ebc69673acf1e1c" title="Compares memory until they differ, and their difference sign (-1,0,1) is returned in diff....">memcmp_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#ad9c4c6bd61544bc39605062a0a5e9de5" title="Compares memory in uint16_t slices until they differ, and their difference is returned in diff....">memcmp16_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d4d/memcmp__s_8c.html#abb3ee5aeb10026d8abc6754e1d4a007f">memcmp_s()</a>, <a class="el" href="../../d2/df8/memcmp16__s_8c.html#a85a86974a274e17fdf6c6bb48c62e659">memcmp16_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1036,17 +1034,15 @@ Copying shall not take place between regions that overlap.</dd></dl>
     <tr><td class="paramname">EOK</td><td>when operation is successful or slen = 0 </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src is NULL POINTER </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = ZERO </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or slen &gt; RSIZE_MAX_MEM16 </td></tr>
+    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically). Or when 2*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != sizeof(dest) and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when slen &gt; RSIZE_MAX_MEM16 </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when 2*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when 2*slen &gt; dmax </td></tr>
     <tr><td class="paramname">ESOVRLP</td><td>when src memory overlaps dest</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#abde638ca0a851bd638506734b64d360d" title="This function copies at most count wchar_t&#39;s from src to dest, up to dlen. If count is zero,...">wmemcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#af5e21f96bca3b36c5aeab42a73a00b18" title="This function copies at most slen uint32_t&#39;s from src to dest, up to dmax.">memcpy32_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a673f6c2131a338ac3cc97add0360a8f8" title="The wmemmove_s function copies count wchar_t&#39;s from the region pointed to by src into the region poin...">wmemmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/dd4/wmemcpy__s_8c.html#a774420081c53df5354cf41fedf48a98b">wmemcpy_s()</a>, <a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../db/dc0/memcpy32__s_8c.html#a862babe08b849d9077feca60ccf1dbbd">memcpy32_s()</a>, <a class="el" href="../../de/de6/wmemmove__s_8c.html#a160c11e9a51e24f4b372579e67ec8067">wmemmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1116,17 +1112,15 @@ Copying shall not take place between regions that overlap.</dd></dl>
     <tr><td class="paramname">EOK</td><td>when operation is successful or slen = 0 </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src is NULL POINTER </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = ZERO </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or slen &gt; RSIZE_MAX_MEM32 </td></tr>
+    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically). Or when 4*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != sizeof(dest) and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when slen &gt; RSIZE_MAX_MEM32 </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when 4*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when 4*slen &gt; dmax </td></tr>
     <tr><td class="paramname">ESOVRLP</td><td>when src memory overlaps dest</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a74919ed4590cfca746d084277dfc82a3" title="The memmove_s function copies slen bytes from the region pointed to by src into the region pointed to...">memmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4959a5a5a34f9a7010069abe69bbd59c" title="The memmove32_s function copies slen uint32_t&#39;s from the region pointed to by src into the region poi...">memmove32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a>, <a class="el" href="../../d8/d56/memmove__s_8c.html#af7b65774eb2a18fe835aa0bb819c634b">memmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a>, <a class="el" href="../../d0/d50/memmove32__s_8c.html#aeeaaac9dd8e3f8a7aaa7d1bbf5d6a5a7">memmove32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1193,16 +1187,14 @@ dmax shall not be greater than RSIZE_MAX_MEM or size of dest. </dd>
     <tr><td class="paramname">EOK</td><td>when operation is successful or slen = 0 </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src is NULL POINTER </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = ZERO </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or slen &gt; RSIZE_MAX_MEM16 </td></tr>
+    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically). Or when 2*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != sizeof(dest) and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when slen &gt; RSIZE_MAX_MEM16 </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when 2*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when 2*slen &gt; dmax</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a74919ed4590cfca746d084277dfc82a3" title="The memmove_s function copies slen bytes from the region pointed to by src into the region pointed to...">memmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a4959a5a5a34f9a7010069abe69bbd59c" title="The memmove32_s function copies slen uint32_t&#39;s from the region pointed to by src into the region poi...">memmove32_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a> <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#af5e21f96bca3b36c5aeab42a73a00b18" title="This function copies at most slen uint32_t&#39;s from src to dest, up to dmax.">memcpy32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d56/memmove__s_8c.html#af7b65774eb2a18fe835aa0bb819c634b">memmove_s()</a>, <a class="el" href="../../d0/d50/memmove32__s_8c.html#aeeaaac9dd8e3f8a7aaa7d1bbf5d6a5a7">memmove32_s()</a>, <a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a> <a class="el" href="../../db/dc0/memcpy32__s_8c.html#a862babe08b849d9077feca60ccf1dbbd">memcpy32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1269,16 +1261,14 @@ dmax shall not be greater than RSIZE_MAX_MEM and size of dest. </dd>
     <tr><td class="paramname">EOK</td><td>when operation is successful or slen = 0 </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/src is NULL POINTER </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = ZERO </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or slen &gt; RSIZE_MAX_MEM32 </td></tr>
+    <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically). Or when 4*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != sizeof(dest) and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when slen &gt; RSIZE_MAX_MEM32 </td></tr>
-    <tr><td class="paramname">EOVERFLOW</td><td>when 4*slen &gt; size of src (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when 4*slen &gt; dmax</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a74919ed4590cfca746d084277dfc82a3" title="The memmove_s function copies slen bytes from the region pointed to by src into the region pointed to...">memmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a> <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#af5e21f96bca3b36c5aeab42a73a00b18" title="This function copies at most slen uint32_t&#39;s from src to dest, up to dmax.">memcpy32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d56/memmove__s_8c.html#af7b65774eb2a18fe835aa0bb819c634b">memmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a>, <a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a> <a class="el" href="../../db/dc0/memcpy32__s_8c.html#a862babe08b849d9077feca60ccf1dbbd">memcpy32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1333,7 +1323,7 @@ len shall not be 0 nor greater than RSIZE_MAX_MEM and size of dest</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9e07fa271da94fa5d7fd9e4914e3f89c" title="Zeros len uint16_t&#39;s starting at dest.">memzero16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a45227a2c93eb4fd3666344cf3fbc588c" title="Zeros len uint32_t&#39;s starting at dest.">memzero32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d5/ddf/memzero16__s_8c.html#ace0fc4e7cf9a8647cab9fb881c736cb4">memzero16_s()</a>, <a class="el" href="../../db/d59/memzero32__s_8c.html#a3ed5a20d11fa67c2930a3ba9d9ff6a86">memzero32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1387,7 +1377,7 @@ len shall not be 0 nor greater than RSIZE_MAX_MEM16 and sizeof(dest)/2.</dd></dl
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#ae20f01a7db805f9aeef79f4b8dab73cf" title="Zeros len bytes starting at dest.">memzero_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a45227a2c93eb4fd3666344cf3fbc588c" title="Zeros len uint32_t&#39;s starting at dest.">memzero32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d0/d4b/memzero__s_8c.html#ab93c89ef32c02c67faa11cb6e6976fda">memzero_s()</a>, <a class="el" href="../../db/d59/memzero32__s_8c.html#a3ed5a20d11fa67c2930a3ba9d9ff6a86">memzero32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1441,7 +1431,7 @@ len shall not be 0 nor greater than RSIZE_MAX_MEM32 and sizeof(dest)/4.</dd></dl
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#ae20f01a7db805f9aeef79f4b8dab73cf" title="Zeros len bytes starting at dest.">memzero_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9e07fa271da94fa5d7fd9e4914e3f89c" title="Zeros len uint16_t&#39;s starting at dest.">memzero16_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d0/d4b/memzero__s_8c.html#ab93c89ef32c02c67faa11cb6e6976fda">memzero_s()</a>, <a class="el" href="../../d5/ddf/memzero16__s_8c.html#ace0fc4e7cf9a8647cab9fb881c736cb4">memzero16_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1503,16 +1493,15 @@ dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest) </dd>
 ch shall not be greater than 255</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">EOK</td><td>when successfully character found. </td></tr>
+    <tr><td class="paramname">EOK</td><td>when the character was successfully found. </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/result is a NULL pointer </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = 0 </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or &gt; sizeof(dest) </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when ch &gt; 255 </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or &gt; sizeof(dest). Or when ch &gt; 255 </td></tr>
     <tr><td class="paramname">ESNOTFND</td><td>when ch not found in dest</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/dff/safe__str__lib_8h.html#a12d245045315d6e481ac586870acd74b" title="Finds the first occurrence of ch (after conversion to char as if by (char)ch) in the null-terminated ...">strchr_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#aeb1e115f2d647f2e8aa3dc63b4462a20" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strspn_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a8fa1073444fa0bf4b1b81b889c4e6084" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strcspn_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#af86046966da9670dc22a94a66241452a" title="Returns a pointer, first, to the first ocurrence of any character in src which is contained in dest.">strpbrk_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a809729ef126f05b478b8dd7a38b8f31b" title="The strstr_s() function locates the first occurrence of the substring pointed to by src which would b...">strstr_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d3/dfa/strchr__s_8c.html#a72af86618a085ea64bb9aa219db992a2">strchr_s()</a>, <a class="el" href="../../d9/df1/strspn__s_8c.html#aa54dec4844c29f3d58e6b2e96454dae9">strspn_s()</a>, <a class="el" href="../../dd/d73/strcspn__s_8c.html#ad9f5c66dc8dbbc8c24b5e0ac3bd8278d">strcspn_s()</a>, <a class="el" href="../../de/dd3/strpbrk__s_8c.html#a940f021081fb3ef70e005475c6e73227">strpbrk_s()</a>, <a class="el" href="../../db/dc3/strstr__s_8c.html#ab82fc7e9db11befdad899b2a0d116332">strstr_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1574,18 +1563,17 @@ dmax shall not be greater than RSIZE_MAX_MEM and size of dest </dd>
 ch shall not be greater than 255</dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">EOK</td><td>when successfully character found. </td></tr>
+    <tr><td class="paramname">EOK</td><td>when the character was successfully found. </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest/result is a NULL pointer </td></tr>
     <tr><td class="paramname">ESZEROL</td><td>when dmax = 0 </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_MEM or ch &gt; 255 </td></tr>
     <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != size of dest and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when ch &gt; 255 </td></tr>
     <tr><td class="paramname">ESNOTFND</td><td>when ch not found in dest</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a59be1653836344cc24ab9d8ed44a031c" title="Finds the last occurrence of ch (after conversion to char as if by (char)ch) in the null-terminated b...">memrchr_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a12d245045315d6e481ac586870acd74b" title="Finds the first occurrence of ch (after conversion to char as if by (char)ch) in the null-terminated ...">strchr_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a2d207b6e425f01c9c441fa8e33738fd4" title="Finds the first occurrence of ch (after conversion to unsigned char as if by (unsigned char)ch) in th...">memchr_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#aeb1e115f2d647f2e8aa3dc63b4462a20" title="This function computes the prefix length of the string pointed to by dest which consists entirely of ...">strspn_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a809729ef126f05b478b8dd7a38b8f31b" title="The strstr_s() function locates the first occurrence of the substring pointed to by src which would b...">strstr_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dd/def/memrchr__s_8c.html#aa8039edd745dd91f2598cc205f0c32fb">memrchr_s()</a>, <a class="el" href="../../d3/dfa/strchr__s_8c.html#a72af86618a085ea64bb9aa219db992a2">strchr_s()</a>, <a class="el" href="../../d7/d0e/memchr__s_8c.html#a739d9d53208a1d7e0e9a3b972cc3d90e">memchr_s()</a>, <a class="el" href="../../d9/df1/strspn__s_8c.html#aa54dec4844c29f3d58e6b2e96454dae9">strspn_s()</a>, <a class="el" href="../../db/dc3/strstr__s_8c.html#ab82fc7e9db11befdad899b2a0d116332">strstr_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1640,7 +1628,7 @@ ch shall not be greater than 255</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a20f032d094e4ed3d3ebc69673acf1e1c" title="Compares memory until they differ, and their difference sign (-1,0,1) is returned in diff....">memcmp_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a2f12645a1d8d720cf458ba5d0e72eae5" title="Compare all memory bytes. Return their difference sign (-1,0,1).">timingsafe_memcmp()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d4d/memcmp__s_8c.html#abb3ee5aeb10026d8abc6754e1d4a007f">memcmp_s()</a>, <a class="el" href="../../d5/d20/timingsafe__memcmp_8c.html#af1065a8fe1746069756cf11128052da8">timingsafe_memcmp()</a> </dd></dl>
 
 </div>
 </div>
@@ -1695,7 +1683,7 @@ ch shall not be greater than 255</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a20f032d094e4ed3d3ebc69673acf1e1c" title="Compares memory until they differ, and their difference sign (-1,0,1) is returned in diff....">memcmp_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a0aafcbdb6bac7fd40d33c8565aa38eb0" title="Compare all memory bytes. Return 0 or not zero.">timingsafe_bcmp()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d4d/memcmp__s_8c.html#abb3ee5aeb10026d8abc6754e1d4a007f">memcmp_s()</a>, <a class="el" href="../../d6/d62/timingsafe__bcmp_8c.html#ab4fc519744643af7ab375e1355de5df8">timingsafe_bcmp()</a> </dd></dl>
 
 </div>
 </div>
@@ -1778,7 +1766,7 @@ Copying shall not take place between regions that overlap.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a5c9223bea7dc2c4c56e248217b2c35c1" title="The strncpy_s function copies not more than slen successive characters (characters that follow a null...">strncpy_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../d2/d68/strncpy__s_8c.html#a40815fe7a3e0b4635b1e06bac73b204e">strncpy_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1858,7 +1846,7 @@ Copying shall not take place between regions that overlap.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a673f6c2131a338ac3cc97add0360a8f8" title="The wmemmove_s function copies count wchar_t&#39;s from the region pointed to by src into the region poin...">wmemmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a>, <a class="el" href="../../de/de6/wmemmove__s_8c.html#a160c11e9a51e24f4b372579e67ec8067">wmemmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1936,7 +1924,7 @@ count shall not be greater than dlen and the size of src</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a74919ed4590cfca746d084277dfc82a3" title="The memmove_s function copies slen bytes from the region pointed to by src into the region pointed to...">memmove_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#add00513bfcd06a5287a671f1a53ad681" title="The memmove16_s function copies slen uint16_t from the region pointed to by src into the region point...">memmove16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a97e87fe2ad9a5e3c044439b787934b28" title="This function copies at most slen bytes from src to dest, up to dmax resp. sizeof(dest)....">memcpy_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a9318536c0f70251b88ae835727572070" title="This function copies at most slen uint16_t&#39;s from src to dest, up to dmax bytes.">memcpy16_s()</a> <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#af5e21f96bca3b36c5aeab42a73a00b18" title="This function copies at most slen uint32_t&#39;s from src to dest, up to dmax.">memcpy32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d56/memmove__s_8c.html#af7b65774eb2a18fe835aa0bb819c634b">memmove_s()</a>, <a class="el" href="../../d8/daf/memmove16__s_8c.html#af62c6666a979a3a19150edeed8e6f0e7">memmove16_s()</a>, <a class="el" href="../../de/d70/memcpy__s_8c.html#ab53dee21309f790ed76b1fbef05864ee">memcpy_s()</a>, <a class="el" href="../../dd/de1/memcpy16__s_8c.html#a7a0c2d549cf4bbf9338fdc9553b6e770">memcpy16_s()</a> <a class="el" href="../../db/dc0/memcpy32__s_8c.html#a862babe08b849d9077feca60ccf1dbbd">memcpy32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -2015,7 +2003,7 @@ slen shall not be greater than dlen and size of src.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/d03/safe__mem__lib_8h.html#ad9c4c6bd61544bc39605062a0a5e9de5" title="Compares memory in uint16_t slices until they differ, and their difference is returned in diff....">memcmp16_s()</a>, <a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a800e32e08b41834c740ed970928a201b" title="Compares memory in uint32_t slices until they differ, and their difference is returned in diff....">memcmp32_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d2/df8/memcmp16__s_8c.html#a85a86974a274e17fdf6c6bb48c62e659">memcmp16_s()</a>, <a class="el" href="../../de/df0/memcmp32__s_8c.html#a1fed13e136255a3432e0c7087e934502">memcmp32_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -3511,6 +3499,6 @@ slen shall not be greater than dlen and size of src.</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 31082020.0-g013c2f 3.6.0
+Generated for Safe C Library 02092020.0-g6d921f 3.6.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

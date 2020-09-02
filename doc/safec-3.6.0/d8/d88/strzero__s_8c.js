@@ -1,4 +1,4 @@
 var strzero__s_8c =
 [
-    [ "_strzero_s_chk", "d8/d88/strzero__s_8c.html#ab823ae363848d00ca5b0ff8936e3b53b", null ]
+    [ "strzero_s", "d8/d88/strzero__s_8c.html#ac21fd3aa908f39bda8beb82ca4e729fb", null ]
 ];

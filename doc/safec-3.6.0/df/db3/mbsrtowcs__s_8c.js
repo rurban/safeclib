@@ -1,4 +1,4 @@
 var mbsrtowcs__s_8c =
 [
-    [ "_mbsrtowcs_s_chk", "df/db3/mbsrtowcs__s_8c.html#ab6b1df7e43d89657194e9347fbb4f7d0", null ]
+    [ "mbsrtowcs_s", "df/db3/mbsrtowcs__s_8c.html#a6ab9f5e40b339678d8da3ad22c794caa", null ]
 ];

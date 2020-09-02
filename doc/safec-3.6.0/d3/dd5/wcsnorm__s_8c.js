@@ -12,8 +12,8 @@ var wcsnorm__s_8c =
     [ "_compare_cc", "d3/dd5/wcsnorm__s_8c.html#ae8e709a7bbee4e3cb9fedcc0c3e80092", null ],
     [ "_composite_cp", "d3/dd5/wcsnorm__s_8c.html#a2d1cf00de50fca632245c648f19c8b43", null ],
     [ "_combin_class", "d3/dd5/wcsnorm__s_8c.html#a8002dc19b0ae29e2fbce77c7958c54a5", null ],
-    [ "_wcsnorm_decompose_s_chk", "d3/dd5/wcsnorm__s_8c.html#a35ebe75d6b6fdf81576efcb5b35fb6eb", null ],
-    [ "_wcsnorm_reorder_s_chk", "d3/dd5/wcsnorm__s_8c.html#a3ff57309bdc300c2716bfc5ba1dd3a4d", null ],
-    [ "_wcsnorm_compose_s_chk", "d3/dd5/wcsnorm__s_8c.html#ad06f3d86749513a7e71011aa8a722d5a", null ],
-    [ "_wcsnorm_s_chk", "d3/dd5/wcsnorm__s_8c.html#aa3c288ad61166b211252b12e177f61b7", null ]
+    [ "wcsnorm_decompose_s", "d3/dd5/wcsnorm__s_8c.html#a4aabc9dc0f813945f1b860ba4db96318", null ],
+    [ "wcsnorm_reorder_s", "d3/dd5/wcsnorm__s_8c.html#a194ef029bce428ba46b339157e2b02c8", null ],
+    [ "wcsnorm_compose_s", "d3/dd5/wcsnorm__s_8c.html#aebf7414086afe6c50a8a84abb6e54571", null ],
+    [ "wcsnorm_s", "d3/dd5/wcsnorm__s_8c.html#a22c90b09ced3b361503cc4f0d81987e9", null ]
 ];

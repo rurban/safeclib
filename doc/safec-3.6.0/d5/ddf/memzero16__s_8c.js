@@ -1,4 +1,4 @@
 var memzero16__s_8c =
 [
-    [ "_memzero16_s_chk", "d5/ddf/memzero16__s_8c.html#af5d4034ae7f83570f7c587ecbe045f54", null ]
+    [ "memzero16_s", "d5/ddf/memzero16__s_8c.html#ace0fc4e7cf9a8647cab9fb881c736cb4", null ]
 ];

@@ -112,21 +112,21 @@ $(document).ready(function(){initNavTree('d9/d02/strerror__s_8c.html','../../');
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6fde6b74179a76274df203f875172527"><td class="memItemLeft" align="right" valign="top">EXPORT <a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#a6fde6b74179a76274df203f875172527">_strerror_s_chk</a> (char *<a class="el" href="../../d8/dff/safe__str__lib_8h.html#acfdd60d33960997bd9baa61ae6e75931">dest</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a50de24e4d2a52cf7059349b3197cb89c">dmax</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> errnum, const size_t destbos)</td></tr>
-<tr class="separator:a6fde6b74179a76274df203f875172527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae22975d09eca4ca2e1358115c37a846f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#ae22975d09eca4ca2e1358115c37a846f">strerror_s</a> (char *<a class="el" href="../../d8/dff/safe__str__lib_8h.html#acfdd60d33960997bd9baa61ae6e75931">dest</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a50de24e4d2a52cf7059349b3197cb89c">dmax</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> errnum)</td></tr>
+<tr class="separator:ae22975d09eca4ca2e1358115c37a846f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="memItemLeft" align="right" valign="top">EXPORT size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d02/strerror__s_8c.html#a3f6ed5e17ae53f1dd3b4527d3111c6fc">strerrorlen_s</a> (<a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> errnum)</td></tr>
 <tr class="memdesc:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <code>strerrorlen_s</code> function returns the untruncated length of the textual description of the system error code <code>errnum</code>, identical to the description that would be printed by <code>perror()</code>.  <a href="../../d9/d02/strerror__s_8c.html#a3f6ed5e17ae53f1dd3b4527d3111c6fc">More...</a><br /></td></tr>
 <tr class="separator:a3f6ed5e17ae53f1dd3b4527d3111c6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a6fde6b74179a76274df203f875172527"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fde6b74179a76274df203f875172527">&#9670;&nbsp;</a></span>_strerror_s_chk()</h2>
+<a id="ae22975d09eca4ca2e1358115c37a846f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae22975d09eca4ca2e1358115c37a846f">&#9670;&nbsp;</a></span>strerror_s()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EXPORT <a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> _strerror_s_chk </td>
+          <td class="memname"><a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> strerror_s </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -141,13 +141,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a>&#160;</td>
-          <td class="paramname"><em>errnum</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const size_t&#160;</td>
-          <td class="paramname"><em>destbos</em>&#160;</td>
+          <td class="paramname"><em>errnum</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -188,13 +182,13 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The length of the error message or 0</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d8/dff/safe__str__lib_8h.html#a99a454ea1f0d44dc187a0ad29c1b9aab" title="The strerror_s function returns a pointer to the textual description of the system error code errnum,...">strerror_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d9/d02/strerror__s_8c.html#ae22975d09eca4ca2e1358115c37a846f">strerror_s()</a> </dd></dl>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 31082020.0-g013c2f 3.6.0
+Generated for Safe C Library 02092020.0-g6d921f 3.6.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

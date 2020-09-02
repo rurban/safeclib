@@ -1,4 +1,4 @@
 var wcscoll__s_8c =
 [
-    [ "_wcscoll_s_chk", "d6/dd8/wcscoll__s_8c.html#addfc9e4aa35156b5a75190b202c50ce7", null ]
+    [ "wcscoll_s", "d6/dd8/wcscoll__s_8c.html#aed9db00e05072b1782f9826559d5a606", null ]
 ];

@@ -1,4 +1,4 @@
 var strisuppercase__s_8c =
 [
-    [ "_strisuppercase_s_chk", "dd/d9f/strisuppercase__s_8c.html#a2a22666503ad907b13c48a3b43b626ce", null ]
+    [ "strisuppercase_s", "dd/d9f/strisuppercase__s_8c.html#a75fd0f3c25590af5a836afe1fca4db16", null ]
 ];

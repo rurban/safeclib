@@ -373,7 +373,7 @@ dmax shall not be greater than RSIZE_MAX_STR and size of dest</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>If there is a runtime-constraint violation, then if dest is not a null pointer and dmax is greater than zero and not greater than RSIZE_MAX_STR, then gets_s nulls dest. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">&gt;0</td><td>when successful operation, all the characters from src were appended to dest and the result in dest is null terminated. </td></tr>
+    <tr><td class="paramname">int</td><td>&gt;0 when on successful operation, all the characters from src were appended to dest and the result in dest is null terminated. </td></tr>
     <tr><td class="paramname">0</td><td>+ errno=ESNULLP when dest is a NULL pointer </td></tr>
     <tr><td class="paramname">0</td><td>+ errno=ESZEROL when dmax = 0 </td></tr>
     <tr><td class="paramname">0</td><td>+ errno=ESLEMAX when dmax &gt; RSIZE_MAX_STR </td></tr>
@@ -453,7 +453,7 @@ not all members of *tm are within their normal ranges, the year indicated by tm-
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>This function returns a pointer to static data and is not thread-safe. POSIX marks this function obsolete and recommends strftime instead. The C standard also recommends strftime instead of asctime and asctime_s because strftime is more flexible and locale-sensitive. POSIX limits undefined behaviors only to when the output string would be longer than 25 characters, when tm-&gt;tm_wday or tm-&gt;tm_mon are not within the expected ranges, or when tm-&gt;tm_year exceeds INT_MAX-1990. Some implementations handle tm-&gt;tm_mday==0 as meaning the last day of the preceding month.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../db/d69/safe__lib_8h.html#ad300fa14f470e5cca2eb96274f785c8e" title="The ctime_s function converts the given time since epoch to a calendar local time and then to a textu...">ctime_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/d76/ctime__s_8c.html#a67c2818f2be374ae9453eb273b70100c">ctime_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -515,17 +515,16 @@ dmax shall not be greater than RSIZE_MAX_STR and size of dest</dd></dl>
     <tr><td class="paramname">EOK</td><td>on success </td></tr>
     <tr><td class="paramname">ESNULLP</td><td>when dest or tm is a NULL pointer </td></tr>
     <tr><td class="paramname">ESLEMIN</td><td>when dmax &lt; 26 or *timer &lt; 0 </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_STR </td></tr>
+    <tr><td class="paramname">ESLEMAX</td><td>when dmax &gt; RSIZE_MAX_STR. Or when *timer &gt; 313360441200L, the year 10000, resp. LONG_MAX on 32bit systems. </td></tr>
     <tr><td class="paramname">EOVERFLOW</td><td>when dmax &gt; size of dest (optionally, when the compiler knows the object_size statically) </td></tr>
     <tr><td class="paramname">ESLEWRNG</td><td>when dmax != size of dest and &ndash;enable-error-dmax </td></tr>
-    <tr><td class="paramname">ESLEMAX</td><td>when *timer &gt; 313360441200L, the year 10000, resp. LONG_MAX on 32bit systems </td></tr>
     <tr><td class="paramname">ESNOSPC</td><td>when dmax is too small for the result buffer </td></tr>
     <tr><td class="paramname">-1</td><td>when ctime_r or ctime returned NULL</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>ctime returns a pointer to static data and is not thread-safe. In addition, it modifies the static tm object which may be shared with gmtime and localtime. POSIX marks this function obsolete and recommends strftime instead. The C standard also recommends strftime instead of ctime and ctime_s because strftime is more flexible and locale-sensitive. The behavior of ctime may be undefined for the values of time_t that result in the string longer than 25 characters (e.g. year 10000).</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../db/d69/safe__lib_8h.html#afc147a37d0d1abd19746c3c8d8d47549" title="The asctime_s function converts the given calendar time tm to a textual representation of the followi...">asctime_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d1/db5/asctime__s_8c.html#a5e6ce9815ee47f2b700cba98fa7e6fa7">asctime_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -684,7 +683,7 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
   </dd>
 </dl>
 <p>errno values: ESNULLP when key, base or compar are a NULL pointer, and nmemb is &gt; 0 ESLEMAX when nmemb or size &gt; RSIZE_MAX_MEM</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../db/d69/safe__lib_8h.html#af52ac01683fe848801d6607473a433c5" title="The qsort_s function sorts the given array pointed to by base in ascending order. The array contains ...">qsort_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d2/d94/qsort__s_8c.html#a8d632acf5d7ab180985b145c4dfbd524">qsort_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -765,7 +764,7 @@ nmemb or size shall not be greater than RSIZE_MAX_MEM.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../db/d69/safe__lib_8h.html#af8cddd2ced1d3dbcc4c8c32cf50cc8e5" title="The bsearch_s function finds an element equal to element pointed to by key in an array pointed to by ...">bsearch_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d6/dcc/bsearch__s_8c.html#ab47e4bb339834683b9c06ce468cc2093">bsearch_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1264,7 +1263,7 @@ No more than TMP_MAX_S files may be opened</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>gmtime returns a pointer to static data and is not thread-safe. When gmtime_r is available it used instead.</dd></dl>
 <p>POSIX requires that this function sets errno to EOVERFLOW if it fails because the argument is too large. POSIX defines a thread-safe alternative gmtime_r, which is similar to the C11 function gmtime_s, except that it does not check the validity of its input parameters.</p>
 <p>This function is available under windows with a different API, reversed argument order, and is not available with safeclib.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d72/localtime__s_8c.html#ad91854a711f6ee3aebcf1bd3adad1a63" title="The localtime_s function converts the given time since epoch to a calendar time, expressed in the cur...">localtime_s()</a>, <a class="el" href="../../db/d69/safe__lib_8h.html#ad300fa14f470e5cca2eb96274f785c8e" title="The ctime_s function converts the given time since epoch to a calendar local time and then to a textu...">ctime_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d72/localtime__s_8c.html#ad91854a711f6ee3aebcf1bd3adad1a63" title="The localtime_s function converts the given time since epoch to a calendar time, expressed in the cur...">localtime_s()</a>, <a class="el" href="../../d1/d76/ctime__s_8c.html#a67c2818f2be374ae9453eb273b70100c">ctime_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1313,7 +1312,7 @@ No more than TMP_MAX_S files may be opened</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>localtime returns a pointer to static data and is not thread-safe. When localtime_r is available it used instead.</dd></dl>
 <p>POSIX requires that this function sets errno to EOVERFLOW if it fails because the argument is too large. POSIX defines a thread-safe alternative localtime_r, which is similar to the C11 function localtime_s, except that it does not check the validity of its input parameters.</p>
 <p>This function is available under windows with a different API, reversed argument order, and is not available with safeclib.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d7/d57/gmtime__s_8c.html#af6fe85a68903d45aee557060358b47d0" title="The gmtime_s function converts the given time since epoch to a calendar time, expressed in Coordinate...">gmtime_s()</a>, <a class="el" href="../../db/d69/safe__lib_8h.html#ad300fa14f470e5cca2eb96274f785c8e" title="The ctime_s function converts the given time since epoch to a calendar local time and then to a textu...">ctime_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../d7/d57/gmtime__s_8c.html#af6fe85a68903d45aee557060358b47d0" title="The gmtime_s function converts the given time since epoch to a calendar time, expressed in Coordinate...">gmtime_s()</a>, <a class="el" href="../../d1/d76/ctime__s_8c.html#a67c2818f2be374ae9453eb273b70100c">ctime_s()</a> </dd></dl>
 
 </div>
 </div>
@@ -1561,6 +1560,6 @@ No more than TMP_MAX_S files may be opened</dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 31082020.0-g013c2f 3.6.0
+Generated for Safe C Library 02092020.0-g6d921f 3.6.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

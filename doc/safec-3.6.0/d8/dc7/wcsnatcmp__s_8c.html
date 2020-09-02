@@ -124,8 +124,8 @@ Functions</h2></td></tr>
 <tr class="separator:a3405575a0ae31542813a1e576cc5d146"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b80ca1671ee726458f7842cb5ebd164"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dc7/wcsnatcmp__s_8c.html#a7b80ca1671ee726458f7842cb5ebd164">compare_left</a> (wchar_t const *a, wchar_t const *b)</td></tr>
 <tr class="separator:a7b80ca1671ee726458f7842cb5ebd164"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cb94b2c180777be111799d44fc61bd9"><td class="memItemLeft" align="right" valign="top">EXPORT <a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dc7/wcsnatcmp__s_8c.html#a0cb94b2c180777be111799d44fc61bd9">_wcsnatcmp_s_chk</a> (const wchar_t *<a class="el" href="../../d8/dff/safe__str__lib_8h.html#acfdd60d33960997bd9baa61ae6e75931">dest</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a50de24e4d2a52cf7059349b3197cb89c">dmax</a>, const wchar_t *<a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a07c19b551364bc6d3a7d79ef5dc24ee0">src</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a914b43f06324fa80ea3666a8af7954e8">smax</a>, const int fold_case, int *resultp, const size_t destbos, const size_t srcbos)</td></tr>
-<tr class="separator:a0cb94b2c180777be111799d44fc61bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa97dd5330eb5d94996593efc2bf1bef0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/dc7/wcsnatcmp__s_8c.html#aa97dd5330eb5d94996593efc2bf1bef0">wcsnatcmp_s</a> (const wchar_t *<a class="el" href="../../d8/dff/safe__str__lib_8h.html#acfdd60d33960997bd9baa61ae6e75931">dest</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a50de24e4d2a52cf7059349b3197cb89c">dmax</a>, const wchar_t *<a class="el" href="../../d8/d03/safe__mem__lib_8h.html#a07c19b551364bc6d3a7d79ef5dc24ee0">src</a>, <a class="el" href="../../dd/d0a/safe__types_8h.html#a648363f66636da630ae2caff1778b0f4">rsize_t</a> <a class="el" href="../../d8/dff/safe__str__lib_8h.html#a914b43f06324fa80ea3666a8af7954e8">smax</a>, const int fold_case, int *resultp)</td></tr>
+<tr class="separator:aa97dd5330eb5d94996593efc2bf1bef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a86792eeba5f5f1f1f9466a74c95cc76d"></a>
@@ -237,14 +237,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0cb94b2c180777be111799d44fc61bd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0cb94b2c180777be111799d44fc61bd9">&#9670;&nbsp;</a></span>_wcsnatcmp_s_chk()</h2>
+<a id="aa97dd5330eb5d94996593efc2bf1bef0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa97dd5330eb5d94996593efc2bf1bef0">&#9670;&nbsp;</a></span>wcsnatcmp_s()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">EXPORT <a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> _wcsnatcmp_s_chk </td>
+          <td class="memname"><a class="el" href="../../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42">errno_t</a> wcsnatcmp_s </td>
           <td>(</td>
           <td class="paramtype">const wchar_t *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -277,19 +277,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>resultp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const size_t&#160;</td>
-          <td class="paramname"><em>destbos</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const size_t&#160;</td>
-          <td class="paramname"><em>srcbos</em>&#160;</td>
+          <td class="paramname"><em>resultp</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -304,6 +292,6 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 31082020.0-g013c2f 3.6.0
+Generated for Safe C Library 02092020.0-g6d921f 3.6.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>

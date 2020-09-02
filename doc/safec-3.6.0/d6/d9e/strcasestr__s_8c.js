@@ -1,4 +1,4 @@
 var strcasestr__s_8c =
 [
-    [ "_strcasestr_s_chk", "d6/d9e/strcasestr__s_8c.html#a98bf327af43af693c7ad572edee922e9", null ]
+    [ "strcasestr_s", "d6/d9e/strcasestr__s_8c.html#af9eb2586cac42fc8f5471aad6c7cf71d", null ]
 ];

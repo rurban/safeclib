@@ -1,4 +1,4 @@
 var wmemcpy__s_8c =
 [
-    [ "_wmemcpy_s_chk", "d9/dd4/wmemcpy__s_8c.html#a6a7603c77da59b95e6bea266ed2e983e", null ]
+    [ "wmemcpy_s", "d9/dd4/wmemcpy__s_8c.html#a774420081c53df5354cf41fedf48a98b", null ]
 ];

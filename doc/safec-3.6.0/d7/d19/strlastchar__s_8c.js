@@ -1,4 +1,4 @@
 var strlastchar__s_8c =
 [
-    [ "_strlastchar_s_chk", "d7/d19/strlastchar__s_8c.html#a0edead78b36762f8a70ece523ca61063", null ]
+    [ "strlastchar_s", "d7/d19/strlastchar__s_8c.html#adb25e926ea35f458254f190895ab3c88", null ]
 ];

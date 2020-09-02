@@ -1,4 +1,4 @@
 var wcscmp__s_8c =
 [
-    [ "_wcscmp_s_chk", "d1/dbf/wcscmp__s_8c.html#a68a7464fa6523f243b5a2b510b98529a", null ]
+    [ "wcscmp_s", "d1/dbf/wcscmp__s_8c.html#af8391ba8920c1b086d4b9656aabaef0f", null ]
 ];

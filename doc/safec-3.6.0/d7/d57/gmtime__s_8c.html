@@ -183,13 +183,13 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>gmtime returns a pointer to static data and is not thread-safe. When gmtime_r is available it used instead.</dd></dl>
 <p>POSIX requires that this function sets errno to EOVERFLOW if it fails because the argument is too large. POSIX defines a thread-safe alternative gmtime_r, which is similar to the C11 function gmtime_s, except that it does not check the validity of its input parameters.</p>
 <p>This function is available under windows with a different API, reversed argument order, and is not available with safeclib.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d72/localtime__s_8c.html#ad91854a711f6ee3aebcf1bd3adad1a63" title="The localtime_s function converts the given time since epoch to a calendar time, expressed in the cur...">localtime_s()</a>, <a class="el" href="../../db/d69/safe__lib_8h.html#ad300fa14f470e5cca2eb96274f785c8e" title="The ctime_s function converts the given time since epoch to a calendar local time and then to a textu...">ctime_s()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../dc/d72/localtime__s_8c.html#ad91854a711f6ee3aebcf1bd3adad1a63" title="The localtime_s function converts the given time since epoch to a calendar time, expressed in the cur...">localtime_s()</a>, <a class="el" href="../../d1/d76/ctime__s_8c.html#a67c2818f2be374ae9453eb273b70100c">ctime_s()</a> </dd></dl>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <hr class="footer"/><address class="footer"><small>
-Generated for Safe C Library 31082020.0-g013c2f 3.6.0
+Generated for Safe C Library 02092020.0-g6d921f 3.6.0
 by <a href="http://www.doxygen.org/index.html">doxygen</a>
 </small></address></body></html>
