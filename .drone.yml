@@ -28,12 +28,14 @@ platform:
   os: linux
   arch: arm
 steps:
-  - name: arm32v7-fedora
-    image: arm32v7/fedora
+  - name: arm32v7-debian
+    image: arm32v7/debian
     commands:
       - uname -a
-      - dnf install -y gcc make file git automake autoconf which
-                       libtool perl-Text-Diff pkgconf-pkg-config
+      - apt-get update -qq
+      - apt-get install -yq --no-install-suggests --no-install-recommends
+                build-essential file gcc make autotools-dev automake autoconf libtool
+                libtext-diff-perl pkg-config
       - build-aux/autogen.sh
       - build-aux/conf-make-check.sh
 trigger:
