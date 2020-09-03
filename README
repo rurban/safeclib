@@ -257,10 +257,16 @@ Tested Platforms
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
 - freebsd 10 - 12 amd64
-- arm-linux-gnueabihf cross-compiled and tested under qemu (under darwin and debian)
+- linux docker images under qemu:
+  i386/debian, x86_64/rhel, arm32v7/debian, aarch64: arm64v8/{debian,centos,rhel,fedora},
+  s390x/fedora (the only big endian test I could find), ppc64le/{debian,ubuntu,fedora,centos,rhel}
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
-with most available compilers. See `build-aux/smoke.sh`.
+with most available compilers. See `build-aux/smoke.sh` and the various CI configs.
+- https://travis-ci.org/github/rurban/safeclib/
+- https://ci.appveyor.com/project/rurban/safeclib/
+- https://cirrus-ci.com/github/rurban/safeclib
+- https://cloud.drone.io/rurban/safeclib/
 
 Known Issues
 ------------
