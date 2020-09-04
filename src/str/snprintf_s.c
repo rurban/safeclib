@@ -90,8 +90,9 @@ any of the arguments corresponding to %s is a null pointer
  * @see
  *    sprintf_s(), vsnprintf_s(), snwprintf_s()
  */
-
-#ifdef SAFECLIB_HAVE_C99
+#if defined FOR_DOXYGEN
+int sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
+#elif defined SAFECLIB_HAVE_C99
 EXPORT int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
 #else
