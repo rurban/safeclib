@@ -64,7 +64,7 @@ bool isExclusion (uint32_t uv);
 /* else a passthru macro in *_private.h */
 #if SIZEOF_WCHAR_T == 2
 /* convert surrogate pair to unicode codepoint */
-EXPORT uint32_t _dec_w16(char *src) {
+EXPORT uint32_t _dec_w16(char8_t *src) {
     uint32_t s1 = src[0];
     /*if (unlikely(s1 >= 0xd800 && s1 < 0xdc00)) {*/
     if (unlikely((s1 & 0xfc00) == 0xd800)) {
@@ -110,7 +110,7 @@ static int _bsearch_exc(const void *ptr1, const void *ptr2) {
  * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
  * variant, as used here and in cperl core since 5.27.2.
  */
-static int _u8decomp_canonical_s(char *dest, rsize_t dmax, uint32_t cp) {
+static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
     if (unlikely(dmax < 5)) {
@@ -204,7 +204,7 @@ static int _u8decomp_canonical_s(char *dest, rsize_t dmax, uint32_t cp) {
 
 #ifdef HAVE_NORM_COMPAT
 
-static int _u8decomp_compat_s(char *dest, rsize_t dmax, uint32_t cp) {
+static int _u8decomp_compat_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
     if (unlikely(dmax < 19)) {
@@ -300,7 +300,7 @@ static int _u8decomp_compat_s(char *dest, rsize_t dmax, uint32_t cp) {
 }
 #endif
 
-static int _u8decomp_hangul_s(char *dest, rsize_t dmax, uint32_t cp) {
+static int _u8decomp_hangul_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
     uint32_t sindex = cp - Hangul_SBase;
     uint32_t lindex = sindex / Hangul_NCount;
     uint32_t vindex = (sindex % Hangul_NCount) / Hangul_TCount;
@@ -329,7 +329,7 @@ static int _u8decomp_hangul_s(char *dest, rsize_t dmax, uint32_t cp) {
    returns a negative errno_t on error
 */
 
-EXPORT int _u8decomp_s(char *restrict dest, rsize_t dmax, const uint32_t cp,
+EXPORT int _u8decomp_s(char8_t *restrict dest, rsize_t dmax, const uint32_t cp,
                        const bool iscompat) {
     /*assert(dmax > 4);*/
 
@@ -494,21 +494,21 @@ static uint8_t _combin_class(uint32_t cp) {
 
 /* create an unordered decomposed utf-8 string */
 #ifdef FOR_DOXYGEN
-errno_t u8norm_decompose_s(char *restrict dest, rsize_t dmax,
-                            const char *restrict src,
-                            rsize_t *restrict lenp,
-                            const bool iscompat)
+errno_t u8norm_decompose_s(char8_t *restrict dest, rsize_t dmax,
+                           const char8_t *restrict src,
+                           rsize_t *restrict lenp,
+                           const bool iscompat)
 #else
-EXPORT errno_t _u8norm_decompose_s_chk(char *restrict dest, rsize_t dmax,
-                                        const char *restrict src,
-                                        rsize_t *restrict lenp,
-                                        const bool iscompat,
-                                        const size_t destbos)
+EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
+                                       const char8_t *restrict src,
+                                       rsize_t *restrict lenp,
+                                       const bool iscompat,
+                                       const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
     char *orig_dest;
-    const char *overlap_bumper;
+    const char8_t *overlap_bumper;
     uint32_t cp;
     int c;
 
@@ -577,7 +577,7 @@ EXPORT errno_t _u8norm_decompose_s_chk(char *restrict dest, rsize_t dmax,
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = dest;
+    orig_dest = (char*)dest;
 
     if (dest < src) {
         overlap_bumper = src;
@@ -732,12 +732,12 @@ done:
 
 /* reorder decomposed sequence to NFD */
 #ifdef FOR_DOXYGEN
-errno_t u8norm_reorder_s(char *restrict dest, rsize_t dmax, const char *restrict src,
+errno_t u8norm_reorder_s(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src,
                           const rsize_t len)
 #else
-EXPORT errno_t _u8norm_reorder_s_chk(char *restrict dest, rsize_t dmax,
-                                      const char *restrict src, const rsize_t len,
-                                      const size_t destbos)
+EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
+                                     const char8_t *restrict src, const rsize_t len,
+                                     const size_t destbos)
 #endif
 {
     UN8IF_cc seq_ary[CC_SEQ_SIZE];
@@ -747,7 +747,7 @@ EXPORT errno_t _u8norm_reorder_s_chk(char *restrict dest, rsize_t dmax,
     size_t cc_pos = 0;
     char *p = (char *)src;
     const char *e = p + len;
-    char *orig_dest = dest;
+    char *orig_dest = (char*)dest;
     rsize_t orig_dmax = dmax;
 
     if (destbos == BOS_UNKNOWN) {
@@ -866,13 +866,13 @@ EXPORT errno_t _u8norm_reorder_s_chk(char *restrict dest, rsize_t dmax,
 /* combine decomposed sequences to NFC. */
 /* iscontig = false; composeContiguous? FCC if true */
 #ifdef FOR_DOXYGEN
-errno_t u8norm_compose_s(char *restrict dest, rsize_t dmax,
-                          const char *restrict src,
+errno_t u8norm_compose_s(char8_t *restrict dest, rsize_t dmax,
+                          const char8_t *restrict src,
                           rsize_t *restrict lenp,
                           const bool iscontig)
 #else
-EXPORT errno_t _u8norm_compose_s_chk(char *restrict dest, rsize_t dmax,
-                                      const char *restrict src,
+EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
+                                      const char8_t *restrict src,
                                       rsize_t *restrict lenp,
                                       const bool iscontig,
                                       const size_t destbos)
@@ -889,7 +889,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char *restrict dest, rsize_t dmax,
     uint32_t *seq_ext = NULL;                /* heap */
     size_t seq_max = CC_SEQ_SIZE;
     size_t cc_pos = 0;
-    char *orig_dest = dest;
+    char *orig_dest = (char*)dest;
     rsize_t orig_dmax = dmax;
 
     if (destbos == BOS_UNKNOWN) {
@@ -905,7 +905,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char *restrict dest, rsize_t dmax,
         const size_t destsz = dmax;
         if (unlikely(destsz > destbos)) {
             *lenp = 0;
-            handle_error(dest, destbos / sizeof(char),
+            handle_error((char*)dest, destbos,
                           "u8norm_compose_s: dmax exceeds dest", EOVERFLOW);
             return EOVERFLOW;
         }
@@ -1079,18 +1079,18 @@ EXPORT errno_t _u8norm_compose_s_chk(char *restrict dest, rsize_t dmax,
 /* Normalize to NFC, NFD, FCC, FCD (fastest, used in u8fc_s), and
  * optionally NFKD, NFKC */
 #ifdef FOR_DOXYGEN
-errno_t u8norm_s(char *restrict dest, rsize_t dmax, const char *restrict src,
+errno_t u8norm_s(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src,
                  const wcsnorm_mode_t mode, rsize_t *restrict lenp)
 #else
-EXPORT errno_t _u8norm_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src,
+EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
+                             const char8_t *restrict src,
                              const wcsnorm_mode_t mode, rsize_t *restrict lenp,
                              const size_t destbos)
 #endif
 {
-    char tmp_stack[128];
-    char *tmp_ptr;
-    char *tmp = NULL;
+    char8_t tmp_stack[128];
+    char8_t *tmp_ptr;
+    char8_t *tmp = NULL;
     rsize_t len;
     const bool iscompat =
         mode & WCSNORM_NFKD; /* WCSNORM_NFKD or WCSNORM_NFKC */
@@ -1108,7 +1108,7 @@ EXPORT errno_t _u8norm_s_chk(char *restrict dest, rsize_t dmax,
     if (len + 2 < 128)
         tmp_ptr = tmp_stack;
     else
-        tmp_ptr = tmp = (char *)malloc((len + 2) * sizeof(char));
+        tmp_ptr = tmp = (char8_t *)malloc((len + 2));
 
     rc = _u8norm_reorder_s_chk(tmp_ptr, len + 2, dest, len, destbos);
     if (unlikely(rc)) {

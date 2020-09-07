@@ -62,12 +62,12 @@
  *    u8len_s(), strnlen_s(), wcsnlen_s()
  */
 #ifdef FOR_DOXYGEN
-rsize_t u8nlen_s(const char *str, rsize_t smax)
+rsize_t u8nlen_s(const char8_t *str, rsize_t smax)
 #else
-EXPORT rsize_t _u8nlen_s_chk(const char *str, rsize_t smax, size_t strbos)
+EXPORT rsize_t _u8nlen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
 #endif
 {
-    const char *z;
+    const char8_t *z;
     rsize_t orig_smax = smax;
 
     if (unlikely(str == NULL)) {

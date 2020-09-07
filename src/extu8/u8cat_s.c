@@ -87,15 +87,15 @@
  *    u8icat_s(), wcscat_s(), strcpy_s(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8cat_s(char *restrict dest, rsize_t dmax, const char *restrict src)
+errno_t u8cat_s(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src)
 #else
-EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restrict src,
+EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src,
                             const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
-    char *orig_dest;
-    const char *overlap_bumper;
+    char8_t *orig_dest;
+    const char8_t *overlap_bumper;
 
     CHK_DEST_NULL("u8cat_s")
     CHK_DMAX_ZERO("u8cat_s")
@@ -118,7 +118,7 @@ EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restr
         while (*dest != L'\0') {
 
             if (unlikely(dest == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax,
+              handle_error((char*)orig_dest, orig_dmax,
                               "u8cat_s: "
                               "overlapping objects",
                               ESOVRLP);
@@ -128,7 +128,7 @@ EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restr
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error(orig_dest, orig_dmax,
+                handle_error((char*)orig_dest, orig_dmax,
                               "u8cat_s: "
                               "dest unterminated",
                               ESUNTERM);
@@ -138,7 +138,7 @@ EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restr
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax,
+                handle_error((char*)orig_dest, orig_dmax,
                               "u8cat_s: "
                               "overlapping objects",
                               ESOVRLP);
@@ -179,7 +179,7 @@ EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restr
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error(orig_dest, orig_dmax,
+                handle_error((char*)orig_dest, orig_dmax,
                               "u8cat_s: "
                               "dest unterminated",
                               ESUNTERM);
@@ -189,7 +189,7 @@ EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restr
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_error(orig_dest, orig_dmax,
+                handle_error((char*)orig_dest, orig_dmax,
                               "u8cat_s: "
                               "overlapping objects",
                               ESOVRLP);
@@ -222,7 +222,7 @@ EXPORT errno_t _u8cat_s_chk(char *restrict dest, rsize_t dmax, const char *restr
     /*
      * the entire src was not copied, so null the string
      */
-    handle_error(orig_dest, orig_dmax,
+    handle_error((char*)orig_dest, orig_dmax,
                   "u8cat_s: not enough "
                   "space for src",
                   ESNOSPC);

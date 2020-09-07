@@ -74,13 +74,18 @@
  * @see
  *    u8cpy_s(), strncpy_s(), wmemcpy_s(), wmemmove_s()
  */
-
-EXPORT errno_t _u8ncpy_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src, rsize_t slen,
-                             const size_t destbos, const size_t srcbos) {
+#ifdef FOR_DOXYGEN
+errno_t u8ncpy_s(char8_t *restrict dest, rsize_t dmax,
+                 const char8_t *restrict src, rsize_t slen)
+#else
+EXPORT errno_t _u8ncpy_s_chk(char8_t *restrict dest, rsize_t dmax,
+                             const char8_t *restrict src, rsize_t slen,
+                             const size_t destbos, const size_t srcbos)
+#endif
+{
     rsize_t orig_dmax;
     char *orig_dest;
-    const char *overlap_bumper;
+    const char8_t *overlap_bumper;
 
     if (unlikely(slen == 0 && dest && dmax)) {
         *dest = L'\0';
@@ -95,8 +100,9 @@ EXPORT errno_t _u8ncpy_s_chk(char *restrict dest, rsize_t dmax,
         CHK_DEST_OVR_CLEAR("u8ncpy_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("u8ncpy_s", src)
+    orig_dest = (char*)dest;
     if (unlikely(slen > RSIZE_MAX_STR)) {
-            handle_error(dest, u8nlen_s(dest, dmax),
+      handle_error(orig_dest, u8nlen_s(dest, dmax),
                          "u8ncpy_s: slen exceeds max",
                          ESLEMAX);
         return RCNEGATE(ESLEMAX);
@@ -105,7 +111,7 @@ EXPORT errno_t _u8ncpy_s_chk(char *restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
-            handle_error(dest, u8nlen_s(dest, dmax),
+          handle_error(orig_dest, u8nlen_s(dest, dmax),
                           "u8ncpy_s: slen exceeds src", EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
@@ -113,7 +119,6 @@ EXPORT errno_t _u8ncpy_s_chk(char *restrict dest, rsize_t dmax,
 
     /* hold base in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = dest;
 
     if (dest < src) {
         overlap_bumper = src;

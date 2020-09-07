@@ -71,17 +71,17 @@
  *    u8ncpy(), wmemcpy(), wmemmove(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8cpy_s(char *restrict dest, rsize_t dmax,
-                const char *restrict src)
+errno_t u8cpy_s(char8_t *restrict dest, rsize_t dmax,
+                const char8_t *restrict src)
 #else
-EXPORT errno_t _u8cpy_s_chk(char *restrict dest, rsize_t dmax,
-                            const char *restrict src,
+EXPORT errno_t _u8cpy_s_chk(char8_t *restrict dest, rsize_t dmax,
+                            const char8_t *restrict src,
                             const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
     char *orig_dest;
-    const char *overlap_bumper;
+    const char8_t *overlap_bumper;
 
     CHK_DEST_NULL("u8cpy_s")
     CHK_DMAX_ZERO("u8cpy_s")
@@ -99,7 +99,7 @@ EXPORT errno_t _u8cpy_s_chk(char *restrict dest, rsize_t dmax,
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = dest;
+    orig_dest = (char*)dest;
 
     if (dest < src) {
         overlap_bumper = src;
@@ -107,9 +107,9 @@ EXPORT errno_t _u8cpy_s_chk(char *restrict dest, rsize_t dmax,
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8cpy_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8cpy_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
