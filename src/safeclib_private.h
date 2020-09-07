@@ -718,6 +718,12 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
 /* from u8norm_s.c */
 EXTERN int _u8decomp_s(char8_t *restrict dest, rsize_t dmax, const uint32_t cp,
                        const bool iscompat);
+const char* _u8_get_script(uint32_t cp);
+int _u8_init_script(void);
+int _u8_chk_script(char8_t *restrict str, rsize_t len);
+int _u8_err_script(char8_t *restrict str, const char *script, uint32_t cp);
+// if the string needs to be normalized or not
+int _u8_is_decomposed(char8_t *restrict str, rsize_t len);
 #endif
 
 #endif /* __SAFECLIB_PRIVATE_H__ */
