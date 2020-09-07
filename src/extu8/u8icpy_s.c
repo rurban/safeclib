@@ -51,13 +51,13 @@
  * @param[in]   src   pointer to the utf-8 string that will be copied to dest
  *
  * @pre Neither dest nor src shall be a null pointer.
- * @pre src must not contain mixed scripts characters.
+ * @pre src must not contain mixed scripts characters nor bidi changes.
  * @pre dmax shall not be greater than RSIZE_MAX_WSTR and size of dest.
  * @pre dmax shall not equal zero.
  * @pre dmax shall be greater than u8inlen_s(src, dmax).
  * @pre Copying shall not take place between objects that overlap.
  *
- * @note C11 uses RSIZE_MAX, not RSIZE_MAX_WSTR.
+ * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  If there is a runtime-constraint violation, then if dest
  *          is not a null pointer and dmax is greater than zero and
@@ -66,24 +66,25 @@
  *                      were copied into dest and the result is null terminated.
  * @retval  -ESNULLP    when dest or src is a NULL pointer
  * @retval  -ESZEROL    when dmax = 0
- * @retval  -ESLEMAX    when dmax > RSIZE_MAX_WSTR
+ * @retval  -ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  -ESOVRLP    when buffers overlap
  * @retval  -ESNOSPC    when dest < src
+ * @retval  -ESU8I      when disallowed mixed scripts or bidi changes were detected.
  *
  * @see
  *    u8cpy(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8icpy_s(char *restrict dest, rsize_t dmax, const char *restrict src)
+errno_t u8icpy_s(char8i_t *restrict dest, rsize_t dmax, const char8_t *restrict src)
 #else
-EXPORT errno_t _u8icpy_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src,
+EXPORT errno_t _u8icpy_s_chk(char8i_t *restrict dest, rsize_t dmax,
+                             const char8_t *restrict src,
                              const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
     char *orig_dest;
-    const char *overlap_bumper;
+    const char8_t *overlap_bumper;
 
     CHK_DEST_NULL("u8icpy_s")
     CHK_DMAX_ZERO("u8icpy_s")
@@ -98,10 +99,12 @@ EXPORT errno_t _u8icpy_s_chk(char *restrict dest, rsize_t dmax,
     if (unlikely(dest == src)) {
         return RCNEGATE(EOK);
     }
+    // TODO normalize src.
+    // check scripts in dest and src.
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = dest;
+    orig_dest = (char*)dest;
 
     if (dest < src) {
         overlap_bumper = src;
