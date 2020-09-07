@@ -200,6 +200,8 @@ EXT_U8_FILES = \
 	extu8/u8cat_s.c        \
 	extu8/u8icat_s.c       \
 	extu8/u8norm_s.c       \
+	extu8/u8script.c       \
+	extu8/u8scripts.h       \
 	extu8/u8cpy_s.c        \
 	extu8/u8icpy_s.c       \
 	extu8/u8ncpy_s.c       \
@@ -243,6 +245,11 @@ ALL_SRC_FILES =
 	$(STD_IO_FILES)     \
 	$(STD_OS_FILES)     \
 	$(STD_MISC_FILES)
+
+PERL = @PERL@
+if ENABLE_U8
+EXTRA_DIST = extu8/gen-u8scripts.pl
+endif
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
@@ -316,6 +323,11 @@ libsafec_la_LDFLAGS = \
 #	-export-symbols $(EXPORT_SYM)
 #libsafec_la_DEPENDENCIES = $(EXPORT_SYM)
 
+if ENABLE_U8
+extu8/u8scripts.h: extu8/gen-u8scripts.pl Scripts.txt
+	$(PERL) extu8/gen-u8scripts.pl
+endif
+
 # emacs flymake-mode
 check-syntax:
 	test -n "$(CHK_SOURCES)" && \
@@ -338,6 +350,9 @@ endif
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
+if ENABLE_U8
+DISTCLEANFILES = Scripts.txt
+endif
 if ENABLE_GCOV
 CLEANFILES  += */*.gcov *.gcov gcov.log
 endif
