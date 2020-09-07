@@ -1017,7 +1017,8 @@ AC_SUBST(INSERT_DISABLE_WCHAR)
 
 # Checks for system services
 # ===============================================
-# None
+
+AC_CHECK_TOOLS([PERL], [cperl perl])
 
 # Output to downstream tools, like automake
 # ===============================================
