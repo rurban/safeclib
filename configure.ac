@@ -822,7 +822,7 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINTPTR_T
-AC_CHECK_SIZEOF(size_t)
+AC_SUBST(FALLBACK_CHAR8_T)
 AC_CHECK_TYPE([errno_t],
         [FALLBACK_ERRNO_T=""],
         [FALLBACK_ERRNO_T="typedef int errno_t;"],
@@ -834,8 +834,12 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      [Define if struct tm has the tm_gmtoff member.])], 
      , 
      [#include <time.h>])
+AC_CHECK_SIZEOF(size_t)
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
+AC_CHECK_TYPE([char8_t],
+        [FALLBACK_CHAR8_T=""],
+        [FALLBACK_CHAR8_T="typedef unsigned char char8_t;"])
 
 AX_GCC_BUILTIN(__builtin_ctz)
 AX_GCC_BUILTIN(__builtin_constant_p)

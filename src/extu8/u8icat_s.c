@@ -40,9 +40,9 @@
  * @brief
  *    The u8icat_s function appends a copy of the utf-8 string src
  *    (including the terminating null character) to
- *    the end of the utf-8 normalized identifier dest. The initial
+ *    the end of the utf-8 normalized identifier-like dest. The initial
  *    utf-8 character from src overwrites the null
- *    character at the end of dest.  Identifiers follow stricter
+ *    character at the end of dest.  Identifier-like strings follow stricter
  *    rules for mixed scripts, src will be normalized.
  * @details
  *    All elements following the terminating null utf-8 character (if
@@ -55,8 +55,8 @@
  * @param[out]  dest      pointer to a normalized utf-8 string that will be
  *                        extended by a normalized copy of src if dmax allows.
  *                        The utf-8 string is normalized, follows the strict
- *                        security guidelines for identifiers (esp. no mixed scripts)
- *                        and will be null terminated.
+ *                        security guidelines for identifiers (esp. no bidi changes,
+ *                        no mixed scripts) and will be null terminated.
  *                        If the resulting concatenated utf-8 string is less
  *                        than dmax, the remaining slack space is nulled.
  * @param[in]   dmax      restricted maximum byte-length of the resulting
@@ -65,7 +65,8 @@
  *                        concatenated to identifier dest.
  *
  * @pre  Neither dest nor src shall be a null pointer
- * @pre  dest must be already normalized and contain no mixed scripts characters.
+ * @pre  dest must be already normalized and contain no disallowed mixed scripts
+ *       characters or bidi changes.
  * @pre  src must not contain mixed scripts characters.
  * @pre  The union of src and dest must not contain mixed scripts characters.
  * @pre  dmax shall not equal zero
@@ -90,21 +91,22 @@
  * @retval  ESUNTERM   when dest not terminated in the first dmax utf-8
  *                     bytes
  * @retval  ESOVRLP    when src overlaps with dest
+ * @retval  ESU8I      when disallowed mixed scripts or bidi changes were detected.
  *
  * @see
  *    u8icat_s(), wcscat_s(), strcpy_s(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8icat_s(char *restrict dest, rsize_t dmax, const char *restrict src)
+errno_t u8icat_s(char8i_t *restrict dest, rsize_t dmax, const char8_t *restrict src)
 #else
-EXPORT errno_t _u8icat_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src,
+EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
+                             const char8_t *restrict src,
                              const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
     char *orig_dest;
-    const char *overlap_bumper;
+    const char8_t *overlap_bumper;
 
     CHK_DEST_NULL("u8icat_s")
     CHK_DMAX_ZERO("u8icat_s")
@@ -118,7 +120,7 @@ EXPORT errno_t _u8icat_s_chk(char *restrict dest, rsize_t dmax,
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = dest;
+    orig_dest = (char*)dest;
 
     if (dest < src) {
         overlap_bumper = src;
