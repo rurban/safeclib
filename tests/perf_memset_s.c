@@ -19,30 +19,16 @@
  *   Speed overhead: -1 - 2%
  *
  * fc32 on ryzen3:
- * gcc-10.2.1 speed overhead: 5.13%
- * clang-10.0 speed overhead: 51.16%
+ * gcc-10.2.1 speed overhead: 5.13% and -2.53% with -march=native
+ * clang-10.0 speed overhead: 51.16% and 3.26% with -march=native
  *
  */
 
 #include "test_private.h"
 #include "safe_mem_lib.h"
+#include "perf_private.h"
 #undef debug_printf
 #include "mem/mem_primitives_lib.h"
-
-#ifndef __KERNEL__
-#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif
-#elif !defined(__x86_64__) && !defined(__i386__)
-#error Not supported in Linux kernel space
-#endif
 
 #if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
 #undef memset_s
@@ -53,94 +39,8 @@
 uint8_t mem1[LEN];
 uint8_t mem2[LEN];
 
-static inline clock_t rdtsc();
-static inline uint64_t timer_start();
-static inline uint64_t timer_end();
-static double timing_loop(uint32_t len, uint32_t loops);
-int main(void);
-
-static inline clock_t rdtsc() {
-#ifdef __x86_64__
-    uint64_t a, d;
-    __asm__ volatile("rdtsc" : "=a"(a), "=d"(d));
-    return (clock_t)(a | (d << 32));
-#elif defined(__i386__)
-    clock_t x;
-    __asm__ volatile("rdtsc" : "=A"(x));
-    return x;
-#else
-#define NO_CYCLE_COUNTER
-    return clock();
-#endif
-}
-
-// see https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/ia-32-ia-64-benchmark-code-execution-paper.pdf
-// 3.2.1 The Improved Benchmarking Method
-static inline uint64_t timer_start()
-{
-#if defined (__i386__) || (defined(__x86_64__) && SIZEOF_SIZE_T == 4)
-  uint32_t cycles_high, cycles_low;
-  __asm__ volatile
-      ("cpuid\n\t"
-       "rdtsc\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%eax", "%ebx", "%ecx", "%edx");
-    return ((uint64_t)cycles_high << 32) | cycles_low;
-#elif defined __x86_64__
-  uint32_t cycles_high, cycles_low;
-  __asm__ volatile
-      ("cpuid\n\t"
-       "rdtsc\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%rax", "%rbx", "%rcx", "%rdx");
-  return ((uint64_t)cycles_high << 32) | cycles_low;
-#elif defined(__ARM_ARCH) && (__ARM_ARCH >= 6)
-  // V6 is the earliest arch that has a standard cyclecount
-  uint32_t pmccntr;
-  uint32_t pmuseren;
-  uint32_t pmcntenset;
-  // Read the user mode perf monitor counter access permissions.
-  asm volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
-  if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
-    asm volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
-    if (pmcntenset & 0x80000000ul) {  // Is it counting?
-      asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
-      // The counter is set up to count every 64th cycle
-      return static_cast<int64_t>(pmccntr) * 64;  // Should optimize to << 6
-    }
-  }
-  return (uint64_t)rdtsc();
-#else
-  return (uint64_t)rdtsc();
-#endif
-}
-
-static inline uint64_t timer_end()
-{
-#if defined (__i386__) || (defined(__x86_64__) && defined (HAVE_BIT32))
-  uint32_t cycles_high, cycles_low;
-  __asm__ volatile
-      ("rdtscp\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t"
-       "cpuid\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%eax", "%ebx", "%ecx", "%edx");
-    return ((uint64_t)cycles_high << 32) | cycles_low;
-#elif defined __x86_64__
-  uint32_t cycles_high, cycles_low;
-  __asm__ volatile
-      ("rdtscp\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t"
-       "cpuid\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%rax", "%rbx", "%rcx", "%rdx");
-  return ((uint64_t)cycles_high << 32) | cycles_low;
-#else
-  return (uint64_t)rdtsc();
-#endif
-}
+//static double timing_loop(uint32_t len, uint32_t loops);
+//int main(void);
 
 static double timing_loop(uint32_t len, uint32_t loops) {
     uint32_t i;

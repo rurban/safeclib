@@ -22,21 +22,7 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
-
-#ifndef __KERNEL__
-#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif
-#else
-#error Not supported in Linux kernel space
-#endif
+#include "perf_private.h"
 
 #if defined(TEST_MSVCRT) && defined(HAVE_STRCPY_S)
 #undef strcpy_s
@@ -47,31 +33,12 @@
 char str1[LEN];
 char str2[LEN];
 
-static inline clock_t rdtsc();
-static double timing_loop(uint32_t len, uint32_t loops);
-int main(void);
-
-static inline clock_t rdtsc() {
-#ifdef __x86_64__
-    uint64_t a, d;
-    __asm__ volatile("rdtsc" : "=a"(a), "=d"(d));
-    return (clock_t)(a | (d << 32));
-#elif defined(__i386__)
-    clock_t x;
-    __asm__ volatile("rdtsc" : "=A"(x));
-    return x;
-#else
-#define NO_CYCLE_COUNTER
-    return clock();
-#endif
-}
-
 static double timing_loop(uint32_t len, uint32_t loops) {
     uint32_t i;
     size_t errors = 0;
 
-    clock_t clock_start;
-    clock_t clock_end;
+    uint64_t clock_start;
+    uint64_t clock_end;
 
     clock_t sl_clock_diff;
     clock_t sd_clock_diff;
@@ -94,13 +61,13 @@ static double timing_loop(uint32_t len, uint32_t loops) {
     /*
      * Safe C Lib Routine
      */
-    clock_start = rdtsc();
+    clock_start = timer_start();
     for (i = 0; i < loops; i++) {
         volatile errno_t rc;
         rc = strcpy_s(str1, LEN, str2);
         errors += rc;
     }
-    clock_end = rdtsc();
+    clock_end = timer_end();
 
     /*
      * Note that background stuff continues to run, i.e. interrupts, so
@@ -111,13 +78,13 @@ static double timing_loop(uint32_t len, uint32_t loops) {
     /*
      * Standard C Routine
      */
-    clock_start = rdtsc();
+    clock_start = timer_start();
     for (i = 0; i < loops; i++) {
         volatile char *rc;
         rc = strcpy(str1, str2);
         errors += *rc;
     }
-    clock_end = rdtsc();
+    clock_end = timer_end();
 
     /*
      * Note that background stuff continues to run, i.e. interrupts, so

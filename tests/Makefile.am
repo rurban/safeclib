@@ -277,10 +277,12 @@ endif
 # endif
 # endif
 
-p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON)
-p_memset_s_SOURCES            = perf_memset_s.c $(SAFEC_TEST_COMMON)
+p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON) perf_private.h
+p_memset_s_SOURCES            = perf_memset_s.c $(SAFEC_TEST_COMMON) perf_private.h
 p_memset_s_CFLAGS             = $(CFLAGS) $(AM_CFLAGS) -I$(top_srcdir)/src
-p_strcpy_s_SOURCES            = perf_strcpy_s.c $(SAFEC_TEST_COMMON)
+# needed for windows
+p_memset_s_LDFLAGS            = $(top_builddir)/src/mem/mem_primitives_lib.lo $(LDADD)
+p_strcpy_s_SOURCES            = perf_strcpy_s.c $(SAFEC_TEST_COMMON) perf_private.h
 
 t_memcpy_s_SOURCES            = test_memcpy_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT) test_expmem.h

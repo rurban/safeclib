@@ -4,21 +4,7 @@
 
 #include "test_private.h"
 #include "safe_mem_lib.h"
-
-#ifndef __KERNEL__
-#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif
-#else
-#error Not supported in Linux kernel space
-#endif
+#include "perf_private.h"
 
 #define LEN (1024 * 20)
 
@@ -27,14 +13,12 @@ uint32_t mem2[LEN];
 
 uint16_t mem3[LEN];
 uint16_t mem4[LEN];
-static void timing_loop(uint32_t len, uint32_t loops);
-int main(void);
 
 static void timing_loop(uint32_t len, uint32_t loops) {
     uint32_t i;
 
-    clock_t clock_start;
-    clock_t clock_end;
+    uint64_t clock_start;
+    uint64_t clock_end;
 
     clock_t sl_clock_diff;
     clock_t sd_clock_diff;
@@ -56,11 +40,11 @@ static void timing_loop(uint32_t len, uint32_t loops) {
     /*
      * Safe C Lib Routine
      */
-    clock_start = clock();
+    clock_start = timer_start();
     for (i = 0; i < loops; i++) {
         (void)memcpy32_s(mem1, len, mem2, len);
     }
-    clock_end = clock();
+    clock_end = timer_end();
 
     /*
      * Note that background stuff continues to run, i.e. interrupts, so
@@ -71,12 +55,12 @@ static void timing_loop(uint32_t len, uint32_t loops) {
     /*
      * Standard C Routine
      */
-    clock_start = clock();
+    clock_start = timer_start();
     for (i = 0; i < loops; i++) {
         (void)memcpy16_s(mem3, len, mem4, len);
         // memcpy(mem1, mem2, len);
     }
-    clock_end = clock();
+    clock_end = timer_end();
 
     /*
      * Note that background stuff continues to run, i.e. interrupts, so
