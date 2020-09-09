@@ -17,10 +17,17 @@
  *         memset_s.o  1228  +56%,  444 bytes
  *
  *   Speed overhead: -1 - 2%
+ *
+ * fc32 on ryzen3:
+ * gcc-10.2.1 speed overhead: 56.56%
+ * clang-10.0 speed overhead: 51.25%
+ *
  */
 
 #include "test_private.h"
 #include "safe_mem_lib.h"
+#undef debug_printf
+#include "mem/mem_primitives_lib.h"
 
 #ifndef __KERNEL__
 #ifdef TIME_WITH_SYS_TIME
@@ -74,9 +81,9 @@ static double timing_loop(uint32_t len, uint32_t loops) {
 
     clock_t sl_clock_diff;
     clock_t sd_clock_diff;
+    clock_t sp_clock_diff;
 
-    double sl_clock_dur;
-    double sd_clock_dur;
+    double sl_clock_dur, sd_clock_dur, sp_clock_dur;
     double percent;
 
     for (i = 0; i < LEN; i++) {
@@ -89,7 +96,18 @@ static double timing_loop(uint32_t len, uint32_t loops) {
     /*printf("\n Timing %d byte copy, %u loops \n", len, loops); */
 
     /*
-     * Safe C Lib Routine
+     * Fast safe C Lib Routine (without MEMORY_BARRIER)
+     */
+    clock_start = rdtsc();
+    for (i = 0; i < loops; i++) {
+        mem_prim_set(mem1, len, 0);
+    }
+    clock_end = rdtsc();
+
+    sp_clock_diff = (clock_end - clock_start) / loops;
+
+    /*
+     * Slow safe C Lib Routine (with MEMORY_BARRIER)
      */
     clock_start = rdtsc();
     for (i = 0; i < loops; i++) {
@@ -123,15 +141,16 @@ static double timing_loop(uint32_t len, uint32_t loops) {
     sd_clock_diff = (clock_end - clock_start) / loops;
 
     /* convert to seconds */
+    sp_clock_dur = ((double)(sp_clock_diff) / CLOCKS_PER_SEC);
     sl_clock_dur = ((double)(sl_clock_diff) / CLOCKS_PER_SEC);
     sd_clock_dur = ((double)(sd_clock_diff) / CLOCKS_PER_SEC);
     percent = 100 * (sl_clock_dur - sd_clock_dur) / sl_clock_dur;
 
     /* just to disable optimizing away the inner loop */
     /* fprintf(stderr, "errors %lu\n", errors); */
-    printf("%u  %u  memset_s %1.6f  memset %1.6f  diff %1.6f  %2.2f %%\n",
-           loops, len, sl_clock_dur, sd_clock_dur,
-           (sl_clock_dur - sd_clock_dur), percent);
+    printf("%u  %u  mem_prim_set %1.6f  memset_s %1.6f  memset %1.6f  diff %1.6f  %2.2f %%\n",
+           loops, len, sp_clock_dur, sl_clock_dur, sd_clock_dur,
+           (sp_clock_dur - sd_clock_dur), percent);
 
     return percent;
 }

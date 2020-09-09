@@ -279,6 +279,7 @@ endif
 
 p_memcpy_s_SOURCES            = perf_memcpy_s.c $(SAFEC_TEST_COMMON)
 p_memset_s_SOURCES            = perf_memset_s.c $(SAFEC_TEST_COMMON)
+p_memset_s_CFLAGS             = $(CFLAGS) $(AM_CFLAGS) -I$(top_srcdir)/src
 p_strcpy_s_SOURCES            = perf_strcpy_s.c $(SAFEC_TEST_COMMON)
 
 t_memcpy_s_SOURCES            = test_memcpy_s.c $(SAFEC_TEST_COMMON) \
