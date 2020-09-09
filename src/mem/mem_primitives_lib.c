@@ -160,7 +160,6 @@ void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
         *dp = value;
     }
 
-    MEMORY_BARRIER;
     return;
 }
 
@@ -267,7 +266,6 @@ void mem_prim_set(void *dest, uint32_t len, uint8_t value) {
         *dp = value;
     }
 
-    MEMORY_BARRIER;
     return;
 }
 
