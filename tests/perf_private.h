@@ -63,6 +63,59 @@ static inline clock_t rdtsc() {
     clock_t x;
     __asm__ volatile("rdtsc" : "=A"(x));
     return x;
+#elif defined(__ARM_ARCH) && (__ARM_ARCH >= 7) && (SIZEOF_SIZE_T == 4)
+  // V7 is the earliest arch that has a standard cyclecount (some say 6)
+  uint32_t pmccntr;
+  uint32_t pmuseren;
+  uint32_t pmcntenset;
+  // Read the user mode perf monitor counter access permissions.
+  asm volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
+  if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
+    asm volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
+    if (pmcntenset & 0x80000000ul) {  // Is it counting?
+      asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
+      // The counter is set up to count every 64th cycle
+      return (int64_t)(pmccntr) * 64;  // Should optimize to << 6
+    }
+  }
+  return (uint64_t)rdtsc();
+#elif defined(__aarch64__) && (SIZEOF_SIZE_T == 8)
+  uint64_t pmccntr;
+  uint64_t pmuseren = 1UL;
+  // Read the user mode perf monitor counter access permissions.
+  //asm volatile("mrs cntv_ctl_el0,  %0" : "=r" (pmuseren));
+  if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
+    asm volatile("mrs %0, cntvct_el0" : "=r" (pmccntr));
+    return (uint64_t)(pmccntr) * 64;  // Should optimize to << 6
+  }
+  return (uint64_t)rdtsc();
+#elif defined(__powerpc64__) || defined(__ppc64__)
+    uint64_t tb;
+    __asm__ volatile (\
+      "mfspr %0, 268"
+      : "=r" (tb));
+    return tb;
+#elif defined(__powerpc__) || defined(__ppc__)
+    // This returns a time-base, which is not always precisely a cycle-count.
+    uint32_t tbu, tbl, tmp;
+    __asm__ volatile (\
+      "0:\n"
+      "mftbu %0\n"
+      "mftbl %1\n"
+      "mftbu %2\n"
+      "cmpw %0, %2\n"
+      "bne- 0b"
+      : "=r" (tbu), "=r" (tbl), "=r" (tmp));
+    return (((uint64) tbu << 32) | tbl);
+#elif defined(__sparc__)
+    uint64_t tick;
+    asm(".byte 0x83, 0x41, 0x00, 0x00");
+    asm("mov   %%g1, %0" : "=r" (tick));
+    return tick;
+#elif defined(__ia64__)
+    uint64_t itc;
+    asm("mov %0 = ar.itc" : "=r" (itc));
+    return itc;
 #else
 #define NO_CYCLE_COUNTER
     return clock();
@@ -91,22 +144,6 @@ static inline uint64_t timer_start()
        "mov %%eax, %1\n\t": "=r" (cycles_high), "=r" (cycles_low)::
        "%rax", "%rbx", "%rcx", "%rdx");
   return ((uint64_t)cycles_high << 32) | cycles_low;
-#elif defined(__ARM_ARCH) && (__ARM_ARCH >= 6)
-  // V6 is the earliest arch that has a standard cyclecount
-  uint32_t pmccntr;
-  uint32_t pmuseren;
-  uint32_t pmcntenset;
-  // Read the user mode perf monitor counter access permissions.
-  asm volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
-  if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
-    asm volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
-    if (pmcntenset & 0x80000000ul) {  // Is it counting?
-      asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
-      // The counter is set up to count every 64th cycle
-      return (int64_t)(pmccntr) * 64;  // Should optimize to << 6
-    }
-  }
-  return (uint64_t)rdtsc();
 #else
   return (uint64_t)rdtsc();
 #endif
