@@ -63,6 +63,8 @@ TAGS
 /stamp-h1
 /aclocal.m4
 /autom4te.cache/
+/libsafec-*
+/fmt
 
 # More generated files
 build-aux/ar-lib
@@ -79,6 +81,7 @@ doc/html
 doc/man
 src/gcov.log
 tests/gcov.log
+src/Scripts.txt
 
 #
 # Debian directory (make deb-pkg)
