@@ -724,6 +724,7 @@ int _u8_chk_script(char8_t *restrict str, rsize_t len);
 int _u8_err_script(char8_t *restrict str, const char *script, uint32_t cp);
 // if the string needs to be normalized or not
 int _u8_is_decomposed(char8_t *restrict str, rsize_t len);
+
 #endif
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

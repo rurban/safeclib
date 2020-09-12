@@ -37,6 +37,10 @@ CORE_FILES = \
 	safeclib_private.h    \
 	abort_handler_s.c     \
 	ignore_handler_s.c
+if ENABLE_U8
+CORE_FILES += \
+	u8_private.h
+endif
 
 STD_MEM_FILES = \
 	mem/safe_mem_constraint.h \
@@ -201,11 +205,21 @@ EXT_U8_FILES = \
 	extu8/u8icat_s.c       \
 	extu8/u8norm_s.c       \
 	extu8/u8script.c       \
-	extu8/u8scripts.h       \
+	extu8/u8scripts.h      \
 	extu8/u8cpy_s.c        \
 	extu8/u8icpy_s.c       \
 	extu8/u8ncpy_s.c       \
 	extu8/u8nlen_s.c
+
+if ENABLE_WCHAR
+EXT_U8_FILES += \
+	extu8/u8towcs_s.c      \
+	extu8/u8rtowcs_s.c     \
+	extu8/wcstou8_s.c      \
+	extu8/wcsrtou8_s.c     \
+	extu8/wcrtou8_s.c      \
+	extu8/wctou8_s.c
+endif
 endif
 
 STD_IO_FILES = \
