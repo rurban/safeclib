@@ -326,6 +326,7 @@ EXTERN errno_t _u8nset_s_chk(char8_t *restrict dest, rsize_t dmax, int value,
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
 /* multibyte conversions, from - to wchar8_t */
+#ifndef SAFECLIB_DISABLE_WCHAR
 
 EXTERN errno_t _u8towcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
                               rsize_t dmax, const char8_t *restrict src,
@@ -386,6 +387,8 @@ EXTERN errno_t _wctou8_s_chk(int *restrict retvalp, char8_t *restrict dest,
                  "dest overflow or empty") VAL_OVR2(wc, 0x10ffff);
 #define wctou8_s(retvalp, dest, dmax, wc)                                      \
     _wctou8_s_chk(retvalp, dest, dmax, wc, BOS(dest))
+
+#endif /* SAFECLIB_DISABLE_WCHAR */
 
 /* search wide substring */
 EXTERN errno_t _u8str_s_chk(char8_t *restrict dest, rsize_t dmax,

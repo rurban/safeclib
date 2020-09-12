@@ -36,6 +36,8 @@
 #include <assert.h>
 #endif
 
+#include "u8_private.h"
+
 /* generated via cperl dist/Unicode-Normalize/mkheader -ind -std */
 #define TRUE 1
 #define FALSE 0
@@ -61,34 +63,6 @@ bool isExclusion (uint32_t uv);
 #define CC_SEQ_SIZE 10
 #define CC_SEQ_STEP 5
 
-/* else a passthru macro in *_private.h */
-#if SIZEOF_WCHAR_T == 2
-/* convert surrogate pair to unicode codepoint */
-EXPORT uint32_t _dec_w16(char8_t *src) {
-    uint32_t s1 = src[0];
-    /*if (unlikely(s1 >= 0xd800 && s1 < 0xdc00)) {*/
-    if (unlikely((s1 & 0xfc00) == 0xd800)) {
-        uint32_t s2 = src[1];
-        if (likely((s2 & 0xfc00) == 0xdc00)) {
-#if 0
-            s1 = ((s1 & 0x3ff) << 10) + (s2 & 0x3ff);
-            if (s1 < 0x10000)
-                s1 += 0x10000;
-            return s1;
-#else
-            return (s1 << 10) + s2 - 0x35FDC00;
-#endif
-        } else {
-            invoke_safe_str_constraint_handler("u8norm_s: "
-                                               "illegal surrogate pair",
-                                               NULL, EILSEQ);
-            return 0;
-        }
-    } else {
-        return *src;
-    }
-}
-#endif
 
 #if defined(HAVE_NORM_COMPAT) || UN8IF_canon_exc_size > 0
 
@@ -175,23 +149,16 @@ static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
             const int l = UN8IF_canon_LEN(vi);
             const int i = UN8IF_canon_IDX(vi);
             const char *tbl = (const char *)UN8IF_canon_tbl[l - 1];
-#if SIZEOF_WCHAR_T > 2
             const int len = l;
-#else
-            /* unw16ifcan.h needs TBL(5) for len 6. UN8IF_canon_MAXLEN */
-            const int len = (l == 5) ? 6 : l;
-#endif
 #if defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
-#if SIZEOF_WCHAR_T > 2
             assert(l > 0 && l <= 4);
             /* 13.0: tbl sizes: (917,763,227,36) */
             /* l: 1-4 */
             assert((l == 1 && i < 917) || (l == 2 && i < 763) ||
                    (l == 3 && i < 227) || (l == 4 && i < 36) || 0);
             assert(dmax > 4);
-#endif
             memcpy(dest, &tbl[i * len], len); /* 33% perf */
             dest[len] = L'\0';
             return len;
@@ -376,11 +343,9 @@ static uint32_t _composite_cp(uint32_t cp, uint32_t cp2) {
         return 0;
     }
 
-#if SIZEOF_WCHAR_T > 2
     if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
         return -(ESLEMAX);
     }
-#endif
 
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
         uint32_t lindex = cp - Hangul_LBase;
@@ -583,7 +548,7 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
         overlap_bumper = src;
 
         while (dmax > 0) {
-            cp = _dec_w16(src);
+            cp = dec_utf8((char8_t**)&src);
             if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_decompose_s: "
@@ -592,7 +557,6 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(ESOVRLP);
             }
             /* A surrogate pair can only represent max _UNICODE_MAX */
-#if SIZEOF_WCHAR_T > 2
             if (unlikely(_UNICODE_MAX < cp)) {
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_decompose_s: "
@@ -600,7 +564,6 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                               ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
-#endif
             if (!cp)
                 goto done;
 
@@ -608,18 +571,10 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
             if (c > 0) {
                 dest += c;
                 dmax -= c;
-#if SIZEOF_WCHAR_T == 2
                 if (cp > 0xffff) {
                     src++;
                 }
-#endif
             } else if (c == 0) {
-#if SIZEOF_WCHAR_T == 2
-                if (cp > 0xffff) {
-                    *dest++ = *src++;
-                    dmax--;
-                }
-#endif
                 *dest++ = *src;
                 dmax--;
             } else {
@@ -635,7 +590,7 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
         overlap_bumper = dest;
 
         while (dmax > 0) {
-            cp = _dec_w16(src);
+            cp = dec_utf8((char8_t**)&src);
             if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_decompose_s: "
@@ -643,7 +598,6 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                               ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
-#if SIZEOF_WCHAR_T > 2
             if (unlikely(_UNICODE_MAX < cp)) {
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_decompose_s: "
@@ -651,7 +605,6 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                               ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
-#endif
             if (!cp)
                 goto done;
 
@@ -659,17 +612,13 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
             if (c > 0) {
                 dest += c;
                 dmax -= c;
-#if SIZEOF_WCHAR_T == 2
                 if (cp > 0xffff)
                     src++;
-#endif
             } else if (c == 0) {
-#if SIZEOF_WCHAR_T == 2
                 if (cp > 0xffff) {
                     *dest++ = *src++;
                     dmax--;
                 }
-#endif
                 *dest++ = *src;
                 dmax--;
             } else {
@@ -759,13 +708,7 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
 
     while (p < e) {
         uint8_t cur_cc;
-        uint32_t cp = _dec_w16(p);
-        p++;
-#if SIZEOF_WCHAR_T == 2
-        if (cp > 0xffff) {
-            p++;
-        }
-#endif
+        uint32_t cp = dec_utf8((char8_t**)&p);
 
         cur_cc = _combin_class(cp);
         if (cur_cc != 0) {
@@ -806,13 +749,13 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
                 qsort((void *)seq_ptr, cc_pos, sizeof(UN8IF_cc), _compare_cc);
 
             for (i = 0; i < cc_pos; i++) {
-                _ENC_W16(dest, dmax, seq_ptr[i].cp);
+              //enc_utf8(dest, dmax, seq_ptr[i].cp);
             }
             cc_pos = 0;
         }
 
         if (cur_cc == 0) {
-            _ENC_W16(dest, dmax, cp);
+          //_ENC_W16(dest, dmax, cp);
         }
 
         if (unlikely(!dmax)) {
@@ -826,7 +769,7 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
     if (seq_ext)
         free(seq_ext);
         /* surrogate pairs can actually collapse */
-#if defined(SAFECLIB_STR_NULL_SLACK) && SIZEOF_WCHAR_T == 2
+#if defined(SAFECLIB_STR_NULL_SLACK)
     memset(dest, 0, dmax);
 #else
     *dest = 0;
@@ -913,13 +856,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
 
     while (p < e) {
         uint8_t cur_cc;
-        uint32_t cp = _dec_w16(p);
-        p++;
-#if SIZEOF_WCHAR_T == 2
-        if (cp > 0xffff) {
-            p++;
-        }
-#endif
+        uint32_t cp = dec_utf8((char8_t**)&p);
 
         cur_cc = _combin_class(cp);
 
@@ -930,7 +867,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 if (p < e)
                     continue;
             } else {
-                _ENC_W16(dest, dmax, cp);
+                //_ENC_W16(dest, dmax, cp);
                 if (unlikely(!dmax)) {
                     handle_error(orig_dest, orig_dmax,
                                   "u8norm_compose_s: "
@@ -993,7 +930,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
         }
 
         /* output */
-        _ENC_W16(dest, dmax, cpS); /* starter (composed or not) */
+        //_ENC_W16(dest, dmax, cpS); /* starter (composed or not) */
         if (unlikely(!dmax)) {
             handle_error(orig_dest, orig_dmax,
                           "u8norm_compose_s: "
@@ -1003,7 +940,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
         }
 
         if (cc_pos == 1) {
-            _ENC_W16(dest, dmax, *seq_ptr);
+            //_ENC_W16(dest, dmax, *seq_ptr);
             cc_pos = 0;
         } else if (cc_pos > 1) {
             memcpy(dest, seq_ptr, cc_pos * sizeof(char));
@@ -1034,6 +971,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
  *    stops at the first null or after dmax characters.
  *
  * @details
+ *    The default mode should always be NFD.
  *    Decomposed characters are checked for the left-hand-size and then
  *    right-hand-side of the Decomposition_Mapping Unicode property, which
  *    means the codepoint will be normalized if the sequence is composed or
@@ -1052,7 +990,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
  * @param[in]   mode  convert to nfc or just nfd.
  *                    experimentally to fast modes FCD or FCC.
  *                    optionally to compat modes NFKD, NFKC with \c
- * --enable-norm-compat
+ *                    --enable-norm-compat
  *                    @see enum \c u8norm_mode.
  * @param[out]  lenp  pointer to length of the result, may be NULL
  *
