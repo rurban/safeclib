@@ -47,6 +47,7 @@ Makefile.in
 *.gcov
 cover_db
 /build-*
+compile_commands.json
 
 #
 # Top-level generic files
