@@ -93,15 +93,20 @@ EXTERN errno_t _u8ncpy_s_chk(char8_t *restrict dest, rsize_t dmax,
 #define u8ncpy_s(dest, dmax, src, slen)                                       \
     _u8ncpy_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src))
 
-/* utf-8 string length */
+/* utf-8 string byte-length */
 EXTERN rsize_t _u8len_s_chk(const char8_t *str, size_t strbos)
     BOS_CHK(str);
 #define u8len_s(str) _u8len_s_chk(str, BOS(str))
 
-/* utf-8 string bounded length */
+/* utf-8 string bounded byte-length */
 EXTERN rsize_t _u8nlen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
 #define u8nlen_s(str, smax) _u8nlen_s_chk(str, smax, BOS(str))
+
+/* utf-8 string bounded character length (grapheme clusters) */
+EXTERN rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
+    BOS_CHK2(str, smax);
+#define u8glen_s(str, smax) _u8glen_s_chk(str, smax, BOS(str))
 
 /* string tokenizer */
 EXTERN char8_t *_u8tok_s_chk(char8_t *restrict dest, rsize_t *restrict dmaxp,
