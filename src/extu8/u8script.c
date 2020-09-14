@@ -36,7 +36,7 @@
 #include <assert.h>
 #endif
 
-#include "u8scripts.h"
+#include "extu8/u8scripts.h"
 
 // TODO static hash of scripts in u8i string
 

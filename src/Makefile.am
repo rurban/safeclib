@@ -209,7 +209,9 @@ EXT_U8_FILES = \
 	extu8/u8cpy_s.c        \
 	extu8/u8icpy_s.c       \
 	extu8/u8ncpy_s.c       \
-	extu8/u8nlen_s.c
+	extu8/u8nlen_s.c       \
+	extu8/u8gbreaks.h      \
+	extu8/u8glen_s.c
 
 if ENABLE_WCHAR
 EXT_U8_FILES += \
@@ -262,7 +264,7 @@ ALL_SRC_FILES =
 
 PERL = @PERL@
 if ENABLE_U8
-EXTRA_DIST = extu8/gen-u8scripts.pl
+EXTRA_DIST = extu8/gen-u8scripts.pl extu8/gen-u8gbreaks.pl
 endif
 
 # Not all the code can support -Werror yet so we specifically enable it
@@ -337,9 +339,22 @@ libsafec_la_LDFLAGS = \
 #	-export-symbols $(EXPORT_SYM)
 #libsafec_la_DEPENDENCIES = $(EXPORT_SYM)
 
+# u8scripts.h and u8gbreaks.h are committed, pre-generated Unicode tables
+# (like extwchar/unwifcan.h & co.), not rebuilt as part of the normal
+# build. Regenerating them requires network access to fetch Unicode's
+# Scripts.txt/GraphemeBreakProperty.txt, which isn't available (and
+# shouldn't be needed) on a plain `make`/`make check`/CI run.  Maintainers
+# who need to refresh them against a newer Unicode version can run:
+#   make -C src update-u8-tables
 if ENABLE_U8
-extu8/u8scripts.h: extu8/gen-u8scripts.pl Scripts.txt
-	$(PERL) extu8/gen-u8scripts.pl
+update-u8-tables:
+	cd $(srcdir) && test -e Scripts.txt || \
+	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt
+	cd $(srcdir) && test -e GraphemeBreakProperty.txt || \
+	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakProperty.txt
+	cd $(srcdir) && $(PERL) extu8/gen-u8scripts.pl
+	cd $(srcdir) && $(PERL) extu8/gen-u8gbreaks.pl
+.PHONY: update-u8-tables
 endif
 
 # emacs flymake-mode
@@ -364,12 +379,13 @@ gcov:
 	    mv $$base.c.gcov $$dir/ ; \
 	  fi; \
 	done
+.PHONY: gcov
 endif
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
 if ENABLE_U8
-DISTCLEANFILES = Scripts.txt
+DISTCLEANFILES = Scripts.txt GraphemeBreakProperty.txt
 endif
 if ENABLE_GCOV
 CLEANFILES  += */*.gcov *.gcov gcov.log
