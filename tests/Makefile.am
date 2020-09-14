@@ -198,7 +198,8 @@ endif
 
 if ENABLE_U8
 SAFEC_BUILT_TESTS += \
-	t_u8glen_s
+	t_u8glen_s   \
+	t_u8norm_s
 endif
 
 SAFEC_BUILT_PERFS =  p_memcpy_s p_memset_s p_strcpy_s
@@ -494,6 +495,7 @@ endif
 
 if ENABLE_U8
 t_u8glen_s_SOURCES            = test_u8glen_s.c $(SAFEC_TEST_COMMON)
+t_u8norm_s_SOURCES            = test_u8norm_s.c $(SAFEC_TEST_COMMON)
 endif
 
 @VALGRIND_CHECK_RULES@
