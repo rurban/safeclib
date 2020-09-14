@@ -54,14 +54,15 @@ while (<$in>) {
     my @F = split;
     my ($from, $to);
     $prop = $F[2]; # the boundclass, i.e. GraphemeBreakProperty
+    # Maybe: add Start or Other prop (for start-of-text state, when needed)
+    $prop = "RI" if $prop eq "Regional_Indicator";
     $S{$prop} = $prop; # just to store the very same SV value in the big %A
     if ($F[0]=~ /^(\w+)\.\.(\w+)/) {
       ($from, $to) = ($1, $2);
       my $i = hex ("0x$from");
       my $j = hex ("0x$to");
       for ($i..$j) { # fill all ranges
-        $A{$i} = $S{$prop};
-        $A{$j} = $S{$prop};
+        $A{$_} = $S{$prop};
       }
     } else {
       $from = $F[0];
@@ -106,10 +107,10 @@ print $out <<EOF;
  *------------------------------------------------------------------
  */
 
-/* Sorted Unicode Grapheme_Cluster_Break properties
+/* Sorted Unicode Grapheme_Cluster_Break properties.
 */
 typedef enum {
-  _U8_GBREAK_NONE                 = 0, /* XX */
+  _U8_GBREAK_NONE                 = 0,
 EOF
 
 my $last = 0;
@@ -124,7 +125,7 @@ for (0 .. $last) {
     my $p = $A{$_};
     if (!exists $breaks{$p}) {
       push @breaks, $p;
-      $breaks{$p} = !0;
+      $breaks{$p} = !0; # SV_Yes is predefined
     }
   }
 }
@@ -132,7 +133,9 @@ my $last_break = $breaks{$#breaks};
 undef %breaks;
 # warn $last;
 for (@breaks) {
-  printf $out "  _U8_GBREAK_%-20s = %d,\n", uc($_), $i++;
+  printf $out "  _U8_GBREAK_%-20s = %d,", uc($_), $i++;
+  printf $out " /* Regional_Indicator */" if $_ eq 'RI';
+  printf $out "\n";
 }
 print $out "} _u8_gbreaks_t;\n\n";
 
