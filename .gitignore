@@ -102,8 +102,8 @@ src/Scripts.txt
 /config.h*
 include/safe_config.h
 include/stamp-h2
-/Scripts.txt
 src/Scripts.txt
+src/GraphemeBreakProperty.txt
 
 # stgit generated dirs
 patches-*
