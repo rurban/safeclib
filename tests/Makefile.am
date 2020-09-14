@@ -196,6 +196,10 @@ SAFEC_BUILT_TESTS += 	\
 	t_vwprintf_s
 endif
 endif
+if ENABLE_U8
+SAFEC_BUILT_TESTS += \
+	t_u8glen_s
+endif
 
 SAFEC_BUILT_PERFS = \
 	p_memcpy_s \
@@ -494,6 +498,10 @@ t_vsnprintf_s_SOURCES         = test_vsnprintf_s.c $(SAFEC_TEST_COMMON) \
 t_snwprintf_s_SOURCES         = test_snwprintf_s.c $(SAFEC_TEST_COMMON)
 t_vsnwprintf_s_SOURCES        = test_vsnwprintf_s.c $(SAFEC_TEST_COMMON)
 endif
+endif
+
+if ENABLE_U8
+t_u8glen_s_SOURCES            = test_u8glen_s.c $(SAFEC_TEST_COMMON)
 endif
 
 @VALGRIND_CHECK_RULES@
