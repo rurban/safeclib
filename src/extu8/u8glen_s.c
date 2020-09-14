@@ -129,21 +129,65 @@ EXPORT rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
       uint32_t cp1 = dec_utf8 (&p);
       if (!cp1)
         return 0;
+      smax -= (p - str);
+      c++; // GB1: start-of-text ÷ Any
       b1 = _u8_gbreak (cp1);
       /* Don't touch past smax */
-      for (; smax && *p != 0; ) {
+      for (; smax > 0 && *p != 0; b1 = b2) {
         uint32_t cp2;
         const char8_t *z = p;
         if (!*p)
           return c;
+        /* FIXME Normalize to NFD on the fly */
         cp2 = dec_utf8 (&p);
         smax -= (p - z);
         b2 = _u8_gbreak (cp2);
-        if (b1 != b2) {
-          c++;
-          b1 = b2;
+        // TODO: pre-compile counting valid state changes into bitmatrix?
+        // "Do not break between a CR and LF. Otherwise, break before and after controls."
+        if (b1 == _U8_GBREAK_CR && b2 == _U8_GBREAK_LF) // GB3: CR × LF
+          continue;
+        else if (b1 >= _U8_GBREAK_CONTROL && b1 <= _U8_GBREAK_CR) // GB4: CONTROL|CR|LF ÷
+          {
+            c++; continue;
+          }
+        else if (b2 >= _U8_GBREAK_CONTROL && b2 <= _U8_GBREAK_CR) // GB5: ÷ CONTROL|CR|LF
+          {
+            c++; continue;
+          }
+        // "Do not break Hangul syllable sequences."
+        else if (b1 == _U8_GBREAK_L &&                           // GB6: L × L|V|LV|LVT
+                 (b2 == _U8_GBREAK_L || b2 == _U8_GBREAK_V || b2 == _U8_GBREAK_LV ||
+                  b2 == _U8_GBREAK_LVT))
+          continue;
+        else if ((b1 == _U8_GBREAK_LV || b1 == _U8_GBREAK_V) &&  // GB7: LV|V × V|T
+                 (b2 == _U8_GBREAK_V || b2 == _U8_GBREAK_T))
+          continue;
+        else if ((b1 == _U8_GBREAK_LVT || b1 == _U8_GBREAK_T) && // GB8: LV|V × V|T
+                 (b2 == _U8_GBREAK_V || b2 == _U8_GBREAK_T))
+          continue;
+        // "Do not break before extending characters or ZWJ."
+        else if (b2 == _U8_GBREAK_EXTEND || b2 == _U8_GBREAK_ZWJ) // GB9: × Extend|ZWJ
+          continue;
+        // "Do not break before SpacingMarks, or after Prepend characters."
+        else if (b2 == _U8_GBREAK_SPACINGMARK) // GB9a: × SpacingMark
+          continue;
+        else if (b1 == _U8_GBREAK_PREPEND)     // GB9b: Prepend ×
+          continue;
+#if 0
+        // "Do not break within emoji flag sequences. That is, do not break between
+        // regional indicator (RI) symbols if there is an odd number of RI characters
+        // before the break point."
+        else if (b1 == _U8_GBREAK_RI && b2 == _U8_GBREAK_RI) {
+          // TODO GB12: ^(RI RI)* RI × RI
+          // TODO GB13: [^RI] (RI RI)* RI × RI
+          continue;
         }
+#endif
+        c++; // GB999: "Otherwise, break everywhere"
       }
+      // GB2: Any ÷ end-of-text
+      //if (c && (!smax || !*p))
+      //  c++;
       return c;
     }
 }

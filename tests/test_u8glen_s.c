@@ -56,21 +56,10 @@ int test_u8glen_s(void) {
 #endif
 
     strcpy(str1, "test");
-    max_len = RSIZE_MAX_WSTR + 1;
+    max_len = RSIZE_MAX_STR + 1;
     EXPECT_BOS("str overflow")
-    len = u8glen_s(str1, RSIZE_MAX_WSTR + 1);
-    /* They allow more */
-#if !defined(MINGW_HAS_SECURE_API) && !defined(_WSTRING_S_DEFINED)
+    len = u8glen_s(str1, max_len);
     EXPLEN(0)
-#elif !(defined(TEST_MSVCRT) && defined(HAVE_WCSNLEN_S))
-    EXPLEN(0)
-#else
-    if (max_len < INT_MAX) {
-        EXPLEN(4)
-    } else {
-        EXPLEN(0)
-    }
-#endif
 
     /* overflow: sizeof = 5 */
     /* PS: compile-time check once fixed by adding const'ness and all warnings
@@ -90,7 +79,6 @@ int test_u8glen_s(void) {
     /* no overflow: sizeof = 5 */
     len = u8glen_s("test", 4);
     EXPLEN(4)
-
     /* no overflow: sizeof = 5 */
     len = u8glen_s("test", 5);
     EXPLEN(4)
@@ -141,13 +129,9 @@ int test_u8glen_s(void) {
     len = u8glen_s("testing", 1);
     EXPLEN(max_len)
 
-    /*--------------------------------------------------*/
-
     max_len = 2;
     len = u8glen_s("testing", 2);
     EXPLEN(max_len)
-
-    /*--------------------------------------------------*/
 
     max_len = 3;
     len = u8glen_s("testing", 3);
@@ -158,10 +142,10 @@ int test_u8glen_s(void) {
     EXPLEN(4)
 
     len = u8glen_s("진서/真書", LEN);
-    EXPLEN(4)
+    EXPLEN(5)
     len = u8glen_s("암클", LEN);
-    EXPLEN(4)
-    len = u8glen_s("Café", LEN);
+    EXPLEN(2)
+    len = u8glen_s("Café", LEN); // TODO normalize
     EXPLEN(4)
     len = u8glen_s("Café", LEN);
     EXPLEN(4)
