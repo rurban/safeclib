@@ -18,7 +18,7 @@ typedef struct {
     int bits_stored; /* number of bits from the codepoint that fits in char */
 } _utf_t;
 
-_utf_t *utf[] = {
+static const _utf_t *utf[] = {
     /*             mask                 lead                beg      end    bits */
     [0] = &(_utf_t){0x3f/*0b00111111*/, 0x80/*0b10000000*/, 0,       0,        6},
     [1] = &(_utf_t){0x7f/*0b01111111*/, 0x00/*0b00000000*/, 0000,    0177,     7},
@@ -31,7 +31,7 @@ _utf_t *utf[] = {
 #if 0
 static int cp_len(const uint32_t cp) {
     int len = 0;
-    for (_utf_t **u = utf; *u; ++u) {
+    for (_utf_t **u = (_utf_t **)utf; *u; ++u) {
         if ((cp >= (*u)->beg) && (cp <= (*u)->end)) {
             break;
         }
@@ -50,7 +50,7 @@ static int cp_len(const uint32_t cp) {
 
 static int utf8_len(const char8_t ch) {
     int len = 0;
-    for (_utf_t **u = utf; *u; ++u) {
+    for (_utf_t **u = (_utf_t **)utf; *u; ++u) {
         if ((ch & ~(*u)->mask) == (*u)->lead) {
             break;
         }
