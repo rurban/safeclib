@@ -84,7 +84,7 @@ static int _bsearch_exc(const void *ptr1, const void *ptr2) {
  * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
  * variant, as used here and in cperl core since 5.27.2.
  */
-static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
+static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, const uint32_t cp) {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
     if (unlikely(dmax < 5)) {
@@ -267,11 +267,11 @@ static int _u8decomp_compat_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
 }
 #endif
 
-static int _u8decomp_hangul_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
-    uint32_t sindex = cp - Hangul_SBase;
-    uint32_t lindex = sindex / Hangul_NCount;
-    uint32_t vindex = (sindex % Hangul_NCount) / Hangul_TCount;
-    uint32_t tindex = sindex % Hangul_TCount;
+static int _u8decomp_hangul_s(char8_t *dest, rsize_t dmax, const uint32_t cp) {
+    const uint32_t sindex = cp - Hangul_SBase;
+    const uint32_t lindex = sindex / Hangul_NCount;
+    const uint32_t vindex = (sindex % Hangul_NCount) / Hangul_TCount;
+    const uint32_t tindex = sindex % Hangul_TCount;
 
     if (unlikely(dmax < 4)) {
         return -(ESNOSPC);
@@ -297,7 +297,8 @@ static int _u8decomp_hangul_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
 */
 
 EXPORT int _u8decomp_s(char8_t *restrict dest, rsize_t dmax, const uint32_t cp,
-                       const bool iscompat) {
+                       const bool iscompat)
+{
     /*assert(dmax > 4);*/
 
     /* The costly is_HANGUL_cp_high(cp) checks also all composing chars.

@@ -122,14 +122,24 @@ EXPORT rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
       smax = strbos; // use the real length
     }
     {
-      // TODO get neighboring char boundary classes (Grapheme_Cluster_Break) and compare them.
+      // Get neighboring char boundary classes (Grapheme_Cluster_Break) and compare them.
+      // See the TR29 rules, named GB1 - GB9.
       char8_t *p = (char8_t *)str;
+      char8_t dest[19];
       _u8_gbreaks_t b1, b2;
       rsize_t c = 0;
       uint32_t cp1 = dec_utf8 (&p);
-      if (!cp1)
-        return 0;
+      int ndecomp;
       smax -= (p - str);
+      if (!cp1 || smax <= 0)
+        return 0;
+      /* normalize to NFD on the fly.
+         we ignore dest, just need the returned length */
+      ndecomp = _u8decomp_s (dest, 19, cp1, false);
+      if (ndecomp > 0) {
+        smax -= ndecomp;
+        p += ndecomp;
+      }
       c++; // GB1: start-of-text ÷ Any
       b1 = _u8_gbreak (cp1);
       /* Don't touch past smax */
@@ -138,11 +148,17 @@ EXPORT rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
         const char8_t *z = p;
         if (!*p)
           return c;
-        /* FIXME Normalize to NFD on the fly */
         cp2 = dec_utf8 (&p);
         smax -= (p - z);
         b2 = _u8_gbreak (cp2);
-        // TODO: pre-compile counting valid state changes into bitmatrix?
+        /* normalize to NFD as above */
+        ndecomp = _u8decomp_s (dest, 19, cp2, false);
+        if (ndecomp > 0) {
+          smax -= ndecomp;
+          p += ndecomp;
+        }
+        // TODO: Pre-compile counting valid state changes into branchless 13x13 bitmatrix.
+        // The rules:
         // "Do not break between a CR and LF. Otherwise, break before and after controls."
         if (b1 == _U8_GBREAK_CR && b2 == _U8_GBREAK_LF) // GB3: CR × LF
           continue;
