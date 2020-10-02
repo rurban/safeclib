@@ -67,6 +67,7 @@ TAGS
 /fmt
 
 # More generated files
+compile_commands.json
 build-aux/ar-lib
 build-aux/test-driver
 tests/test-suite.log
@@ -75,7 +76,6 @@ tests/test-fc.pl
 tests/test-norm.pl
 tests/test-upr.pl
 Doxyfile
-README.md
 doc/footer
 doc/html
 doc/man
