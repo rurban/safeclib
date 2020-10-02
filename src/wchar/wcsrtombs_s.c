@@ -35,7 +35,7 @@
 #include "safeclib_private.h"
 #endif
 
-#if (defined(TEST_MSVCRT) && defined(HAVE_WCSTOK_S)) || !defined(HAVE_WCHAR_H)
+#if (defined(TEST_MSVCRT) && defined(HAVE_WCSRTOMBS_S)) || !defined(HAVE_WCHAR_H)
 #else
 
 /**

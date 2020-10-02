@@ -35,8 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
-#if (defined(TEST_MSVCRT) && defined(HAVE_MBSRTOWC_S)) ||                      \
-    !defined(HAVE_WCHAR_H) || !defined(HAVE_MBSTOWCS)
+#if (defined(TEST_MSVCRT) && defined(HAVE_MBSTOWCS_S)) ||                      \
+    !defined(HAVE_WCHAR_H)
 #else
 
 /* newlib, cygwin64 has no STDC_HEADERS!

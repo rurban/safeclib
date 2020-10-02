@@ -34,11 +34,10 @@
 AC_PREREQ([2.69])
 
 # information on the package
-AC_INIT([Safe C Library],
-        [m4_esyscmd(build-aux/version-gen.sh .tarball-version)],
+#AC_SUBST([PACKAGE_VERSION], [3.7])
+AC_INIT([Safe C Library], [3.7],
         [https://github.com/rurban/safeclib/issues],
-        [libsafec],
-        [http://github.com/rurban/safeclib/])
+        [safeclib], [http://github.com/rurban/safeclib/])
 
 # Configure the configure script
 # ===============================================
@@ -81,7 +80,6 @@ PKG_INSTALLDIR
 
 # Global Variable & Defaults
 # ===============================================
-
 # Keep this in sync with what is passed in AC_INIT
 TARBALL_VERSION_FILE=".tarball-version"
 
@@ -97,6 +95,16 @@ dnl         lt_prog_compiler_static=
 dnl         enable_static=no
 dnl         ;;
 dnl esac
+
+AC_MSG_CHECKING([package version])
+AC_MSG_RESULT($PACKAGE_VERSION)
+AC_MSG_CHECKING([so version-info])
+AC_MSG_RESULT($SAFECLIB_SO_VERSION)
+
+ISODATE=`date +%Y-%m-%d`
+AC_SUBST(ISODATE)
+
+AC_CANONICAL_HOST
 
 # Configure options
 # ===============================================
@@ -654,6 +662,10 @@ AC_CHECK_PROGS([POD2MAN], [pod2man])
 if test -z "POD2MAN";
    then AC_MSG_WARN([pod2man not found - continuing without pod2man support])
 fi
+AC_CHECK_PROGS([PANDOC], [pandoc])
+if test -z "$PANDOC";
+   then AC_MSG_WARN([pandoc not found - README.rst cannot be generated from README.md])
+fi
 AM_CONDITIONAL([HAVE_DSYMUTIL], [test -n "$ac_ct_DSYMUTIL"])
 
 case $host_os in
@@ -1004,8 +1016,8 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # version information, refer to the libtool manual, section "Updating
 # library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([SAFEC_SO_VERSION], [3:6:0])
-AC_SUBST([SAFEC_API_VERSION], [3.6.0])
+AC_SUBST([SAFEC_SO_VERSION], [3:7:0])
+AC_SUBST([SAFEC_API_VERSION], [3.7.0])
 
 # Automake variables, these variables get automagically included at the top
 # of all automake generated make files. This is why you don't see them
@@ -1044,7 +1056,8 @@ AC_CONFIG_FILES([include/safe_lib_errno.h], [chmod -w include/safe_lib_errno.h])
 AC_CONFIG_FILES([include/safe_types.h], [chmod -w include/safe_types.h])
 
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
-AM_CONDITIONAL([HAVE_POD2MAN], [test -n "POD2MAN"])
+AM_CONDITIONAL([HAVE_POD2MAN], [test -n "$POD2MAN"])
+AM_CONDITIONAL([HAVE_PANDOC], [test -n "$PANDOC"])
 AM_CONDITIONAL([HAVE_WINE], [test -n "$WINE"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([Doxyfile])])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/footer])])

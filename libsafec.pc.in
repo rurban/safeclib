@@ -8,5 +8,5 @@ Name: @PACKAGE@
 Description: A safe coding library for C, ref ISO TR24731, C11 Annex K
 Version: @VERSION@
 URL: @PACKAGE_URL@
-Libs: -L${libdir} -lsafec-@SAFEC_API_VERSION@
+Libs: -L${libdir} -lsafec
 Cflags: -I${includedir}/@PACKAGE@
