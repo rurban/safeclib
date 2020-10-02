@@ -374,16 +374,6 @@ dist_man_MANS += \
 	doc/man/man3/towfc_s.c.3	\
 	doc/man/man3/towlower.3		\
 	doc/man/man3/towupper.3		\
-	doc/man/man3/unw16ifcan.h.3	\
-	doc/man/man3/unw16ifcmb.h.3	\
-	doc/man/man3/unw16ifcmp.h.3	\
-	doc/man/man3/unw16ifcpt.h.3	\
-	doc/man/man3/unw16ifexc.h.3	\
-	doc/man/man3/unwifcan.h.3	\
-	doc/man/man3/unwifcmb.h.3	\
-	doc/man/man3/unwifcmp.h.3	\
-	doc/man/man3/unwifcpt.h.3	\
-	doc/man/man3/unwifexc.h.3	\
 	doc/man/man3/vfprintf_s.3	\
 	doc/man/man3/vfprintf_s.c.3	\
 	doc/man/man3/vfscanf_s.3	\
@@ -530,6 +520,7 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
 	-rm doc/man/man3/qsort_musl.3
 	-rm doc/man/man3/shl.3
 	-rm doc/man/man3/shr.3
+	-rm doc/man/man3/mem_*.3
 	-rm doc/man/man3/nextchar.3
 	-rm doc/man/man3/ntz.3
 	-rm doc/man/man3/pairs.3
@@ -551,9 +542,13 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
 	-rm doc/man/man3/md_doc_libc-overview.3
 	-rm doc/man/man3/libc-overview.md.3
 	-rm doc/man/man3/len{_errmsgs_s,}.3
-	-rm doc/man/man3/upper.3
 	-rm doc/man/man3/lower{,1,2,3}.3
+	-rm doc/man/man3/upper.3
+	-rm doc/man/man3/towcstrans.c.3
+	-rm doc/man/man3/tow{upper,lower}.3
 	-rm doc/man/man3/uint64_t.3
+	-rm doc/man/man3/wcsstr.3
+	-rm doc/man/man3/wcsstr.c.3
 	-rm doc/man/man3/{cc,cp,cycle,cmpfun,composite,a_ctz_l,a_ctz_64,TBL}.3
 	-rm doc/man/man3/compare_{left,right}.3
 	-rm doc/man/man3/bos_chk_err.3

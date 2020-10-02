@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "safec"
+PROJECT_NAME           = "safeclib"
 PROJECT_NUMBER         = @SAFEC_API_VERSION@
 PROJECT_BRIEF          = "Safe C Library - ISO TR24731 Bounds Checking Interface"
 PROJECT_LOGO           =
@@ -279,7 +279,7 @@ EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = src
 INCLUDE_FILE_PATTERNS  =
-PREDEFINED             = FOR_DOXYGEN HAVE_WCHAR_H SAFECLIB_ENABLE_UNSAFE HAVE_STRNLEN
+PREDEFINED             = FOR_DOXYGEN HAVE_WCHAR_H SAFECLIB_ENABLE_UNSAFE HAVE_STRNLEN HAVE_MBSTOWCS
 EXPAND_AS_DEFINED      =
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------

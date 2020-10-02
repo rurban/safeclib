@@ -131,6 +131,9 @@ static int compare_left(wchar_t const *a, wchar_t const *b) {
 }
 
 #ifdef FOR_DOXYGEN
+errno_t wcsnaticmp_s(const wchar_t *dest, rsize_t dmax,
+                    const wchar_t *src, rsize_t smax,
+                     const int fold_case, int *resultp){}
 errno_t wcsnatcmp_s(const wchar_t *dest, rsize_t dmax,
                     const wchar_t *src, rsize_t smax,
                     const int fold_case, int *resultp)
