@@ -265,35 +265,36 @@ endif
 #$(EXPORT_SYM): safec.h.in
 #        sed -n -e 's/^..*SAFEC_EXPORT[[:space:]][[:space:]]*\([[:alnum:]_][[:alnum:]_]*\)..*$$/\1/p' @top_srcdir@/src/safec.h.in > $@
 
-lib_LTLIBRARIES      = libsafec-@SAFEC_API_VERSION@.la
-libsafec_@SAFEC_API_VERSION@_la_SOURCES = \
+lib_LTLIBRARIES  = libsafec.la
+libsafec_la_SOURCES = \
 	$(STD_MEM_FILES)    \
 	$(STD_STR_FILES)    \
 	$(STD_IO_FILES)     \
 	$(STD_OS_FILES)     \
 	$(STD_MISC_FILES)
 if ENABLE_WCHAR
-libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
+libsafec_la_SOURCES += \
 	$(STD_WCHAR_FILES)
 endif
 if ENABLE_EXTS
-libsafec_@SAFEC_API_VERSION@_la_SOURCES += \
+libsafec_la_SOURCES += \
 	$(EXT_MEM_FILES) \
 	$(EXT_STR_FILES)
 endif
 
-libsafec_@SAFEC_API_VERSION@_la_LIBADD = \
+libsafec_la_LIBADD = \
 	libmemprims.la  \
 	libsafeccore.la
 if ENABLE_UNSAFE
-libsafec_@SAFEC_API_VERSION@_la_LIBADD += \
+libsafec_la_LIBADD += \
 	libstdunsafe.la
 endif
-libsafec_@SAFEC_API_VERSION@_la_LDFLAGS = \
+libsafec_la_LDFLAGS = \
 	-version-info $(SAFEC_SO_VERSION) \
-	-no-undefined
+	-no-undefined \
+	$(LDFLAGS) $(AM_LDFLAGS)
 #	-export-symbols $(EXPORT_SYM)
-#libsafec_@SAFEC_API_VERSION@_la_DEPENDENCIES = $(EXPORT_SYM)
+#libsafec_la_DEPENDENCIES = $(EXPORT_SYM)
 
 # emacs flymake-mode
 check-syntax:
@@ -306,7 +307,7 @@ AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
 gcov:
 	-test -f $(builddir)/gcov.log && rm $(builddir)/gcov.log
-	for c in $(libsafec_@SAFEC_API_VERSION@_la_SOURCES); do \
+	for c in $(libsafec_la_SOURCES); do \
 	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
 	  if test -e "$$dir/$$base.gcno" -a -e $$c; then \
 	    $(GCOV) -s $$dir $$c | tee -a $(builddir)/gcov.log; \

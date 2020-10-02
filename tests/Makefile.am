@@ -218,7 +218,7 @@ AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
 # WARN_CFLAGS works mostly, but too strict with gnu extensions
 AM_CFLAGS += $(WARN_CFLAGS_TESTS)
 
-LDADD      = $(top_builddir)/src/libsafec-@SAFEC_API_VERSION@.la
+LDADD      = $(top_builddir)/src/libsafec.la
 
 TESTS = $(SAFEC_BUILT_TESTS)
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)

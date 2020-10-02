@@ -485,11 +485,11 @@ CLEANFILES += Doxyfile doc/footer
 MAINTAINERCLEANFILES = *~ README.rst
 
 # avoid parallel doxygen
+if HAVE_DOXYGEN
 $(dist_man_MANS) ::
 doc/man/man3/EOK.3 :: Doxyfile README.rst doc/footer include/safe_config.h
 	-rm $@
-	doxygen
-
+	$(DOXYGEN)
 docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
    doc/man/man1/check_for_unsafe_apis.1 doc/man/man3/EOK.3
 	-rm -rf doc/man/man3/d[0-9a-f]
@@ -561,8 +561,11 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
 	-rm doc/man/man3/handle_{,w,mem_}error.3
 	-rm doc/man/man3/handle_{str,mem}_bos_*.3
 	-rm doc/man/man3/handle_str_src_bos_*.3
+endif
+if HAVE_PANDOC
 README.rst: README.md
 	pandoc -o README.rst README.md
+endif
 all-local: Doxyfile doc/footer
 clean-local:
 	rm -rf $(builddir)/doc/html
@@ -612,6 +615,7 @@ gh-pages: docs
 release: docs distcheck
 	git branch |grep '^* master'
 	git tag -f v`date +%d%m%Y`
+	git tag -f $(PACKAGE_VERSION)
 	build-aux/autogen.sh
 	./configure
 	$(MAKE)
@@ -626,6 +630,6 @@ release: docs distcheck
 	$(MAKE) docs
 	$(MAKE) gh-pages
 	git branch |grep '^* gh-pages'
-	git commit -m"Update to v`date +%d%m%Y`"
+	git commit -m"Update to $(PACKAGE_VERSION)"
 	git push
 	git checkout master
