@@ -2,9 +2,6 @@ Safe C Library - README
 =======================
 [![safeclib support vis xs:code](doc/safeclib-banner.png)](https://xscode.com/rurban/safeclib)
 
-:toc:
-
-
 Copying
 -------
 
@@ -14,25 +11,26 @@ under the root directory of this release. Basically it's MIT licensed.
 Overview
 --------
 
-This library implements the secure C11 Annex K functions on top of most libc
+This library implements the secure C11 Annex K[^5] functions on top of most libc
 implementations, which are missing from them.
 
 The ISO TR24731 Bounds Checking Interface documents indicate that the key
 motivation for the new specification is to help mitigate the ever increasing
-security attacks, specifically the buffer overrun.
+security attacks, specifically the buffer overrun.[^1]
 
-The rationale document says ``Buffer overrun attacks continue to be a security
+The rationale document says _"Buffer overrun attacks continue to be a security
 problem. Roughly 10% of vulnerability reports cataloged by CERT from
 01/01/2005 to 07/01/2005 involved buffer overflows. Preventing buffer overruns
-is the primary, but not the only, motivation for this technical report.''
+is the primary, but not the only, motivation for this technical report."_[^2]
 
-The rationale document continues ``that these only mitigate, that is lessen,
+The rationale document continues _"that these only mitigate, that is lessen,
 security problems. When used properly, these functions decrease the danger
 buffer overrun attacks. Source code may remain vulnerable due to other bugs
 and security issues. The highest level of security is achieved by building in
-layers of security utilizing multiple strategies.''
+layers of security utilizing multiple strategies."_[^2]
 
-.The rationale document lists the following key points for TR24731:
+The rationale document lists the following key points for TR24731:
+
 - Guard against overflowing a buffer
 - Do not produce unterminated strings
 - Do not unexpectedly truncate strings
@@ -69,7 +67,7 @@ Design Considerations
 ---------------------
 
 This library implements since 3.0 all functions defined in the
-specifications.  Included in the library are extensions to the specification
+specifications.[^3]  Included in the library are extensions to the specification
 to provide a complementary set of functions with like behavior.
 
 This library is meant to be used on top of all the existing libc's
@@ -83,10 +81,12 @@ http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt
 C11 standard (ISO/IEC 9899:2011)
 http://en.cppreference.com/w/c
 
+CERT C Secure Coding Standard[^4]
+
 Stackoverflow discussion:
 https://stackoverflow.com/questions/372980/do-you-use-the-tr-24731-safe-functions
 
-DrDobbs review
+DrDobbs review[^6]
 http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670
 
 C17 reconsidered safeclib but looked only at the old incomplete Cisco version,
@@ -98,11 +98,11 @@ http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm
 The TR24731 specification says an implementation may set errno for the
 functions deﬁned in the technical report, but is not required to.
 This library does not set `errno` in most functions, only in
-bsearch_s, fscanf_s, fwscanf_s, gets_s, gmtime_s, localtime_s,
-scanf_s, sscanf_s, swscanf_s, strtok_s, vfscanf_s,
-vfwscanf_s, vsscanf_s, vswscanf_s, wcstok_s, wscanf_s.
+`bsearch_s`, `fscanf_s`, `fwscanf_s`, `gets_s`, `gmtime_s`, `localtime_s`,
+`scanf_s`, `sscanf_s`, `swscanf_s`, `strtok_s`, `vfscanf_s`,
+`vfwscanf_s`, `vsscanf_s`, `vswscanf_s`, `wcstok_s`, `wscanf_s`.
 
-In most cases the safeclib extended ES* errors do not set errno, only
+In most cases the safeclib extended ES* errors do not set `errno`, only
 when the underlying insecure system call fails, errno is set.  The
 library does use `errno` return codes as required by functional APIs.
 Specific Safe C String and Safe C Memory errno codes are defined in
@@ -128,19 +128,19 @@ With valid dest and dmax values, dest is cleared. With the optional
 `--disable-null-slack` only the first value of dest is cleared,
 otherwise the whole dest buffer.
 
-rsize_t::
-	The specification defines a new type.  This type, rsize_t, is
-	conditionally defined in the safe_lib.h header file.
+`rsize_t`
+	The specification defines a new type.  This type, `rsize_t`, is
+    conditionally defined in the `safe_lib.h` header file.
 
-RSIZE_MAX::
-	The specification defines the macro RSIZE_MAX which expands to a value
-	of type rsize_t. The specification uses RSIZE_MAX for both the string
+`RSIZE_MAX`
+	The specification defines the macro `RSIZE_MAX` which expands to a value
+	of type `rsize_t`. The specification uses `RSIZE_MAX` for both the string
 	functions and the memory functions. This implementation defines two
-	macros: RSIZE_MAX_STR and RSIZE_MAX_MEM.  RSIZE_MAX_STR defines the
-	range limit for the safe string functions.  RSIZE_MAX_MEM defines the
+	macros: `RSIZE_MAX_STR` and `RSIZE_MAX_MEM`.  `RSIZE_MAX_STR` defines the
+	range limit for the safe string functions. `RSIZE_MAX_MEM` defines the
 	range limit for the safe memory functions.  The point is that string
 	limits can and should be different from memory limits.
-	There also exist RSIZE_MAX_WSTR, RSIZE_MAX_MEM16, RSIZE_MAX_MEM32.
+	There also exist `RSIZE_MAX_WSTR`, `RSIZE_MAX_MEM16`, `RSIZE_MAX_MEM32`.
 
 * Compile-time constraints
 
@@ -155,8 +155,8 @@ via the optional `--enable-error-dmax` to be fatal. On unsupported
 compilers, the overflow check and optional equality warn-dmax check is
 deferred to run-time. This check is only possible with
 `__builtin_object_size` and `-O2` when the dest buffer size is known
-at compile-time, otherwise only the simplier `dest == NULL`, `dmax ==
-0` and `dmax > RSIZE_MAX` checks are performed.
+at compile-time, otherwise only the simplier `dest == NULL`, `dmax == 0`
+and `dmax > RSIZE_MAX` checks are performed.
 
 * Header Files
 
@@ -184,20 +184,20 @@ The build system for the userspace library is the well known *GNU build
 system*, a.k.a. Autotools. This system is well understood and supported
 by many different platforms and distributions which should allow this
 library to be built on a wide variety of platforms. See the
-xref:tested-platforms[``Tested Platforms''] section for details on what
+[Tested platforms](#tested-platforms) section for details on what
 platforms this library was tested on during its development.
 
 * Building
 
 For those familiar with autotools you can probably skip this part. For those
 not and want to get right to building the code see below. And, for those that
-need additional information see the 'INSTALL' file in the same directory.
+need additional information see the `INSTALL` file in the same directory.
 
-.To build you do the following:
+To build you do the following:
 
-    $ ./build-aux/autogen.sh
-    $ ./configure
-    $ make
+    ./build-aux/autogen.sh
+    ./configure
+    make
 
 `autogen.sh` only needs to be run if you are building from the git
 repository. Optionally, you can do `make check` if you want to run the unit
@@ -206,10 +206,10 @@ tests.
 
 * Installing
 
-Installation must be preformed by `root`, an `Administrator' on most
+Installation must be preformed by `root`, an `Administrator` on most
 systems. The following is used to install the library.
 
-    $ sudo make install
+    sudo make install
 
 Safe Linux Kernel Module
 ------------------------
@@ -222,32 +222,30 @@ build the kernel module.
 
 .To build do the following:
 
-    $ ./configure --disable-wchar
-    $ make -f Makefile.kernel
-
+    ./configure --disable-wchar
+    make -f Makefile.kernel
 
 This assumes you are compiling on a Linux box and this makefile supports the
 standard kernel build system infrastructure documented in:
-<linux-kernel-src-tree>/Documentation/kbuild/modules.txt
+`/usr/src/linux-kernel/Documentation/kbuild/modules.txt`
 
 NOTE: If you build the kernel module then wish to build the userspace library
-      or vice versa you will need to do a +make clean+ otherwise a +make check+
+      or vice versa you will need to do a `make clean` otherwise a `make check`
       will fail to build.
 
 
 * Installing
 
 The kernel module will be found at the root of the source tree called
-'slkm.ko'. The file 'testslkm.ko' are the unit tests run on the userspace
+`slkm.ko`. The file `testslkm.ko` are the unit tests run on the userspace
 library but in Linux kernel module form to verify functionality within the
 kernel.
 
-
-[[tested-platforms]]
 Tested Platforms
 ----------------
 
-.The library has been tested on the following systems:
+The library has been tested on the following systems:
+
 - Linux Fedora core 31 - 32 amd64/i386 glibc 2.28 - 2.31 (all gcc's + clang's)
 - Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc's + clang's)
 - Linux Debian 9 - 11 amd64/i386 glibc 2.24 - 2.28 (all gcc's + clang's)
@@ -265,6 +263,7 @@ Tested Platforms
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
 
 with most available compilers. See `build-aux/smoke.sh` and the various CI configs.
+
 - https://travis-ci.org/github/rurban/safeclib/
 - https://ci.appveyor.com/project/rurban/safeclib/
 - https://cirrus-ci.com/github/rurban/safeclib
@@ -273,19 +272,25 @@ with most available compilers. See `build-aux/smoke.sh` and the various CI confi
 Known Issues
 ------------
 1. If you are building the library from the git repository you will have to
-   first run `build-aux/autogen.sh` which runs autoreconf to ``install'' the
+   first run `build-aux/autogen.sh` which runs autoreconf to `install` the
    autotools files and create the configure script.
 
-[bibliography]
-.References
-- [[[1]]] Programming languages, their environments and system software
-          interfaces, Extensions to the C Library, Part I: Bounds-checking
-          interfaces, ISO/IEC TR 24731-1.
-- [[[2]]] Rationale for TR 24731 Extensions to the C Library Part I:
-          Bounds-checking interfaces, ISO/IEC JTC1 SC22 WG14 N1225.
-- [[[3]]] The Open Group Base Specifications Issue 7
-          http://pubs.opengroup.org/onlinepubs/9699919799/functions/contents.html
-- [[[4]]] CERT C Secure Coding Standard
-          https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard
-- [[[5]]] C11 Standard (ISO/IEC 9899:2011) Annex K
-- [[[6]]] DrDobbs review http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670
+References
+----------
+
+[^1]: Programming languages, their environments and system software
+      interfaces, Extensions to the C Library, Part I: Bounds-checking
+      interfaces, ISO/IEC TR 24731-1.
+
+[^2]: Rationale for TR 24731 Extensions to the C Library Part I:
+      Bounds-checking interfaces, ISO/IEC JTC1 SC22 WG14 N1225.
+          
+[^3]: The Open Group Base Specifications Issue 7
+      http://pubs.opengroup.org/onlinepubs/9699919799/functions/contents.html
+
+[^4]: CERT C Secure Coding Standard
+      https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard
+
+[^5]: C11 Standard (ISO/IEC 9899:2011) Annex K
+
+[^6]: DrDobbs review http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670

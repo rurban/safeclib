@@ -51,7 +51,8 @@ dist_pkginclude_HEADERS = \
 
 # Support files
 SAFEC_INFRA = \
-	$(top_srcdir)/README                       \
+	$(top_srcdir)/README.md                  \
+	README.rst                               \
 	${top_srcdir}/build-aux/autogen.sh       \
 	${top_srcdir}/build-aux/msys2.bat        \
 	${top_srcdir}/build-aux/smoke.sh         \
@@ -480,41 +481,46 @@ dist_man_MANS += \
 #	doc/man/man3/WCSNORM_NFKC.3     \
 #	doc/man/man3/WCSNORM_NFKD.3
 #endif
-CLEANFILES += Doxyfile doc/footer README.md
+CLEANFILES += Doxyfile doc/footer
+MAINTAINERCLEANFILES = *~ README.rst
 
 # avoid parallel doxygen
 $(dist_man_MANS) ::
-doc/man/man3/EOK.3 :: Doxyfile README.md doc/footer include/safe_config.h
+doc/man/man3/EOK.3 :: Doxyfile README.rst doc/footer include/safe_config.h
 	-rm $@
 	doxygen
 
-docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
+docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
    doc/man/man1/check_for_unsafe_apis.1 doc/man/man3/EOK.3
 	-rm -rf doc/man/man3/d[0-9a-f]
 	-rm doc/man/man3/_*.3
+	-rm doc/man/man3/v.3
+	-rm doc/man/man3/_*_chk.3
 	-rm doc/man/man3/slk_*.3
 	-rm doc/man/man3/BOS*.3
-	-rm doc/man/man3/VAL_OVR2*
 	-rm doc/man/man3/HAVE___BUILTIN_CONSTANT_P.3
 	-rm doc/man/man3/HAVE___BUILTIN_OBJECT_SIZE.3
+	-rm doc/man/man3/UNWIF_*.3
+	-rm doc/man/man3/TBL.3
 	-rm doc/man/man3/VAL_OVR2*
-	-rm doc/man/man3/{wmask,wsize,likely,unlikely}.3
+	-rm doc/man/man3/{wmask,wsize}.3
+	-rm doc/man/man3/ASM_VOLATILE.3
 	-rm doc/man/man3/CASE*.3
 	-rm doc/man/man3/DRV*.3
-	-rm doc/man/man3/INLINE.3
-	-rm doc/man/man3/EOVERFLOW.3
-	-rm doc/man/man3/EXPORT_SYMBOL.3
-	-rm doc/man/man3/EXPORT.3
+	-rm doc/man/man3/DISABLE_DLLIMPORT.3
 	-rm doc/man/man3/EXTERN.3
+	-rm doc/man/man3/errno_t.3
 	-rm doc/man/man3/Hangul*.3
 	-rm doc/man/man3/hangul.h.3
+	-rm doc/man/man3/seqindex_*
+	-rm doc/man/man3/*case_seqindex.3
+	-rm doc/man/man3/UINT16_MAX.3
 	-rm doc/man/man3/UNWIF_*.3
 	-rm doc/man/man3/README*
+	-rm doc/man/man3/__STDC_WANT_LIB_EXT1__.3
+	-rm doc/man/man3/__WORDSIZE.3
 	-rm doc/man/man3/MODULE*.3
-	-rm doc/man/man3/NDEBUG.3
 	-rm doc/man/man3/NORMALIZE_IND_TBL.3
-	-rm doc/man/man3/RCNEGATE.3
-	-rm doc/man/man3/SAFECLIB_ENABLE_UNSAFE.3
 	-rm doc/man/man3/is*.3
 	-rm doc/man/man3/debruijn32.3
 	-rm doc/man/man3/errmsgs_s.3
@@ -530,10 +536,7 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/pntz.3
 	-rm doc/man/man3/pos.3
 	-rm doc/man/man3/sl_default_handler.3
-	-rm doc/man/man3/slabort.3
-	-rm doc/man/man3/sldebug_printf.3
 	-rm doc/man/man3/slkm_init.c.3
-	-rm doc/man/man3/slprintf.3
 	-rm doc/man/man3/module_{exit,init}.3
 	-rm doc/man/man3/sift.3
 	-rm doc/man/man3/v.3
@@ -541,6 +544,10 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/todo.3
 	-rm doc/man/man3/tbl2.3
 	-rm doc/man/man3/tbl3.3
+	-rm doc/man/man3/unsafe_get_property.3
+	-rm doc/man/man3/unw16if*.h.3
+	-rm doc/man/man3/unwif*.h.3
+	-rm doc/man/man3/wsize.3
 	-rm doc/man/man3/md_doc_libc-overview.3
 	-rm doc/man/man3/libc-overview.md.3
 	-rm doc/man/man3/len{_errmsgs_s,}.3
@@ -554,8 +561,8 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.md \
 	-rm doc/man/man3/handle_{,w,mem_}error.3
 	-rm doc/man/man3/handle_{str,mem}_bos_*.3
 	-rm doc/man/man3/handle_str_src_bos_*.3
-README.md: README
-	cp $(srcdir)/README README.md
+README.rst: README.md
+	pandoc -o README.rst README.md
 all-local: Doxyfile doc/footer
 clean-local:
 	rm -rf $(builddir)/doc/html
