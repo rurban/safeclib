@@ -41,8 +41,8 @@
 #
 # Version Numbering
 # -----------------
-# Version number format: Major.Minor.Patch[-dirty]
-# where -dirty denotes uncommitted changes.
+# Version number format: Major.Minor.Patch[_gCOMMITHASH[_dirty]]
+# where _dirty denotes uncommitted changes.
 #
 # Detailed Description
 # --------------------
@@ -60,7 +60,7 @@
 # To you configure.ac file:
 #
 #	AC_INIT([project-name],
-#		m4_esyscmd([path/to/version-gen.sh tarball-version]),
+#		m4_esyscmd([path/to/version-gen.sh .tarball-version]),
 #		[bug-email@example.com])
 #
 # Add the following to your Makefile.am, so that .version will be present
@@ -99,7 +99,7 @@
 #	git tag -d "test1.2"; git checkout -- README
 #
 
-SCRIPTVERSION=2017-08-24
+SCRIPTVERSION=2020-10-07
 
 prog=$0
 
@@ -119,7 +119,7 @@ Options:
 
     --prefix        prefix of git tags (default 'v')
     --abbrev        value passed to the --abbrev option of git describe
-                    (default 4)
+                    (default 6)
 
     --help          this output and exit
     --version       the version of this script and exit
@@ -157,7 +157,7 @@ if test -z "$tarball_version_file"; then
 fi
 
 #export GIT_DIR=$(dirname $tarball_version_file)/.git
-tag_sed_script="${tag_sed_script:-s/\(.?*\)-\(.*\)-\(.*\)/\1.\2-\3/}"
+tag_sed_script="${tag_sed_script:-s/\(.?*\)-\(.*\)-\(g.*\)/\1_\2_\3/;s/-/_/g}"
 nl='
 '
 v=
@@ -173,10 +173,10 @@ if test -f "$tarball_version_file"; then
 		&& echo "$prog: WARNING: $tarball_version_file is missing or damaged" 1>&2
 fi
 
-# read git version, if the repo has uncommitted changes append
-# '-dirty' to version.
+# read git version.
+# if the repo has uncommitted changes, append '_dirty' to version.
 if test -z "$v"; then
-	v=$(git describe --long --tags --always --match "$prefix*" --abbrev=$abbrev \
+	v=$(git describe --tags --always --match "$prefix*" --abbrev=$abbrev \
 		--dirty 2>/dev/null) || v=UNKNOWN
 	v=$(echo "$v" | sed "$tag_sed_script" | sed "s/^$prefix//")
 fi
