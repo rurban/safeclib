@@ -17,14 +17,13 @@ echo Extending path to MSYS...
 SET "PATH=C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%"
 
 echo Temporary keyring mess (https://www.msys2.org/news/)
-rem bash -lc "curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
-rem bash -lc "curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig"
-rem bash -lc "pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig"
+bash -lc "wget http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{,.sig}"
+bash -lc "pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig"
+bash -lc "pacman -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
 rem bash -lc "pacman -U --config <(echo) msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
-bash -lc "rm -r /etc/pacman.d/gnupg/"
-bash -lc "pacman-key --init"
-bash -lc "pacman-key --populate msys2"
-bash -lc "pacman -S --noconfirm msys2-keyring"
+rem bash -lc "rm -r /etc/pacman.d/gnupg/"
+rem bash -lc "pacman-key --init"
+rem bash -lc "pacman-key --populate msys2"
 
 echo Updating pacman...
 bash -lc "pacman -Syy --noconfirm pacman"
