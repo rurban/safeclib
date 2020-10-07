@@ -17,9 +17,9 @@ echo Extending path to MSYS...
 SET "PATH=C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%"
 
 echo Temporary keyring mess (https://www.msys2.org/news/)
-bash -lc "wget http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{,.sig}"
+bash -lc "wget https://mirror.yandex.ru/mirrors/msys2/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{,.sig}"
 bash -lc "pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig"
-bash -lc "pacman -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
+bash -lc "pacman -U --noconfirm msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
 rem bash -lc "pacman -U --config <(echo) msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
 rem bash -lc "rm -r /etc/pacman.d/gnupg/"
 rem bash -lc "pacman-key --init"
