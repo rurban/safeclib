@@ -48,6 +48,7 @@ extern "C" {
 #include <wchar.h>
 #endif
 
+#undef EXTERN
 #if defined _WIN32 && !defined(DISABLE_DLLIMPORT)
 #if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
 #define EXTERN extern __declspec(dllexport)
