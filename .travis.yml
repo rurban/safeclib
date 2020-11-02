@@ -178,11 +178,12 @@ matrix:
       compiler: g++
       env: CONF="--enable-debug --enable-unsafe --enable-norm-compat"
       <<: *test_native
-    - name: x86_64-osx
-      compiler: gcc
-      os: osx
-      env: CONF="--enable-unsafe --enable-norm-compat"
-      <<: *test_native
+    # osx is not free anymore
+    #- name: x86_64-osx
+    #  compiler: gcc
+    #  os: osx
+    #  env: CONF="--enable-unsafe --enable-norm-compat"
+    #  <<: *test_native
     - name: x86_64-clang
       compiler: clang
       env: CFLAGS="-O2 -D_FORTIFY_SOURCE=2 -march=native" CONF="--disable-constraint-handler"
