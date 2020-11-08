@@ -245,6 +245,14 @@ EXTERN size_t strerrorlen_s(errno_t errnum);
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
+/* improved strcpy */
+EXTERN char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
+                           const char *restrict src, errno_t *restrict errp,
+                           const size_t destbos, const size_t srcbos)
+  BOS_CHK(dest) BOS_NULL(src) BOS_NULL(errp);
+#define stpcpy_s(dest, dmax, src, errp)                                     \
+    _stpcpy_s_chk(dest, dmax, src, errp, BOS(dest), BOS(src))
+
 /* string compare */
 EXTERN errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
                              int *resultp, const size_t destbos,

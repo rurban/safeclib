@@ -118,6 +118,7 @@ SAFEC_BUILT_TESTS += \
 	t_memzero_s           \
 	t_memzero32_s         \
 	t_memzero16_s         \
+	t_stpcpy_s            \
 	t_strcasecmp_s        \
 	t_strcasestr_s        \
 	t_strcmp_s            \
@@ -429,6 +430,7 @@ t_memset16_s_SOURCES          = test_memset16_s.c $(SAFEC_TEST_COMMON) test_expm
 t_memzero_s_SOURCES           = test_memzero_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_memzero32_s_SOURCES         = test_memzero32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_memzero16_s_SOURCES         = test_memzero16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_stpcpy_s_SOURCES            = test_stpcpy_s.c $(SAFEC_TEST_COMMON)
 t_strcasecmp_s_SOURCES        = test_strcasecmp_s.c $(SAFEC_TEST_COMMON)
 t_strcasestr_s_SOURCES        = test_strcasestr_s.c $(SAFEC_TEST_COMMON)
 t_strcmpfld_s_SOURCES         = test_strcmpfld_s.c $(SAFEC_TEST_COMMON)

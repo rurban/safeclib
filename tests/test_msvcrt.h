@@ -116,6 +116,7 @@ void _errno_msvc(const int n, const int winerr, int *errp, const char *f,
 #undef wmemcmp_s
 #undef strcat_s
 #undef strcpy_s
+#undef stpcpy_s
 #undef strncat_s
 #undef strncpy_s
 #undef strnlen_s

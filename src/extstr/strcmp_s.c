@@ -62,7 +62,7 @@
  * @retval   0         when strings the same
  * @retval  <0         when dest less than src
  * @retval  EOK        when comparison is complete
- * @retval  ESUNTERM   when dest or src is unterminated, or dmax is too small.
+ * @retval  ESUNTERM   when src is unterminated
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR

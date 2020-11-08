@@ -85,6 +85,7 @@ STD_UNSAFE_FILES = \
 	io/tmpnam_s.c
 
 EXT_STR_FILES = \
+	extstr/stpcpy_s.c            \
 	extstr/strcasecmp_s.c        \
 	extstr/strcasestr_s.c        \
 	extstr/strcmp_s.c            \
