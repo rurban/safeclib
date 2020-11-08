@@ -253,6 +253,14 @@ EXTERN char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
 #define stpcpy_s(dest, dmax, src, errp)                                     \
     _stpcpy_s_chk(dest, dmax, src, errp, BOS(dest), BOS(src))
 
+EXTERN char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
+                            const char *restrict src, rsize_t slen,
+                            errno_t *restrict errp,
+                            const size_t destbos, const size_t srcbos)
+  BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(errp);
+#define stpncpy_s(dest, dmax, src, slen, errp)                   \
+  _stpncpy_s_chk(dest, dmax, src, slen, errp, BOS(dest), BOS(src))
+
 /* string compare */
 EXTERN errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
                              int *resultp, const size_t destbos,

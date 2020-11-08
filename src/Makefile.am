@@ -86,6 +86,7 @@ STD_UNSAFE_FILES = \
 
 EXT_STR_FILES = \
 	extstr/stpcpy_s.c            \
+	extstr/stpncpy_s.c           \
 	extstr/strcasecmp_s.c        \
 	extstr/strcasestr_s.c        \
 	extstr/strcmp_s.c            \

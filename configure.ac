@@ -873,7 +873,7 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs iswdigit iswspace \
         towlower towupper towctrans bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
-        asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy])
+        asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy])
 
 dnl add the extensions, pretending we want them
 echo "#define __STDC_WANT_LIB_EXT1__  1" >>confdefs.h
@@ -890,6 +890,7 @@ AC_CHECK_FUNCS(
         strnlen_s strtok_s strerror_s vsprintf_s tmpnam_s snprintf_s \
         vsnprintf_s snwprintf_s \
         strspn_s strset_s strchr_s strrchr_s strstr_s strzero_s strnset_s \
+        stpcpy_s stpncpy_s \
         mbsrtowcs_s mbstowcs_s wcsrtombs_s wcstombs_s \
         wcrtomb_s wctomb_s wcsnlen_s wcscpy_s wcsncpy_s wcscat_s wcsncat_s \
         wmemcpy_s wmemmove_s wcstok_s vswprintf_s swprintf_s vfwprintf_s \

@@ -86,12 +86,12 @@
  * @return  If there is a runtime-constraint violation, and if dest and
  *          dmax are valid, then strncpy_s nulls dest.
  * @retval  EOK        successful operation, when slen == 0 or the characters
- * in src were copied to dest and the result is null terminated.
+ *                     in src were copied to dest and the result is null terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
  * @retval  EOVERFLOW  when dmax/slen > size of dest/src (optionally, when the
- * compiler knows the object_size statically)
+ *                     compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when strings overlap
  * @retval  ESNOSPC    when src longer than dest
