@@ -35,7 +35,9 @@
 #define __SAFECLIB_PRIVATE_H__
 
 #ifndef DEBUG
+#ifndef NDEBUG
 #define NDEBUG
+#endif
 #endif
 
 #include "config.h"
