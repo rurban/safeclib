@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * u8glen_s.c
+ * u8width_s.c
  *
  * September 2020, Reini Urban (WIP)
  *
@@ -52,11 +52,11 @@ static _u8_gbreaks_t _u8_gbreak(const uint32_t cp) {
 }
 
 /**
- * @def u8glen_s(str,smax)
+ * @def u8width_s(str,smax)
  * @brief
- *    The u8glen_s function computes the number of "graphemes" of the utf-8 string pointed
+ *    The u8width_s function computes the number of "graphemes" of the utf-8 string pointed
  *    to by str, stopping at smax bytes of str. This is equivalent to the number of extended
- *    grapheme clusters, the visual length of characters of the string. See
+ *    grapheme clusters, the visual width of characters of the string. See
  *    the Unicode Text Segmentation Annex TR29.
  *
  * @param  str   pointer to utf-8 string
@@ -71,21 +71,21 @@ static _u8_gbreaks_t _u8_gbreak(const uint32_t cp) {
  *   * Unicode Text Segmentation Annex TR29
  *     http://www.unicode.org/reports/tr29/tr29-29.html
  *
- * @return The function returns the visual utf-8 string length, excluding the
- * terminating null character.  If \c str is NULL, then \c u8glen_s returns
- * 0. Otherwise, the \c u8glen_s function returns the number of extended grapheme
+ * @return The function returns the visual utf-8 string width, excluding the
+ * terminating null character.  If \c str is NULL, then \c u8width_s returns
+ * 0. Otherwise, the \c u8width_s function returns the number of extended grapheme
  * clusters that precede the terminating null character. (Not legacy).
- * If there is no null character in the first \c smax characters of str then \c u8glen_s
+ * If there is no null character in the first \c smax characters of str then \c u8width_s
  * returns \c smax. At most the first \c smax characters of str are accessed
- * by \c u8glen_s.
+ * by \c u8width_s.
  *
  * @see
  *    u8nlen_s()
  */
 #ifdef FOR_DOXYGEN
-rsize_t u8glen_s(const char8_t *str, rsize_t smax)
+rsize_t u8width_s(const char8_t *str, rsize_t smax)
 #else
-EXPORT rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
+EXPORT rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
 #endif
 {
     //const char8_t *z;
@@ -95,12 +95,12 @@ EXPORT rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
         return RCNEGATE(0);
     }
     if (unlikely(smax == 0)) {
-        invoke_safe_str_constraint_handler("u8glen_s: smax is 0", (void *)str,
+        invoke_safe_str_constraint_handler("u8width_s: smax is 0", (void *)str,
                                            ESZEROL);
         return RCNEGATE(0);
     }
     if (unlikely(smax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("u8glen_s: smax exceeds max",
+        invoke_safe_str_constraint_handler("u8width_s: smax exceeds max",
                                            (void *)str, ESLEMAX);
         return RCNEGATE(0);
     }
@@ -111,7 +111,7 @@ EXPORT rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
 #if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX)
     } else {
         if (unlikely(smax != strbos)) {
-            handle_str_bos_chk_warn("u8glen_s", (char *)str, smax, strbos);
+            handle_str_bos_chk_warn("u8width_s", (char *)str, smax, strbos);
             RETURN_ESLEWRNG;
         }
 #endif
