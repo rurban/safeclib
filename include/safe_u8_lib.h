@@ -103,10 +103,10 @@ EXTERN rsize_t _u8nlen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
 #define u8nlen_s(str, smax) _u8nlen_s_chk(str, smax, BOS(str))
 
-/* utf-8 string bounded character length (grapheme clusters) */
-EXTERN rsize_t _u8glen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
+/* utf-8 string bounded visual width (number of grapheme clusters) */
+EXTERN rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
-#define u8glen_s(str, smax) _u8glen_s_chk(str, smax, BOS(str))
+#define u8width_s(str, smax) _u8width_s_chk(str, smax, BOS(str))
 
 /* string tokenizer */
 EXTERN char8_t *_u8tok_s_chk(char8_t *restrict dest, rsize_t *restrict dmaxp,
