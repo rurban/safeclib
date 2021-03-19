@@ -211,7 +211,7 @@ EXT_U8_FILES = \
 	extu8/u8ncpy_s.c       \
 	extu8/u8nlen_s.c       \
 	extu8/u8gbreaks.h      \
-	extu8/u8glen_s.c
+	extu8/u8width_s.c
 
 if ENABLE_WCHAR
 EXT_U8_FILES += \
