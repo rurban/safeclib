@@ -198,7 +198,7 @@ endif
 endif
 if ENABLE_U8
 SAFEC_BUILT_TESTS += \
-	t_u8glen_s   \
+	t_u8width_s   \
 	t_u8norm_s
 endif
 
@@ -502,7 +502,7 @@ endif
 endif
 
 if ENABLE_U8
-t_u8glen_s_SOURCES            = test_u8glen_s.c $(SAFEC_TEST_COMMON)
+t_u8width_s_SOURCES            = test_u8width_s.c $(SAFEC_TEST_COMMON)
 t_u8norm_s_SOURCES            = test_u8norm_s.c $(SAFEC_TEST_COMMON)
 endif
 
