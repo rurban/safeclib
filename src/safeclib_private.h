@@ -600,6 +600,7 @@ typedef unsigned long uintptr_t;
 
 /* mingw64 3.0.1
    has strtok_s, wcstok_s, and vsnprintf_s, which we patch in the tests. */
+#undef _ENC_W16
 
 #if SIZEOF_WCHAR_T > 2
 

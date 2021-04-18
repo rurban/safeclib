@@ -56,6 +56,7 @@ extern "C" {
 #endif
 
 #if defined _WIN32 && !defined(DISABLE_DLLIMPORT)
+#undef EXTERN
 #if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
 #define EXTERN extern __declspec(dllexport)
 #else
