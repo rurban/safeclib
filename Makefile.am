@@ -138,7 +138,6 @@ dist_man_MANS += \
 	doc/man/man3/RSIZE_MAX_MEM16.3	\
 	doc/man/man3/RSIZE_MAX_MEM32.3	\
 	doc/man/man3/RSIZE_MAX_STR.3	\
-	doc/man/man3/RSIZE_MAX_WMEM.3	\
 	doc/man/man3/RSIZE_MAX_WSTR.3	\
 	doc/man/man3/RSIZE_MIN_STR.3	\
 	doc/man/man3/SAFECLIB_STR_NULL_SLACK.3	\
@@ -167,10 +166,6 @@ dist_man_MANS += \
 	doc/man/man3/freopen_s.c.3	\
 	doc/man/man3/fscanf_s.3		\
 	doc/man/man3/fscanf_s.c.3	\
-	doc/man/man3/fwprintf_s.3	\
-	doc/man/man3/fwprintf_s.c.3	\
-	doc/man/man3/fwscanf_s.3	\
-	doc/man/man3/fwscanf_s.c.3	\
 	doc/man/man3/getenv_s.3		\
 	doc/man/man3/getenv_s.c.3	\
 	doc/man/man3/gets_s.3		\
@@ -183,10 +178,6 @@ dist_man_MANS += \
 	doc/man/man3/invoke_safe_str_constraint_handler.3	\
 	doc/man/man3/localtime_s.3	\
 	doc/man/man3/localtime_s.c.3	\
-	doc/man/man3/mbsrtowcs_s.3	\
-	doc/man/man3/mbsrtowcs_s.c.3	\
-	doc/man/man3/mbstowcs_s.3	\
-	doc/man/man3/mbstowcs_s.c.3	\
 	doc/man/man3/mem_handler.3	\
 	doc/man/man3/mem_prim_move.3	\
 	doc/man/man3/mem_prim_move16.3	\
@@ -255,8 +246,6 @@ dist_man_MANS += \
 	doc/man/man3/set_str_constraint_handler_s.3	\
 	doc/man/man3/snprintf_s.3	\
 	doc/man/man3/snprintf_s.c.3	\
-	doc/man/man3/snwprintf_s.3	\
-	doc/man/man3/snwprintf_s.c.3	\
 	doc/man/man3/sprintf_s.3	\
 	doc/man/man3/sprintf_s.c.3	\
 	doc/man/man3/sscanf_s.3		\
@@ -357,10 +346,6 @@ dist_man_MANS += \
 	doc/man/man3/strupr_s.3		\
 	doc/man/man3/strzero_s.3	\
 	doc/man/man3/strzero_s.c.3	\
-	doc/man/man3/swprintf_s.3	\
-	doc/man/man3/swprintf_s.c.3	\
-	doc/man/man3/swscanf_s.3	\
-	doc/man/man3/swscanf_s.c.3	\
 	doc/man/man3/timingsafe_bcmp.3	\
 	doc/man/man3/timingsafe_bcmp.c.3	\
 	doc/man/man3/timingsafe_memcmp.3	\
@@ -369,6 +354,37 @@ dist_man_MANS += \
 	doc/man/man3/tmpfile_s.c.3	\
 	doc/man/man3/tmpnam_s.3		\
 	doc/man/man3/tmpnam_s.c.3	\
+	doc/man/man3/vfprintf_s.3	\
+	doc/man/man3/vfprintf_s.c.3	\
+	doc/man/man3/vfscanf_s.3	\
+	doc/man/man3/vfscanf_s.c.3	\
+	doc/man/man3/vprintf_s.3	\
+	doc/man/man3/vprintf_s.c.3	\
+	doc/man/man3/vscanf_s.3	\
+	doc/man/man3/vscanf_s.c.3	\
+	doc/man/man3/vsnprintf_s.3	\
+	doc/man/man3/vsnprintf_s.c.3	\
+	doc/man/man3/vsprintf_s.3	\
+	doc/man/man3/vsprintf_s.c.3	\
+	doc/man/man3/vsscanf_s.3	\
+	doc/man/man3/vsscanf_s.c.3
+if ENABLE_WCHAR
+dist_man_MANS += \
+	doc/man/man3/RSIZE_MAX_WMEM.3	\
+	doc/man/man3/fwprintf_s.3	\
+	doc/man/man3/fwprintf_s.c.3	\
+	doc/man/man3/fwscanf_s.3	\
+	doc/man/man3/fwscanf_s.c.3	\
+	doc/man/man3/mbsrtowcs_s.3	\
+	doc/man/man3/mbsrtowcs_s.c.3	\
+	doc/man/man3/mbstowcs_s.3	\
+	doc/man/man3/mbstowcs_s.c.3	\
+	doc/man/man3/snwprintf_s.3	\
+	doc/man/man3/snwprintf_s.c.3	\
+	doc/man/man3/swprintf_s.3	\
+	doc/man/man3/swprintf_s.c.3	\
+	doc/man/man3/swscanf_s.3	\
+	doc/man/man3/swscanf_s.c.3	\
 	doc/man/man3/towctrans.c.3	\
 	doc/man/man3/towfc_s.3		\
 	doc/man/man3/towfc_s.c.3	\
@@ -384,26 +400,12 @@ dist_man_MANS += \
 	doc/man/man3/unwifcmp.h.3	\
 	doc/man/man3/unwifcpt.h.3	\
 	doc/man/man3/unwifexc.h.3	\
-	doc/man/man3/vfprintf_s.3	\
-	doc/man/man3/vfprintf_s.c.3	\
-	doc/man/man3/vfscanf_s.3	\
-	doc/man/man3/vfscanf_s.c.3	\
 	doc/man/man3/vfwprintf_s.3	\
 	doc/man/man3/vfwprintf_s.c.3	\
 	doc/man/man3/vfwscanf_s.3	\
 	doc/man/man3/vfwscanf_s.c.3	\
-	doc/man/man3/vprintf_s.3	\
-	doc/man/man3/vprintf_s.c.3	\
-	doc/man/man3/vscanf_s.3	\
-	doc/man/man3/vscanf_s.c.3	\
-	doc/man/man3/vsnprintf_s.3	\
-	doc/man/man3/vsnprintf_s.c.3	\
 	doc/man/man3/vsnwprintf_s.3	\
 	doc/man/man3/vsnwprintf_s.c.3	\
-	doc/man/man3/vsprintf_s.3	\
-	doc/man/man3/vsprintf_s.c.3	\
-	doc/man/man3/vsscanf_s.3	\
-	doc/man/man3/vsscanf_s.c.3	\
 	doc/man/man3/vswprintf_s.3	\
 	doc/man/man3/vswprintf_s.c.3	\
 	doc/man/man3/vswscanf_s.3	\
@@ -411,7 +413,7 @@ dist_man_MANS += \
 	doc/man/man3/vwprintf_s.3	\
 	doc/man/man3/vwprintf_s.c.3	\
 	doc/man/man3/vwscanf_s.3	\
-	doc/man/man3/vwscanf_s.c.3	\
+	doc/man/man3/vwscanf_s.c.3 	\
 	doc/man/man3/wcrtomb_s.3	\
 	doc/man/man3/wcrtomb_s.c.3	\
 	doc/man/man3/wcscat_s.3		\
@@ -430,7 +432,6 @@ dist_man_MANS += \
 	doc/man/man3/wcslwr_s.c.3	\
 	doc/man/man3/wcsnatcmp_s.3	\
 	doc/man/man3/wcsnatcmp_s.c.3	\
-	doc/man/man3/wcsnaticmp_s.3	\
 	doc/man/man3/wcsncat_s.3	\
 	doc/man/man3/wcsncat_s.c.3	\
 	doc/man/man3/wcsncmp_s.3	\
@@ -472,15 +473,13 @@ dist_man_MANS += \
 	doc/man/man3/wprintf_s.c.3	\
 	doc/man/man3/wscanf_s.3		\
 	doc/man/man3/wscanf_s.c.3
-#if ENABLE_WCHAR
-#dist_man_MANS += \
 #	doc/man/man3/WCSNORM_FCC.3      \
 #	doc/man/man3/WCSNORM_FCD.3      \
 #	doc/man/man3/WCSNORM_NFC.3      \
 #	doc/man/man3/WCSNORM_NFD.3      \
 #	doc/man/man3/WCSNORM_NFKC.3     \
 #	doc/man/man3/WCSNORM_NFKD.3
-#endif
+endif
 CLEANFILES += Doxyfile doc/footer
 MAINTAINERCLEANFILES = *~ README.rst
 
