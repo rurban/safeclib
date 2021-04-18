@@ -604,6 +604,7 @@ typedef unsigned long uintptr_t;
 
 #if SIZEOF_WCHAR_T > 2
 
+#undef _ENC_W16
 #define _dec_w16(src) *(src)
 #define _ENC_W16(dest, dmax, cp)                                               \
     *(dest)++ = (cp);                                                          \
