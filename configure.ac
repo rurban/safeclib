@@ -35,9 +35,7 @@ AC_PREREQ([2.69])
 
 # information on the package
 #AC_SUBST([PACKAGE_VERSION], [3.7])
-AC_INIT([Safe C Library], [3.7],
-        [https://github.com/rurban/safeclib/issues],
-        [safeclib], [http://github.com/rurban/safeclib/])
+AC_INIT([Safe C Library],[3.7],[https://github.com/rurban/safeclib/issues],[safeclib],[http://github.com/rurban/safeclib/])
 
 # Configure the configure script
 # ===============================================
@@ -392,8 +390,8 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_CC_C_O
-AC_PROG_CC_C99
-AC_PROG_CC_C11
+#AC_PROG_CC_C99
+#AC_PROG_CC_C11
 
 if test "x$ac_cv_prog_cc_c99" = "xno"; then
    dnl we really should ERROR, lets see how far can come without
@@ -694,6 +692,8 @@ AC_CHECK_HEADERS([stdlib.h	\
                   malloc.h	\
                   string.h	\
                   limits.h	\
+                  stddef.h	\
+                  unistd.h	\
                   sys/types.h	\
                   inttypes.h	\
                   stdint.h	\
@@ -873,15 +873,15 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs iswdigit iswspace \
         towlower towupper towctrans bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
-        asctime_r ctime_r gmtime_r localtime_r memccpy ])
+        asctime_r ctime_r gmtime_r localtime_r memccpy])
 
 dnl add the extensions, pretending we want them
-$as_echo '#define __STDC_WANT_LIB_EXT1__  1' >>confdefs.h
+echo "#define __STDC_WANT_LIB_EXT1__  1" >>confdefs.h
 dnl native safec shadowing functions (should be none)
 AC_CHECK_FUNCS([_memcpy_s_chk _memmove_s_chk _memset_s_chk _memcmp_s_chk \
         _strcpy_s_chk _strncpy_s_chk _strcat_s_chk _strncat_s_chk _strnlen_s_chk \
         _printf_s_chk _sprintf_s_chk _snprintf_s_chk _swprintf_s_chk \
-        _vfprintf_s_chk _vfwprintf_s_chk _vsprintf_s_chk _vsnprintf_s_chk ])
+        _vfprintf_s_chk _vfwprintf_s_chk _vsprintf_s_chk _vsnprintf_s_chk])
 dnl native C11 Annex K functions
 dnl vsnprintf_s vsnwprintf_s strtok_s wcstok_s deviate in mingw from c11
 AC_CHECK_FUNCS(
