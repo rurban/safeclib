@@ -52,6 +52,8 @@
 /* Needed since the switch to time64_t */
 #if defined CONFIG_COMPAT_32BIT_TIME && defined _LINUX_TIME64_H && defined __VDSO_TIME32_H
 #define time_t old_time32_t
+#elif defined _LINUX_TIME64_H && !defined __VDSO_TIME32_H
+#define time_t time64_t
 #endif
 
 #define RCNEGATE(x) (-(x))
