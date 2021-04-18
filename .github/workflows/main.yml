@@ -1,0 +1,117 @@
+name: Github CI
+on: [push, pull_request]
+
+#strategy:
+#  matrix:
+#    os: [ubuntu-14.04, ubuntu-18.04, ubuntu-latest]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        CONF_ARGS:
+          - --disable-wchar
+          - --enable-unsafe --enable-norm-compat
+          - --enable-debug --enable-unsafe --enable-norm-compat --enable-gcov
+          - --enable-debug --enable-unsafe --enable-norm-compat CFLAGS="-fsanitize=address"
+          - --disable-nullslack --enable-warn-dmax
+          - --disable-extensions CFLAGS="-march=native"
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - run: sudo apt-get install doxygen libtext-diff-perl pkg-config
+    - run: sh build-aux/autogen.sh
+    - run: ./configure ${{ matrix.CONF_ARGS }}
+    - if: matrix.CONF_ARGS == '--disable-wchar'
+      name: make kernel module
+      run: make -f Makefile.kernel && make clean
+    - run: make
+    - run: make check-log
+    - if: ${{ contains(matrix.CONF_ARGS, '--enable-gcov') }}
+      name: Run make codecov if --enable-gcov
+      run: |
+        sudo apt-get install libdevel-cover-perl
+        make gcov
+        curl -s https://codecov.io/bash -o codecov_io.sh
+        chmod +x codecov_io.sh
+        bash codecov_io.sh
+    - if: matrix.CONF_ARGS == ''
+      name: Run make distcheck
+      run: |
+        sudo apt-get -y install doxygen
+        make distcheck
+  macOS:
+    name: macOS
+    runs-on: macOS-latest
+    steps:
+    - name: init
+      run: brew install automake
+    - name: checkout
+      uses: actions/checkout@v2
+    - run: sh build-aux/autogen.sh
+    - run: ./configure
+    - run: make
+    - run: make check-log
+    #- run: make distcheck
+  mingw:
+    name: mingw
+    runs-on: windows-latest
+    env:
+      MSYS2_DIR: msys64
+      MSYS2_ARCH: x86_64
+      MSYSTEM: MINGW64
+      ARCH: win64
+      PLATFORM: x64
+      #PATH: "C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%"
+    steps:
+      # see https://github.com/msys2/setup-msys2
+    - name: setup-msys2
+      uses: msys2/setup-msys2@v2
+      with:
+        path-type: minimal
+        update: true
+        install: >-
+          git
+          base-devel
+          coreutils
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-libtool
+          mingw-w64-x86_64-perl
+    - run: reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /d 1
+    - run: git config --global core.autocrlf input
+    - name: checkout
+      uses: actions/checkout@v2
+    - shell: msys2 {0}
+      run: sh build-aux/autogen.sh
+    #- name: Create zipped asset
+    #  run: gzip -c configure >configure.gz
+    #- name: Create Release
+    #  id: create_release
+    #  uses: actions/create-release@v1
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  with:
+    #    tag_name: ${{ github.ref }}
+    #    release_name: Draft Release ${{ github.ref }}
+    #    draft: true
+    #    prerelease: false
+    #- name: Upload Release Asset
+    #  id: upload-release-asset
+    #  uses: actions/upload-release-asset@v1
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  with:
+    #    upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #    asset_path: ./configure.gz
+    #    asset_name: configure.gz
+    #    asset_content_type: application/gzip
+    - shell: msys2 {0}
+      run: ./configure
+    - shell: msys2 {0}
+      run: make
+    - shell: msys2 {0}
+      run: make check-log

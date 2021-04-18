@@ -4,7 +4,7 @@
 # 2017  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017, 2018, 2019, 2020 Reini Urban
+# Copyright (c) 2017-2021 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
