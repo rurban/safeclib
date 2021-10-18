@@ -176,11 +176,13 @@
 #endif
 
 /* mingw 3.4 */
+#ifndef __gnu_hurd__
 #ifndef EOVERFLOW
 #ifdef _WIN32
 #define EOVERFLOW 132
 #else
 #define EOVERFLOW 75
+#endif
 #endif
 #endif
 
