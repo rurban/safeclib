@@ -44,7 +44,7 @@
  * @brief
  *    The stpcpy_s function copies the string pointed to by src
  *    (including the terminating null character) into the array
- *    pointed to by dest. The strings my not overlap.
+ *    pointed to by dest. The strings may not overlap.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
  *    terminating null character (if any) written by stpcpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
