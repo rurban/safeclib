@@ -121,7 +121,7 @@ if [ -e /opt/pgi/osx86-64/2019/bin/pgcc ]; then
     echo /opt/pgi/osx86-64/2019/bin/pgcc --enable-unsafe --enable-debug
     CC=/opt/pgi/osx86-64/2019/bin/pgcc ./configure --enable-unsafe --enable-debug && \
         gmake -s j4 && gmake check-log
-        # fails on several not null slack wirh >RMAX
+        # fails on several not null slack with >RMAX
     gmake -s -j4 clean
 fi
 
@@ -129,15 +129,15 @@ fi
 
 Linux)
     make -s clean
-    for clang in clang clang-10 clang-7 clang-5.0
+    if test -n "`which clang`"; then
+        echo clang -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
+        CC="clang -fsanitize=address -fno-omit-frame-pointer" \
+          ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
+            make -s -j4 check-log || exit
+        make -s clean
+    fi
+    for clang in clang clang-{11,10,7,5.0}
     do
-        if test -n "`which clang`"; then
-            echo $clang -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
-            CC="clang -fsanitize=address -fno-omit-frame-pointer" \
-              ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
-                make -s -j4 check-log || exit
-            make -s clean
-        fi
         if test -n `which $clang`; then
             echo $clang -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
             CC="$clang -march=native" \
@@ -145,7 +145,7 @@ Linux)
                 make -s -j4 check-log && make -s -j4 -C tests tests-bos
         fi
     done
-    for clang in clang-3.7 clang-3.6 clang-3.5 clang-3.4
+    for clang in clang-{3.7,3.6,3.5,3.4}
     do
         if test -n "`which $clang`"; then
             echo $clang -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
@@ -169,7 +169,7 @@ Linux)
     fi
     #CC="g++-6 -std=c++11" ./configure && \
         #    make -s -j4 check-log || exit
-    for gcc in gcc-{10,9,8,7,6,5}
+    for gcc in gcc-{12,11,10,9,8,7,6,5}
     do
         if test -n "`which $gcc`"; then
             if CC="$gcc" ./configure; then
@@ -309,6 +309,7 @@ git clean -dxf src tests
 autoreconf
 if test -n "`which x86_64-w64-mingw32-gcc`"; then
     #CC="x86_64-w64-mingw32-gcc"
+    test -f libssp-0.dll.m64 && cp tests/libssp-0.dll
     ./configure --enable-unsafe --host=x86_64-w64-mingw32 && \
     $make -s -j4 && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
@@ -321,6 +322,7 @@ if test -n "`which x86_64-w64-mingw32-gcc`"; then
     autoreconf
 fi
 if test -n "`which i686-w64-mingw32-gcc`"; then
+    test -f libssp-0.dll.m32 && cp tests/libssp-0.dll
     ./configure --enable-unsafe --host=i686-w64-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
@@ -344,6 +346,7 @@ if test -n "`which i686-w64-mingw32-gcc`"; then
 fi
 if test -n "`i386-mingw32-gcc`"; then
     #CC="i386-mingw32-gcc"
+    test -f libssp-0.dll.m32 && cp tests/libssp-0.dll
     ./configure --enable-unsafe --host=i386-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
     if [ `uname` = Linux ]; then
