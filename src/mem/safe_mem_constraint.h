@@ -35,7 +35,7 @@
 #ifdef FOR_DOXYGEN
 #include "safe_mem_lib.h"
 #else
-#include "safeclib_private.h"
+#include "src/safeclib_private.h"
 #endif
 
 /*

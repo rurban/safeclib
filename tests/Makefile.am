@@ -197,9 +197,16 @@ SAFEC_BUILT_TESTS += 	\
 endif
 endif
 
-SAFEC_BUILT_PERFS =  p_memcpy_s p_memset_s p_strcpy_s
+SAFEC_BUILT_PERFS = \
+	p_memcpy_s \
+	p_strcpy_s
+if !HAVE_MINGW
+SAFEC_BUILT_PERFS += \
+	p_memset_s
+endif
 if ENABLE_EXTS
-SAFEC_BUILT_PERFS += p_memcpy32_s
+SAFEC_BUILT_PERFS += \
+	p_memcpy32_s
 endif
 
 SAFEC_TEST_COMMON = \
