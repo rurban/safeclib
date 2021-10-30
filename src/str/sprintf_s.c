@@ -1,12 +1,9 @@
 /*------------------------------------------------------------------
  * sprintf_s.c
  *
- * November 2014, Charlie Lenahan
- * April 2017, Reini Urban
- * February 2018, Reini Urban
+ * November 2021, Reini Urban
  *
- * Copyright (c) 2014 by Charlie Lenahan
- * Copyright (c) 2017,2018 by Reini Urban
+ * Copyright (c) 2021 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,9 +34,6 @@
 #else
 #include "safeclib_private.h"
 #endif
-
-#if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
-#else
 
 /**
  * @def sprintf_s(dest, dmax, fmt, ...)
@@ -87,7 +81,7 @@
  * @retval -1  if an encoding error or a runtime constraint violation in the
  *             libc function \c vsnprintf occured.
  *
- * @note The C11 standard was most likely wrong with changing the return value
+ * @note The C11 standard was most likely wrong with changing the return value to
  * 0 on errors. All other functions and existing C11 implementations do return
  * -1, so we return negative error codes. See the
  * http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf revision for their
@@ -106,101 +100,18 @@ EXPORT int sprintf_s(char *restrict dest, rsize_t dmax,
                      const char *restrict fmt, ...)
 #endif
 {
-    int ret = -1;
-    va_list ap;
-    const char *p;
-#ifndef SAFECLIB_HAVE_C99
-    const size_t destbos = BOS_UNKNOWN;
-#endif
-
-    if (unlikely(dmax && dest == NULL)) {
-        invoke_safe_str_constraint_handler("sprintf_s: dest is null", NULL,
-                                           ESNULLP);
-        return -ESNULLP;
-    }
-
-    if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("sprintf_s: fmt is null", dest,
-                                           ESNULLP);
-        return -ESNULLP;
-    }
-
-    if (unlikely(dest && dmax == 0)) {
-        invoke_safe_str_constraint_handler("sprintf_s: dmax is 0", dest,
-                                           ESZEROL);
-        return -ESZEROL;
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("sprintf_s: dmax exceeds max", dest,
-                                           ESLEMAX);
-        return -ESLEMAX;
-    }
-    if (destbos == BOS_UNKNOWN) {
-        if (dmax) {
-            BND_CHK_PTR_BOUNDS(dest, dmax);
-        }
-    } else {
-        if (unlikely(dmax > destbos)) {
-            return -(handle_str_bos_overload("sprintf_s: dmax exceeds dest",
-                                             dest, destbos));
-        }
-    }
-
-    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
-        /* at the beginning or if inside, not %%n */
-        if ((p - fmt == 0) || *(p - 1) != '%') {
-            invoke_safe_str_constraint_handler("sprintf_s: illegal %n",
-                                               (char *restrict)fmt, EINVAL);
-            return -1; /* EINVAL */
-        }
-    }
-
-    /* TODO: in order to check for NULL fmt args, need va_copy.
-    va_copy(ap2, ap);
-    void *ptr = va_arg(*ap2, void*);
-    if (ptr == NULL)
-        return -(ESNULLP);
-    va_end(ap2);
-    */
-
-    va_start(ap, fmt);
-    /* FIXME: gcc 4.3 GCC_DIAG_IGNORE(-Wmissing-format-attribute) */
-#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
-    /* to detect illegal format specifiers */
-    ret = vsnprintf_s(dest, (size_t)dmax, (size_t)dmax, fmt, ap);
-    /*#elif defined(HAVE___VSNPRINTF_CHK) */
-    /* glibc allows %n from readonly strings, freebsd/darwin ignores flag. */
-    /*ret = __vsnprintf_chk(dest, (size_t)dmax, 2, (size_t)dmax, fmt, ap);*/
+    va_list va;
+    int ret;
+    va_start(va, fmt);
+#if defined SAFECLIB_HAVE_C99
+    ret = _vsnprintf_s_chk(dest, dmax, destbos, fmt, va);
 #else
-    ret = vsnprintf((char *)dest, (size_t)dmax, fmt, ap);
-#endif
-    /* GCC_DIAG_RESTORE */
-    va_end(ap);
-
-    if (unlikely(dmax && ret >= (int)dmax)
-#ifdef HAVE_MINGW32
-        || (ret == -1 && errno == ERANGE)
-#endif
-    ) {
-        handle_error(dest, dmax, "sprintf_s: len exceeds dmax", ESNOSPC);
-#ifdef HAVE_MINGW32
-        errno = 0;
-#endif
-        return -ESNOSPC; /* different to the standard (=0),
-                            but like all other implementations */
-    }
-
-    if (unlikely(ret < 0)) {
-        char errstr[128] = "sprintf_s: ";
-        strcat(errstr, strerror(errno));
-        handle_error(dest, dmax, errstr, -ret);
-    }
-
+    ret = vsnprintf_s(dest, dmax, fmt, va);
+#endif    
+    va_end(va);
     return ret;
 }
+
 #ifdef __KERNEL__
 EXPORT_SYMBOL(_sprintf_s_chk);
 #endif /* __KERNEL__ */
-
-#endif /* TEST_MSVCRT */

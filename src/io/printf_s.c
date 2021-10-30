@@ -2,8 +2,9 @@
  * printf_s.c
  *
  * September 2017, Reini Urban
+ * November 2021, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017, 2021 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -66,29 +67,13 @@
  */
 
 EXPORT int printf_s(const char *restrict fmt, ...) {
-    va_list ap;
+    va_list va;
     int ret;
-    const char *p;
+    char buffer[1];
 
-    if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("printf_s: fmt is null", NULL,
-                                           ESNULLP);
-        return -(ESNULLP);
-    }
-
-    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
-        /* at the beginning or if inside, not %%n */
-        if ((p - fmt == 0) || *(p - 1) != '%') {
-            invoke_safe_str_constraint_handler("printf_s: illegal %n", NULL,
-                                               EINVAL);
-            return -(EINVAL);
-        }
-    }
-
-    errno = 0;
-    va_start(ap, fmt);
-    ret = vprintf(fmt, ap);
-    va_end(ap);
+    va_start(va, fmt);
+    ret = _vsnprintf_s(_out_char, buffer, (rsize_t)-1, fmt, va);
+    va_end(va);
 
     if (unlikely(ret < 0)) {
         char errstr[128] = "printf_s: ";

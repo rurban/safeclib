@@ -643,4 +643,47 @@ EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
 
+// internal helper for the *printf_s functions.
+// output function type
+typedef void (*out_fct_type)(char character, void *buffer, size_t idx,
+                             size_t maxlen);
+// wrapper (used as buffer) for output function type
+typedef struct {
+    void (*fct)(char character, void *arg);
+    void *arg;
+} out_fct_wrap_type;
+
+// internal buffer output
+static inline void _out_buffer(char character, void *buffer, size_t idx,
+                               size_t maxlen) {
+    if (idx < maxlen) {
+        ((char *)buffer)[idx] = character;
+    }
+}
+
+// internal putchar wrapper
+static inline void _out_char(char character, void *buffer, size_t idx,
+                             size_t maxlen) {
+    (void)buffer;
+    (void)idx;
+    (void)maxlen;
+    if (character) {
+        putchar(character);
+    }
+}
+
+// internal output function wrapper
+static inline void _out_fct(char character, void *buffer, size_t idx,
+                            size_t maxlen) {
+    (void)idx;
+    (void)maxlen;
+    if (character) {
+        // buffer is the output fct pointer
+        ((out_fct_wrap_type *)buffer)
+            ->fct(character, ((out_fct_wrap_type *)buffer)->arg);
+    }
+}
+int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
+                 const char *format, va_list va);
+
 #endif /* __SAFECLIB_PRIVATE_H__ */

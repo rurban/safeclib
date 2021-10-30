@@ -1,10 +1,9 @@
 /*------------------------------------------------------------------
  * snprintf_s.c
  *
- * August 2017, Reini Urban
- * February 2018, Reini Urban
+ * November 2021, Reini Urban
  *
- * Copyright (c) 2017, 2018 by Reini Urban
+ * Copyright (c) 2021 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -91,7 +90,7 @@ any of the arguments corresponding to %s is a null pointer
  *    sprintf_s(), vsnprintf_s(), snwprintf_s()
  */
 #if defined FOR_DOXYGEN
-int sprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
+int snprintf_s(char *restrict dest, rsize_t dmax, const char *restrict fmt, ...)
 #elif defined SAFECLIB_HAVE_C99
 EXPORT int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
@@ -100,75 +99,15 @@ EXPORT int snprintf_s(char *restrict dest, rsize_t dmax,
                       const char *restrict fmt, ...)
 #endif
 {
-    va_list ap;
-    const char *p;
-    int ret = -1;
-#ifndef SAFECLIB_HAVE_C99
-    const size_t destbos = BOS_UNKNOWN;
-#endif
-
-    if (unlikely(dest == NULL ||
-                 fmt == NULL)) { /* for !dmax size-calc use sprintf_s */
-        invoke_safe_str_constraint_handler("snprintf_s: dest/fmt is null", NULL,
-                                           ESNULLP);
-        return -(ESNULLP);
-    }
-    if (unlikely(dmax == 0)) {
-        invoke_safe_str_constraint_handler("snprintf_s: dmax is zero", dest,
-                                           ESZEROL);
-        return -ESZEROL;
-    }
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("snprintf_s: dmax exceeds max", dest,
-                                           ESLEMAX);
-        return -ESLEMAX;
-    }
-    if (destbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(dest, dmax);
-    } else {
-        if (unlikely(dmax > destbos)) {
-            return -(handle_str_bos_overload("snprintf_s: dmax exceeds dest",
-                                             dest, destbos));
-        }
-    }
-
-    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
-        /* at the beginning or if inside, not %%n */
-        if ((p - fmt == 0) || *(p - 1) != '%') {
-            invoke_safe_str_constraint_handler("snprintf_s: illegal %n", dest,
-                                               EINVAL);
-            return -(EINVAL);
-        }
-    }
-
-    errno = 0;
-    va_start(ap, fmt);
-    ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
-    va_end(ap);
-
-    if (unlikely(ret < 0)) {
-        char errstr[128] = "snprintf_s: ";
-#ifdef HAVE_MINGW32
-        if (errno == ERANGE)
-            strcat(errstr, "len exceeds dmax");
-        else
-#endif
-            strcat(errstr, strerror(errno));
-        handle_error(dest, dmax, errstr, -ret);
-        return ret;
-    }
-    /* manual truncation */
-#ifdef SAFECLIB_STR_NULL_SLACK
-    /* oops, ret would have been written if dmax was ignored */
-    if ((rsize_t)ret > dmax) {
-        dest[dmax - 1] = '\0';
-    } else {
-        memset(&dest[ret], 0, dmax - ret);
-    }
+    va_list va;
+    int ret;
+    va_start(va, fmt);
+#if defined SAFECLIB_HAVE_C99
+    ret = _vsnprintf_s_chk(dest, dmax, destbos, fmt, va);
 #else
-    dest[dmax - 1] = '\0';
+    ret = vsnprintf_s(dest, dmax, fmt, va);
 #endif
-
+    va_end(va);
     return ret;
 }
 
