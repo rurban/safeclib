@@ -191,7 +191,7 @@ EXPORT int sprintf_s(char *restrict dest, rsize_t dmax,
                             but like all other implementations */
     }
 
-    if (unlikely(ret <= 0)) {
+    if (unlikely(ret < 0)) {
         char errstr[128] = "sprintf_s: ";
         strcat(errstr, strerror(errno));
         handle_error(dest, dmax, errstr, -ret);

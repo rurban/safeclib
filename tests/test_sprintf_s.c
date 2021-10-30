@@ -174,6 +174,12 @@ int test_sprintf_s(void) {
     ERR(0)
     EXPNULL(str1)
 
+    strcpy(str1, "qqweqq");
+
+    rc = sprintf_s(str1, LEN, "%s", "");
+    ERR(0)
+    EXPNULL(str1)
+
     /*--------------------------------------------------*/
 
     str1[0] = '\0';

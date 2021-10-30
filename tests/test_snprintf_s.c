@@ -228,6 +228,14 @@ int test_snprintf_s(void) {
     ERR(0)
     EXPNULL(str1)
 
+
+    strcpy(str1, "qqweqq");
+
+    rc = snprintf_s(str1, LEN, "%s", "");
+    ERR(0)
+    EXPNULL(str1)
+
+
     /*--------------------------------------------------*/
 
     str1[0] = '\0';
