@@ -42,7 +42,7 @@
 #else
 
 /**
- * @def sprintf_s(dest,dmax,fmt,...)
+ * @def sprintf_s(dest, dmax, fmt, ...)
  * @brief
  *    The \b sprintf_s function composes a string with the same content that
  *    would be printed if format was used on printf. Instead of being

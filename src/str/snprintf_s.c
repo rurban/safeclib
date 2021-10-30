@@ -43,7 +43,7 @@ any of the arguments corresponding to %s is a null pointer
 */
 
 /**
- * @def snprintf_s(dest,dmax,fmt,...)
+ * @def snprintf_s(dest, dmax, fmt, ...)
  * @brief
  *    The truncating \c snprintf_s function composes a string with
  *    same test that would be printed if format was used on \c
