@@ -29,7 +29,9 @@
  *------------------------------------------------------------------
  */
 
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 
 #ifdef FOR_DOXYGEN
 #include "safe_lib.h"
