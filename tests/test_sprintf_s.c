@@ -154,6 +154,13 @@ int test_sprintf_s(void) {
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
+    str1[0] = '\0';
+
+    rc = sprintf_s(str1, 5, "%ld", -10000000L);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
+    EXPNULL(str1)
+
     /*--------------------------------------------------*/
 
     str1[0] = '\0';

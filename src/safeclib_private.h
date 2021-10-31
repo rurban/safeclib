@@ -672,14 +672,22 @@ static inline void _out_char(char character, void *buffer, size_t idx,
     }
 }
 
+// special-case of _out_fct for fprintf_s
+static inline void _out_fchar(char character, void *wrap, size_t idx,
+                             size_t maxlen) {
+    (void)idx;
+    (void)maxlen;
+    fprintf(((out_fct_wrap_type *)wrap)->arg, "%c", character);
+}
+
 // internal output function wrapper
-static inline void _out_fct(char character, void *buffer, size_t idx,
+static inline void _out_fct(char character, void *wrap, size_t idx,
                             size_t maxlen) {
     (void)idx;
     (void)maxlen;
     if (character) {
         // buffer is the output fct pointer
-        ((out_fct_wrap_type *)buffer)->fct(character, ((out_fct_wrap_type *)buffer)->arg);
+        ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
     }
 }
 int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,

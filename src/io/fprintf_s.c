@@ -35,9 +35,6 @@
 #include "safeclib_private.h"
 #endif
 
-#if defined(TEST_MSVCRT) && defined(HAVE_FPRINTF_S)
-#else
-
 /**
  * @brief
  *    The fprintf_s function composes a string via the format string
@@ -59,14 +56,14 @@
  *
  * @pre Neither stream nor fmt shall be a null pointer.
  * @pre fmt  shall not contain the conversion specifier %n.
- * @pre None of the arguments corresponding to %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @return  On success the total number of characters written is returned.
  * @return  On failure a negative number is returned.
- * @retval  -ESNULLP when stream/fmt is NULL pointer
+ * @retval  -ESNULLP when stream or fmt is NULL pointer
  * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error. errno is set then.
+ * @retval  -1       on some other error. errno may be set then.
  *
  */
 
@@ -74,19 +71,20 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     va_list ap;
     int ret;
     const char *p;
+    out_fct_wrap_type wrap = {
+        .arg  = stream
+    };
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fprintf_s: stream is null", NULL,
                                            ESNULLP);
         return -(ESNULLP);
     }
-
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("fprintf_s: fmt is null", NULL,
                                            ESNULLP);
         return -(ESNULLP);
     }
-
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p - fmt == 0) || *(p - 1) != '%') {
@@ -98,10 +96,10 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = vfprintf(stream, fmt, ap);
+    ret = _vsnprintf_s(_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
     va_end(ap);
 
-    if (unlikely(ret < 0)) {
+    if (unlikely(ret < 0 && errno != 0)) {
         char errstr[128] = "fprintf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
@@ -109,5 +107,3 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 
     return ret;
 }
-
-#endif /* TEST_MSVCRT */

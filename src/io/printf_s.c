@@ -39,7 +39,7 @@
 /**
  * @brief
  *    The printf_s function composes a string via the format string
- *    and writes it to a FILE buffer.
+ *    and writes it to the STDOUT file.
  *
  * @note
  *    POSIX specifies that \c errno is set on error. However, the safeclib
@@ -56,26 +56,42 @@
  *
  * @pre fmt shall not be a null pointer.
  * @pre fmt shall not contain the conversion specifier %n.
- * @pre None of the arguments corresponding to %s is a null pointer. (not yet)
+ * @pre None of the arguments corresponding to %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @return  On success the total number of characters written is returned.
  * @return  On failure a negative number is returned.
  * @retval  -ESNULLP when fmt is NULL pointer
  * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error. errno is set then.
+ * @retval  -1       on some other error. errno might be set then.
  */
 
 EXPORT int printf_s(const char *restrict fmt, ...) {
     va_list va;
     int ret;
+    const char *p;
     char buffer[1];
 
+    if (unlikely(fmt == NULL)) {
+        invoke_safe_str_constraint_handler("vsnprintf_s: fmt is null",
+                                           NULL, ESNULLP);
+        return -ESNULLP;
+    }
+    // catch %n early, before it outputs anything
+    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
+        /* at the beginning or if inside, not %%n */
+        if ((p - fmt == 0) || *(p - 1) != '%') {
+            invoke_safe_str_constraint_handler("vsnprintf_s: illegal %n", NULL,
+                                               EINVAL);
+            return -(EINVAL);
+        }
+    }
+    
     va_start(va, fmt);
     ret = _vsnprintf_s(_out_char, buffer, (rsize_t)-1, fmt, va);
     va_end(va);
 
-    if (unlikely(ret < 0)) {
+    if (unlikely(ret < 0 && errno != 0)) {
         char errstr[128] = "printf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);

@@ -596,28 +596,13 @@ static size_t _etoa(out_fct_type out, char *buffer, size_t idx, size_t maxlen,
 #endif // PRINTF_SUPPORT_EXPONENTIAL
 #endif // PRINTF_SUPPORT_FLOAT
 
-// internal vsnprintf, extended for _s
+// internal vsnprintf, extended for _s.
+// already checked in the caller
 int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
-                 const char *format, va_list va)
+                        const char *format, va_list va)
 {
     unsigned int flags, width, precision, n;
     size_t idx = 0U;
-
-    if (unlikely(buffer == NULL || format == NULL)) { /* for !bufsize size-calc use sprintf_s */
-        invoke_safe_str_constraint_handler("vsnprintf_s: dest/fmt is null", NULL,
-                                           ESNULLP);
-        return -ESNULLP;
-    }
-    if (unlikely(bufsize == 0)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax is zero", buffer,
-                                           ESZEROL);
-        return -ESZEROL;
-    }
-    if (unlikely(bufsize > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: dmax exceeds max", buffer,
-                                           ESLEMAX);
-        return -ESLEMAX;
-    }
 
     while (*format) {
         // format specifier?  %[flags][width][.precision][length]
