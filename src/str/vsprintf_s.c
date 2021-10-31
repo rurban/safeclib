@@ -1,10 +1,11 @@
 /*------------------------------------------------------------------
- * vsprintf_s_s.c
+ * vsprintf_s.c
  *
  * August 2017, Reini Urban
  * February 2018, Reini Urban
+ * November 2021, Reini Urban
  *
- * Copyright (c) 2017,2018 by Reini Urban
+ * Copyright (c) 2017,2018,2021 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -75,16 +76,15 @@
  *          including the terminating null, then the buffer is cleared, and the
  *          invalid parameter handler is invoked.
  *
- * @retval -ESNULLP when \c fmt is NULL pointer
- *         -ESNULLP when \c dest is NULL and dmax > 0
- *         -ESZEROL when \c dmax = 0 and dest is not NULL
- *         -ESLEMAX when \c dmax > \c RSIZE_MAX_STR
- *         -EOVERFLOW when \c dmax > size of dest
- *         -ESNOSPC when return value exceeds dmax unless dmax is zero and dest
- * is NULL -EINVAL  when \c fmt contains \c %n
- *
- * @retval -1  if an encoding error or a runtime constraint violation in the
- *             libc function \c vsnprintf occured.
+ * @retval -ESNULLP    when \c fmt is NULL pointer
+ * @retval -ESNULLP    when \c dest is NULL and dmax > 0
+ * @retval -ESNULLP    when a \c %s argument is NULL
+ * @retval -ESZEROL    when \c dmax = 0 and dest is not NULL
+ * @retval -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
+ * @retval -EOVERFLOW  when \c dmax > size of dest
+ * @retval -ESNOSPC    when return value exceeds dmax unless dmax is zero and dest
+ *                     is NULL
+ * @retval -EINVAL     when \c fmt contains \c %n
  *
  * @note The C11 standard was most likely wrong with changing the return value
  * 0 on errors. All other functions and existing C11 implementations do return
@@ -105,62 +105,8 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
                            va_list ap)
 #endif
 {
-
-    int ret = -1;
-    const char *p;
-
-    if (unlikely(dmax && dest == NULL)) {
-        invoke_safe_str_constraint_handler("vsprintf_s: dest is null", NULL,
-                                           ESNULLP);
-        return -ESNULLP;
-    }
-
-    if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vsprintf_s: fmt is null", NULL,
-                                           ESNULLP);
-        return -ESNULLP;
-    }
-
-    if (unlikely(dest && dmax == 0)) {
-        invoke_safe_str_constraint_handler("vsprintf_s: dmax is 0", dest,
-                                           ESZEROL);
-        return -ESZEROL;
-    }
-
-    if (unlikely(dmax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("vsprintf_s: dmax exceeds max", dest,
-                                           ESLEMAX);
-        return -ESLEMAX;
-    }
-    if (destbos == BOS_UNKNOWN) {
-        if (dmax) {
-            BND_CHK_PTR_BOUNDS(dest, dmax);
-        }
-    } else {
-        if (unlikely(dmax > destbos)) {
-            return -(handle_str_bos_overload("vsprintf_s: dmax exceeds dest",
-                                             dest, destbos));
-        }
-    }
-
-    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
-        /* at the beginning or if inside, not %%n */
-        if ((p - fmt == 0) || *(p - 1) != '%') {
-            invoke_safe_str_constraint_handler("vsprintf_s: illegal %n", NULL,
-                                               EINVAL);
-            return -1; /* EINVAL */
-        }
-    }
-
-#if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
-    /* to detect illegal format specifiers */
-    ret = vsnprintf_s(dest, (size_t)dmax, (size_t)dmax, fmt, ap);
-    /*#elif defined(HAVE___VSNPRINTF_CHK) */
-    /* glibc allows %n from readonly strings, freebsd/darwin ignores flag. */
-    /*ret = __vsnprintf_chk(dest, (size_t)dmax, 2, (size_t)dmax, fmt, ap);*/
-#else
-    ret = vsnprintf(dest, (size_t)dmax, fmt, ap);
-#endif
+    int ret;
+    ret = _vsnprintf_s_chk(dest, dmax, destbos, fmt, ap);
 
     if (unlikely(dmax && ret >= (int)dmax)
 #ifdef HAVE_MINGW32
@@ -173,12 +119,6 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
 #endif
         return -ESNOSPC; /* different to the standard (=0),
                             but like all other implementations */
-    }
-
-    if (unlikely(ret < 0)) {
-        char errstr[128] = "vsprintf_s: ";
-        strcat(errstr, strerror(errno));
-        handle_error(dest, dmax, errstr, -ret);
     }
 
     return ret;

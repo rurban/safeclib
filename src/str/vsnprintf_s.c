@@ -82,7 +82,7 @@
 #include "safeclib_private.h"
 #endif
 
-// define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
+// optionally define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
 // printf_config.h header file
 // default: undefined
 #ifdef PRINTF_INCLUDE_CONFIG_H
@@ -869,7 +869,17 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
 
         case 's': {
             const char *p = va_arg(va, char *);
+            if (!p) {
+                invoke_safe_str_constraint_handler("vsnprintf_s: %s arg is null",
+                                                   NULL, ESNULLP);
+                return -(ESNULLP);
+            }
             unsigned int l = _strnlen_s(p, precision ? precision : (size_t)-1);
+            if (l + idx > bufsize) {
+                invoke_safe_str_constraint_handler("vsnprintf_s: %s arg exceeds dmax",
+                                                   NULL, ESNULLP);
+                return -(ESNOSPC);
+            }
             // pre padding
             if (flags & FLAGS_PRECISION) {
                 l = (l < precision ? l : precision);
@@ -894,17 +904,18 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
         }
 
         case 'p': {
+            uintptr_t arg = (uintptr_t)va_arg(va, void *);
             width = sizeof(void *) * 2U;
             flags |= FLAGS_ZEROPAD | FLAGS_UPPERCASE;
 #if defined(PRINTF_SUPPORT_LONG_LONG)
             if (sizeof(uintptr_t) == sizeof(long long)) {
                 idx = _ntoa_long_long(out, buffer, idx, bufsize,
-                                      (uintptr_t)va_arg(va, void *), false, 16U,
+                                      arg, false, 16U,
                                       precision, width, flags);
             } else {
 #endif
                 idx = _ntoa_long(out, buffer, idx, bufsize,
-                                 (unsigned long)((uintptr_t)va_arg(va, void *)),
+                                 (unsigned long)arg,
                                  false, 16U, precision, width, flags);
 #if defined(PRINTF_SUPPORT_LONG_LONG)
             }
@@ -917,6 +928,11 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
             out('%', buffer, idx++, bufsize);
             format++;
             break;
+
+        case 'n':
+            invoke_safe_str_constraint_handler("vsprintf_s: illegal %n", NULL,
+                                               EINVAL);
+            return -1;
 
         default:
             out(*format, buffer, idx++, bufsize);
@@ -961,8 +977,7 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
  * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR and the size of
  * dest.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not
- * yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
@@ -974,6 +989,7 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
  *          and null terminated.
  *
  * @retval  -ESNULLP    when \c dest/fmt is NULL pointer
+ * @retval  -ESNULLP    when a \c %s argument is NULL
  * @retval  -ESZEROL    when \c dmax == 0
  * @retval  -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval  -EOVERFLOW  when \c dmax > size of dest
@@ -991,8 +1007,8 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
                             va_list ap)
 #endif
 {
-    int ret = -1;
     const char *p;
+    int ret;
 
     if (unlikely(dest == NULL || fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dest/fmt is null",
@@ -1017,7 +1033,7 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
                                              dest, destbos));
         }
     }
-#if 1 // TODO
+    // catch %n early, before it outputs anything
     if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
         /* at the beginning or if inside, not %%n */
         if ((p - fmt == 0) || *(p - 1) != '%') {
@@ -1026,27 +1042,35 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
             return -(EINVAL);
         }
     }
-#endif
 
     errno = 0;
     ret = _vsnprintf_s(_out_buffer, dest, dmax, fmt, ap);
 
-    if (unlikely(ret < 0)) {
-        char errstr[128] = "vsnprintf_s: ";
-        strcat(errstr, strerror(errno));
-        handle_error(dest, dmax, errstr, -ret);
-        return ret;
-    }
+    //if (unlikely(ret < 0)) {
+    //    char errstr[128] = "vsnprintf_s: ";
+    //    strcat(errstr, strerror(errno));
+    //    handle_error(dest, dmax, errstr, -ret);
+    //    return ret;
+    //}
+
     /* manual truncation */
+    if (ret >= 0) {
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* oops, ret would have been written if dmax was ignored */
-    if ((rsize_t)ret > dmax) {
-        dest[dmax - 1] = '\0';
-    } else {
-        memset(&dest[ret], 0, dmax - ret);
-    }
+        if ((rsize_t)ret > dmax) {
+            dest[dmax - 1] = '\0';
+        } else {
+            memset(&dest[ret], 0, dmax - ret);
+        }
 #else
-    dest[dmax - 1] = '\0';
+        dest[dmax - 1] = '\0';
 #endif
+    } else {
+#ifdef SAFECLIB_STR_NULL_SLACK
+        memset(dest, 0, dmax);
+#else
+        *dest = '\0';
+#endif
+    }
     return ret;
 }

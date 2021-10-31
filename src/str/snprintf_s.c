@@ -35,12 +35,6 @@
 #include "safeclib_private.h"
 #endif
 
-#ifdef SAFECLIB_ENABLE_UNSAFE
-
-/* TODO:
-any of the arguments corresponding to %s is a null pointer
-*/
-
 /**
  * @def snprintf_s(dest, dmax, fmt, ...)
  * @brief
@@ -69,8 +63,7 @@ any of the arguments corresponding to %s is a null pointer
  * @pre \c dmax shall not be zero.
  * @pre \c dmax shall not be greater than \c RSIZE_MAX_STR and size of dest.
  * @pre \c fmt  shall not contain the conversion specifier \c %n.
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not
- * yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer.
  * @pre No encoding error shall occur.
  *
  * @return  If the buffer \c dest is too small for the formatted text,
@@ -81,6 +74,7 @@ any of the arguments corresponding to %s is a null pointer
  *          constraints violation or an encoding error occurred.
  *
  * @retval  -ESNULLP    when \c dest/fmt is NULL pointer
+ * @retval  -ESNULLP    when a \c %s argument is NULL
  * @retval  -ESZEROL    when \c dmax == 0
  * @retval  -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval  -EOVERFLOW  when \c dmax > size of dest
@@ -110,5 +104,3 @@ EXPORT int snprintf_s(char *restrict dest, rsize_t dmax,
     va_end(va);
     return ret;
 }
-
-#endif /* SAFECLIB_ENABLE_UNSAFE */

@@ -64,7 +64,7 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str1, LEN, NULL);
     ERR_MSVC(-ESNULLP, -1);
     ERRNO_MSVC(0, EINVAL);
-#endif
+ #endif
 
     /*--------------------------------------------------*/
 
@@ -76,7 +76,7 @@ int test_sprintf_s(void) {
     /*--------------------------------------------------*/
 
     rc = sprintf_s(str1, LEN, "%s %n", str2, &ind);
-    ERR(-1); /* EINVAL */
+    ERR(-EINVAL);
     errno = 0;
 
     rc = sprintf_s(str1, LEN, "%s %%n", str2);
@@ -87,11 +87,9 @@ int test_sprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* TODO not yet implemented
-    rc = sprintf_s(str1, LEN, "%p", NULL);
-    ERR(-1);
-    ERRNO_MSVC(ESNULLP, EINVAL);
-    */
+    rc = sprintf_s(str1, LEN, "%s", NULL);
+    ERR(-ESNULLP);
+    ERRNO_MSVC(0, EINVAL); // ??
 
     /*--------------------------------------------------*/
 

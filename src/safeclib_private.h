@@ -679,8 +679,7 @@ static inline void _out_fct(char character, void *buffer, size_t idx,
     (void)maxlen;
     if (character) {
         // buffer is the output fct pointer
-        ((out_fct_wrap_type *)buffer)
-            ->fct(character, ((out_fct_wrap_type *)buffer)->arg);
+        ((out_fct_wrap_type *)buffer)->fct(character, ((out_fct_wrap_type *)buffer)->arg);
     }
 }
 int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,

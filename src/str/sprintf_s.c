@@ -70,16 +70,15 @@
  *          including the terminating null, then the buffer is cleared, and the
  *          invalid parameter handler is invoked.
  *
- * @retval -ESNULLP when \c fmt is NULL pointer
- *         -ESNULLP when \c dest is NULL and dmax > 0
- *         -ESZEROL when \c dmax = 0 and dest is not NULL
- *         -ESLEMAX when \c dmax > \c RSIZE_MAX_STR or dmax > size of dest
- *         -EOVERFLOW when \c dmax > size of dest
- *         -ESNOSPC when return value exceeds dmax unless dmax is zero and dest
- * is NULL -EINVAL  when \c fmt contains \c %n
- *
- * @retval -1  if an encoding error or a runtime constraint violation in the
- *             libc function \c vsnprintf occured.
+ * @retval -ESNULLP    when \c fmt is NULL pointer
+ * @retval -ESNULLP    when \c dest is NULL and dmax > 0
+ * @retval -ESNULLP    when a \c %s argument is NULL
+ * @retval -ESZEROL    when \c dmax = 0 and dest is not NULL
+ * @retval -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR or dmax > size of dest
+ * @retval -EOVERFLOW  when \c dmax > size of dest
+ * @retval -ESNOSPC    when return value exceeds dmax unless dmax is zero and dest
+ *                     is NULL
+ * @retval -EINVAL     when \c fmt contains \c %n
  *
  * @note The C11 standard was most likely wrong with changing the return value to
  * 0 on errors. All other functions and existing C11 implementations do return
