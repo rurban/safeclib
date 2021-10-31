@@ -194,18 +194,24 @@ static size_t _out_rev(out_fct_type out, char *buffer, size_t idx,
     if (!(flags & FLAGS_LEFT) && !(flags & FLAGS_ZEROPAD)) {
         for (size_t i = len; i < width; i++) {
             out(' ', buffer, idx++, maxlen);
+            if (out == _out_buffer && idx > maxlen)
+                return -(ESNOSPC);
         }
     }
 
     // reverse string
     while (len) {
         out(buf[--len], buffer, idx++, maxlen);
+        if (out == _out_buffer && idx > maxlen)
+            return -(ESNOSPC);
     }
 
     // append pad spaces up to given width
     if (flags & FLAGS_LEFT) {
         while (idx - start_idx < width) {
             out(' ', buffer, idx++, maxlen);
+            if (out == _out_buffer && idx > maxlen)
+                return -(ESNOSPC);
         }
     }
 
@@ -605,6 +611,8 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
     size_t idx = 0U;
 
     while (*format) {
+        if ((long)idx < 0)
+            return idx;
         // format specifier?  %[flags][width][.precision][length]
         if (*format != '%') {
             // no
@@ -838,14 +846,20 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
             if (!(flags & FLAGS_LEFT)) {
                 while (l++ < width) {
                     out(' ', buffer, idx++, bufsize);
+                    if (out == _out_buffer && idx > bufsize)
+                        return -(ESNOSPC);
                 }
             }
             // char output
             out((char)va_arg(va, int), buffer, idx++, bufsize);
+            if (out == _out_buffer && idx > bufsize)
+                return -(ESNOSPC);
             // post padding
             if (flags & FLAGS_LEFT) {
                 while (l++ < width) {
                     out(' ', buffer, idx++, bufsize);
+                    if (out == _out_buffer && idx > bufsize)
+                        return -(ESNOSPC);
                 }
             }
             format++;
@@ -862,7 +876,7 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
             unsigned int l = _strnlen_s(p, precision ? precision : (size_t)-1);
             if (l + idx > bufsize) {
                 invoke_safe_str_constraint_handler("vsnprintf_s: %s arg exceeds dmax",
-                                                   NULL, ESNULLP);
+                                                   NULL, ESNOSPC);
                 return -(ESNOSPC);
             }
             // pre padding
@@ -872,16 +886,22 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
             if (!(flags & FLAGS_LEFT)) {
                 while (l++ < width) {
                     out(' ', buffer, idx++, bufsize);
+                    if (out == _out_buffer && idx > bufsize)
+                        return -(ESNOSPC);
                 }
             }
             // string output
             while ((*p != 0) && (!(flags & FLAGS_PRECISION) || precision--)) {
                 out(*(p++), buffer, idx++, bufsize);
+                if (out == _out_buffer && idx > bufsize)
+                    return -(ESNOSPC);
             }
             // post padding
             if (flags & FLAGS_LEFT) {
                 while (l++ < width) {
                     out(' ', buffer, idx++, bufsize);
+                    if (out == _out_buffer && idx > bufsize)
+                        return -(ESNOSPC);
                 }
             }
             format++;
@@ -911,6 +931,8 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
 
         case '%':
             out('%', buffer, idx++, bufsize);
+            if (out == _out_buffer && idx > bufsize)
+                return -(ESNOSPC);
             format++;
             break;
 
@@ -921,6 +943,8 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
 
         default:
             out(*format, buffer, idx++, bufsize);
+            if (out == _out_buffer && idx > bufsize)
+                return -(ESNOSPC);
             format++;
             break;
         }
@@ -928,6 +952,8 @@ int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
 
     // termination
     out((char)0, buffer, idx < bufsize ? idx : bufsize - 1U, bufsize);
+    if (out == _out_buffer && idx > bufsize)
+        return -(ESNOSPC);
 
     // return written chars without terminating \0
     return (int)idx;

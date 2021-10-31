@@ -658,6 +658,9 @@ static inline void _out_buffer(char character, void *buffer, size_t idx,
                                size_t maxlen) {
     if (idx < maxlen) {
         ((char *)buffer)[idx] = character;
+    } else {
+        invoke_safe_str_constraint_handler("vsnprintf_s: exceeds dmax",
+                                           (char*)buffer, ESNOSPC);
     }
 }
 
