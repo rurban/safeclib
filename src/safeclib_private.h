@@ -672,10 +672,15 @@ static inline void _out_char(char character, void *buffer, size_t idx,
     (void)idx;
     (void)maxlen;
     if (character) {
+#ifndef __KERNEL__
         putchar(character);
+#else
+        slprintf("%c", character);
+#endif
     }
 }
 
+#ifndef __KERNEL__
 // special-case of _out_fct for fprintf_s
 static inline void _out_fchar(char character, void *wrap, size_t idx,
                              size_t maxlen) {
@@ -683,6 +688,7 @@ static inline void _out_fchar(char character, void *wrap, size_t idx,
     (void)maxlen;
     fprintf(((out_fct_wrap_type *)wrap)->arg, "%c", character);
 }
+#endif
 
 // internal output function wrapper
 static inline void _out_fct(char character, void *wrap, size_t idx,
