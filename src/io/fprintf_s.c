@@ -96,7 +96,7 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = _vsnprintf_s(_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
+    ret = __vsnprintf_s(_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0 && errno != 0)) {

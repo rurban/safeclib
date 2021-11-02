@@ -604,7 +604,8 @@ static size_t _etoa(out_fct_type out, char *buffer, size_t idx, size_t maxlen,
 
 // internal vsnprintf, extended for _s.
 // already checked in the caller
-int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
+// mingw has a _vsnprintf_s(char *_DstBuf,size_t _DstSize,size_t _MaxCount,const char *_Format,va_list _ArgList);
+int __vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
                         const char *format, va_list va)
 {
     unsigned int flags, width, precision, n;
@@ -1055,7 +1056,7 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
     }
 
     errno = 0;
-    ret = _vsnprintf_s(_out_buffer, dest, dmax, fmt, ap);
+    ret = __vsnprintf_s(_out_buffer, dest, dmax, fmt, ap);
 
     //if (unlikely(ret < 0)) {
     //    char errstr[128] = "vsnprintf_s: ";

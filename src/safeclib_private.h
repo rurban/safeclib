@@ -694,7 +694,8 @@ static inline void _out_fct(char character, void *wrap, size_t idx,
         ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
     }
 }
-int _vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
+// mingw has a _vsnprintf_s
+int __vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
                  const char *format, va_list va);
 
 #endif /* __SAFECLIB_PRIVATE_H__ */
