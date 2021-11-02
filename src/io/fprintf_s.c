@@ -71,9 +71,7 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     va_list ap;
     int ret;
     const char *p;
-    out_fct_wrap_type wrap = {
-        .arg  = stream
-    };
+    out_fct_wrap_type wrap;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fprintf_s: stream is null", NULL,
@@ -95,6 +93,7 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     }
 
     errno = 0;
+    wrap.arg = stream;
     va_start(ap, fmt);
     ret = __vsnprintf_s(_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
     va_end(ap);

@@ -270,6 +270,11 @@ static size_t _ntoa_format(out_fct_type out, char *buffer, size_t idx,
             buf[len++] = ' ';
         }
     }
+    if (width > 2147483614) {
+        invoke_safe_str_constraint_handler("vsnprintf_s: width exceeds max",
+                                           NULL, ESLEMAX);
+        return -ESLEMAX;
+    }
 
     return _out_rev(out, buffer, idx, maxlen, buf, len, width, flags);
 }
@@ -868,13 +873,14 @@ int __vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
         }
 
         case 's': {
+            unsigned int l;
             const char *p = va_arg(va, char *);
             if (!p) {
                 invoke_safe_str_constraint_handler("vsnprintf_s: %s arg is null",
                                                    NULL, ESNULLP);
                 return -(ESNULLP);
             }
-            unsigned int l = _strnlen_s(p, precision ? precision : (size_t)-1);
+            l = _strnlen_s(p, precision ? precision : (size_t)-1);
             if (l + idx > bufsize) {
                 invoke_safe_str_constraint_handler("vsnprintf_s: %s arg exceeds dmax",
                                                    NULL, ESNOSPC);

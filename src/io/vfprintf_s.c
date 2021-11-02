@@ -61,7 +61,7 @@
  *
  * @return  On success the total number of characters written is returned.
  * @return  On failure a negative number is returned.
- * @retval  -ESNULLP when stream/fmt is NULL pointer
+ * @retval  -ESNULLP when stream or fmt is NULL pointer
  * @retval  -EINVAL  when fmt contains %n
  * @retval  -1       on some other error. errno is set then.
  *
@@ -71,6 +71,7 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                       va_list ap) {
     int ret;
     const char *p;
+    out_fct_wrap_type wrap;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("vfprintf_s: stream is null", NULL,
@@ -94,13 +95,23 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
     }
 
     errno = 0;
+#if 0
     ret = vfprintf(stream, fmt, ap);
-
     if (unlikely(ret < 0)) {
         char errstr[128] = "vfprintf_s: ";
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
+#else
+    wrap.arg = stream;
+    ret = __vsnprintf_s(_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
+
+    if (unlikely(ret < 0 && errno != 0)) {
+        char errstr[128] = "vfprintf_s: ";
+        strcat(errstr, strerror(errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, -ret);
+    }
+#endif
 
     return ret;
 }

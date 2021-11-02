@@ -94,12 +94,14 @@ int test_vfprintf_s(void) {
 #if 1
     /* 0x7fffffff + 1 >INT_MAX */
     rc = printf_s("\n%2147483648d\n", INT_MAX);
-    ANYERR();
-#if defined(__GLIBC__)
-    ERRNO(EOVERFLOW);
+    NEGERR(ESLEMAX);
+    //#if defined(__GLIBC__)
+    //ERRNO(EOVERFLOW);
+    //#endif
 #endif
 
-    /* segfaults under darwin */
+#if 0
+    /* segfaults */
     rc = printf_s("%s\n", L'\xd834df01');
     ANYERR();
 #endif

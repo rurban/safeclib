@@ -686,7 +686,8 @@ static inline void _out_fchar(char character, void *wrap, size_t idx,
                              size_t maxlen) {
     (void)idx;
     (void)maxlen;
-    fprintf(((out_fct_wrap_type *)wrap)->arg, "%c", character);
+    //((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
+    fprintf((FILE*)((out_fct_wrap_type *)wrap)->arg, "%c", character);
 }
 #endif
 
