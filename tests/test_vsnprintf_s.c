@@ -10,11 +10,11 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
-#ifdef HAVE_VSNPRINTF_S
-#define HAVE_NATIVE 1
-#else
-#define HAVE_NATIVE 0
-#endif
+//#ifdef HAVE_VSNPRINTF_S
+//#define HAVE_NATIVE 1
+//#else
+//#define HAVE_NATIVE 0
+//#endif
 #include "test_msvcrt.h"
 
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
@@ -127,7 +127,7 @@ int test_vsnprintf_s(void) {
 
     rc = vtprintf_s(str1, 1, "%s", str2);
     if (!use_msvcrt) {
-        ERR(14);
+        ERR(-ESNOSPC);
     } else {
         ERR(-1);
     }
@@ -140,7 +140,7 @@ int test_vsnprintf_s(void) {
 
     rc = vtprintf_s(str1, 2, "%s", str2);
     if (!use_msvcrt) {
-        ERR(14);
+        ERR(-ESNOSPC);
     } else {
         ERR(-1);
     }
@@ -171,12 +171,11 @@ int test_vsnprintf_s(void) {
 
     rc = vtprintf_s(str1, 5, "%s", str2);
 #ifndef HAVE_MINGW32
-    NOERRNULL() /* no ENOSPC */
-    EXPSTR(str1, "keep")
+    ERR(-ESNOSPC);
 #else
     ERR(-1);
-    EXPSTR(str1, "")
 #endif
+    EXPSTR(str1, "")
 
     /*--------------------------------------------------*/
 
@@ -185,12 +184,11 @@ int test_vsnprintf_s(void) {
 
     rc = vtprintf_s(str1, 2, "%s", str2);
 #ifndef HAVE_MINGW32
-    ERR(14) /* sic! unsafe */
-    EXPSTR(str1, "k")
+    ERR(-ESNOSPC);
 #else
     ERR(-1);
-    EXPSTR(str1, "")
 #endif
+    EXPSTR(str1, "")
 
     /*--------------------------------------------------*/
 
@@ -235,11 +233,11 @@ int test_vsnprintf_s(void) {
 
     rc = vtprintf_s(str1, 12, "%s", str2);
 #ifndef HAVE_MINGW32
-    ERR(14) /* sic! unsafe */
+    ERR(-ESNOSPC);
 #else
     ERR(-1);
-    EXPSTR(str1, "")
 #endif
+    EXPSTR(str1, "")
 
     /*--------------------------------------------------*/
 
@@ -256,11 +254,11 @@ int test_vsnprintf_s(void) {
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
 #ifndef HAVE_MINGW32
-    ERR(13) /* sic! unsafe */
+    EXPSTR(str1, "")
 #else
     ERR(-1);
-    EXPSTR(str1, "")
 #endif
+    EXPSTR(str1, "")
 
     /*--------------------------------------------------*/
 

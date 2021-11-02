@@ -37,9 +37,6 @@
 #include "safeclib_private.h"
 #endif
 
-#if defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S)
-#else
-
 /**
  * @def vsprintf_s(dest,dmax,fmt,va_args)
  * @brief
@@ -123,5 +120,3 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
 
     return ret;
 }
-
-#endif /* TEST_MSVCRT */

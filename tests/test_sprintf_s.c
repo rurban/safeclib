@@ -16,11 +16,11 @@ EXTERN int sprintf_s(char *restrict dest, rsize_t dmax,
 #endif
 #endif
 
-#ifdef HAVE_SPRINTF_S
-#define HAVE_NATIVE 1
-#else
-#define HAVE_NATIVE 0
-#endif
+//#ifdef HAVE_SPRINTF_S
+//#define HAVE_NATIVE 1
+//#else
+//#define HAVE_NATIVE 0
+//#endif
 #include "test_msvcrt.h"
 
 #define LEN (128)

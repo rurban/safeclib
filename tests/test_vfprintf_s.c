@@ -10,11 +10,11 @@
 #include "safe_str_lib.h"
 #include <unistd.h>
 
-#ifdef HAVE_VFPRINTF_S
-#define HAVE_NATIVE 1
-#else
-#define HAVE_NATIVE 0
-#endif
+//#ifdef HAVE_VFPRINTF_S
+//#define HAVE_NATIVE 1
+//#else
+//#define HAVE_NATIVE 0
+//#endif
 #include "test_msvcrt.h"
 
 #define TMP "tmpvfp"
@@ -55,10 +55,8 @@ int test_vfprintf_s(void) {
     rc = vtfprintf_s(out, "", NULL);
     NEGERR(EOK)
 
-    /* TODO
     rc = vtfprintf_s(NULL, "%s", NULL);
     NEGERR(ESNULLP);
-    */
 
     /*--------------------------------------------------*/
 
@@ -80,10 +78,8 @@ int test_vfprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* TODO
     rc = vtfprintf_s(out, "%s", NULL);
     NEGERR(ESNULLP)
-    */
 
     /*--------------------------------------------------*/
 
@@ -95,7 +91,7 @@ int test_vfprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-#if 0
+#if 1
     /* 0x7fffffff + 1 >INT_MAX */
     rc = printf_s("\n%2147483648d\n", INT_MAX);
     ANYERR();

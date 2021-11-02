@@ -643,7 +643,8 @@ EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
 
-// internal helper for the *printf_s functions.
+// internal helpers for the *printf_s functions:
+
 // output function type
 typedef void (*out_fct_type)(char character, void *buffer, size_t idx,
                              size_t maxlen);

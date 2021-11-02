@@ -15,11 +15,11 @@ EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
                       const char *restrict fmt, va_list ap);
 #endif
 
-#ifdef HAVE_VSPRINTF_S
-#define HAVE_NATIVE 1
-#else
-#define HAVE_NATIVE 0
-#endif
+//#ifdef HAVE_VSPRINTF_S
+//#define HAVE_NATIVE 1
+//#else
+//#define HAVE_NATIVE 0
+//#endif
 #include "test_msvcrt.h"
 
 #define LEN (128)
@@ -48,11 +48,9 @@ int test_vsprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* not testable, and not implemented.
-      rc = vtprintf_s(str1, LEN, "%s", NULL);
-      ERR(0);
-      ERRNO(ESNULLP);
-    */
+    rc = vtprintf_s(str1, LEN, "%s", NULL);
+    ERR(-ESNULLP);
+    ERRNO_MSVC(0, EINVAL);
 
     /*--------------------------------------------------*/
 
@@ -97,7 +95,7 @@ int test_vsprintf_s(void) {
     /* wine msvcrt doesn't check %n neither */
 #if !(defined(_WINE_MSVCRT) && defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S))
     rc = vtprintf_s(str1, LEN, "%s %n", str2);
-    ERR(-1);
+    ERR(-EINVAL);
     ERRNO_MSVC(0, EINVAL);
 #endif
 
@@ -155,6 +153,11 @@ int test_vsprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 1, "%s", str2);
+    ERR_MSVC(-ESNOSPC, -1);
+    ERRNO_MSVC(0, ERANGE);
+    EXPNULL(str1)
+
+    rc = vtprintf_s(str1, 5, "%ld", -10000000L);
     ERR_MSVC(-ESNOSPC, -1);
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
@@ -263,8 +266,7 @@ int test_vsprintf_s(void) {
     /* everybody incorrectly accepts illegal % specifiers, only musl not. */
     rc = vtprintf_s(str1, LEN, "%y");
     /* TODO: dietlibc, uClibc, minilibc */
-#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions    \
-                                                 */
+#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions */
     /* they print unknown formats verbatim */
     NOERR();
 #else

@@ -16,11 +16,11 @@ EXTERN int snprintf_s(char *restrict dest, rsize_t dmax,
 #endif
 #endif
 
-#ifdef HAVE_SNPRINTF_S
-#define HAVE_NATIVE 1
-#else
-#define HAVE_NATIVE 0
-#endif
+//#ifdef HAVE_SNPRINTF_S
+//#define HAVE_NATIVE 1
+//#else
+//#define HAVE_NATIVE 0
+//#endif
 #include "test_msvcrt.h"
 
 #define LEN (128)
@@ -86,16 +86,15 @@ int test_snprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* TODO
-    rc = snprintf_s(str1, LEN, "%p", NULL);
-    NEGERR(ESNULLP)
-    */
+    rc = snprintf_s(str1, LEN, "%p", NULL); // %p NULL is allowed
+    NOERR();
 
     /*--------------------------------------------------*/
 
     strcpy(str1, "123456");
     strcpy(str2, "keep it simple");
 
+    // note: compare to the insecure variant
     rc = snprintf(str1, 1, "%s", str2);
     /* number of characters (not including the terminating null character)
        which would have been written to buffer if dmax was ignored */
@@ -120,7 +119,7 @@ int test_snprintf_s(void) {
      * RSIZE_MAX), which would have been written to buffer if bufsz
      * was ignored. */
 #if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
-    ERR(14); /* but truncated, written only 1, the \0 */
+    ERR(-ESNOSPC);
 #else
     ERR(-1);
 #endif
@@ -136,6 +135,7 @@ int test_snprintf_s(void) {
     strcpy(str1, "123456");
     strcpy(str2, "keep it simple");
 
+    // compare to the insecure variant
     rc = snprintf(str1, 2, "%s", str2);
 #if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(14); /* but truncated, written only 2: k\0 */
@@ -152,18 +152,8 @@ int test_snprintf_s(void) {
 
     strcpy(str1, "123456");
     rc = snprintf_s(str1, 2, "%s", str2);
-#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
-    ERR(14); /* but truncated, written only 2: k\0 */
-    EXPSTR(str1, "k")
-    if ((ind = memcmp(str1, "k\0003456\000", 7))) {
-        debug_printf("%s %u snprintf truncation: %d \"%s\"\n", __FUNCTION__,
-                     __LINE__, ind, str1);
-        errs++;
-    }
-#else
-    ERR(-1);
+    ERR(-ESNOSPC);
     EXPSTR(str1, "")
-#endif
 
     /*--------------------------------------------------*/
 
@@ -190,12 +180,8 @@ int test_snprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = snprintf_s(str1, 5, "%s", str2);
-#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
-    NOERRNULL() /* no ENOSPC */
-    EXPSTR(str1, "keep")
-#else
+    ERR(-ESNOSPC);
     EXPSTR(str1, "")
-#endif
 
     /*--------------------------------------------------*/
 
@@ -203,12 +189,8 @@ int test_snprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = snprintf_s(str1, 2, "%s", str2);
-#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
-    NOERRNULL()
-    EXPSTR(str1, "k")
-#else
+    ERR(-ESNOSPC);
     EXPSTR(str1, "")
-#endif
 
     /*--------------------------------------------------*/
 
@@ -260,12 +242,8 @@ int test_snprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = snprintf_s(str1, 12, "%s", str2);
-#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
-    ERR(14) /* sic! unsafe */
-#else
-    ERR(-1);
+    ERR(-ESNOSPC);
     EXPSTR(str1, "")
-#endif
 
     /*--------------------------------------------------*/
 
@@ -281,12 +259,8 @@ int test_snprintf_s(void) {
     strcpy(str1, "12345678901234567890");
 
     rc = snprintf_s(str1, 8, "%s", &str1[7]);
-#if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
-    ERR(13) /* sic! unsafe */
-#else
-    ERR(-1);
+    ERR(-ESNOSPC);
     EXPSTR(str1, "")
-#endif
 
     /*--------------------------------------------------*/
 
