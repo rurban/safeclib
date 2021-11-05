@@ -1006,8 +1006,8 @@ int __vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
  *          including the terminating null, then the buffer is truncated
  *          and null terminated.
  *
- * @retval  -ESNULLP    when \c dest/fmt is NULL pointer
- * @retval  -ESNULLP    when a \c %s argument is NULL
+ * @retval  -ESNULLP    when \c dest or fmt is NULL pointer, or
+ *                      when a \c %s argument is NULL
  * @retval  -ESZEROL    when \c dmax == 0
  * @retval  -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval  -EOVERFLOW  when \c dmax > size of dest

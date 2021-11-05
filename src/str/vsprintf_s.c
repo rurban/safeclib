@@ -73,9 +73,9 @@
  *          including the terminating null, then the buffer is cleared, and the
  *          invalid parameter handler is invoked.
  *
- * @retval -ESNULLP    when \c fmt is NULL pointer
- * @retval -ESNULLP    when \c dest is NULL and dmax > 0
- * @retval -ESNULLP    when a \c %s argument is NULL
+ * @retval -ESNULLP    when \c fmt is NULL pointer, or
+ *                     when \c dest is NULL and dmax > 0, or
+ *                     when a \c %s argument is NULL
  * @retval -ESZEROL    when \c dmax = 0 and dest is not NULL
  * @retval -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval -EOVERFLOW  when \c dmax > size of dest

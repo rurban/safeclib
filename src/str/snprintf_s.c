@@ -73,8 +73,8 @@
  *          character, or a negative error number if a runtime
  *          constraints violation or an encoding error occurred.
  *
- * @retval  -ESNULLP    when \c dest/fmt is NULL pointer
- * @retval  -ESNULLP    when a \c %s argument is NULL
+ * @retval  -ESNULLP    when \c dest/fmt is NULL pointer, or
+ *                      when a \c %s argument is NULL
  * @retval  -ESZEROL    when \c dmax == 0
  * @retval  -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval  -EOVERFLOW  when \c dmax > size of dest
