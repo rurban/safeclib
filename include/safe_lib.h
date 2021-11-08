@@ -179,7 +179,7 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
                void *context, const size_t basebos)
     BOS_ATTR(nmemb && (_BOS_NULL(key) || _BOS_NULL(base) ||
                        _BOS_ZERO(base, nmemb *size)),
-             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb *size)
+             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb * size)
         BOS_ATTR(nmemb && !compar, "empty compar");
 #define bsearch_s(key, base, nmemb, size, compar, context)                     \
     _bsearch_s_chk(key, base, nmemb, size, compar, context, BOS(base))
@@ -188,8 +188,8 @@ EXTERN errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
                             int (*compar)(const void *x, const void *y,
                                           void *context),
                             void *context, const size_t basebos)
-    BOS_ATTR(nmemb && (_BOS_NULL(base) || _BOS_ZERO(base, nmemb *size)),
-             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb *size)
+    BOS_ATTR(nmemb && (_BOS_NULL(base) || _BOS_ZERO(base, nmemb * size)),
+             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb * size)
         BOS_ATTR(nmemb && !compar, "empty compar");
 #ifndef MINGW_HAS_SECURE_API
 #define qsort_s(base, nmemb, size, compar, context)                            \

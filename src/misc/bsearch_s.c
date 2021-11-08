@@ -80,7 +80,7 @@
  * @pre nmemb or size shall not be greater than RSIZE_MAX_MEM.
  *
  *    If the array contains several elements that compar would indicate as
- * equal to the element searched for, then it is unspecified which element the
+ *    equal to the element searched for, then it is unspecified which element the
  *    function will return as the result.
  *
  * @return Pointer to an element in the array that compares equal to *key, or
@@ -100,6 +100,7 @@
  * errno values:
  *   ESNULLP   when key, base or compar are a NULL pointer, and nmemb is > 0
  *   ESLEMAX   when nmemb or size > RSIZE_MAX_MEM
+ *   ESNOSPC   when nmemb * size > sizeof base
  *
  * @see
  *    qsort_s()
@@ -128,7 +129,7 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
     if (basebos == BOS_UNKNOWN) {
         if (unlikely(nmemb > RSIZE_MAX_MEM || size > RSIZE_MAX_MEM)) {
             invoke_safe_mem_constraint_handler(
-                "bsearch_s: nmemb/size exceeds max", (void *)base, ESLEMAX);
+                "bsearch_s: nmemb or size exceeds max", (void *)base, ESLEMAX);
             errno = ESLEMAX;
             return NULL;
         }
@@ -137,8 +138,8 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
         rsize_t basesz = nmemb * size;
         if (unlikely(basesz > basebos)) {
             invoke_safe_mem_constraint_handler(
-                "bsearch_s: nmemb*size exceeds base", (void *)base, ESLEMAX);
-            errno = ESLEMAX;
+                "bsearch_s: nmemb*size exceeds sizeof base", (void *)base, ESNOSPC);
+            errno = ESNOSPC;
             return NULL;
         }
 #ifdef HAVE_WARN_DMAX
