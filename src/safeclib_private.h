@@ -655,8 +655,9 @@ typedef struct {
 } out_fct_wrap_type;
 
 // internal buffer output
-static inline void _out_buffer(char character, void *buffer, size_t idx,
-                               size_t maxlen) {
+static inline void safec_out_buffer(char character, void *buffer, size_t idx,
+                                    size_t maxlen)
+{
     if (idx < maxlen) {
         ((char *)buffer)[idx] = character;
     } else {
@@ -666,8 +667,9 @@ static inline void _out_buffer(char character, void *buffer, size_t idx,
 }
 
 // internal putchar wrapper
-static inline void _out_char(char character, void *buffer, size_t idx,
-                             size_t maxlen) {
+static inline void safec_out_char(char character, void *buffer, size_t idx,
+                                  size_t maxlen)
+{
     (void)buffer;
     (void)idx;
     (void)maxlen;
@@ -681,8 +683,8 @@ static inline void _out_char(char character, void *buffer, size_t idx,
 }
 
 #ifndef __KERNEL__
-// special-case of _out_fct for fprintf_s
-static inline void _out_fchar(char character, void *wrap, size_t idx,
+// special-case of safec_out_fct for fprintf_s
+static inline void safec_out_fchar(char character, void *wrap, size_t idx,
                              size_t maxlen) {
     (void)idx;
     (void)maxlen;
@@ -692,8 +694,8 @@ static inline void _out_fchar(char character, void *wrap, size_t idx,
 #endif
 
 // internal output function wrapper
-static inline void _out_fct(char character, void *wrap, size_t idx,
-                            size_t maxlen) {
+static inline void safec_out_fct(char character, void *wrap, size_t idx,
+                                 size_t maxlen) {
     (void)idx;
     (void)maxlen;
     if (character) {
@@ -702,7 +704,7 @@ static inline void _out_fct(char character, void *wrap, size_t idx,
     }
 }
 // mingw has a _vsnprintf_s
-int __vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
-                 const char *format, va_list va);
+int safec_vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
+                      const char *format, va_list va);
 
 #endif /* __SAFECLIB_PRIVATE_H__ */

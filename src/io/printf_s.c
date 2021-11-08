@@ -88,7 +88,7 @@ EXPORT int printf_s(const char *restrict fmt, ...) {
     }
     
     va_start(va, fmt);
-    ret = __vsnprintf_s(_out_char, buffer, (rsize_t)-1, fmt, va);
+    ret = safec_vsnprintf_s(safec_out_char, buffer, (rsize_t)-1, fmt, va);
     va_end(va);
 
     if (unlikely(ret < 0 && errno != 0)) {

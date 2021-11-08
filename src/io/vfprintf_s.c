@@ -104,7 +104,7 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
     }
 #else
     wrap.arg = stream;
-    ret = __vsnprintf_s(_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
+    ret = safec_vsnprintf_s(safec_out_fchar, (char*)&wrap, (rsize_t)-1, fmt, ap);
 
     if (unlikely(ret < 0 && errno != 0)) {
         char errstr[128] = "vfprintf_s: ";
