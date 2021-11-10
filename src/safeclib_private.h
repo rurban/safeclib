@@ -598,6 +598,9 @@ typedef unsigned long uintptr_t;
 #define vswprintf(dest, dmax, fmt, ap) vswprintf(dest, fmt, ap)
 #endif
 
+#define wcstombs_s(retvalp, dest, dmax, src, len)                              \
+    _wcstombs_s_chk(retvalp, dest, dmax, src, len, BOS(dest))
+
 /* mingw64 3.0.1
    has strtok_s, wcstok_s, and vsnprintf_s, which we patch in the tests. */
 #undef _ENC_W16
@@ -703,8 +706,8 @@ static inline void safec_out_fct(char character, void *wrap, size_t idx,
         ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
     }
 }
-// mingw has a _vsnprintf_s
-int safec_vsnprintf_s(out_fct_type out, char *buffer, const size_t bufsize,
-                      const char *format, va_list va);
+// mingw has a _vsnprintf_s. we use our own.
+int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
+                      const size_t bufsize, const char *format, va_list va);
 
 #endif /* __SAFECLIB_PRIVATE_H__ */
