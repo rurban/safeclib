@@ -263,18 +263,11 @@ int test_vsprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* everybody incorrectly accepts illegal % specifiers, only musl not. */
+    /* Only musl and msvcrt sec_api incorrectly accepts illegal % specifiers. */
     rc = vtprintf_s(str1, LEN, "%y");
-    /* TODO: dietlibc, uClibc, minilibc */
-#if defined(__GLIBC__) || defined(BSD_ALL_LIKE) /* and older mingw versions */
-    /* they print unknown formats verbatim */
-    NOERR();
-#else
-    /* only musl and msvcrt sec_api correctly rejects illegal format specifiers
-     */
+    /* We implemented it now by our own, as we cannot trust most libc's */
     ERR(-1);
     EXPNULL(str1)
-#endif
 
     /*--------------------------------------------------*/
 

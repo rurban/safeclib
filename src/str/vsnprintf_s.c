@@ -1048,10 +1048,20 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 return -1;
             }
         default:
+            // illegal % format-specifier
+#ifndef ENABLE_ILLEGAL_FORMATSPECIFIER
+            {
+                char msg[80];
+                snprintf(msg, sizeof msg, "%s: illegal %%%c format-specifier", funcname, *format);
+                invoke_safe_str_constraint_handler(msg, NULL, EINVAL);
+            }
+            return -1;
+#else
             out(*format, buffer, idx++, bufsize);
             if (out == safec_out_buffer && idx > bufsize)
                 return -(ESNOSPC);
             format++;
+#endif
             break;
         }
     }
