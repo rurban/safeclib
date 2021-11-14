@@ -200,25 +200,25 @@ static size_t safec_out_rev(out_fct_type out, char *buffer, size_t idx,
     // pad spaces up to given width
     if (!(flags & FLAGS_LEFT) && !(flags & FLAGS_ZEROPAD)) {
         for (size_t i = len; i < width; i++) {
-            out(' ', buffer, idx++, maxlen);
-            if (out == safec_out_buffer && idx > maxlen)
-                return -(ESNOSPC);
+            int rc = out(' ', buffer, idx++, maxlen);
+            if (unlikely(rc < 0))
+                return rc;
         }
     }
 
     // reverse string
     while (len) {
-        out(buf[--len], buffer, idx++, maxlen);
-        if (out == safec_out_buffer && idx > maxlen)
-            return -(ESNOSPC);
+        int rc = out(buf[--len], buffer, idx++, maxlen);
+        if (unlikely(rc < 0))
+            return rc;
     }
 
     // append pad spaces up to given width
     if (flags & FLAGS_LEFT) {
         while (idx - start_idx < width) {
-            out(' ', buffer, idx++, maxlen);
-            if (out == safec_out_buffer && idx > maxlen)
-                return -(ESNOSPC);
+            int rc = out(' ', buffer, idx++, maxlen);
+            if (unlikely(rc < 0))
+                return rc;
         }
     }
 
@@ -610,15 +610,20 @@ static size_t safec_etoa(out_fct_type out, const char *funcname,
         // output the exponent part
         if (minwidth) {
             // output the exponential symbol
-            out((flags & FLAGS_UPPERCASE) ? 'E' : 'e', buffer, idx++, maxlen);
+            int rc = out((flags & FLAGS_UPPERCASE) ? 'E' : 'e', buffer, idx++, maxlen);
+            if (unlikely(rc < 0))
+                return rc;
             // output the exponent value
             idx = safec_ntoa_long(out, funcname, buffer, idx, maxlen,
                              (expval < 0) ? -expval : expval, expval < 0, 10, 0,
                              minwidth - 1, FLAGS_ZEROPAD | FLAGS_PLUS);
             // might need to right-pad spaces
             if (flags & FLAGS_LEFT) {
-                while (idx - start_idx < width)
+                while (idx - start_idx < width) {
                     out(' ', buffer, idx++, maxlen);
+                    if (unlikely(rc < 0))
+                        return rc;
+                }
             }
         }
     }
@@ -633,8 +638,9 @@ static size_t safec_etoa(out_fct_type out, const char *funcname,
 int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                       char *buffer, const size_t bufsize, const char *format, va_list va)
 {
-    unsigned int flags, width, precision, n;
     size_t idx = 0U;
+    unsigned int flags, width, precision, n;
+    int rc = 0;
 
     while (*format) {
         if ((long)idx < 0)
@@ -642,7 +648,9 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
         // format specifier?  %[flags][width][.precision][length]
         if (*format != '%') {
             // no
-            out(*format, buffer, idx++, bufsize);
+            rc = out(*format, buffer, idx++, bufsize);
+            if (unlikely(rc < 0))
+                return rc;
             format++;
             continue;
         } else {
@@ -890,30 +898,30 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
             // pre padding
             if (!(flags & FLAGS_LEFT)) {
                 while (l++ < width) {
-                    out(' ', buffer, idx++, bufsize);
-                    if (out == safec_out_buffer && idx > bufsize)
-                        return -(ESNOSPC);
+                    rc = out(' ', buffer, idx++, bufsize);
+                    if (unlikely(rc < 0))
+                        return rc;
                 }
             }
             // char output
             if (flags & FLAGS_LONG) {
                 char *p = &wstr[0];
                 while (*p != 0) {
-                    out(*(p++), buffer, idx++, bufsize);
-                    if (out == safec_out_buffer && idx > bufsize)
-                        return -(ESNOSPC);
+                    rc = out(*(p++), buffer, idx++, bufsize);
+                    if (unlikely(rc < 0))
+                        return rc;
                 }
             } else {
-                out((char)va_arg(va, int), buffer, idx++, bufsize);
+                rc = out((char)va_arg(va, int), buffer, idx++, bufsize);
+                if (unlikely(rc < 0))
+                    return rc;
             }
-            if (out == safec_out_buffer && idx > bufsize)
-                return -(ESNOSPC);
             // post padding
             if (flags & FLAGS_LEFT) {
                 while (l++ < width) {
-                    out(' ', buffer, idx++, bufsize);
-                    if (out == safec_out_buffer && idx > bufsize)
-                        return -(ESNOSPC);
+                    rc = out(' ', buffer, idx++, bufsize);
+                    if (unlikely(rc < 0))
+                        return rc;
                 }
             }
             format++;
@@ -981,21 +989,21 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
             }
             if (!(flags & FLAGS_LEFT)) {
                 while (l++ < width) {
-                    out(' ', buffer, idx++, bufsize);
-                    if (out == safec_out_buffer && idx > bufsize) {
+                    rc = out(' ', buffer, idx++, bufsize);
+                    if (unlikely(rc < 0)) {
                         if (flags & FLAGS_LONG)
                             free(p);
-                        return -(ESNOSPC);
+                        return rc;
                     }
                 }
             }
             // string output
             while ((*p != 0) && (!(flags & FLAGS_PRECISION) || precision--)) {
-                out(*(p++), buffer, idx++, bufsize);
-                if (out == safec_out_buffer && idx > bufsize) {
+                rc = out(*(p++), buffer, idx++, bufsize);
+                if (unlikely(rc < 0)) { //eg.  EBADF write to closed file
                     if (flags & FLAGS_LONG)
                         free(p);
-                    return -(ESNOSPC);
+                    return rc;
                 }
             }
             if (flags & FLAGS_LONG)
@@ -1003,9 +1011,9 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
             // post padding
             if (flags & FLAGS_LEFT) {
                 while (l++ < width) {
-                    out(' ', buffer, idx++, bufsize);
-                    if (out == safec_out_buffer && idx > bufsize)
-                        return -(ESNOSPC);
+                    rc = out(' ', buffer, idx++, bufsize);
+                    if (unlikely(rc < 0))
+                        return rc;
                 }
             }
             format++;
@@ -1034,9 +1042,9 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
         }
 
         case '%':
-            out('%', buffer, idx++, bufsize);
-            if (out == safec_out_buffer && idx > bufsize)
-                return -(ESNOSPC);
+            rc = out('%', buffer, idx++, bufsize);
+            if (unlikely(rc < 0))
+                return rc;
             format++;
             break;
 
@@ -1057,9 +1065,11 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
             }
             return -1;
 #else
-            out(*format, buffer, idx++, bufsize);
-            if (out == safec_out_buffer && idx > bufsize)
-                return -(ESNOSPC);
+            {
+                rc = out(*format, buffer, idx++, bufsize);
+                if (unlikely(rc < 0))
+                    return rc;
+            }
             format++;
 #endif
             break;
@@ -1067,9 +1077,9 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
     }
 
     // termination
-    out((char)0, buffer, idx < bufsize ? idx : bufsize - 1U, bufsize);
-    if (out == safec_out_buffer && idx > bufsize)
-        return -(ESNOSPC);
+    rc = out((char)0, buffer, idx < bufsize ? idx : bufsize - 1U, bufsize);
+    if (unlikely(rc < 0))
+        return rc;
 
     // return written chars without terminating \0
     return (int)idx;

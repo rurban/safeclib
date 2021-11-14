@@ -2,6 +2,7 @@
  * vfprintf_s.c
  *
  * September 2017, Reini Urban
+ * November 2021, Reini Urban
  *
  * Copyright (c) 2017 by Reini Urban
  * All rights reserved.
@@ -78,7 +79,11 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                                            ESNULLP);
         return -(ESNULLP);
     }
-
+    if (unlikely(fileno(stream) < 0)) {
+        invoke_safe_str_constraint_handler("vfprintf_s: stream is invalid", NULL,
+                                           EBADF);
+        return -(EBADF);
+    }
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vfprintf_s: fmt is null", NULL,
                                            ESNULLP);

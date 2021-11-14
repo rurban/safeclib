@@ -649,28 +649,30 @@ EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
 // internal helpers for the *printf_s functions:
 
 // output function type
-typedef void (*out_fct_type)(char character, void *buffer, size_t idx,
-                             size_t maxlen);
+typedef int (*out_fct_type)(char character, void *buffer, size_t idx,
+                            size_t maxlen);
 // wrapper (used as buffer) for output function type
 typedef struct {
-    void (*fct)(char character, void *arg);
+    int (*fct)(char character, void *arg);
     void *arg;
 } out_fct_wrap_type;
 
 // internal buffer output
-static inline void safec_out_buffer(char character, void *buffer, size_t idx,
+static inline int safec_out_buffer(char character, void *buffer, size_t idx,
                                     size_t maxlen)
 {
     if (idx < maxlen) {
         ((char *)buffer)[idx] = character;
+        return 1;
     } else {
         invoke_safe_str_constraint_handler("vsnprintf_s: exceeds dmax",
                                            (char*)buffer, ESNOSPC);
+        return -(ESNOSPC);
     }
 }
 
 // internal putchar wrapper
-static inline void safec_out_char(char character, void *buffer, size_t idx,
+static inline int safec_out_char(char character, void *buffer, size_t idx,
                                   size_t maxlen)
 {
     (void)buffer;
@@ -678,33 +680,35 @@ static inline void safec_out_char(char character, void *buffer, size_t idx,
     (void)maxlen;
     if (character) {
 #ifndef __KERNEL__
-        putchar(character);
+        return putchar(character);
 #else
-        slprintf("%c", character);
+        int rc = 0;
+        rc = slprintf("%c", character);
+        return rc;
 #endif
     }
+    else
+        return 0;
 }
 
 #ifndef __KERNEL__
 // special-case of safec_out_fct for fprintf_s
-static inline void safec_out_fchar(char character, void *wrap, size_t idx,
+static inline int safec_out_fchar(char character, void *wrap, size_t idx,
                              size_t maxlen) {
     (void)idx;
     (void)maxlen;
     //((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
-    fprintf((FILE*)((out_fct_wrap_type *)wrap)->arg, "%c", character);
+    return fprintf((FILE*)((out_fct_wrap_type *)wrap)->arg, "%c", character);
 }
 #endif
 
 // internal output function wrapper
-static inline void safec_out_fct(char character, void *wrap, size_t idx,
+static inline int safec_out_fct(char character, void *wrap, size_t idx,
                                  size_t maxlen) {
     (void)idx;
     (void)maxlen;
-    if (character) {
-        // buffer is the output fct pointer
-        ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
-    }
+    // wrap is the output fct pointer
+    return ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
 }
 // mingw has a _vsnprintf_s. we use our own.
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
