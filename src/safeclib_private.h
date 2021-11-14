@@ -698,7 +698,7 @@ static inline int safec_out_fchar(char character, void *wrap, size_t idx,
     (void)idx;
     (void)maxlen;
     //((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
-    return fprintf((FILE*)((out_fct_wrap_type *)wrap)->arg, "%c", character);
+    return fputc(character, (FILE*)((out_fct_wrap_type *)wrap)->arg);
 }
 #endif
 
@@ -710,6 +710,7 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
     // wrap is the output fct pointer
     return ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
 }
+
 // mingw has a _vsnprintf_s. we use our own.
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);

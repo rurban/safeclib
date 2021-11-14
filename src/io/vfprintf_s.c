@@ -89,8 +89,7 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                                            ESNULLP);
         return -(ESNULLP);
     }
-
-    if (unlikely((p = strnstr(fmt, "%n", RSIZE_MAX_STR)))) {
+    if (unlikely((p = strstr(fmt, "%n")))) {
         /* at the beginning or if inside, not %%n */
         if ((p - fmt == 0) || *(p - 1) != '%') {
             invoke_safe_str_constraint_handler("vfprintf_s: illegal %n", NULL,
