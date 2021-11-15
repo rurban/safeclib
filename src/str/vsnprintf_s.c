@@ -943,7 +943,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                     return -(ESNULLP);
                 }
                 l = wcsnlen_s(lp, precision ? precision : (size_t)-1);
-                p = malloc(l + 1);
+                p = (char*)malloc(l + 1);
                 if (!p) {
 		    char msg[80];
 		    snprintf(msg, sizeof msg, "%s: malloc %%ls arg failed", funcname);
