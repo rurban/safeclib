@@ -1,6 +1,17 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.7.0
+        - Switched to proper semantic versioning for upstream packagers.
+        - Added stpcpy_s and stpncpy_s as in the Intel safestringlib fork.
+        - Added our own portable implementation of the family of printf_s
+          functions. This make the results and errno sideeffects more predictable.
+          scanf_s not yet. Fixes GH #97.
+        - Some minor bugfixes, like unknown size_t GH #89, ECONSTANTS as enums
+          on hurd (GH #101), sprintf_s with "" arg (GH #97).
+        - Minor test improvements overall.
+        - Don't build/install wchar manpages with --disable-wchar (GH #95)
+
 Changes in v02092020 3.6.0
         - Improved generated man pages. Describe not the private _chk functions,
           but the public _s functions. Merge duplicate return values.
