@@ -43,6 +43,7 @@
 //
 // based on https://github.com/mpaland/printf/blob/master/printf.c
 // converted by Reini Urban Nov 2021 for the _s variants.
+// Also added support for %Lsc and %Lefg
 //
 // \license The MIT License (MIT)
 //
@@ -137,6 +138,12 @@
 #define PRINTF_SUPPORT_LONG_LONG
 #endif
 
+// support for the long double types (%Lf %Le %Lf %Lg %La)
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
+#define PRINTF_SUPPORT_LONG_DOUBLE
+#endif
+
 // support for the ptrdiff_t type (%t)
 // ptrdiff_t is normally defined in <stddef.h> as long or long long type
 // default: activated
@@ -159,6 +166,7 @@
 #define FLAGS_LONG_LONG (1U << 9U)
 #define FLAGS_PRECISION (1U << 10U)
 #define FLAGS_ADAPT_EXP (1U << 11U)
+#define FLAGS_LONG_DOUBLE (1U << 12U)
 
 // import float.h for DBL_MAX
 #if defined(PRINTF_SUPPORT_FLOAT)
@@ -361,12 +369,16 @@ static size_t safec_etoa(out_fct_type out,  const char *funcname,
 			 char *buffer, size_t idx, size_t maxlen,
                          double value, unsigned int prec, unsigned int width,
                          unsigned int flags);
+static size_t safec_eltoa(out_fct_type out,  const char *funcname,
+			 char *buffer, size_t idx, size_t maxlen,
+                         long double value, unsigned int prec, unsigned int width,
+                         unsigned int flags);
 #endif
 
 // internal ftoa for fixed decimal floating point
-static size_t safec_ftoa(out_fct_type out,  const char *funcname,
+static size_t safec_fltoa(out_fct_type out,  const char *funcname,
 			 char *buffer, size_t idx, size_t maxlen,
-                         double value, unsigned int prec, unsigned int width,
+                         long double value, unsigned int prec, unsigned int width,
                          unsigned int flags)
 {
     char buf[PRINTF_FTOA_BUFFER_SIZE];
@@ -384,13 +396,20 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
 
     // test for special values
     if (value != value)
-        return safec_out_rev(out, buffer, idx, maxlen, "nan", 3, width, flags);
-    if (value < -DBL_MAX)
-        return safec_out_rev(out, buffer, idx, maxlen, "fni-", 4, width, flags);
-    if (value > DBL_MAX)
         return safec_out_rev(out, buffer, idx, maxlen,
-                        (flags & FLAGS_PLUS) ? "fni+" : "fni",
-                        (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
+    if ((flags & FLAGS_LONG_DOUBLE) && (value < -LDBL_MAX))
+        return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
+    if (!(flags & FLAGS_LONG_DOUBLE) && (value < -DBL_MAX))
+        return safec_out_rev(out, buffer, idx, maxlen, "fni-", 4, width, flags);
+    if ((flags & FLAGS_LONG_DOUBLE) && (value > LDBL_MAX))
+        return safec_out_rev(out, buffer, idx, maxlen,
+                             (flags & FLAGS_PLUS) ? "FNI+" : "FNI",
+                             (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+    if (!(flags & FLAGS_LONG_DOUBLE) && (value > DBL_MAX))
+        return safec_out_rev(out, buffer, idx, maxlen,
+                             (flags & FLAGS_PLUS) ? "fni+" : "fni",
+                             (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
 
     // test for very large values
     // standard printf behavior is to print EVERY whole number digit -- which
@@ -496,24 +515,37 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
     return safec_out_rev(out, buffer, idx, maxlen, buf, len, width, flags);
 }
 
-#if defined(PRINTF_SUPPORT_EXPONENTIAL)
-// internal ftoa variant for exponential floating-point type, contributed by
-// Martijn Jasperse <m.jasperse@gmail.com>
-static size_t safec_etoa(out_fct_type out, const char *funcname,
+static size_t safec_ftoa(out_fct_type out,  const char *funcname,
 			 char *buffer, size_t idx, size_t maxlen,
                          double value, unsigned int prec, unsigned int width,
                          unsigned int flags)
 {
+    long double lv = (long double)value;
+    return safec_fltoa(out, funcname, buffer, idx, maxlen, lv, prec, width, flags);
+}
+
+#if defined(PRINTF_SUPPORT_EXPONENTIAL)
+// internal ftoa variant for exponential floating-point type, contributed by
+// Martijn Jasperse <m.jasperse@gmail.com>
+static size_t safec_eltoa(out_fct_type out, const char *funcname,
+			 char *buffer, size_t idx, size_t maxlen,
+                         long double value, unsigned int prec, unsigned int width,
+                         unsigned int flags)
+{
     union {
         uint64_t U;
+        float f;
         double F;
+        long double LD;
     } conv;
     int exp2, expval;
     unsigned int minwidth, fwidth;
     bool negative;
 
     // check for NaN and special values
-    if ((value != value) || (value > DBL_MAX) || (value < -DBL_MAX)) {
+    if ((value != value)
+        || ((flags & FLAGS_LONG_DOUBLE) && ((value > LDBL_MAX) || (value < -LDBL_MAX)))
+        || (!(flags & FLAGS_LONG_DOUBLE) && ((value > DBL_MAX) || (value < -DBL_MAX)))) {
         return safec_ftoa(out, funcname, buffer, idx, maxlen, value, prec, width, flags);
     }
 
@@ -629,6 +661,16 @@ static size_t safec_etoa(out_fct_type out, const char *funcname,
     }
     return idx;
 }
+
+static size_t safec_etoa(out_fct_type out,  const char *funcname,
+			 char *buffer, size_t idx, size_t maxlen,
+                         double value, unsigned int prec, unsigned int width,
+                         unsigned int flags)
+{
+    long double lv = (long double)value;
+    return safec_eltoa(out, funcname, buffer, idx, maxlen, lv, prec, width, flags);
+}
+
 #endif // PRINTF_SUPPORT_EXPONENTIAL
 #endif // PRINTF_SUPPORT_FLOAT
 
@@ -731,6 +773,12 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 flags |= FLAGS_LONG_LONG;
                 format++;
             }
+            break;
+        case 'L':
+            if (flags & FLAGS_LONG)
+                return -1; // EINVAL
+            flags |= FLAGS_LONG_DOUBLE;
+            format++;
             break;
         case 'h':
             flags |= FLAGS_SHORT;
@@ -857,8 +905,12 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
         case 'F':
             if (*format == 'F')
                 flags |= FLAGS_UPPERCASE;
-            idx = safec_ftoa(out, funcname, buffer, idx, bufsize,
-                             va_arg(va, double), precision, width, flags);
+            if (flags & FLAGS_LONG_DOUBLE)
+                idx = safec_fltoa(out, funcname, buffer, idx, bufsize,
+                                 va_arg(va, long double), precision, width, flags);
+            else
+                idx = safec_ftoa(out, funcname, buffer, idx, bufsize,
+                                 va_arg(va, double), precision, width, flags);
             format++;
             break;
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
@@ -870,8 +922,12 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 flags |= FLAGS_ADAPT_EXP;
             if ((*format == 'E') || (*format == 'G'))
                 flags |= FLAGS_UPPERCASE;
-            idx = safec_etoa(out, funcname, buffer, idx, bufsize,
-                             va_arg(va, double), precision, width, flags);
+            if (flags & FLAGS_LONG_DOUBLE)
+                idx = safec_eltoa(out, funcname, buffer, idx, bufsize,
+                                  va_arg(va, long double), precision, width, flags);
+            else
+                idx = safec_etoa(out, funcname, buffer, idx, bufsize,
+                                 va_arg(va, double), precision, width, flags);
             format++;
             break;
 #endif // PRINTF_SUPPORT_EXPONENTIAL
