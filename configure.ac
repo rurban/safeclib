@@ -725,6 +725,8 @@ AC_CHECK_HEADERS([stdlib.h	\
                   limits.h	\
                   stddef.h	\
                   unistd.h	\
+                  float.h	\
+                  math.h	\
                   sys/types.h	\
                   inttypes.h	\
                   stdint.h	\
@@ -952,12 +954,12 @@ dnl AC_CHECK_FUNCS([ __sync_synchronize MemoryBarrier _mm_mfence _mm_sfence \
 dnl        __machine_rw_barrier ])
 AC_FUNC_MEMCMP
 dnl no header needed as is checks if the linker can find it
-dnl mbstowcs missing on cygwin64
+dnl mbstowcs missing on cygwin64, isinfl on macOS, BSD, ...
 AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         strnstr strnlen strrchr memrchr strstr bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror \
-        fileno ftruncate])
+        fileno ftruncate isinfl])
 
 if test "x$enable_wchar" = "xtrue" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \

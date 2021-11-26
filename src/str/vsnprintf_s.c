@@ -431,7 +431,8 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
 #  ifdef PRINTF_SUPPORT_LONG_DOUBLE
         // TODO Is %le good?
-        return safec_etoa_long(out, funcname, buffer, idx, maxlen, value, prec, width, flags, "%le");
+        return safec_etoa_long(out, funcname, buffer, idx, maxlen, (long double)value,
+                               prec, width, flags, "%le");
 #  else
         return safec_etoa(out, funcname, buffer, idx, maxlen, value, prec, width, flags);
 #  endif // PRINTF_SUPPORT_LONG_DOUBLE
@@ -534,6 +535,66 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
 }
 
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
+#ifdef HAVE_ISINFL
+#define _ISINFL(value) isinfl(value)
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+/* C99 and later */
+#define _ISINFL(value) isinf(value)
+#else
+#include <limits.h>
+/* Portable implementation for older standards */
+static inline int portable_isinfl(long double x) {
+/* Handle special case for non-finite values */
+#ifdef HUGE_VALL
+    if (x == HUGE_VALL || x == -HUGE_VALL) {
+        return 1;
+    }
+#endif
+
+/* IEEE 754 bit pattern checking */
+#if LDBL_MANT_DIG == 53 && LDBL_MAX_EXP == 1024
+    /* Same as double */
+    union {
+        long double ld;
+        unsigned long long bits;
+    } u = {x};
+
+    return ((u.bits & 0x7fffffffffffffffULL) == 0x7ff0000000000000ULL);
+#elif LDBL_MANT_DIG == 64 && LDBL_MAX_EXP == 16384
+    /* 80-bit extended precision */
+    union {
+        long double ld;
+        struct {
+            unsigned long long mantissa;
+            unsigned short exp_sign;
+        } bits;
+    } u = {x};
+
+    return ((u.bits.exp_sign & 0x7fff) == 0x7fff) &&
+           (u.bits.mantissa == 0x8000000000000000ULL);
+#elif LDBL_MANT_DIG == 113 && LDBL_MAX_EXP == 16384
+    /* 128-bit quad precision */
+    union {
+        long double ld;
+        struct {
+            unsigned long long hi;
+            unsigned long long lo;
+        } bits;
+    } u = {x};
+
+    return ((u.bits.hi & 0x7fff000000000000ULL) == 0x7fff000000000000ULL) &&
+           (u.bits.lo == 0) && ((u.bits.hi & 0x0000ffffffffffffULL) == 0);
+#else
+    /* Fallback comparison-based method */
+    if (x != x) {
+        return 0; /* NaN */
+    }
+    return (x + x == x) && (x != 0.0L);
+#endif
+}
+#define _ISINFL(value) portable_isinfl(value)
+#endif // HAVE_ISINFL
+
 // internal ftoa for fixed decimal long double
 static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
                               char *buffer, size_t idx, size_t maxlen,
@@ -547,7 +608,8 @@ static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
                              (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
-    if (isinfl(value)) {
+    if (_ISINFL(value))
+    {
         if (value < 0)
             return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
         else
@@ -599,8 +661,9 @@ static inline size_t safec_atoa(out_fct_type out, const char *funcname,
 
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
-                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
-    if (isinfl(value)) {
+                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3,
+                             width, flags);
+    if (isinf(value)) {
         if (value < 0)
             return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
         else
