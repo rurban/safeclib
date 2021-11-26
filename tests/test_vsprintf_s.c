@@ -9,6 +9,8 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 #include <stdarg.h>
+#include <wchar.h>
+#include <float.h>
 #if defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S)
 #undef vsprintf_s
 EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
@@ -26,6 +28,7 @@ EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
 
 static char str1[LEN];
 static char str2[LEN];
+static wchar_t wstr[LEN];
 static inline int vtprintf_s(char *restrict dest, rsize_t dmax,
                              const char *restrict fmt, ...);
 int test_vsprintf_s(void);
@@ -45,6 +48,13 @@ int test_vsprintf_s(void) {
     int32_t len2;
     int32_t len3;
     int errs = 0;
+    const double nan;
+    int32_t *inan = (int32_t *)&nan;
+    inan[0] = -1;
+    inan[1] = -1;
+    float f;
+    double d;
+    long double ld;
 
     /*--------------------------------------------------*/
 
@@ -268,6 +278,56 @@ int test_vsprintf_s(void) {
     /* We implemented it now by our own, as we cannot trust most libc's */
     ERR(-1);
     EXPNULL(str1)
+
+    /*--------------------------------------------------*/
+
+#ifndef SAFECLIB_DISABLE_WCHAR
+    rc = vtprintf_s(str1, LEN, "%lc", 65);
+    NOERR()
+    EXPSTR(str1, "A");
+
+    wcscpy(wstr, L"AB");
+    rc = vtprintf_s(str1, LEN, "%ls", wstr);
+    NOERR()
+    EXPSTR(str1, "AB");
+#endif
+
+    rc = vtprintf_s(str1, LEN, "%f", 0.0f);
+    NOERR()
+    EXPSTR(str1, "0.000000");
+
+    rc = vtprintf_s(str1, LEN, "%lf", 0.0);
+    NOERR()
+    EXPSTR(str1, "0.000000");
+    rc = vtprintf_s(str1, LEN, "%llf", 0.0);
+    NOERR()
+    EXPSTR(str1, "0.000000");
+    rc = vtprintf_s(str1, LEN, "%Lf", 0.0L);
+    NOERR()
+    EXPSTR(str1, "0.000000");
+
+    rc = vtprintf_s(str1, LEN, "%f", nan);
+    NOERR()
+    EXPSTR(str1, "nan");
+    rc = vtprintf_s(str1, LEN, "%Lf", nan);
+    NOERR()
+    EXPSTR(str1, "NAN");
+    d = DBL_MAX + 0.1;
+    rc = vtprintf_s(str1, LEN, "%f", d);
+    NOERR()
+    EXPSTR(str1, "fni");
+    d = -DBL_MAX - 0.1;
+    rc = vtprintf_s(str1, LEN, "%f", d);
+    NOERR()
+    EXPSTR(str1, "fni-");
+    ld = LDBL_MAX + 0.1;
+    rc = vtprintf_s(str1, LEN, "%Lf", ld);
+    NOERR()
+    EXPSTR(str1, "FNI");
+    ld = -LDBL_MAX + -0.1;
+    rc = vtprintf_s(str1, LEN, "%Lf", ld);
+    NOERR()
+    EXPSTR(str1, "FNI-");
 
     /*--------------------------------------------------*/
 
