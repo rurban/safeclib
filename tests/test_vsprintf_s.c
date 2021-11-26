@@ -296,12 +296,26 @@ int test_vsprintf_s(void) {
     rc = vtprintf_s(str1, LEN, "%llf", 0.0);
     NOERR()
     EXPSTR(str1, "0.000000");
+    rc = vtprintf_s(str1, LEN, "%a", 0.0);
+    NOERR()
+    EXPSTR(str1, "0x0p+0");
+    rc = vtprintf_s(str1, LEN, "%A", 0.0);
+    NOERR()
+    EXPSTR(str1, "0X0P+0");
+#ifdef HAVE_LONG_DOUBLE
     rc = vtprintf_s(str1, LEN, "%Lf", 0.0L);
     NOERR()
     EXPSTR(str1, "0.000000");
     rc = vtprintf_s(str1, LEN, "long >%Lf<", 0.0L);
     NOERR()
     EXPSTR(str1, "long >0.000000<");
+    rc = vtprintf_s(str1, LEN, "long >%La<", 0.0L);
+    NOERR()
+    EXPSTR(str1, "long >0x0p+0<");
+    rc = vtprintf_s(str1, LEN, "long >%LA<", 0.0L);
+    NOERR()
+    EXPSTR(str1, "long >0X0P+0<");
+#endif
 
     {
         union {
