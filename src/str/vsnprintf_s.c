@@ -426,7 +426,8 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
 #  ifdef PRINTF_SUPPORT_LONG_DOUBLE
         // TODO Is %le good?
-        return safec_etoa_long(out, funcname, buffer, idx, maxlen, value, prec, width, flags, "%le");
+        return safec_etoa_long(out, funcname, buffer, idx, maxlen, (long double)value,
+                               prec, width, flags, "%le");
 #  else
         return safec_etoa(out, funcname, buffer, idx, maxlen, value, prec, width, flags);
 #  endif // PRINTF_SUPPORT_LONG_DOUBLE
@@ -542,7 +543,17 @@ static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
                              (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
-    if (isinfl(value)) {
+    if
+#ifdef HAVE_ISINFL
+        (isinfl(value))
+//#elif defined HAVE___ISINFL
+//        (__isinfl(value))
+#else
+#define ISINFL(x) x == x && x > 0x7fff8000000000000000
+        (ISINFL(value))
+#undef ISINFL
+#endif
+    {
         if (value < 0)
             return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
         else
