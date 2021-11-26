@@ -103,7 +103,7 @@
 
 // 'ftoa' conversion buffer size, this must be big enough to hold one converted
 // float number including padded zeros (dynamically created on stack)
-// default: 32 byte
+// default: 32 byte for double
 #ifndef PRINTF_FTOA_BUFFER_SIZE
 #define PRINTF_FTOA_BUFFER_SIZE 32U
 #endif
@@ -121,7 +121,7 @@
 #endif
 
 // define the default floating point precision
-// default: 6 digits
+// default: 6 digits, resp. 12 for long double
 #ifndef PRINTF_DEFAULT_FLOAT_PRECISION
 #define PRINTF_DEFAULT_FLOAT_PRECISION 6U
 #endif
@@ -135,13 +135,21 @@
 // support for the long long types (%llu or %p)
 // default: activated
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
-#define PRINTF_SUPPORT_LONG_LONG
+# ifdef HAVE_LONG_LONG
+#  define PRINTF_SUPPORT_LONG_LONG
+# else
+#  undef PRINTF_SUPPORT_LONG_LONG
+# endif
 #endif
 
 // support for the long double types (%Lf %Le %Lf %Lg %La)
-// default: activated
+// default: probed
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
-#define PRINTF_SUPPORT_LONG_DOUBLE
+# ifdef HAVE_LONG_DOUBLE
+#  define PRINTF_SUPPORT_LONG_DOUBLE
+# else
+#  undef PRINTF_SUPPORT_LONG_DOUBLE
+# endif
 #endif
 
 // support for the ptrdiff_t type (%t)
@@ -168,9 +176,10 @@
 #define FLAGS_ADAPT_EXP (1U << 11U)
 #define FLAGS_LONG_DOUBLE (1U << 12U)
 
-// import float.h for DBL_MAX
+// import float.h for DBL_MAX, math.h for isinf()
 #if defined(PRINTF_SUPPORT_FLOAT)
 #include <float.h>
+#include <math.h>
 #endif
 
 // internal secure strlen
@@ -328,7 +337,7 @@ static size_t safec_ntoa_long(out_fct_type out,  const char *funcname,
 }
 
 // internal itoa for 'long long' type
-#if defined(PRINTF_SUPPORT_LONG_LONG)
+#ifdef PRINTF_SUPPORT_LONG_LONG
 static size_t safec_ntoa_long_long(out_fct_type out,  const char *funcname,
 				   char *buffer, size_t idx,
                                    size_t maxlen, unsigned long long value,
@@ -363,22 +372,22 @@ static size_t safec_ntoa_long_long(out_fct_type out,  const char *funcname,
 #if defined(PRINTF_SUPPORT_FLOAT)
 
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
-// forward declaration so that safec_ftoa can switch to exp notation for values >
-// PRINTF_MAX_FLOAT
+// forward declaration so that safec_ftoa can switch to exp notation for values > PRINTF_MAX_FLOAT
 static size_t safec_etoa(out_fct_type out,  const char *funcname,
 			 char *buffer, size_t idx, size_t maxlen,
                          double value, unsigned int prec, unsigned int width,
                          unsigned int flags);
-static size_t safec_eltoa(out_fct_type out,  const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
-                         long double value, unsigned int prec, unsigned int width,
-                         unsigned int flags);
-#endif
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
+static size_t safec_etoa_long(out_fct_type out,  const char *funcname,
+                              char *buffer, size_t idx, size_t maxlen,
+                              long double value, unsigned int prec, unsigned int width,
+                              unsigned int flags, const char* format);
+#endif // PRINTF_SUPPORT_LONG_DOUBLE
+#endif // PRINTF_SUPPORT_EXPONENTIAL
 
-// internal ftoa for fixed decimal floating point
-static size_t safec_fltoa(out_fct_type out,  const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
-                         long double value, unsigned int prec, unsigned int width,
+static size_t safec_ftoa(out_fct_type out,  const char *funcname,
+                         char *buffer, size_t idx, size_t maxlen,
+                         double value, unsigned int prec, unsigned int width,
                          unsigned int flags)
 {
     char buf[PRINTF_FTOA_BUFFER_SIZE];
@@ -393,33 +402,37 @@ static size_t safec_fltoa(out_fct_type out,  const char *funcname,
     static const double pow10[] = {1,         10,        100,     1000,
                                    10000,     100000,    1000000, 10000000,
                                    100000000, 1000000000};
+    const unsigned maxprec = 9U;
 
     // test for special values
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
                              (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
-    if ((flags & FLAGS_LONG_DOUBLE) && (value < -LDBL_MAX))
-        return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
-    if (!(flags & FLAGS_LONG_DOUBLE) && (value < -DBL_MAX))
-        return safec_out_rev(out, buffer, idx, maxlen, "fni-", 4, width, flags);
-    if ((flags & FLAGS_LONG_DOUBLE) && (value > LDBL_MAX))
-        return safec_out_rev(out, buffer, idx, maxlen,
-                             (flags & FLAGS_PLUS) ? "FNI+" : "FNI",
-                             (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
-    if (!(flags & FLAGS_LONG_DOUBLE) && (value > DBL_MAX))
-        return safec_out_rev(out, buffer, idx, maxlen,
-                             (flags & FLAGS_PLUS) ? "fni+" : "fni",
-                             (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+    {
+        if (isinf(value) < 0)
+            // reverse of -inf
+            return safec_out_rev(out, buffer, idx, maxlen, "fni-", 4, width, flags);
+        if (isinf(value) > 0)
+            // reverse of inf
+            return safec_out_rev(out, buffer, idx, maxlen,
+                                 (flags & FLAGS_PLUS) ? "fni+" : "fni",
+                                 (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+    }
 
     // test for very large values
     // standard printf behavior is to print EVERY whole number digit -- which
     // could be 100s of characters overflowing your buffers == bad
     if ((value > PRINTF_MAX_FLOAT) || (value < -PRINTF_MAX_FLOAT)) {
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
+#  ifdef PRINTF_SUPPORT_LONG_DOUBLE
+        // TODO Is %le good?
+        return safec_etoa_long(out, funcname, buffer, idx, maxlen, value, prec, width, flags, "%le");
+#  else
         return safec_etoa(out, funcname, buffer, idx, maxlen, value, prec, width, flags);
+#  endif // PRINTF_SUPPORT_LONG_DOUBLE
 #else
         return 0U;
-#endif
+#endif // PRINTF_SUPPORT_EXPONENTIAL
     }
 
     // test for negative
@@ -434,7 +447,7 @@ static size_t safec_fltoa(out_fct_type out,  const char *funcname,
         prec = PRINTF_DEFAULT_FLOAT_PRECISION;
     }
     // limit precision to 9, cause a prec >= 10 can lead to overflow errors
-    while ((len < PRINTF_FTOA_BUFFER_SIZE) && (prec > 9U)) {
+    while ((len < PRINTF_FTOA_BUFFER_SIZE) && (prec > maxprec)) {
         buf[len++] = '0';
         prec--;
     }
@@ -515,28 +528,60 @@ static size_t safec_fltoa(out_fct_type out,  const char *funcname,
     return safec_out_rev(out, buffer, idx, maxlen, buf, len, width, flags);
 }
 
-static size_t safec_ftoa(out_fct_type out,  const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
-                         double value, unsigned int prec, unsigned int width,
-                         unsigned int flags)
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
+// internal ftoa for fixed decimal long double
+static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
+                              char *buffer, size_t idx, size_t maxlen,
+                              long double value, unsigned int prec, unsigned int width,
+                              unsigned int flags, const char* format)
 {
-    long double lv = (long double)value;
-    return safec_fltoa(out, funcname, buffer, idx, maxlen, lv, prec, width, flags);
+    static char buf[64];
+    char *p = (char*)buf;
+    int rc = 0;
+
+    if (value != value)
+        return safec_out_rev(out, buffer, idx, maxlen,
+                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
+    if (isinfl(value)) {
+        if (value < 0)
+            return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
+        else
+            return safec_out_rev(out, buffer, idx, maxlen,
+                                 (flags & FLAGS_PLUS) ? "FNI+" : "FNI",
+                                 (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+    }
+    snprintf(buf, 64, format, value);
+    buf[63] = '\0';
+    while (*p != 0) {
+        rc = out(*(p++), buffer, idx++, maxlen);
+        if (unlikely(rc < 0))
+            return rc;
+    }
+    return idx;
 }
+
+// internal etoa for fixed decimal long double
+static inline size_t safec_etoa_long(out_fct_type out, const char *funcname,
+                                     char *buffer, size_t idx, size_t maxlen,
+                                     long double value, unsigned int prec, unsigned int width,
+                                     unsigned int flags, const char* format)
+{
+    return safec_ftoa_long(out, funcname, buffer, idx, maxlen, value, prec,
+                           width, flags, format);
+}
+#endif
 
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
 // internal ftoa variant for exponential floating-point type, contributed by
 // Martijn Jasperse <m.jasperse@gmail.com>
-static size_t safec_eltoa(out_fct_type out, const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
-                         long double value, unsigned int prec, unsigned int width,
+static size_t safec_etoa(out_fct_type out, const char *funcname,
+                         char *buffer, size_t idx, size_t maxlen,
+                         double value, unsigned int prec, unsigned int width,
                          unsigned int flags)
 {
     union {
         uint64_t U;
-        float f;
         double F;
-        long double LD;
     } conv;
     int exp2, expval;
     unsigned int minwidth, fwidth;
@@ -544,7 +589,6 @@ static size_t safec_eltoa(out_fct_type out, const char *funcname,
 
     // check for NaN and special values
     if ((value != value)
-        || ((flags & FLAGS_LONG_DOUBLE) && ((value > LDBL_MAX) || (value < -LDBL_MAX)))
         || (!(flags & FLAGS_LONG_DOUBLE) && ((value > DBL_MAX) || (value < -DBL_MAX)))) {
         return safec_ftoa(out, funcname, buffer, idx, maxlen, value, prec, width, flags);
     }
@@ -570,7 +614,7 @@ static size_t safec_eltoa(out_fct_type out, const char *funcname,
     // now approximate log10 from the log2 integer part and an expansion of ln
     // around 1.5
     expval = (int)(0.1760912590558 + exp2 * 0.301029995663981 +
-                       (conv.F - 1.5) * 0.289529654602168);
+                   (conv.F - 1.5) * 0.289529654602168);
     // now we want to compute 10^expval but we want to be sure it won't overflow
     exp2 = (int)(expval * 3.321928094887362 + 0.5);
     {
@@ -661,16 +705,6 @@ static size_t safec_eltoa(out_fct_type out, const char *funcname,
     }
     return idx;
 }
-
-static size_t safec_etoa(out_fct_type out,  const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
-                         double value, unsigned int prec, unsigned int width,
-                         unsigned int flags)
-{
-    long double lv = (long double)value;
-    return safec_eltoa(out, funcname, buffer, idx, maxlen, lv, prec, width, flags);
-}
-
 #endif // PRINTF_SUPPORT_EXPONENTIAL
 #endif // PRINTF_SUPPORT_FLOAT
 
@@ -683,6 +717,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
     size_t idx = 0U;
     unsigned int flags, width, precision, n;
     int rc = 0;
+    const char *startformat = NULL;
 
     while (*format) {
         if ((long)idx < 0)
@@ -696,6 +731,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
             format++;
             continue;
         } else {
+            startformat = (char*)format;
             // yes, evaluate it
             format++;
         }
@@ -774,12 +810,14 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 format++;
             }
             break;
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
         case 'L':
             if (flags & FLAGS_LONG)
                 return -1; // EINVAL
             flags |= FLAGS_LONG_DOUBLE;
             format++;
             break;
+#endif
         case 'h':
             flags |= FLAGS_SHORT;
             format++;
@@ -905,13 +943,24 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
         case 'F':
             if (*format == 'F')
                 flags |= FLAGS_UPPERCASE;
-            if (flags & FLAGS_LONG_DOUBLE)
-                idx = safec_fltoa(out, funcname, buffer, idx, bufsize,
-                                 va_arg(va, long double), precision, width, flags);
-            else
+            format++;
+            if (flags & FLAGS_LONG_DOUBLE) {
+                if (*format) {
+                    unsigned off = format - startformat;
+                    char *s = (char*)malloc(off + 1);
+                    memcpy(s, startformat, off);
+                    s[off] = '\0';
+                    idx = safec_ftoa_long(out, funcname, buffer, idx, bufsize,
+                                          va_arg(va, long double), precision, width, flags, s);
+                    free(s);
+                } else { // already at end
+                    idx = safec_ftoa_long(out, funcname, buffer, idx, bufsize,
+                                          va_arg(va, long double), precision, width, flags, startformat);
+                }
+            } else {
                 idx = safec_ftoa(out, funcname, buffer, idx, bufsize,
                                  va_arg(va, double), precision, width, flags);
-            format++;
+            }
             break;
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
         case 'e':
@@ -922,13 +971,18 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 flags |= FLAGS_ADAPT_EXP;
             if ((*format == 'E') || (*format == 'G'))
                 flags |= FLAGS_UPPERCASE;
-            if (flags & FLAGS_LONG_DOUBLE)
-                idx = safec_eltoa(out, funcname, buffer, idx, bufsize,
-                                  va_arg(va, long double), precision, width, flags);
-            else
+            format++;
+            if (flags & FLAGS_LONG_DOUBLE) {
+                const char end = *format;
+                *(char*)format = '\0';
+                idx = safec_etoa_long(out, funcname, buffer, idx, bufsize,
+                                      va_arg(va, long double), precision, width, flags, startformat);
+                *(char*)format = end;
+            }
+            else {
                 idx = safec_etoa(out, funcname, buffer, idx, bufsize,
                                  va_arg(va, double), precision, width, flags);
-            format++;
+            }
             break;
 #endif // PRINTF_SUPPORT_EXPONENTIAL
 #endif // PRINTF_SUPPORT_FLOAT
