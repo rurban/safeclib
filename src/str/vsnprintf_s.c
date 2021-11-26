@@ -569,9 +569,50 @@ static inline size_t safec_etoa_long(out_fct_type out, const char *funcname,
     return safec_ftoa_long(out, funcname, buffer, idx, maxlen, value, prec,
                            width, flags, format);
 }
+
+// internal atoa for fixed decimal long double
+static inline size_t safec_atoa_long(out_fct_type out, const char *funcname,
+                                     char *buffer, size_t idx, size_t maxlen,
+                                     long double value, unsigned int prec, unsigned int width,
+                                     unsigned int flags, const char* format)
+{
+    return safec_ftoa_long(out, funcname, buffer, idx, maxlen, value, prec,
+                           width, flags, format);
+}
 #endif
 
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
+// the complete same as safec_ftoa_long, but taking double, not long double
+static inline size_t safec_atoa(out_fct_type out, const char *funcname,
+                                     char *buffer, size_t idx, size_t maxlen,
+                                     double value, unsigned int prec, unsigned int width,
+                                     unsigned int flags, const char* format)
+{
+    static char buf[64];
+    char *p = (char*)buf;
+    int rc = 0;
+
+    if (value != value)
+        return safec_out_rev(out, buffer, idx, maxlen,
+                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
+    if (isinfl(value)) {
+        if (value < 0)
+            return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
+        else
+            return safec_out_rev(out, buffer, idx, maxlen,
+                                 (flags & FLAGS_PLUS) ? "FNI+" : "FNI",
+                                 (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+    }
+    snprintf(buf, 64, format, value);
+    buf[63] = '\0';
+    while (*p != 0) {
+        rc = out(*(p++), buffer, idx++, maxlen);
+        if (unlikely(rc < 0))
+            return rc;
+    }
+    return idx;
+}
+
 // internal ftoa variant for exponential floating-point type, contributed by
 // Martijn Jasperse <m.jasperse@gmail.com>
 static size_t safec_etoa(out_fct_type out, const char *funcname,
@@ -973,15 +1014,56 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 flags |= FLAGS_UPPERCASE;
             format++;
             if (flags & FLAGS_LONG_DOUBLE) {
-                const char end = *format;
-                *(char*)format = '\0';
-                idx = safec_etoa_long(out, funcname, buffer, idx, bufsize,
-                                      va_arg(va, long double), precision, width, flags, startformat);
-                *(char*)format = end;
+                if (*format) {
+                    unsigned off = format - startformat;
+                    char *s = (char*)malloc(off + 1);
+                    memcpy(s, startformat, off);
+                    s[off] = '\0';
+                    idx = safec_etoa_long(out, funcname, buffer, idx, bufsize,
+                                          va_arg(va, long double), precision, width, flags, s);
+                    free(s);
+                } else {
+                    idx = safec_etoa_long(out, funcname, buffer, idx, bufsize,
+                                          va_arg(va, long double), precision, width, flags, startformat);
+                }
             }
             else {
                 idx = safec_etoa(out, funcname, buffer, idx, bufsize,
                                  va_arg(va, double), precision, width, flags);
+            }
+            break;
+        case 'a':
+        case 'A':
+            if (*format == 'A')
+                flags |= FLAGS_UPPERCASE;
+            format++;
+            if (flags & FLAGS_LONG_DOUBLE) {
+                if (*format) {
+                    unsigned off = format - startformat;
+                    char *s = (char*)malloc(off + 1);
+                    memcpy(s, startformat, off);
+                    s[off] = '\0';
+                    idx = safec_atoa_long(out, funcname, buffer, idx, bufsize,
+                                          va_arg(va, long double), precision, width, flags, s);
+                    free(s);
+                } else {
+                    idx = safec_atoa_long(out, funcname, buffer, idx, bufsize,
+                                          va_arg(va, long double), precision, width, flags, startformat);
+                }
+            }
+            else {
+                if (*format) {
+                    unsigned off = format - startformat;
+                    char *s = (char*)malloc(off + 1);
+                    memcpy(s, startformat, off);
+                    s[off] = '\0';
+                    idx = safec_atoa(out, funcname, buffer, idx, bufsize,
+                                     va_arg(va, double), precision, width, flags, s);
+                    free(s);
+                } else {
+                    idx = safec_atoa(out, funcname, buffer, idx, bufsize,
+                                     va_arg(va, double), precision, width, flags, startformat);
+                }
             }
             break;
 #endif // PRINTF_SUPPORT_EXPONENTIAL
