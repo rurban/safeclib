@@ -803,6 +803,9 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINTPTR_T
+AC_CHECK_TYPES([long long])
+AC_TYPE_LONG_DOUBLE
+AC_TYPE_LONG_DOUBLE_WIDER
 AC_CHECK_SIZEOF(size_t)
 AC_CHECK_TYPE([errno_t],
         [FALLBACK_ERRNO_T=""],
@@ -817,7 +820,13 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      [#include <time.h>])
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
-
+AC_MSG_CHECKING(for __float128)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[__float128 x = 1.0Q;]])],
+       have_float128=yes, have_float128=no)
+AC_MSG_RESULT($have_float128)
+if test $have_float128 = yes; then
+   AC_DEFINE([HAVE_FLOAT128], [1], [Define to 1 if __float128 is usable.])
+fi
 AX_GCC_BUILTIN(__builtin_ctz)
 AX_GCC_BUILTIN(__builtin_constant_p)
 INSERT_CONSTANT_P="#undef HAVE___BUILTIN_CONSTANT_P"

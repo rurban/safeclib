@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <wchar.h>
 #include <float.h>
+#include <math.h>
 #if defined(TEST_MSVCRT) && defined(HAVE_VSPRINTF_S)
 #undef vsprintf_s
 EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
@@ -48,13 +49,6 @@ int test_vsprintf_s(void) {
     int32_t len2;
     int32_t len3;
     int errs = 0;
-    const double nan;
-    int32_t *inan = (int32_t *)&nan;
-    inan[0] = -1;
-    inan[1] = -1;
-    float f;
-    double d;
-    long double ld;
 
     /*--------------------------------------------------*/
 
@@ -282,7 +276,7 @@ int test_vsprintf_s(void) {
     /*--------------------------------------------------*/
 
 #ifndef SAFECLIB_DISABLE_WCHAR
-    rc = vtprintf_s(str1, LEN, "%lc", 65);
+    rc = vtprintf_s(str1, LEN, "%lc", L'A');
     NOERR()
     EXPSTR(str1, "A");
 
@@ -305,29 +299,49 @@ int test_vsprintf_s(void) {
     rc = vtprintf_s(str1, LEN, "%Lf", 0.0L);
     NOERR()
     EXPSTR(str1, "0.000000");
+    rc = vtprintf_s(str1, LEN, "long >%Lf<", 0.0L);
+    NOERR()
+    EXPSTR(str1, "long >0.000000<");
 
-    rc = vtprintf_s(str1, LEN, "%f", nan);
-    NOERR()
-    EXPSTR(str1, "nan");
-    rc = vtprintf_s(str1, LEN, "%Lf", nan);
-    NOERR()
-    EXPSTR(str1, "NAN");
-    d = DBL_MAX + 0.1;
-    rc = vtprintf_s(str1, LEN, "%f", d);
-    NOERR()
-    EXPSTR(str1, "fni");
-    d = -DBL_MAX - 0.1;
-    rc = vtprintf_s(str1, LEN, "%f", d);
-    NOERR()
-    EXPSTR(str1, "fni-");
-    ld = LDBL_MAX + 0.1;
-    rc = vtprintf_s(str1, LEN, "%Lf", ld);
-    NOERR()
-    EXPSTR(str1, "FNI");
-    ld = -LDBL_MAX + -0.1;
-    rc = vtprintf_s(str1, LEN, "%Lf", ld);
-    NOERR()
-    EXPSTR(str1, "FNI-");
+    {
+        union {
+            uint64_t L;
+            uint32_t U[2]; // always 8 byte
+            double F;
+        } c32;
+        union {
+            uint64_t U[2]; // 10-16 bytes
+            long double F;
+        } c64;
+        c32.U[0] = -1;
+        c32.U[1] = -1;
+        c64.U[0] = -1;
+        c64.U[1] = -1;
+
+        rc = vtprintf_s(str1, LEN, "%f", c32.F);
+        NOERR()
+        EXPSTR(str1, "nan");
+#ifdef HAVE_LONG_DOUBLE
+        rc = vtprintf_s(str1, LEN, "%Lf", c64.F);
+        NOERR()
+        EXPSTR(str1, "NAN");
+#endif
+        rc = vtprintf_s(str1, LEN, "%f", INFINITY);
+        NOERR()
+        EXPSTR(str1, "inf"); // 6.926406461289696e-310
+        rc = vtprintf_s(str1, LEN, "%f", -INFINITY);
+        NOERR()
+        EXPSTR(str1, "-inf");
+
+#ifdef HAVE_LONG_DOUBLE
+        rc = vtprintf_s(str1, LEN, "%Lf", HUGE_VALL);
+        NOERR()
+        EXPSTR(str1, "INF");
+        rc = vtprintf_s(str1, LEN, "%Lf", -HUGE_VALL);
+        NOERR()
+        EXPSTR(str1, "-INF");
+#endif
+    }
 
     /*--------------------------------------------------*/
 
