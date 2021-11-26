@@ -997,7 +997,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                     invoke_safe_str_constraint_handler(msg, buffer, ESNULLP);
                     return -(ESNULLP);
                 }
-                l = wcsnlen_s(lp, precision ? precision : (size_t)-1);
+                l = wcsnlen_s(lp, precision ? precision : RSIZE_MAX_WSTR);
                 p = (char*)malloc(l + 1);
                 if (!p) {
                     char msg[80];
@@ -1005,7 +1005,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                     invoke_safe_str_constraint_handler(msg, buffer, 1);
                     return -1;
                 }
-                err = wcstombs_s(&len, p, l, lp, l);
+                err = wcstombs_s(&len, p, l+1, lp, l);
                 if (err != EOK) {
                     char msg[80];
                     snprintf(msg, sizeof msg, "%s: wcstombs_s for %%ls arg failed", funcname);
