@@ -228,6 +228,7 @@ AM_CFLAGS  += -I$(top_builddir)/include -I$(srcdir)
 AM_CFLAGS += $(WARN_CFLAGS_TESTS)
 
 LDADD      = $(top_builddir)/src/libsafec.la
+#t_vsprintf_s_LDADD = $(LDADD) -lm
 
 TESTS = $(SAFEC_BUILT_TESTS)
 check_PROGRAMS = $(SAFEC_BUILT_TESTS)
