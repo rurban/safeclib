@@ -934,16 +934,18 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
 #endif // PRINTF_SUPPORT_FLOAT
         case 'c': {
             unsigned int l = 1U;
-            char wstr[4];
+            char wstr[5];
             if (flags & FLAGS_LONG) {
 #ifndef SAFECLIB_DISABLE_WCHAR
                 int len = wctomb(wstr, va_arg(va, int));
-                if (len <= 0) {
+                if (len <= 0 || len > 4) {
 		    char msg[80];
 		    snprintf(msg, sizeof msg, "%s: wctomb for %%lc arg failed", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(-len));
                     return len;
                 }
+                wstr[len] = '\0';
+                memcpy(buffer, wstr, len + 1);
 #else
 		char msg[80];
 		snprintf(msg, sizeof msg, "%s: unsupported %%lc arg", funcname);
