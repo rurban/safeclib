@@ -769,11 +769,13 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
     }
     if (seq_ext)
         free(seq_ext);
-        /* surrogate pairs can actually collapse */
+#if 0
+    /* surrogate pairs can actually collapse */
 #if defined(SAFECLIB_STR_NULL_SLACK)
     memset(dest, 0, dmax);
 #else
     *dest = 0;
+#endif
 #endif
     return EOK;
 }
@@ -1031,8 +1033,7 @@ EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
     char8_t *tmp_ptr;
     char8_t *tmp = NULL;
     rsize_t len;
-    const bool iscompat =
-        mode & WCSNORM_NFKD; /* WCSNORM_NFKD or WCSNORM_NFKC */
+    const bool iscompat = (mode & WCSNORM_NFKD) || (mode & WCSNORM_NFKC);
 
     errno_t rc =
         _u8norm_decompose_s_chk(dest, dmax, src, &len, iscompat, destbos);
