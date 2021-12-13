@@ -853,7 +853,7 @@ EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
     }
     if (seq_ext)
         free(seq_ext);
-        /* surrogate pairs can actually collapse */
+    /* surrogate pairs can actually collapse */
 #if defined(SAFECLIB_STR_NULL_SLACK) && SIZEOF_WCHAR_T == 2
     memset(dest, 0, dmax * sizeof(wchar_t));
 #else
