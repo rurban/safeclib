@@ -383,6 +383,14 @@ AC_ARG_ENABLE(debug-build,
 	esac], [enable_debug_build=false ])
 AM_CONDITIONAL(ENABLE_DEBUG_BUILD, test "x$enable_debug_build" = "xtrue")
 
+AC_ARG_ENABLE(hardening,
+	AS_HELP_STRING([--disable-hardening],
+	               [disable hardening @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_hardening=true ;;
+	no)  enable_hardening=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-hardening]) ;;
+	esac], [enable_hardening=true])
 
 AC_MSG_NOTICE([Check programs])
 # ===============================================
@@ -543,14 +551,17 @@ case $host_os in
        [],[$ax_ccf_err])
     ;;
 esac
-AX_APPEND_COMPILE_FLAGS(
-        [-fstack-protector-strong -fstack-clash-protection -fcf-protection \
-         -fno-strict-aliasing -fno-strict-overflow -fno-delete-null-pointer-checks \
-         -fno-lifetime-dse],
-        [WARN_CFLAGS],[$ax_ccf_err])
-AX_APPEND_LINK_FLAGS(
-        [-fstack-protector-strong -fstack-clash-protection -fcf-protection],
-        [WARN_LDFLAGS],[$ax_ccf_err])
+
+if test "x$enable_hardening" = "xtrue" ; then
+	AX_APPEND_COMPILE_FLAGS(
+	        [-fstack-protector-strong -fstack-clash-protection -fcf-protection \
+	         -fno-strict-aliasing -fno-strict-overflow -fno-delete-null-pointer-checks \
+	         -fno-lifetime-dse],
+	        [WARN_CFLAGS],[$ax_ccf_err])
+	AX_APPEND_LINK_FLAGS(
+	        [-fstack-protector-strong -fstack-clash-protection -fcf-protection],
+	        [WARN_LDFLAGS],[$ax_ccf_err])
+fi
 
 if test x$ax_cv_check_cflags__Wrestrict = xyes; then
    AC_DEFINE([HAVE_WARNING_RESTRICT], 1, [Have -Wrestrict])
