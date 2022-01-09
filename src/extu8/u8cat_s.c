@@ -210,6 +210,17 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
                     }
                 }
 #endif
+                /*
+                if (*(dest-1) & 0x80) { // Last byte has been overwritten
+                  for (i=k; (i>0) && ((k-i) < 3) && ((dest[i] & 0xC0) == 0x80); i--) ;
+                  switch(k-i) {
+                  case 0:                                 dest[i] = '\0'; break;
+                  case 1:  if ( (dest[i] & 0xE0) != 0xC0) dest[i] = '\0'; break;
+                  case 2:  if ( (dest[i] & 0xF0) != 0xE0) dest[i] = '\0'; break;
+                  case 3:  if ( (dest[i] & 0xF8) != 0xF0) dest[i] = '\0'; break;
+                  }
+                }
+                */
                 return RCNEGATE(EOK);
             }
 
@@ -218,7 +229,7 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
             src++;
         }
     }
-
+    
     /*
      * the entire src was not copied, so null the string
      */
