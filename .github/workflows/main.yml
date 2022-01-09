@@ -54,7 +54,7 @@ jobs:
       uses: actions/checkout@v2
     - run: sh build-aux/autogen.sh
     - run: ./configure
-    - run: make
+    - run: make V=1
     - run: make check-log
     #- run: make distcheck
   mingw:
@@ -81,12 +81,23 @@ jobs:
           mingw-w64-x86_64-toolchain
           mingw-w64-x86_64-libtool
           mingw-w64-x86_64-perl
+          libtool
+          autoconf-wrapper
+          automake-wrapper
     - run: reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /d 1
     - run: git config --global core.autocrlf input
     - name: checkout
       uses: actions/checkout@v2
     - shell: msys2 {0}
       run: sh build-aux/autogen.sh
+      #run: libtoolize -f && autoheader && aclocal -I m4 && autoconf && automake --add-missing; autoreconf -fi
+      continue-on-error: true
+    - shell: msys2 {0}
+      run: ./configure
+    - shell: msys2 {0}
+      run: make V=1
+    - shell: msys2 {0}
+      run: make check-log
     #- name: Create zipped asset
     #  run: gzip -c configure >configure.gz
     #- name: Create Release
@@ -109,9 +120,3 @@ jobs:
     #    asset_path: ./configure.gz
     #    asset_name: configure.gz
     #    asset_content_type: application/gzip
-    - shell: msys2 {0}
-      run: ./configure
-    - shell: msys2 {0}
-      run: make V=1
-    - shell: msys2 {0}
-      run: make check-log
