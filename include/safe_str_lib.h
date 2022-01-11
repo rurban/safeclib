@@ -159,8 +159,8 @@ char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 EXTERN int _sprintf_s_chk(char *restrict dest, const rsize_t dmax,
                    const size_t destbos, const char *restrict fmt, ...)
    __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
-#define sprintf_s(dest, dmax, ...)                                             \
-    _sprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
+#define sprintf_s(dest, dmax, fmt, ...)                                        \
+    _sprintf_s_chk(dest, dmax, BOS(dest), fmt, __VA_ARGS__)
 #else
 EXTERN int sprintf_s(char *restrict dest, rsize_t dmax,
                      const char *restrict fmt, ...)
@@ -178,8 +178,8 @@ EXTERN int _vsprintf_s_chk(char *restrict dest, rsize_t dmax,
 EXTERN int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
   __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
-#define snprintf_s(dest, dmax, ...)                                            \
-    _snprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
+#define snprintf_s(dest, dmax, fmt, ...)                                       \
+    _snprintf_s_chk(dest, dmax, BOS(dest), fmt, __VA_ARGS__)
 #else
 EXTERN int snprintf_s(char *restrict dest, rsize_t dmax,
                       const char *restrict fmt, ...)
@@ -648,8 +648,8 @@ EXTERN int _swprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                            const size_t destbos, const wchar_t *restrict fmt,
                            ...)
   __attribute_format_wprintf(4,5) BOSW_CHK(dest) BOS_FMT(fmt);
-#define swprintf_s(dest, dmax, ...)                                            \
-    _swprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
+#define swprintf_s(dest, dmax, fmt, ...)                                       \
+    _swprintf_s_chk(dest, dmax, BOS(dest), fmt, __VA_ARGS__)
 #else
 EXTERN int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
                       const wchar_t *restrict fmt, ...)
@@ -668,8 +668,8 @@ EXTERN int _snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                             const size_t destbos, const wchar_t *restrict fmt,
                             ...)
   __attribute_format_wprintf(4,5) BOSW_CHK(dest) BOS_FMT(fmt);
-#define snwprintf_s(dest, dmax, ...)                            \
-    _snwprintf_s_chk(dest, dmax, BOS(dest), __VA_ARGS__)
+#define snwprintf_s(dest, dmax, fmt, ...)                                      \
+    _snwprintf_s_chk(dest, dmax, BOS(dest), fmt, __VA_ARGS__)
 #else
 EXTERN int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
                        const wchar_t *restrict fmt, ...)
