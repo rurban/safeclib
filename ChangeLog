@@ -7,6 +7,9 @@ Changes in 3.7.0
         - Added our own portable implementation of the family of printf_s
           functions. This make the results and errno sideeffects more predictable.
           scanf_s not yet. Fixes GH #97.
+	- Added a --disable-hardening option, which bypasses obviously failing
+	  AX_APPEND_COMPILE_FLAGS probes (PR #107, ffontaine).
+	  E.g. needed on some exotic uclibc buildroot targets.
         - Some minor bugfixes, like unknown size_t GH #89, ECONSTANTS as enums
           on hurd (GH #101), sprintf_s with "" arg (GH #97).
         - Minor test improvements overall.
