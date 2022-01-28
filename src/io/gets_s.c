@@ -90,12 +90,12 @@
  * @retval  int >0     when on successful operation, all the characters from src
  *                     were appended to dest and the result in dest is null
  *                     terminated.
- * @retval  0,errno=ESNULLP    when dest is a NULL pointer
- * @retval  0,errno=ESZEROL    when dmax = 0
- * @retval  0,errno=ESLEMAX    when dmax > RSIZE_MAX_STR
- * @retval  0,errno=EOVERFLOW  when dmax > size of dest
- * @retval  0,errno=ESUNTERM   endline or eof not encountered after storing
- *                             dmax-1 characters to dest.
+ * @retval  errno=ESNULLP    when dest is a NULL pointer
+ * @retval  errno=ESZEROL    when dmax = 0
+ * @retval  errno=ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  errno=EOVERFLOW  when dmax > size of dest
+ * @retval  errno=ESUNTERM   endline or eof not encountered after storing
+ *                           dmax-1 characters to dest.
  *
  * @see
  *    scanf_s()
