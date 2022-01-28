@@ -3,7 +3,7 @@
  * File 'towfc_s.c'
  * Lines executed:98.28% of 174
  *
- * Full case-folding regarding latest Unicode (10.0) CaseFolding.txt
+ * Full case-folding regarding latest Unicode (14.0) CaseFolding.txt
  * Some F characters fold to multiples.
  *------------------------------------------------------------------
  */
@@ -67,7 +67,7 @@ int test_towfc_s(void) {
     if (!f) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget https://www.unicode.org/Public/13.0.0/ucd/CaseFolding.txt")
+        system("wget https://www.unicode.org/Public/14.0.0/ucd/CaseFolding.txt")
             ? printf(" done\n")
             : printf(" failed\n");
         f = fopen(CFOLD, "r");
@@ -195,8 +195,7 @@ int test_towfc_s(void) {
                             WEXPSTR(result, L"i");
                         }
                     }
-                } else if (*status ==
-                           'S') { /* ignore as we handle the other F case */
+                } else if (*status == 'S') { /* ignore as we handle the other F case */
                     ;
                 } else { /* the simple 1:1 C case */
 #if SIZEOF_WCHAR_T > 2
@@ -207,15 +206,13 @@ int test_towfc_s(void) {
                     {
                         errs++;
                         printf("%s %u  Error: iswfc(U+%04X) => %d (towfc=>%d) "
-                               "\"%s\" status=%s %s\n",
-                               __FUNCTION__, __LINE__, wc, n, len, mapping,
-                               status, name);
+                               "\"%s\" status=%s %s\n", __FUNCTION__, __LINE__, wc,
+                               n, len, mapping, status, name);
                     } else if (cp != m0) {
                         errs++;
                         printf("%s %u  Error: towfc(U+%04X) => %X != %X \"%s\" "
-                               "status=%s %s\n",
-                               __FUNCTION__, __LINE__, wc, cp, m0, mapping, status,
-                               name);
+                               "status=%s %s\n", __FUNCTION__, __LINE__, wc, cp, m0,
+                               mapping, status, name);
                     }
                 }
             }

@@ -33,7 +33,7 @@ int test_towupper(void);
  */
 /*# define PERL "perl" */
 /*# define PERL "cperl5.30.0"*/
-#define PERL "perl5.34.0"
+#define PERL "perl5.36.0"
 #endif
 #define TESTPL "test-upr.pl"
 
@@ -154,7 +154,7 @@ int test_towupper(void) {
     if (!f) {
         printf("downloading %s ...", GENCAT);
         fflush(stdout);
-        if (system("wget https://www.unicode.org/Public/13.0.0/ucd/extracted/"
+        if (system("wget https://www.unicode.org/Public/14.0.0/ucd/extracted/"
                    "DerivedGeneralCategory.txt"))
             printf(" done\n");
         else
@@ -166,7 +166,7 @@ int test_towupper(void) {
     if (!cf) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        if (system("wget https://www.unicode.org/Public/13.0.0/ucd/CaseFolding.txt"))
+        if (system("wget https://www.unicode.org/Public/14.0.0/ucd/CaseFolding.txt"))
             printf(" done\n");
         else
             printf(" failed\n");

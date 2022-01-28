@@ -24,7 +24,7 @@ int test_wcsfc_s(void);
 #ifndef PERL
 /*# define PERL "perl"*/
 /*# define PERL "cperl5.30.0"*/
-#define PERL "perl5.34.0"
+#define PERL "perl5.36.0"
 #endif
 #define TESTPL "test-fc.pl"
 

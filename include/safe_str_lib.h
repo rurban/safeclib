@@ -67,7 +67,7 @@ extern "C" {
 #endif
 
 /* With this UCD version we generated our tables */
-#define SAFECLIB_UNICODE_VERSION 13
+#define SAFECLIB_UNICODE_VERSION 14
 
 /**
  * The shortest string is a null string!!

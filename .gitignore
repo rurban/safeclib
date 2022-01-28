@@ -75,6 +75,8 @@ tests/test-suite*.log
 tests/test-fc.pl
 tests/test-norm.pl
 tests/test-upr.pl
+tests/CaseFolding.txt
+tests/DerivedGeneralCategory.txt
 Doxyfile
 doc/footer
 doc/html
@@ -82,6 +84,8 @@ doc/man
 src/gcov.log
 tests/gcov.log
 src/Scripts.txt
+# generated for u8
+src/extwchar/un8if*.h
 
 #
 # Debian directory (make deb-pkg)

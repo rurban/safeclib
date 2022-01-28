@@ -39,7 +39,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     { (u1), (l) - (u1), (u2) - (u1) + 1 }
 #define CASELACE(u1, u2) CASEMAP((u1), (u2), (u1) + 1)
 
-/* Unicode 13.0 */
+/* Unicode 14.0 */
 
 /* must be sorted */
 static const struct {
@@ -113,7 +113,8 @@ static const struct {
 
     CASEMAP(0x2160, 0x216f, 0x2170),
     CASEMAP(0x24b6, 0x24cf, 0x24d0),
-    CASEMAP(0x2c00, 0x2c2e, 0x2c30),
+    CASEMAP(0x2c00, 0x2c2f, 0x2c30),
+
     CASELACE(0x2c67, 0x2c6b),
     CASELACE(0x2c80, 0x2ce2),
     CASELACE(0x2ceb, 0x2ced),
@@ -131,9 +132,13 @@ static const struct {
     CASELACE(0xa796, 0xa79e),
     CASELACE(0xa7a0, 0xa7a8),
     CASELACE(0xa7b4, 0xa7be), /* Unicode 8,12 */
+    CASELACE(0xa7c0, 0xa7c1), /* Unicode 14 */
     CASELACE(0xa7c2, 0xa7c3), /* Unicode 12 */
     CASELACE(0xa7c7, 0xa7c8), /* Unicode 13 */
     CASELACE(0xa7c9, 0xa7ca), /* Unicode 13 */
+    CASELACE(0xa7d0, 0xa7d1), /* Unicode 14 */
+    CASELACE(0xa7d6, 0xa7d7), /* Unicode 14 */
+    CASELACE(0xa7d8, 0xa7d9), /* Unicode 14 */
     CASELACE(0xa7f5, 0xa7f6), /* Unicode 13 */
 
     CASEMAP(0xff21, 0xff3a, 0xff41),
@@ -150,6 +155,7 @@ static const struct {
     CASEMAP(0xab70, 0xabbf, 0x13a0), /* CHEROKEE */
     CASEMAP(0x10400, 0x10427, 0x10428),
     CASEMAP(0x104b0, 0x104d3, 0x104d8), /* Unicode 9 */
+    CASEMAP(0x10570, 0x10595, 0x10597), /* Unicode 14 */
     CASEMAP(0x10c80, 0x10cb2, 0x10cc0), /* Unicode 8 */
     CASEMAP(0x118a0, 0x118bf, 0x118c0), /* Unicode 7 */
     CASEMAP(0x16e40, 0x16e5f, 0x16e60), /* MEDEFAIDRIN reverse (Unicode 11) */
