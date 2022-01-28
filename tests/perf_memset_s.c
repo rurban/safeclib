@@ -28,7 +28,7 @@
 #include "safe_mem_lib.h"
 #include "perf_private.h"
 #undef debug_printf
-#include "src/mem/mem_primitives_lib.h"
+#include "mem/mem_primitives_lib.h"
 
 #if defined(TEST_MSVCRT) && defined(HAVE_MEMSET_S)
 #undef memset_s

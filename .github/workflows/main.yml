@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         CONF_ARGS:
+          -
           - --disable-wchar
           - --enable-unsafe --enable-norm-compat
           - --enable-debug --enable-unsafe --enable-norm-compat --enable-gcov
@@ -42,7 +43,7 @@ jobs:
     - if: matrix.CONF_ARGS == ''
       name: Run make distcheck
       run: |
-        sudo apt-get -y install doxygen
+        sudo apt-get -y install doxygen wget perl
         make distcheck
   macOS:
     name: macOS

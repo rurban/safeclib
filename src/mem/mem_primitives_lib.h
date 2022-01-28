@@ -35,7 +35,7 @@
 #define __MEM_PRIMITIVES_LIB_H__
 
 #ifndef FOR_DOXYGEN
-#include "src/safeclib_private.h"
+#include "safeclib_private.h"
 #endif
 
 #ifndef __KERNEL__
