@@ -18,13 +18,13 @@ int test_wcsfc_s(void);
 
 #define PERL_TEST
 /* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0
+   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32, 5.36 with 14.0
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
 #ifndef PERL
 /*# define PERL "perl"*/
 /*# define PERL "cperl5.30.0"*/
-#define PERL "perl5.32"
+#define PERL "perl5.34.0"
 #endif
 #define TESTPL "test-fc.pl"
 
@@ -440,7 +440,7 @@ int test_wcsfc_s(void) {
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
     fprintf_s(pl,
-              "use v5.27.2;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
+              "use v5.34;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
               "sub wstr ($) {\n"
               "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
               "}\n"

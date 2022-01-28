@@ -3,6 +3,9 @@
 
 Changes in 3.7.0
         - Switched to proper semantic versioning for upstream packagers.
+        - Fixed getenv_s to allow dest=NULL or dmax=0 as in the spec. (GH #109)
+        - Updated to Unicode 13 (tested against perl 5.34)
+          export define SAFECLIB_UNICODE_VERSION 13
         - Added stpcpy_s and stpncpy_s as in the Intel safestringlib fork.
         - Added our own portable implementation of the family of printf_s
           functions. This make the results and errno sideeffects more predictable.

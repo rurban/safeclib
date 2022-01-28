@@ -29,11 +29,11 @@ int test_towupper(void);
 #define CFOLD "CaseFolding.txt"
 #ifndef PERL
 /* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0
+   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0, 5.34 with 14.0
  */
 /*# define PERL "perl" */
-/*# define PERL "cperl5.27.2"*/
-#define PERL "perl5.32"
+/*# define PERL "cperl5.30.0"*/
+#define PERL "perl5.34.0"
 #endif
 #define TESTPL "test-upr.pl"
 
@@ -154,8 +154,7 @@ int test_towupper(void) {
     if (!f) {
         printf("downloading %s ...", GENCAT);
         fflush(stdout);
-        if (system("wget "
-                   "ftp://ftp.unicode.org/Public/UNIDATA/extracted/"
+        if (system("wget https://www.unicode.org/Public/13.0.0/ucd/extracted/"
                    "DerivedGeneralCategory.txt"))
             printf(" done\n");
         else
@@ -167,7 +166,7 @@ int test_towupper(void) {
     if (!cf) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        if (system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt"))
+        if (system("wget https://www.unicode.org/Public/13.0.0/ucd/CaseFolding.txt"))
             printf(" done\n");
         else
             printf(" failed\n");

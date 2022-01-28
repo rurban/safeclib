@@ -67,7 +67,7 @@ int test_towfc_s(void) {
     if (!f) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget ftp://ftp.unicode.org/Public/UNIDATA/CaseFolding.txt")
+        system("wget https://www.unicode.org/Public/13.0.0/ucd/CaseFolding.txt")
             ? printf(" done\n")
             : printf(" failed\n");
         f = fopen(CFOLD, "r");

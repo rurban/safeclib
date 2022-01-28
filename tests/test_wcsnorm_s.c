@@ -28,8 +28,8 @@ int test_wcsnorm_s(void);
 */
 #ifndef PERL
 /*# define PERL "perl" */
-/*# define PERL "cperl5.29.2" */
-#define PERL "perl5.32"
+/*# define PERL "cperl5.30.0" */
+#define PERL "perl5.34.0"
 #endif
 #define TESTPL "test-norm.pl"
 
