@@ -2,8 +2,9 @@
  * getenv_s.c
  *
  * September 2017, Reini Urban
+ * January 2022, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2022 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -62,24 +63,22 @@
  * @param[out] len    pointer to a size_t where getenv_s will store the length
  *                    of the found environment variable. Might be NULL.
  * @param[out] dest   pointer to a string where getenv_s will store the
- * contents of the found environment variable.
+ *                    contents of the found environment variable. Might be NULL.
  * @param[in]  dmax   maximum number of characters that getenv_s is allowed
- *                    to write to dest (size of the buffer).
+ *                    to write to dest (size of the buffer). Might be 0.
  * @param[in]  name   null-terminated character string identifying the name of
  *                    the environmental variable to look for.
  *
- * @pre name and dest shall not be a null pointer.
+ * @pre name shall not be a null pointer.
  * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest.
- * @pre dmax shall not equal zero.
- * @pre dmax shall be greater than the strlen of the returned env value.
+ * @pre dmax shall be 0 if dest is NULL or greater than the strlen of the returned env value.
  *
  * @return zero if the environment variable was found, non-zero if it was not
  *         found of if a runtime constrant violation occurred. On any error,
- *         writes zero to *len (unless len is a null pointer).
+ *         writes zero to *len, unless len is a null pointer.
  *
  * @retval  EOK        on success
- * @retval  ESNULLP    when dest or name are a NULL pointer
- * @retval  ESZEROL    when dmax = 0
+ * @retval  ESNULLP    when name is a NULL pointer
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
@@ -98,10 +97,8 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
 #endif
 {
     const char *buf;
-    int len1;
+    size_t len1;
 
-    CHK_DEST_NULL("getenv_s")
-    CHK_DMAX_ZERO("getenv_s")
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("getenv_s", RSIZE_MAX_STR)
         BND_CHK_PTR_BOUNDS(dest, dmax);
@@ -109,6 +106,8 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
         CHK_DEST_OVR("getenv_s", destbos)
     }
     if (unlikely(name == NULL)) {
+        if (len)
+            *len = 0;
         handle_error(dest, dmax, "getenv_s: name is null", ESNULLP);
         return ESNULLP;
     }
@@ -130,12 +129,12 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
     }
 
     len1 = strlen(buf);
-    if (unlikely((rsize_t)len1 >= dmax)) {
+    if (unlikely(dmax != 0 && len1 >= dmax)) {
         if (len)
             *len = 0;
         handle_error(dest, dmax, "getenv_s: dmax is too small", ESNOSPC);
         return RCNEGATE(ESNOSPC);
-    } else {
+    } else if (dest) {
         if (len)
             *len = len1;
         strcpy_s(dest, dmax, buf);

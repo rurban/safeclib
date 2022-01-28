@@ -33,26 +33,26 @@ int test_getenv_s(void) {
     /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty dest")
-    rc = getenv_s(&len, NULL, LEN, name);
+    EXPECT_BOS("empty name")
+    rc = getenv_s(&len, dest, LEN, NULL);
     if (use_msvcrt && rc == ESNULLP) {
         printf("safec.dll overriding msvcrt.dll\n");
         use_msvcrt = false;
     }
-    ERR_MSVC(ESNULLP, EINVAL);
-
-    EXPECT_BOS("empty name")
-    rc = getenv_s(&len, dest, LEN, NULL);
     ERR_MSVC(ESNULLP, 0);
+#endif
+
+    rc = getenv_s(&len, NULL, 0, name);
+    ERR_MSVC(0, EINVAL);
 
     /*--------------------------------------------------*/
 
-    EXPECT_BOS("empty dest or dmax")
     rc = getenv_s(&len, dest, 0, name);
-    ERR_MSVC(ESZEROL, EINVAL);
+    ERR_MSVC(0, EINVAL);
 
     /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("dest overflow")
     rc = getenv_s(&len, dest, RSIZE_MAX_STR + 1, name);
     ERR_MSVC(ESLEMAX, 0);
@@ -62,6 +62,11 @@ int test_getenv_s(void) {
 
     rc = getenv_s(&len, dest, 1, name);
     ERR_MSVC(ESNOSPC, 34);
+    if (len != 0) {
+        printf("%s %u  Error len=%u rc=%d \n", __FUNCTION__, __LINE__,
+               (unsigned)len, rc);
+        errs++;
+    }
 
     /*--------------------------------------------------*/
 
