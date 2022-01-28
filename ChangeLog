@@ -1,15 +1,19 @@
 
         ChangeLog file for safeclib
 
-Changes in 3.7.0
+Changes in 3.7
         - Switched to proper semantic versioning for upstream packagers.
         - Fixed getenv_s to allow dest=NULL or dmax=0 as in the spec. (GH #109)
+        - Fixed qsort_s with gcc-12 (GH #110)
         - Updated to Unicode 14 (tested against perl 5.35.7)
           export define SAFECLIB_UNICODE_VERSION 14
         - Added stpcpy_s and stpncpy_s as in the Intel safestringlib fork.
         - Added our own portable implementation of the family of printf_s
           functions. This make the results and errno sideeffects more predictable.
           scanf_s not yet. Fixes GH #97.
+        - This also adds support for the %Lx family of printf handlers: %L[fFeEaAgG]
+          and wide-char %ls, %lc conversions.
+          (GH #103). Now just custom sscanf_s and UTF-8 support is missing.
 	- Added a --disable-hardening option, which bypasses obviously failing
 	  AX_APPEND_COMPILE_FLAGS probes (PR #107, ffontaine).
 	  E.g. needed on some exotic uclibc buildroot targets.

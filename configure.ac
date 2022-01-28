@@ -4,7 +4,7 @@
 # 2017  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017-2021 Reini Urban
+# Copyright (c) 2017-2022 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -34,7 +34,6 @@
 AC_PREREQ([2.69])
 
 # information on the package
-#AC_SUBST([PACKAGE_VERSION], [3.7])
 AC_INIT([Safe C Library],[3.7],[https://github.com/rurban/safeclib/issues],[safeclib],[http://github.com/rurban/safeclib/])
 
 # Configure the configure script

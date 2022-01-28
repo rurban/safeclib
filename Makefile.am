@@ -390,16 +390,6 @@ dist_man_MANS += \
 	doc/man/man3/towfc_s.c.3	\
 	doc/man/man3/towlower.3		\
 	doc/man/man3/towupper.3		\
-	doc/man/man3/unw16ifcan.h.3	\
-	doc/man/man3/unw16ifcmb.h.3	\
-	doc/man/man3/unw16ifcmp.h.3	\
-	doc/man/man3/unw16ifcpt.h.3	\
-	doc/man/man3/unw16ifexc.h.3	\
-	doc/man/man3/unwifcan.h.3	\
-	doc/man/man3/unwifcmb.h.3	\
-	doc/man/man3/unwifcmp.h.3	\
-	doc/man/man3/unwifcpt.h.3	\
-	doc/man/man3/unwifexc.h.3	\
 	doc/man/man3/vfwprintf_s.3	\
 	doc/man/man3/vfwprintf_s.c.3	\
 	doc/man/man3/vfwscanf_s.3	\
@@ -514,7 +504,6 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
 	-rm doc/man/man3/seqindex_*
 	-rm doc/man/man3/*case_seqindex.3
 	-rm doc/man/man3/UINT16_MAX.3
-	-rm doc/man/man3/UNWIF_*.3
 	-rm doc/man/man3/README*
 	-rm doc/man/man3/__STDC_WANT_LIB_EXT1__.3
 	-rm doc/man/man3/__WORDSIZE.3
@@ -601,6 +590,15 @@ check-log:
 perf:
 	tests/p_memcpy_s
 	tests/p_memcpy32_s
+pkg:
+	-rm -rf inst
+	$(MAKE) install DESTDIR="`pwd`/inst" prefix=/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
+if HAVE_MINGW
+	(cd inst && zip ../$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)-$(host_triplet).zip -r $(PACKAGE_TARNAME)-$(PACKAGE_VERSION) && cd -)
+else
+	tar cfz $(PACKAGE_TARNAME)-$(PACKAGE_VERSION)-$(host_triplet).tar.gz -C inst $(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
+endif
+	rm -rf inst
 gh-pages: docs
 	echo ensure ./configure --enable-unsafe
 	ls doc/man/man3/tmpnam_s.3

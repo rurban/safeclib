@@ -45,6 +45,18 @@ jobs:
       run: |
         sudo apt-get -y install doxygen wget perl
         make distcheck
+    - if: matrix.CONF_ARGS == '' && startsWith(github.ref, 'refs/tags/')
+      name: Prep-Release
+      run: sha256sum safeclib-*.tar.* > dist.sha256
+    - if: matrix.CONF_ARGS == '' && startsWith(github.ref, 'refs/tags/')
+      name: Release
+      continue-on-error: true
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: dist.sha256
+        files: |
+          dist.sha256
+          safeclib-*.tar.*
   macOS:
     name: macOS
     runs-on: macOS-latest
@@ -85,6 +97,7 @@ jobs:
           libtool
           autoconf-wrapper
           automake-wrapper
+          zip
     - run: reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /d 1
     - run: git config --global core.autocrlf input
     - name: checkout
@@ -98,8 +111,17 @@ jobs:
       run: make V=1
     - shell: msys2 {0}
       run: make check-log
-    #- name: Create zipped asset
-    #  run: gzip -c configure >configure.gz
+    - shell: msys2 {0}
+      if: startsWith(github.ref, 'refs/tags/')
+      run: make pkg; sha256sum safeclib-*-x86_64-w64-mingw32.zip > mingw.sha256
+    - name: Release
+      uses: softprops/action-gh-release@fe9a9bd3295828558c7a3c004f23f3bf77d155b2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        append_body_path: mingw.sha256
+        files: |
+          mingw.sha256
+          safeclib-*-x86_64-w64-mingw32.zip
     #- name: Create Release
     #  id: create_release
     #  uses: actions/create-release@v1
