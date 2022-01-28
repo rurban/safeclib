@@ -111,7 +111,7 @@ int test_towfc_s(void) {
                     ERR(ESNOTFND);
                     if (n) {
                         printf("%s %u  Error %d U+%04X n=%d 0x%x\n",
-                               __FUNCTION__, __LINE__, rc, wc, n, (int)cp);
+                               __FUNCTION__, __LINE__, rc, wc, n, (unsigned)cp);
                         errs++;
                     }
                 }
@@ -212,9 +212,9 @@ int test_towfc_s(void) {
                                status, name);
                     } else if (cp != m0) {
                         errs++;
-                        printf("%s %u  Error: towfc(U+%04X) => %X \"%s\" "
+                        printf("%s %u  Error: towfc(U+%04X) => %X != %X \"%s\" "
                                "status=%s %s\n",
-                               __FUNCTION__, __LINE__, wc, cp, mapping, status,
+                               __FUNCTION__, __LINE__, wc, cp, m0, mapping, status,
                                name);
                     }
                 }
