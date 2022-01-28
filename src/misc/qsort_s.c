@@ -126,6 +126,7 @@ typedef unsigned long uint64_t;
  */
 
 typedef int (*cmpfun)(const void *, const void *, void *);
+static unsigned char tmp[256];
 #ifdef HAVE___BUILTIN_CTZ
 #define ntz(x) __builtin_ctz((x))
 #else
@@ -167,14 +168,11 @@ static inline int pntz(size_t p[2]) {
 }
 
 static void cycle(size_t width, unsigned char *ar[], int n) {
-    unsigned char tmp[256];
     size_t l;
     int i;
 
-    if (n < 2) {
+    if (n < 2)
         return;
-    }
-
     ar[n] = tmp;
     while (width) {
         l = sizeof(tmp) < width ? sizeof(tmp) : width;
