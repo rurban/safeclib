@@ -157,9 +157,13 @@ int test_towupper(void) {
         if (system("wget https://www.unicode.org/Public/14.0.0/ucd/extracted/"
                    "DerivedGeneralCategory.txt"))
             printf(" done\n");
-        else
+        else {
             printf(" failed\n");
+            return 0;
+        }
         f = fopen(GENCAT, "r");
+        if (!f)
+            return 0;
     }
 
     cf = fopen(CFOLD, "r");
@@ -168,9 +172,13 @@ int test_towupper(void) {
         fflush(stdout);
         if (system("wget https://www.unicode.org/Public/14.0.0/ucd/CaseFolding.txt"))
             printf(" done\n");
-        else
+        else {
             printf(" failed\n");
+            return 0;
+        }
         cf = fopen(CFOLD, "r");
+        if (!cf)
+            return 0;
     }
 
     while (!feof(f)) {

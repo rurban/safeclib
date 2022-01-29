@@ -38,11 +38,15 @@ int test_towlower(void) {
     if (!f) {
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        system("wget https://www.unicode.org/Public/14.0.0/ucd/CaseFolding.txt")
-            ? printf(" done\n")
-            : printf(" failed\n");
-        printf(" done\n");
+        if (system("wget https://www.unicode.org/Public/14.0.0/ucd/CaseFolding.txt"))
+            printf(" done\n");
+        else {
+            printf(" failed\n");
+            return 0;
+        }
         f = fopen(CFOLD, "r");
+        if (!f)
+            return 0;
     }
     while (!feof(f)) {
         int l;
