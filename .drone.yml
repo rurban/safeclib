@@ -10,7 +10,7 @@ steps:
     image: arm64v8/fedora
     commands:
       - uname -a
-      - dnf install -y --repo fedora gcc make file git automake autoconf which
+      - dnf install -y --repo fedora gcc bash make file git automake autoconf which
                                      libtool perl-Text-Diff pkgconf-pkg-config
       - build-aux/autogen.sh
       - build-aux/conf-make-check.sh
@@ -34,7 +34,7 @@ steps:
       - uname -a
       - apt-get update -qq
       - apt-get install -yq --no-install-suggests --no-install-recommends
-                build-essential file gcc make autotools-dev automake autoconf libtool
+                build-essential file bash gcc make autotools-dev automake autoconf libtool
                 libtext-diff-perl pkg-config
       - build-aux/autogen.sh
       - build-aux/conf-make-check.sh
