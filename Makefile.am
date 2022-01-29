@@ -612,7 +612,7 @@ gh-pages: docs
 release: docs distcheck
 	git branch |grep '^* master'
 	git tag -f v`date +%d%m%Y`
-	git tag -f $(PACKAGE_VERSION)
+	git tag -f v$(PACKAGE_VERSION)
 	build-aux/autogen.sh
 	./configure
 	$(MAKE)
@@ -627,6 +627,6 @@ release: docs distcheck
 	$(MAKE) docs
 	$(MAKE) gh-pages
 	git branch |grep '^* gh-pages'
-	git commit -m"Update to $(PACKAGE_VERSION)"
+	git commit -m"Update to v$(PACKAGE_VERSION)"
 	git push
 	git checkout master
