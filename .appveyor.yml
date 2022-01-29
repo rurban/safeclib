@@ -2,14 +2,14 @@ version: 3.7.{build}
 max_jobs: 4
 environment:
   matrix:
-    - MINGW: 1
-      MSYS2_ARCH: x86_64
-      MSYSTEM: MINGW64
-      PLATFORM: x64
-    - MINGW: 1
-      MSYS2_ARCH: i686
-      MSYSTEM: MINGW32
-      PLATFORM: x86
+    #- MINGW: 1
+    #  MSYS2_ARCH: x86_64
+    #  MSYSTEM: MINGW64
+    #  PLATFORM: x64
+    #- MINGW: 1
+    #  MSYS2_ARCH: i686
+    #  MSYSTEM: MINGW32
+    #  PLATFORM: x86
     - CYGWIN: 1
       PLATFORM: x86
     - CYGWIN: 1
