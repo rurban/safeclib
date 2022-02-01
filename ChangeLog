@@ -1,6 +1,9 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.7.1
+        - Fixed powerpc compilation of the perf tests. GH #113
+
 Changes in 3.7
         - Switched to proper semantic versioning for upstream packagers.
         - Fixed getenv_s to allow dest=NULL or dmax=0 as in the spec. (GH #109)

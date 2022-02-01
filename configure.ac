@@ -34,7 +34,7 @@
 AC_PREREQ([2.69])
 
 # information on the package
-AC_INIT([Safe C Library],[3.7],[https://github.com/rurban/safeclib/issues],[safeclib],[http://github.com/rurban/safeclib/])
+AC_INIT([Safe C Library],[3.7.1],[https://github.com/rurban/safeclib/issues],[safeclib],[http://github.com/rurban/safeclib/])
 
 # Configure the configure script
 # ===============================================

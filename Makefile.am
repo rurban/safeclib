@@ -612,7 +612,7 @@ gh-pages: docs
 release: docs distcheck
 	git branch |grep '^* master'
 	git tag -f v`date +%d%m%Y`
-	git tag -f v$(PACKAGE_VERSION)
+	-git tag -f v$(PACKAGE_VERSION)
 	build-aux/autogen.sh
 	./configure
 	$(MAKE)
