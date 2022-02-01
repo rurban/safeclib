@@ -106,7 +106,7 @@ static inline clock_t rdtsc() {
       "cmpw %0, %2\n"
       "bne- 0b"
       : "=r" (tbu), "=r" (tbl), "=r" (tmp));
-    return (((uint64) tbu << 32) | tbl);
+    return (((uint64_t) tbu << 32) | tbl);
 #elif defined(__sparc__)
     uint64_t tick;
     asm(".byte 0x83, 0x41, 0x00, 0x00");
