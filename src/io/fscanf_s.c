@@ -2,8 +2,9 @@
  * fscanf_s.c
  *
  * September 2017, Reini Urban
+ * February 2022, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2022 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -36,7 +37,8 @@
 #endif
 
 /* TODO:
-any of the arguments corresponding to %s is a null pointer.
+ %s null pointer check
+ the two-arg versions of \c %c, \c %s, and \c %[.
 */
 
 /**
@@ -55,20 +57,14 @@ any of the arguments corresponding to %s is a null pointer.
  *
  * @pre Neither \c stream nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not
- * yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer.
  * @pre No encoding error shall occur.
  * @pre \c %c, \c %s, and \c %[ conversion specifiers each expect two
  *      arguments (the usual pointer and a value of type \c rsize_t
  *      indicating the size of the receiving array, which may be 1
  *      when reading with a \c %c into a single character) and
  *      except that the following errors are detected at runtime and
- *      call the currently installed constraint handler function. (not yet)
- *
- * @warning The current implementation just does some basic argument
- *      checks and then calls the native \c vsscanf() libc
- *      function. Thus the \c %s null pointer check and the two-arg
- *      versions of \c %c, \c %s, and \c %[ are not yet implemented.
+ *      call the currently installed constraint handler function.
  *
  * @return Number of receiving arguments successfully assigned, or \c EOF
  *         if read failure occurs before the first receiving argument
@@ -89,6 +85,7 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
+    in_fct_wrap_type wrap;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fscanf_s: stream is null", NULL,
@@ -127,8 +124,10 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 #endif
 
     errno = 0;
+    wrap.arg = stream;
     va_start(ap, fmt);
-    ret = vfscanf(stream, fmt, ap);
+    ret = safec_vscanf_s(safec_in_fchar, "fscanf_s", &wrap, fmt, ap);
+    //ret = vfscanf(stream, fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
