@@ -83,7 +83,10 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
-    in_fct_wrap_type wrap;
+    FILE f = {.buf = (void *)buffer,
+              .cookie = (void *)buffer,
+              .read = safec_string_read,
+              .lock = -1};
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("sscanf_s: buffer is null", NULL,
@@ -122,10 +125,9 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 #endif
 
     errno = 0;
-    wrap.arg = (void*)buffer;
     va_start(ap, fmt);
     //ret = vsscanf(buffer, fmt, ap);
-    ret = safec_vscanf_s(safec_in_buffer, "sscanf_s", &wrap, fmt, ap);
+    ret = safec_vfscanf_s(&f, "sscanf_s", fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

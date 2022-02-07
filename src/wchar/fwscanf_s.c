@@ -126,9 +126,8 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
 #endif
 
     errno = 0;
-    wrap.arg = stream;
     va_start(ap, fmt);
-    ret = safec_vscanf_s(safec_in_fwchar, "fwscanf_s", &wrap, fmt, ap);
+    ret = safec_vfwscanf_s(stream, "fwscanf_s", fmt, ap);
     //ret = vfwscanf(stream, fmt, ap);
     va_end(ap);
 
