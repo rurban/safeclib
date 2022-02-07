@@ -125,7 +125,7 @@ EXPORT int scanf_s(const char *restrict fmt, ...) {
     errno = 0;
     va_start(ap, fmt);
     //ret = vscanf(fmt, ap);
-    ret = safec_vscanf_s(safec_in_char, "scanf_s", NULL, fmt, ap);
+    ret = safec_vscanf_s(stdin, "scanf_s", fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
