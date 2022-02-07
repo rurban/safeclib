@@ -85,7 +85,6 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
-    in_fct_wrap_type wrap;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fscanf_s: stream is null", NULL,
@@ -124,9 +123,8 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 #endif
 
     errno = 0;
-    wrap.arg = stream;
     va_start(ap, fmt);
-    ret = safec_vscanf_s(safec_in_fchar, "fscanf_s", &wrap, fmt, ap);
+    ret = safec_vfscanf_s(stream, "fscanf_s", fmt, ap);
     //ret = vfscanf(stream, fmt, ap);
     va_end(ap);
 

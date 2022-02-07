@@ -714,68 +714,46 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
 // mingw has a _vsnprintf_s. we use our own.
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
+int safec_vfscanf_s(FILE *f, const char *funcname, const char *format, va_list va);
+int safec_vfwscanf_s(FILE *f, const char *funcname, const wchar_t *format, va_list va);
 
-// input function type
-typedef int (*in_fct_type)(void *buffer, size_t idx, size_t maxlen);
-// wrapper (used as buffer) for input function type
-typedef struct {
-    int (*fct)(void *arg);
-    void *arg;
-} in_fct_wrap_type;
+static size_t safec_string_read(FILE *f, unsigned char *buf, size_t len) {
+    char *src = f->cookie;
+    size_t k = len + 256;
+    char *end = memchr(src, 0, k);
+    if (end)
+        k = end - src;
+    if (k < len)
+        len = k;
+    memcpy(buf, src, len);
+    f->rpos = (void *)(src + len);
+    f->rend = (void *)(src + k);
+    f->cookie = src + k;
+    return len;
+}
 
-int safec_vscanf_s(in_fct_type in, const char *funcname, const in_fct_wrap_type *wrap,
-                   const char *format, va_list va);
+static size_t safec_wstring_read(FILE *f, unsigned char *buf, size_t len) {
+    const wchar_t *src = f->cookie;
+    size_t k;
 
-// internal buffer input
-static inline int safec_in_buffer(void *buffer, size_t idx, size_t maxlen)
-{
-    if (idx < maxlen) {
-        return ((char *)buffer)[idx];
-    } else {
-        invoke_safe_str_constraint_handler("vsscanf_s: exceeds dmax",
-                                           (char*)buffer, ESNOSPC);
-        return -(ESNOSPC);
+    if (!src)
+        return 0;
+
+    k = wcsrtombs((void *)f->buf, &src, f->buf_size, 0);
+    if (k == (size_t)-1) {
+        f->rpos = f->rend = 0;
+        return 0;
     }
-}
-static inline wchar_t safec_in_wbuf(void *buffer, size_t idx, size_t maxlen)
-{
-    if (idx < maxlen) {
-        return ((wchar_t*)buffer)[idx];
-    } else {
-        invoke_safe_str_constraint_handler("vswscanf_s: exceeds dmax",
-                                           (char*)buffer, ESNOSPC);
-        return -(ESNOSPC);
-    }
-}
 
-// internal getchar wrapper
-static inline int safec_in_char(void *buffer, size_t idx, size_t maxlen)
-{
-    (void)buffer;
-    (void)idx;
-    (void)maxlen;
-#ifndef __KERNEL__
-    return getchar(); // == getc(stdin)
-#else
-    return 0;
-#endif
-}
+    f->rpos = f->buf;
+    f->rend = f->buf + k;
+    f->cookie = (void *)src;
 
-#ifndef __KERNEL__
-// special-case of safec_in_fct for fscanf_s
-static inline int safec_in_fchar(void *wrap, size_t idx, size_t maxlen) {
-    (void)idx;
-    (void)maxlen;
-    return fgetc((FILE*)((in_fct_wrap_type *)wrap)->arg);
-}
-#endif
+    if (!len || !k)
+        return 0;
 
-// internal generic input function wrapper
-static inline int safec_in_fct(void *wrap, size_t idx, size_t maxlen) {
-    (void)idx;
-    (void)maxlen;
-    // wrap is the input fct pointer
-    return ((in_fct_wrap_type *)wrap)->fct(((in_fct_wrap_type *)wrap)->arg);
+    *buf = *f->rpos++;
+    return 1;
 }
 
 #endif /* __SAFECLIB_PRIVATE_H__ */
