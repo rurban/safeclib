@@ -2,8 +2,9 @@
  * swscanf_s.c
  *
  * September 2017, Reini Urban
+ * February 2022, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2022 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,10 +38,6 @@
 
 #if !(defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
 
-/* TODO:
-any of the arguments corresponding to %s is a null pointer.
-*/
-
 /**
  * @brief
  *    The \b swscanf_s function reads a formatted wide string.
@@ -58,20 +55,14 @@ any of the arguments corresponding to %s is a null pointer.
  *
  * @pre Neither \c src nor \c fmt shall be a null pointer.
  * @pre \c fmt shall not contain the conversion specifier \c %n
- * @pre None of the arguments corresponding to \c %s is a null pointer. (not
- * yet)
+ * @pre None of the arguments corresponding to \c %s is a null pointer.
  * @pre No encoding error shall occur.
  * @pre \c %c, \c %s, and \c %[ conversion specifiers each expect two
  *      arguments (the usual pointer and a value of type \c rsize_t
  *      indicating the size of the receiving array, which may be 1
  *      when reading with a \c %lc into a single wide character) and
  *      except that the following errors are detected at runtime and
- *      call the currently installed constraint handler function. (not yet)
- *
- * @warning The current implementation just does some basic argument
- *      checks and then calls the native \c vsscanf() libc
- *      function. Thus the \c %s null pointer check and the two-arg
- *      versions of \c %c, \c %s, and \c %[ are not yet implemented.
+ *      call the currently installed constraint handler function.
  *
  * @return Number of receiving arguments successfully assigned, or \c EOF
  *         if read failure occurs before the first receiving argument
@@ -90,6 +81,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
     va_list ap;
     wchar_t *p;
     int ret;
+    in_fct_wrap_type wrap;
 
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("swscanf_s: src is null", NULL,
@@ -135,8 +127,10 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 #endif
 
     errno = 0;
+    wrap.arg = src;
     va_start(ap, fmt);
-    ret = vswscanf(src, fmt, ap);
+    ret = safec_vscanf_s(safec_in_wbuf, "swscanf_s", &wrap, fmt, ap);
+    //ret = vswscanf(src, fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
