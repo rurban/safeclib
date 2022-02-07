@@ -2,8 +2,9 @@
  * scanf_s.c
  *
  * September 2017, Reini Urban
+ * February 2022, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2022 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -36,7 +37,8 @@
 #endif
 
 /* TODO:
-any of the arguments corresponding to %s is a null pointer.
+ %s null pointer check
+ the two-arg versions of \c %c, \c %s, and \c %[.
 */
 
 /**
@@ -67,7 +69,7 @@ any of the arguments corresponding to %s is a null pointer.
  *      call the currently installed constraint handler function. (not yet)
  *
  * @warning The current implementation just does some basic argument
- *      checks and then calls the native \c vsscanf() libc
+ *      checks and then calls the native \c vscanf() libc
  *      function. Thus the \c %s null pointer check and the two-arg
  *      versions of \c %c, \c %s, and \c %[ are not yet implemented.
  *
@@ -122,7 +124,8 @@ EXPORT int scanf_s(const char *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = vscanf(fmt, ap);
+    //ret = vscanf(fmt, ap);
+    ret = safec_vscanf_s(safec_in_char, "scanf_s", NULL, fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
