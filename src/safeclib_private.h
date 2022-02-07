@@ -2,10 +2,10 @@
  * safeclib_private.h - Internal library references
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
- * 2017 Reini Urban
+ * 2017, 2022 Reini Urban
  *
  * Copyright (c) 2012, 2013 by Cisco Systems, Inc
- * Copyright (c) 2017 Reini Urban
+ * Copyright (c) 2017,2022 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -714,5 +714,68 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
 // mingw has a _vsnprintf_s. we use our own.
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
+
+// input function type
+typedef int (*in_fct_type)(void *buffer, size_t idx, size_t maxlen);
+// wrapper (used as buffer) for input function type
+typedef struct {
+    int (*fct)(void *arg);
+    void *arg;
+} in_fct_wrap_type;
+
+int safec_vscanf_s(in_fct_type in, const char *funcname, const in_fct_wrap_type *wrap,
+                   const char *format, va_list va);
+
+// internal buffer input
+static inline int safec_in_buffer(void *buffer, size_t idx, size_t maxlen)
+{
+    if (idx < maxlen) {
+        return ((char *)buffer)[idx];
+    } else {
+        invoke_safe_str_constraint_handler("vsscanf_s: exceeds dmax",
+                                           (char*)buffer, ESNOSPC);
+        return -(ESNOSPC);
+    }
+}
+static inline wchar_t safec_in_wbuf(void *buffer, size_t idx, size_t maxlen)
+{
+    if (idx < maxlen) {
+        return ((wchar_t*)buffer)[idx];
+    } else {
+        invoke_safe_str_constraint_handler("vswscanf_s: exceeds dmax",
+                                           (char*)buffer, ESNOSPC);
+        return -(ESNOSPC);
+    }
+}
+
+// internal getchar wrapper
+static inline int safec_in_char(void *buffer, size_t idx, size_t maxlen)
+{
+    (void)buffer;
+    (void)idx;
+    (void)maxlen;
+#ifndef __KERNEL__
+    return getchar(); // == getc(stdin)
+#else
+    return 0;
+#endif
+}
+
+#ifndef __KERNEL__
+// special-case of safec_in_fct for fscanf_s
+static inline int safec_in_fchar(void *wrap, size_t idx, size_t maxlen) {
+    (void)idx;
+    (void)maxlen;
+    return fgetc((FILE*)((in_fct_wrap_type *)wrap)->arg);
+}
+#endif
+
+// internal generic input function wrapper
+static inline int safec_in_fct(void *wrap, size_t idx, size_t maxlen) {
+    (void)idx;
+    (void)maxlen;
+    // wrap is the input fct pointer
+    return ((in_fct_wrap_type *)wrap)->fct(((in_fct_wrap_type *)wrap)->arg);
+}
 
 #endif /* __SAFECLIB_PRIVATE_H__ */
