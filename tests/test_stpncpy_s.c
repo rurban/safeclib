@@ -1,12 +1,6 @@
 /*------------------------------------------------------------------
- * test_strncpy_s
+ * test_stpncpy_s
  * File 'stpncpy_s.c'
- * File 'stpncpy_s.c'
- * Lines executed:75.25% of 101
- * File 'stpncpy_s.c'
- * Lines executed:75.25% of 101
- * File 'stpncpy_s.c'
- * Lines executed:75.25% of 101
  * Lines executed:75.25% of 101
  *------------------------------------------------------------------
  */
