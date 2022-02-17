@@ -360,6 +360,16 @@ AC_ARG_ENABLE(doc,
 	esac], [enable_doc=true])
 AM_CONDITIONAL(ENABLE_DOC, test "x$enable_doc" = "xtrue")
 
+AC_ARG_ENABLE(tests,
+	AS_HELP_STRING([--disable-tests],
+	               [disable tests @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_tests=true ;;
+	no)  enable_tests=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-tests]) ;;
+	esac], [enable_tests=true])
+AM_CONDITIONAL(ENABLE_TESTS, test "x$enable_tests" = "xtrue")
+
 dnl for windows dllimport. checking pic_flag DLL_EXPORT would be better,
 dnl but this is only enabled for the shared objs, and we need it in the config
 dnl for our tests.
