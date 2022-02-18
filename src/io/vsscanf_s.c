@@ -34,6 +34,7 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 /**
@@ -83,9 +84,11 @@ EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
     char *p;
 #endif
     int ret;
-    FILE f = {
-        .buf = (void *)buffer, .cookie = (void *)buffer,
-        .read = safec_string_read, .lock = -1
+    _SAFEC_FILE sf = {
+        .buf = (void *)buffer,
+        .cookie = (void *)buffer,
+        .read = safec_string_read,
+        .lock = -1
     };
 
     if (unlikely(buffer == NULL)) {
@@ -125,7 +128,7 @@ EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
 #endif
 
     errno = 0;
-    ret = safec_vfscanf_s(&f, "vsscanf_s", fmt, ap);
+    ret = safec_vfscanf_s(&sf, "vsscanf_s", fmt, ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vsscanf_s: ";

@@ -34,6 +34,7 @@
 #include "safe_str_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 #if !(defined(TEST_MSVCRT) && defined(HAVE_WSCANF_S))
@@ -80,6 +81,15 @@ EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
     va_list ap;
     wchar_t *p;
     int ret;
+    unsigned char buf[256];
+    _SAFEC_FILE sf = {
+        .f = stdin,
+        .buf = buf,
+        .buf_size = sizeof buf,
+        .cookie = (void *)stdin,
+        .read = safec_wstring_read,
+        .lock = -1
+    };
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("wscanf_s: fmt is null", NULL,
@@ -114,7 +124,7 @@ EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfwscanf_s(stdin, "wscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "wscanf_s", fmt, ap);
     //ret = vwscanf(fmt, ap);
     va_end(ap);
 

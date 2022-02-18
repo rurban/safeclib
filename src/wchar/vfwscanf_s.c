@@ -34,6 +34,7 @@
 #include "safe_str_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 /**
@@ -83,6 +84,15 @@ EXPORT int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
 {
     wchar_t *p;
     int ret;
+    unsigned char buf[256];
+    _SAFEC_FILE sf = {
+        .f = stream,
+        .buf = buf,
+        .buf_size = sizeof buf,
+        .cookie = (void *)stream,
+        .read = safec_wstring_read,
+        .lock = -1
+    };
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("vfwscanf_s: stream is null", NULL,
@@ -130,7 +140,7 @@ EXPORT int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
 
     errno = 0;
     //ret = vfwscanf(stream, fmt, ap);
-    ret = safec_vfwscanf_s(stream, "vfwscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "vfwscanf_s", fmt, ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vfwscanf_s: ";
@@ -142,112 +152,7 @@ EXPORT int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
     return ret;
 }
 
-// =============================================================================
-/* from musl:
-----------------------------------------------------------------------
-Copyright © 2005-2014 Rich Felker, et al.
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-----------------------------------------------------------------------
-*/
-
-#define SIZE_hh -2
-#define SIZE_h  -1
-#define SIZE_def 0
-#define SIZE_l   1
-#define SIZE_L   2
-#define SIZE_ll  3
-
-static void safec_store_int(void *dest, int size, unsigned long long i) {
-    if (!dest)
-        return;
-    switch (size) {
-    case SIZE_hh:
-        *(char *)dest = i;
-        break;
-    case SIZE_h:
-        *(short *)dest = i;
-        break;
-    case SIZE_def:
-        *(int *)dest = i;
-        break;
-    case SIZE_l:
-        *(long *)dest = i;
-        break;
-    case SIZE_ll:
-        *(long long *)dest = i;
-        break;
-    }
-}
-
-static void *safec_arg_n(va_list ap, unsigned int n) {
-    void *p;
-    unsigned int i;
-    va_list ap2;
-    va_copy(ap2, ap);
-    for (i = n; i > 1; i--)
-        va_arg(ap2, void *);
-    p = va_arg(ap2, void *);
-    va_end(ap2);
-    return p;
-}
-
-static int safec_in_set(const wchar_t *set, int c) {
-    int j;
-    const wchar_t *p = set;
-    if (*p == '-') {
-        if (c == '-')
-            return 1;
-        p++;
-    } else if (*p == ']') {
-        if (c == ']')
-            return 1;
-        p++;
-    }
-    for (; *p && *p != ']'; p++) {
-        if (*p == '-' && p[1] && p[1] != ']')
-            for (j = p++ [-1]; j < *p; j++)
-                if (c == j)
-                    return 1;
-        if (c == *p)
-            return 1;
-    }
-    return 0;
-}
-
-// on FILE* or pseudo-file buffers
-#define shcnt(f) ((f)->shcnt + ((f)->rpos - (f)->buf))
-#define shlim(f, lim) __shlim((f), (lim))
-#define shgetc(f) (((f)->rpos != (f)->shend) ? *(f)->rpos++ : __shgetc(f))
-#define shunget(f) ((f)->shlim>=0 ? (void)(f)->rpos-- : (void)0)
-
-#if 1
-#undef getwc
-#define getwc(f)                                                               \
-    ((f)->rpos != (f)->rend && *(f)->rpos < 128 ? *(f)->rpos++ : (getwc)(f))
-
-#undef ungetwc
-#define ungetwc(c, f)                                                          \
-    ((f)->rend && (c) < 128U ? *--(f)->rpos : ungetwc((c), (f)))
-#endif
-
+#if 0
 // from MUSL. TODO: safeties
 int safec_vfwscanf(FILE *restrict f, const wchar_t *restrict fmt, va_list ap) {
     int width;
@@ -550,3 +455,4 @@ int safec_vfwscanf(FILE *restrict f, const wchar_t *restrict fmt, va_list ap) {
     FUNLOCK(f);
     return matches;
 }
+#endif

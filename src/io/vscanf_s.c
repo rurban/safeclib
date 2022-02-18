@@ -34,6 +34,7 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 /**
@@ -80,6 +81,15 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
     char *p;
 #endif
     int ret;
+    unsigned char buf[256];
+    _SAFEC_FILE sf = {
+        .f = stdin,
+        .buf = buf,
+        .buf_size = sizeof buf,
+        .cookie = (void *)stdin,
+        .read = safec_string_read,
+        .lock = -1
+    };
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vscanf_s: fmt is null", NULL,
@@ -112,7 +122,7 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
 
     errno = 0;
     //ret = vscanf(fmt, ap);
-    ret = safec_vfscanf_s(stdin, "vscanf_s", fmt, ap);
+    ret = safec_vfscanf_s(&sf, "vscanf_s", fmt, ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vscanf_s: ";
