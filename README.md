@@ -167,7 +167,7 @@ implementation separates the memory related functions into the
 `safe_str_lib.h` header, and the rest into the `safe_lib.h`
 header. There are also the internal `safe_compile.h`, `safe_config.h`
 `safe_lib_errno.h` and `safe_types.h` headers, but they do not need to
-be included.
+be included. You can also include all safec API's with `<safec.h>`.
 
 The make file builds a single library `libsafec-VERSION.a` and `.so`.
 Built but not installed are also libmemprims, libsafeccore and libstdunsafe.

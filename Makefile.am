@@ -38,6 +38,7 @@ SUBDIRS = src tests
 
 # Library header files
 pkginclude_HEADERS    = \
+	include/safec.h  \
 	include/safe_compile.h  \
 	include/safe_lib.h     \
 	include/safe_mem_lib.h \
@@ -231,6 +232,7 @@ dist_man_MANS += \
 	doc/man/man3/rsize_t.3		\
 	doc/man/man3/safe_compile.h.3	\
 	doc/man/man3/safe_config.h.3	\
+	doc/man/man3/safec.h.3	        \
 	doc/man/man3/safe_lib.h.3	\
 	doc/man/man3/safe_lib_errno.h.3	\
 	doc/man/man3/safe_mem_constraint.c.3	\
@@ -590,6 +592,8 @@ check-log:
 perf:
 	tests/p_memcpy_s
 	tests/p_memcpy32_s
+	tests/p_memset_s
+	tests/p_strcpy_s
 pkg:
 	-rm -rf inst
 	$(MAKE) install DESTDIR="`pwd`/inst" prefix=/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)
