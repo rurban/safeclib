@@ -34,6 +34,7 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 /**
@@ -83,10 +84,12 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
-    FILE f = {.buf = (void *)buffer,
-              .cookie = (void *)buffer,
-              .read = safec_string_read,
-              .lock = -1};
+    _SAFEC_FILE sf = {
+        .buf = (void *)buffer,
+        .cookie = (void *)buffer,
+        .read = safec_string_read,
+        .lock = -1
+    };
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("sscanf_s: buffer is null", NULL,
@@ -127,7 +130,7 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
     errno = 0;
     va_start(ap, fmt);
     //ret = vsscanf(buffer, fmt, ap);
-    ret = safec_vfscanf_s(&f, "sscanf_s", fmt, ap);
+    ret = safec_vfscanf_s(&sf, "sscanf_s", fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

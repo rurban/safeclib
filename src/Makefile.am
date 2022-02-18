@@ -1,10 +1,10 @@
 # Makefile.am - Process with automake to produce Makefile.in
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
-# 2017-2018 Reini Urban
+# 2017-2018, 2022 Reini Urban
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017, 2019 Reini Urban
+# Copyright (c) 2017, 2019, 2022 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -36,7 +36,8 @@ MEM_PRIM_FILES = \
 CORE_FILES = \
 	safeclib_private.h    \
 	abort_handler_s.c     \
-	ignore_handler_s.c
+	ignore_handler_s.c    \
+	safec_file_s.h
 
 STD_MEM_FILES = \
 	mem/safe_mem_constraint.h \
@@ -196,6 +197,7 @@ STD_WCHAR_FILES += \
 endif
 
 STD_IO_FILES = \
+	io/safec_vfscanf_s.c \
 	io/sscanf_s.c	\
 	io/fscanf_s.c	\
 	io/scanf_s.c	\

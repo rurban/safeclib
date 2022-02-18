@@ -34,6 +34,7 @@
 #include "safe_str_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 /**
@@ -79,7 +80,15 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
     va_list ap;
     wchar_t *p;
     int ret;
-    in_fct_wrap_type wrap;
+    unsigned char buf[256];
+    _SAFEC_FILE sf = {
+        .f = stream,
+        .buf = buf,
+        .buf_size = sizeof buf,
+        .cookie = (void *)stream,
+        .read = safec_wstring_read,
+        .lock = -1
+    };
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fwscanf_s: stream is null", NULL,
@@ -127,7 +136,7 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfwscanf_s(stream, "fwscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "fwscanf_s", fmt, ap);
     //ret = vfwscanf(stream, fmt, ap);
     va_end(ap);
 
