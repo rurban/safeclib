@@ -34,6 +34,7 @@
 #include "safe_str_lib.h"
 #else
 #include "safeclib_private.h"
+#include "io/safec_file.h"
 #endif
 
 /**
@@ -70,7 +71,7 @@
  * @retval  EOF  on error
  *
  * @see
- *    vswscanf_s(), wscanf_s(), vvwscanf_s(), vfwprintf_s()
+ *    vswscanf_s(), wscanf_s(), vscanf_s(), vfwprintf_s()
  *
  */
 
@@ -79,11 +80,14 @@ EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap)
     wchar_t *p;
     int ret;
     unsigned char buf[256];
-    FILE f = {.buf = buf,
-              .buf_size = sizeof buf,
-              .cookie = (void *)src,
-              .read = safec_wstring_read,
-              .lock = -1};
+    _SAFEC_FILE sf = {
+        .f = stdin,
+        .buf = buf,
+        .buf_size = sizeof buf,
+        .cookie = (void *)stdin,
+        .read = safec_wstring_read,
+        .lock = -1
+    };
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vwscanf_s: fmt is null", NULL,
@@ -123,7 +127,7 @@ EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap)
 
     errno = 0;
     //ret = vwscanf(fmt, ap);
-    ret = safec_vfwscanf_s(&f, "vwscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "vwscanf_s", fmt, ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vwscanf_s: ";

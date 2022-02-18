@@ -714,46 +714,10 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
 // mingw has a _vsnprintf_s. we use our own.
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
-int safec_vfscanf_s(FILE *f, const char *funcname, const char *format, va_list va);
-int safec_vfwscanf_s(FILE *f, const char *funcname, const wchar_t *format, va_list va);
 
-static size_t safec_string_read(FILE *f, unsigned char *buf, size_t len) {
-    char *src = f->cookie;
-    size_t k = len + 256;
-    char *end = memchr(src, 0, k);
-    if (end)
-        k = end - src;
-    if (k < len)
-        len = k;
-    memcpy(buf, src, len);
-    f->rpos = (void *)(src + len);
-    f->rend = (void *)(src + k);
-    f->cookie = src + k;
-    return len;
-}
-
-static size_t safec_wstring_read(FILE *f, unsigned char *buf, size_t len) {
-    const wchar_t *src = f->cookie;
-    size_t k;
-
-    if (!src)
-        return 0;
-
-    k = wcsrtombs((void *)f->buf, &src, f->buf_size, 0);
-    if (k == (size_t)-1) {
-        f->rpos = f->rend = 0;
-        return 0;
-    }
-
-    f->rpos = f->buf;
-    f->rend = f->buf + k;
-    f->cookie = (void *)src;
-
-    if (!len || !k)
-        return 0;
-
-    *buf = *f->rpos++;
-    return 1;
-}
+// internal helpers for the *scanf_s functions:
+//#include "io/safec_file.h"
+//int safec_vfscanf_s(_SAFEC_FILE* sf, const char *funcname, const char *fmt, va_list ap);
+//int safec_vfwscanf_s(_SAFEC_FILE* sf, const char *funcname, const wchar_t *fmt, va_list ap);
 
 #endif /* __SAFECLIB_PRIVATE_H__ */
