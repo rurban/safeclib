@@ -104,7 +104,7 @@ static inline clock_t rdtsc() {
     ASM_INLINE volatile (\
       "0:\n"
       "mftbu %0\n"
-      "mftbl %1\n"
+      "mftb %1\n"
       "mftbu %2\n"
       "cmpw %0, %2\n"
       "bne- 0b"
