@@ -79,7 +79,6 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
 #endif
 {
     char *ps;
-    rsize_t len;
 
     CHK_SRC_NULL("strpbrk_s", firstp)
     *firstp = NULL;
@@ -121,7 +120,6 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
     while (*dest && dmax) {
 
         ps = src;
-        len = slen;
         while (*ps) {
 
             /* check for a match with the substring */
@@ -130,7 +128,6 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
                 return RCNEGATE(EOK);
             }
             ps++;
-            len--;
         }
         dest++;
         dmax--;
