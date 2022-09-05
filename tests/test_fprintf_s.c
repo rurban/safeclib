@@ -20,16 +20,47 @@
 #define TMP "tmpfp"
 #define LEN (128)
 
-static FILE *out;
+int errs = 0;
+int win_wplus = 0; // if EINVAL with fopen w+
+static FILE *out, *f;
 static char str[LEN];
 int test_fprintf_s(void);
+
+// a variant for debugging
+static size_t cmp_and_reset(FILE *out, const char *s) {
+    size_t pos = ftell(out);
+    fflush(out);
+    *str = '\0';
+    if (win_wplus) {
+        fclose(out);
+        out = fopen(TMP, "r");
+        size_t nread = fread(str, 1, pos, out);
+        fclose(out);
+        out = fopen(TMP, "w");
+    } else {
+        rewind(out);
+        size_t nread = fread(str, 1, pos, out);
+    }
+    EXPSTR(str, s)
+    if (!win_wplus) {
+        rewind(out);
+        size_t nread = ftruncate(fileno(out), 0L);
+    }
+    return pos;
+}
 
 int test_fprintf_s(void) {
     errno_t rc;
     int ind;
-    int errs = 0;
 
-    out = fopen(TMP, "w");
+    // mingw (with some versions) disallows w+ (EINVAL)
+    out = fopen(TMP, "w+");
+    if (errno) {
+        perror("fopen w+");
+        fclose(out);
+	out = fopen(TMP, "w");
+	win_wplus = 1;
+    }
 
     /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
@@ -86,12 +117,16 @@ int test_fprintf_s(void) {
     rc = fprintf_s(out, "%ld", -10000L);
     NOERR()
 
+    rewind(out);
+    ftruncate(fileno(out), 0L);
+
     /*--------------------------------------------------*/
 
     str[0] = '\0';
 
     rc = fprintf_s(out, "%s", str);
     ERR(0)
+    cmp_and_reset(out, "");
 
     /*--------------------------------------------------*/
 
@@ -99,6 +134,7 @@ int test_fprintf_s(void) {
 
     rc = fprintf_s(out, "%s", str);
     ERR(strlen(str))
+    cmp_and_reset(out, "keep it simple");
 
     /*--------------------------------------------------*/
 
