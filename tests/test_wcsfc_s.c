@@ -21,12 +21,6 @@ int test_wcsfc_s(void);
    Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32, 5.36 with 14.0
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
-#ifndef PERL
-/*# define PERL "perl"*/
-/*# define PERL "cperl5.30.0"*/
-#define PERL "perl5.37.4-uni15"
-#define PERL_VERSION "5.37.4"
-#endif
 #define TESTPL "test-fc.pl"
 
 int test_wcsfc_s(void) {
@@ -443,7 +437,9 @@ int test_wcsfc_s(void) {
     fprintf_s(pl,
               "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
               "use Unicode::UCD;\n"
-              "print Unicode::UCD::UnicodeVersion(), \" must be %d.0.0\\n\";\n"
+              "warn \"Unicode::UCD::UnicodeVersion() must be "
+                "%d.0.0 if Unicode::UCD::UnicodeVersion() ne "
+                "\"%d.0.0\"\\n\";\n"
               "sub wstr ($) {\n"
               "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
               "}\n"
@@ -457,7 +453,7 @@ int test_wcsfc_s(void) {
               "         unpack('W*',$ch), wstr $nfd, wstr $fc, wstr $got;\n"
               "    1\n"
               "  }\n"
-              "}\n", PERL_VERSION, SAFECLIB_UNICODE_VERSION);
+                  "}\n", PERL_VERSION, SAFECLIB_UNICODE_VERSION, SAFECLIB_UNICODE_VERSION);
 #endif
     for (wc = 0xc0; wc < 0x02fa20; wc++) {
         static wchar_t src[5];
@@ -524,10 +520,10 @@ int test_wcsfc_s(void) {
         printf("Cross check with " PERL ":\n");
         fflush(stdout);
         if (system(PERL " " TESTPL) < 0) {
-            printf("Redo with perl (probably wrong Unicode version):\n");
+            printf("Redo with %s (probably wrong Unicode version):\n", PERL);
             fflush(stdout);
-            if (!system("perl " TESTPL))
-                printf("perl " TESTPL " failed\n");
+            if (!system(PERL " " TESTPL))
+                printf(PERL " " TESTPL " failed\n");
         }
     }
 #ifndef DEBUG

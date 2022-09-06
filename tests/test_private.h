@@ -36,6 +36,11 @@
 #include "config.h"
 #include "safe_config.h"
 
+#ifndef PERL
+#define PERL "perl5.37.4-uni15"
+#define PERL_VERSION "5.37.4"
+#endif
+
 #ifdef __KERNEL__
 
 #include <linux/kernel.h>

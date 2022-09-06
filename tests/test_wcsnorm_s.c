@@ -26,11 +26,6 @@ int test_wcsnorm_s(void);
 /* Must have the same Unicode version 10, since 5.27.3
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
-#ifndef PERL
-/*# define PERL "perl" */
-/*# define PERL "cperl5.30.0" */
-#define PERL "perl5.37.4-uni15"
-#endif
 #define TESTPL "test-norm.pl"
 
 int test_wcsnorm_s(void) {
@@ -558,7 +553,7 @@ int test_wcsnorm_s(void) {
         {
             size_t i;
             /* cross-check with perl */
-            fprintf_s(pl, "$err += chknfd (\"\\N{U+%04X}\",\"\\N{U+%04X}", ind,
+            fprintf_s(pl, "$err += chknfd (\"\\N{U+%04X}\",\"\\N{U+%04X}", (unsigned)ind,
                       str[0]);
             for (i = 1; i < len; i++) {
                 fprintf_s(pl, "\\N{U+%04X}", str[i]);
@@ -567,7 +562,7 @@ int test_wcsnorm_s(void) {
 
 #ifdef HAVE_NORM_COMPAT
             rc = wcsnorm_s(str, LEN, src, WCSNORM_NFKD, &len);
-            fprintf_s(pl, "$err += chknfkd(\"\\N{U+%04X}\",\"\\N{U+%04X}", ind,
+            fprintf_s(pl, "$err += chknfkd(\"\\N{U+%04X}\",\"\\N{U+%04X}", (unsigned)ind,
                       str[0]);
             for (i = 1; i < len; i++) {
                 fprintf_s(pl, "\\N{U+%04X}", str[i]);
