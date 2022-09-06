@@ -1,6 +1,7 @@
 Safe C Library - README
 =======================
-[![safeclib support vis xs:code](doc/safeclib-banner.png)](https://xscode.com/rurban/safeclib)
+
+[![safeclib](doc/safeclib-banner.png)](https://github.com/rurban/safeclib/issues)
 
 Copying
 -------
@@ -180,6 +181,7 @@ development tool chain.
 
 Userspace Library
 -----------------
+
 The build system for the userspace library is the well known *GNU build
 system*, a.k.a. Autotools. This system is well understood and supported
 by many different platforms and distributions which should allow this
@@ -213,6 +215,7 @@ systems. The following is used to install the library.
 
 Safe Linux Kernel Module
 ------------------------
+
 The build for the kernel module has not been integrated into the autotools
 build infrastructure. Consequently, you have to run a different makefile to
 build the kernel module.
@@ -246,7 +249,7 @@ Tested Platforms
 
 The library has been tested on the following systems:
 
-- Linux Fedora core 31 - 32 amd64/i386 glibc 2.28 - 2.31 (all gcc's + clang's)
+- Linux Fedora core 31 - 36 amd64/i386 glibc 2.28 - 2.36 (all gcc's + clang's)
 - Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc's + clang's)
 - Linux Debian 9 - 11 amd64/i386 glibc 2.24 - 2.28 (all gcc's + clang's)
 - Linux centos 7 amd64
@@ -256,7 +259,7 @@ The library has been tested on the following systems:
 - i386-mingw32 cross-compiled
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
-- freebsd 10 - 12 amd64
+- freebsd 10 - 13 amd64
 - linux docker images under qemu:
   i386/debian, x86_64/rhel, arm32v7/debian, aarch64: arm64v8/{debian,centos,rhel,fedora},
   s390x/fedora (the only big endian test I could find), ppc64le/{debian,ubuntu,fedora,centos,rhel}
@@ -271,6 +274,7 @@ with most available compilers. See `build-aux/smoke.sh` and the various CI confi
 
 Known Issues
 ------------
+
 1. If you are building the library from the git repository you will have to
    first run `build-aux/autogen.sh` which runs autoreconf to `install` the
    autotools files and create the configure script.
