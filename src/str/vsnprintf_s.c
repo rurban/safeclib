@@ -1076,10 +1076,12 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
         }
     }
 
-    // termination
-    rc = out((char)0, buffer, idx < bufsize ? idx : bufsize - 1U, bufsize);
-    if (unlikely(rc < 0))
-        return rc;
+    // termination for s*printf only
+    if (out == safec_out_buffer) {
+        rc = out((char)0, buffer, idx < bufsize ? idx : bufsize - 1U, bufsize);
+        if (unlikely(rc < 0))
+            return rc;
+    }
 
     // return written chars without terminating \0
     return (int)idx;
