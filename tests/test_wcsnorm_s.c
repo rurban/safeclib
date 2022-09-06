@@ -22,14 +22,14 @@ EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
 int test_wcsnorm_s(void);
 
-/*#define PERL_TEST*/
+#define PERL_TEST
 /* Must have the same Unicode version 10, since 5.27.3
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
 #ifndef PERL
 /*# define PERL "perl" */
 /*# define PERL "cperl5.30.0" */
-#define PERL "perl5.36.0"
+#define PERL "perl5.37.4-uni15"
 #endif
 #define TESTPL "test-norm.pl"
 

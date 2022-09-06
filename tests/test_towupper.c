@@ -33,7 +33,8 @@ int test_towupper(void);
  */
 /*# define PERL "perl" */
 /*# define PERL "cperl5.30.0"*/
-#define PERL "perl5.36.0"
+#define PERL "perl5.37.4-uni15"
+#define PERL_VERSION "5.37.4"
 #endif
 #define TESTPL "test-upr.pl"
 
@@ -86,9 +87,10 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
                         __LINE__, wc, lwr, mp, status, name);
                     /* cross-check with perl */
                     if (!init) {
-                        fprintf(pl, "use v5.31.8;\n");
+                        fprintf(pl, "use v%s;\n", PERL_VERSION);
                         fprintf(pl, "use Unicode::UCD;\n");
-                        fprintf(pl, "print Unicode::UCD::UnicodeVersion(), \" must be 13.0.0\\n\";\n");
+                        fprintf(pl, "print Unicode::UCD::UnicodeVersion(), \" must be %d.0.0\\n\";\n",
+                                SAFECLIB_UNICODE_VERSION);
                         fprintf(pl, "my ($l,$u,$got);\n");
                         init = 1;
                     }
@@ -152,10 +154,14 @@ int test_towupper(void) {
     pl = fopen(TESTPL, "w");
     f = fopen(GENCAT, "r");
     if (!f) {
-        printf("downloading %s ...", GENCAT);
+        char url[256];
+        snprintf(url, 255,
+                 "wget https://www.unicode.org/Public/%d.0.0/ucd/extracted/"
+                 "DerivedGeneralCategory.txt",
+                 SAFECLIB_UNICODE_VERSION);
+        printf("downloading %s via %s ...", GENCAT, url);
         fflush(stdout);
-        if (system("wget https://www.unicode.org/Public/14.0.0/ucd/extracted/"
-                   "DerivedGeneralCategory.txt"))
+        if (system(url))
             printf(" done\n");
         else {
             printf(" failed\n");
@@ -168,9 +174,13 @@ int test_towupper(void) {
 
     cf = fopen(CFOLD, "r");
     if (!cf) {
-        printf("downloading %s ...", CFOLD);
+        char url[256];
+        snprintf(url, 255,
+                 "wget https://www.unicode.org/Public/%d.0.0/ucd/CaseFolding.txt",
+                 SAFECLIB_UNICODE_VERSION);
+        printf("downloading %s via %s ...", CFOLD, url);
         fflush(stdout);
-        if (system("wget https://www.unicode.org/Public/14.0.0/ucd/CaseFolding.txt"))
+        if (system(url))
             printf(" done\n");
         else {
             printf(" failed\n");

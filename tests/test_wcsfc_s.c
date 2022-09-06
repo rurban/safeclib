@@ -24,7 +24,8 @@ int test_wcsfc_s(void);
 #ifndef PERL
 /*# define PERL "perl"*/
 /*# define PERL "cperl5.30.0"*/
-#define PERL "perl5.36.0"
+#define PERL "perl5.37.4-uni15"
+#define PERL_VERSION "5.37.4"
 #endif
 #define TESTPL "test-fc.pl"
 
@@ -440,7 +441,9 @@ int test_wcsfc_s(void) {
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
     fprintf_s(pl,
-              "use v5.34;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
+              "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
+              "use Unicode::UCD;\n"
+              "print Unicode::UCD::UnicodeVersion(), \" must be %d.0.0\\n\";\n"
               "sub wstr ($) {\n"
               "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
               "}\n"
@@ -454,7 +457,7 @@ int test_wcsfc_s(void) {
               "         unpack('W*',$ch), wstr $nfd, wstr $fc, wstr $got;\n"
               "    1\n"
               "  }\n"
-              "}\n");
+              "}\n", PERL_VERSION, SAFECLIB_UNICODE_VERSION);
 #endif
     for (wc = 0xc0; wc < 0x02fa20; wc++) {
         static wchar_t src[5];
