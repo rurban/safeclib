@@ -1,6 +1,11 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.8
+        - Fixed wrong *printf_s \0 termination. Broken since 3.7. GH #124.
+        - Fixed getenv_s to not handle_error for non-existent env var. GH #119
+        - Added a single include/safec.h for all 3 public headers. GH #114
+
 Changes in 3.7.1
         - Fixed powerpc compilation of the perf tests. GH #113
 
