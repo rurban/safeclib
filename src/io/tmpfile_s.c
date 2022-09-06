@@ -35,6 +35,10 @@
 #include "safeclib_private.h"
 #endif
 
+/* conflicting API. Use mingw's implementation */
+#if defined(HAVE_TMPFILE_S) && defined(MINGW_HAS_SECURE_API)
+#else
+
 /**
  * @brief
  *    The \c tmpfile_s function creates a temporary binary file that is
@@ -103,3 +107,5 @@ EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
 
     return EOK;
 }
+
+#endif /* HAVE_TMPFILE_S on MINGW */

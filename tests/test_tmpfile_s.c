@@ -28,12 +28,22 @@ int test_tmpfile_s(void) {
 
     rc = tmpfile_s(NULL);
     init_msvcrt(rc == ESNULLP, &use_msvcrt);
+#ifdef HAVE_TMPFILE_S
+    ERR_MSVC(ESNULLP, EINVAL);
+#else
     ERR_MSVC(ESNULLP, EACCES);
+#endif
 
     /*--------------------------------------------------*/
 
     rc = tmpfile_s(&tmp);
-    if (!(rc == 0 || rc == EACCES || rc == ESLEMAX)) {
+    if (!(rc == 0 ||
+#if !defined(HAVE_TMPFILE_S) && defined(_WIN32)
+          // old mingw
+          rc == EACCES ||
+#endif
+          rc == ESLEMAX))
+    {
         debug_printf("%s %u   Error rc=%d \n", __FUNCTION__, __LINE__, rc);
         errs++;
     }

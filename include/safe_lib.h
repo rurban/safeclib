@@ -113,17 +113,14 @@ EXTERN errno_t _tmpnam_s_chk(const char *dest, rsize_t dmax,
 #define tmpnam_s(dest, dmax) _tmpnam_s_chk(dest, dmax, BOS(dest))
 #endif
 
-#ifndef __KERNEL__
-EXTERN errno_t tmpfile_s(FILE *restrict *restrict streamptr);
-#endif /* __KERNEL__ */
-
 EXTERN char *_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
 #define gets_s(dest, dmax) _gets_s_chk(dest, dmax, BOS(dest))
 
+#ifndef __KERNEL__
 /* Windows sec_api does without restrict */
 #ifndef MINGW_HAS_SECURE_API
-#ifndef __KERNEL__
+EXTERN errno_t tmpfile_s(FILE *restrict *restrict streamptr);
 EXTERN errno_t fopen_s(FILE *restrict *restrict streamptr,
                        const char *restrict filename,
                        const char *restrict mode);
@@ -131,7 +128,12 @@ EXTERN errno_t fopen_s(FILE *restrict *restrict streamptr,
 EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
                          const char *restrict mode, FILE *restrict stream);
+#else
+EXTERN errno_t tmpfile_s(FILE **streamptr);
+#endif
 #endif /* __KERNEL__ */
+
+#ifndef MINGW_HAS_SECURE_API
 #define asctime_s(dest, dmax, tm) _asctime_s_chk(dest, dmax, tm, BOS(dest))
 #define ctime_s(dest, dmax, timer) _ctime_s_chk(dest, dmax, timer, BOS(dest))
 #endif
