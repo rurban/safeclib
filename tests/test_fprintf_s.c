@@ -118,7 +118,7 @@ int test_fprintf_s(void) {
     NOERR()
 
     rewind(out);
-    ftruncate(fileno(out), 0L);
+    (void)ftruncate(fileno(out), 0L);
 
     /*--------------------------------------------------*/
 

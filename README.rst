@@ -1,7 +1,7 @@
 Safe C Library - README
 =======================
 
-|safeclib support vis xs:code|
+|safeclib|
 
 Copying
 -------
@@ -260,7 +260,7 @@ Tested Platforms
 
 The library has been tested on the following systems:
 
--  Linux Fedora core 31 - 32 amd64/i386 glibc 2.28 - 2.31 (all gcc’s +
+-  Linux Fedora core 31 - 36 amd64/i386 glibc 2.28 - 2.36 (all gcc’s +
    clang’s)
 -  Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc’s +
    clang’s)
@@ -273,7 +273,7 @@ The library has been tested on the following systems:
 -  i386-mingw32 cross-compiled
 -  cygwin32 gcc (newlib)
 -  cygwin64 gcc -std=c99 (newlib)
--  freebsd 10 - 12 amd64
+-  freebsd 10 - 13 amd64
 -  linux docker images under qemu: i386/debian, x86_64/rhel,
    arm32v7/debian, aarch64: arm64v8/{debian,centos,rhel,fedora},
    s390x/fedora (the only big endian test I could find),
@@ -327,5 +327,5 @@ References
    DrDobbs review
    http://www.drdobbs.com/cpp/the-new-c-standard-explored/232901670
 
-.. |safeclib support vis xs:code| image:: doc/safeclib-banner.png
-   :target: https://xscode.com/rurban/safeclib
+.. |safeclib| image:: doc/safeclib-banner.png
+   :target: https://github.com/rurban/safeclib/issues

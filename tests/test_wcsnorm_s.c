@@ -554,18 +554,18 @@ int test_wcsnorm_s(void) {
             size_t i;
             /* cross-check with perl */
             fprintf_s(pl, "$err += chknfd (\"\\N{U+%04X}\",\"\\N{U+%04X}", (unsigned)ind,
-                      str[0]);
+                      (unsigned)str[0]);
             for (i = 1; i < len; i++) {
-                fprintf_s(pl, "\\N{U+%04X}", str[i]);
+                fprintf_s(pl, "\\N{U+%04X}", (unsigned)str[i]);
             }
             fprintf_s(pl, "\");\n");
 
 #ifdef HAVE_NORM_COMPAT
             rc = wcsnorm_s(str, LEN, src, WCSNORM_NFKD, &len);
             fprintf_s(pl, "$err += chknfkd(\"\\N{U+%04X}\",\"\\N{U+%04X}", (unsigned)ind,
-                      str[0]);
+                      (unsigned)str[0]);
             for (i = 1; i < len; i++) {
-                fprintf_s(pl, "\\N{U+%04X}", str[i]);
+                fprintf_s(pl, "\\N{U+%04X}", (unsigned)str[i]);
             }
             fprintf_s(pl, "\");\n");
 #endif
