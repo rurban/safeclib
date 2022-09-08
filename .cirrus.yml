@@ -5,11 +5,11 @@ freebsd_instance:
   cpu: 4
 task:
   install_script:
-    - pkg install -y autoconf automake libtool pkgconf git wget m4
+    - pkg install -y autoconf automake libtool pkgconf git wget m4 gmake
   build_script:
     - build-aux/autogen.sh
     - CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --enable-unsafe --enable-norm-compat
-    - make
+    - gmake
   test_script:
-    - make check-log
-    - make distcheck
+    - gmake check-log
+    - gmake distcheck
