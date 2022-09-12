@@ -130,6 +130,10 @@ With ``--disable-constraint-handler`` calling the runtime-constraint
 handler can be disabled, saving some memory, but not much run-time
 performance.
 
+With ``--with-default-handler=<abort|ignore>`` you may set the default
+constraint handler at compile-time to ``abort_handler_s`` or
+``ignore_handler_s``.
+
 The runtime-constraint handler might not return. If the handler does
 return, the library function whose runtime-constraint was violated
 returns an indication of failure as given by the function’s return. With

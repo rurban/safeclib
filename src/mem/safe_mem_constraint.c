@@ -33,7 +33,12 @@
 #include "mem/safe_mem_constraint.h"
 #include "safe_mem_lib.h"
 
-static constraint_handler_t mem_handler = NULL;
+static constraint_handler_t mem_handler =
+#ifdef SAFECLIB_DEFAULT_HANDLER
+    SAFECLIB_DEFAULT_HANDLER;
+#else
+    NULL;
+#endif
 
 /**
  * @brief

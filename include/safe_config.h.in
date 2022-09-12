@@ -3,8 +3,9 @@
  * @configure_input@
  *
  * August 2017, Reini Urban
+ * September 2022, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2022 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -68,8 +69,8 @@ extern "C" {
 /* Null out the remaining part of a string buffer if it is not completely used */
 @INSERT_NULLSLACK@
 
-/* Disable the C11 invoke_safe_{str,mem}_constraint_handler callbacks on errors,
-   for performance, smaller size and less flexibility. */
+/* Disable the C11 invoke_safe_{str,mem}_constraint_handler callbacks on
+   errors, for performance, smaller size and less flexibility. */
 @INSERT_CONSTRAINT_HANDLER@
 
 /* Define to include some additional unsafe C11 functions:
@@ -111,7 +112,7 @@ extern "C" {
 #endif
 
 /*
- * Defined by --enable-warn-dmax, to enable dmax checks against 
+ * Defined by --enable-warn-dmax, to enable dmax checks against
  *  __builtin_object_size(dest)
  */
 @INSERT_WARN_DMAX@
@@ -125,6 +126,11 @@ extern "C" {
  * Set if libsafec3 was compiled with C99 support.
  */
 @INSERT_SAFECLIB_HAVE_C99@
+
+/*
+ * Set to a default ignopre or abort default handler.
+ */
+@INSERT_DEFAULT_HANDLER@
 
 /*
  * The spec does not call out a maximum len for the strtok src

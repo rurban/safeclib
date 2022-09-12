@@ -1,7 +1,7 @@
 # configure.ac - Process with autoconf to produce a configure script
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
-# 2017  Reini Urban <rurban@cpan.org>
+# 2017-2022  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
 # Copyright (c) 2017-2022 Reini Urban
@@ -349,6 +349,24 @@ if test "x$enable_error_dmax" = "xtrue" ; then
 else
 	AC_MSG_RESULT([no (default)])
 fi
+
+AC_ARG_WITH(default-handler,
+	AS_HELP_STRING([--with-default-handler=<ignore|abort>],
+	               [enforce compile-time default-handler]),
+	[case "${withval}" in
+	ignore) default_handler=ignore ;;
+	abort)  default_handler=abort ;;
+	*) AC_MSG_ERROR([bad value ${withval} for --with-default-handler=]) ;;
+	esac], [])
+AC_MSG_CHECKING([for --with-default-handler])
+if test -n "$default_handler" ; then
+	AC_MSG_RESULT([$default_handler])
+	INSERT_DEFAULT_HANDLER="#define SAFECLIB_DEFAULT_HANDLER ${default_handler}_handler_s"
+else
+	AC_MSG_RESULT([no (default)])
+	INSERT_DEFAULT_HANDLER="#undef SAFECLIB_DEFAULT_HANDLER"
+fi
+AC_SUBST(INSERT_DEFAULT_HANDLER)
 
 AC_ARG_ENABLE(doc,
 	AS_HELP_STRING([--disable-doc],
