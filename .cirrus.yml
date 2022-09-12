@@ -8,8 +8,7 @@ task:
     - pkg install -y autoconf automake libtool pkgconf git wget m4 gmake
   build_script:
     - build-aux/autogen.sh
-    - CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --enable-unsafe --enable-norm-compat
+    - CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib MAKE=gmake ./configure --enable-unsafe --enable-norm-compat --disable-dependency-tracking
     - gmake
   test_script:
     - gmake check-log
-    - gmake distcheck
