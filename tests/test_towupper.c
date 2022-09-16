@@ -154,9 +154,8 @@ int test_towupper(void) {
     if (!f) {
         char url[256];
         snprintf(url, 255,
-                 "wget https://www.unicode.org/Public/%d.0.0/ucd/extracted/"
-                 "DerivedGeneralCategory.txt",
-                 SAFECLIB_UNICODE_VERSION);
+                 "wget https://www.unicode.org/Public/%d.0.0/ucd/extracted/%s",
+                 SAFECLIB_UNICODE_VERSION, GENCAT);
         printf("downloading %s via %s ...", GENCAT, url);
         fflush(stdout);
         if (system(url))
@@ -174,8 +173,8 @@ int test_towupper(void) {
     if (!cf) {
         char url[256];
         snprintf(url, 255,
-                 "wget https://www.unicode.org/Public/%d.0.0/ucd/CaseFolding.txt",
-                 SAFECLIB_UNICODE_VERSION);
+                 "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
+                 SAFECLIB_UNICODE_VERSION, CFOLD);
         printf("downloading %s via %s ...", CFOLD, url);
         fflush(stdout);
         if (system(url))
