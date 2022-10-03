@@ -737,6 +737,7 @@ AC_CHECK_HEADERS([stdlib.h	\
                   emmintrin.h   \
                   x86intrin.h   \
                   arm_neon.h    \
+                  arm_acle.h    \
                   mmintrin.h    \
                   altivec.h     \
                   spe.h         \
@@ -879,6 +880,12 @@ AX_GCC_BUILTIN(__builtin___bnd_null_ptr_bounds)
 AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_get_ptr_lbound)
 #AX_GCC_BUILTIN(__builtin___bnd_get_ptr_ubound)
+
+dnl arm intrinsic barriers
+AX_GCC_BUILTIN(__dsb)
+AX_GCC_BUILTIN(__isb)
+AX_GCC_BUILTIN(__builtin___dsb)
+AX_GCC_BUILTIN(__builtin___isb)
 
 AC_CHECK_FUNCS([ vswprintf vswscanf mbsrtowcs ])
 

@@ -143,8 +143,6 @@
 #define MEMORY_BARRIER ASM_VOLATILE("mfence" ::: "memory")
 #elif defined(__GNUC__) && defined(ASM_INLINE) && defined(__i386__)
 #define MEMORY_BARRIER ASM_VOLATILE("lock; addl $0,0(%%esp)" ::: "memory")
-#elif defined(ASM_INLINE) && (defined(HAVE_ARM_NEON) || defined(HAVE_ARM_NEON))
-#define MEMORY_BARRIER ASM_VOLATILE("dmb; dsb; isb" ::: "memory")
 #elif (defined(__GNUC__) && __GNUC__ >= 4) || defined(HAVE___SYNC_SYNCHRONIZE)
 #define MEMORY_BARRIER __sync_synchronize()
 /* new gcc-5 memory_barrier insn for most archs:
@@ -155,6 +153,10 @@
 #elif defined(HAVE_COMPAT_XMM) || defined(HAVE__MM_SFENCE)
 /* x86-compat headers (e.g. rs6000, arm, ...) have no mfence */
 #define MEMORY_BARRIER _mm_sfence()
+#elif defined(__GNUC__) && defined(HAVE___DSM) && defined(HAVE___ISB)
+#define MEMORY_BARRIER __dsb(15); __isb(15)
+#elif defined(ASM_INLINE) && defined(HAVE_ARM_ACLE_H) && defined(_ARM_ARCH_ISA_A64)
+#define MEMORY_BARRIER ASM_VOLATILE("dsb sy; isb sy" ::: "memory")
 #else
 #define MEMORY_BARRIER COMPILER_BARRIER
 #endif
