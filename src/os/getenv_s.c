@@ -3,6 +3,7 @@
  *
  * September 2017, Reini Urban
  * January 2022, Reini Urban
+ * October 2022, Reini Urban
  *
  * Copyright (c) 2017,2022 by Reini Urban
  * All rights reserved.
@@ -99,16 +100,42 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
     const char *buf;
     size_t len1;
 
-    if (destbos == BOS_UNKNOWN) {
-        CHK_DMAX_MAX("getenv_s", RSIZE_MAX_STR)
-        BND_CHK_PTR_BOUNDS(dest, dmax);
-    } else {
-        CHK_DEST_OVR("getenv_s", destbos)
+    if (likely(dest)) {
+        if (destbos == BOS_UNKNOWN) {
+            if (unlikely(dmax > RSIZE_MAX_STR)) {
+                goto err_dmax;
+            }
+            BND_CHK_PTR_BOUNDS(dest, dmax);
+        } else {
+            if (unlikely(dmax > destbos)) {
+            err_dmax:
+                if (len)
+                    *len = 0;
+                invoke_safe_str_constraint_handler("getenv_s: dmax exceeds max",
+                                                   (void *)dest, ESLEMAX);
+                return RCNEGATE(ESLEMAX);
+            }
+        }
+    }
+    else {
+        if (dmax != 0) { // with dest == NULL
+            if (len)
+                *len = 0;
+            invoke_safe_str_constraint_handler("getenv_s: dmax must be 0",
+                                               NULL, ESNULLP);
+            return ESNULLP;
+        }
     }
     if (unlikely(name == NULL)) {
         if (len)
             *len = 0;
-        handle_error(dest, dmax, "getenv_s: name is null", ESNULLP);
+        if (likely(dest)) {
+            handle_error(dest, dmax, "getenv_s: name is null", ESNULLP);
+        }
+        else {
+            invoke_safe_str_constraint_handler("getenv_s: name is null",
+                                               NULL, ESNULLP);
+        }
         return ESNULLP;
     }
 
@@ -120,11 +147,13 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
 #endif
 
     if (buf == NULL) {
+        if (likely(dest)) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-        memset(dest, 0, dmax);
+            memset(dest, 0, dmax);
 #else
-        *dest = '\0';
+            *dest = '\0';
 #endif
+        }
         if (len)
             *len = 0;
         return -1;
@@ -136,10 +165,11 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
             *len = 0;
         handle_error(dest, dmax, "getenv_s: dmax is too small", ESNOSPC);
         return RCNEGATE(ESNOSPC);
-    } else if (dest) {
+    } else {
         if (len)
             *len = len1;
-        strcpy_s(dest, dmax, buf);
+        if (dest)
+            strcpy_s(dest, dmax, buf);
     }
 
     return EOK;

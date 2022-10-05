@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_getenv_s
  * File 'os/getenv_s.c'
- * Lines executed:100.00% of 29
+ * Lines executed:95.24% of 42
  *
  *------------------------------------------------------------------
  */
@@ -31,6 +31,8 @@ int test_getenv_s(void) {
     const char *name = "PATH";
 
     /*--------------------------------------------------*/
+    /* Note that native getenv_s with MSVC looks completely broken for
+       most cases. Maybe we should force our implementation there. */
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty name")
@@ -40,15 +42,29 @@ int test_getenv_s(void) {
         use_msvcrt = false;
     }
     ERR_MSVC(ESNULLP, 0);
+    ind = len;
+    if (!use_msvcrt) {
+        INDCMP(!= 0);
+    }
+
+    rc = getenv_s(&len, NULL, 0, NULL);
+    ERR_MSVC(ESNULLP, EINVAL);
+    ind = len;
+    if (!use_msvcrt) {
+        INDCMP(!= 0);
+    }
 #endif
 
+    /*--------------------------------------------------*/
+    /* cases where name exists */
+
+    str2 = getenv(name); // for PATH
     rc = getenv_s(&len, NULL, 0, name);
     ERR_MSVC(0, EINVAL);
-
-    /*--------------------------------------------------*/
-
-    rc = getenv_s(&len, dest, 0, name);
-    ERR_MSVC(0, EINVAL);
+    ind = strlen(str2);
+    if (!use_msvcrt) {
+        INDCMP(!= (int)len);
+    }
 
     /*--------------------------------------------------*/
 
@@ -56,6 +72,10 @@ int test_getenv_s(void) {
     EXPECT_BOS("dest overflow")
     rc = getenv_s(&len, dest, RSIZE_MAX_STR + 1, name);
     ERR_MSVC(ESLEMAX, 0);
+    ind = len;
+    if (!use_msvcrt) {
+        INDCMP(!= 0);
+    }
 #endif
 
     /*--------------------------------------------------*/
@@ -72,7 +92,6 @@ int test_getenv_s(void) {
 
     rc = getenv_s(&len, dest, LEN, name);
     ERR(EOK);
-    str2 = getenv(name);
     EXPSTR(dest, str2);
     ind = strlen(str2);
     if (!use_msvcrt) {
@@ -83,7 +102,26 @@ int test_getenv_s(void) {
     ERR_MSVC(EOK, EINVAL);
     EXPSTR(dest, str2);
 
+    rc = getenv_s(&len, dest, LEN, name);
+    ERR(EOK);
+    EXPSTR(dest, str2);
+    ind = strlen(str2);
+    if (!use_msvcrt) {
+        INDCMP(!= (int)len);
+    }
+
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("dest overflow or empty")
+    rc = getenv_s(&len, NULL, LEN, name);
+    ERR_MSVC(ESNULLP, EINVAL); // with NULL dmax must be 0
+    ind = len;
+    if (!use_msvcrt) {
+        INDCMP(!= 0);
+    }
+#endif
+
     /*--------------------------------------------------*/
+    /* cases where name does not exist */
 
     rc = getenv_s(NULL, dest, LEN, "c#hewhc&wehc%erwhc$weh");
     ERR_MSVC(-1, EINVAL);
