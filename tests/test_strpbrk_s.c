@@ -58,15 +58,27 @@ int test_strpbrk_s(void) {
     NOFIRST()
 
     EXPECT_BOS("dest overflow")
-    rc = strpbrk_s(str1, RSIZE_MAX_STR + 1, str2, LEN, &first);
-    ERR(ESLEMAX)
+    rc = strpbrk_s(str1, LEN + 1, str2, LEN, &first);
+    ERR(EOVERFLOW)
+    NOFIRST()
+
+    EXPECT_BOS("slen exceeds src")
+    rc = strpbrk_s(str1, LEN, str2, LEN + 1, &first);
+    ERR(EOVERFLOW)
     NOFIRST()
 
     EXPECT_BOS("src overflow")
-    rc = strpbrk_s(str1, LEN, str2, RSIZE_MAX_STR + 1, &first);
-    ERR(ESLEMAX)
+    rc = strpbrk_s(str1, LEN, str2, LEN + 1, &first);
+    ERR(EOVERFLOW)
     NOFIRST()
 #endif
+
+    strcpy(str1, "keep it simple");
+    strcpy(str2, "1234");
+    rc = strpbrk_s(str1, LEN, str2, 3, &first);
+    ERR(ESNOTFND)
+    NOFIRST()
+
     /*--------------------------------------------------*/
 
     str1[0] = '\0';
@@ -94,6 +106,7 @@ int test_strpbrk_s(void) {
                      __LINE__, (void *)first, (void *)std_first, rc);
         errs++;
     }
+
     /*--------------------------------------------------*/
 
     strcpy(str1, "keep it simple");
@@ -125,7 +138,7 @@ int test_strpbrk_s(void) {
     strcpy(str1, "keep it simple");
     strcpy(str2, "123456");
 
-    rc = strpbrk_s(str1, LEN, str2, 2, &first);
+    rc = strpbrk_s(str1, LEN, str2, 6, &first);
     ERR(ESNOTFND)
     if (first != 0) {
         debug_printf("%s %u  Error  first=%p  rc=%d \n", __FUNCTION__, __LINE__,
