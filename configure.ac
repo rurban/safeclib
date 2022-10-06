@@ -34,7 +34,11 @@
 AC_PREREQ([2.69])
 
 # information on the package
-AC_INIT([Safe C Library],[3.7.2],[https://github.com/rurban/safeclib/issues],[safeclib],[http://github.com/rurban/safeclib/])
+AC_INIT([Safe C Library],
+        [m4_esyscmd(build-aux/version-gen.sh .tarball-version)],
+        [https://github.com/rurban/safeclib/issues],
+        [safeclib],
+        [http://github.com/rurban/safeclib/])
 
 # Configure the configure script
 # ===============================================
@@ -92,11 +96,6 @@ dnl         lt_prog_compiler_static=
 dnl         enable_static=no
 dnl         ;;
 dnl esac
-
-AC_MSG_CHECKING([package version])
-AC_MSG_RESULT($PACKAGE_VERSION)
-AC_MSG_CHECKING([so version-info])
-AC_MSG_RESULT($SAFECLIB_SO_VERSION)
 
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
@@ -1069,6 +1068,11 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_SUBST([SAFEC_SO_VERSION], [3:7:0])
 AC_SUBST([SAFEC_API_VERSION], [3.7.0])
+
+AC_MSG_CHECKING([package version])
+AC_MSG_RESULT($PACKAGE_VERSION)
+AC_MSG_CHECKING([so version-info])
+AC_MSG_RESULT($SAFEC_SO_VERSION)
 
 # Automake variables, these variables get automagically included at the top
 # of all automake generated make files. This is why you don't see them
