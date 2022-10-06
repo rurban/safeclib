@@ -2,8 +2,10 @@
  * strpbrk_s.c
  *
  * November 2008, Bo Berry
+ * November 2022, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2022 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -54,8 +56,8 @@
  *
  * @pre  Neither dest, src nor firstp shall be a null pointer.
  * @pre  Neither dmax nor slen shall not be 0.
- * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and size of
- * dest/src
+ * @pre  Neither dmax nor slen shall be greater than RSIZE_MAX_STR and
+ *       the size of dest/src
  *
  * @return  pointer to the first ocurrence of any character contained in src
  * @retval  EOK         when successful operation
@@ -63,8 +65,10 @@
  * @retval  ESZEROL     when dmax/slen = 0
  * @retval  ESLEMAX     when dmax/slen > RSIZE_MAX_STR
  * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
- *                      knows the object_size statically)
- * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ *                      knows the object_size statically).
+ *                      when slen > size of src
+ * @retval  ESLEWRNG    with --enable-error-dmax, when dmax != sizeof(dest) or
+ *                      slen > size of src
  *
  * @see
  *    strfirstchar_s(), strlastchar_s(), strfirstdiff_s(),
@@ -74,7 +78,8 @@
 #ifdef FOR_DOXYGEN
 errno_t strpbrk_s(char *dest, rsize_t dmax, char *src, rsize_t slen, char **firstp)
 #else
-EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen, char **firstp,
+EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
+                              char **firstp,
                               const size_t destbos, const size_t srcbos)
 #endif
 {
@@ -90,7 +95,6 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
     if (destbos == BOS_UNKNOWN) {
         CHK_DMAX_MAX("strpbrk_s", RSIZE_MAX_STR)
         BND_CHK_PTR_BOUNDS(dest, dmax);
-        BND_CHK_PTR_BOUNDS(dest, slen);
     } else {
         CHK_DEST_OVR("strpbrk_s", destbos)
     }
@@ -104,9 +108,8 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
-            invoke_safe_str_constraint_handler("strpbrk_s: slen exceeds src",
-                                               (void *)src, ESLEMAX);
-            return RCNEGATE(ESLEMAX);
+            return handle_str_bos_overflow("strpbrk_s: slen exceeds src", dest,
+                                           destbos);
         }
     }
     if (unlikely(slen == 0)) {
@@ -128,6 +131,9 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
             if (*dest == *ps) {
                 *firstp = dest;
                 return RCNEGATE(EOK);
+            }
+            if (unlikely(!len)) {
+                return RCNEGATE(ESNOTFND);
             }
             ps++;
             len--;
