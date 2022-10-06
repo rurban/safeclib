@@ -86,7 +86,7 @@ int test_snprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    rc = snprintf_s(str1, LEN, "%p", NULL); // %p NULL is allowed
+    rc = snprintf_s(str1, LEN, "%p", (char*)NULL); // %p NULL is allowed
     NOERR();
 
     /*--------------------------------------------------*/

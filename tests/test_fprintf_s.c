@@ -65,7 +65,7 @@ int test_fprintf_s(void) {
     /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
-    rc = fprintf_s(NULL, "%s", NULL);
+    rc = fprintf_s(NULL, "%s", (char*)NULL);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     NEGERR_MSVC(ESNULLP, EOF);
 
@@ -101,7 +101,7 @@ int test_fprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    rc = fprintf_s(out, "%s", NULL);
+    rc = fprintf_s(out, "%s", (char*)NULL);
     NEGERR(ESNULLP)
 
     /*--------------------------------------------------*/
