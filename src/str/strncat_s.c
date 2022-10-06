@@ -143,7 +143,7 @@ EXPORT errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
         CHK_DEST_OVR_CLEAR("strncat_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("strncat_s", src)
-    CHK_SRC_OVR_CLEAR("strncat_s", src, slen, RSIZE_MAX_STR)
+    CHK_SRC_OVR_CLEAR("strncat_s", src, slen)
     CHK_SLEN_MAX_CLEAR("strncat_s", slen, RSIZE_MAX_STR)
     else if (unlikely(slen == 0)) {
         /* Special case, analog to msvcrt: when dest is big enough
@@ -155,7 +155,7 @@ EXPORT errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
-        return handle_str_bos_overload("strncat_s: slen exceeds src",
+        return handle_str_bos_overflow("strncat_s: slen exceeds src",
                                        dest, destbos);
     }
 

@@ -143,7 +143,7 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
                 *errp = RCNEGATE(ESLEMAX);
                 return NULL;
             } else {
-                *errp = handle_str_bos_overload("stpncpy_s: dmax exceeds dest",
+                *errp = handle_str_bos_overflow("stpncpy_s: dmax exceeds dest",
                                                (char *)dest, destbos);
                 return NULL;
             }
@@ -155,10 +155,10 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
         *errp = RCNEGATE(ESNULLP);
         return NULL;
     }
-    //CHK_SRC_OVR_CLEAR("stpncpy_s", src, slen, RSIZE_MAX_STR)
+    //CHK_SRC_OVR_CLEAR("stpncpy_s", src, slen)
     if (_BOS_KNOWN(src)) {
         if (unlikely(_BOS_OVR_N(src, slen))) {
-            *errp = handle_str_bos_overload("stpncpy_s", (char *)dest,
+            *errp = handle_str_bos_overflow("stpncpy_s", (char *)dest,
                                            _BOS_KNOWN(dest) ? BOS(dest) : dmax);
             return NULL;
         }
@@ -174,7 +174,7 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
-        *errp = handle_str_bos_overload("stpncpy_s: slen exceeds src", dest,
+        *errp = handle_str_bos_overflow("stpncpy_s: slen exceeds src", dest,
                                        destbos);
         return NULL;
     }

@@ -100,7 +100,7 @@ static inline void handle_werror(wchar_t *restrict dest, const rsize_t dmax,
  * Safe C Lib internal string handlers to handle overflows with compile-time
  * known dest and dmax sizes.
  */
-int handle_str_bos_overload(const char *restrict msg, char *restrict dest,
+int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
                             const rsize_t dmax);
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
