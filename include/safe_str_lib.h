@@ -160,7 +160,7 @@ char * strtok_s(char *_Str,const char *_Delim,char **_Context); */
 
 /* safe sprintf_s */
 /* now __STDC_WANT_LIB_EXT1__ >= 1 compatible */
-#ifdef SAFECLIB_HAVE_C99
+#if defined(SAFECLIB_HAVE_C99) && !defined(FOR_DOXYGEN)
 EXTERN int _sprintf_s_chk(char *restrict dest, const rsize_t dmax,
                    const size_t destbos, const char *restrict fmt, ...)
    __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
@@ -179,7 +179,7 @@ EXTERN int _vsprintf_s_chk(char *restrict dest, rsize_t dmax,
     _vsprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 
 /* truncating, no ESNOSPC */
-#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
+#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT) && !defined(FOR_DOXYGEN)
 EXTERN int _snprintf_s_chk(char *restrict dest, rsize_t dmax,
                            const size_t destbos, const char *restrict fmt, ...)
   __attribute_format__(printf,4,5) BOS_CHK(dest) BOS_FMT(fmt);
@@ -668,7 +668,7 @@ EXTERN int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
     _vswprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 
 /* truncating, no ESNOSPC */
-#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT)
+#if defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT) && !defined(FOR_DOXYGEN)
 EXTERN int _snwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                             const size_t destbos, const wchar_t *restrict fmt,
                             ...)
