@@ -65,6 +65,9 @@ TAGS
 /autom4te.cache/
 /libsafec-*
 /fmt
+/libssp-0.dll.m32
+/libssp-0.dll.m64
+/.build-*
 
 # More generated files
 compile_commands.json
@@ -131,3 +134,8 @@ doc/Doxyfile.bak
 
 # Should not be distributed
 doc/n3631.pdf
+doc/N2730 Restartable and Non-Restartable Functions for Efficient Character Conversions
+doc/n2231.htm
+doc/n2596.pdf
+doc/n2653.htm
+doc/n2731.pdf

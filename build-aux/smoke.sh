@@ -210,6 +210,8 @@ echo "--disable-wchar -f Makefile.kernel"
     make -s -j4 -f Makefile.kernel || exit
 make -s clean
 git clean -dxf src tests
+rm -f testslkm.mod slkm.mod .testslkm.mod.cmd .testslkm.ko.cmd .slkm.mod.cmd \
+   .slkm.ko.cmd .modules.order.cmd .Module.symvers.cmd
 autoreconf
 echo gcc gcov
 if ./configure --enable-gcov --disable-shared --enable-unsafe --enable-norm-compat; then
