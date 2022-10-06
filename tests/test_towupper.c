@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_towupper.c
  *
- * Test the musl-inherited towupper regarding latest Unicode 13.0
+ * Test the musl-inherited towupper regarding latest Unicode 15.0
  * Unicode has no explicit lower->upper mapping document.
  *
  *------------------------------------------------------------------

@@ -66,7 +66,9 @@ extern "C" {
 #define EXTERN extern
 #endif
 
-/* With this UCD version we generated our tables */
+/**
+ * With this UCD version we generated our tables
+ */
 #define SAFECLIB_UNICODE_VERSION 15
 
 /**
