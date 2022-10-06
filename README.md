@@ -283,6 +283,9 @@ Known Issues
    first run `build-aux/autogen.sh` which runs autoreconf to `install` the
    autotools files and create the configure script.
 
+2. If you use cmake, you'd need to add `-DCMAKE_APPLE_SILICON_PROCESSOR=$(uname -m)`
+   for Apple Silicon M1 or M2 processors.
+
 References
 ----------
 

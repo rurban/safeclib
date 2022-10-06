@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_towfc_s.c
  * File 'towfc_s.c'
- * Lines executed:98.28% of 174
+ * Lines executed:93.68% of 174
  *
  * Full case-folding regarding latest Unicode (15.0) CaseFolding.txt
  * Some F characters fold to multiples.
