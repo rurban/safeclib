@@ -136,7 +136,7 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
                 *errp = RCNEGATE(ESLEMAX);
                 return NULL;
             } else {
-                *errp = handle_str_bos_overload("stpcpy_s: dmax exceeds dest",
+                *errp = handle_str_bos_overflow("stpcpy_s: dmax exceeds dest",
                                                (char *)dest, destbos);
                 return NULL;
             }

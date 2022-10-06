@@ -312,7 +312,7 @@ typedef unsigned long uintptr_t;
                              ESLEMAX);                                         \
                 return RCNEGATE(ESLEMAX);                                      \
             } else {                                                           \
-                return handle_str_bos_overload(func ": dmax exceeds dest",     \
+                return handle_str_bos_overflow(func ": dmax exceeds dest",     \
                                                (char *)dest, destbos);         \
             }                                                                  \
         }                                                                      \
@@ -407,7 +407,7 @@ typedef unsigned long uintptr_t;
             handle_error(dest, destbos, func ": dmax exceeds max", ESLEMAX);   \
             return RCNEGATE(ESLEMAX);                                          \
         } else {                                                               \
-            return handle_str_bos_overload(func ": dmax exceeds dest",         \
+            return handle_str_bos_overflow(func ": dmax exceeds dest",         \
                                            (char *)dest, destbos);             \
         }                                                                      \
     }
@@ -491,10 +491,10 @@ typedef unsigned long uintptr_t;
         return RCNEGATE(ESNULLP);                                              \
     }
 #if defined(HAVE_WARN_DMAX) && defined(HAVE_ERROR_DMAX)
-#define CHK_SRC_OVR_CLEAR(func, src, slen, MAX)                                \
+#define CHK_SRC_OVR_CLEAR(func, src, slen)                                     \
     if (_BOS_KNOWN(src)) {                                                     \
         if (unlikely(_BOS_OVR_N(src, slen))) {                                 \
-            return handle_str_bos_overload(                                    \
+            return handle_str_bos_overflow(                                    \
                 func, (char *)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax);      \
         } else if (_BOS_CHK_N(src, slen)) {                                    \
             handle_str_src_bos_chk_warn(func, (char *)dest, slen, BOS(src),    \
@@ -504,10 +504,10 @@ typedef unsigned long uintptr_t;
         BND_CHK_PTR_BOUNDS(src, slen);                                         \
     }
 #elif defined(HAVE_WARN_DMAX)
-#define CHK_SRC_OVR_CLEAR(func, src, slen, MAX)                                \
+#define CHK_SRC_OVR_CLEAR(func, src, slen)                                     \
     if (_BOS_KNOWN(src)) {                                                     \
         if (unlikely(_BOS_OVR_N(src, slen))) {                                 \
-            return handle_str_bos_overload(                                    \
+            return handle_str_bos_overflow(                                    \
                 func, (char *)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax);      \
         } else if (_BOS_CHK_N(src, slen)) {                                    \
             handle_str_src_bos_chk_warn(func, (char *)dest, slen, BOS(src),    \
@@ -516,10 +516,10 @@ typedef unsigned long uintptr_t;
         BND_CHK_PTR_BOUNDS(src, slen);                                         \
     }
 #else
-#define CHK_SRC_OVR_CLEAR(func, src, slen, MAX)                                \
+#define CHK_SRC_OVR_CLEAR(func, src, slen)                                     \
     if (_BOS_KNOWN(src)) {                                                     \
         if (unlikely(_BOS_OVR_N(src, slen))) {                                 \
-            return handle_str_bos_overload(                                    \
+            return handle_str_bos_overflow(                                    \
                 func, (char *)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax);      \
         }                                                                      \
         BND_CHK_PTR_BOUNDS(src, slen);                                         \

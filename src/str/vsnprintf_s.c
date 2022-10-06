@@ -1168,7 +1168,7 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         if (unlikely(dmax > destbos)) {
-            return -(handle_str_bos_overload("vsnprintf_s: dmax exceeds dest",
+            return -(handle_str_bos_overflow("vsnprintf_s: dmax exceeds dest",
                                              dest, destbos));
         }
     }

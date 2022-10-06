@@ -132,12 +132,12 @@ EXPORT errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
         CHK_DEST_OVR_CLEAR("strncpy_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("strncpy_s", src)
-    CHK_SRC_OVR_CLEAR("strncpy_s", src, slen, RSIZE_MAX_STR)
+    CHK_SRC_OVR_CLEAR("strncpy_s", src, slen)
     CHK_SLEN_MAX_CLEAR("strncpy_s", slen, RSIZE_MAX_STR)
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
-        return handle_str_bos_overload("strncpy_s: slen exceeds src",
+        return handle_str_bos_overflow("strncpy_s: slen exceeds src",
                                        dest, destbos);
     }
 
