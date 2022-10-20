@@ -868,6 +868,7 @@ EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
  * dest.
  * @retval  EOK        on success
  * @retval  ESNOSPC    when dmax too small for the result buffer
+ * @retval  ESNULLP    when dest, src or lenp are NULL
  * @retval  EOF        on some normalization error
  *
  * @see
@@ -903,12 +904,24 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
     wchar_t *orig_dest = dest;
     rsize_t orig_dmax = dmax;
 
+    if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
+                                           "dest is null",
+                                           dest, ESNULLP);
+        if (lenp)
+            *lenp = 0;
+        return RCNEGATE(ESNULLP);
+    }
+    if (unlikely(lenp == NULL)) {
+        handle_werror(dest, destbos / sizeof(wchar_t),
+                      "wcsnorm_compose_s: lenp is null", ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_WSTR)) {
             *lenp = 0;
-            invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
-                                               "dmax exceeds max",
-                                               (void *)dest, ESLEMAX);
+            handle_werror(dest, destbos / sizeof(wchar_t),
+                          "wcsnorm_compose_s: dmax exceeds max", ESLEMAX);
             return ESLEMAX;
         }
         BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
@@ -920,6 +933,12 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
                           "wcsnorm_compose_s: dmax exceeds dest", EOVERFLOW);
             return EOVERFLOW;
         }
+    }
+    if (unlikely(src == NULL)) {
+        *lenp = 0;
+        handle_werror(dest, destbos / sizeof(wchar_t),
+                      "wcsnorm_compose_s: src is null", ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
 
     while (p < e) {
@@ -1033,7 +1052,8 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #else
     *dest = 0;
 #endif
-    *lenp = orig_dmax - dmax;
+    if (lenp)
+        *lenp = orig_dmax - dmax;
     return EOK;
 }
 

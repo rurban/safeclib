@@ -204,6 +204,7 @@ static inline void shr(size_t p[2], int n) {
         p[1] = 0;
     }
     p[0] >>= n;
+    // TODO: The result of the left shift is undefined due to shifting by '64', which is greater or equal to the width of type 'size_t'
     p[0] |= p[1] << (sizeof(size_t) * 8 - n);
     p[1] >>= n;
 }
