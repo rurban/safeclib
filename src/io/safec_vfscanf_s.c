@@ -246,9 +246,16 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         case 'S':
         case 'C':
         case 'p':
-        case 'n':
+        //case 'n':
             p--;
             break;
+        case 'n': {
+            char tmp[128];
+            snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
+            invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
+            errno = EINVAL;
+            return EOF;
+        }
         default:
             goto fmt_fail;
         }
@@ -267,10 +274,16 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                 width = 1;
         case '[':
             break;
-        case 'n':
-            safec_store_int(dest, size, pos);
+        case 'n': {
+            char tmp[128];
+            snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
+            invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
+            errno = EINVAL;
+            return EOF;
+        }
+            //safec_store_int(dest, size, pos);
             /* do not increment match count, etc! */
-            continue;
+            //continue;
         default:
             shlim(sf, 0);
             while (isspace(shgetc(sf)))
@@ -465,27 +478,4 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
     }
     FUNLOCK(sf);
     return matches;
-}
-
-static int safec_in_wset(const wchar_t *set, int c) {
-    int j;
-    const wchar_t *p = set;
-    if (*p == '-') {
-        if (c == '-')
-            return 1;
-        p++;
-    } else if (*p == ']') {
-        if (c == ']')
-            return 1;
-        p++;
-    }
-    for (; *p && *p != ']'; p++) {
-        if (*p == '-' && p[1] && p[1] != ']')
-            for (j = p++ [-1]; j < *p; j++)
-                if (c == j)
-                    return 1;
-        if (c == *p)
-            return 1;
-    }
-    return 0;
 }

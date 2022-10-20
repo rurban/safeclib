@@ -275,9 +275,16 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
         case 'S':
         case 'C':
         case 'p':
-        case 'n':
+        //case 'n':
             p--;
             break;
+        case 'n': {
+            char tmp[128];
+            snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
+            invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
+            errno = EINVAL;
+            return EOF;
+        }
         default:
             goto fmt_fail;
         }
@@ -303,9 +310,19 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
 
         switch (t) {
         case 'n':
+#if 0
             safec_store_int(dest, size, pos);
             /* do not increment match count, etc! */
             continue;
+#else
+            {
+                char tmp[128];
+                snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
+                invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
+                errno = EINVAL;
+                return EOF;
+            }
+#endif
         case 's':
         case 'c':
         case '[':

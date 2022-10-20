@@ -74,7 +74,6 @@
  *
  * @see
  *    vswscanf_s(), fwscanf_s(), vfwscanf_s(), vfwprintf_s()
- *
  */
 
 EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
