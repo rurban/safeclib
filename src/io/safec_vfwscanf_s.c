@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- * safec_vfscanf_s.c
+ * safec_vfwscanf_s.c
  *
  * February 2022, Reini Urban
  *
@@ -34,6 +34,7 @@
 #include "safe_lib.h"
 #else
 #include "safeclib_private.h"
+#include <wctype.h>
 #include "io/safec_file.h"
 #endif
 
@@ -90,19 +91,28 @@ static void safec_store_int(void *dest, int size, unsigned long long i) {
     }
 }
 
-size_t safec_string_read(_SAFEC_FILE *f, unsigned char *buf, size_t len) {
-    char *src = f->cookie;
-    size_t k = len + 256;
-    char *end = memchr(src, 0, k);
-    if (end)
-        k = end - src;
-    if (k < len)
-        len = k;
-    memcpy(buf, src, len);
-    f->rpos = (void *)(src + len);
-    f->rend = (void *)(src + k);
-    f->cookie = src + k;
-    return len;
+size_t safec_wstring_read(_SAFEC_FILE *f, unsigned char *buf, size_t len) {
+    const wchar_t *src = f->cookie;
+    size_t k;
+
+    if (!src)
+        return 0;
+
+    k = wcsrtombs((void *)f->buf, &src, f->buf_size, 0);
+    if (k == (size_t)-1) {
+        f->rpos = f->rend = 0;
+        return 0;
+    }
+
+    f->rpos = f->buf;
+    f->rend = f->buf + k;
+    f->cookie = (void *)src;
+
+    if (!len || !k)
+        return 0;
+
+    *buf = *f->rpos++;
+    return 1;
 }
 
 static void *safec_arg_n(va_list ap, unsigned int n) {
@@ -117,64 +127,83 @@ static void *safec_arg_n(va_list ap, unsigned int n) {
     return p;
 }
 
-// from MUSL. TODO: safeties
-int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
-                    va_list ap) {
+static int safec_in_wset(const wchar_t *set, int c) {
+    int j;
+    const wchar_t *p = set;
+    if (*p == '-') {
+        if (c == '-')
+            return 1;
+        p++;
+    } else if (*p == ']') {
+        if (c == ']')
+            return 1;
+        p++;
+    }
+    for (; *p && *p != ']'; p++) {
+        if (*p == '-' && p[1] && p[1] != ']')
+            for (j = p++ [-1]; j < *p; j++)
+                if (c == j)
+                    return 1;
+        if (c == *p)
+            return 1;
+    }
+    return 0;
+}
+
+int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
+                     va_list ap) {
     int width;
     int size;
     int alloc = 0;
-    int base;
-    const unsigned char *p;
+    // int base;
+    const wchar_t *p;
     int c, t;
     char *s = NULL;
     wchar_t *wcs = NULL;
-    mbstate_t st;
+    // mbstate_t st;
     void *dest = NULL;
     int invert;
     int matches = 0;
-    unsigned long long x;
-    long double y;
-    off_t pos = 0;
-    unsigned char scanset[257];
+    // unsigned long long x;
+    // long double y;
+    off_t pos = 0, cnt;
+    static const char size_pfx[][3] = {"hh", "h", "", "l", "L", "ll"};
+    char tmp[3 * sizeof(int) + 10];
+    const wchar_t *set;
     size_t i, k;
-    wchar_t wc;
+    // wchar_t wc;
+    int gotmatch;
 
     FLOCK(sf);
-    if (!sf->rpos)
-        __toread(sf);
-    if (!sf->rpos)
-        goto input_fail;
+    fwide(sf->f, 1);
 
-    for (p = (const unsigned char *)fmt; *p; p++) {
+    for (p = fmt; *p; p++) {
 
         alloc = 0;
 
-        if (isspace(*p)) {
-            while (isspace(p[1]))
+        if (iswspace(*p)) {
+            while (iswspace(p[1]))
                 p++;
-            shlim(sf, 0);
-            while (isspace(shgetc(sf)))
-                ;
-            shunget(sf);
-            pos += shcnt(sf);
+            while (iswspace((c = shgetwc(sf))))
+                pos++;
+            shungetwc(c, sf);
             continue;
         }
         if (*p != '%' || p[1] == '%') {
-            shlim(sf, 0);
             if (*p == '%') {
                 p++;
-                while (isspace((c = shgetc(sf))))
-                    ;
+                while (iswspace((c = shgetwc(sf))))
+                    pos++;
             } else {
-                c = shgetc(sf);
+                c = shgetwc(sf);
             }
             if (c != *p) {
-                shunget(sf);
+                shungetwc(c, sf);
                 if (c < 0)
                     goto input_fail;
                 goto match_fail;
             }
-            pos += shcnt(sf);
+            pos++;
             continue;
         }
 
@@ -182,14 +211,14 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         if (*p == '*') {
             dest = 0;
             p++;
-        } else if (isdigit(*p) && p[1] == '$') {
+        } else if (iswdigit(*p) && p[1] == '$') {
             dest = safec_arg_n(ap, *p - '0');
             p += 2;
         } else {
             dest = va_arg(ap, void *);
         }
 
-        for (width = 0; isdigit(*p); p++) {
+        for (width = 0; iswdigit(*p); p++) {
             width = 10 * width + *p - '0';
         }
 
@@ -255,94 +284,87 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
 
         t = *p;
 
-        /* C or S */
+        /* Transform S,C -> ls,lc */
         if ((t & 0x2f) == 3) {
             t |= 32;
             size = SIZE_l;
         }
 
+        if (t != 'n') {
+            if (t != '[' && (t | 32) != 'c')
+                while (iswspace((c = shgetwc(sf))))
+                    pos++;
+            else
+                c = shgetwc(sf);
+            if (c < 0)
+                goto input_fail;
+            shungetwc(c, sf);
+        }
+
         switch (t) {
-        case 'c':
-            if (width < 1)
-                width = 1;
-        case '[':
-            break;
         case 'n':
             safec_store_int(dest, size, pos);
             /* do not increment match count, etc! */
             continue;
-        default:
-            shlim(sf, 0);
-            while (isspace(shgetc(sf)))
-                ;
-            shunget(sf);
-            pos += shcnt(sf);
-        }
-
-        shlim(sf, width);
-        if (shgetc(sf) < 0)
-            goto input_fail;
-        shunget(sf);
-
-        switch (t) {
         case 's':
         case 'c':
         case '[':
-            if (t == 'c' || t == 's') {
-                memset(scanset, -1, sizeof scanset);
-                scanset[0] = 0;
-                if (t == 's') {
-                    scanset[1 + '\t'] = 0;
-                    scanset[1 + '\n'] = 0;
-                    scanset[1 + '\v'] = 0;
-                    scanset[1 + '\f'] = 0;
-                    scanset[1 + '\r'] = 0;
-                    scanset[1 + ' '] = 0;
-                }
+            if (t == 'c') {
+                if (width < 1)
+                    width = 1;
+                invert = 1;
+                set = L"";
+            } else if (t == 's') {
+                static const wchar_t spaces[] = {
+                    ' ',    '\t',   '\n',   '\r',   11,     12,
+                    0x0085, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004,
+                    0x2005, 0x2006, 0x2008, 0x2009, 0x200a, 0x2028,
+                    0x2029, 0x205f, 0x3000, 0};
+                invert = 1;
+                set = spaces;
             } else {
                 if (*++p == '^')
                     p++, invert = 1;
                 else
                     invert = 0;
-                memset(scanset, invert, sizeof scanset);
-                scanset[0] = 0;
-                if (*p == '-')
-                    p++, scanset[1 + '-'] = 1 - invert;
-                else if (*p == ']')
-                    p++, scanset[1 + ']'] = 1 - invert;
-                for (; *p != ']'; p++) {
+                set = p;
+                if (*p == ']')
+                    p++;
+                while (*p != ']') {
                     if (!*p)
                         goto fmt_fail;
-                    if (*p == '-' && p[1] && p[1] != ']')
-                        for (c = p++ [-1]; c < *p; c++)
-                            scanset[1 + c] = 1 - invert;
-                    scanset[1 + *p] = 1 - invert;
+                    p++;
                 }
             }
-            wcs = 0;
-            s = 0;
+
+            s = (size == SIZE_def) ? dest : 0;
+            wcs = (size == SIZE_l) ? dest : 0;
+
+            gotmatch = 0;
+
+            if (width < 1)
+                width = -1;
+
             i = 0;
-            k = t == 'c' ? width + 1U : 31;
-            if (size == SIZE_l) {
-                if (alloc) {
+            if (alloc) {
+                k = t == 'c' ? width + 1U : 31;
+                if (size == SIZE_l) {
                     wcs = malloc(k * sizeof(wchar_t));
                     if (!wcs)
                         goto alloc_fail;
                 } else {
-                    wcs = dest;
+                    s = malloc(k);
+                    if (!s)
+                        goto alloc_fail;
                 }
-                st = (mbstate_t){0};
-                while (scanset[(c = shgetc(sf)) + 1]) {
-                    switch (mbrtowc(&wc, &(char){c}, 1, &st)) {
-                    case -1:
-                        goto input_fail;
-                    case -2:
-                        continue;
-                    default:
-                        break;
-                    }
-                    if (wcs)
-                        wcs[i++] = wc;
+            }
+            while (width) {
+                if ((c = shgetwc(sf)) < 0)
+                    break;
+                if (safec_in_wset(set, c) == invert)
+                    break;
+                if (wcs) {
+                    wcs[i++] = c;
                     if (alloc && i == k) {
                         wchar_t *tmp;
                         k += k + 1;
@@ -351,16 +373,12 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                             goto alloc_fail;
                         wcs = tmp;
                     }
-                }
-                if (!mbsinit(&st))
-                    goto input_fail;
-            } else if (alloc) {
-                s = malloc(k);
-                if (!s)
-                    goto alloc_fail;
-                while (scanset[(c = shgetc(sf)) + 1]) {
-                    s[i++] = c;
-                    if (i == k) {
+                } else if (size != SIZE_l) {
+                    int l = wctomb(s ? s + i : tmp, c);
+                    if (l < 0)
+                        goto input_fail;
+                    i += l;
+                    if (alloc && i > k - 4) {
                         char *tmp;
                         k += k + 1;
                         tmp = realloc(s, k);
@@ -369,18 +387,16 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                         s = tmp;
                     }
                 }
-            } else if ((s = dest)) {
-                while (scanset[(c = shgetc(sf)) + 1])
-                    s[i++] = c;
-            } else {
-                while (scanset[(c = shgetc(sf)) + 1])
-                    ;
+                pos++;
+                width -= (width > 0);
+                gotmatch = 1;
             }
-            shunget(sf);
-            if (!shcnt(sf))
-                goto match_fail;
-            if (t == 'c' && shcnt(sf) != width)
-                goto match_fail;
+            if (width) {
+                shungetwc(c, sf);
+                if (t == 'c' || !gotmatch)
+                    goto match_fail;
+            }
+
             if (alloc) {
                 if (size == SIZE_l)
                     *(wchar_t **)dest = wcs;
@@ -394,63 +410,42 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     s[i] = 0;
             }
             break;
-        case 'p':
-        case 'X':
-        case 'x':
-            base = 16;
-            goto int_common;
-        case 'o':
-            base = 8;
-            goto int_common;
+
         case 'd':
-        case 'u':
-            base = 10;
-            goto int_common;
         case 'i':
-            base = 0;
-        int_common:
-            x = __intscan(sf, base, 0, ULLONG_MAX);
-            if (!shcnt(sf))
-                goto match_fail;
-            if (t == 'p' && dest)
-                *(void **)dest = (void *)(uintptr_t)x;
-            else
-                safec_store_int(dest, size, x);
-            break;
+        case 'o':
+        case 'u':
+        case 'x':
         case 'a':
-        case 'A':
         case 'e':
-        case 'E':
         case 'f':
-        case 'F':
         case 'g':
+        case 'A':
+        case 'E':
+        case 'F':
         case 'G':
-            y = __floatscan(sf, size, 0);
-            if (!shcnt(sf))
+        case 'X':
+        case 'p':
+            if (width < 1)
+                width = 0;
+            snprintf(tmp, sizeof tmp, "%.*s%.0d%s%c%%lln", 1 + !dest, "%*",
+                     width, size_pfx[size + 2], t);
+            cnt = 0;
+            // FIXME
+            if (fscanf(sf->f, tmp, dest ? dest : &cnt, &cnt) == -1)
+                goto input_fail;
+            else if (!cnt)
                 goto match_fail;
-            if (dest)
-                switch (size) {
-                case SIZE_def:
-                    *(float *)dest = y;
-                    break;
-                case SIZE_l:
-                    *(double *)dest = y;
-                    break;
-                case SIZE_L:
-                    *(long double *)dest = y;
-                    break;
-                default:
-                    goto fmt_fail;
-                }
+            pos += cnt;
             break;
         default:
             goto fmt_fail;
         }
 
-        pos += shcnt(sf);
         if (dest)
             matches++;
     }
+
     if (0) {
     fmt_fail:
     alloc_fail:
@@ -465,27 +460,4 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
     }
     FUNLOCK(sf);
     return matches;
-}
-
-static int safec_in_wset(const wchar_t *set, int c) {
-    int j;
-    const wchar_t *p = set;
-    if (*p == '-') {
-        if (c == '-')
-            return 1;
-        p++;
-    } else if (*p == ']') {
-        if (c == ']')
-            return 1;
-        p++;
-    }
-    for (; *p && *p != ']'; p++) {
-        if (*p == '-' && p[1] && p[1] != ']')
-            for (j = p++ [-1]; j < *p; j++)
-                if (c == j)
-                    return 1;
-        if (c == *p)
-            return 1;
-    }
-    return 0;
 }
