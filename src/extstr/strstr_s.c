@@ -2,8 +2,10 @@
  * strstr_s.c
  *
  * November 2008, Bo Berry
+ * September 2018, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
+ * Copyright (c) 2018 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -123,7 +125,7 @@ EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
     if (unlikely(slen > dmax)) { /* now check the actual lengths */
         len = strlen(src);
         dlen = strlen(dest);
-        if (len > dmax || len > strlen(dest))
+        if (len > dmax || len > dlen)
             return RCNEGATE(ESNOTFND);
     }
 
