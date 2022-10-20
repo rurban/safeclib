@@ -920,7 +920,7 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_WSTR)) {
             *lenp = 0;
-            handle_werror(dest, destbos / sizeof(wchar_t),
+            handle_werror(dest, RSIZE_MAX_WSTR,
                           "wcsnorm_compose_s: dmax exceeds max", ESLEMAX);
             return ESLEMAX;
         }
