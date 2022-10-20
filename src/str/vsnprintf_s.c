@@ -929,7 +929,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
         }
 
         case 's': {
-            char *p;
+            char *p, *op;
             unsigned int l;
             if (flags & FLAGS_LONG) {
 #ifndef SAFECLIB_DISABLE_WCHAR
@@ -997,17 +997,18 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                     }
                 }
             }
+            op = p;
             // string output
             while ((*p != 0) && (!(flags & FLAGS_PRECISION) || precision--)) {
                 rc = out(*(p++), buffer, idx++, bufsize);
                 if (unlikely(rc < 0)) { //eg.  EBADF write to closed file
                     if (flags & FLAGS_LONG)
-                        free(p);
+                        free(op);
                     return rc;
                 }
             }
             if (flags & FLAGS_LONG)
-                free(p);
+                free(op);
             // post padding
             if (flags & FLAGS_LEFT) {
                 while (l++ < width) {
