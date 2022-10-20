@@ -106,6 +106,10 @@ LIBTOOL_DISTCLEAN_FILES = \
 	build-aux/test-driver
 DISTCLEANFILES = .version m4/pkg.m4
 
+compile_commands.json: Makefile $(srcdir)/config.h \
+	$(dist_pkginclude_HEADERS)
+	-intercept-build $(MAKE)
+
 if ENABLE_DOC
 MAN1_SOURCES = doc/man/man1/check_for_unsafe_apis.1
 dist_man_MANS =
