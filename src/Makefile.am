@@ -37,7 +37,7 @@ CORE_FILES = \
 	safeclib_private.h    \
 	abort_handler_s.c     \
 	ignore_handler_s.c    \
-	safec_file_s.h
+	io/safec_file_s.h
 if ENABLE_U8
 CORE_FILES += \
 	extu8/u8_private.h
@@ -266,6 +266,7 @@ endif
 
 STD_IO_FILES = \
 	io/safec_vfscanf_s.c \
+	io/safec_vfwscanf_s.c \
 	io/sscanf_s.c	\
 	io/fscanf_s.c	\
 	io/scanf_s.c	\
