@@ -274,16 +274,13 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                 width = 1;
         case '[':
             break;
-        case 'n': {
-            char tmp[128];
+        case 'n': { // unsafe
+            char tmp[64];
             snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
             invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
             errno = EINVAL;
             return EOF;
         }
-            //safec_store_int(dest, size, pos);
-            /* do not increment match count, etc! */
-            //continue;
         default:
             shlim(sf, 0);
             while (isspace(shgetc(sf)))

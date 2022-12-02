@@ -67,30 +67,6 @@ static long double __floatscan(_SAFEC_FILE *sf, int size, int zero) {
     return 0.0L;
 }
 
-static void safec_store_int(void *dest, int size, unsigned long long i) {
-    if (!dest)
-        return;
-    switch (size) {
-    case SIZE_hh:
-        *(char *)dest = i;
-        break;
-    case SIZE_h:
-        *(short *)dest = i;
-        break;
-    case SIZE_def:
-        *(int *)dest = i;
-        break;
-    case SIZE_l:
-        *(long *)dest = i;
-        break;
-    case SIZE_ll:
-        *(long long *)dest = i;
-        break;
-    default:
-        break;
-    }
-}
-
 size_t safec_wstring_read(_SAFEC_FILE *f, unsigned char *buf, size_t len) {
     const wchar_t *src = f->cookie;
     size_t k;
@@ -309,20 +285,13 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
         }
 
         switch (t) {
-        case 'n':
-#if 0
-            safec_store_int(dest, size, pos);
-            /* do not increment match count, etc! */
-            continue;
-#else
-            {
-                char tmp[128];
-                snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
-                invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
-                errno = EINVAL;
-                return EOF;
-            }
-#endif
+        case 'n': { // unsafe
+            char tmp[64];
+            snprintf(tmp, sizeof(tmp), "%s: illegal %%n", funcname);
+            invoke_safe_str_constraint_handler(tmp, NULL, EINVAL);
+            errno = EINVAL;
+            return EOF;
+        }
         case 's':
         case 'c':
         case '[':
