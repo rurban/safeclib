@@ -66,6 +66,9 @@ extern "C" {
 /* set memory constraint handler */
 EXTERN constraint_handler_t
 set_mem_constraint_handler_s(constraint_handler_t handler);
+/* set thread-local constraint handler, overriding the global variant */
+EXTERN constraint_handler_t
+thrd_set_mem_constraint_handler_s(constraint_handler_t handler);
 
 /* copy memory */
 EXTERN errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,

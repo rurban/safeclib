@@ -15,6 +15,7 @@
 .gdbinit
 .version
 .tarball-version
+.cache
 *.o
 *.o.*
 *.lo
@@ -140,3 +141,4 @@ doc/n2231.htm
 doc/n2596.pdf
 doc/n2653.htm
 doc/n2731.pdf
+doc/n2809.pdf

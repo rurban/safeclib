@@ -103,6 +103,9 @@ EXTERN void ignore_handler_s(const char *restrict msg, void *restrict ptr,
 /* set string constraint handler */
 EXTERN constraint_handler_t
 set_str_constraint_handler_s(constraint_handler_t handler);
+/* set thread-local constraint handler, overriding the global variant */
+EXTERN constraint_handler_t
+thrd_set_str_constraint_handler_s(constraint_handler_t handler);
 
 /* string concatenate */
 #if !defined(TEST_MSVCRT)

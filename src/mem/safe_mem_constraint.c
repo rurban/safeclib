@@ -3,8 +3,10 @@
  *
  * October 2008, Bo Berry
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
+ * 2022, Reini Urban <rurban@cpan.org>
  *
  * Copyright (c) 2008-2012 Cisco Systems
+ * Copyright (c) 2022 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -34,6 +36,19 @@
 #include "safe_mem_lib.h"
 
 static constraint_handler_t mem_handler =
+#ifdef SAFECLIB_DEFAULT_HANDLER
+    SAFECLIB_DEFAULT_HANDLER;
+#else
+    NULL;
+#endif
+
+static
+#if defined HAVE_C11
+    _Thread_local
+#elif defined SAFECLIB_HAVE_C99
+    __thread
+#endif
+    constraint_handler_t thrd_mem_handler =
 #ifdef SAFECLIB_DEFAULT_HANDLER
     SAFECLIB_DEFAULT_HANDLER;
 #else
@@ -84,13 +99,48 @@ set_mem_constraint_handler_s(constraint_handler_t handler) {
 EXPORT_SYMBOL(set_mem_constraint_handler_s);
 #endif
 
+/**
+ * @brief
+ *    The thrd_set_mem_constraint_handler_s function sets the
+ *    runtime-constraint handler to a thread-local handler.
+ * @details
+ *    The thrd_set_mem_constraint_handler_s function behaves the same way
+ *    as the set_mem_constraint_handler_s function except that it sets the
+ *    runtime-constraint handler to the handler only for the calling thread and
+ *    for any threads that are yet to be created by the calling thread. The
+ *    function has no effect on other threads in the program. The
+ *    remaining effects of the two functions are identical, as are their
+ *    return values.
+ *
+ * @remark SPECIFIED IN
+ *    ISO/IEC JTC1 SC22 WG14 N2809
+ *    https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2809.pdf
+ *
+ * @see
+ *    thrd_set_str_constraint_handler_s()
+ */
+EXPORT constraint_handler_t
+thrd_set_mem_constraint_handler_s(constraint_handler_t handler) {
+    constraint_handler_t prev_handler = thrd_mem_handler;
+    if (NULL == handler) {
+        thrd_mem_handler = sl_default_handler;
+    } else {
+        thrd_mem_handler = handler;
+    }
+    return prev_handler;
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(thrd_set_mem_constraint_handler_s);
+#endif
+
 /* enable for decl */
 #ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 #undef invoke_safe_mem_constraint_handler
 #endif
 /**
  * @brief
- *    Invokes the currently set constraint handler or the default.
+ *    Invokes the currently set thread-safe or not constraint handler
+ *    or the default.
  *    Can be disabled via \c --disable-constraint-handler
  *
  * @param *msg    Pointer to the message describing the error.
@@ -100,7 +150,9 @@ EXPORT_SYMBOL(set_mem_constraint_handler_s);
  */
 EXPORT void invoke_safe_mem_constraint_handler(const char *msg, void *ptr,
                                                errno_t error) {
-    if (NULL != mem_handler) {
+    if (NULL != thrd_mem_handler) {
+        thrd_mem_handler(msg, ptr, error);
+    } else if (NULL != mem_handler) {
         mem_handler(msg, ptr, error);
     } else {
         sl_default_handler(msg, ptr, error);
