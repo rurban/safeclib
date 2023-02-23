@@ -126,6 +126,7 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
     va_list ap, ap2;
     wchar_t *p;
     int ret = -1;
+    int l_errno;
     const size_t destsz = dmax * sizeof(wchar_t);
 #if !(defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT))
     const size_t destbos = BOS_UNKNOWN;
@@ -188,6 +189,7 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     /* C11 solves the ESNOSPC problem */
 #ifdef HAVE_VSNWPRINTF_S
@@ -242,6 +244,8 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
         return ret;
     }
 #endif
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

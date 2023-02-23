@@ -72,6 +72,7 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     int ret;
     const char *p;
     out_fct_wrap_type wrap;
+    int l_errno;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fprintf_s: stream is null", NULL,
@@ -92,6 +93,7 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
         }
     }
 
+    l_errno = errno;
     errno = 0;
     wrap.arg = stream;
     va_start(ap, fmt);
@@ -103,6 +105,8 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

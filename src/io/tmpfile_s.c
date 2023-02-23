@@ -80,6 +80,7 @@
 
 EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
     static int count = 0;
+    int l_errno;
 
     if (unlikely(streamptr == NULL)) {
         invoke_safe_str_constraint_handler("tmpfile_s: streamptr is null", NULL,
@@ -95,6 +96,7 @@ EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
         return ESLEMAX;
     }
 
+    l_errno = errno;
     errno = 0;
     *streamptr = tmpfile();
 
@@ -104,6 +106,8 @@ EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
         return errno;
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return EOK;
 }

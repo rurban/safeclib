@@ -90,6 +90,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
     va_list ap;
     wchar_t *p;
     int ret;
+    int l_errno;
 
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("swscanf_s: src is null", NULL,
@@ -134,6 +135,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     va_start(ap, fmt);
     ret = vswscanf(src, fmt, ap);
@@ -144,6 +146,8 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, (void *)src, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

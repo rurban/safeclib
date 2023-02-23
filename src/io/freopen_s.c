@@ -83,6 +83,7 @@ EXPORT errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
                          const char *restrict mode, FILE *restrict stream) {
 
+    int l_errno;
     if (unlikely(newstreamptr == NULL)) {
         invoke_safe_str_constraint_handler("freopen_s: newstreamptr is null",
                                            NULL, ESNULLP);
@@ -101,6 +102,7 @@ EXPORT errno_t freopen_s(FILE *restrict *restrict newstreamptr,
         return ESNULLP;
     }
 
+    l_errno = errno;
     errno = 0;
     *newstreamptr = freopen(filename, mode, stream);
 
@@ -110,6 +112,8 @@ EXPORT errno_t freopen_s(FILE *restrict *restrict newstreamptr,
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
         return errno;
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return EOK;
 }

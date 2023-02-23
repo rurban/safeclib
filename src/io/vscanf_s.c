@@ -89,6 +89,7 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
     char *p;
 #endif
     int ret;
+    int l_errno;
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vscanf_s: fmt is null", NULL,
@@ -119,6 +120,7 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
     }
 #endif
 
+    l_errno = errno;
     errno = 0;
     ret = vscanf(fmt, ap);
 
@@ -127,6 +129,8 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }
