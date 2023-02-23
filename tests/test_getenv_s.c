@@ -62,9 +62,12 @@ int test_getenv_s(void) {
     rc = getenv_s(&len, NULL, 0, name);
     ERR_MSVC(0, EINVAL);
     ind = strlen(str2);
-    if (!use_msvcrt) {
-        INDCMP(!= (int)len);
-    }
+#ifdef _WIN32
+    // microsoft returns the size, not the len. so do we now
+    INDCMP(!= (int)len+1);
+#else
+    INDCMP(!= (int)len);
+#endif
 
     /*--------------------------------------------------*/
 
@@ -94,9 +97,11 @@ int test_getenv_s(void) {
     ERR(EOK);
     EXPSTR(dest, str2);
     ind = strlen(str2);
-    if (!use_msvcrt) {
-        INDCMP(!= (int)len);
-    }
+#ifdef _WIN32
+    INDCMP(!= (int)len+1);
+#else
+    INDCMP(!= (int)len);
+#endif
 
     rc = getenv_s(NULL, dest, LEN, name);
     ERR_MSVC(EOK, EINVAL);
@@ -106,9 +111,11 @@ int test_getenv_s(void) {
     ERR(EOK);
     EXPSTR(dest, str2);
     ind = strlen(str2);
-    if (!use_msvcrt) {
-        INDCMP(!= (int)len);
-    }
+#ifdef _WIN32
+    INDCMP(!= (int)len+1);
+#else
+    INDCMP(!= (int)len);
+#endif
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("dest overflow or empty")

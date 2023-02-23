@@ -63,6 +63,9 @@
  *
  * @param[out] len    pointer to a size_t where getenv_s will store the length
  *                    of the found environment variable. Might be NULL.
+ *                    Note that on Microsoft Windows we return len+1, the
+ *                    size of the buffer, including the terminating NUL, to match
+ *                    the wrong getenv_s implementation und usages in the wild there.
  * @param[out] dest   pointer to a string where getenv_s will store the
  *                    contents of the found environment variable. Might be NULL.
  * @param[in]  dmax   maximum number of characters that getenv_s is allowed
@@ -167,7 +170,11 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
         return RCNEGATE(ESNOSPC);
     } else {
         if (len)
+#ifdef _WIN32
+            *len = len1 + 1;
+#else
             *len = len1;
+#endif
         if (dest)
             strcpy_s(dest, dmax, buf);
     }

@@ -110,6 +110,10 @@ out-of-order CPU's. Only the linux kernel and safeclib do so.
   includes the terminating zero, i.e. the result is `+1` from the
   spec.
 
+* `getenv_s` returns in len the size of the env buffer, not the len, as described in the
+   standard (https://en.cppreference.com/w/c/program/getenv). The Microsoft size is len + 1.
+   Their usage example is also wrong: https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/getenv-s-wgetenv-s?view=msvc-170
+
 ## safeclib
 
 * safeclib does not check optional NULL parameters to the vararg
