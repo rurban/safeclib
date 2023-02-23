@@ -68,7 +68,7 @@
  *
  * @return  If the buffer \c dest is too small for the formatted text,
  *          including the terminating null, then the buffer is truncated
- *          and null terminated.
+ *          and zero terminated.
  * @retval  Number of characters not including the terminating null
  *          character, or a negative error number if a runtime
  *          constraints violation or an encoding error occurred.

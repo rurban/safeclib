@@ -57,7 +57,7 @@
  *
  *    The conversion stops if:
  *
- *    - The wide null character \c L'\0' was converted and stored.
+ *    - The wide NUL character \c L'\0' was converted and stored.
  *      The bytes stored in this case are the unshift sequence (if necessary)
  *      followed by \c '\0', \c *srcp is set to \c NULL and \c *ps represents
  *      the initial shift state.
@@ -71,7 +71,7 @@
  *      wide character. This condition is not checked if \c dst==NULL.
  *
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written in the array of dmax
+ *    terminating NUL character (if any) written in the array of dmax
  *    characters pointed to by dest are nulled. Also in the error cases for
  *    srcp = NULL, *srcp = NULL, ESNOSPC and EILSEQ.
  *
@@ -119,7 +119,7 @@
  *                     is NULL
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when *srcp and dest overlap
- * @retval  ESNOSPC    when there is no null character in the first dmax
+ * @retval  ESNOSPC    when there is no NUL character in the first dmax
  *                     multibyte characters in the *srcp array and len is
  *                     greater than dmax (unless dest is null)
  * @retval  EILSEQ     if returned by wctomb()

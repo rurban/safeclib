@@ -44,7 +44,7 @@
  *    the character array pointed to by \c src into the string
  *    pointed to by \c dest. A null is included to properly
  *    terminate the dest string. The copy operation does not
- *    stop on the null character as the function copies \c slen
+ *    stop on the NUL character as the function copies \c slen
  *    characters.
  *
  * @remark EXTENSION TO
@@ -55,7 +55,7 @@
  * @param[out]  dest  pointer to string that will be replaced by src.
  * @param[in]   dmax  restricted maximum length of dest
  * @param[in]   src   pointer to the character array to be copied
- *                    to dest and null terminated.
+ *                    to dest and zero terminated.
  * @param[in]   slen  number of bytes that will be
  *                    copied from the src field into the dest string.
  *

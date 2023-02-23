@@ -46,11 +46,11 @@
  * @def strncat_s(dest,dmax,src,slen)
  * @brief
  *    The strncat_s function appends a copy of the string pointed
- *    to by src (including the terminating null character) to the
+ *    to by src (including the terminating NUL character) to the
  *    end of the string pointed to by dest. The initial character
- *    from src overwrites the null character at the end of dest.
+ *    from src overwrites the NUL character at the end of dest.
  * @details
- *    All elements following the terminating null character (if
+ *    All elements following the terminating NUL character (if
  *    any) written by strncat_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strncat_s returns.
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
@@ -67,7 +67,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out]  dest  pointer to string that will be extended by src
- *                    if dmax allows. The string is null terminated.
+ *                    if dmax allows. The string is zero terminated.
  *                    If the resulting concatenated string is less
  *                    than dmax, the remaining slack space is nulled.
  * @param[in]   dmax  restricted maximum length of the resulting dest,
@@ -94,7 +94,7 @@
  * @returns  If there is a runtime-constraint violation, and if dest and dmax
  *           are valid, then strncat_s clears dest.
  * @retval  EOK        successful operation, when slen == 0 or all the
- * characters are copied from src and dest is null terminated. As special case,
+ * characters are copied from src and dest is zero terminated. As special case,
  * analog to msvcrt: when slen == 0 and dmax is big enough for dest, also
  * return EOK, but clear the rest of dest.
  * @retval  ESNULLP    when dest/src is NULL pointer

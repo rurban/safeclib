@@ -36,7 +36,7 @@ The rationale document lists the following key points for TR24731:
 - Do not produce unterminated strings
 - Do not unexpectedly truncate strings
 - Provide a library useful to existing code
-- Preserve the null terminated string datatype
+- Preserve the zero terminated string datatype
 - Only require local edits to programs
 - Library based solution
 - Support compile-time checking

@@ -64,7 +64,7 @@
  *      which is at least strlen(dest) + 3.
  *
  * @return Returns zero and writes the file name to dest on
- * success. On error, returns non-zero and writes the null character
+ * success. On error, returns non-zero and writes the NUL character
  * to dest[0] (only if dest is not null and dmax is valid).
  *
  * @retval  EOK        on success

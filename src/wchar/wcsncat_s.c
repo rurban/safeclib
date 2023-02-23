@@ -61,7 +61,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out]  dest  pointer to wide string that will be extended by src
- *                    if dmax allows. The string is null terminated.
+ *                    if dmax allows. The string is zero terminated.
  *                    If the resulting concatenated wide string is less
  *                    than dmax, the remaining slack space is nulled.
  * @param[in]   dmax  restricted maximum length of the resulting dest,
@@ -86,7 +86,7 @@
  *           not a null pointer and dmax is greater than zero and not
  *           greater than RSIZE_MAX_WSTR, then wcsncat_s nulls dest.
  * @retval  EOK        successful operation, when slen == 0 or all the wide
- * characters are copied from src and dest is null terminated. As special case,
+ * characters are copied from src and dest is zero terminated. As special case,
  * analog to msvcrt: when slen == 0 and dmax is big enough for dest, also
  * return EOK, but clear dest.
  * @retval  ESNULLP    when dest/src is NULL pointer and slen > 0

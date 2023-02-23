@@ -43,7 +43,7 @@
  *    (space or tab).
  *
  * @details
- *    The shifted-trimmed text is null terminated.
+ *    The shifted-trimmed text is zero terminated.
  *    The text is shifted so the original pointer can continue to be used. This
  *    is useful when the memory was malloc'ed and will need to be freed.
  *
@@ -58,7 +58,7 @@
  * @pre  dest shall not be a null pointer.
  * @pre  dmax shall not be 0
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
- * @pre  dest shall be null terminated
+ * @pre  dest shall be zero terminated
  *
  * @retval  EOK        when successful operation
  * @retval  ESNULLP    when dest is NULL pointer
@@ -67,7 +67,7 @@
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESUNTERM   when dest was not null terminated
+ * @retval  ESUNTERM   when dest was not zero terminated
  *
  * @see
  *    strljustify_s(),

@@ -42,7 +42,7 @@
  * @def wcsnlen_s(str,smax)
  * @brief
  *    The wcsnlen_s function computes the length of the wide string pointed
- *    to by str, providing limited support for non-null terminated strings.
+ *    to by str, providing limited support for non-zero terminated strings.
  *
  * @remark SPECIFIED IN
  *    ISO/IEC TR 24731-1, Programming languages, environments
@@ -50,12 +50,12 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param  str   pointer to wide string
- * @param  smax  maximum length of wide string, incl. the final null
+ * @param  smax  maximum length of wide string, incl. the final NUL
  *
  * @pre  str shall not be a null pointer.
  * @pre  smax shall not equal zero.
  * @pre  smax shall not be greater than RSIZE_MAX_WSTR and size of str
- *       (inc. final null).
+ *       (inc. final NUL).
  *
  * @note   On mingw with \c MINGW_HAS_SECURE_API this API is forceinline'd
  *         and the native \c wcsnlen_s with the msvcrt has a different smax
@@ -64,9 +64,9 @@
  *         called.
  *
  * @return The function returns the wide string length, excluding the
- * terminating null character.  If \c str is NULL, then \c wcsnlen_s returns
+ * terminating NUL character.  If \c str is NULL, then \c wcsnlen_s returns
  * 0. Otherwise, the \c wcsnlen_s function returns the number of wide
- * characters that precede the terminating null character. If there is no null
+ * characters that precede the terminating NUL character. If there is no NUL
  * character in the first \c smax characters of str then \c wcsnlen_s
  * returns \c smax. At most the first \c smax characters of str are accessed
  * by \c wcsnlen_s.

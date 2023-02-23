@@ -64,7 +64,7 @@
  *
  * @return  If no runtime-constraint violation occurred, the \c sprintf_s
  * function returns the number of characters written in the array, not counting
- *          the terminating null character. If an error occurred,
+ *          the terminating NUL character. If an error occurred,
  *          \c sprintf_s returns a negative value. (deviating from C11)
  * @return  If dest is valid and too small for the formatted text,
  *          including the terminating null, then the buffer is cleared, and the

@@ -45,16 +45,16 @@
  * @def strncpy_s(dest,dmax,src,slen)
  * @brief
  *    The \b strncpy_s function copies not more than slen successive characters
- *    (characters that follow a null character are not copied) from the
- *    array pointed to by src to the array pointed to by dest. If no null
- *    character was copied from src, then dest[n] is set to a null character,
- *    thus guaranteeing null termination.
+ *    (characters that follow a NUL character are not copied) from the
+ *    array pointed to by src to the array pointed to by dest. If no NUL
+ *    character was copied from src, then dest[n] is set to a NUL character,
+ *    thus guaranteeing zero termination.
  * @details
- *    All elements following the terminating null character (if
+ *    All elements following the terminating NUL character (if
  *    any) written by strncpy_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strncpy_s returns.
  *    With SAFECLIB_STR_NULL_SLACK defined the rest is cleared with
- *    NULL bytes.
+ *    NUL bytes.
  *    With modern compilers and constant arguments most errors
  *    will be caught at compile-time.
  *
@@ -84,9 +84,9 @@
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
  * @return  If there is a runtime-constraint violation, and if dest and
- *          dmax are valid, then strncpy_s nulls dest.
+ *          dmax are valid, then strncpy_s zeros dest.
  * @retval  EOK        successful operation, when slen == 0 or the characters
- *                     in src were copied to dest and the result is null terminated.
+ *                     in src were copied to dest and the result is zero terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
@@ -160,7 +160,7 @@ EXPORT errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
             if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
-                 * copy slen chars plus the null char.  We null the slack.
+                 * copy slen chars plus the NUL char.  We zero the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
                 if (dmax > 0x20)
@@ -214,7 +214,7 @@ EXPORT errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
             if (unlikely(slen == 0)) {
                 /*
                  * Copying truncated to slen chars.  Note that the TR says to
-                 * copy slen chars plus the null char.  We null the slack.
+                 * copy slen chars plus the NUL char.  We zero the slack.
                  */
 #ifdef SAFECLIB_STR_NULL_SLACK
                 if (dmax > 0x20)

@@ -41,7 +41,7 @@
  * @def strncpyfldin_s(dest,dmax,src,slen)
  * @brief
  *    The strcpyfldin_s function copies at most slen characters from the
- *    null terminated string pointed to by src into the fixed character
+ *    zero terminated string pointed to by src into the fixed character
  *    array pointed to by dest. The copy operation stops on the null
  *    character if encountered and then continues to fill the field
  *    with nulls up to dmax characters.
@@ -53,7 +53,7 @@
  *
  * @param[out]  dest  pointer to string that will be replaced by src.
  * @param[in]   dmax  restricted maximum length of dest
- * @param[in]   src   pointer to the null terminated string that will be copied
+ * @param[in]   src   pointer to the zero terminated string that will be copied
  *                    into the character array pointed to by dest
  * @param[in]   slen  number of bytes to be copied
  *

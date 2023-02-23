@@ -42,7 +42,7 @@
  * @brief
  *    The \b strcpyfld_s function copies \c slen characters from the character
  *    array pointed to by \c src into the character array pointed to by \c
- * dest. The copy operation does not stop on the null character as the function
+ * dest. The copy operation does not stop on the NUL character as the function
  * copies \c slen characters.
  *
  * @remark EXTENSION TO

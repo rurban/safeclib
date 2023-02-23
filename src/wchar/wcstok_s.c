@@ -77,14 +77,14 @@
  *    extends to the end of the string pointed to by dest, and
  *    subsequent searches in the same string for a token return
  *    a null pointer. If such a character is found, it is
- *    overwritten by a null character, which terminates the
+ *    overwritten by a NUL character, which terminates the
  *    current token.
  *
  *    In all cases, the wcstok_s function stores sufﬁcient information
  *    in the pointer pointed to by ptr so that subsequent calls,
  *    with a null pointer for dest and the unmodiﬁed pointer value
  *    for ptr, shall start searching just past the element overwritten
- *    by a null character (if any).
+ *    by a NUL character (if any).
  *
  *    delim uses a STRTOK_DELIM_MAX_LEN of 16.
  *

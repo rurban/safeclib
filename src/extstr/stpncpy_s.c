@@ -43,14 +43,14 @@
  * @def stpncpy_s(dest,dmax,src,slen,errp)
  * @brief
  *    The strncpy_s function copies max slen bytes of the string pointed
- *    to by src (excluding the terminating null character) into the array
+ *    to by src (excluding the terminating NUL character) into the array
  *    pointed to by dest. The strings may not overlap.
  * @details
- *    All elements following the terminating null character (if
+ *    All elements following the terminating NUL character (if
  *    any) written by stpncpy_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when stpncpy_s returns.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by stpncpy_s in the
+ *    terminating NUL character (if any) written by stpncpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
  *    stpncpy_s returns.
  *    With modern compilers and constant arguments most errors
@@ -65,7 +65,7 @@
  * @param[in]   src   pointer to the string that will be copied to dest
  * @param[in]   slen  the maximum number of bytes to copy from src
  * @param[out]  errp  EOK        success. the characters in src were
- *                               copied into dest and the result is null terminated.
+ *                               copied into dest and the result is zero terminated.
  *                    ESNULLP    when dest or src is a NULL pointer
  *                    ESZEROL    when dmax = 0
  *                    ESLEMAX    when dmax or slen > RSIZE_MAX_STR
@@ -180,7 +180,7 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
     }
 
     if (unlikely(dest == src)) {
-        /* walk to the terminating null character */
+        /* walk to the terminating NUL character */
         while (dmax > 0) {
             if (*dest == '\0') {
                 goto eok;

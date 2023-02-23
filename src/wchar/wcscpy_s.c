@@ -41,10 +41,10 @@
  * @def wcscpy_s(dest,dmax,src)
  * @brief
  *    The \c wcscpy_s function copies the string pointed to by \c src
- *    (including the terminating null character) into the array
+ *    (including the terminating NUL character) into the array
  *    pointed to by dest.
  *    With \c SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by \c wcscpy_s in the
+ *    terminating NUL character (if any) written by \c wcscpy_s in the
  *    array of \c dmax characters pointed to by \c dest are nulled when
  *    \c wcscpy_s returns.
  *
@@ -72,7 +72,7 @@
  *          is not a null pointer and dmax is greater than zero and
  *          not greater than RSIZE_MAX_WSTR, then wcscpy_s nulls dest.
  * @retval  EOK         when successful operation, the wide characters in src
- * were copied into dest and the result is null terminated.
+ * were copied into dest and the result is zero terminated.
  * @retval  -ESNULLP    when dest or src is a NULL pointer
  * @retval  -ESZEROL    when dmax = 0
  * @retval  -ESLEMAX    when dmax > RSIZE_MAX_WSTR

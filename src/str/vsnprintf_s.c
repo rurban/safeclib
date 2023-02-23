@@ -1126,7 +1126,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
  * @return  On failure a negative error number is returned.
  * @return  If the buffer \c dest is too small for the formatted text,
  *          including the terminating null, then the buffer is truncated
- *          and null terminated.
+ *          and zero terminated.
  *
  * @retval  -ESNULLP    when \c dest or fmt is NULL pointer, or
  *                      when a \c %s argument is NULL

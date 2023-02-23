@@ -44,11 +44,11 @@
  * @def strcat_s(dest,dmax,src)
  * @brief
  *    The \b strcat_s function appends a copy of the string pointed
- *    to by src (including the terminating null character) to the
+ *    to by src (including the terminating NUL character) to the
  *    end of the string pointed to by dest. The initial character
- *    from src overwrites the null character at the end of dest.
+ *    from src overwrites the NUL character at the end of dest.
  * @details
- *    All elements following the terminating null character (if
+ *    All elements following the terminating NUL character (if
  *    any) written by strcat_s in the array of dmax characters
  *    pointed to by dest take unspeciﬁed values when strcat_s
  *    returns.
@@ -66,7 +66,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out]  dest      pointer to string that will be extended by src
- *                        if dmax allows. The string is null terminated.
+ *                        if dmax allows. The string is zero terminated.
  *                        If the resulting concatenated string is less
  *                        than dmax, the remaining slack space is nulled.
  * @param[in]   dmax      restricted maximum length of the resulting dest,

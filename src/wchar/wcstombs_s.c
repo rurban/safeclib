@@ -59,7 +59,7 @@
  *
  *    The conversion stops if:
  *
- *    - The wide null character \c L'\0' was converted and stored.
+ *    - The wide NUL character \c L'\0' was converted and stored.
  *      The bytes stored in this case are the unshift sequence (if necessary)
  *      followed by \c '\0'.
  *
@@ -70,7 +70,7 @@
  *      This condition is not checked if \c dest==NULL.
  *
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written in the array of dmax
+ *    terminating NUL character (if any) written in the array of dmax
  *    characters pointed to by dest are nulled. Also in the error cases for
  *    src = NULL, ESNOSPC and EILSEQ.
  *
@@ -88,7 +88,7 @@
  * @param[in]   dmax    The size in bytes of dest
  * @param[in]   src     wide string that will be converted to \c dest
  * @param[in]   len     number of bytes to be stored in \c dest, not
- *                      including the terminating null character.
+ *                      including the terminating NUL character.
  *
  * @pre \c retvalp and \c src shall not be a null pointer.
  * @pre dmax and len shall not be greater than \c RSIZE_MAX_STR
@@ -112,7 +112,7 @@
  * compiler knows the object_size statically), unless dest is NULL
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
  * @retval  ESOVRLP    when src and dest overlap
- * @retval  ESNOSPC    when there is no null character in the first dmax
+ * @retval  ESNOSPC    when there is no NUL character in the first dmax
  *                     multibyte characters in the src array and len is
  *                     greater than dmax (unless dest is null)
  * @retval  EILSEQ     if returned by wcstombs()

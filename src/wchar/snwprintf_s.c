@@ -50,7 +50,7 @@ any of the arguments corresponding to %s is a null pointer.
  *    wprintf. Instead of being printed, the content is stored in
  *    dest.
  *    With \c SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by \c snwprintf_s in the
+ *    terminating NUL character (if any) written by \c snwprintf_s in the
  *    array of dmax wide characters pointed to by \c dest are nulled when
  *    \c snwprintf_s returns.
  *

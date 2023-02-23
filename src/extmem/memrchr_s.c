@@ -46,7 +46,7 @@ extern void *memrchr(const void *, int, size_t);
  * @brief
  *    Finds the last occurrence of ch (after conversion to char as if by
  *    (char)ch) in the null-terminated byte string pointed to by dest (each
- *    character interpreted as unsigned char). The terminating null character
+ *    character interpreted as unsigned char). The terminating NUL character
  *    is considered to be a part of the string and can be found when searching
  *    for '\0'.
  *

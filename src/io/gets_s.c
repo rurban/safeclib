@@ -59,7 +59,7 @@
  *    from stdin until new-line character, end-of-file condition, or read
  *    error before calling the constraint handler.
  *    With SAFECLIB_STR_NULL_SLACK the rest of dmax is cleared with NULL
- *    bytes, without all elements following the terminating null character (if
+ *    bytes, without all elements following the terminating NUL character (if
  *    any) written by gets_s in the array of dmax characters pointed to by
  *    dest take unspeciﬁed values when gets_s returns.
  *

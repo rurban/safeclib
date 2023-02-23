@@ -49,7 +49,7 @@
  *    No more than dmax-1 bytes are written, the buffer is always
  *    null-terminated. If the message had to be truncated to fit the buffer
  *    and dmax is greater than 3, then only dmax-4 bytes are written, and
- *    the characters "..." are appended before the null terminator.  The
+ *    the characters "..." are appended before the NUL terminator.  The
  *    behavior is undefined if writing to dest occurs past the end of the
  *    array, which can happen when the size of the buffer pointed to by dest is
  *    less than the number of characters in the error message which in turn is

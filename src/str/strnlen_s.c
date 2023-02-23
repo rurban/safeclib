@@ -56,10 +56,10 @@
  * @pre  smax shall not be greater than RSIZE_MAX_STR nor sizeof(str).
  *
  * @return   The function returns the string length, excluding the terminating
- *           null character.  If \c str is NULL, then \c strnlen_s returns \c
+ *           NUL character.  If \c str is NULL, then \c strnlen_s returns \c
  *           0.  Otherwise, the \c strnlen_s function returns the number of
- *           characters that precede the terminating null character. If there
- *           is no null character in the first \c smax characters of \c str
+ *           characters that precede the terminating NUL character. If there
+ *           is no NUL character in the first \c smax characters of \c str
  *           then \c strnlen_s returns smax. At most the first \c smax or \c
  *           sizeof(str) characters of str are accessed by \c strnlen_s.
  *

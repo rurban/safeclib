@@ -56,7 +56,7 @@
  * @return
  *    The function returns a terminated string.  If a null is not
  *    encountered prior to dmax characters, the dmax character is
- *    set to null terminating the string. The string length is
+ *    set to zero terminating the string. The string length is
  *    also returned.
  *
  * @see

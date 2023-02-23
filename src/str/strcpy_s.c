@@ -48,10 +48,10 @@
  * @def strcpy_s(dest,dmax,src)
  * @brief
  *    The strcpy_s function copies the string pointed to by src
- *    (including the terminating null character) into the array
+ *    (including the terminating NUL character) into the array
  *    pointed to by dest.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by strcpy_s in the
+ *    terminating NUL character (if any) written by strcpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
  *    strcpy_s returns.
  *    With modern compilers and constant arguments most errors
@@ -85,7 +85,7 @@
  * @return  If there is a runtime-constraint violation, and if dest
  *          and dmax are valid, then strcpy_s nulls dest.
  * @retval  EOK        when successful operation, the characters in src were
- *                     copied into dest and the result is null terminated.
+ *                     copied into dest and the result is zero terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR

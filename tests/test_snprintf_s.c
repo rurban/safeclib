@@ -96,7 +96,7 @@ int test_snprintf_s(void) {
 
     // note: compare to the insecure variant
     rc = snprintf(str1, 1, "%s", str2);
-    /* number of characters (not including the terminating null character)
+    /* number of characters (not including the terminating NUL character)
        which would have been written to buffer if dmax was ignored */
 #if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(14); /* but truncated, written only 1 */

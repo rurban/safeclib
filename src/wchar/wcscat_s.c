@@ -41,9 +41,9 @@
  * @def wcscat_s(dest,dmax,src)
  * @brief
  *    The wcscat_s function appends a copy of the wide string pointed
- *    to by src (including the terminating null character) to the
+ *    to by src (including the terminating NUL character) to the
  *    end of the wide string pointed to by dest. The initial wide character
- *    from src overwrites the null character at the end of dest.
+ *    from src overwrites the NUL character at the end of dest.
  * @details
  *    All elements following the terminating null wide character (if
  *    any) written by wcscat_s in the array of dmax characters
@@ -61,7 +61,7 @@
  *    Part I: Bounds-checking interfaces
  *
  * @param[out]  dest      pointer to wide string that will be extended by src
- *                        if dmax allows. The wide string is null terminated.
+ *                        if dmax allows. The wide string is zero terminated.
  *                        If the resulting concatenated wide string is less
  *                        than dmax, the remaining slack space is nulled.
  * @param[in]   dmax      restricted maximum wchar_t length of the resulting
@@ -81,7 +81,7 @@
  *          not a null pointer and dmax is greater than zero and not
  *          greater than RSIZE_MAX_WSTR, then wcscat_s nulls dest.
  * @retval  EOK        when successful operation, all the wide characters from
- * src were appended to dest and the result in dest is null terminated.
+ * src were appended to dest and the result in dest is zero terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR

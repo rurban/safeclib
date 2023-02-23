@@ -51,9 +51,9 @@ any of the arguments corresponding to %s is a null pointer.
  *    with same test that would be printed if format was used on \c
  *    wprintf. Instead of being printed, the content is stored in
  *    dest.
- *    dest will be terminated with a null character.
+ *    dest will be terminated with a NUL character.
  *    With \c SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by \c vsnwprintf_s in the
+ *    terminating NUL character (if any) written by \c vsnwprintf_s in the
  *    array of dmax wide characters pointed to by \c dest are nulled when
  *    \c vsnwprintf_s returns.
  *

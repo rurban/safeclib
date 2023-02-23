@@ -318,7 +318,7 @@ EXTERN errno_t _strcpyfld_s_chk(char *dest, const rsize_t dmax, const char *src,
 #define strcpyfld_s(dest, dmax, src, slen)                                     \
     _strcpyfld_s_chk(dest, dmax, src, slen, BOS(dest))
 
-/* copy from a null terminated string to fixed char array */
+/* copy from a zero terminated string to fixed char array */
 EXTERN errno_t _strcpyfldin_s_chk(char *dest, rsize_t dmax, const char *src,
                                   rsize_t slen, const size_t destbos)
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)
@@ -326,7 +326,7 @@ EXTERN errno_t _strcpyfldin_s_chk(char *dest, rsize_t dmax, const char *src,
 #define strcpyfldin_s(dest, dmax, src, slen)                                   \
     _strcpyfldin_s_chk(dest, dmax, src, slen, BOS(dest))
 
-/* copy from a char array to null terminated string */
+/* copy from a char array to zero terminated string */
 EXTERN errno_t _strcpyfldout_s_chk(char *dest, rsize_t dmax, const char *src,
                                    rsize_t slen, const size_t destbos)
     BOS_CHK_BUTZERO(dest, slen) BOS_OVR2_BUTZERO(src, slen)

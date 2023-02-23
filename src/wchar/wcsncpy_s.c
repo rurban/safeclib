@@ -43,10 +43,10 @@
  * @def wcsncpy_s(dest,dmax,src,slen)
  * @brief
  *    The \b wcsncpy_s function copies the wide string pointed to by src
- *    (including the terminating null character) into the wide string
+ *    (including the terminating NUL character) into the wide string
  *    pointed to by dest.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by wcsncpy_s in the
+ *    terminating NUL character (if any) written by wcsncpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
  *    wcsncpy_s returns.
  *
@@ -75,7 +75,7 @@
  * @return  If there is a runtime-constraint violation, then if dest and
  *          dmax are valid, then wcsncpy_s nulls dest.
  * @retval  EOK        successful operation, when slen == 0 or the wide
- * characters in src were copied into dest and the result is null terminated.
+ * characters in src were copied into dest and the result is zero terminated.
  * @retval  ESNULLP    when dest/src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR

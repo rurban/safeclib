@@ -43,10 +43,10 @@
  * @def stpcpy_s(dest,dmax,src,errp)
  * @brief
  *    The stpcpy_s function copies the string pointed to by src
- *    (including the terminating null character) into the array
+ *    (including the terminating NUL character) into the array
  *    pointed to by dest. The strings may not overlap.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written by stpcpy_s in the
+ *    terminating NUL character (if any) written by stpcpy_s in the
  *    array of dmax characters pointed to by dest are nulled when
  *    stpcpy_s returns.
  *    With modern compilers and constant arguments most errors
@@ -60,7 +60,7 @@
  * @param[in]   dmax  restricted maximum length of dest
  * @param[in]   src   pointer to the string that will be copied to dest
  * @param[out]  errp  EOK        success. the characters in src were
- *                               copied into dest and the result is null terminated.
+ *                               copied into dest and the result is zero terminated.
  *                    ESNULLP    when dest or src is a NULL pointer
  *                    ESZEROL    when dmax = 0
  *                    ESLEMAX    when dmax > RSIZE_MAX_STR
@@ -151,7 +151,7 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
     slen = 0;
 
     if (unlikely(dest == src)) {
-        /* walk to the terminating null character */
+        /* walk to the terminating NUL character */
         while (dmax > 0) {
             if (*dest == '\0') {
                 goto eok;

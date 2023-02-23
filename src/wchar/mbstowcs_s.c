@@ -66,7 +66,7 @@
  *
  *    The conversion stops if:
  *
- *    - The multibyte null character was converted and stored.
+ *    - The multibyte NUL character was converted and stored.
  *
  *    - An invalid multibyte character (according to the current C
  *      locale) was encountered.
@@ -111,7 +111,7 @@
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax and
  * dest != NULL
  * @retval  ESOVRLP    when src and dest overlap
- * @retval  ESNOSPC    when there is no null character in the first dmax
+ * @retval  ESNOSPC    when there is no NUL character in the first dmax
  *                     multibyte characters in the src array and len is
  *                     greater than dmax (unless dest is null)
  * @see

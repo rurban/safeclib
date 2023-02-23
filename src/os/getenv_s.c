@@ -52,7 +52,7 @@
  *    is written to *len (unless null) and '\0' is written to value[0] (unless
  *    null).
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written in the
+ *    terminating NUL character (if any) written in the
  *    array of dmax characters pointed to by dest are nulled.
  *    If \c secure_getenv() is available, it is used.
  *

@@ -41,7 +41,7 @@
  *    Sets maximal dmax wide characters of dest to a wide character value,
  *    but not the final NULL character.
  *    With SAFECLIB_STR_NULL_SLACK defined all elements following the
- *    terminating null character (if any) written in the
+ *    terminating NUL character (if any) written in the
  *    array of dmax wide characters pointed to by dest are nulled.
  *
  * @remark EXTENSION TO

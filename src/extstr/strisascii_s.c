@@ -51,7 +51,7 @@
  * @param  dmax  maximum length of string
  *
  * @pre  dest shall not be a null pointer.
- * @pre  dest shall be a null terminated.
+ * @pre  dest shall be a zero terminated.
  * @pre  dmax shall not equal zero.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
