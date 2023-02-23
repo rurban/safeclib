@@ -103,6 +103,8 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
 #endif
 {
     int ret;
+    int l_errno = errno;
+    errno = 0;
     ret = _vsnprintf_s_chk(dest, dmax, destbos, fmt, ap);
 
     if (unlikely(dmax && ret >= (int)dmax)
@@ -111,12 +113,11 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
 #endif
     ) {
         handle_error(dest, dmax, "vsprintf_s: len exceeds dmax", ESNOSPC);
-#ifdef HAVE_MINGW32
-        errno = 0;
-#endif
         return -ESNOSPC; /* different to the standard (=0),
                             but like all other implementations */
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

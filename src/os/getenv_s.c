@@ -102,6 +102,7 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
 {
     const char *buf;
     size_t len1;
+    int l_errno;
 
     if (likely(dest)) {
         if (destbos == BOS_UNKNOWN) {
@@ -142,6 +143,7 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
         return ESNULLP;
     }
 
+    l_errno = errno;
     errno = 0;
 #ifdef HAVE_SECURE_GETENV
     buf = secure_getenv(name);
@@ -178,6 +180,8 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
         if (dest)
             strcpy_s(dest, dmax, buf);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return EOK;
 }

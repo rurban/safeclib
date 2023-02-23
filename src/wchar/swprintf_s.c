@@ -123,6 +123,7 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     va_list ap, ap2;
     wchar_t *p;
     int ret = -1;
+    int l_errno;
     const size_t destsz = dmax * sizeof(wchar_t);
 #if !(defined(SAFECLIB_HAVE_C99) && !defined(TEST_MSVCRT))
     const size_t destbos = BOS_UNKNOWN;
@@ -189,6 +190,7 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     va_start(ap, fmt);
     va_copy(ap2, ap);
@@ -199,13 +201,14 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(ret == -1)) {
         if (unlikely(dmax == 1))
             goto nospc;
-        errno = 0;
         if (likely(dmax < 512)) { /* stacksize 2k */
             static wchar_t tmp[512];
+            errno = 0;
             va_start(ap2, fmt);
             ret = vswprintf(tmp, 512, fmt, ap2);
             va_end(ap2);
         } else {
+            errno = 0;
             wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
             if (!tmp) {
                 handle_werror(dest, dmax, "swprintf_s: malloc failed", ENOMEM);
@@ -218,7 +221,8 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
         }
         if (ret > 0) {
         nospc:
-            errno = 0; /* EOVERFLOW */
+            if (0 == errno)
+                errno = l_errno;
             handle_werror(dest, dmax, "swprintf_s: len exceeds dmax", ESNOSPC);
             return -(ESNOSPC);
         }
@@ -231,6 +235,8 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
         strcat(errstr, strerror(errno));
         handle_werror(dest, dmax, errstr, -ret);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

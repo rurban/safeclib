@@ -1554,6 +1554,7 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
 {
     const char *p;
     int ret;
+    int l_errno;
 
     if (unlikely(dest == NULL || fmt == NULL)) {
         invoke_safe_str_constraint_handler("vsnprintf_s: dest/fmt is null",
@@ -1588,6 +1589,7 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
         }
     }
 
+    l_errno = errno;
     errno = 0;
     ret =
         safec_vsnprintf_s(safec_out_buffer, "vsnprintf_s", dest, dmax, fmt, ap);
@@ -1618,5 +1620,7 @@ EXPORT int _vsnprintf_s_chk(char *restrict dest, rsize_t dmax,
         *dest = '\0';
 #endif
     }
+    if (0 == errno)
+        errno = l_errno;
     return ret;
 }

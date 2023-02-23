@@ -79,6 +79,7 @@ EXPORT errno_t fopen_s(FILE *restrict *restrict streamptr,
                        const char *restrict filename,
                        const char *restrict mode) {
 
+    int l_errno;
     if (unlikely(streamptr == NULL)) {
         invoke_safe_str_constraint_handler("fopen_s: streamptr is null", NULL,
                                            ESNULLP);
@@ -97,6 +98,7 @@ EXPORT errno_t fopen_s(FILE *restrict *restrict streamptr,
         return ESNULLP;
     }
 
+    l_errno = errno;
     errno = 0;
     *streamptr = fopen(filename, mode);
 
@@ -106,6 +108,8 @@ EXPORT errno_t fopen_s(FILE *restrict *restrict streamptr,
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
         return errno;
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return EOK;
 }

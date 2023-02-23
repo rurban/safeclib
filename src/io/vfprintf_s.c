@@ -71,6 +71,7 @@
 EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                       va_list ap) {
     int ret;
+    int l_errno;
     const char *p;
     out_fct_wrap_type wrap;
 
@@ -100,6 +101,7 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
         }
     }
 
+    l_errno = errno;
     errno = 0;
 #if 0
     ret = vfprintf(stream, fmt, ap);
@@ -118,6 +120,8 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
 #endif
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

@@ -87,6 +87,7 @@ EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap)
 {
     wchar_t *p;
     int ret;
+    int l_errno;
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vwscanf_s: fmt is null", NULL,
@@ -124,6 +125,7 @@ EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap)
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     ret = vwscanf(fmt, ap);
 
@@ -132,6 +134,8 @@ EXPORT int vwscanf_s(const wchar_t *restrict fmt, va_list ap)
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

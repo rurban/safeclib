@@ -67,6 +67,7 @@
 
 EXPORT int vprintf_s(const char *restrict fmt, va_list ap) {
     int ret;
+    int l_errno;
     const char *p;
 
     if (unlikely(fmt == NULL)) {
@@ -84,6 +85,7 @@ EXPORT int vprintf_s(const char *restrict fmt, va_list ap) {
         }
     }
 
+    l_errno = errno;
     errno = 0;
     ret = vprintf(fmt, ap);
 
@@ -92,6 +94,8 @@ EXPORT int vprintf_s(const char *restrict fmt, va_list ap) {
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

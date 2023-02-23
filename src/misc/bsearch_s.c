@@ -118,6 +118,7 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
                void *context, const size_t basebos)
 #endif
 {
+    int l_errno;
     if (likely(nmemb != 0)) {
         if (unlikely(key == NULL || base == NULL || compar == NULL)) {
             invoke_safe_mem_constraint_handler(
@@ -153,6 +154,7 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
 #endif
     }
 
+    l_errno = errno;
     errno = 0;
 
     while (nmemb > 0) {
@@ -169,6 +171,8 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
             nmemb -= nmemb / 2;
         }
     }
+    if (0 == errno)
+        errno = l_errno;
     return NULL;
 }
 
