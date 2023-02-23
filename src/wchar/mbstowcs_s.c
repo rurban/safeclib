@@ -130,6 +130,7 @@ EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
 {
     wchar_t *orig_dest;
     errno_t rc;
+    int l_errno;
 #ifdef HAVE_CYGWIN64
     mbstate_t st;
 #endif
@@ -180,6 +181,7 @@ EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
 
     /* hold base of dest in case src was not copied */
     orig_dest = dest;
+    l_errno = errno;
     errno = 0;
 
     *retvalp = mbstowcs(dest, src, len);
@@ -196,7 +198,7 @@ EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
     } else {
         if (dest) {
             size_t tmp = 0;
-            errno = 0;
+            // errno = 0;
             if (*retvalp > RSIZE_MAX_WSTR) { /* else ESNOSPC */
                 tmp = mbstowcs(NULL, src, len);
             }
@@ -212,6 +214,8 @@ EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
             rc = ((size_t)*retvalp == 0) ? EOK : errno;
         }
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return RCNEGATE(rc);
 }

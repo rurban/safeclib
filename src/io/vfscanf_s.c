@@ -89,6 +89,7 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
     char *p;
 #endif
     int ret;
+    int l_errno;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("vfscanf_s: stream is null", NULL,
@@ -126,6 +127,7 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
     }
 #endif
 
+    l_errno = errno;
     errno = 0;
     ret = vfscanf(stream, fmt, ap);
 
@@ -134,6 +136,8 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

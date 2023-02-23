@@ -109,6 +109,7 @@ EXPORT char *_gets_s_chk(char *restrict dest, rsize_t dmax,
 #endif
 {
     char *ret;
+    int l_errno;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("gets_s: dest is null", NULL,
@@ -145,6 +146,7 @@ EXPORT char *_gets_s_chk(char *restrict dest, rsize_t dmax,
         }
     }
 
+    l_errno = errno;
     errno = 0;
     ret = fgets(dest, dmax + 1, stdin);
 
@@ -171,6 +173,8 @@ EXPORT char *_gets_s_chk(char *restrict dest, rsize_t dmax,
 #endif
         }
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }
