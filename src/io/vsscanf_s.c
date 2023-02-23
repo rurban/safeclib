@@ -91,6 +91,7 @@ EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
     char *p;
 #endif
     int ret;
+    int l_errno;
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("vsscanf_s: buffer is null", NULL,
@@ -128,6 +129,7 @@ EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
     }
 #endif
 
+    l_errno = errno;
     errno = 0;
     ret = vsscanf(buffer, fmt, ap);
 
@@ -136,6 +138,8 @@ EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

@@ -112,6 +112,7 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 {
     wchar_t *p;
     int ret = -1;
+    int l_errno;
     const size_t destsz = dmax * sizeof(wchar_t);
 #ifndef HAVE_VSNWPRINTF_S
     va_list ap2;
@@ -171,6 +172,7 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     /* C11 solves the ESNOSPC problem */
 #ifdef HAVE_VSNWPRINTF_S
@@ -195,7 +197,7 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
         }
         if (ret > 0) {
         nospc:
-            errno = 0;
+            // errno = 0;
             handle_werror(dest, dmax, "vswprintf_s: len exceeds dmax", ESNOSPC);
             return -(ESNOSPC);
         }
@@ -218,6 +220,8 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #endif
         *dest = 0;
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

@@ -86,6 +86,7 @@ any of the arguments corresponding to %s is a null pointer.
 EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     va_list ap;
     int ret;
+    int l_errno;
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
@@ -126,6 +127,7 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     }
 #endif
 
+    l_errno = errno;
     errno = 0;
     va_start(ap, fmt);
     ret = vfscanf(stream, fmt, ap);
@@ -136,6 +138,8 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
         strcat(errstr, strerror(errno));
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

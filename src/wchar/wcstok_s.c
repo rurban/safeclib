@@ -189,6 +189,7 @@ EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
     rsize_t slen;
     rsize_t destsz;
     const wchar_t *orig_dest = dest;
+    int l_errno;
 
     if (unlikely(dmaxp == NULL)) {
         invoke_safe_str_constraint_handler("wcstok_s: dmaxp is NULL",
@@ -264,6 +265,7 @@ EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
      * scan dest for a delimiter
      */
     ptoken = NULL;
+    l_errno = errno;
     errno = 0;
     while (*dest != L'\0' && !ptoken) {
 
@@ -314,6 +316,8 @@ EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
      */
     if (ptoken == NULL) {
         *dmaxp = dlen;
+        if (0 == errno)
+            errno = l_errno;
         return (ptoken);
     }
 
@@ -367,6 +371,8 @@ EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
         dlen--;
     }
 
+    if (0 == errno)
+        errno = l_errno;
     *dmaxp = dlen;
     return (ptoken);
 }
