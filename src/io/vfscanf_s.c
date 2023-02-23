@@ -89,6 +89,7 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
                       .cookie = (void *)stream,
                       .read = safec_stream_read,
                       .lock = -1};
+    int l_errno;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("vfscanf_s: stream is null", NULL,
@@ -126,6 +127,7 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
     }
 #endif
 
+    l_errno = errno;
     errno = 0;
     ret = _safec_vfscanf_impl(&sf, "vfscanf_s", fmt, ap, 1);
 
@@ -138,6 +140,8 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
         }
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

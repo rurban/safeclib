@@ -88,6 +88,7 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
                       .cookie = (void *)stdin,
                       .read = safec_stream_read,
                       .lock = -1};
+    int l_errno;
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vscanf_s: fmt is null", NULL,
@@ -118,6 +119,7 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
     }
 #endif
 
+    l_errno = errno;
     errno = 0;
     // ret = vscanf(fmt, ap);
     ret = _safec_vfscanf_impl(&sf, "vscanf_s", fmt, ap, 1);
@@ -131,6 +133,8 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
         }
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

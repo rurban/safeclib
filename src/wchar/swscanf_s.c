@@ -83,6 +83,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
     wchar_t *p;
     int ret;
     _SAFEC_FILE sf = {.cookie = (void *)src, .lock = -1};
+    int l_errno;
 
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("swscanf_s: src is null", NULL,
@@ -127,6 +128,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     va_start(ap, fmt);
     ret = _safec_vfwscanf_impl(&sf, "swscanf_s", fmt, ap, 1);
@@ -142,6 +144,8 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
         }
         invoke_safe_str_constraint_handler(errstr, (void *)src, errno);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

@@ -185,6 +185,7 @@ EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
     rsize_t dlen;
     rsize_t slen;
     rsize_t dmax;
+    int l_errno;
     const char *orig_dest = dest;
 
     if (unlikely(dmaxp == NULL)) {
@@ -256,6 +257,7 @@ EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
      */
     dlen = *dmaxp;
     ptoken = NULL;
+    l_errno = errno;
     errno = 0;
     while (*dest != '\0' && !ptoken) {
 
@@ -304,6 +306,8 @@ EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
      */
     if (ptoken == NULL) {
         *dmaxp = dlen;
+        if (0 == errno)
+            errno = l_errno;
         return (ptoken);
     }
 
@@ -357,6 +361,8 @@ EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
         dlen--;
     }
 
+    if (0 == errno)
+        errno = l_errno;
     *dmaxp = dlen;
     return (ptoken);
 }

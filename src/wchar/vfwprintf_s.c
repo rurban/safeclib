@@ -80,6 +80,7 @@ EXPORT int vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt,
                        va_list ap) {
     wchar_t *p;
     int ret;
+    int l_errno;
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("vfwprintf_s: stream is null", NULL,
@@ -115,6 +116,7 @@ EXPORT int vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     ret = vfwprintf(stream, fmt, ap);
 
@@ -127,6 +129,8 @@ EXPORT int vfwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt,
         }
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

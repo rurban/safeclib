@@ -132,6 +132,7 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #ifndef HAVE_VSNWPRINTF_S
     va_list ap2;
 #endif
+    int l_errno;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vsnwprintf_s: dest is null", NULL,
@@ -192,6 +193,7 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #error need wcsstr or wcschr
 #endif
 
+    l_errno = errno;
     errno = 0;
     /* C11 solves the ESNOSPC problem */
 #ifdef HAVE_VSNWPRINTF_S
@@ -215,6 +217,8 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                 va_end(ap2);
                 handle_werror(dest, dmax, "vsnwprintf_s: malloc failed",
                               ENOMEM);
+                if (0 == errno)
+                    errno = l_errno;
                 return -(ENOMEM);
             }
             tmp = t;
@@ -252,6 +256,8 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
         return ret;
     }
 #endif
+    if (0 == errno)
+        errno = l_errno;
 
     return ret;
 }

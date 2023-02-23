@@ -133,6 +133,7 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
     wchar_t *orig_dest;
     mbstate_t orig_ps;
     errno_t rc;
+    int l_errno;
 
     CHK_SRC_NULL("mbsrtowcs_s", retvalp)
     *retvalp = 0;
@@ -183,6 +184,8 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
     orig_dest = dest;
     memcpy(&orig_ps, ps, sizeof(orig_ps));
 
+    l_errno = errno;
+    errno = 0;
     /* The libc converter writes up to len wchar_t, so with len >= dmax
      * first measure the needed size without writing (on copies of *srcp
      * and *ps) and only convert when it fits into dest. Else we would
@@ -211,7 +214,7 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
     } else {
         if (dest) {
             size_t tmp = 0;
-            errno = 0;
+            // errno = 0;
             /* with NULL either 0 or -1 is returned */
             if (*retvalp > RSIZE_MAX_WSTR) { /* else ESNOSPC */
                 tmp = mbsrtowcs(NULL, srcp, len - 1, &orig_ps);
@@ -227,6 +230,8 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
             rc = ((size_t)*retvalp == 0) ? EOK : errno;
         }
     }
+    if (0 == errno)
+        errno = l_errno;
 
     return RCNEGATE(rc);
 }
