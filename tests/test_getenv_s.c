@@ -64,7 +64,7 @@ int test_getenv_s(void) {
     ind = strlen(str2);
 #ifdef _WIN32
     // microsoft returns the size, not the len. so do we now
-    INDCMP(!= (int)len+1);
+    INDCMP(!= (int)len-1);
 #else
     INDCMP(!= (int)len);
 #endif
@@ -98,7 +98,7 @@ int test_getenv_s(void) {
     EXPSTR(dest, str2);
     ind = strlen(str2);
 #ifdef _WIN32
-    INDCMP(!= (int)len+1);
+    INDCMP(!= (int)len-1);
 #else
     INDCMP(!= (int)len);
 #endif
@@ -112,7 +112,7 @@ int test_getenv_s(void) {
     EXPSTR(dest, str2);
     ind = strlen(str2);
 #ifdef _WIN32
-    INDCMP(!= (int)len+1);
+    INDCMP(!= (int)len-1);
 #else
     INDCMP(!= (int)len);
 #endif
