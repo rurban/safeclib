@@ -209,6 +209,12 @@ To build you do the following:
 repository. Optionally, you can do `make check` if you want to run the unit
 tests.
 
+On Apple M1-M3 hardware I was told to use this:
+
+    ./configure --disable-hardening CC="clang -arch arm64 -arch x86_64" \
+      CXX="clang -arch arm64 -arch x86_64" CPP="clang -E" CXXCPP="clang -E"
+
+This builds safeclib as a fat lib for macOS arm64 + X86-64 using clang.
 
 * Installing
 
