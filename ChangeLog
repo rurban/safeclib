@@ -5,6 +5,10 @@ Changes in 3.8
         - Fixed wrong *printf_s \0 termination. Broken since 3.7. GH #124.
         - Fixed getenv_s to not handle_error for non-existent env var. GH #119
         - Added a single include/safec.h for all 3 public headers. GH #114
+        - Changed wording of Null termination to Zero termination. GH #130
+        - Improve arm/aarch64 MEMORY_BARRIER, GH #116
+        - strpbrk_s: check for slen overflow or early exit,
+        - Update to Unicode 15.0
 
 Changes in 3.7.1
         - Fixed powerpc compilation of the perf tests. GH #113

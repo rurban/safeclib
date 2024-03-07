@@ -136,7 +136,7 @@ Linux)
             make -s -j4 check-log || exit
         make -s clean
     fi
-    for clang in clang clang-{11,10,7,5.0}
+    for clang in clang clang-{17,16,15,14,13,12,11,10,7,5.0}
     do
         if test -n `which $clang`; then
             echo $clang -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
@@ -169,7 +169,7 @@ Linux)
     fi
     #CC="g++-6 -std=c++11" ./configure && \
         #    make -s -j4 check-log || exit
-    for gcc in gcc-{12,11,10,9,8,7,6,5}
+    for gcc in gcc-{13,12,11,10,9,8,7,6,5}
     do
         if test -n "`which $gcc`"; then
             if CC="$gcc" ./configure; then
