@@ -259,7 +259,7 @@ Tested Platforms
 
 The library has been tested on the following systems:
 
-- Linux Fedora core 31 - 36 amd64/i386 glibc 2.28 - 2.36 (all gcc's + clang's)
+- Linux Fedora core 31 - 39 amd64/i386 glibc 2.28 - 2.38 (all gcc's + clang's)
 - Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc's + clang's)
 - Linux Debian 9 - 11 amd64/i386 glibc 2.24 - 2.28 (all gcc's + clang's)
 - Linux centos 7 amd64

@@ -219,6 +219,15 @@ To build you do the following:
 repository. Optionally, you can do ``make check`` if you want to run the
 unit tests.
 
+On Apple M1-M3 hardware I was told to use this:
+
+::
+
+   ./configure --disable-hardening CC="clang -arch arm64 -arch x86_64" \
+     CXX="clang -arch arm64 -arch x86_64" CPP="clang -E" CXXCPP="clang -E"
+
+This builds safeclib as a fat lib for macOS arm64 + X86-64 using clang.
+
 -  Installing
 
 Installation must be preformed by ``root``, an ``Administrator`` on most
@@ -264,7 +273,7 @@ Tested Platforms
 
 The library has been tested on the following systems:
 
--  Linux Fedora core 31 - 36 amd64/i386 glibc 2.28 - 2.36 (all gcc’s +
+-  Linux Fedora core 31 - 39 amd64/i386 glibc 2.28 - 2.38 (all gcc’s +
    clang’s)
 -  Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc’s +
    clang’s)

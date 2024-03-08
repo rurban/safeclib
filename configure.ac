@@ -1,10 +1,10 @@
 # configure.ac - Process with autoconf to produce a configure script
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
-# 2017-2022  Reini Urban <rurban@cpan.org>
+# 2017-2024  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017-2022 Reini Urban
+# Copyright (c) 2017-2024 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -1073,8 +1073,8 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # version information, refer to the libtool manual, section "Updating
 # library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([SAFEC_SO_VERSION], [3:7:0])
-AC_SUBST([SAFEC_API_VERSION], [3.7.0])
+AC_SUBST([SAFEC_SO_VERSION], [3:8:0])
+AC_SUBST([SAFEC_API_VERSION], [3.8.0])
 
 AC_MSG_CHECKING([package version])
 AC_MSG_RESULT($PACKAGE_VERSION)

@@ -1,6 +1,9 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.8.1
+        - Forgot to bump SO_VERSION and API_VERSION to 3.8
+
 Changes in 3.8
         - Fixed wrong *printf_s \0 termination. Broken since 3.7. GH #124.
         - Fixed getenv_s to not handle_error for non-existent env var. GH #119
