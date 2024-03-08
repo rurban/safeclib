@@ -60,6 +60,14 @@ they only provide a compiler barrier against false compiler optimizations. They
 don't reliably sync memory stores with possibly re-ordered loads by modern
 out-of-order CPU's. Only the linux kernel and safeclib do so.
 
+# Unrelated to Annex K, but security related
+
+C11 introduced unsafe unicode identifiers, with identifiers becaming unidentifiable,
+without any **-Whomo-glyph** standardization or following the
+[UTR 39 Security guidelines](http://www.unicode.org/reports/tr39/).
+See my [libu8ident](https://rurban.github.io/libu8ident/) which checks for these, and
+[D2528R1 - C++ Identifier Security using Unicode Standard Annex 39](https://rurban.github.io/libu8ident/doc/D2528R1.html)
+
 # C11 Annex K/safec caveats
 
 * `tmpnam_s`:
