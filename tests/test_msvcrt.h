@@ -35,9 +35,9 @@
 #include "config.h"
 #include "safe_config.h"
 #include "test_private.h"
-#include <stdbool.h>
 
 #ifndef __KERNEL__
+#include <stdbool.h>
 #include <errno.h>
 #endif
 

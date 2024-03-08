@@ -44,8 +44,8 @@ extern "C" {
 #include "safe_types.h"
 #include "safe_compile.h"
 
-#include <stdarg.h>
 #ifndef __KERNEL__
+#include <stdarg.h>
 #include <time.h>
 #if defined HAVE_SYS_TIME_H
 #include <sys/time.h>
