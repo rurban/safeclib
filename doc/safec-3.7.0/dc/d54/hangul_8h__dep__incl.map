@@ -1,4 +1,5 @@
 <map id="hangul.h" name="hangul.h">
-<area shape="rect" id="node1" title=" " alt="" coords="19,5,98,32"/>
-<area shape="rect" id="node2" href="$d3/dd5/wcsnorm__s_8c.html" title=" " alt="" coords="5,80,112,107"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="19,5,97,33"/>
+<area shape="rect" id="Node000002" href="$d3/dd5/wcsnorm__s_8c.html" title=" " alt="" coords="5,81,111,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,48,61,81,55,81,55,48"/>
 </map>
