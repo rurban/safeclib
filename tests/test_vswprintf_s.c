@@ -209,8 +209,15 @@ int test_vswprintf_s(void) {
     rc = vtwprintf_s(str1, 8, BOS(str1), L"%ls", &str1[7]);
     /* overlapping implementation defined */
 #if defined(__GLIBC__) || defined(_WIN32)
-    ERR(-ESNOSPC);
-    WEXPNULL(str1);
+    // both are valid
+    if (str1[0] == L'\0') {
+      WEXPNULL(str1);
+      ERR(-ESNOSPC);
+    } else if (wcscmp(str1, L"8901234") == 0) {
+      NOERR();
+    } else {
+      WEXPNULL(str1);
+    }
 #else
     NOERR();
     /* WEXPSTR(str1, L"8901234"); or WEXPNULL(str1) */
