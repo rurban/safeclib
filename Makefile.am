@@ -610,13 +610,15 @@ endif
 gh-pages: docs
 	echo ensure ./configure --enable-unsafe
 	ls doc/man/man3/tmpnam_s.3
+	cp -f doc/libc-overview.md doc/libc-overview.md.master
 	git checkout gh-pages
+	-mv doc/libc-overview.md.master doc/libc-overview.md
 	rm -rf doc/man
 	rm -rf doc/safec-$(SAFEC_API_VERSION)
 	mkdir doc/safec-$(SAFEC_API_VERSION)
 	mv doc/html/* doc/safec-$(SAFEC_API_VERSION)/
 	rm -rf doc/html
-	git add doc/safec-$(SAFEC_API_VERSION)
+	git add doc/libc-overview.md doc/safec-$(SAFEC_API_VERSION)
 release: docs distcheck
 	git branch |grep '^* master'
 	git tag -f v`date +%d%m%Y`
