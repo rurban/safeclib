@@ -46,7 +46,6 @@ Makefile.in
 *.gcda
 *.gcov
 cover_db
-/build-*
 
 #
 # Top-level generic files
@@ -71,6 +70,7 @@ TAGS
 /libssp-0.dll.m32
 /libssp-0.dll.m64
 /.build-*
+/.rb.sh
 
 # More generated files
 compile_commands.json
