@@ -17,8 +17,10 @@ steps:
 # https://docker-runner.docs.drone.io/configuration/trigger/
 trigger:
   branch:
+    - aarch64-m1
     - archs
     - master
+    - relprep
 
 ---
 kind: pipeline
@@ -36,9 +38,10 @@ steps:
       - apt-get install -yq --no-install-suggests --no-install-recommends
                 build-essential file bash gcc make autotools-dev automake autoconf libtool
                 libtext-diff-perl pkg-config
-      - build-aux/autogen.sh
       - build-aux/conf-make-check.sh
 trigger:
   branch:
+    - aarch64-m1
     - archs
     - master
+    - relprep

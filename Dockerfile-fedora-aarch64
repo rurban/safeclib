@@ -18,16 +18,17 @@ RUN sed -i '/^enabled=1$/ s/1/0/' /etc/yum.repos.d/*-modular.repo || true
 RUN dnf -y --allowerasing --repo fedora install \
   file gcc git make redhat-rpm-config sudo \
   automake autoconf libtool perl-Text-Diff pkgconf-pkg-config strace gdb
-#RUN dnf -y --repo fedora install m4 libtool perl-Text-Diff pkgconf-pkg-config strace gdb
-#RUN dnf -y --repo fedora install strace gdb
+#RUN dnf -y --repo fedora install m4
 
 # Create test user and the environment
 RUN useradd "${TEST_USER}"
-WORKDIR "${WORK_DIR}"
-COPY . .
-RUN chown -R "${TEST_USER}:${TEST_USER}" "${WORK_DIR}"
-
 # Enable sudo without password for convenience.
 RUN echo "${TEST_USER} ALL = NOPASSWD: ALL" >> /etc/sudoers
 
+WORKDIR "${WORK_DIR}"
+COPY . .
+RUN chown -R "${TEST_USER}:${TEST_USER}" "${WORK_DIR}"
 USER "${TEST_USER}"
+
+RUN ./configure --host=aarch64-linux-gnu --disable-shared --enable-debug
+RUN make

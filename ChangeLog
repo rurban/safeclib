@@ -1,6 +1,9 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.8.2
+        - Add aarch64 CI to github. drone.io became unresponsive.
+
 Changes in 3.8.1
         - Forgot to bump SO_VERSION and API_VERSION to 3.8
 
