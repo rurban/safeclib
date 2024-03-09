@@ -57,7 +57,7 @@ SAFEC_INFRA = \
 	${top_srcdir}/build-aux/autogen.sh       \
 	${top_srcdir}/build-aux/msys2.bat        \
 	${top_srcdir}/build-aux/smoke.sh         \
-	$(top_srcdir)/build-aux/version-gen.sh   \
+	$(top_srcdir)/build-aux/git-version-gen  \
 	$(top_srcdir)/doc/libc-overview.md     	 \
 	$(top_srcdir)/scripts                    \
 	$(top_srcdir)/.version                   \
