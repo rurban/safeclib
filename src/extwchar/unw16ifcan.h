@@ -283,24 +283,24 @@ typedef struct { const uint32_t cp; const wchar_t* v; } UNWIF_canon_exc_t;
 /* sorted for binary search */
 #define UNWIF_canon_exc_size 9
 static const UNWIF_canon_exc_t UNWIF_canon_exc [9] = {
-	{ 0x1d160, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6e" },
-	{ 0x1d161, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6f" },
-	{ 0x1d162, L"\xd834\xdd58\xd834\xdd65\xd834\xdd70" },
-	{ 0x1d163, L"\xd834\xdd58\xd834\xdd65\xd834\xdd71" },
-	{ 0x1d164, L"\xd834\xdd58\xd834\xdd65\xd834\xdd72" },
-	{ 0x1d1bd, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6e" },
-	{ 0x1d1be, L"\xd834\xddba\xd834\xdd65\xd834\xdd6e" },
-	{ 0x1d1bf, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6f" },
-	{ 0x1d1c0, L"\xd834\xddba\xd834\xdd65\xd834\xdd6f" }
+        { 0x1d160, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6e" },
+        { 0x1d161, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6f" },
+        { 0x1d162, L"\xd834\xdd58\xd834\xdd65\xd834\xdd70" },
+        { 0x1d163, L"\xd834\xdd58\xd834\xdd65\xd834\xdd71" },
+        { 0x1d164, L"\xd834\xdd58\xd834\xdd65\xd834\xdd72" },
+        { 0x1d1bd, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6e" },
+        { 0x1d1be, L"\xd834\xddba\xd834\xdd65\xd834\xdd6e" },
+        { 0x1d1bf, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6f" },
+        { 0x1d1c0, L"\xd834\xddba\xd834\xdd65\xd834\xdd6f" }
 };
 
 static const wchar_t* UNWIF_canon_tbl [6] = {
-	(const wchar_t*) UNWIF_canon_tbl_1,
-	(const wchar_t*) UNWIF_canon_tbl_2,
-	(const wchar_t*) UNWIF_canon_tbl_3,
-	(const wchar_t*) UNWIF_canon_tbl_4,
-	NULL,
-	(const wchar_t*) UNWIF_canon_tbl_6
+        (const wchar_t*) UNWIF_canon_tbl_1,
+        (const wchar_t*) UNWIF_canon_tbl_2,
+        (const wchar_t*) UNWIF_canon_tbl_3,
+        (const wchar_t*) UNWIF_canon_tbl_4,
+        NULL,
+        (const wchar_t*) UNWIF_canon_tbl_6
 };
 
 /* the rows */

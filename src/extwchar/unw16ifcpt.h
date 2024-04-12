@@ -503,40 +503,40 @@ typedef struct { const uint32_t cp; const wchar_t* v; } UNWIF_compat_exc_t;
 /* sorted for binary search */
 #define UNWIF_compat_exc_size 26
 static const UNWIF_compat_exc_t UNWIF_compat_exc [26] = {
-	{ 0x321d, L"(\x110b\x1169\x110c\x1165\x11ab)" },
-	{ 0x321e, L"(\x110b\x1169\x1112\x116e)" },
-	{ 0x3307, L"\x30a8\x30b9\x30af\x30fc\x30c8\x3099" },
-	{ 0x3313, L"\x30ad\x3099\x30eb\x30bf\x3099\x30fc" },
-	{ 0x3315, L"\x30ad\x30ed\x30af\x3099\x30e9\x30e0" },
-	{ 0x3316, L"\x30ad\x30ed\x30e1\x30fc\x30c8\x30eb" },
-	{ 0x3319, L"\x30af\x3099\x30e9\x30e0\x30c8\x30f3" },
-	{ 0x331a, L"\x30af\x30eb\x30bb\x3099\x30a4\x30ed" },
-	{ 0x332b, L"\x30cf\x309a\x30fc\x30bb\x30f3\x30c8" },
-	{ 0x332e, L"\x30d2\x309a\x30a2\x30b9\x30c8\x30eb" },
-	{ 0x3332, L"\x30d5\x30a1\x30e9\x30c3\x30c8\x3099" },
-	{ 0x3334, L"\x30d5\x3099\x30c3\x30b7\x30a7\x30eb" },
-	{ 0x334a, L"\x30df\x30ea\x30cf\x3099\x30fc\x30eb" },
-	{ 0x3356, L"\x30ec\x30f3\x30c8\x30b1\x3099\x30f3" },
-	{ 0x33af, L"rad\x2215s2" },
-	{ 0xfdfa, L"\x0635\x0644\x0649\x0020\x0627\x0644\x0644\x0647\x0020\x0639\x0644\x064a\x0647\x0020\x0648\x0633\x0644\x0645" },
-	{ 0xfdfb, L"\x062c\x0644\x0020\x062c\x0644\x0627\x0644\x0647" },
-	{ 0x1d160, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6e" },
-	{ 0x1d161, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6f" },
-	{ 0x1d162, L"\xd834\xdd58\xd834\xdd65\xd834\xdd70" },
-	{ 0x1d163, L"\xd834\xdd58\xd834\xdd65\xd834\xdd71" },
-	{ 0x1d164, L"\xd834\xdd58\xd834\xdd65\xd834\xdd72" },
-	{ 0x1d1bd, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6e" },
-	{ 0x1d1be, L"\xd834\xddba\xd834\xdd65\xd834\xdd6e" },
-	{ 0x1d1bf, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6f" },
-	{ 0x1d1c0, L"\xd834\xddba\xd834\xdd65\xd834\xdd6f" }
+        { 0x321d, L"(\x110b\x1169\x110c\x1165\x11ab)" },
+        { 0x321e, L"(\x110b\x1169\x1112\x116e)" },
+        { 0x3307, L"\x30a8\x30b9\x30af\x30fc\x30c8\x3099" },
+        { 0x3313, L"\x30ad\x3099\x30eb\x30bf\x3099\x30fc" },
+        { 0x3315, L"\x30ad\x30ed\x30af\x3099\x30e9\x30e0" },
+        { 0x3316, L"\x30ad\x30ed\x30e1\x30fc\x30c8\x30eb" },
+        { 0x3319, L"\x30af\x3099\x30e9\x30e0\x30c8\x30f3" },
+        { 0x331a, L"\x30af\x30eb\x30bb\x3099\x30a4\x30ed" },
+        { 0x332b, L"\x30cf\x309a\x30fc\x30bb\x30f3\x30c8" },
+        { 0x332e, L"\x30d2\x309a\x30a2\x30b9\x30c8\x30eb" },
+        { 0x3332, L"\x30d5\x30a1\x30e9\x30c3\x30c8\x3099" },
+        { 0x3334, L"\x30d5\x3099\x30c3\x30b7\x30a7\x30eb" },
+        { 0x334a, L"\x30df\x30ea\x30cf\x3099\x30fc\x30eb" },
+        { 0x3356, L"\x30ec\x30f3\x30c8\x30b1\x3099\x30f3" },
+        { 0x33af, L"rad\x2215s2" },
+        { 0xfdfa, L"\x0635\x0644\x0649\x0020\x0627\x0644\x0644\x0647\x0020\x0639\x0644\x064a\x0647\x0020\x0648\x0633\x0644\x0645" },
+        { 0xfdfb, L"\x062c\x0644\x0020\x062c\x0644\x0627\x0644\x0647" },
+        { 0x1d160, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6e" },
+        { 0x1d161, L"\xd834\xdd58\xd834\xdd65\xd834\xdd6f" },
+        { 0x1d162, L"\xd834\xdd58\xd834\xdd65\xd834\xdd70" },
+        { 0x1d163, L"\xd834\xdd58\xd834\xdd65\xd834\xdd71" },
+        { 0x1d164, L"\xd834\xdd58\xd834\xdd65\xd834\xdd72" },
+        { 0x1d1bd, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6e" },
+        { 0x1d1be, L"\xd834\xddba\xd834\xdd65\xd834\xdd6e" },
+        { 0x1d1bf, L"\xd834\xddb9\xd834\xdd65\xd834\xdd6f" },
+        { 0x1d1c0, L"\xd834\xddba\xd834\xdd65\xd834\xdd6f" }
 };
 
 static const wchar_t* UNWIF_compat_tbl [5] = {
-	(const wchar_t*) UNWIF_compat_tbl_1,
-	(const wchar_t*) UNWIF_compat_tbl_2,
-	(const wchar_t*) UNWIF_compat_tbl_3,
-	(const wchar_t*) UNWIF_compat_tbl_4,
-	(const wchar_t*) UNWIF_compat_tbl_5
+        (const wchar_t*) UNWIF_compat_tbl_1,
+        (const wchar_t*) UNWIF_compat_tbl_2,
+        (const wchar_t*) UNWIF_compat_tbl_3,
+        (const wchar_t*) UNWIF_compat_tbl_4,
+        (const wchar_t*) UNWIF_compat_tbl_5
 };
 
 /* the rows */

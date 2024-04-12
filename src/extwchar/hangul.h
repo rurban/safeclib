@@ -7,7 +7,7 @@
 #define H_HANGUL 1
 
 /*
-	HANGUL (Korean) has special normalization rules.
+        HANGUL (Korean) has special normalization rules.
         Unicode 9.0
 */
 

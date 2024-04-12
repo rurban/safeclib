@@ -227,7 +227,7 @@ static size_t safec_out_rev(out_fct_type out, char *buffer, size_t idx,
 
 // internal itoa format
 static size_t safec_ntoa_format(out_fct_type out, const char *funcname,
-				char *buffer, size_t idx,
+                                char *buffer, size_t idx,
                                 size_t maxlen, char *buf, size_t len, bool negative,
                                 unsigned int base, unsigned int prec,
                                 unsigned int width, unsigned int flags)
@@ -291,7 +291,7 @@ static size_t safec_ntoa_format(out_fct_type out, const char *funcname,
 
 // internal itoa for 'long' type
 static size_t safec_ntoa_long(out_fct_type out,  const char *funcname,
-			      char *buffer, size_t idx,
+                              char *buffer, size_t idx,
                               size_t maxlen, unsigned long value, bool negative,
                               unsigned long base, unsigned int prec,
                               unsigned int width, unsigned int flags)
@@ -322,7 +322,7 @@ static size_t safec_ntoa_long(out_fct_type out,  const char *funcname,
 // internal itoa for 'long long' type
 #if defined(PRINTF_SUPPORT_LONG_LONG)
 static size_t safec_ntoa_long_long(out_fct_type out,  const char *funcname,
-				   char *buffer, size_t idx,
+                                   char *buffer, size_t idx,
                                    size_t maxlen, unsigned long long value,
                                    bool negative, unsigned long long base,
                                    unsigned int prec, unsigned int width,
@@ -358,14 +358,14 @@ static size_t safec_ntoa_long_long(out_fct_type out,  const char *funcname,
 // forward declaration so that safec_ftoa can switch to exp notation for values >
 // PRINTF_MAX_FLOAT
 static size_t safec_etoa(out_fct_type out,  const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
+                         char *buffer, size_t idx, size_t maxlen,
                          double value, unsigned int prec, unsigned int width,
                          unsigned int flags);
 #endif
 
 // internal ftoa for fixed decimal floating point
 static size_t safec_ftoa(out_fct_type out,  const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
+                         char *buffer, size_t idx, size_t maxlen,
                          double value, unsigned int prec, unsigned int width,
                          unsigned int flags)
 {
@@ -500,7 +500,7 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
 // internal ftoa variant for exponential floating-point type, contributed by
 // Martijn Jasperse <m.jasperse@gmail.com>
 static size_t safec_etoa(out_fct_type out, const char *funcname,
-			 char *buffer, size_t idx, size_t maxlen,
+                         char *buffer, size_t idx, size_t maxlen,
                          double value, unsigned int prec, unsigned int width,
                          unsigned int flags)
 {
@@ -883,14 +883,14 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
 #ifndef SAFECLIB_DISABLE_WCHAR
                 int len = wctomb(wstr, va_arg(va, int));
                 if (len <= 0) {
-		    char msg[80];
-		    snprintf(msg, sizeof msg, "%s: wctomb for %%lc arg failed", funcname);
+                    char msg[80];
+                    snprintf(msg, sizeof msg, "%s: wctomb for %%lc arg failed", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(-len));
                     return len;
                 }
 #else
-		char msg[80];
-		snprintf(msg, sizeof msg, "%s: unsupported %%lc arg", funcname);
+                char msg[80];
+                snprintf(msg, sizeof msg, "%s: unsupported %%lc arg", funcname);
                 invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(1));
                 return -1;
 #endif
@@ -937,47 +937,47 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
                 errno_t err;
                 const wchar_t *lp = va_arg(va, wchar_t *);
                 if (!lp) {
-		    char msg[80];
-		    snprintf(msg, sizeof msg, "%s: %%ls arg is null", funcname);
+                    char msg[80];
+                    snprintf(msg, sizeof msg, "%s: %%ls arg is null", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, ESNULLP);
                     return -(ESNULLP);
                 }
                 l = wcsnlen_s(lp, precision ? precision : (size_t)-1);
                 p = (char*)malloc(l + 1);
                 if (!p) {
-		    char msg[80];
-		    snprintf(msg, sizeof msg, "%s: malloc %%ls arg failed", funcname);
+                    char msg[80];
+                    snprintf(msg, sizeof msg, "%s: malloc %%ls arg failed", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, 1);
                     return -1;
                 }
                 err = wcstombs_s(&len, p, l, lp, l);
                 if (err != EOK) {
-		    char msg[80];
-		    snprintf(msg, sizeof msg, "%s: wcstombs_s for %%ls arg failed", funcname);
+                    char msg[80];
+                    snprintf(msg, sizeof msg, "%s: wcstombs_s for %%ls arg failed", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(err));
                     return err;
                 }
 #else
-		{
-		    char msg[80];
-		    snprintf(msg, sizeof msg, "%s: unsupported %%ls arg", funcname);
-		    invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(1));
-		}
+                {
+                    char msg[80];
+                    snprintf(msg, sizeof msg, "%s: unsupported %%ls arg", funcname);
+                    invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(1));
+                }
                 return -1;
 #endif
             } else {
                 p = va_arg(va, char *);
                 if (!p) {
-		    char msg[80];
-		    snprintf(msg, sizeof msg, "%s: %%s arg is null", funcname);
+                    char msg[80];
+                    snprintf(msg, sizeof msg, "%s: %%s arg is null", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, ESNULLP);
                     return -(ESNULLP);
                 }
                 l = safec_strnlen_s(p, precision ? precision : (size_t)-1);
             }
             if (l + idx > bufsize) {
-		char msg[80];
-		snprintf(msg, sizeof msg, "%s: %%s arg exceeds dmax", funcname);
+                char msg[80];
+                snprintf(msg, sizeof msg, "%s: %%s arg exceeds dmax", funcname);
                 invoke_safe_str_constraint_handler(msg, buffer, ESNOSPC);
                 if (flags & FLAGS_LONG)
                     free(p);
