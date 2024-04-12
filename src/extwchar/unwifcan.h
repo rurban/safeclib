@@ -280,10 +280,10 @@ static const wchar_t UNWIF_canon_tbl_4 [36][4] = {
 #define UNWIF_canon_exc_size 0
 
 static const wchar_t* UNWIF_canon_tbl [4] = {
-	(const wchar_t*) UNWIF_canon_tbl_1,
-	(const wchar_t*) UNWIF_canon_tbl_2,
-	(const wchar_t*) UNWIF_canon_tbl_3,
-	(const wchar_t*) UNWIF_canon_tbl_4
+        (const wchar_t*) UNWIF_canon_tbl_1,
+        (const wchar_t*) UNWIF_canon_tbl_2,
+        (const wchar_t*) UNWIF_canon_tbl_3,
+        (const wchar_t*) UNWIF_canon_tbl_4
 };
 
 /* the rows */

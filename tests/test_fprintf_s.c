@@ -58,8 +58,8 @@ int test_fprintf_s(void) {
     if (errno) {
         perror("fopen w+");
         fclose(out);
-	out = fopen(TMP, "w");
-	win_wplus = 1;
+        out = fopen(TMP, "w");
+        win_wplus = 1;
     }
 
     /*--------------------------------------------------*/

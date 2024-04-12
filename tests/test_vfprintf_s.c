@@ -71,8 +71,8 @@ int test_vfprintf_s(void) {
     if (errno) {
         perror("fopen w+");
         fclose(out);
-	out = fopen(TMP, "w");
-	win_wplus = 1;
+        out = fopen(TMP, "w");
+        win_wplus = 1;
     }
 
 #define CMP_AND_RESET(out, s)                                                  \
