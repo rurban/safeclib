@@ -17,8 +17,8 @@ int test_memcmp_s(void);
 
 int test_memcmp_s(void) {
     errno_t rc;
-    int32_t ind;
-    int32_t std_ind;
+    int ind;
+    int std_ind;
     uint32_t len;
     int errs = 0;
 
