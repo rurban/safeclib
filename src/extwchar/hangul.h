@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is built by cperl regen/regcharclass-safec.pl.
  * cp_high means only codepoints > 0xff
  */

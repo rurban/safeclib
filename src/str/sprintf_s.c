@@ -106,7 +106,7 @@ EXPORT int sprintf_s(char *restrict dest, rsize_t dmax,
     ret = _vsnprintf_s_chk(dest, dmax, destbos, fmt, va);
 #else
     ret = vsnprintf_s(dest, dmax, fmt, va);
-#endif    
+#endif
     va_end(va);
     return ret;
 }

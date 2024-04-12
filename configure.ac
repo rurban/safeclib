@@ -809,10 +809,10 @@ AC_CHECK_TYPE([errno_t],
         [[#include <errno.h>]])
 AC_SUBST(FALLBACK_ERRNO_T)
 AC_TYPE_MBSTATE_T
-AC_CHECK_MEMBER(struct tm.tm_gmtoff, 
-  [AC_DEFINE(HAVE_TM_GMTOFF, 1, 
-     [Define if struct tm has the tm_gmtoff member.])], 
-     , 
+AC_CHECK_MEMBER(struct tm.tm_gmtoff,
+  [AC_DEFINE(HAVE_TM_GMTOFF, 1,
+     [Define if struct tm has the tm_gmtoff member.])],
+     ,
      [#include <time.h>])
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
@@ -948,7 +948,7 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror])
 
-if test "x$enable_wchar" = "xtrue" ; then        
+if test "x$enable_wchar" = "xtrue" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \
         vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs iswdigit iswspace \
         towlower towupper towctrans ])
@@ -977,7 +977,7 @@ AC_CHECK_FUNCS(
         fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
         asctime_s ctime_s getenv_s ])
 
-if test "x$enable_wchar" = "xtrue" ; then        
+if test "x$enable_wchar" = "xtrue" ; then
    AC_CHECK_FUNCS(
       [ mbsrtowcs_s mbstowcs_s wcsrtombs_s wcstombs_s \
         wcrtomb_s wctomb_s wcsnlen_s wcscpy_s wcsncpy_s wcscat_s wcsncat_s \
@@ -991,7 +991,7 @@ fi
 dnl but delete it, because we override it case by case
 $GREP -v '__STDC_WANT_LIB_EXT1__' confdefs.h > confdefs.h.tmp
 mv confdefs.h.tmp confdefs.h
-        
+
 AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])

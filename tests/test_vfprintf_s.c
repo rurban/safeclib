@@ -188,7 +188,7 @@ int test_vfprintf_s(void) {
         perror("fopen r");
         unlink(TMP);
         return errs + 1;
-    }    
+    }
     /* print to not-writable stream */
     errno = 0;
     rc = vtfprintf_s(out, "%s", str1);
