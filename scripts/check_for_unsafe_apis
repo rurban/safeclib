@@ -181,7 +181,7 @@ my %gFuncConvertMap = (
     "fopen"     => "fopen_s",
     "freopen"   => "freopen_s",
     "gets"      => "gets_s", # not fgets
-    
+
     # C11 std APIs (OS)
     "asctime" => "asctime_s",
     "ctime"   => "ctime_s",
@@ -191,7 +191,7 @@ my %gFuncConvertMap = (
     "tmpnam"  => "mkstemp", #"tmpnam_s",
     "tempnam" => "mkstemp", #"tmpnam_s",
     "tmpfile" => "tmpfile_s",
-    
+
     # C11 std APIs (Misc)
     "bsearch" => "bsearch_s",
     "qsort"   => "qsort_s",
@@ -200,7 +200,7 @@ my %gFuncConvertMap = (
     #    - GNU extensions
     "memcmp"      => "memcmp_s",
     "wmemcmp"     => "wmemcmp_s",
-    
+
     #    - Posix extensions
     "strnlen"     => "strnlen_s",
     "strcasecmp"  => "strcasecmp_s",
@@ -236,7 +236,7 @@ my %gFuncConvertMap = (
     "strtolowercase" => "strtolowercase_s",
     "strtouppercase" => "strtouppercase_s",
     "strzero"        => "strzero_s",
-    
+
     #    - BSD extensions
     #"strnstr"  => "strnlen_s", # broken in newlib
     "strlcat"  => "strcat_s",

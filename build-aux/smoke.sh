@@ -367,7 +367,7 @@ if [ -z "`git status --porcelain`" ]; then
         ../configure && $make check-log || exit
     cd ..
     rm -rf .build
-    
+
     echo make distcheck
     build-aux/autogen.sh && \
         ./configure && $make distcheck
@@ -379,6 +379,6 @@ rm .slkm.ko.cmd .testslkm.ko.cmd  CaseFolding.txt test-upr.pl \
    tmpfopen tmpvwscanf tmpwscanf
 rm -rf .tmp_versions/
 
-autoreconf    
+autoreconf
 ./configure --enable-unsafe --enable-debug && \
     $make -s -j4 check-log || exit

@@ -86,7 +86,7 @@ EXPORT int printf_s(const char *restrict fmt, ...) {
             return -(EINVAL);
         }
     }
-    
+
     va_start(va, fmt);
     ret = safec_vsnprintf_s(safec_out_char, "printf_s", buffer, (rsize_t)-1, fmt, va);
     va_end(va);

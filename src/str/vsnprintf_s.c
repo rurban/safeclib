@@ -955,7 +955,7 @@ int safec_vsnprintf_s(out_fct_type out, const char* funcname,
 		    char msg[80];
 		    snprintf(msg, sizeof msg, "%s: wcstombs_s for %%ls arg failed", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer, RCNEGATE(err));
-                    return err; 
+                    return err;
                 }
 #else
 		{

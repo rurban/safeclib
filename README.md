@@ -301,7 +301,7 @@ References
 
 [^2]: Rationale for TR 24731 Extensions to the C Library Part I:
       Bounds-checking interfaces, ISO/IEC JTC1 SC22 WG14 N1225.
-          
+
 [^3]: The Open Group Base Specifications Issue 7
       http://pubs.opengroup.org/onlinepubs/9699919799/functions/contents.html
 
