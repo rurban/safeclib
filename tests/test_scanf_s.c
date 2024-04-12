@@ -48,7 +48,9 @@ int test_scanf_s(void) {
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty fmt")
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s(NULL, NULL);
+    GCC_DIAG_RESTORE
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
 #endif
@@ -62,7 +64,9 @@ int test_scanf_s(void) {
     /*--------------------------------------------------*/
 
     stuff_stdin("      24");
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s %%n", str2, LEN);
+    GCC_DIAG_RESTORE
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
         printf("%s %u wrong fscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
@@ -77,7 +81,9 @@ int test_scanf_s(void) {
     ERRNO(0);
 
     stuff_stdin("      24");
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s %%n", str2, 6);
+    GCC_DIAG_RESTORE
     if (rc != 1) {
         printf("flapping tests - abort\n");
         return errs;
@@ -112,7 +118,9 @@ int test_scanf_s(void) {
     len1 = strlen(str1);
     stuff_stdin(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s", str2, LEN);
+    GCC_DIAG_RESTORE
     if (rc != 1) {
         printf("flapping tests - abort\n");
         return errs;
@@ -134,7 +142,9 @@ int test_scanf_s(void) {
     strcpy(str1, "keep it simple");
     stuff_stdin(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s", str2, LEN);
+    GCC_DIAG_RESTORE
     if (rc != 1) {
         printf("flapping tests - abort\n");
         return errs;
@@ -173,7 +183,10 @@ int test_scanf_s(void) {
     /*--------------------------------------------------*/
 
     stuff_stdin("      24");
+    GCC_DIAG_IGNORE(-Wformat)
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s %n", str2, LEN, &ind);
+    GCC_DIAG_RESTORE
     ERREOF(EINVAL);
 
     /*--------------------------------------------------*/
@@ -182,7 +195,9 @@ int test_scanf_s(void) {
     str2[0] = '\0';
     stuff_stdin(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s", str2, LEN);
+    GCC_DIAG_RESTORE
     if (rc == -1) { /* flapping test */
         ERR(-1);
         EXPNULL(str2);
@@ -195,7 +210,9 @@ int test_scanf_s(void) {
     str1[0] = '\0';
     stuff_stdin(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s", str2, LEN);
+    GCC_DIAG_RESTORE
     if (rc != -1) {
         printf("flapping tests - abort\n");
         return errs;
@@ -213,7 +230,9 @@ int test_scanf_s(void) {
     strcpy(str1, "qqweqq");
     stuff_stdin(str1);
     /* would block reading */
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = scanf_s("%s", str2, LEN);
+    GCC_DIAG_RESTORE
 #endif
 
     /*--------------------------------------------------*/

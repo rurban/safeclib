@@ -40,7 +40,9 @@ int test_printf_s(void) {
 
     /*--------------------------------------------------*/
 
+    GCC_DIAG_IGNORE(-Wformat-zero-length)
     rc = printf_s("");
+    GCC_DIAG_RESTORE
     NEGERR(EOK)
 
     /* TODO
@@ -51,7 +53,9 @@ int test_printf_s(void) {
     /*--------------------------------------------------*/
 
     str1[0] = '\0';
+    GCC_DIAG_IGNORE(-Wformat)
     rc = printf_s("%s%n\n", str1, &ind);
+    GCC_DIAG_RESTORE
     NEGERR(EINVAL)
 
     /*--------------------------------------------------*/

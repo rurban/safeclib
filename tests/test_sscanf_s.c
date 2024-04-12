@@ -38,7 +38,9 @@ int test_sscanf_s(void) {
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty fmt")
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, NULL, NULL);
+    GCC_DIAG_RESTORE
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
 
@@ -53,7 +55,10 @@ int test_sscanf_s(void) {
     /*--------------------------------------------------*/
 
     strcpy(str1, "      24");
+    GCC_DIAG_IGNORE(-Wformat)
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s %n", str2, LEN, &ind);
+    GCC_DIAG_RESTORE
     ERREOF(EINVAL);
 
     rc = sscanf_s(str1, "%%n");
@@ -64,11 +69,15 @@ int test_sscanf_s(void) {
     ERR(1);
     ERRNO(0);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s %%n", str2, 6);
+    GCC_DIAG_RESTORE
     ERR(1);
     ERRNO(0);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s %%n", str3, 6);
+    GCC_DIAG_RESTORE
     ERR(1);
     ERRNO(0);
     EXPSTR(str3, "24");
@@ -97,7 +106,9 @@ int test_sscanf_s(void) {
     strcpy(str1, "aaaaaaaaaa");
     len1 = strlen(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     ERR(1)
     len2 = strlen(str2);
     len3 = strlen(str1);
@@ -114,7 +125,9 @@ int test_sscanf_s(void) {
 
     strcpy(str1, "keep it simple");
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     ERR(1);
     EXPSTR(str1, "keep it simple")
 
@@ -123,7 +136,9 @@ int test_sscanf_s(void) {
     str1[0] = '\0';
     str2[0] = '\0';
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     ERR(-1)
     EXPNULL(str1)
 
@@ -132,7 +147,9 @@ int test_sscanf_s(void) {
     str1[0] = '\0';
     strcpy(str2, "keep it simple");
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = sscanf_s(str1, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     ERR(-1)
     EXPSTR(str1, "")
 

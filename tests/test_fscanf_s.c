@@ -50,7 +50,9 @@ int test_fscanf_s(void) {
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty stream")
+    GCC_DIAG_IGNORE(-Wformat-zero-length)
     rc = fscanf_s(NULL, "");
+    GCC_DIAG_RESTORE
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
     ERREOF_MSVC(ESNULLP, EINVAL);
 
@@ -70,7 +72,9 @@ int test_fscanf_s(void) {
     /*--------------------------------------------------*/
 
     stuff_stream("      24");
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = fscanf_s(stream, "%s %%n", str2, LEN);
+    GCC_DIAG_RESTORE
 #ifdef BSD_LIKE
     if (rc != -1) { /* BSD's return -1 on %%n */
         printf("%s %u wrong fscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
@@ -100,7 +104,9 @@ int test_fscanf_s(void) {
     strcpy(str1, "aaaaaaaaaa");
     stuff_stream(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = fscanf_s(stream, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     if (rc != 1) {
         printf("flapping tests - abort\n");
         return errs;
@@ -121,7 +127,9 @@ int test_fscanf_s(void) {
 
     stuff_stream("keep it simple");
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = fscanf_s(stream, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     ERR(1);
     EXPSTR(str2, "keep");
 
@@ -154,7 +162,10 @@ int test_fscanf_s(void) {
     /*--------------------------------------------------*/
 
     stuff_stream("      24");
+    GCC_DIAG_IGNORE(-Wformat)
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = fscanf_s(stream, "%s %n", str2, LEN, &ind);
+    GCC_DIAG_RESTORE
     ERREOF(EINVAL);
 
     /*--------------------------------------------------*/
@@ -162,7 +173,9 @@ int test_fscanf_s(void) {
     str1[0] = '\0';
     stuff_stream(str1);
 
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = fscanf_s(stream, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     if (rc != 1) {
         printf("flapping tests - abort\n");
         return errs;
