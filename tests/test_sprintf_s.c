@@ -87,7 +87,9 @@ int test_sprintf_s(void) {
 
     /*--------------------------------------------------*/
 
+    GCC_DIAG_IGNORE(-Wformat)
     rc = sprintf_s(str1, LEN, "%s", NULL);
+    GCC_DIAG_RESTORE
     ERR(-ESNULLP);
     ERRNO_MSVC(0, EINVAL); // ??
 
