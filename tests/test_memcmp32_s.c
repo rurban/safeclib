@@ -14,7 +14,7 @@
 int main(void) {
     errno_t rc;
     uint32_t len;
-    int32_t ind;
+    int ind;
     uint32_t i;
 
     uint32_t mem1[LEN];
