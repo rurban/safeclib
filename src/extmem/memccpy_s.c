@@ -89,6 +89,8 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
                               const size_t destbos, const size_t srcbos)
 #endif
 {
+    (void) srcbos;
+
     uint8_t *dp;
     const uint8_t *sp;
     rsize_t orig_dmax = dmax;
