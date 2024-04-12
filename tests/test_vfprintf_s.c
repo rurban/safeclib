@@ -47,16 +47,19 @@ static size_t cmp_and_reset(FILE *out, const char *s) {
         fclose(out);
         out = fopen(TMP, "r");
         size_t nread = fread(buf, pos, 1, out);
+        (void) nread;
         fclose(out);
         out = fopen(TMP, "w");
     } else {
         rewind(out);
         size_t nread = fread(buf, pos, 1, out);
+        (void) nread;
     }
     EXPSTR(buf, s)
     if (!win_wplus) {
         rewind(out);
         size_t nread = ftruncate(fileno(out), 0L);
+        (void) nread;
     }
     return pos;
 }

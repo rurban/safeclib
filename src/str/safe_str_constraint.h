@@ -61,6 +61,9 @@ EXTERN void invoke_safe_str_constraint_handler(const char *restrict msg,
 static inline void handle_error(char *restrict dest, const rsize_t dmax,
                                 const char *restrict err_msg,
                                 errno_t err_code) {
+    (void) err_msg;
+    (void) err_code;
+
 #ifdef SAFECLIB_STR_NULL_SLACK
     /* null string to eliminate partial copy */
     memset((void *)dest, 0, dmax);
