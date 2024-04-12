@@ -72,7 +72,7 @@ static void timing_loop(uint32_t len, uint32_t loops) {
     sl_clock_dur = ((double)(sl_clock_diff) / CLOCKS_PER_SEC);
     sd_clock_dur = ((double)(sd_clock_diff) / CLOCKS_PER_SEC);
 
-    printf("%u  %u  memcpy32_s %1.9f  memcpy16_s %1.9f  \n", loops, len,
+    printf("%"PRIu32"  %"PRIu32"  memcpy32_s %1.9f  memcpy16_s %1.9f  \n", loops, len,
            sl_clock_dur, sd_clock_dur);
 
     return;

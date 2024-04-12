@@ -155,7 +155,7 @@ int test_memcpy_s(void) {
     if (!use_msvcrt) {
         EXPMEM(mem1, 0, len, 0, 1);
         if (mem1[len] == 0) {
-            debug_printf("%d - %d m1=%d  m2=%d  \n", __LINE__, i, mem1[i],
+            debug_printf("%d - %"PRIu32" m1=%d  m2=%d  \n", __LINE__, i, mem1[i],
                          mem2[i]);
             errs++;
         }

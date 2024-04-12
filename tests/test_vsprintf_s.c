@@ -141,7 +141,7 @@ int test_vsprintf_s(void) {
     if (len3 != len2) {
 #ifdef DEBUG
         int len1 = strlen(str1);
-        debug_printf("%s %u lengths wrong: %d  %u  %u \n", __FUNCTION__,
+        debug_printf("%s %u lengths wrong: %d  %"PRId32"  %"PRId32" \n", __FUNCTION__,
                      __LINE__, len1, len2, len3);
 #endif
         errs++;

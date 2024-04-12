@@ -61,7 +61,7 @@ int test_localtime_s(void) {
 #else
     tmptr->tm_year = 10000;
     timer = mktime(tmptr);
-    debug_printf("year 10000 = %ld\n", timer);
+    debug_printf("year 10000 = %"PRId64"\n", timer);
     timer++;
 #endif
 #ifdef BSD_OR_DARWIN_LIKE

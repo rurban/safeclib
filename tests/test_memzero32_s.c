@@ -48,7 +48,7 @@ int main(void) {
     /* verify mem1 was zeroed */
     for (i = 0; i < len; i++) {
         if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n", __LINE__, i, mem1[i]);
+            debug_printf("%d - %"PRIu32" m1=%d \n", __LINE__, i, mem1[i]);
             errs++;
         }
     }
@@ -65,7 +65,7 @@ int main(void) {
     /* verify mem1 was zeroed */
     for (i = 0; i < len; i++) {
         if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n", __LINE__, i, mem1[i]);
+            debug_printf("%d - %"PRIu32" m1=%d \n", __LINE__, i, mem1[i]);
             errs++;
         }
     }
@@ -82,7 +82,7 @@ int main(void) {
     /* verify mem1 was zeroed */
     for (i = 0; i < len; i++) {
         if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n", __LINE__, i, mem1[i]);
+            debug_printf("%d - %"PRIu32" m1=%d \n", __LINE__, i, mem1[i]);
             errs++;
         }
     }
@@ -99,7 +99,7 @@ int main(void) {
     /* verify mem1 was zeroed */
     for (i = 0; i < len; i++) {
         if (mem1[i] != 0) {
-            debug_printf("%d - %d m1=%d \n", __LINE__, i, mem1[i]);
+            debug_printf("%d - %"PRIu32" m1=%d \n", __LINE__, i, mem1[i]);
             errs++;
         }
     }
