@@ -118,7 +118,7 @@ static double timing_loop(uint32_t len, uint32_t loops) {
 
     /* just to disable optimizing away the inner loop */
     /* fprintf(stderr, "errors %lu\n", errors); */
-    printf("%u  %u  mem_prim_set %1.6f  memset_s %1.6f  memset %1.6f  diff %1.6f  %2.2f %%\n",
+    printf("%"PRIu32"  %"PRIu32"  mem_prim_set %1.6f  memset_s %1.6f  memset %1.6f  diff %1.6f  %2.2f %%\n",
            loops, len, sp_clock_dur, sl_clock_dur, sd_clock_dur,
            (sp_clock_dur - sd_clock_dur), percent);
 

@@ -50,6 +50,8 @@
 #error Not supported in Linux kernel space
 #endif
 
+#include <inttypes.h>
+
 static inline clock_t rdtsc();
 static inline uint64_t timer_start();
 static inline uint64_t timer_end();

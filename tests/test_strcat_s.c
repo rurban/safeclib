@@ -182,7 +182,7 @@ int test_strcat_s(void) {
     ERR(EOK)
     len3 = strlen(str1);
     if (len3 != (len1 + len2)) {
-        debug_printf("%s %u lengths wrong: %u  %u  %u \n", __FUNCTION__,
+        debug_printf("%s %u lengths wrong: %"PRId32"  %"PRId32"  %"PRId32" \n", __FUNCTION__,
                      __LINE__, len1, len2, len3);
         errs++;
     }

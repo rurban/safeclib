@@ -110,7 +110,7 @@ int main(void) {
     ERR(EOK)
     for (j = 0; j < len; j++) {
         if (str1[j] != str2[j]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+            debug_printf("%s %u  diff s1[%"PRIu32"]=%d  s2[%"PRIu32"]=%d   rc=%u \n",
                          __FUNCTION__, __LINE__, j, str1[j], j, str2[j], rc);
             errs++;
         }
@@ -129,7 +129,7 @@ int main(void) {
     ERR(EOK)
     for (j = 0; j < len; j++) {
         if (str1[j] != str2[j]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+            debug_printf("%s %u  diff s1[%"PRIu32"]=%d  s2[%"PRIu32"]=%d   rc=%u \n",
                          __FUNCTION__, __LINE__, j, str1[j], j, str2[j], rc);
             errs++;
         }
@@ -177,7 +177,7 @@ int main(void) {
     ERR(EOK)
     for (j = 0; j < len; j++) {
         if (str1[j] != str2[j]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+            debug_printf("%s %u  diff s1[%"PRIu32"]=%d  s2[%"PRIu32"]=%d   rc=%u \n",
                          __FUNCTION__, __LINE__, j, str1[j], j, str2[j], rc);
             errs++;
         }
@@ -196,7 +196,7 @@ int main(void) {
     ERR(EOK)
     for (j = 0; j < len; j++) {
         if (str1[j] != str2[j]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+            debug_printf("%s %u  diff s1[%"PRIu32"]=%d  s2[%"PRIu32"]=%d   rc=%u \n",
                          __FUNCTION__, __LINE__, j, str1[j], j, str2[j], rc);
             errs++;
         }
@@ -217,7 +217,7 @@ int main(void) {
     ERR(EOK)
     for (j = 0; j < slen; j++) {
         if (str1[j] != str2[j]) {
-            debug_printf("%s %u  diff s1[%d]=%d  s2[%d]=%d   rc=%u \n",
+            debug_printf("%s %u  diff s1[%"PRIu32"]=%d  s2[%"PRIu32"]=%d   rc=%u \n",
                          __FUNCTION__, __LINE__, j, str1[j], j, str2[j], rc);
             errs++;
         }
