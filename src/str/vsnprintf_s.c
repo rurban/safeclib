@@ -596,7 +596,7 @@ static size_t safec_etoa(out_fct_type out, const char *funcname,
     }
 
     // rescale the float value
-    if (expval) {
+    if (expval && conv.F != 0.0) {
         value /= conv.F;
     }
 

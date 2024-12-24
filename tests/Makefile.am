@@ -34,6 +34,7 @@ SAFEC_BUILT_TESTS = \
 	t_memmove_s     \
 	t_memset_s      \
 	t_sprintf_s     \
+	t_sprintf_s_exc \
 	t_strcat_s      \
 	t_strcpy_s      \
 	t_strncat_s     \
@@ -301,6 +302,9 @@ t_memset_s_SOURCES            = test_memset_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 t_sprintf_s_SOURCES           = test_sprintf_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
+t_sprintf_s_exc_SOURCES       = test_sprintf_s_exc.c $(SAFEC_TEST_COMMON) \
+	                        $(SAFEC_TEST_MSVCRT)
+t_sprintf_s_exc_LDFLAGS       = $(LDADD) -lm
 t_strcat_s_SOURCES            = test_strcat_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 t_strcpy_s_SOURCES            = test_strcpy_s.c $(SAFEC_TEST_COMMON) \

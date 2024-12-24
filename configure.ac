@@ -732,6 +732,7 @@ AC_CHECK_HEADERS([stdlib.h	\
                   wchar.h	\
                   langinfo.h    \
                   valgrind/valgrind.h \
+                  fenv.h        \
                   intrin.h      \
                   xmmintrin.h   \
                   emmintrin.h   \
@@ -975,7 +976,7 @@ AC_CHECK_FUNCS(
         sscanf_s fscanf_s scanf_s vfscanf_s \
         vsscanf_s vscanf_s printf_s fprintf_s tmpfile_s vfprintf_s vprintf_s \
         fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
-        asctime_s ctime_s getenv_s ])
+        asctime_s ctime_s getenv_s feenableexcept ])
 
 if test "x$enable_wchar" = "xtrue" ; then
    AC_CHECK_FUNCS(
