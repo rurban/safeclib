@@ -21,7 +21,7 @@ jobs:
           - --disable-nullslack --enable-warn-dmax
           - --disable-extensions CFLAGS="-march=native"
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 1
     - run: sudo apt-get install doxygen libtext-diff-perl pkg-config
@@ -64,7 +64,7 @@ jobs:
     - name: init
       run: brew install automake
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - run: sh build-aux/autogen.sh
     - run: ./configure --disable-hardening
     - run: make V=1
@@ -101,7 +101,7 @@ jobs:
     - run: reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /d 1
     - run: git config --global core.autocrlf input
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - shell: msys2 {0}
       run: sh build-aux/autogen.sh
       continue-on-error: true
