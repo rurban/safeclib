@@ -144,10 +144,10 @@ jobs:
     #    asset_content_type: application/gzip
   aarch64:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
-      - uses: uraimo/run-on-arch-action@v2.7.1
+      - uses: uraimo/run-on-arch-action@v2.8.1
         name: Check on aarch64
         id: runcmd
         with:
