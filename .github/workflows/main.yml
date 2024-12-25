@@ -62,7 +62,7 @@ jobs:
     runs-on: macOS-latest
     steps:
     - name: init
-      run: brew install automake
+      run: brew install autoconf automake libtool
     - name: checkout
       uses: actions/checkout@v4
     - run: sh build-aux/autogen.sh
