@@ -287,8 +287,10 @@ exit
 esac
 
 # platform independent (i.e. darwin, linux, bsd's with the 3 mingw cross compilers)
+$make clean
 CC="cc -m32" ./configure && \
     $make -s -j4 check-log || exit
+$make clean
 ./configure && \
     $make -s -j4 check-log || exit
 ./configure --disable-nullslack && \
