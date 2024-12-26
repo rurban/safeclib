@@ -259,9 +259,9 @@ Tested Platforms
 
 The library has been tested on the following systems:
 
-- Linux Fedora core 31 - 39 amd64/i386 glibc 2.28 - 2.38 (all gcc's + clang's)
-- Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc's + clang's)
-- Linux Debian 9 - 11 amd64/i386 glibc 2.24 - 2.28 (all gcc's + clang's)
+- Linux Fedora core 31 - 41 amd64/i386 glibc 2.28 - 2.40 (all gcc’s + clang’s)
+- Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc’s + clang’s)
+- Linux Debian/Ubuntu since Debian 9 amd64/i386 glibc 2.24 - 2.40 (all gcc’s + clang’s)
 - Linux centos 7 amd64
 - Linux Void amd64 musl-1.1.16
 - x86_64-w64-mingw32 native and cross-compiled
@@ -277,6 +277,7 @@ The library has been tested on the following systems:
 
 with most available compilers. See `build-aux/smoke.sh` and the various CI configs.
 
+- https://github.com/rurban/safeclib/actions
 - https://travis-ci.org/github/rurban/safeclib/
 - https://ci.appveyor.com/project/rurban/safeclib/
 - https://cirrus-ci.com/github/rurban/safeclib

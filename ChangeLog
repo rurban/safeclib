@@ -2,6 +2,10 @@
         ChangeLog file for safeclib
 
 Changes in 3.8.2
+	- Fixed vsnprintf_s safec_etoa div-by-zero exceptions. GH #144
+	- Fixed C90 compliance, decl-after-stmt. Matthias Schulz.
+	- Use portable inttypes format specifiers. Matthias Schulz.
+	- Fixed unused variable warning. Matthias Schulz.
         - Add aarch64 CI to github. drone.io became unresponsive.
 
 Changes in 3.8.1

@@ -2,7 +2,7 @@
 # https://github.com/moby/moby/releases/tag/v17.05.0-ce
 ARG BASE_IMAGE=fedora
 #FROM ${BASE_IMAGE}
-FROM fedora:39-aarch64
+FROM fedora:41-aarch64
 
 # Test with non-root user.
 ENV TEST_USER tester
