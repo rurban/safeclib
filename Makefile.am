@@ -621,7 +621,6 @@ gh-pages: docs
 	git add doc/libc-overview.md doc/safec-$(SAFEC_API_VERSION)
 release: docs distcheck
 	git branch |grep '^* master'
-	git tag -f v`date +%d%m%Y`
 	-git tag -f v$(PACKAGE_VERSION)
 	build-aux/autogen.sh
 	./configure
