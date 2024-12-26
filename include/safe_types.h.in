@@ -62,6 +62,7 @@ typedef int errno_t;
 #ifndef __cplusplus
 @INSERT_BOOL_SUPPORT@
 #else
+# undef restrict
 # define restrict __restrict
 #endif
 
