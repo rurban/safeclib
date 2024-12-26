@@ -336,7 +336,7 @@ int test_vsprintf_s(void) {
         NOERR()
         EXPSTR(str1, "nan");
 #ifdef HAVE_LONG_DOUBLE
-        rc = vtprintf_s(str1, LEN, "%Lf", c64.F);
+        rc = vtprintf_s(str1, LEN, "%LF", c64.F);
         NOERR()
         EXPSTR(str1, "NAN");
 #endif
@@ -345,13 +345,13 @@ int test_vsprintf_s(void) {
         EXPSTR(str1, "inf"); // 6.926406461289696e-310
         rc = vtprintf_s(str1, LEN, "%f", -INFINITY);
         NOERR()
-        EXPSTR(str1, "-inf");
+        EXPSTR(str1, "-inf"); // or "inf" on BSD/mingw
 
 #ifdef HAVE_LONG_DOUBLE
-        rc = vtprintf_s(str1, LEN, "%Lf", HUGE_VALL);
+        rc = vtprintf_s(str1, LEN, "%LF", HUGE_VALL);
         NOERR()
         EXPSTR(str1, "INF");
-        rc = vtprintf_s(str1, LEN, "%Lf", -HUGE_VALL);
+        rc = vtprintf_s(str1, LEN, "%LF", -HUGE_VALL);
         NOERR()
         EXPSTR(str1, "-INF");
 #endif

@@ -302,6 +302,45 @@ int test_sprintf_s(void) {
     ERR(5)
     EXPSTR(str2, "56789")
 
+    // padding
+    rc = sprintf_s(str2, 10, "[%6s]", str1);
+    ERR(8)
+    EXPSTR(str2, "[ 56789]")
+    rc = sprintf_s(str2, 10, "[%-6s]", str1);
+    ERR(8)
+    EXPSTR(str2, "[56789 ]")
+    rc = sprintf_s(str2, 10, "[%*s]", 6, str1);
+    ERR(8)
+    EXPSTR(str2, "[ 56789]")
+
+    // truncating
+    rc = sprintf_s(str2, 10, "%.4s", str1);
+    ERR(4)
+    EXPSTR(str2, "5678")
+    rc = sprintf_s(str2, 10, "%.*s", 4, str1);
+    ERR(4)
+    EXPSTR(str2, "5678")
+
+    rc = sprintf_s(str2, 10, "%c", 'A');
+    ERR(1)
+    EXPSTR(str2, "A")
+
+    rc = sprintf_s(str2, LEN, "%i", 1);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%d", -1);
+    ERR(2)
+    EXPSTR(str2, "-1")
+    rc = sprintf_s(str2, LEN, "%+i", 1);
+    ERR(2)
+    EXPSTR(str2, "+1")
+    rc = sprintf_s(str2, LEN, "%.3i", 1);
+    ERR(3)
+    EXPSTR(str2, "001")
+    rc = sprintf_s(str2, LEN, "%.0i", 1);
+    ERR(1)
+    EXPSTR(str2, "1")
+
     rc = sprintf_s(str2, LEN, "%hhu", (unsigned char)1);
     ERR(1)
     EXPSTR(str2, "1")
@@ -334,16 +373,34 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str2, LEN, "%f", 0.1f);
     NOERRNULL()
     EXPSTR(str2, "0.100000")
+    rc = sprintf_s(str2, LEN, "%.1f", 0.1f);
+    NOERRNULL()
+    EXPSTR(str2, "0.1")
+    rc = sprintf_s(str2, LEN, "%.0f", 1.5);
+    NOERRNULL()
+    EXPSTR(str2, "2")
+    rc = sprintf_s(str2, LEN, "%05.2f", 1.5);
+    NOERRNULL()
+    EXPSTR(str2, "01.50")
+    rc = sprintf_s(str2, LEN, "%.2f", 1.5);
+    NOERRNULL()
+    EXPSTR(str2, "1.50")
+    rc = sprintf_s(str2, LEN, "%5.2f", 1.5);
+    NOERRNULL()
+    EXPSTR(str2, " 1.50")
     rc = sprintf_s(str2, LEN, "%F", 0.1f);
     NOERRNULL()
     EXPSTR(str2, "0.100000")
-    rc = sprintf_s(str2, LEN, "%g", 0.1f);
-    NOERRNULL()
-    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
-    rc = sprintf_s(str2, LEN, "%G", 0.1f);
-    NOERRNULL()
-    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
     rc = sprintf_s(str2, LEN, "%g", 0.1);
+    NOERRNULL()
+    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    rc = sprintf_s(str2, LEN, "%#g", 0.1); // alternate form
+    NOERRNULL()
+    EXPSTR(str2, "0.100000")
+    rc = sprintf_s(str2, LEN, "%G", 0.1);
+    NOERRNULL()
+    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    rc = sprintf_s(str2, LEN, "%g", 0.1f);
     NOERRNULL()
     EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
     rc = sprintf_s(str2, LEN, "%g", 1.0);
@@ -355,6 +412,31 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str2, LEN, "%a", 0.1f);
     NOERRNULL()
     EXPSTR(str2, "0x1.99999ap-4")
+
+    rc = sprintf_s(str2, LEN, "%g", 0.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "nan")
+    rc = sprintf_s(str2, LEN, "%G", 0.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "NAN")
+    rc = sprintf_s(str2, LEN, "%g", 1.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "inf")
+    rc = sprintf_s(str2, LEN, "%g", -1.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "-inf") // or "inf" on BSD/mingw
+    rc = sprintf_s(str2, LEN, "%G", 1.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "INF")
+    rc = sprintf_s(str2, LEN, "%G", -1.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "-INF") // or "INF" on BSD/mingw
+    rc = sprintf_s(str2, LEN, "%+g", 1.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "+inf")
+    rc = sprintf_s(str2, LEN, "%+G", 1.0/0.0);
+    NOERRNULL()
+    EXPSTR(str2, "+INF")
 #endif
 #endif
     {
@@ -382,6 +464,7 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str2, LEN, "%La", ld);
     NOERRNULL()
     EXPSTR(str2, "0xc.cccccccccccdp-7")
+    // or "0x1.999999999999ap-4" on BSD
 #endif
 #endif
     }

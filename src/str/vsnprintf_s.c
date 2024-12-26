@@ -166,7 +166,7 @@
 #define FLAGS_LEFT (1U << 1U)
 #define FLAGS_PLUS (1U << 2U)
 #define FLAGS_SPACE (1U << 3U)
-#define FLAGS_HASH (1U << 4U)
+#define FLAGS_HASH (1U << 4U) // ALTERNATE_FORM
 #define FLAGS_UPPERCASE (1U << 5U)
 #define FLAGS_CHAR (1U << 6U)
 #define FLAGS_SHORT (1U << 7U)
@@ -412,16 +412,22 @@ static size_t safec_ftoa(out_fct_type out,  const char *funcname,
     // test for special values
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
-                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
+                             (flags & FLAGS_UPPERCASE) ? "NAN" : "nan", 3, width, flags);
     {
         if (isinf(value) < 0)
             // reverse of -inf
-            return safec_out_rev(out, buffer, idx, maxlen, "fni-", 4, width, flags);
+            return safec_out_rev(out, buffer, idx, maxlen,
+                                 (flags & FLAGS_UPPERCASE) ? "FNI-" : "fni-", 4,
+                                 width, flags);
         if (isinf(value) > 0)
             // reverse of inf
             return safec_out_rev(out, buffer, idx, maxlen,
-                                 (flags & FLAGS_PLUS) ? "fni+" : "fni",
-                                 (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+                                 (flags & FLAGS_PLUS)
+                                     ? (flags & FLAGS_UPPERCASE) ? "FNI+"
+                                                                 : "fni+"
+                                     : (flags & FLAGS_UPPERCASE) ? "FNI"
+                                                                 : "fni",
+                                 (flags & FLAGS_PLUS) ? 4 : 3, width, flags);
     }
 
     // test for very large values
@@ -607,15 +613,21 @@ static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
 
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
-                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3, width, flags);
-    if (_ISINFL(value))
-    {
+                             (flags & FLAGS_UPPERCASE) ? "NAN" : "nan", 3,
+                             width, flags);
+    if (_ISINFL(value)) {
         if (value < 0)
-            return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
+            return safec_out_rev(out, buffer, idx, maxlen,
+                                 (flags & FLAGS_UPPERCASE) ? "FNI-" : "fni-", 4,
+                                 width, flags);
         else
             return safec_out_rev(out, buffer, idx, maxlen,
-                                 (flags & FLAGS_PLUS) ? "FNI+" : "FNI",
-                                 (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+                                 (flags & FLAGS_PLUS)
+                                     ? (flags & FLAGS_UPPERCASE) ? "FNI+"
+                                                                 : "fni+"
+                                     : (flags & FLAGS_UPPERCASE) ? "FNI"
+                                                                 : "fni",
+                                 (flags & FLAGS_PLUS) ? 4 : 3, width, flags);
     }
     snprintf(buf, 64, format, value);
     buf[63] = '\0';
@@ -661,15 +673,21 @@ static inline size_t safec_atoa(out_fct_type out, const char *funcname,
 
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
-                             (flags & FLAGS_LONG_DOUBLE) ? "NAN" : "nan", 3,
+                             (flags & FLAGS_UPPERCASE) ? "NAN" : "nan", 3,
                              width, flags);
     if (isinf(value)) {
         if (value < 0)
-            return safec_out_rev(out, buffer, idx, maxlen, "FNI-", 4, width, flags);
+            return safec_out_rev(out, buffer, idx, maxlen,
+                                 (flags & FLAGS_UPPERCASE) ? "FNI-" : "fni-", 4,
+                                 width, flags);
         else
             return safec_out_rev(out, buffer, idx, maxlen,
-                                 (flags & FLAGS_PLUS) ? "FNI+" : "FNI",
-                                 (flags & FLAGS_PLUS) ? 4U : 3U, width, flags);
+                                 (flags & FLAGS_PLUS)
+                                     ? (flags & FLAGS_UPPERCASE) ? "FNI+"
+                                                                 : "fni+"
+                                     : (flags & FLAGS_UPPERCASE) ? "FNI"
+                                                                 : "fni",
+                                 (flags & FLAGS_PLUS) ? 4 : 3, width, flags);
     }
     snprintf(buf, 64, format, value);
     buf[63] = '\0';
@@ -747,7 +765,8 @@ static size_t safec_etoa(out_fct_type out, const char *funcname,
     // in "%g" mode, "prec" is the number of *significant figures* not decimals
     if (flags & FLAGS_ADAPT_EXP) {
         // do we want to fall-back to "%f" mode?
-        if ((value >= 1e-4) && (value < 1e6)) {
+        // TODO: strip trailing zeros and dot
+        if ((flags & FLAGS_HASH) || ((value >= 1e-4) && (value < 1e6))) {
             if ((int)prec > expval) {
                 prec = (unsigned)((int)prec - expval - 1);
             } else {
