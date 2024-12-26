@@ -28,28 +28,33 @@ int test_fprintf_s(void);
 
 // a variant for debugging
 static size_t cmp_and_reset(FILE *out, const char *s) {
+    size_t nread;
     size_t pos = ftell(out);
     fflush(out);
     *str = '\0';
     if (win_wplus) {
         fclose(out);
         out = fopen(TMP, "r");
-        size_t nread = fread(str, 1, pos, out);
+        nread = fread(str, 1, pos, out);
         fclose(out);
         out = fopen(TMP, "w");
     } else {
         rewind(out);
-        size_t nread = fread(str, 1, pos, out);
+        nread = fread(str, 1, pos, out);
     }
     EXPSTR(str, s)
     if (!win_wplus) {
         rewind(out);
-        size_t nread = ftruncate(fileno(out), 0L);
+#if defined(HAVE_FTRUNCATE) && defined(HAVE_FILENO)
+        nread = ftruncate(fileno(out), 0L);
+#endif
     }
+    (void) nread;
     return pos;
 }
 
 int test_fprintf_s(void) {
+    size_t nread;
     errno_t rc;
     int ind;
 
@@ -118,7 +123,8 @@ int test_fprintf_s(void) {
     NOERR()
 
     rewind(out);
-    (void)ftruncate(fileno(out), 0L);
+    nread = ftruncate(fileno(out), 0L);
+    (void)nread;
 
     /*--------------------------------------------------*/
 

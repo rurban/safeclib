@@ -40,31 +40,42 @@ int win_wplus = 0; // if EINVAL with fopen w+
 
 // a variant for debugging
 static size_t cmp_and_reset(FILE *out, const char *s) {
+    size_t nread;
     size_t pos = ftell(out);
     fflush(out);
     *buf = '\0';
     if (win_wplus) {
         fclose(out);
         out = fopen(TMP, "r");
-        size_t nread = fread(buf, pos, 1, out);
-        (void) nread;
+        nread = fread(buf, pos, 1, out);
         fclose(out);
         out = fopen(TMP, "w");
     } else {
         rewind(out);
-        size_t nread = fread(buf, pos, 1, out);
-        (void) nread;
+        nread = fread(buf, pos, 1, out);
     }
     EXPSTR(buf, s)
     if (!win_wplus) {
         rewind(out);
-        size_t nread = ftruncate(fileno(out), 0L);
-        (void) nread;
+#if defined(HAVE_FTRUNCATE) && defined(HAVE_FILENO)
+        nread = ftruncate(fileno(out), 0L);
+#endif
     }
+    (void) nread;
     return pos;
 }
 
+#if !(defined(HAVE_FTRUNCATE) && defined(HAVE_FILENO))
+size_t ftruncate(int fd, long length) {
+    return 0UL;
+}
+int fileno(const char* path) {
+    return 0;
+}
+#endif
+
 int test_vfprintf_s(void) {
+    size_t nread;
     errno_t rc;
     int32_t ind;
     long pos;
@@ -95,7 +106,7 @@ int test_vfprintf_s(void) {
     EXPSTR(buf, s)                                                             \
     if (!win_wplus) {                                                          \
         rewind(out);                                                           \
-        ind = ftruncate(fileno(out), 0L);                                      \
+        nread = ftruncate(fileno(out), 0L);                                    \
     }
 
 #ifdef HAVE_SYS_STAT_H

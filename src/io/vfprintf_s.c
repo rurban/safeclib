@@ -79,11 +79,13 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                                            ESNULLP);
         return -(ESNULLP);
     }
+#ifdef HAVE_FILENO
     if (unlikely(fileno(stream) < 0)) {
         invoke_safe_str_constraint_handler("vfprintf_s: stream is invalid", NULL,
                                            EBADF);
         return -(EBADF);
     }
+#endif
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("vfprintf_s: fmt is null", NULL,
                                            ESNULLP);
