@@ -393,22 +393,22 @@ int test_sprintf_s(void) {
     EXPSTR(str2, "0.100000")
     rc = sprintf_s(str2, LEN, "%g", 0.1);
     NOERRNULL()
-    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    EXPSTR(str2, "0.1")
     rc = sprintf_s(str2, LEN, "%#g", 0.1); // alternate form
     NOERRNULL()
     EXPSTR(str2, "0.100000")
     rc = sprintf_s(str2, LEN, "%G", 0.1);
     NOERRNULL()
-    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    EXPSTR(str2, "0.1")
     rc = sprintf_s(str2, LEN, "%g", 0.1f);
     NOERRNULL()
-    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    EXPSTR(str2, "0.1")
     rc = sprintf_s(str2, LEN, "%g", 1.0);
     NOERRNULL()
-    EXPSTR(str2, "1") // FIXME 0.100000 trailing-zeros and dot not stripped
+    EXPSTR(str2, "1")
     rc = sprintf_s(str2, LEN, "%lg", 0.1);
     NOERRNULL()
-    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    EXPSTR(str2, "0.1")
     rc = sprintf_s(str2, LEN, "%a", 0.1f);
     NOERRNULL()
     EXPSTR(str2, "0x1.99999ap-4")

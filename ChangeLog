@@ -1,6 +1,13 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.9
+	- Add long double support to vsnprintf_s. GH #103
+	  With fixes for %a, %g, %G, %#g.
+	- Fixed %lc, %ls bug in vsnprintf_s.
+	- Fixes for non-POSIX systems missing fileno and ftruncate. GH #136
+	  (ecospro compiler)
+
 Changes in 3.8.2
 	- Fixed vsnprintf_s safec_etoa div-by-zero exceptions. GH #144
 	- Fixed C90 compliance, decl-after-stmt. Matthias Schulz.

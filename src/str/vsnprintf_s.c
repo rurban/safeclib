@@ -392,7 +392,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
                          unsigned int prec, unsigned int width,
                          unsigned int flags) {
     char buf[PRINTF_FTOA_BUFFER_SIZE];
-    size_t len = 0U;
+    size_t len = 0U, off = 0U;
     double tmp;
     double diff = 0.0;
     unsigned long frac;
@@ -525,6 +525,19 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
+    // strip leading zeros and dots
+    if ((flags & FLAGS_ADAPT_EXP) && !(flags & FLAGS_HASH)) {
+        size_t olen = len;
+        while (buf[off] == '0') {
+            off++; len--;
+            if (off >= olen)
+                break;
+        }
+        if (buf[off] == '.' && off < olen) {
+            off++; len--;
+        }
+    }
+
     if (len < PRINTF_FTOA_BUFFER_SIZE) {
         if (negative) {
             buf[len++] = '-';
@@ -535,7 +548,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
-    return safec_out_rev(out, buffer, idx, maxlen, buf, len, width, flags);
+    return safec_out_rev(out, buffer, idx, maxlen, &buf[off], len, width, flags);
 }
 
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
@@ -763,7 +776,6 @@ static size_t safec_etoa(out_fct_type out, const char *funcname, char *buffer,
     // in "%g" mode, "prec" is the number of *significant figures* not decimals
     if (flags & FLAGS_ADAPT_EXP) {
         // do we want to fall-back to "%f" mode?
-        // TODO: strip trailing zeros and dot
         if ((flags & FLAGS_HASH) || ((value >= 1e-4) && (value < 1e6))) {
             if ((int)prec > expval) {
                 prec = (unsigned)((int)prec - expval - 1);
@@ -807,7 +819,7 @@ static size_t safec_etoa(out_fct_type out, const char *funcname, char *buffer,
         const size_t start_idx = idx;
         idx = safec_ftoa(out, funcname, buffer, idx, maxlen,
                          negative ? -value : value, prec, fwidth,
-                         flags & ~FLAGS_ADAPT_EXP);
+                         flags);
 
         // output the exponent part
         if (minwidth) {
