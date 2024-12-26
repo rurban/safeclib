@@ -166,7 +166,7 @@ var safe__str__lib_8h =
     [ "_strstr_s_chk", "d8/dff/safe__str__lib_8h.html#a6cda6e5d1877bd1a27404dc9faadf4cb", null ],
     [ "BOS_NULL", "d8/dff/safe__str__lib_8h.html#a9bfcc9154b0076b55d06f911b8f34e23", null ],
     [ "_strchr_s_chk", "d8/dff/safe__str__lib_8h.html#a66c16534b2471e1bbb608b609d3dca16", null ],
-    [ "BOS_NULL", "d8/dff/safe__str__lib_8h.html#ac2831e5473862d6cf8c186383e7da660", null ],
+    [ "BOS_NULL", "d8/dff/safe__str__lib_8h.html#a8d5656a16146902696d3de962c43a26b", null ],
     [ "_strrchr_s_chk", "d8/dff/safe__str__lib_8h.html#a375b15e12fd4f6e0ea7737957d7bc56a", null ],
     [ "_strtolowercase_s_chk", "d8/dff/safe__str__lib_8h.html#ad2f8f779fbb4c5f2267d9510da392f3b", null ],
     [ "_strtouppercase_s_chk", "d8/dff/safe__str__lib_8h.html#a8df6802494de562eaba0f72c9453d0aa", null ],

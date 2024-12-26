@@ -1,6 +1,6 @@
 # Overview of various libc's regarding the secure C11 extensions
 
-C11 defined the optional secure extensions to be demanded by 
+C11 defined the optional secure extensions to be demanded by
 `__STDC_WANT_LIB_EXT1__`.
 
 From the following tested libc implementations:
@@ -196,7 +196,7 @@ Available at https://code.google.com/archive/p/slibc/
   calling an invalid `strlen()` on NULL.
 
 * quirky declaration of various standards, which conflict with each other.
-  
+
   glibc needs the correct standard to include some extensions
   when we declare the standard by ourselves.
   e.g. clang-4.0 -std=c99 misses several reentrant versions.

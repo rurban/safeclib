@@ -1,15 +1,11 @@
 var searchData=
 [
-  ['ignore_5fhandler_5fs_0',['ignore_handler_s',['../d7/dac/ignore__handler__s_8c.html#a33a2e940941f23b0f5d48880ff948b5a',1,'ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error):&#160;ignore_handler_s.c'],['../db/d69/safe__lib_8h.html#a7fdc3594c01813cc1fdf77dc378715de',1,'ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error):&#160;ignore_handler_s.c'],['../d8/dff/safe__str__lib_8h.html#a7fdc3594c01813cc1fdf77dc378715de',1,'ignore_handler_s(const char *restrict msg, void *restrict ptr, errno_t error):&#160;ignore_handler_s.c']]],
-  ['ignore_5fhandler_5fs_2ec_1',['ignore_handler_s.c',['../d7/dac/ignore__handler__s_8c.html',1,'']]],
-  ['invoke_5fsafe_5fmem_5fconstraint_5fhandler_2',['invoke_safe_mem_constraint_handler',['../d6/da6/safe__mem__constraint_8c.html#add0276a6e71652719dde97fbf8e5a7b6',1,'invoke_safe_mem_constraint_handler(const char *msg, void *ptr, errno_t error):&#160;safe_mem_constraint.c'],['../d4/d81/safe__mem__constraint_8h.html#a9b49cc73b106962dbeade80160404344',1,'invoke_safe_mem_constraint_handler(const char *msg, void *ptr, errno_t error):&#160;safe_mem_constraint.c']]],
-  ['invoke_5fsafe_5fstr_5fconstraint_5fhandler_3',['invoke_safe_str_constraint_handler',['../d1/d53/safe__str__constraint_8c.html#af4a0b83438cd6feaa04addba136975d1',1,'invoke_safe_str_constraint_handler(const char *restrict msg, void *restrict ptr, errno_t error):&#160;safe_str_constraint.c'],['../d2/d62/safe__str__constraint_8h.html#aff28fcaf37cf61fc6243e0adb1444bf8',1,'invoke_safe_str_constraint_handler(const char *restrict msg, void *restrict ptr, errno_t error):&#160;safe_str_constraint.c']]],
-  ['is_5fhangul_5fcp_5fhigh_4',['is_HANGUL_cp_high',['../d5/dbc/hangul_8h.html#a6deea900a0f5268bac6ca99a94d11c87',1,'hangul.h']]],
-  ['iscomp2nd_5',['isComp2nd',['../db/dab/unwifexc_8h.html#afafcb41fcb594b12882f0f27f5926463',1,'isComp2nd(uint32_t uv):&#160;unwifexc.h'],['../d0/dd5/unw16ifexc_8h.html#afafcb41fcb594b12882f0f27f5926463',1,'isComp2nd(uint32_t uv):&#160;unw16ifexc.h']]],
-  ['isexclusion_6',['isExclusion',['../d0/dd5/unw16ifexc_8h.html#a1a17e196136fc523b859e4d6032d80f5',1,'isExclusion(uint32_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#a1a17e196136fc523b859e4d6032d80f5',1,'isExclusion(uint32_t uv):&#160;unwifexc.h']]],
-  ['isnonstdecomp_7',['isNonStDecomp',['../d0/dd5/unw16ifexc_8h.html#ae7d50bfa223226614a988eada1768f17',1,'isNonStDecomp(uint32_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#ae7d50bfa223226614a988eada1768f17',1,'isNonStDecomp(uint32_t uv):&#160;unwifexc.h']]],
-  ['issingleton_8',['isSingleton',['../d0/dd5/unw16ifexc_8h.html#ac7fc90fd56544cf1ea56a23cd549d01f',1,'isSingleton(uint32_t uv):&#160;unw16ifexc.h'],['../db/dab/unwifexc_8h.html#ac7fc90fd56544cf1ea56a23cd549d01f',1,'isSingleton(uint32_t uv):&#160;unwifexc.h']]],
-  ['iswdigit_9',['iswdigit',['../d8/dc7/wcsnatcmp__s_8c.html#a86792eeba5f5f1f1f9466a74c95cc76d',1,'wcsnatcmp_s.c']]],
-  ['iswfc_10',['iswfc',['../dc/d32/towfc__s_8c.html#a5b45a6e1355d051019888b241cb5109d',1,'iswfc(const uint32_t wc):&#160;towfc_s.c'],['../d8/dff/safe__str__lib_8h.html#a429612502202b0189f29ec768ca3ba7c',1,'iswfc(const uint32_t wc) VAL_OVR2(wc:&#160;safe_str_lib.h']]],
-  ['iswspace_11',['iswspace',['../d8/dc7/wcsnatcmp__s_8c.html#a1f84d01011d9d9861286286a7f2eb893',1,'wcsnatcmp_s.c']]]
+  ['general_20quirks_0',['General quirks',['../d6/d31/md_doc_2libc-overview.html#autotoc_md9',1,'']]],
+  ['getenv_5fs_1',['getenv_s',['../db/d69/safe__lib_8h.html#aea48b0e9ff916cdd04a29914bbfdf976',1,'getenv_s:&#160;safe_lib.h'],['../d1/d26/getenv__s_8c.html#a000d0593afe3e7afc1c4c9b17f640d71',1,'getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax, const char *restrict name):&#160;getenv_s.c']]],
+  ['getenv_5fs_2ec_2',['getenv_s.c',['../d1/d26/getenv__s_8c.html',1,'']]],
+  ['gets_5fs_3',['gets_s',['../db/d69/safe__lib_8h.html#a9a917737ec69d96072ff76601db2c748',1,'gets_s:&#160;safe_lib.h'],['../d2/d59/gets__s_8c.html#aa6eea066d358e507350d65c7f32ee063',1,'gets_s(char *restrict dest, rsize_t dmax):&#160;gets_s.c']]],
+  ['gets_5fs_2ec_4',['gets_s.c',['../d2/d59/gets__s_8c.html',1,'']]],
+  ['glibc_5',['glibc',['../d6/d31/md_doc_2libc-overview.html#autotoc_md19',1,'']]],
+  ['gmtime_5fs_6',['gmtime_s',['../d7/d57/gmtime__s_8c.html#a0908fe923a40045f19dae1cfafdb6a02',1,'gmtime_s(const time_t *restrict timer, struct tm *restrict dest):&#160;gmtime_s.c'],['../db/d69/safe__lib_8h.html#ab348e95fc95b14b1067e7f5581ce2542',1,'gmtime_s(const time_t *restrict timer, struct tm *restrict dest) BOS_NULL(timer) BOS_NULL(dest):&#160;gmtime_s.c']]],
+  ['gmtime_5fs_2ec_7',['gmtime_s.c',['../d7/d57/gmtime__s_8c.html',1,'']]]
 ];

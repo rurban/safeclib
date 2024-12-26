@@ -28,20 +28,21 @@ var NAVTREE =
     [ "Safe C Library - README", "index.html", "index" ],
     [ "Overview of various libc's regarding the secure C11 extensions", "d6/d31/md_doc_2libc-overview.html", [
       [ "General quirks", "d6/d31/md_doc_2libc-overview.html#autotoc_md9", null ],
-      [ "C11 Annex K/safec caveats", "d6/d31/md_doc_2libc-overview.html#autotoc_md10", [
-        [ "Microsoft Windows/MINGW_HAS_SECURE_API", "d6/d31/md_doc_2libc-overview.html#autotoc_md11", null ],
-        [ "safeclib", "d6/d31/md_doc_2libc-overview.html#autotoc_md12", null ],
-        [ "Android FORTIFY and _STLP_USE_SAFE_STRING_FUNCTIONS", "d6/d31/md_doc_2libc-overview.html#autotoc_md13", null ],
-        [ "Huawei securec", "d6/d31/md_doc_2libc-overview.html#autotoc_md14", null ],
-        [ "Open Watcom 1.5", "d6/d31/md_doc_2libc-overview.html#autotoc_md15", null ],
-        [ "slibc", "d6/d31/md_doc_2libc-overview.html#autotoc_md16", null ]
+      [ "Unrelated to Annex K, but security related", "d6/d31/md_doc_2libc-overview.html#autotoc_md10", null ],
+      [ "C11 Annex K/safec caveats", "d6/d31/md_doc_2libc-overview.html#autotoc_md11", [
+        [ "Microsoft Windows/MINGW_HAS_SECURE_API", "d6/d31/md_doc_2libc-overview.html#autotoc_md12", null ],
+        [ "safeclib", "d6/d31/md_doc_2libc-overview.html#autotoc_md13", null ],
+        [ "Android FORTIFY and _STLP_USE_SAFE_STRING_FUNCTIONS", "d6/d31/md_doc_2libc-overview.html#autotoc_md14", null ],
+        [ "Huawei securec", "d6/d31/md_doc_2libc-overview.html#autotoc_md15", null ],
+        [ "Open Watcom 1.5", "d6/d31/md_doc_2libc-overview.html#autotoc_md16", null ],
+        [ "slibc", "d6/d31/md_doc_2libc-overview.html#autotoc_md17", null ]
       ] ],
-      [ "Other caveats", "d6/d31/md_doc_2libc-overview.html#autotoc_md17", [
-        [ "glibc", "d6/d31/md_doc_2libc-overview.html#autotoc_md18", null ],
-        [ "newlib", "d6/d31/md_doc_2libc-overview.html#autotoc_md19", null ],
-        [ "FreeBSD libc", "d6/d31/md_doc_2libc-overview.html#autotoc_md20", null ],
-        [ "musl", "d6/d31/md_doc_2libc-overview.html#autotoc_md21", null ],
-        [ "wine", "d6/d31/md_doc_2libc-overview.html#autotoc_md22", null ]
+      [ "Other caveats", "d6/d31/md_doc_2libc-overview.html#autotoc_md18", [
+        [ "glibc", "d6/d31/md_doc_2libc-overview.html#autotoc_md19", null ],
+        [ "newlib", "d6/d31/md_doc_2libc-overview.html#autotoc_md20", null ],
+        [ "FreeBSD libc", "d6/d31/md_doc_2libc-overview.html#autotoc_md21", null ],
+        [ "musl", "d6/d31/md_doc_2libc-overview.html#autotoc_md22", null ],
+        [ "wine", "d6/d31/md_doc_2libc-overview.html#autotoc_md23", null ]
       ] ]
     ] ],
     [ "Todo List", "dd/da0/todo.html", null ],
@@ -69,8 +70,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d4/de0/unw16ifcpt_8h.html",
-"d5/dbc/hangul_8h.html#a5ddc15b477bea9a0f8226d8be3287201",
+"d4/de0/unw16ifcpt_8h.html#a003978e9d9e04d01466f13de4ca9529b",
+"d5/dbc/hangul_8h.html#a6deea900a0f5268bac6ca99a94d11c87",
 "d8/dc7/wcsnatcmp__s_8c.html#aa97dd5330eb5d94996593efc2bf1bef0",
 "d9/d3d/mbstowcs__s_8c.html#a3c510157d0697c2addff5ef650aaab15",
 "d9/dfd/unw16ifcmp_8h.html#a7bc5bd3e6010ebb72186b83a968ece28",

@@ -1,9 +1,20 @@
 var searchData=
 [
-  ['getenv_5fs_0',['getenv_s',['../db/d69/safe__lib_8h.html#aea48b0e9ff916cdd04a29914bbfdf976',1,'getenv_s:&#160;safe_lib.h'],['../d1/d26/getenv__s_8c.html#a000d0593afe3e7afc1c4c9b17f640d71',1,'getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax, const char *restrict name):&#160;getenv_s.c']]],
-  ['getenv_5fs_2ec_1',['getenv_s.c',['../d1/d26/getenv__s_8c.html',1,'']]],
-  ['gets_5fs_2',['gets_s',['../db/d69/safe__lib_8h.html#a9a917737ec69d96072ff76601db2c748',1,'gets_s:&#160;safe_lib.h'],['../d2/d59/gets__s_8c.html#aa6eea066d358e507350d65c7f32ee063',1,'gets_s(char *restrict dest, rsize_t dmax):&#160;gets_s.c']]],
-  ['gets_5fs_2ec_3',['gets_s.c',['../d2/d59/gets__s_8c.html',1,'']]],
-  ['gmtime_5fs_4',['gmtime_s',['../d7/d57/gmtime__s_8c.html#a0908fe923a40045f19dae1cfafdb6a02',1,'gmtime_s(const time_t *restrict timer, struct tm *restrict dest):&#160;gmtime_s.c'],['../db/d69/safe__lib_8h.html#ab348e95fc95b14b1067e7f5581ce2542',1,'gmtime_s(const time_t *restrict timer, struct tm *restrict dest) BOS_NULL(timer) BOS_NULL(dest):&#160;gmtime_s.c']]],
-  ['gmtime_5fs_2ec_5',['gmtime_s.c',['../d7/d57/gmtime__s_8c.html',1,'']]]
+  ['eok_0',['EOK',['../d0/dc2/safe__lib__errno_8h.html#acf2e4414e0bf0d331a111e70f9317434',1,'safe_lib_errno.h']]],
+  ['errmsgs_5fs_1',['errmsgs_s',['../d0/d29/strerror__s_8h.html#ac68369aa2d417217ceb3b259e59601ff',1,'strerror_s.h']]],
+  ['errno_5ft_2',['errno_t',['../dd/d0a/safe__types_8h.html#a46a037236862ac1a534efbe605c10f42',1,'safe_types.h']]],
+  ['esempty_3',['ESEMPTY',['../d0/dc2/safe__lib__errno_8h.html#a972680d6fbeed945532d00242f0fa9e1',1,'safe_lib_errno.h']]],
+  ['eslast_4',['ESLAST',['../d0/dc2/safe__lib__errno_8h.html#addbf5232885d2d87b94a0c5eb43aeb33',1,'safe_lib_errno.h']]],
+  ['eslemax_5',['ESLEMAX',['../d0/dc2/safe__lib__errno_8h.html#a37338d1cd52473db60939dc2b3617aa9',1,'safe_lib_errno.h']]],
+  ['eslemin_6',['ESLEMIN',['../d0/dc2/safe__lib__errno_8h.html#a1cba577826f9ef8686676eb69a18ce46',1,'safe_lib_errno.h']]],
+  ['eslewrng_7',['ESLEWRNG',['../d0/dc2/safe__lib__errno_8h.html#ab840aa3a7637f79bcb00ee2ed78d51ba',1,'safe_lib_errno.h']]],
+  ['esnodiff_8',['ESNODIFF',['../d0/dc2/safe__lib__errno_8h.html#a9a34ee6f3a60d9e349f49414f0c49505',1,'safe_lib_errno.h']]],
+  ['esnospc_9',['ESNOSPC',['../d0/dc2/safe__lib__errno_8h.html#a7fc41eb1a1967b519fdde86b7deb9092',1,'safe_lib_errno.h']]],
+  ['esnotfnd_10',['ESNOTFND',['../d0/dc2/safe__lib__errno_8h.html#a530ade2683f55ba71db096c4ca72d8d2',1,'safe_lib_errno.h']]],
+  ['esnullp_11',['ESNULLP',['../d0/dc2/safe__lib__errno_8h.html#a6b244ee60d3c08bc5c4a266c7f513895',1,'safe_lib_errno.h']]],
+  ['esovrlp_12',['ESOVRLP',['../d0/dc2/safe__lib__errno_8h.html#a676f867855bb06eeda6b9d220f173730',1,'safe_lib_errno.h']]],
+  ['esunterm_13',['ESUNTERM',['../d0/dc2/safe__lib__errno_8h.html#a5a23b3bf978250a97a9498051a2da2ff',1,'safe_lib_errno.h']]],
+  ['eszerol_14',['ESZEROL',['../d0/dc2/safe__lib__errno_8h.html#a9ff9a755b9b61037a02d1220ec8a7808',1,'safe_lib_errno.h']]],
+  ['extensions_15',['Overview of various libc&apos;s regarding the secure C11 extensions',['../d6/d31/md_doc_2libc-overview.html',1,'']]],
+  ['extern_16',['EXTERN',['../db/d69/safe__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN:&#160;safe_lib.h'],['../d8/d03/safe__mem__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN:&#160;safe_mem_lib.h'],['../d8/dff/safe__str__lib_8h.html#a77366c1bd428629dc898e188bfd182a3',1,'EXTERN:&#160;safe_str_lib.h']]]
 ];
