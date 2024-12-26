@@ -8,6 +8,50 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+
+#ifdef PRINTF_INCLUDE_CONFIG_H
+#include "printf_config.h"
+#endif
+
+// support for the long long types (%llu or %p)
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
+# ifdef HAVE_LONG_LONG
+#  define PRINTF_SUPPORT_LONG_LONG
+# else
+#  undef PRINTF_SUPPORT_LONG_LONG
+# endif
+#endif
+
+// support for the long double types (%Lf %Le %Lg %La)
+// default: probed
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
+# ifdef HAVE_LONG_DOUBLE
+#  define PRINTF_SUPPORT_LONG_DOUBLE
+# else
+#  undef PRINTF_SUPPORT_LONG_DOUBLE
+# endif
+#endif
+
+// support for the floating point type (%f)
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_FLOAT
+#define PRINTF_SUPPORT_FLOAT
+#endif
+
+// support for exponential floating point notation (%e/%g)
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_EXPONENTIAL
+#define PRINTF_SUPPORT_EXPONENTIAL
+#endif
+
+// support for the ptrdiff_t type (%t)
+// ptrdiff_t is normally defined in <stddef.h> as long or long long type
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_PTRDIFF_T
+#define PRINTF_SUPPORT_PTRDIFF_T
+#endif
+
 #if defined(TEST_MSVCRT) && defined(HAVE_SPRINTF_S)
 #ifdef SAFECLIB_HAVE_C99
 #undef sprintf_s
@@ -255,8 +299,103 @@ int test_sprintf_s(void) {
     strcpy(str1, "56789");
 
     rc = sprintf_s(str2, 10, "%s", str1);
-    NOERRNULL()
+    ERR(5)
     EXPSTR(str2, "56789")
+
+    rc = sprintf_s(str2, LEN, "%hhu", (unsigned char)1);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%hu", (unsigned short)1);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%u", 1U);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%zu", (size_t)1U);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%ju", 1UL);
+    ERR(1)
+    EXPSTR(str2, "1")
+
+#ifdef PRINTF_SUPPORT_LONG_LONG
+    rc = sprintf_s(str2, LEN, "%llu", 1ULL);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%Ld", 1LL);
+    ERR(1)
+    EXPSTR(str2, "1")
+    rc = sprintf_s(str2, LEN, "%Li", 1LL);
+    ERR(1)
+    EXPSTR(str2, "1")
+#endif
+#ifdef PRINTF_SUPPORT_FLOAT
+#ifdef PRINTF_SUPPORT_EXPONENTIAL
+    rc = sprintf_s(str2, LEN, "%f", 0.1f);
+    NOERRNULL()
+    EXPSTR(str2, "0.100000")
+    rc = sprintf_s(str2, LEN, "%F", 0.1f);
+    NOERRNULL()
+    EXPSTR(str2, "0.100000")
+    rc = sprintf_s(str2, LEN, "%g", 0.1f);
+    NOERRNULL()
+    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    rc = sprintf_s(str2, LEN, "%G", 0.1f);
+    NOERRNULL()
+    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    rc = sprintf_s(str2, LEN, "%g", 0.1);
+    NOERRNULL()
+    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    rc = sprintf_s(str2, LEN, "%g", 1.0);
+    NOERRNULL()
+    EXPSTR(str2, "1") // FIXME 0.100000 trailing-zeros and dot not stripped
+    rc = sprintf_s(str2, LEN, "%lg", 0.1);
+    NOERRNULL()
+    EXPSTR(str2, "0.1") // FIXME 0.100000 trailing-zeros not stripped
+    rc = sprintf_s(str2, LEN, "%a", 0.1f);
+    NOERRNULL()
+    EXPSTR(str2, "0x1.99999ap-4")
+#endif
+#endif
+    {
+    const long double ld = 0.1;
+#ifdef PRINTF_SUPPORT_EXPONENTIAL
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
+    rc = sprintf_s(str2, LEN, "%Le", ld);
+    NOERRNULL()
+    EXPSTR(str2, "1.000000e-01")
+    rc = sprintf_s(str2, LEN, "%LE", ld);
+    NOERRNULL()
+    EXPSTR(str2, "1.000000E-01")
+    rc = sprintf_s(str2, LEN, "%Lf", ld);
+    NOERRNULL()
+    EXPSTR(str2, "0.100000")
+    rc = sprintf_s(str2, LEN, "%LF", ld);
+    NOERRNULL()
+    EXPSTR(str2, "0.100000")
+    rc = sprintf_s(str2, LEN, "%Lg", ld);
+    NOERRNULL()
+    EXPSTR(str2, "0.1")
+    rc = sprintf_s(str2, LEN, "%LG", ld);
+    NOERRNULL()
+    EXPSTR(str2, "0.1")
+    rc = sprintf_s(str2, LEN, "%La", ld);
+    NOERRNULL()
+    EXPSTR(str2, "0xc.cccccccccccdp-7")
+#endif
+#endif
+    }
+#ifdef PRINTF_SUPPORT_PTRDIFF_T
+    rc = sprintf_s(str2, LEN, "%td", str2 - str1);
+    NOERRNULL()
+    if (str2 - str1)
+        EXPNSTR(str2, "0")
+    else
+        EXPSTR(str2, "0")
+    // invalid length
+    rc = sprintf_s(str2, LEN, "%t", str2 - str1);
+    ERR(-1)
+#endif
 
     /*--------------------------------------------------*/
 

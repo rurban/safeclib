@@ -37,8 +37,8 @@
 #include "safe_config.h"
 
 #ifndef PERL
-#define PERL "perl5.37.4-uni15"
-#define PERL_VERSION "5.37.4"
+#define PERL "perl5.38"
+#define PERL_VERSION "5.38"
 #endif
 
 #ifdef __KERNEL__
@@ -345,6 +345,15 @@ static inline void *bnd_chk_malloc(size_t n) {
     {                                                                          \
         int _ind = strcmp((s1), (s2));                                         \
         if (_ind != 0) {                                                       \
+            debug_printf("%s %u  Expected \"%s\", got \"%s\" \n",              \
+                         __FUNCTION__, __LINE__, (s2), s1);                    \
+            errs++;                                                            \
+        }                                                                      \
+    }
+#define EXPNSTR(s1, s2)                                                         \
+    {                                                                          \
+        int _ind = strcmp((s1), (s2));                                         \
+        if (_ind == 0) {                                                       \
             debug_printf("%s %u  Expected \"%s\", got \"%s\" \n",              \
                          __FUNCTION__, __LINE__, (s2), s1);                    \
             errs++;                                                            \
