@@ -1,3 +1,3 @@
 #!/bin/sh
 test -f configure || build-aux/autogen.sh
-./configure && make && make check-log
+./configure --enable-debug && make && make check-log
