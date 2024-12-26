@@ -50,21 +50,22 @@
  * @param[in]  dest    pointer to string to compare against
  * @param[in]  dmax    restricted maximum length of dest
  * @param[in]  ch      character to search for
- * @param[out] resultp pointer to char* in dest
+ * @param[out] resultp pointer to char* in dest on EOK
  *
  * @pre  Neither dest nor resultp shall be a null pointer.
  * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest.
  * @pre  ch shall not be greater than 255.
  *
- * @retval  EOK        when successfully character found.
- * @retval  ESNULLP    when dest/resultp is a NULL pointer
+ * @return  The error code of the result. On EOK, see resultp.
+ * @retval  EOK        when successfully character found. See resultp
+ * @retval  ESNOTFND   when ch not found in dest
+ * @retval  ESNULLP    when dest or resultp is the NULL pointer
  * @retval  ESZEROL    when dmax = 0 or strnlen_s = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR or ch > 255
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
- * @retval  ESNOTFND   when ch not found in dest
  *
  * @see
  *    memrchr_s(), strchr_s(), memchr_s(), strspn_s(), strstr_s()

@@ -63,14 +63,10 @@
  * @pre   resultp shall not be a null pointer.
  * @pre   dmax/smax shall not be 0
  * @pre   dmax/smax shall not be greater than RSIZE_MAX_WSTR and size of
- * dest/src
+ *        dest/src
  *
- * @return  resultp (when the return code is OK)
- *            >0 when dest greater than src
- *             0 when strings are the same
- *            <0 when dest less than src
- *
- * @retval  EOK        when comparison is complete
+ * @return  The error code of the result. On EOK see resultp.
+ * @retval  EOK        when comparison is complete. See resultp
  * @retval  ESUNTERM   when dest or src is unterminated, or dmax is too small.
  * @retval  ESNULLP    when dest/src/resultp is NULL pointer
  * @retval  ESZEROL    when dmax/smax = 0

@@ -56,14 +56,15 @@
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest.
  * @pre  ch shall not be greater than 255
  *
+ * @return  The error code of the result. On EOK, see resultp.
  * @retval  EOK        when successfully character found.
- * @retval  ESNULLP    when dest/resultp is a NULL pointer
+ * @retval  ESNOTFND   when ch not found in dest
+ * @retval  ESNULLP    when dest or resultp is the NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR, or ch > 255
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
- * @retval  ESNOTFND   when ch not found in dest
  *
  * @see
  *    memchr_s(), strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()

@@ -48,19 +48,20 @@
  * @param[in]  dest    pointer to buffer to compare against
  * @param[in]  dmax    length of dest to search in
  * @param[in]  ch      character to search for
- * @param[out] result  pointer to result in dest
+ * @param[out] resultp pointer to result in dest
  *
  * @pre  Neither dest nor result shall be a null pointer.
  * @pre  dmax shall not be 0.
  * @pre  dmax shall not be greater than RSIZE_MAX_MEM and sizeof(dest)
  * @pre  ch shall not be greater than 255
  *
- * @retval  EOK        when the character was successfully found.
- * @retval  ESNULLP    when dest/result is a NULL pointer
+ * @return  The error code of the result. On EOK, see resultp.
+ * @retval  EOK        when the character was successfully found. See resultp
+ * @retval  ESNOTFND   when ch not found in dest
+ * @retval  ESNULLP    when dest or resultp is the NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_MEM or > sizeof(dest).
  *                     Or when ch > 255
- * @retval  ESNOTFND   when ch not found in dest
  *
  * @see
  *    strchr_s(), strspn_s(), strcspn_s(), strpbrk_s(), strstr_s()
@@ -68,19 +69,19 @@
  */
 #ifdef FOR_DOXYGEN
 errno_t memchr_s(const void *restrict dest, rsize_t dmax,
-                 const int ch, void **result)
+                 const int ch, void **resultp)
 #else
 EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
-                             const int ch, void **result,
+                             const int ch, void **resultp,
                              const size_t destbos)
 #endif
 {
-    if (unlikely(result == NULL)) {
-        invoke_safe_mem_constraint_handler("memchr_s: result is null",
+    if (unlikely(resultp == NULL)) {
+        invoke_safe_mem_constraint_handler("memchr_s: resultp is null",
                                            (void *)dest, ESNULLP);
         return (ESNULLP);
     }
-    *result = NULL;
+    *resultp = NULL;
     CHK_DEST_MEM_NULL("memchr_s")
     CHK_DMAX_MEM_ZERO("memchr_s")
     if (destbos == BOS_UNKNOWN) {
@@ -96,9 +97,9 @@ EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
     }
 
     /* compares wordwise */
-    *result = memchr((void *)dest, ch, (size_t)dmax);
+    *resultp = memchr((void *)dest, ch, (size_t)dmax);
 
-    if (!*result)
+    if (!*resultp)
         return (ESNOTFND);
     return (EOK);
 }

@@ -56,9 +56,10 @@
  * @pre  dmax shall not be 0
  * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
- * @return  pointer to last occurence of c, NULL if not found
- * @retval  EOK         when pointer to last occurrence is returned
- * @retval  ESNULLP     when dst/first is NULL pointer
+ * @return  The error code of the result. On EOK, see lastp.
+ * @retval  EOK         when pointer to last occurrence is returned in lastp
+ * @retval  ESNOTFND    when not found
+ * @retval  ESNULLP     when dest or lastp is the NULL pointer
  * @retval  ESZEROL     when dmax = 0
  * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
  * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler

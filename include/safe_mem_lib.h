@@ -204,16 +204,16 @@ EXTERN errno_t _memzero32_s_chk(uint32_t *dest, rsize_t len,
 
 /* find a byte */
 EXTERN errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
-                             const int ch, void **result, const size_t destbos)
-    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(result);
-#define memchr_s(dest, dmax, ch, result)                                       \
-    _memchr_s_chk(dest, dmax, ch, result, BOS(dest))
+                             const int ch, void **resultp, const size_t destbos)
+    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(resultp);
+#define memchr_s(dest, dmax, ch, resultp)                                      \
+    _memchr_s_chk(dest, dmax, ch, resultp, BOS(dest))
 
 EXTERN errno_t _memrchr_s_chk(const void *restrict dest, rsize_t dmax,
-                              const int ch, void **result, const size_t destbos)
-    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(result);
-#define memrchr_s(dest, dmax, ch, result)                                      \
-    _memrchr_s_chk(dest, dmax, ch, result, BOS(dest))
+                              const int ch, void **resultp, const size_t destbos)
+    BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(resultp);
+#define memrchr_s(dest, dmax, ch, resultp)                                      \
+    _memrchr_s_chk(dest, dmax, ch, resultp, BOS(dest))
 
 /* timing-safe byte sequence comparisons
    (already in OpenBSD, cygwin, newlib, FreeBSD) */

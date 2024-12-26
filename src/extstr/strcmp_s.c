@@ -57,13 +57,11 @@
  * @pre   dmax shall not be 0
  * @pre   dmax shall not be greater than RSIZE_MAX_STR and size of dest
  *
- * @return  resultp (when the return code is OK)
- * @retval  >0         when dest greater than src
- * @retval   0         when strings the same
- * @retval  <0         when dest less than src
- * @retval  EOK        when comparison is complete
+ * @return  The error code of the result. On EOK, see resultp.
+ * @retval  EOK        when comparison is complete and the result is returned
+ *                     in resultp
  * @retval  ESUNTERM   when src is unterminated
- * @retval  ESNULLP    when dest/src/resultp is NULL pointer
+ * @retval  ESNULLP    when dest, src or resultp is the NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler

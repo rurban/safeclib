@@ -63,12 +63,13 @@
  * @pre   dlen shall not be greater than RSIZE_MAX_WMEM and size of dest.
  * @pre   slen shall not be greater than dlen and size of src.
  *
- * @retval  EOK         when operation is successful
- * @retval  ESNULLP     when dest/src is NULL POINTER
+ * @return  The error code of the result. On EOK see diff.
+ * @retval  EOK         when operation is successful. See diff
+ * @retval  ESNULLP     when dest/src is the NULL pointer
  * @retval  ESZEROL     when dlen/slen = ZERO
  * @retval  ESLEMAX     when dlen/slen > RSIZE_MAX_WMEM
  * @retval  EOVERFLOW   when dlen/slen > size of dest/src (optionally, when the
- * compiler knows the object_size statically)
+ *                      compiler knows the object_size statically)
  * @retval  ESLEWRNG    when dlen != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when slen > dlen
  *
