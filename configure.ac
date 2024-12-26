@@ -116,7 +116,7 @@ AC_ARG_ENABLE(gcov,
 	esac], [enable_gcov=false ])
 
 AC_MSG_CHECKING([for --enable-gcov])
-if test "x$enable_gcov" = "xtrue" ; then
+if test "$enable_gcov" = "true" ; then
 	dnl if test "$GCC" = yes; then
 	dnl 	AC_MSG_ERROR([gcov only works if gcc is used])
 	dnl fi
@@ -137,7 +137,7 @@ if test "x$enable_gcov" = "xtrue" ; then
 else
 	AC_MSG_RESULT([no (default)])
 fi
-AM_CONDITIONAL(ENABLE_GCOV, test "x$enable_gcov" = "xtrue")
+AM_CONDITIONAL(ENABLE_GCOV, test "$enable_gcov" = "true")
 
 AC_ARG_ENABLE(debug,
 	AS_HELP_STRING([--enable-debug],
@@ -149,32 +149,32 @@ AC_ARG_ENABLE(debug,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
 	esac], [enable_debug=false ])
 AC_MSG_CHECKING([for --enable-debug])
-if test "x$enable_debug" = "xtrue" ; then
-        if test "x$enable_gcov" = "xtrue" ; then
+if test "$enable_debug" = "true" ; then
+        if test "$enable_gcov" = "true" ; then
 	   DEBUG_CFLAGS="-g"
         else
 	   DEBUG_CFLAGS="-g -O2"
         fi
-        if test "x`uname -o`" = "xDarwin" -a x$cross_compiling = xno; then
+        if test "$(uname -o)" = "Darwin" -a "$cross_compiling" = "no"; then
             enable_shared=no
             enable_shared_with_static_runtimes=no
         fi
         AC_MSG_RESULT([yes CFLAGS = $DEBUG_CFLAGS])
 	AM_CPPFLAGS="${AM_CPPFLAGS} -DDEBUG"
 else
-        if test "x$enable_gcov" = "xtrue"; then
+        if test "$enable_gcov" = "true"; then
 	   DEBUG_CFLAGS="-g"
         else
            # default release optimization
 	   DEBUG_CFLAGS="-O2"
-           if test x$GCC = xyes; then
+           if test "$GCC" = "yes"; then
 	      DEBUG_CFLAGS="-O2 -D_FORTIFY_SOURCE=2"
            fi
         fi
         AC_MSG_RESULT([no CFLAGS = $DEBUG_CFLAGS])
 fi
 
-if test "x$CFLAGS" = "x-g -O2" -o "x$CFLAGS" = "x-g"; then
+if test "$CFLAGS" = "-g -O2" -o "$CFLAGS" = "-g"; then
 	# by doing it this way we suppress automake's assumption that if
 	# CFLAGS is empty lets compile the code with '-g -O2'.
 	CFLAGS="${DEBUG_CFLAGS}"
@@ -184,7 +184,7 @@ else
 	             CFLAGS these may be overridden.
 	             CFLAGS = '$CFLAGS'])
 fi
-AM_CONDITIONAL(ENABLE_DEBUG, test "x$enable_debug" = "xtrue")
+AM_CONDITIONAL(ENABLE_DEBUG, test "$enable_debug" = "true")
 
 AC_ARG_ENABLE(extensions,
 	AS_HELP_STRING([--disable-extensions],
@@ -197,7 +197,7 @@ AC_ARG_ENABLE(extensions,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-extensions]) ;;
 	esac], [enable_extensions=true])
 AC_MSG_CHECKING([for --disable-extensions])
-if test "x$enable_extensions" = "xfalse" ; then
+if test "$enable_extensions" = "false" ; then
 	AC_MSG_RESULT([yes])
 	INSERT_EXTS="#define SAFECLIB_DISABLE_EXTENSIONS 1"
 else
@@ -208,7 +208,7 @@ fi
 #		  [Define to 1 to disable additional functions not defined
 #		   in the C11 appendix K specification])
 AC_SUBST(INSERT_EXTS)
-AM_CONDITIONAL(ENABLE_EXTS, test "x$enable_extensions" = "xtrue")
+AM_CONDITIONAL(ENABLE_EXTS, test "$enable_extensions" = "true")
 
 AC_ARG_ENABLE(memmax,
 	AS_HELP_STRING([--enable-memmax],
@@ -250,7 +250,7 @@ AC_ARG_ENABLE(nullslack,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-nullslack]) ;;
 	esac], [enable_nullslack=true ])
 AC_MSG_CHECKING([for --disable-nullslack])
-if test "x$enable_nullslack" = "xtrue" ; then
+if test "$enable_nullslack" = "true" ; then
 	AC_MSG_RESULT([no (default)])
 	INSERT_NULLSLACK="#define SAFECLIB_STR_NULL_SLACK 1"
 	# AC_DEFINE([SAFECLIB_STR_NULL_SLACK], 1,
@@ -273,7 +273,7 @@ AC_ARG_ENABLE(constraint-handler,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-constraint-handler]) ;;
 	esac], [enable_constraint_handler=true])
 AC_MSG_CHECKING([for --disable-constraint-handler])
-if test "x$enable_constraint_handler" = "xfalse" ; then
+if test "$enable_constraint_handler" = "false" ; then
 	AC_MSG_RESULT([yes])
 	INSERT_CONSTRAINT_HANDLER="#define SAFECLIB_DISABLE_CONSTRAINT_HANDLER 1"
 else
@@ -291,7 +291,7 @@ AC_ARG_ENABLE(unsafe,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-unsafe]) ;;
 	esac], [enable_unsafe=no ])
 AC_MSG_CHECKING([for --enable-unsafe])
-if test "x$enable_unsafe" = "xtrue" ; then
+if test "$enable_unsafe" = "true" ; then
 	AC_MSG_RESULT([yes])
 	INSERT_UNSAFE="#define SAFECLIB_ENABLE_UNSAFE 1"
 else
@@ -299,7 +299,7 @@ else
 	INSERT_UNSAFE="#undef SAFECLIB_ENABLE_UNSAFE"
 fi
 AC_SUBST(INSERT_UNSAFE)
-AM_CONDITIONAL([ENABLE_UNSAFE], test "x$enable_unsafe" = "xtrue")
+AM_CONDITIONAL([ENABLE_UNSAFE], test "$enable_unsafe" = "true")
 
 AC_ARG_ENABLE(norm-compat,
 	AS_HELP_STRING([--enable-norm-compat],
@@ -310,7 +310,7 @@ AC_ARG_ENABLE(norm-compat,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-norm-compat]) ;;
 	esac], [enable_norm_compat=false ])
 AC_MSG_CHECKING([for --enable-norm-compat])
-if test "x$enable_norm_compat" = "xtrue" ; then
+if test "$enable_norm_compat" = "true" ; then
 	AC_MSG_RESULT([yes])
 	AC_DEFINE([HAVE_NORM_COMPAT], 1,
 	 	  [Define to 1 to enable the compat normalization modes for wcsnorm_s
@@ -328,7 +328,7 @@ AC_ARG_ENABLE(warn-dmax,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-warn-dmax]) ;;
 	esac], [enable_warn_dmax=false ])
 AC_MSG_CHECKING([for --enable-warn-dmax])
-if test "x$enable_warn_dmax" = "xtrue" ; then
+if test "$enable_warn_dmax" = "true" ; then
 	AC_MSG_RESULT([yes])
 else
 	AC_MSG_RESULT([no (default)])
@@ -343,7 +343,7 @@ AC_ARG_ENABLE(error-dmax,
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-error-dmax]) ;;
 	esac], [enable_error_dmax=false ])
 AC_MSG_CHECKING([for --enable-error-dmax])
-if test "x$enable_error_dmax" = "xtrue" ; then
+if test "$enable_error_dmax" = "true" ; then
 	AC_MSG_RESULT([yes])
 else
 	AC_MSG_RESULT([no (default)])
@@ -375,12 +375,12 @@ AC_ARG_ENABLE(doc,
 	no)  enable_doc=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-doc]) ;;
 	esac], [enable_doc=true])
-AM_CONDITIONAL(ENABLE_DOC, test "x$enable_doc" = "xtrue")
+AM_CONDITIONAL(ENABLE_DOC, test "$enable_doc" = "true")
 
 dnl for windows dllimport. checking pic_flag DLL_EXPORT would be better,
 dnl but this is only enabled for the shared objs, and we need it in the config
 dnl for our tests.
-if test "x$enable_shared" = "xno" ; then
+if test "$enable_shared" = "no" ; then
 	INSERT_DISABLE_DLLIMPORT="#define DISABLE_DLLIMPORT 1"
 else
 	INSERT_DISABLE_DLLIMPORT="#undef DISABLE_DLLIMPORT"
@@ -397,7 +397,7 @@ AC_ARG_ENABLE(debug-build,
 	no)  enable_debug_build=false ;;
 	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug-build]) ;;
 	esac], [enable_debug_build=false ])
-AM_CONDITIONAL(ENABLE_DEBUG_BUILD, test "x$enable_debug_build" = "xtrue")
+AM_CONDITIONAL(ENABLE_DEBUG_BUILD, test "$enable_debug_build" = "true")
 
 AC_ARG_ENABLE(hardening,
 	AS_HELP_STRING([--disable-hardening],
@@ -417,27 +417,27 @@ AM_PROG_CC_C_O
 #AC_PROG_CC_C99
 #AC_PROG_CC_C11
 
-if test "x$ac_cv_prog_cc_c99" = "xno"; then
+if test "$ac_cv_prog_cc_c99" = "no"; then
    dnl we really should ERROR, lets see how far can come without
    AC_MSG_WARN([This compiler ${CC} has no c99 support])
    INSERT_SAFECLIB_HAVE_C99="#undef SAFECLIB_HAVE_C99"
 else
    AC_DEFINE([SAFECLIB_HAVE_C99], 1,
         [Defined to 1 when the compiler supports c99, mostly (...) macros])
-   if test "x$ac_cv_prog_cc_c99" != "x"; then
+   if test "$ac_cv_prog_cc_c99" != ""; then
       AC_MSG_RESULT([added $ac_cv_prog_cc_c99 to CFLAGS])
       AM_CFLAGS="$AM_CFLAGS $ac_cv_prog_cc_c99"
    fi
    INSERT_SAFECLIB_HAVE_C99="#define SAFECLIB_HAVE_C99 1"
 fi
-dnl AM_CONDITIONAL([SAFECLIB_HAVE_C99], [test "x$ac_cv_prog_cc_c99=no" != "xno"])
+dnl AM_CONDITIONAL([SAFECLIB_HAVE_C99], [test "$ac_cv_prog_cc_c99=no" != "no"])
 AC_SUBST(SAFECLIB_HAVE_C99)
 AC_SUBST(INSERT_SAFECLIB_HAVE_C99)
 
-if test "x$ac_cv_prog_cc_c11" != "xno"; then
+if test "$ac_cv_prog_cc_c11" != "no"; then
    AC_DEFINE([HAVE_C11], 1,
         [Defined to 1 when the compiler supports c11])
-   if test "x$ac_cv_prog_cc_c11" != "x"; then
+   if test "$ac_cv_prog_cc_c11" != ""; then
       AC_MSG_RESULT([added $ac_cv_prog_cc_c11 to CFLAGS])
       AM_CFLAGS="$AM_CFLAGS $ac_cv_prog_cc_c11"
    fi
@@ -481,7 +481,7 @@ case $host_os in
 esac
 dnl gcc 4.2 fails with -Wmissing-format-attribute
 dnl https://gcc.gnu.org/bugzilla/show_bug.cgi?id=28492
-if test "x$GCC" != "x" ; then
+if test "$GCC" != "" ; then
   AC_MSG_CHECKING([for -Wmissing-format-attribute usability])
   old_cflags="$CFLAGS"
   CFLAGS="-Wmissing-format-attribute -Werror"
@@ -528,7 +528,7 @@ case $host_os in
     ;;
 esac
 dnl older non-c99 g++ complain about __VA_ARGS__, for();
-if test "x$ac_cv_prog_cc_c99" = "xno" -a x$ax_compiler_cxx = xyes; then
+if test "$ac_cv_prog_cc_c99" = "no" -a "$ax_compiler_cxx" = "yes"; then
     WARN_CFLAGS=`echo $WARN_CFLAGS | sed -e"s,-Werror ,,"`
 fi
 
@@ -546,7 +546,7 @@ dnl    [],[$ax_ccf_err])
 #AX_APPEND_COMPILE_FLAGS(["-fcheck-pointer-bounds -mmpx"],
 #   [CFLAGS],[$ax_ccf_err])
 dnl icc:
-if test x$ac_compiler_gnu = xno -a -n "$ax_ccf_err"; then
+if test "$ac_compiler_gnu" = "no" -a -n "$ax_ccf_err"; then
     AX_CHECK_COMPILE_FLAG([-check-pointers-mpx=rw],
        [CFLAGS="$CFLAGS -check-pointers-mpx=rw" LIBS="$LIBS -lmpx -lchkp"],
        [],[$ax_ccf_err])
@@ -568,7 +568,7 @@ case $host_os in
     ;;
 esac
 
-if test "x$enable_hardening" = "xtrue" ; then
+if test "$enable_hardening" = "true" ; then
 	AX_APPEND_COMPILE_FLAGS(
 	        [-fstack-protector-strong -fstack-clash-protection -fcf-protection \
 	         -fno-strict-aliasing -fno-strict-overflow -fno-delete-null-pointer-checks \
@@ -579,12 +579,12 @@ if test "x$enable_hardening" = "xtrue" ; then
 	        [WARN_LDFLAGS],[$ax_ccf_err])
 fi
 
-if test x$ax_cv_check_cflags__Wrestrict = xyes; then
+if test $ax_cv_check_cflags__Wrestrict = yes; then
    AC_DEFINE([HAVE_WARNING_RESTRICT], 1, [Have -Wrestrict])
 fi
 PEDANTIC="-pedantic"
 WARN_CFLAGS_TEST="-Wall -Wextra"
-if test x$ac_compiler_gnu = xno; then
+if test $ac_compiler_gnu = no; then
     AX_CHECK_COMPILE_FLAG([-pedantic],
        [PEDANTIC="-pedantic"],
        [PEDANTIC=""
@@ -601,7 +601,7 @@ INSERT_OBJECT_SIZE="#undef HAVE___BUILTIN_OBJECT_SIZE"
 INSERT_WARN_DMAX="#undef HAVE_WARN_DMAX"
 INSERT_ERROR_DMAX="#undef HAVE_ERROR_DMAX"
 
-if test x$ax_cv_have___builtin_object_size = xyes; then
+if test $ax_cv_have___builtin_object_size = yes; then
     AX_CHECK_COMPILE_FLAG([-Wuser-defined-warnings],
         [have_user_defined_warnings="yes"],[have_user_defined_warnings="no"])
     AX_CHECK_COMPILE_FLAG([$ax_ccf_err -Wgcc-compat],
@@ -612,15 +612,15 @@ if test x$ax_cv_have___builtin_object_size = xyes; then
         AC_DEFINE([HAVE_USER_DEFINED_WARNINGS], 1, [Uses -Wuser-defined-warnings])
     fi
     INSERT_OBJECT_SIZE="# define HAVE___BUILTIN_OBJECT_SIZE 1"
-    if test "x$enable_warn_dmax" = "xtrue" ; then
+    if test "$enable_warn_dmax" = "true" ; then
         INSERT_WARN_DMAX="# define HAVE_WARN_DMAX 1"
     fi
-    if test "x$enable_error_dmax" = "xtrue" ; then
+    if test "$enable_error_dmax" = "true" ; then
         INSERT_WARN_DMAX="#define HAVE_WARN_DMAX 1"
         INSERT_ERROR_DMAX="#define HAVE_ERROR_DMAX 1"
     fi
 else
-    if test "x$enable_warn_dmax" = "xtrue" ; then
+    if test "$enable_warn_dmax" = "true" ; then
       AC_MSG_RESULT([warn-dmax ignored, no __builtin_object_size])
     fi
 fi
@@ -660,7 +660,7 @@ int myfunc(char *ptr) {
       have_attribute_diagnose_if=no
     ])
 CFLAGS="$old_cflags"
-AM_CONDITIONAL([HAVE_ATTRIBUTE_DIAGNOSE_IF], [test "x$have_attribute_diagnose_if" = "xyes"])
+AM_CONDITIONAL([HAVE_ATTRIBUTE_DIAGNOSE_IF], [test "$have_attribute_diagnose_if" = "yes"])
 AC_SUBST(WARN_CFLAGS_TEST, $WARN_CFLAGS_TEST)
 
 AX_ASM_INLINE()
@@ -670,10 +670,10 @@ dnl Was needed for wcsnorm_s / mark.h. So far not needed anymore
 dnl AX_CHECK_COMPILE_FLAG([-fbracket-depth=512],
 dnl    [AM_CFLAGS="$AM_CFLAGS -fbracket-depth=512"], [], [], [])
 
-AM_CONDITIONAL([HAVE_MINGW], [test "x$host_os" = "xmingw32"])
+AM_CONDITIONAL([HAVE_MINGW], [test "$host_os" = "mingw32"])
 AM_CONDITIONAL([HAVE_MINGW_CROSS],
-        [test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"])
-if test "x$host_os" = "xmingw32" -a "x$build_os" != "xmingw32"; then
+        [test "$host_os" = "mingw32" -a "$build_os" != "mingw32"])
+if test "$host_os" = "mingw32" -a "$build_os" != "mingw32"; then
    AC_CHECK_PROGS([WINE], [wine])
    if test -z "$WINE"; then
       AC_MSG_WARN([wine not found - cannot check cross-compiled executables])
@@ -748,38 +748,38 @@ AC_CHECK_HEADERS([stdlib.h	\
                   ])
 
 INSERT_SYS_TYPES_H=""
-if test "x$ac_cv_header_sys_types_h" = "xyes"; then
+if test "$ac_cv_header_sys_types_h" = "yes"; then
 	INSERT_SYS_TYPES_H="#include <sys/types.h>"
 fi
 AC_SUBST(INSERT_SYS_TYPES_H)
 
 INSERT_INTTYPES_H=""
-if test "x$ac_cv_header_inttypes_h" = "xyes"; then
+if test "$ac_cv_header_inttypes_h" = "yes"; then
 	INSERT_INTTYPES_H="#include <inttypes.h>"
 fi
 AC_SUBST(INSERT_INTTYPES_H)
 
 INSERT_STDINT_H=""
-if test "x$ac_cv_header_stdint_h" = "xyes"; then
+if test "$ac_cv_header_stdint_h" = "yes"; then
 	INSERT_STDINT_H="#include <stdint.h>"
 fi
 AC_SUBST(INSERT_STDINT_H)
 
 INSERT_ERRNO_H=""
-if test "x$ac_cv_header_errno_h" = "xyes"; then
+if test "$ac_cv_header_errno_h" = "yes"; then
 	INSERT_ERRNO_H="#include <errno.h>"
 fi
 AC_SUBST(INSERT_ERRNO_H)
 
 INSERT_BOOL_SUPPORT="#include <stdbool.h>"
-if test "x$ac_cv_header_stdbool_h" = "xno"; then
+if test "$ac_cv_header_stdbool_h" = "no"; then
 	INSERT_BOOL_SUPPORT="
 # define bool _Bool
 # define false 0
 # define true 1
 # define __bool_true_false_are_defined 1
 "
-if test "x$ac_cv_type__bool" = "xno"; then
+if test "$ac_cv_type__bool" = "no"; then
 	INSERT_BOOL_SUPPORT="
 #ifdef __cplusplus
 typedef bool _Bool;
@@ -832,7 +832,7 @@ fi
 AX_GCC_BUILTIN(__builtin_ctz)
 AX_GCC_BUILTIN(__builtin_constant_p)
 INSERT_CONSTANT_P="#undef HAVE___BUILTIN_CONSTANT_P"
-if test x$ax_cv_have___builtin_constant_p = xyes; then
+if test "$ax_cv_have___builtin_constant_p" = "yes"; then
   INSERT_CONSTANT_P="#define HAVE___BUILTIN_CONSTANT_P 1"
 fi
 AC_SUBST(INSERT_CONSTANT_P)
@@ -844,12 +844,12 @@ AX_GCC_FUNC_ATTRIBUTE(returns_nonnull)
 AX_GCC_FUNC_ATTRIBUTE(format_wprintf)
 AX_GCC_FUNC_ATTRIBUTE(format_wscanf)
 
-if test x$ax_cv_have_func_attribute_format_wprintf = xyes; then
+if test "$ax_cv_have_func_attribute_format_wprintf" = "yes"; then
   HAVE_ATTRIBUTE_FORMAT_WPRINTF=1
 else
   HAVE_ATTRIBUTE_FORMAT_WPRINTF=0
 fi
-if test x$ax_cv_have_func_attribute_format_wscanf = xyes; then
+if test "$ax_cv_have_func_attribute_format_wscanf" = "yes"; then
   HAVE_ATTRIBUTE_FORMAT_WSCANF=1
 else
   HAVE_ATTRIBUTE_FORMAT_WSCANF=0
@@ -909,8 +909,8 @@ AC_ARG_ENABLE(wchar,
 	yes) enable_wchar=true ;;
 	no)  enable_wchar=false ;;
         dnl early mingw32 have only crippled wchar support: only wcscmp, wcslen
-	*)   if test x$ac_cv_type_wchar_t = xyes -a x$ac_cv_func_vswprintf = xyes \
-                  -a x$ac_cv_header_wchar_h = xyes
+	*)   if test "$ac_cv_type_wchar_t" = "yes" -a "$ac_cv_func_vswprintf" = "yes" \
+                  -a "$ac_cv_header_wchar_h" = "yes"
              then
                enable_wchar=true
              else
@@ -922,15 +922,15 @@ AC_ARG_ENABLE(wchar,
 AC_MSG_CHECKING([for --disable-wchar or broken wchar usability])
 dnl catch mingw32 1.0 with crippled wchar
 
-if test x$ac_cv_header_wchar_h = xyes -a x$enable_wchar = xtrue \
-   -a x$ac_cv_func_vswprintf = xyes \
-   -a x$ac_cv_func_mbsrtowcs = xyes -a x$ac_cv_func_vswscanf = xyes
+if test "$ac_cv_header_wchar_h" = "yes" -a "$enable_wchar" = "true" \
+   -a "$ac_cv_func_vswprintf" = "yes" \
+   -a "$ac_cv_func_mbsrtowcs" = "yes" -a "$ac_cv_func_vswscanf" = "yes"
 then
   enable_wchar=true
 else
   enable_wchar=false
 fi
-if test "x$enable_wchar" = "xtrue" ; then
+if test "$enable_wchar" = "true" ; then
 	AC_MSG_RESULT([no (default)])
 else
 	AC_MSG_RESULT([yes])
@@ -961,7 +961,7 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror \
         fileno ftruncate isinfl])
 
-if test "x$enable_wchar" = "xtrue" ; then
+if test "$enable_wchar" = "true" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \
         vswprintf vsnwprintf vswscanf mbsrtowcs mbstowcs iswdigit iswspace \
         towlower towupper towctrans ])
@@ -990,7 +990,7 @@ AC_CHECK_FUNCS(
         fopen_s freopen_s gets_s bsearch_s qsort_s gmtime_s localtime_s \
         asctime_s ctime_s getenv_s feenableexcept ])
 
-if test "x$enable_wchar" = "xtrue" ; then
+if test "$enable_wchar" = "true" ; then
    AC_CHECK_FUNCS(
       [ mbsrtowcs_s mbstowcs_s wcsrtombs_s wcstombs_s \
         wcrtomb_s wctomb_s wcsnlen_s wcscpy_s wcsncpy_s wcscat_s wcsncat_s \
@@ -1005,14 +1005,14 @@ dnl but delete it, because we override it case by case
 $GREP -v '__STDC_WANT_LIB_EXT1__' confdefs.h > confdefs.h.tmp
 mv confdefs.h.tmp confdefs.h
 
-AM_CONDITIONAL([HAVE_WCSSTR], [test "x$ac_cv_func_wcsstr" = "xyes"])
-AM_CONDITIONAL([HAVE_MBSTOWCS], [test "x$ac_cv_func_mbstowcs" = "xyes"])
-AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "x$ac_cv_func_vsnwprintf_s" = "xyes"])
-AM_CONDITIONAL([HAVE_MEMCPY_S], [test "x$ac_cv_func_memcpy_s" = "xyes"])
+AM_CONDITIONAL([HAVE_WCSSTR], [test "$ac_cv_func_wcsstr" = "yes"])
+AM_CONDITIONAL([HAVE_MBSTOWCS], [test "$ac_cv_func_mbstowcs" = "yes"])
+AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "$ac_cv_func_vsnwprintf_s" = "yes"])
+AM_CONDITIONAL([HAVE_MEMCPY_S], [test "$ac_cv_func_memcpy_s" = "yes"])
 AM_CONDITIONAL([HAVE_TIMINGSAFE_BCMP],
-   [test "x$ac_cv_func_timingsafe_memcmp" = "xyes" -a "x$ac_cv_func_timingsafe_bcmp" = "xyes" ])
+   [test "$ac_cv_func_timingsafe_memcmp" = "yes" -a "$ac_cv_func_timingsafe_bcmp" = "yes" ])
 
-if test "x$ac_cv_func_towupper" = "xyes"; then
+if test "$ac_cv_func_towupper" = "yes"; then
   AC_MSG_CHECKING([for towupper usability])
   AC_RUN_IFELSE( [AC_LANG_PROGRAM([[
 #include <wctype.h>
@@ -1034,7 +1034,7 @@ return (towupper(0x1C80) == 0x412
 fi
 
 dnl cygwin had a broken strnstr until Aug 2017
-if test "x$ac_cv_func_strnstr" = "xyes"; then
+if test "$ac_cv_func_strnstr" = "yes"; then
   AC_MSG_CHECKING([for strnstr usability])
   AC_RUN_IFELSE( [AC_LANG_PROGRAM([[
 #include <string.h>
@@ -1050,14 +1050,14 @@ return strnstr("%s %n", "%n", 6) ? 0 : 1;
 	[ AC_MSG_RESULT([no (cross)]) ])
 fi
 
-if test "x$enable_wchar" = "xtrue" ; then
+if test "$enable_wchar" = "true" ; then
         INSERT_DISABLE_WCHAR="#undef SAFECLIB_DISABLE_WCHAR"
         AX_COMPILE_CHECK_SIZEOF(wchar_t, [#include <wchar.h>])
 else
         INSERT_DISABLE_WCHAR="#define SAFECLIB_DISABLE_WCHAR 1"
         ac_cv_header_wchar_h=no
 fi
-AM_CONDITIONAL([ENABLE_WCHAR], [test "x$enable_wchar" = "xtrue"])
+AM_CONDITIONAL([ENABLE_WCHAR], [test "$enable_wchar" = "true"])
 AC_SUBST(INSERT_DISABLE_WCHAR)
 
 
@@ -1104,7 +1104,7 @@ AC_SUBST([AM_CFLAGS])
 AC_SUBST([AM_LDFLAGS])
 
 # Some build debugging output
-if test "x$enable_debug_build" = "xtrue"; then
+if test "$enable_debug_build" = "true"; then
 	AC_MSG_RESULT([AM_CPPFLAGS = $AM_CPPFLAGS])
 	AC_MSG_RESULT([AM_CFLAGS = $AM_CFLAGS])
 	AC_MSG_RESULT([AM_LDFLAGS = $AM_LDFLAGS])
