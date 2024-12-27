@@ -345,7 +345,7 @@ int test_vsprintf_s(void) {
         EXPSTR(str1, "inf"); // 6.926406461289696e-310
         rc = vtprintf_s(str1, LEN, "%f", -INFINITY);
         NOERR()
-        EXPSTR(str1, "-inf"); // or "inf" on BSD/mingw
+        EXPSTR_OR(str1, "-inf", "inf"); // "inf" on BSD/mingw
 
 #ifdef HAVE_LONG_DOUBLE
         rc = vtprintf_s(str1, LEN, "%LF", HUGE_VALL);

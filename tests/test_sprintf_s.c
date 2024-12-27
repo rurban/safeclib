@@ -424,13 +424,13 @@ int test_sprintf_s(void) {
     EXPSTR(str2, "inf")
     rc = sprintf_s(str2, LEN, "%g", -1.0/0.0);
     NOERRNULL()
-    EXPSTR(str2, "-inf") // or "inf" on BSD/mingw
+    EXPSTR_OR(str2, "-inf", "inf") // "inf" on BSD/mingw
     rc = sprintf_s(str2, LEN, "%G", 1.0/0.0);
     NOERRNULL()
     EXPSTR(str2, "INF")
     rc = sprintf_s(str2, LEN, "%G", -1.0/0.0);
     NOERRNULL()
-    EXPSTR(str2, "-INF") // or "INF" on BSD/mingw
+    EXPSTR_OR(str2, "-INF", "INF") // "INF" on BSD/mingw
     rc = sprintf_s(str2, LEN, "%+g", 1.0/0.0);
     NOERRNULL()
     EXPSTR(str2, "+inf")
@@ -463,8 +463,8 @@ int test_sprintf_s(void) {
     EXPSTR(str2, "0.1")
     rc = sprintf_s(str2, LEN, "%La", ld);
     NOERRNULL()
-    EXPSTR(str2, "0xc.cccccccccccdp-7")
-    // or "0x1.999999999999ap-4" on BSD
+    // OR-case with macOS, aarch64
+    EXPSTR_OR(str2, "0xc.cccccccccccdp-7", "0x1.999999999999ap-4")
 #endif
 #endif
     }

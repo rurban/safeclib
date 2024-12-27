@@ -350,7 +350,15 @@ static inline void *bnd_chk_malloc(size_t n) {
             errs++;                                                            \
         }                                                                      \
     }
-#define EXPNSTR(s1, s2)                                                         \
+#define EXPSTR_OR(s, s1, s2)                                                   \
+    {                                                                          \
+        if (strcmp((s), (s1)) && strcmp((s), (s2))) {                          \
+            debug_printf("%s %u  Expected \"%s\" or \"%s\", got \"%s\" \n",    \
+                         __FUNCTION__, __LINE__, (s1), (s2), s);               \
+            errs++;                                                            \
+        }                                                                      \
+    }
+#define EXPNSTR(s1, s2)                                                        \
     {                                                                          \
         int _ind = strcmp((s1), (s2));                                         \
         if (_ind == 0) {                                                       \
