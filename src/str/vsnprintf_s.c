@@ -176,7 +176,7 @@
 #define FLAGS_LONG_DOUBLE (1U << 12U)
 
 // import float.h for DBL_MAX, math.h for isinf()
-#if defined(PRINTF_SUPPORT_FLOAT)
+#ifdef PRINTF_SUPPORT_FLOAT
 #include <float.h>
 #include <math.h>
 #endif
@@ -363,9 +363,9 @@ static size_t safec_ntoa_long_long(out_fct_type out, const char *funcname,
 }
 #endif // PRINTF_SUPPORT_LONG_LONG
 
-#if defined(PRINTF_SUPPORT_FLOAT)
+#ifdef PRINTF_SUPPORT_FLOAT
 
-#if defined(PRINTF_SUPPORT_EXPONENTIAL)
+#ifdef PRINTF_SUPPORT_EXPONENTIAL
 // forward declaration so that safec_ftoa can switch to exp notation for values
 // > PRINTF_MAX_FLOAT
 static size_t safec_etoa(out_fct_type out, const char *funcname, char *buffer,
@@ -431,7 +431,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
     // standard printf behavior is to print EVERY whole number digit -- which
     // could be 100s of characters overflowing your buffers == bad
     if ((value > PRINTF_MAX_FLOAT) || (value < -PRINTF_MAX_FLOAT)) {
-#if defined(PRINTF_SUPPORT_EXPONENTIAL)
+#ifdef PRINTF_SUPPORT_EXPONENTIAL
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
         // TODO Is %le good?
         return safec_etoa_long(out, funcname, buffer, idx, maxlen,
@@ -671,7 +671,7 @@ static inline size_t safec_atoa_long(out_fct_type out, const char *funcname,
 }
 #endif
 
-#if defined(PRINTF_SUPPORT_EXPONENTIAL)
+#ifdef PRINTF_SUPPORT_EXPONENTIAL
 // the complete same as safec_ftoa_long, but taking double, not long double
 static inline size_t safec_atoa(out_fct_type out, const char *funcname,
                                 char *buffer, size_t idx, size_t maxlen,
@@ -972,7 +972,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 format++;
             }
             break;
-#if defined(PRINTF_SUPPORT_PTRDIFF_T)
+#ifdef PRINTF_SUPPORT_PTRDIFF_T
         case 't':
             flags |= (sizeof(ptrdiff_t) == sizeof(long) ? FLAGS_LONG
                                                         : FLAGS_LONG_LONG);
@@ -1042,7 +1042,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             if ((*format == 'i') || (*format == 'd')) {
                 // signed
                 if (flags & FLAGS_LONG_LONG) {
-#if defined(PRINTF_SUPPORT_LONG_LONG)
+#ifdef PRINTF_SUPPORT_LONG_LONG
                     const long long value = va_arg(va, long long);
                     idx = safec_ntoa_long_long(
                         out, funcname, buffer, idx, bufsize,
@@ -1068,7 +1068,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             } else {
                 // unsigned
                 if (flags & FLAGS_LONG_LONG) {
-#if defined(PRINTF_SUPPORT_LONG_LONG)
+#ifdef PRINTF_SUPPORT_LONG_LONG
                     idx = safec_ntoa_long_long(
                         out, funcname, buffer, idx, bufsize,
                         va_arg(va, unsigned long long), false, base, precision,
@@ -1093,7 +1093,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             format++;
             break;
         }
-#if defined(PRINTF_SUPPORT_FLOAT)
+#ifdef PRINTF_SUPPORT_FLOAT
         case 'f':
         case 'F':
             if (*format == 'F')
@@ -1122,7 +1122,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                                  va_arg(va, double), precision, width, flags);
             }
             break;
-#if defined(PRINTF_SUPPORT_EXPONENTIAL)
+#ifdef PRINTF_SUPPORT_EXPONENTIAL
         case 'e':
         case 'E':
         case 'g':
@@ -1355,7 +1355,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             uintptr_t arg = (uintptr_t)va_arg(va, void *);
             width = sizeof(void *) * 2U;
             flags |= FLAGS_ZEROPAD | FLAGS_UPPERCASE;
-#if defined(PRINTF_SUPPORT_LONG_LONG)
+#ifdef PRINTF_SUPPORT_LONG_LONG
             if (sizeof(uintptr_t) == sizeof(long long)) {
                 idx = safec_ntoa_long_long(out, funcname, buffer, idx, bufsize,
                                            arg, false, 16U, precision, width,
@@ -1365,7 +1365,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 idx = safec_ntoa_long(out, funcname, buffer, idx, bufsize,
                                       (unsigned long)arg, false, 16U, precision,
                                       width, flags);
-#if defined(PRINTF_SUPPORT_LONG_LONG)
+#ifdef PRINTF_SUPPORT_LONG_LONG
             }
 #endif
             format++;
