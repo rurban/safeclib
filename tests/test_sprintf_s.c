@@ -371,12 +371,6 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str2, LEN, "%llu", 1ULL);
     ERR(1)
     EXPSTR(str2, "1")
-    rc = sprintf_s(str2, LEN, "%Ld", 1LL);
-    ERR(1)
-    EXPSTR(str2, "1")
-    rc = sprintf_s(str2, LEN, "%Li", 1LL);
-    ERR(1)
-    EXPSTR(str2, "1")
 #endif
 #ifdef PRINTF_SUPPORT_FLOAT
 #ifdef PRINTF_SUPPORT_EXPONENTIAL
@@ -451,9 +445,14 @@ int test_sprintf_s(void) {
 #endif
     {
     const long double ld = 0.1;
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
+    rc = sprintf_s(str2, LEN, "%Ld", 1LL);
+    ERR(-1)
+    rc = sprintf_s(str2, LEN, "%Li", 1LL);
+    ERR(-1)
+
 #ifdef PRINTF_SUPPORT_FLOAT
 #ifdef PRINTF_SUPPORT_EXPONENTIAL
-#ifdef PRINTF_SUPPORT_LONG_DOUBLE
     rc = sprintf_s(str2, LEN, "%Le", ld);
     NOERRNULL()
     EXPSTR(str2, "1.000000e-01")

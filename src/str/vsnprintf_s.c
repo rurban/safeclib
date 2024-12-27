@@ -5,7 +5,7 @@
  * November 2021, Reini Urban
  *
  * Copyright (c) 2014-2019, PALANDesign Hannover, Germany
- * Copyright (c) 2021 by Reini Urban
+ * Copyright (c) 2021, 2024 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -958,6 +958,8 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
         case 'L':
             if (flags & FLAGS_LONG)
                 return -1; // EINVAL
+            if (flags & FLAGS_SHORT)
+                return -1; // EINVAL
             flags |= FLAGS_LONG_DOUBLE;
             format++;
             break;
@@ -1002,6 +1004,15 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
         case 'b': {
             // set the base
             unsigned int base;
+#ifndef ENABLE_ILLEGAL_FORMATSPECIFIER
+            if (flags & FLAGS_LONG_DOUBLE) {
+                char msg[80];
+                snprintf(msg, sizeof msg, "%s: illegal %%L%c format-specifier",
+                         funcname, *format);
+                invoke_safe_str_constraint_handler(msg, NULL, EINVAL);
+                return -1;
+            }
+#endif
             if (*format == 'x' || *format == 'X') {
                 base = 16U;
             } else if (*format == 'o') {
