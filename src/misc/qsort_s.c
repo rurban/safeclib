@@ -381,8 +381,7 @@ EXPORT errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
         if (unlikely(basesz != basebos)) {
             handle_mem_bos_chk_warn("qsort_s", (void *)base, basesz, basebos);
 #ifdef HAVE_ERROR_DMAX
-            errno = ESLEWRNG;
-            return NULL;
+            return RCNEGATE(ESLEWRNG);
 #endif
         }
 #endif
