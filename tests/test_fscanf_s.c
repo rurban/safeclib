@@ -40,6 +40,7 @@ void stuff_stream(const char *dest) {
 int test_fscanf_s(void) {
     errno_t rc;
     int32_t ind;
+    int i1;
     size_t len1;
     size_t len2;
     size_t len3;
@@ -90,12 +91,12 @@ int test_fscanf_s(void) {
 #endif
 
     stuff_stream("      24");
-    rc = fscanf_s(stream, " %d", &len1);
+    rc = fscanf_s(stream, " %d", &i1);
     ERR(1);
     ERRNO(0);
-    if ((int)len1 != 24) {
+    if (i1 != 24) {
         debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
-                     (int)len1);
+                     i1);
         errs++;
     }
 

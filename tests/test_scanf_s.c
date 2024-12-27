@@ -38,6 +38,7 @@ void stuff_stdin(const char *dest) {
 int test_scanf_s(void) {
     errno_t rc;
     int32_t ind;
+    int i1;
     size_t len1;
     size_t len2;
     size_t len3;
@@ -99,16 +100,16 @@ int test_scanf_s(void) {
     EXPSTR(str3, "24");*/
 
     stuff_stdin("      24");
-    rc = scanf_s(" %d", &len1);
+    rc = scanf_s(" %d", &i1);
     if (rc != 1) {
         printf("flapping tests - abort\n");
         return errs;
     }
     ERR(1);
     ERRNO(0);
-    if ((int)len1 != 24) {
+    if (i1 != 24) {
         debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
-                     (int)len1);
+                     i1);
         errs++;
     }
 
