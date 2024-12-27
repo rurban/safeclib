@@ -302,6 +302,34 @@ fi
     $make -s -j4 check-log || exit
 ./configure --disable-wchar && \
     $make -s -j4 check-log || exit
+./configure --disable-float && \
+    $make -s -j4 check-log || exit
+./configure --disable-float-exp && \
+    $make -s -j4 check-log || exit
+./configure --disable-long-long && \
+    $make -s -j4 check-log || exit
+./configure --disable-long-double && \
+    $make -s -j4 check-log || exit
+./configure --disable-printf-ptrdiff && \
+    $make -s -j4 check-log || exit
+./configure --disable-doc && \
+    $make -s -j4 check-log || exit
+./configure --disable-hardening && \
+    $make -s -j4 check-log || exit
+./configure --disable-shared && \
+    $make -s -j4 check-log || exit
+./configure --enable-debug && \
+    $make -s -j4 check-log || exit
+./configure --enable-unsafe && \
+    $make -s -j4 check-log || exit
+./configure --enable-norm-compat && \
+    $make -s -j4 check-log || exit
+./configure --enable-gcov && \
+    $make -s -j4 check-log || exit
+./configure --enable-memmax=262144 && \
+    $make -s -j4 check-log || exit
+./configure --enable-strmax=2056 && \
+    $make -s -j4 check-log || exit
 ./configure --enable-warn-dmax && \
     $make -s -j4 check-log || exit
 echo configure --enable-error-dmax must fail
