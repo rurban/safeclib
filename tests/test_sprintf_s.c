@@ -8,6 +8,9 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#ifdef HAVE_STDDEF_H
+#include <stddef.h> // do we have ptrdiff_t?
+#endif
 
 #ifdef PRINTF_INCLUDE_CONFIG_H
 #include "printf_config.h"
@@ -353,9 +356,16 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str2, LEN, "%zu", (size_t)1U);
     ERR(1)
     EXPSTR(str2, "1")
-    rc = sprintf_s(str2, LEN, "%ju", 1UL);
+    // 64-bit only:
+    //if (sizeof(intmax_t) == sizeof(long))
+#if SIZEOF_SIZE_T == 8
+        rc = sprintf_s(str2, LEN, "%ju", 1UL);
+#else
+        rc = sprintf_s(str2, LEN, "%ju", 1ULL);
+#endif
     ERR(1)
     EXPSTR(str2, "1")
+    // else rc 19, 6223306920690712577
 
 #ifdef PRINTF_SUPPORT_LONG_LONG
     rc = sprintf_s(str2, LEN, "%llu", 1ULL);
@@ -469,15 +479,26 @@ int test_sprintf_s(void) {
 #endif
     }
 #ifdef PRINTF_SUPPORT_PTRDIFF_T
+    {
+#ifdef HAVE_STDDEF_H
+    const ptrdiff_t pd = str2 - str1;
+    rc = sprintf_s(str2, LEN, "%td", pd);
+#else
     rc = sprintf_s(str2, LEN, "%td", str2 - str1);
+#endif
     NOERRNULL()
     if (str2 - str1)
         EXPNSTR(str2, "0")
     else
         EXPSTR(str2, "0")
-    // invalid length
+    // invalid length. -Wformat
+#ifdef HAVE_STDDEF_H
+    rc = sprintf_s(str2, LEN, "%t", pd);
+#else
     rc = sprintf_s(str2, LEN, "%t", str2 - str1);
+#endif
     ERR(-1)
+    }
 #endif
 
     /*--------------------------------------------------*/
