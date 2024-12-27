@@ -410,13 +410,13 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         return safec_out_rev(out, buffer, idx, maxlen,
                              (flags & FLAGS_UPPERCASE) ? "NAN" : "nan", 3,
                              width, flags);
-    {
-        if (isinf(value) < 0)
+    if (isinf(value)) {
+        if (value < 0)
             // reverse of -inf
             return safec_out_rev(out, buffer, idx, maxlen,
                                  (flags & FLAGS_UPPERCASE) ? "FNI-" : "fni-", 4,
                                  width, flags);
-        if (isinf(value) > 0)
+        else
             // reverse of inf
             return safec_out_rev(out, buffer, idx, maxlen,
                                  (flags & FLAGS_PLUS)
@@ -426,7 +426,6 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
                                                              : "fni",
                                  (flags & FLAGS_PLUS) ? 4 : 3, width, flags);
     }
-
     // test for very large values
     // standard printf behavior is to print EVERY whole number digit -- which
     // could be 100s of characters overflowing your buffers == bad
@@ -529,12 +528,14 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
     if ((flags & FLAGS_ADAPT_EXP) && !(flags & FLAGS_HASH)) {
         size_t olen = len;
         while (buf[off] == '0') {
-            off++; len--;
+            off++;
+            len--;
             if (off >= olen)
                 break;
         }
         if (buf[off] == '.' && off < olen) {
-            off++; len--;
+            off++;
+            len--;
         }
     }
 
@@ -548,7 +549,8 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
-    return safec_out_rev(out, buffer, idx, maxlen, &buf[off], len, width, flags);
+    return safec_out_rev(out, buffer, idx, maxlen, &buf[off], len, width,
+                         flags);
 }
 
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
@@ -818,8 +820,7 @@ static size_t safec_etoa(out_fct_type out, const char *funcname, char *buffer,
     {
         const size_t start_idx = idx;
         idx = safec_ftoa(out, funcname, buffer, idx, maxlen,
-                         negative ? -value : value, prec, fwidth,
-                         flags);
+                         negative ? -value : value, prec, fwidth, flags);
 
         // output the exponent part
         if (minwidth) {
@@ -1160,7 +1161,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             if (*format == 'A')
                 flags |= FLAGS_UPPERCASE;
             format++;
-#ifdef PRINTF_SUPPORT_LONG_DOUBLE            
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
             if (flags & FLAGS_LONG_DOUBLE) {
                 if (*format) {
                     unsigned off = format - startformat;
