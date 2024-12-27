@@ -857,7 +857,9 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
     size_t idx = 0U;
     unsigned int flags, width, precision, n;
     int rc = 0;
+#ifdef PRINTF_SUPPORT_FLOAT
     const char *startformat = NULL;
+#endif
 
     while (*format) {
         if ((long)idx < 0)
@@ -871,7 +873,9 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             format++;
             continue;
         } else {
+#ifdef PRINTF_SUPPORT_FLOAT
             startformat = (char *)format;
+#endif
             // yes, evaluate it
             format++;
         }
