@@ -483,7 +483,7 @@ MAINTAINERCLEANFILES = *~ README.rst
 if HAVE_DOXYGEN
 $(dist_man_MANS) ::
 doc/man/man3/EOK.3 :: Doxyfile README.rst doc/footer include/safe_config.h
-	-rm $@
+	@if test -f $@; then rm -f $@; fi
 	$(DOXYGEN)
 docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
    doc/man/man1/check_for_unsafe_apis.1 doc/man/man3/EOK.3
