@@ -80,8 +80,8 @@ static inline int _is_lt_accented(uint32_t wc) {
  *   Composed characters are checked for the left-hand-side of the
  *   Decomposition_Mapping Unicode property, which means the codepoint will be
  *   normalized to NFD if any codepoint is composed. Technically only FCD as
- * all FC expansions are already properly ordered, and all mangled marks will
- * not be reordered, as the have the same Combining Class.
+ *   all FC expansions are already properly ordered, and all mangled marks will
+ *   not be reordered, as the have the same Combining Class.
  *
  * @param[out]  dest  wide string to hold the result (~130% larger than src)
  * @param[in]   dmax  maximum result buffer size
@@ -211,7 +211,18 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
             }
             src++;
         } else { /* c = 0 or 1. 1 might still be special case */
-            if (unlikely(*src == 0x3a3)) {
+            //if (c == 0) {
+            //    *dest++ = *src++;
+            //    dmax--;
+            //    continue;
+            //}
+            if (unlikely(c == 0 &&
+                         (*src == 0x1cbb || *src == 0x1cbc ||
+                          *src == 0x1057B || *src == 0x1058B || *src == 0x10593))) {
+                *dest++ = *src++;
+                dmax--;
+            }
+            else if (unlikely(*src == 0x3a3)) {
                 if (iswspace(*(src + 1))) /* final sigma? */
                     *dest++ = 0x3c2;
                 else

@@ -39,7 +39,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     { (u1), (l) - (u1), (u2) - (u1) + 1 }
 #define CASELACE(u1, u2) CASEMAP((u1), (u2), (u1) + 1)
 
-/* Unicode 14.0 */
+/* Unicode 15.0 */
 
 /* must be sorted */
 static const struct {
@@ -167,7 +167,8 @@ static const unsigned short pairs[][2] = {
     /* upper - lower */
     {'I', 0x0131},
     {'S', 0x017f},
-    {0x00b5, 0x03bc},
+    {0x00b5, 0x3bc},
+    {0x0101, 0x100}, // Unicode 15
     {0x0130, 'i'},
     {0x0178, 0x00ff},
     {0x017f, 0x73},

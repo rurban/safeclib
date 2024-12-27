@@ -28,7 +28,8 @@ int test_towupper(void);
 #define GENCAT "DerivedGeneralCategory.txt"
 #define CFOLD "CaseFolding.txt"
 /* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0, 5.34 with 14.0, 5.37.4 with 15.0
+   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0, 5.34 with 14.0,
+   5.37.4-5.40 with 15.0
  */
 #define TESTPL "test-upr.pl"
 
@@ -77,16 +78,16 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
                 if (*status != 'F') {
                     /* false positives */
                     debug_printf(
-                        "%u U+%04X: U+%04X != U+%04X status=%s, name=%s\n",
-                        __LINE__, wc, lwr, mp, status, name);
+                      "cross-check U+%04X: U+%04X != U+%04X status=%s, name=%s:\n",
+                      wc, lwr, mp, status, name);
                     /* cross-check with perl */
                     if (!init) {
                         fprintf(pl, "use v%s;\n", PERL_VERSION);
                         fprintf(pl, "use Unicode::UCD;\n");
                         fprintf(pl,
                                 "warn \"Unicode::UCD::UnicodeVersion() must be "
-                                "%d.0.0 if Unicode::UCD::UnicodeVersion() ne "
-                                "\"%d.0.0\"\\n\";\n",
+                                "%d.0.0\" if Unicode::UCD::UnicodeVersion() ne "
+                                "\"%d.0.0\";\n",
                                 SAFECLIB_UNICODE_VERSION,
                                 SAFECLIB_UNICODE_VERSION);
                         fprintf(pl, "my ($l,$u,$got);\n");

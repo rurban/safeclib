@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsfc_s
  * File 'wcsfc_s.c'
- * Lines executed:52.21% of 136
+ * Lines executed:53.24% of 139
  *
  *------------------------------------------------------------------
  */
@@ -18,7 +18,8 @@ int test_wcsfc_s(void);
 
 #define PERL_TEST
 /* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32, 5.36 with 14.0
+   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32, 5.36 with 14.0,
+   5.38 - 5.40 with 15.0
    perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
 */
 #define TESTPL "test-fc.pl"
@@ -435,11 +436,11 @@ int test_wcsfc_s(void) {
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
     fprintf_s(pl,
-              "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;"
+              "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
               "use Unicode::UCD;\n"
               "warn \"Unicode::UCD::UnicodeVersion() must be "
-                "%d.0.0 if Unicode::UCD::UnicodeVersion() ne "
-                "\"%d.0.0\"\\n\";\n"
+                "%d.0.0\" if Unicode::UCD::UnicodeVersion() ne "
+                "\"%d.0.0\";\n"
               "sub wstr ($) {\n"
               "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
               "}\n"
@@ -450,7 +451,7 @@ int test_wcsfc_s(void) {
               "  if ($nfd ne $got) {\n"
               "    print \"Error \" if $fc ne $got;\n"
               "    printf \"NFD \\\\x{%%X} = %%s; fc = %%s; got: %%s\\n\",\n"
-              "         unpack('W*',$ch), wstr $nfd, wstr $fc, wstr $got;\n"
+              "         unpack('W*',$ch), wstr($nfd), wstr($fc), wstr($got);\n"
               "    1\n"
               "  }\n"
                   "}\n", PERL_VERSION, SAFECLIB_UNICODE_VERSION, SAFECLIB_UNICODE_VERSION);

@@ -44,7 +44,7 @@
  *    returning the number of new wide character codepoints needed.
  *    The usual \c iswupper(wc) case returns 1, and the special 104 full
  *    folding cases as specified in Unicode 10.0 \c CaseFolding.txt return either
- *    2 or 3. This implements Unicode 14.0
+ *    2 or 3. This implements Unicode 14.0. (5 errors for Unicode 15)
  *
  * @param[in]   wc  unicode character codepoint
  *
@@ -229,7 +229,7 @@ static const struct {
 
 /* Return the number of wide lower-case characters needed to full fold-case
    the given uppercase character. Returns 0, 1, 2 or 3.
-   0 if the charcater stays the same, 1 if one character changes,
+   0 if the character stays the same, 1 if one character changes,
    2 or 3 if the character will be replaced with 2 or 3.
 
    Note that accents expand to more characters than 1 via NFD decomposition.
@@ -239,8 +239,11 @@ static const struct {
 int iswfc(const uint32_t wc) {
     /* the slow variant would walk the 2 loops */
     if (likely((wc < 0xdf) || (wc > 0x0587 && wc < 0x1e96) ||
-               (wc > 0x1FFC && wc < 0xFB00) || (wc > 0xFB17)))
+               (wc > 0x1FFC && wc < 0xFB00) || (wc > 0xFB17))) {
+        if (wc == 0x1cbb || wc == 0x1cbc)
+            return 0;
         goto single;
+    }
     if (wc < 0x1e96) {
         if (wc == 0xdf || wc == 0x130 || wc == 0x149 || wc == 0x1f0 ||
             wc == 0x587)
@@ -305,7 +308,7 @@ single:
    May return 2 on sizeof(wchar_t)==2 if >0xffff, i.e. converted to surrogate
    pair
 
-   perl5.27.3 -E'no warnings; for (0..0x10ffff){
+   perl -E'no warnings; for (0..0x10ffff){
      my ($lc,$fc) = (lc(pack"W",$_), fc(pack"W",$_));
      printf "U+%04X: fc: %X, lc: %X\n", $_, unpack("W",$fc), unpack("W",$lc)
        if $lc ne $fc and length($fc)==1;

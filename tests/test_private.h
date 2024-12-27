@@ -37,8 +37,8 @@
 #include "safe_config.h"
 
 #ifndef PERL
-#define PERL "perl5.38"
-#define PERL_VERSION "5.38"
+#define PERL "perl"
+#define PERL_VERSION "5.40"
 #endif
 
 #ifdef __KERNEL__
