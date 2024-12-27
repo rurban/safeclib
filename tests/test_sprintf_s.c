@@ -491,12 +491,14 @@ int test_sprintf_s(void) {
         EXPNSTR(str2, "0")
     else
         EXPSTR(str2, "0")
-    // invalid length. -Wformat
+    // invalid length
+    GCC_DIAG_IGNORE(-Wformat)
 #ifdef HAVE_STDDEF_H
     rc = sprintf_s(str2, LEN, "%t", pd);
 #else
     rc = sprintf_s(str2, LEN, "%t", str2 - str1);
 #endif
+    GCC_DIAG_RESTORE
     ERR(-1)
     }
 #endif
