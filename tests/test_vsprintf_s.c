@@ -18,6 +18,36 @@ EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
                       const char *restrict fmt, va_list ap);
 #endif
 
+// support for the floating point type (%f)
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_FLOAT
+#define PRINTF_SUPPORT_FLOAT
+#endif
+
+#ifdef PRINTF_INCLUDE_CONFIG_H
+#include "printf_config.h"
+#endif
+
+// support for the long long types (%llu or %p)
+// default: activated
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
+# ifdef HAVE_LONG_LONG
+#  define PRINTF_SUPPORT_LONG_LONG
+# else
+#  undef PRINTF_SUPPORT_LONG_LONG
+# endif
+#endif
+
+// support for the long double types (%Lf %Le %Lg %La)
+// default: probed
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
+# ifdef HAVE_LONG_DOUBLE
+#  define PRINTF_SUPPORT_LONG_DOUBLE
+# else
+#  undef PRINTF_SUPPORT_LONG_DOUBLE
+# endif
+#endif
+
 //#ifdef HAVE_VSPRINTF_S
 //#define HAVE_NATIVE 1
 //#else
@@ -286,6 +316,7 @@ int test_vsprintf_s(void) {
     EXPSTR(str1, "AB");
 #endif
 
+#ifdef PRINTF_SUPPORT_FLOAT
     rc = vtprintf_s(str1, LEN, "%f", 0.0f);
     NOERR()
     EXPSTR(str1, "0.000000");
@@ -302,7 +333,7 @@ int test_vsprintf_s(void) {
     rc = vtprintf_s(str1, LEN, "%A", 0.0);
     NOERR()
     EXPSTR(str1, "0X0P+0");
-#ifdef HAVE_LONG_DOUBLE
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
     rc = vtprintf_s(str1, LEN, "%Lf", 0.0L);
     NOERR()
     EXPSTR(str1, "0.000000");
@@ -335,7 +366,7 @@ int test_vsprintf_s(void) {
         rc = vtprintf_s(str1, LEN, "%f", c32.F);
         NOERR()
         EXPSTR(str1, "nan");
-#ifdef HAVE_LONG_DOUBLE
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
         rc = vtprintf_s(str1, LEN, "%LF", c64.F);
         NOERR()
         EXPSTR(str1, "NAN");
@@ -347,7 +378,7 @@ int test_vsprintf_s(void) {
         NOERR()
         EXPSTR_OR(str1, "-inf", "inf"); // "inf" on BSD/mingw
 
-#ifdef HAVE_LONG_DOUBLE
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
         rc = vtprintf_s(str1, LEN, "%LF", HUGE_VALL);
         NOERR()
         EXPSTR(str1, "INF");
@@ -356,6 +387,7 @@ int test_vsprintf_s(void) {
         EXPSTR(str1, "-INF");
 #endif
     }
+#endif
 
     /*--------------------------------------------------*/
 

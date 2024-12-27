@@ -451,6 +451,7 @@ int test_sprintf_s(void) {
 #endif
     {
     const long double ld = 0.1;
+#ifdef PRINTF_SUPPORT_FLOAT
 #ifdef PRINTF_SUPPORT_EXPONENTIAL
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
     rc = sprintf_s(str2, LEN, "%Le", ld);
@@ -475,6 +476,7 @@ int test_sprintf_s(void) {
     NOERRNULL()
     // OR-case with macOS, aarch64
     EXPSTR_OR(str2, "0xc.cccccccccccdp-7", "0x1.999999999999ap-4")
+#endif
 #endif
 #endif
     }

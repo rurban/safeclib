@@ -1088,6 +1088,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             if (*format == 'F')
                 flags |= FLAGS_UPPERCASE;
             format++;
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
             if (flags & FLAGS_LONG_DOUBLE) {
                 if (*format) {
                     unsigned off = format - startformat;
@@ -1103,7 +1104,9 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                                           va_arg(va, long double), precision,
                                           width, flags, startformat);
                 }
-            } else {
+            } else
+#endif
+            {
                 idx = safec_ftoa(out, funcname, buffer, idx, bufsize,
                                  va_arg(va, double), precision, width, flags);
             }
@@ -1118,6 +1121,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             if ((*format == 'E') || (*format == 'G'))
                 flags |= FLAGS_UPPERCASE;
             format++;
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE
             if (flags & FLAGS_LONG_DOUBLE) {
                 if (*format) {
                     unsigned off = format - startformat;
@@ -1133,7 +1137,9 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                                           va_arg(va, long double), precision,
                                           width, flags, startformat);
                 }
-            } else {
+            } else
+#endif
+            {
                 idx = safec_etoa(out, funcname, buffer, idx, bufsize,
                                  va_arg(va, double), precision, width, flags);
             }
@@ -1143,6 +1149,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
             if (*format == 'A')
                 flags |= FLAGS_UPPERCASE;
             format++;
+#ifdef PRINTF_SUPPORT_LONG_DOUBLE            
             if (flags & FLAGS_LONG_DOUBLE) {
                 if (*format) {
                     unsigned off = format - startformat;
@@ -1158,7 +1165,9 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                                           va_arg(va, long double), precision,
                                           width, flags, startformat);
                 }
-            } else {
+            } else
+#endif
+            {
                 if (*format) {
                     unsigned off = format - startformat;
                     char *s = (char *)malloc(off + 1);
