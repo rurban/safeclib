@@ -17,7 +17,11 @@
 #endif
 #include "test_msvcrt.h"
 
+#if RSIZE_MAX_STR < 4090
+#define LEN (RSIZE_MAX_STR)
+#else
 #define LEN (4090)
+#endif
 
 static char dest[LEN];
 int test_getenv_s(void);
