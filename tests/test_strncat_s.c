@@ -159,7 +159,7 @@ int test_strncat_s(void) {
     /*--------------------------------------------------*/
 
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    EXPECT_BOS("slen exceeds src")
+    EXPECT_BOS("slen exceeds src") EXPECT_BOS("src overflow or empty")
     rc = strncat_s(str1, 32, "ROString", 31);
     ERR_MSVC(EOVERFLOW, EINVAL);
     if (!use_msvcrt) {

@@ -39,7 +39,7 @@ int test_memrchr_s(void) {
     ERR(ESNULLP);
     SUBNULL();
 
-    EXPECT_BOS("empty result")
+    EXPECT_BOS("empty resultp")
     rc = memrchr_s(mem, LEN, ch, NULL);
     ERR(ESNULLP);
 

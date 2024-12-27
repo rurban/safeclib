@@ -34,7 +34,7 @@ int test_memchr_s(void) {
     ERR(ESNULLP);
     SUBNULL();
 
-    EXPECT_BOS("empty result")
+    EXPECT_BOS("empty resultp")
     rc = memchr_s(mem, LEN, ch, NULL);
     ERR(ESNULLP);
 

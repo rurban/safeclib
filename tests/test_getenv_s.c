@@ -51,6 +51,7 @@ int test_getenv_s(void) {
         INDCMP(!= 0);
     }
 
+    EXPECT_BOS("empty name")
     rc = getenv_s(&len, NULL, 0, NULL);
     ERR_MSVC(ESNULLP, EINVAL);
     ind = len;
@@ -76,7 +77,7 @@ int test_getenv_s(void) {
     /*--------------------------------------------------*/
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("dest overflow")
+    EXPECT_BOS("dest overflow or empty")
     rc = getenv_s(&len, dest, RSIZE_MAX_STR + 1, name);
     ERR_MSVC(ESLEMAX, 0);
     ind = len;

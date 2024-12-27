@@ -154,7 +154,7 @@ int test_strncpy_s(void) {
 
     // dont clear the const string, but dest.
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    EXPECT_BOS("slen exceeds src")
+    EXPECT_BOS("slen exceeds src") EXPECT_BOS("src overflow or empty")
     rc = strncpy_s(str1, 32, "ROString", 31);
     ERR(EOVERFLOW); /* slen exceeds src */
     if (!use_msvcrt) {

@@ -62,7 +62,7 @@ int test_strpbrk_s(void) {
     ERR(EOVERFLOW)
     NOFIRST()
 
-    EXPECT_BOS("slen exceeds src")
+    EXPECT_BOS("slen exceeds src") EXPECT_BOS("src overflow or empty")
     rc = strpbrk_s(str1, LEN, str2, LEN + 1, &first);
     ERR(EOVERFLOW)
     NOFIRST()

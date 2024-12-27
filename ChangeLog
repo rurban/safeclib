@@ -4,7 +4,11 @@
 Changes in 3.9
 	- Add long double support to vsnprintf_s. GH #103
 	  With fixes for %a, %g, %G, %#g.
+	- Added *printf_s configure flags --disable-float, --disable-float-exp,
+          --disable-long-long, --disable-long-double, --disable-printf-ptrdiff
 	- Fixed %lc, %ls bug in vsnprintf_s.
+	- Fixed 5 wrong case-mappings with Unicode 15: GH #145.
+	  2 GEORGIAN, 3 VITHKUQI characters.
 	- Fixes for non-POSIX systems missing fileno and ftruncate. GH #136
 	  (ecospro compiler)
 

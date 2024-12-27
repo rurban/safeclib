@@ -41,11 +41,11 @@ int main(void) {
     ERR(false)
 
     /* literal strings once fixed via const decl. fragile */
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     rc = strisascii_s("test", RSIZE_MAX_STR + 1);
     ERR(false)
 
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     rc = strisascii_s("", 2);
     ERR(false)
 #endif

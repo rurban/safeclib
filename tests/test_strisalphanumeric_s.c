@@ -37,7 +37,7 @@ int main(void) {
     rc = strisalphanumeric_s(str, LEN + 1);
     ERR(false)
 
-    EXPECT_BOS_TODO("dest overflow")
+    EXPECT_BOS("dest overflow")
     rc = strisalphanumeric_s("", 2);
     ERR(false)
 #endif

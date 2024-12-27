@@ -37,8 +37,8 @@ int test_sscanf_s(void) {
 
     print_msvcrt(use_msvcrt);
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty fmt")
     GCC_DIAG_IGNORE(-Wformat-extra-args)
+    EXPECT_BOS("empty fmt")
     rc = sscanf_s(str1, NULL, NULL);
     GCC_DIAG_RESTORE
     init_msvcrt(errno == ESNULLP, &use_msvcrt);
