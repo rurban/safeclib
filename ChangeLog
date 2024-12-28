@@ -1,6 +1,9 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.9.1
+        - Forgot to bump SO_VERSION and API_VERSION to 3.9
+
 Changes in 3.9
 	- Add long double support to vsnprintf_s. GH #103
 	  With fixes for %a, %g, %G, %#g.
