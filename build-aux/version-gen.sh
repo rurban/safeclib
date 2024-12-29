@@ -99,7 +99,7 @@
 #	git tag -d "test1.2"; git checkout -- README
 #
 
-SCRIPTVERSION=2017-08-24
+SCRIPTVERSION=2024-12-29
 
 prog=$0
 
@@ -176,7 +176,7 @@ fi
 # read git version, if the repo has uncommitted changes append
 # '-dirty' to version.
 if test -z "$v"; then
-	v=$(git describe --long --tags --always --match "$prefix*" --abbrev=$abbrev \
+	v=$(git describe --tags --match "$prefix*" --abbrev=$abbrev \
 		--dirty 2>/dev/null) || v=UNKNOWN
 	v=$(echo "$v" | sed "$tag_sed_script" | sed "s/^$prefix//")
 fi
