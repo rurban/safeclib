@@ -21,7 +21,7 @@ jobs:
           - --disable-nullslack --enable-warn-dmax
           - --disable-extensions CFLAGS="-march=native"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         fetch-depth: 1
     - run: sudo apt-get install doxygen libtext-diff-perl pkg-config
@@ -51,7 +51,7 @@ jobs:
     - if: matrix.CONF_ARGS == '' && startsWith(github.ref, 'refs/tags/')
       name: Release
       continue-on-error: true
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
       with:
         body_path: dist.sha256
         files: |
@@ -64,7 +64,7 @@ jobs:
     - name: init
       run: brew install autoconf automake libtool
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - run: sh build-aux/autogen.sh
     - run: ./configure --disable-hardening --enable-debug
     - run: make V=1
@@ -83,7 +83,7 @@ jobs:
     steps:
       # see https://github.com/msys2/setup-msys2
     - name: setup-msys2
-      uses: msys2/setup-msys2@v2
+      uses: msys2/setup-msys2@40677d36a502eb2cf0fb808cc9dec31bf6152638 # v2.28.0
       with:
         path-type: minimal
         update: true
@@ -101,7 +101,7 @@ jobs:
     - run: reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /d 1
     - run: git config --global core.autocrlf input
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - shell: msys2 {0}
       run: sh build-aux/autogen.sh
       continue-on-error: true
@@ -146,8 +146,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
-      - uses: actions/checkout@v4
-      - uses: uraimo/run-on-arch-action@v2.8.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: Check on aarch64
         id: runcmd
         with:
