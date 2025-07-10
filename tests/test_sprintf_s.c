@@ -94,14 +94,14 @@ int test_sprintf_s(void) {
     rc = sprintf_s(NULL, LEN, "%s", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     ERR_MSVC(-ESNULLP, -1);
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(errno12, EINVAL);
 
     /*--------------------------------------------------*/
 
     EXPECT_BOS("dest overflow")
     rc = sprintf_s(str1, RSIZE_MAX_STR + 1, "%s", str2);
     ERR_MSVC(-ESLEMAX, 0);
-    ERRNO(0);
+    ERRNO(errno12);
 
     /*--------------------------------------------------*/
 
@@ -110,7 +110,7 @@ int test_sprintf_s(void) {
     EXPECT_BOS("empty fmt")
     rc = sprintf_s(str1, LEN, NULL);
     ERR_MSVC(-ESNULLP, -1);
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(errno12, EINVAL);
  #endif
 
     /*--------------------------------------------------*/
@@ -118,7 +118,7 @@ int test_sprintf_s(void) {
     EXPECT_BOS("empty dest or dmax")
     rc = sprintf_s(str1, 0, "%s", str2);
     ERR_MSVC(-ESZEROL, -1);
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(errno12, EINVAL);
 #endif
     /*--------------------------------------------------*/
 

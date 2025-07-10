@@ -46,24 +46,44 @@ int main(void) {
     EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(NULL, 0, L"%ls", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESNULLP, EINVAL);
+#endif
 
     EXPECT_BOS("empty fmt")
     rc = swprintf_s(str1, LEN, NULL, NULL);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESNULLP, EINVAL);
+#endif
 
     EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(str1, 0, L"%ls", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESZEROL, EINVAL);
+#endif
 
     EXPECT_BOS("dest overflow")
     rc = swprintf_s(str1, RSIZE_MAX_STR + 1, L"%ls", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESLEMAX, 0);
+#endif
 
 #if defined HAVE___BUILTIN_OBJECT_SIZE && defined SAFECLIB_HAVE_C99
     EXPECT_BOS("dest overflow")
     rc = swprintf_s(str1, LEN + 1, L"%ls", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-EOVERFLOW, 0);
+#endif
 #endif
 
 #endif
@@ -71,7 +91,11 @@ int main(void) {
 
     str2[0] = '\0';
     rc = swprintf_s(str1, LEN, L"%s %n", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-EINVAL, EINVAL);
+#endif
 
     /*--------------------------------------------------*/
     rc = swprintf_s(str1, LEN, L"%s %%n", str2);

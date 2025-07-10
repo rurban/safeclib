@@ -66,7 +66,11 @@ int test_vswprintf_s(void) {
 
     rc = vtwprintf_s(NULL, LEN, 0, L"%ls", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESNULLP, EINVAL);
+#endif
 
     /* not testable */
     if (use_msvcrt) {
@@ -76,28 +80,48 @@ int test_vswprintf_s(void) {
     }
 
     rc = vtwprintf_s(str1, LEN, BOS(str1), NULL, NULL);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESNULLP, EINVAL);
+#endif
 
     /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, 0, BOS(str1), L"%ls", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESZEROL, EINVAL);
+#endif
 
     /*--------------------------------------------------*/
 
     rc = vtwprintf_s(str1, (RSIZE_MAX_STR + 1), BOS(str1), L"%ls", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERRNO_MSVC(-ESLEMAX, 0);
+#endif
 
     if (_BOS_KNOWN(str1)) {
       rc = vtwprintf_s(str1, (LEN + 1), BOS(str1), L"%ls", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+      ERRNO_MSVC(errno12, EINVAL);
+#else
       ERRNO_MSVC(-EOVERFLOW, 0);
+#endif
     }
 
     /*--------------------------------------------------*/
 
     str2[0] = '\0';
     rc = vtwprintf_s(str1, LEN, BOS(str1), L"%s %n", str2);
+#ifdef HAVE_HAVE_ERRNO12_SPRINTF_NULL
+    ERRNO_MSVC(errno12, EINVAL);
+#else
     ERR(-EINVAL)
+#endif
 
     rc = vtwprintf_s(str1, LEN, BOS(str1), L"%s %%n", str2);
     ERR(3)

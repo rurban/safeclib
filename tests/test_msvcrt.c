@@ -30,6 +30,7 @@
  */
 
 #define __TEST_MSVCRT_C__
+#include "test_private.h"
 #include "test_msvcrt.h"
 
 bool use_msvcrt;
