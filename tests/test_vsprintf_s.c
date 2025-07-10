@@ -84,12 +84,7 @@ int test_vsprintf_s(void) {
 
     rc = vtprintf_s(str1, LEN, "%s", NULL);
     ERR(-ESNULLP);
-#if defined(__aarch64__) && defined(__linux__)
-    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
-    if (errno == 12 && is_ubuntu())
-        broken_errno = 1;
-#endif
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(ERRNO12, EINVAL);
 
     /*--------------------------------------------------*/
 
@@ -99,7 +94,7 @@ int test_vsprintf_s(void) {
     rc = vtprintf_s(str1, LEN, NULL);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     ERR_MSVC(-ESNULLP, -1);
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(ERRNO12, EINVAL);
 #elif defined(_MSC_VER)
     use_msvcrt = 1;
 #else
@@ -111,13 +106,13 @@ int test_vsprintf_s(void) {
 
     rc = vtprintf_s(NULL, LEN, "%s", str2);
     ERR_MSVC(-ESNULLP, -1);
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(ERRNO12, EINVAL);
 
     /*--------------------------------------------------*/
 
     rc = vtprintf_s(str1, 0, "%s", str2);
     ERR_MSVC(-ESZEROL, -1);
-    ERRNO_MSVC(0, EINVAL);
+    ERRNO_MSVC(ERRNO12, EINVAL);
     /* Unknown error: 401 */
     /* debug_printf("%s %u  strerror(ESZEROL): %s\n", __FUNCTION__, __LINE__,
        strerror(errno)); */

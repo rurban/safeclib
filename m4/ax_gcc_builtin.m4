@@ -37,6 +37,9 @@
 #    __builtin_clzll
 #    __builtin_complex
 #    __builtin_constant_p
+#    __builtin_cpu_init
+#    __builtin_cpu_is
+#    __builtin_cpu_supports
 #    __builtin_ctz
 #    __builtin_ctzl
 #    __builtin_ctzll
@@ -92,7 +95,7 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 7
+#serial 9
 
 AC_DEFUN([AX_GCC_BUILTIN], [
     AS_VAR_PUSHDEF([ac_var], [ax_cv_have_$1])
@@ -139,6 +142,18 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin___wmempcpy_chk], [$1("", "", 0, 0)],
                 [__builtin___wmemset_chk], [$1("", "", 0, 0)],
                 [__builtin___wprintf_chk], [$1(0, "")],
+                [__builtin___wcscpy_chk], [$1("", "", 0)],
+                [__builtin___wcsncat_chk], [$1("", "", 0, 0)],
+                [__builtin___wcsncpy_chk], [$1("", "", 0, 0)],
+                [__builtin___wcsnrtombs_chk], [$1("", "", 0, 0, "", 0)],
+                [__builtin___wcsrtombs_chk], [$1("", "", 0, "", 0)],
+                [__builtin___wcstombs_chk], [$1("", "", 0, 0)],
+                [__builtin___wctomb_chk], [$1("", 0, 0)],
+                [__builtin___wmemcpy_chk], [$1("", "", 0, 0)],
+                [__builtin___wmemmove_chk], [$1("", "", 0, 0)],
+                [__builtin___wmempcpy_chk], [$1("", "", 0, 0)],
+                [__builtin___wmemset_chk], [$1("", "", 0, 0)],
+                [__builtin___wprintf_chk], [$1(0, "")],
                 [__builtin___bnd_set_ptr_bounds], [$1("", 0)],
                 [__builtin___bnd_narrow_ptr_bounds], [$1("", "", 0)],
                 [__builtin___bnd_copy_ptr_bounds], [$1("", "")],
@@ -154,7 +169,7 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_bswap16], [$1(0)],
                 [__builtin_bswap32], [$1(0)],
                 [__builtin_bswap64], [$1(0)],
-                [__builtin_choose_expr], [if($1(1, 1, 0)) 1],
+                [__builtin_choose_expr], [$1(0, 0, 0)],
                 [__builtin___clear_cache], [$1("", "")],
                 [__builtin_clrsb], [$1(0)],
                 [__builtin_clrsbl], [$1(0)],
@@ -164,6 +179,9 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_clzll], [$1(0)],
                 [__builtin_complex], [$1(0.0, 0.0)],
                 [__builtin_constant_p], [$1(0)],
+                [__builtin_cpu_init], [$1()],
+                [__builtin_cpu_is], [$1("intel")],
+                [__builtin_cpu_supports], [$1("sse")],
                 [__builtin_ctz], [$1(0)],
                 [__builtin_ctzl], [$1(0)],
                 [__builtin_ctzll], [$1(0)],
@@ -213,7 +231,7 @@ AC_DEFUN([AX_GCC_BUILTIN], [
             [AS_VAR_SET([ac_var], [no])])
     ])
 
-    AS_IF([test yes = AS_VAR_GET([ac_var])],
+    AS_VAR_IF([ac_var], [yes],
         [AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_$1), 1,
             [Define to 1 if the system has the `$1' built-in function])], [])
 
