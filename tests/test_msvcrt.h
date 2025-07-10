@@ -1,9 +1,9 @@
 /*------------------------------------------------------------------
  * test_msvcrt.h - Seperate safec from native msvcrt sec_api
  *
- * 2018  Reini Urban
+ * 2018,2025  Reini Urban
  *
- * Copyright (c) 2018 Reini Urban
+ * Copyright (c) 2018,2025 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -34,7 +34,6 @@
 
 #include "config.h"
 #include "safe_config.h"
-#include "test_private.h"
 
 #ifndef __KERNEL__
 #include <stdbool.h>

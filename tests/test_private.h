@@ -2,9 +2,10 @@
  * test_private.h - Internal test routines & library references
  *
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
- * 2017  Reini Urban
+ * 2017, 2025  Reini Urban
  *
  * Copyright (c) 2012, 2013 by Cisco Systems, Inc
+ * Copyright (c) 2025 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -590,5 +591,14 @@ static inline void *bnd_chk_malloc(size_t n) {
     }
 #endif
 #endif /* __KERNEL__/WCHAR */
+
+// for newer glibc's. esp. ubuntu aarch64
+#ifdef HAVE_ERRNO12_SPRINTF_NULL
+// FIXME probe
+//#define ERRNO12 12
+#define ERRNO12 0
+#else
+#define ERRNO12 0
+#endif
 
 #endif /* __TEST_PRIVATE_H__ */

@@ -1,10 +1,10 @@
 # configure.ac - Process with autoconf to produce a configure script
 #
 # 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
-# 2017-2024  Reini Urban <rurban@cpan.org>
+# 2017-2025  Reini Urban <rurban@cpan.org>
 #
 # Copyright (c) 2012, 2013 Cisco Systems
-# Copyright (c) 2017-2024 Reini Urban
+# Copyright (c) 2017-2025 Reini Urban
 # All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person
@@ -639,6 +639,25 @@ if test "$ac_compiler_gnu" = "no" -a -n "$ax_ccf_err"; then
     #AX_APPEND_COMPILE_FLAGS(["-check-pointers-mpx=rw"],
     #   [CFLAGS],[$ax_ccf_err])
 fi
+
+dnl FIXME
+AC_MSG_CHECKING([for errno 12 on sprintf NULL])
+AC_COMPILE_IFELSE(
+  [AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <errno.h>
+]], [[
+      char s[] = "abc";
+      int rc = snprintf(NULL, 10, "%s", s);
+      return errno == 12;
+    ]]
+    )],
+    [ AC_MSG_RESULT([yes])
+      have_errno12_sprintf_null=yes
+      AC_DEFINE([HAVE_ERRNO12_SPRINTF_NULL], 1,
+                [Defined to 1 when the libc sets errno 12 on printing to a NULL buffer])
+    ],
+    [ AC_MSG_RESULT([no])])
 
 dnl windows mult. decl are not properly sorted out yet
 case $host_os in

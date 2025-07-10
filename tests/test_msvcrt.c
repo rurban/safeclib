@@ -30,6 +30,7 @@
  */
 
 #define __TEST_MSVCRT_C__
+#include "test_private.h"
 #include "test_msvcrt.h"
 #ifndef __KERNEL__
 #include <stdio.h>
