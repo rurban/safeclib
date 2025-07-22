@@ -2,7 +2,7 @@
 # https://github.com/moby/moby/releases/tag/v17.05.0-ce
 ARG BASE_IMAGE=fedora
 #FROM ${BASE_IMAGE}
-FROM fedora:41-aarch64
+FROM fedora:42-aarch64
 
 # Test with non-root user.
 ENV TEST_USER tester
@@ -15,8 +15,8 @@ ENV WORK_DIR "/work"
 #RUN ls /etc/yum.repos.d/*.repo
 RUN sed -i '/^enabled=1$/ s/1/0/' /etc/yum.repos.d/*-modular.repo || true
 # RUN dnf -y update
-RUN dnf -y --allowerasing --repo fedora install \
-  file gcc git make redhat-rpm-config sudo \
+RUN dnf -y --repo fedora install \
+  file gcc git make diff cmp redhat-rpm-config sudo \
   automake autoconf libtool perl-Text-Diff pkgconf-pkg-config strace gdb
 #RUN dnf -y --repo fedora install m4
 
