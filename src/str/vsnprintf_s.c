@@ -391,7 +391,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
                          size_t idx, size_t maxlen, double value,
                          unsigned int prec, unsigned int width,
                          unsigned int flags) {
-    char buf[PRINTF_FTOA_BUFFER_SIZE];
+    char buf[PRINTF_FTOA_BUFFER_SIZE + 1]; // Add extra byte for safety
     size_t len = 0U, off = 0U;
     double tmp;
     double diff = 0.0;
