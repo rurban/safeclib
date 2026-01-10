@@ -309,7 +309,7 @@ static size_t safec_ntoa_long(out_fct_type out, const char *funcname,
                               unsigned long value, bool negative,
                               unsigned long base, unsigned int prec,
                               unsigned int width, unsigned int flags) {
-    char buf[PRINTF_NTOA_BUFFER_SIZE];
+    char buf[PRINTF_NTOA_BUFFER_SIZE + 1];
     size_t len = 0U;
 
     // no hash for 0 values
