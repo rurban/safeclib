@@ -123,7 +123,10 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
                        const wchar_t *restrict fmt, ...)
 #endif
 {
-    va_list ap, ap2;
+    va_list ap;
+#ifndef HAVE_VSNWPRINTF_S
+    va_list ap2;
+#endif
     wchar_t *p;
     int ret = -1;
     const size_t destsz = dmax * sizeof(wchar_t);
