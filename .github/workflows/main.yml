@@ -21,7 +21,7 @@ jobs:
           - --disable-nullslack --enable-warn-dmax
           - --disable-extensions CFLAGS="-march=native"
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         fetch-depth: 1
     - run: sudo apt-get install doxygen libtext-diff-perl pkg-config
@@ -64,7 +64,7 @@ jobs:
     - name: init
       run: brew install autoconf automake libtool
     - name: checkout
-      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
     - run: sh build-aux/autogen.sh
     - run: ./configure --disable-hardening --enable-debug
     - run: make V=1
@@ -83,7 +83,7 @@ jobs:
     steps:
       # see https://github.com/msys2/setup-msys2
     - name: setup-msys2
-      uses: msys2/setup-msys2@fb197b72ce45fb24f17bf3f807a388985654d1f2 # v2.29.0
+      uses: msys2/setup-msys2@4f806de0a5a7294ffabaff804b38a9b435a73bda # v2.30.0
       with:
         path-type: minimal
         update: true
@@ -101,7 +101,7 @@ jobs:
     - run: reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /f /v DontShowUI /d 1
     - run: git config --global core.autocrlf input
     - name: checkout
-      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
     - shell: msys2 {0}
       run: sh build-aux/autogen.sh
       continue-on-error: true
@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: Check on aarch64
         id: runcmd
