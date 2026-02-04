@@ -1,6 +1,11 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.??
+	- Fix vsnprintf_s two buffer sizes by 1 (Bernd Kuhls)
+        - Fixes for !HAVE_VSNWPRINTF_S
+	- Update Dockerfiles and CI
+
 Changes in 3.9.1
         - Forgot to bump SO_VERSION and API_VERSION to 3.9
 
