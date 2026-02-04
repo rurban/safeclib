@@ -31,7 +31,11 @@
 
 #define __TEST_MSVCRT_C__
 #include "test_msvcrt.h"
+#ifndef __KERNEL__
+#include <stdio.h>
+#endif
 
+bool broken_errno = false;
 bool use_msvcrt;
 void print_msvcrt(bool is_msvcrt) {
 #if defined(_WIN32) || defined(TEST_MSVCRT)
@@ -64,6 +68,26 @@ void init_msvcrt(bool is_msvcrt, bool *msvcrtp) {
 #endif
 }
 
+bool is_ubuntu(void) {
+#ifndef __KERNEL__
+    FILE *fh = fopen("/etc/os-release", "r");
+    if (!fh)
+        return false;
+    char line[256];
+    bool is_ubu = false;
+    while (fgets(line, sizeof(line), fh)) {
+        if (strstr(line, "Ubuntu")) {
+            is_ubu = true;
+            break;
+        }
+    }
+    fclose(fh);
+    return is_ubu;
+#else
+    return false;
+#endif
+}
+
 void _err_msvc(int rc, const int n, const int winerr, int *errp, const char *f,
                const unsigned l) {
     const int chk = use_msvcrt ? winerr : n;
@@ -87,7 +111,8 @@ void _errno_msvc(const int n, const int winerr, int *errp, const char *f,
 #endif
     if (errno != chk) {
         debug_printf("%s %u  Error errno=%d \n", f, l, (int)errno);
-        (*errp)++;
+        if (!broken_errno)
+            (*errp)++;
     }
     if (use_msvcrt)
         errno = 0;

@@ -50,11 +50,13 @@
 #endif
 
 #ifndef __TEST_MSVCRT_C__
+extern bool broken_errno; // i.e. ubuntu aarch64. fedora is fine
 extern bool use_msvcrt;
 #endif
 
 void init_msvcrt(bool is_msvcrt, bool *msvcrtp);
 void print_msvcrt(bool use_msvcrt);
+bool is_ubuntu(void);
 void _err_msvc(int rc, const int n, const int winerr, int *errp, const char *f,
                const unsigned l);
 void _errno_msvc(const int n, const int winerr, int *errp, const char *f,

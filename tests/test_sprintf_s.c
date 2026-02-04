@@ -94,6 +94,11 @@ int test_sprintf_s(void) {
     rc = sprintf_s(NULL, LEN, "%s", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     ERR_MSVC(-ESNULLP, -1);
+#if defined(__aarch64__) && defined(__linux__)
+    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
+    if (errno == 12 && is_ubuntu())
+        broken_errno = 1;
+#endif
     ERRNO_MSVC(0, EINVAL);
 
     /*--------------------------------------------------*/

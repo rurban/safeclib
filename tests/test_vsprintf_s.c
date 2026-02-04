@@ -84,6 +84,11 @@ int test_vsprintf_s(void) {
 
     rc = vtprintf_s(str1, LEN, "%s", NULL);
     ERR(-ESNULLP);
+#if defined(__aarch64__) && defined(__linux__)
+    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
+    if (errno == 12 && is_ubuntu())
+        broken_errno = 1;
+#endif
     ERRNO_MSVC(0, EINVAL);
 
     /*--------------------------------------------------*/

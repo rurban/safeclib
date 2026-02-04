@@ -46,6 +46,11 @@ int main(void) {
     EXPECT_BOS("empty dest") EXPECT_BOS("empty dest or dmax")
     rc = swprintf_s(NULL, 0, L"%ls", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
+#if defined(__aarch64__) && defined(__linux__)
+    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
+    if (errno == 12 && is_ubuntu())
+        broken_errno = 1;
+#endif
     ERRNO_MSVC(-ESNULLP, EINVAL);
 
     EXPECT_BOS("empty fmt")
