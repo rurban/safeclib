@@ -203,7 +203,13 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #endif
 
     if (unlikely(ret >= (int)dmax)) {
+#ifdef HAVE_VSNWPRINTF_S
+        errno = 0;
+        handle_werror(dest, dmax, "vswprintf_s: len exceeds dmax", ESNOSPC);
+        return -(ESNOSPC);
+#else
         goto nospc; /* probably dead code. vswprintf will cut this already */
+#endif
     } else if (unlikely(ret < 0)) {
 #ifndef HAVE_VSNWPRINTF_S
         char errstr[128] = "vswprintf_s: ";
