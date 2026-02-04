@@ -1,0 +1,25 @@
+# Docker >= 17.05.0-ce allows using build-time args (ARG) in FROM (#31352).
+# https://github.com/moby/moby/releases/tag/v17.05.0-ce
+ARG BASE_IMAGE=ubuntu:latest
+FROM ${BASE_IMAGE}
+
+# Test with non-root user.
+ENV TEST_USER tester
+ENV WORK_DIR "/work"
+
+RUN apt-get update -y
+RUN apt-get install -y file git make sudo automake autoconf libtool pkg-config strace gawk diffutils apt-utils
+RUN apt-get install -y gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+
+# Create test user and the environment
+RUN useradd "${TEST_USER}"
+# Enable sudo without password for convenience.
+RUN echo "${TEST_USER} ALL = NOPASSWD: ALL" >> /etc/sudoers
+
+WORKDIR "${WORK_DIR}"
+COPY . .
+RUN chown -R "${TEST_USER}:${TEST_USER}" "${WORK_DIR}"
+USER "${TEST_USER}"
+
+RUN ./configure --host=aarch64-linux-gnu --disable-shared --enable-debug --disable-doc
+RUN make

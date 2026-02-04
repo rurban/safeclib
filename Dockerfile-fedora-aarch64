@@ -1,8 +1,7 @@
 # Docker >= 17.05.0-ce allows using build-time args (ARG) in FROM (#31352).
 # https://github.com/moby/moby/releases/tag/v17.05.0-ce
-ARG BASE_IMAGE=fedora
-#FROM ${BASE_IMAGE}
-FROM fedora:41-aarch64
+ARG BASE_IMAGE=fedora:latest
+FROM ${BASE_IMAGE}
 
 # Test with non-root user.
 ENV TEST_USER tester
@@ -14,11 +13,10 @@ ENV WORK_DIR "/work"
 # if they exists.
 #RUN ls /etc/yum.repos.d/*.repo
 RUN sed -i '/^enabled=1$/ s/1/0/' /etc/yum.repos.d/*-modular.repo || true
-# RUN dnf -y update
-RUN dnf -y --allowerasing --repo fedora install \
-  file gcc git make redhat-rpm-config sudo \
-  automake autoconf libtool perl-Text-Diff pkgconf-pkg-config strace gdb
-#RUN dnf -y --repo fedora install m4
+#RUN dnf -y update
+RUN dnf -y install file git make redhat-rpm-config sudo \
+           automake autoconf libtool perl-Text-Diff pkgconf-pkg-config strace gdb
+RUN dnf -y install awk diffutils gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu sysroot-aarch64-fc42-glibc
 
 # Create test user and the environment
 RUN useradd "${TEST_USER}"
@@ -30,5 +28,5 @@ COPY . .
 RUN chown -R "${TEST_USER}:${TEST_USER}" "${WORK_DIR}"
 USER "${TEST_USER}"
 
-RUN ./configure --host=aarch64-linux-gnu --disable-shared --enable-debug
+RUN ./configure --host=aarch64-redhat-linux --disable-shared --enable-debug
 RUN make
