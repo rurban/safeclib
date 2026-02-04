@@ -1,7 +1,8 @@
 # Build configuration for https://cirrus-ci.org
+# Images at https://cirrus-ci.org/guide/FreeBSD/
 
 freebsd_instance:
-  image_family: freebsd-13-0
+  image_family: freebsd-14-3
   cpu: 4
 task:
   install_script:
