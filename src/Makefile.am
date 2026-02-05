@@ -311,6 +311,10 @@ gcov:
 	-test -f $(builddir)/gcov.log && rm $(builddir)/gcov.log
 	for c in $(libsafec_la_SOURCES); do \
 	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
+	  if test -e "$$dir/.libs/$$base.gcno" -a -e $$c; then \
+	    mv $$dir/.libs/$$base.gcno $$dir/ ; \
+	    mv $$dir/.libs/$$base.gcda $$dir/ ; \
+	  fi; \
 	  if test -e "$$dir/$$base.gcno" -a -e $$c; then \
 	    $(GCOV) -s $$dir $$c | tee -a $(builddir)/gcov.log; \
 	    mv $$base.c.gcov $$dir/ ; \
