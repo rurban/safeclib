@@ -143,22 +143,13 @@ jobs:
     #    asset_name: configure.gz
     #    asset_content_type: application/gzip
   aarch64:
-    runs-on: ubuntu-latest
-    timeout-minutes: 50
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
-        name: Check on aarch64
-        id: runcmd
-        with:
-          arch: aarch64
-          githubToken: ${{ github.token }}
-          distro: ubuntu_latest
-          install: |
-            apt-get update -q -y
-            apt-get install -y make gcc grep bash file git libtool automake autoconf \
-                               libtext-diff-perl pkg-config
-            git config --global --add safe.directory /home/runner/work/safeclib/safeclib
-          run: |
-            build-aux/autogen.sh
-            build-aux/conf-make-check.sh
+      - run: |
+            sudo apt-get update -q -y
+            sudo apt-get install -y make gcc grep bash file git libtool automake autoconf \
+                            libtext-diff-perl pkg-config
+      - run: sh build-aux/autogen.sh
+      - run: build-aux/conf-make-check.sh
