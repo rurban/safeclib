@@ -715,4 +715,40 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
 
+/* * PORTABILITY: Tiered Fallback for isinf/isinfl
+ * Required for RTEMS/Newlib or bare-metal where standard math.h is incomplete.
+ */
+#include <math.h>
+
+/* Tier 1 is handled by configure.ac (HAVE_ISINF). If missing, proceed to Tier 2. */
+#if !defined(HAVE_ISINF)
+    /* Tier 2: Compiler Built-in (GCC/Clang) - Ideal for RTEMS */
+    #if defined(__GNUC__) || defined(__clang__)
+        #define isinf(x) __builtin_isinf(x)
+
+    /* Tier 3: Hard Fallback (IEEE 754 Bitwise) - The "Bare Metal" implementation */
+    #else
+        static inline int _safeclib_isinf_fallback(double x) {
+            union { uint64_t u; double d; } u;
+            u.d = x;
+            /* Mask off the sign bit (bit 63) */
+            uint64_t abs_u = u.u & 0x7FFFFFFFFFFFFFFFULL;
+            /* Infinity is Exponent=All 1s (0x7FF), Mantissa=All 0s */
+            return abs_u == 0x7FF0000000000000ULL;
+        }
+        #define isinf(x) _safeclib_isinf_fallback(x)
+    #endif
+#endif
+
+/* Fallback for long double (isinfl) */
+#if !defined(HAVE_ISINFL)
+    #if defined(__GNUC__) || defined(__clang__)
+        #define isinfl(x) __builtin_isinfl(x)
+    #else
+        /* Fallback: Downcast to double. 
+           (Bitwise on long double is dangerous due to 80-bit vs 128-bit platform diffs) */
+        #define isinfl(x) isinf((double)(x))
+    #endif
+#endif
+
 #endif /* __SAFECLIB_PRIVATE_H__ */
