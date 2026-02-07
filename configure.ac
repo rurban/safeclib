@@ -943,6 +943,9 @@ fi
 AC_SUBST(HAVE_ATTRIBUTE_FORMAT_WPRINTF)
 AC_SUBST(HAVE_ATTRIBUTE_FORMAT_WSCANF)
 
+AX_GCC_BUILTIN(__builtin_isinf)
+AX_GCC_BUILTIN(__builtin_isinfl)
+
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf
               vfprintf vfwprintf vsprintf vsnprintf"
@@ -1045,7 +1048,7 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         strnstr strnlen strrchr memrchr strstr bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror \
-        fileno ftruncate isinfl])
+        fileno ftruncate isinfl isinf])
 
 if test "$enable_wchar" = "true" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \

@@ -177,8 +177,53 @@
 
 // import float.h for DBL_MAX, math.h for isinf()
 #ifdef PRINTF_SUPPORT_FLOAT
-#include <float.h>
-#include <math.h>
+# ifdef HAVE_FLOAT_H
+#  include <float.h>
+# else
+#  undef PRINTF_SUPPORT_FLOAT
+# endif
+#endif
+#if defined(PRINTF_SUPPORT_FLOAT) && defined(PRINTF_SUPPORT_EXPONENTIAL)
+# ifdef HAVE_MATH_H
+#  include <math.h>
+# endif
+# ifndef HAVE_ISINF
+#  ifdef HAVE___BUILTIN_ISINF
+#   undef isinf
+#   define isinf(x) __builtin_isinf(x)
+#  else
+#   ifdef HAVE_LIMITS_H
+#    include <limits.h>
+#   endif
+/* see also portable_isinfl below */
+static inline int portable_isinf(double x) {
+/* Handle special case for non-finite values */
+#ifdef INFINITY
+    if (x == INFINITY || x == -INFINITY) {
+        return 1;
+    }
+#endif
+/* IEEE 754 bit pattern checking */
+#if DBL_MANT_DIG == 53 && DBL_MAX_EXP == 1024
+    {
+        union { uint64_t u; double d; } u;
+        u.d = x;
+        /* Mask off the sign bit (bit 63) */
+        uint64_t abs_u = u.u & 0x7FFFFFFFFFFFFFFFULL;
+        /* Infinity is Exponent=All 1s (0x7FF), Mantissa=All 0s */
+        return abs_u == 0x7FF0000000000000ULL;
+    }
+#else
+    /* Fallback comparison-based method */
+    if (x != x) {
+        return 0; /* NaN */
+    }
+    return (x + x == x) && (x != 0.0L);
+#endif
+}
+#   define isinf(x) portable_isinf(x)
+#  endif
+# endif
 #endif
 
 // internal secure strlen
@@ -554,13 +599,17 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
 }
 
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
-#ifdef HAVE_ISINFL
-#define _ISINFL(value) isinfl(value)
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+# if defined(HAVE_ISINFL)
+#  define _ISINFL(value) isinfl(value)
+# elif defined(HAVE___BUILTIN_ISINFL)
+#  define _ISINFL(x) __builtin_isinfl(x)
+# elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 /* C99 and later */
-#define _ISINFL(value) isinf(value)
-#else
-#include <limits.h>
+#  define _ISINFL(value) isinf(value)
+# else
+#  ifdef HAVE_LIMITS_H
+#   include <limits.h>
+#  endif
 /* Portable implementation for older standards */
 static inline int portable_isinfl(long double x) {
 /* Handle special case for non-finite values */
@@ -611,7 +660,7 @@ static inline int portable_isinfl(long double x) {
     return (x + x == x) && (x != 0.0L);
 #endif
 }
-#define _ISINFL(value) portable_isinfl(value)
+# define _ISINFL(value) portable_isinfl(value)
 #endif // HAVE_ISINFL
 
 // internal ftoa for fixed decimal long double
@@ -671,7 +720,7 @@ static inline size_t safec_atoa_long(out_fct_type out, const char *funcname,
     return safec_ftoa_long(out, funcname, buffer, idx, maxlen, value, prec,
                            width, flags, format);
 }
-#endif
+#endif // PRINTF_SUPPORT_LONG_DOUBLE
 
 #ifdef PRINTF_SUPPORT_EXPONENTIAL
 // the complete same as safec_ftoa_long, but taking double, not long double
