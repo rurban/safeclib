@@ -130,6 +130,12 @@ void abort(void) __attribute__((noreturn));
 #ifdef HAVE_WCHAR_H
 #include <wchar.h>
 #endif
+#ifdef HAVE_MATH_H
+/* Fallback for isinf/isinfl
+ * Required for RTEMS/Newlib or bare-metal where standard math.h is incomplete.
+ */
+#include <math.h>
+#endif
 
 #if defined(__STDC_WANT_LIB_EXT1__) && (__STDC_WANT_LIB_EXT1__ >= 1)
 #define WANT_C11
@@ -715,17 +721,10 @@ static inline int safec_out_fct(char character, void *wrap, size_t idx,
 int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
 
-/* * PORTABILITY: Tiered Fallback for isinf/isinfl
- * Required for RTEMS/Newlib or bare-metal where standard math.h is incomplete.
- */
-#include <math.h>
-
 /* Tier 1 is handled by configure.ac (HAVE_ISINF). If missing, proceed to Tier 2. */
 #if !defined(HAVE_ISINF)
-    /* Tier 2: Compiler Built-in (GCC/Clang) - Ideal for RTEMS */
-    #if defined(__GNUC__) || defined(__clang__)
+    #ifdef HAVE___BUILTIN_ISINF
         #define isinf(x) __builtin_isinf(x)
-
     /* Tier 3: Hard Fallback (IEEE 754 Bitwise) - The "Bare Metal" implementation */
     #else
         static inline int _safeclib_isinf_fallback(double x) {
@@ -742,11 +741,11 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
 
 /* Fallback for long double (isinfl) */
 #if !defined(HAVE_ISINFL)
-    #if defined(__GNUC__) || defined(__clang__)
+    #ifdef HAVE___BUILTIN_ISINFL
         #define isinfl(x) __builtin_isinfl(x)
     #else
-        /* Fallback: Downcast to double. 
-           (Bitwise on long double is dangerous due to 80-bit vs 128-bit platform diffs) */
+        /* Fallback: Downcast to double.
+           (Bitwise on long double is hw-specific due to 80-bit vs 128-bit platform diffs) */
         #define isinfl(x) isinf((double)(x))
     #endif
 #endif

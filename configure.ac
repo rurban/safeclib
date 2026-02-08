@@ -818,6 +818,7 @@ AC_CHECK_HEADERS([stdlib.h	\
                   stdint.h	\
                   errno.h	\
                   wchar.h	\
+                  math.h	\
                   langinfo.h    \
                   valgrind/valgrind.h \
                   fenv.h        \
@@ -942,6 +943,9 @@ else
 fi
 AC_SUBST(HAVE_ATTRIBUTE_FORMAT_WPRINTF)
 AC_SUBST(HAVE_ATTRIBUTE_FORMAT_WSCANF)
+
+AX_GCC_BUILTIN(__builtin_isinf)
+AX_GCC_BUILTIN(__builtin_isinfl)
 
 builtins_chk="memcpy memmove memset strcpy strncpy strcat strncat
               printf sprintf snprintf swprintf
