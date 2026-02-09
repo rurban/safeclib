@@ -155,3 +155,13 @@ jobs:
                             libtext-diff-perl pkg-config
       - run: sh build-aux/autogen.sh
       - run: build-aux/conf-make-check.sh
+  linux-cmake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        fetch-depth: 1
+    - run: cmake .
+    - run: make
+    - run: make test || (cat Testing/Temporary/LastTest.log; false)

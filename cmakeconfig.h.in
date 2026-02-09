@@ -1,0 +1,337 @@
+#ifndef __SAFECLIB_CONF_H__
+#define __SAFECLIB_CONF_H__
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#cmakedefine HAVE_SYS_TIME_H 1
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#cmakedefine HAVE_STDLIB_H 1
+
+/* Define to 1 if you have the <memory.h> header file. */
+#cmakedefine HAVE_MEMORY_H 1
+
+/* Define to 1 if you have the <ctype.h> header file. */
+#cmakedefine HAVE_CTYPE_H 1
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine HAVE_MALLOC_H 1
+
+/* Define to 1 if you have the <string.h> header file. */
+#cmakedefine HAVE_STRING_H 1
+
+/* Define to 1 if you have the <limits.h> header file. */
+#cmakedefine HAVE_LIMITS_H 1
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#cmakedefine HAVE_STDDEF_H 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H 1
+
+/* Define to 1 if you have the <float.h> header file. */
+#cmakedefine HAVE_FLOAT_H 1
+
+/* Define to 1 if you have the <math.h> header file. */
+#cmakedefine HAVE_MATH_H 1
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#cmakedefine HAVE_SYS_TYPES_H 1
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H 1
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <errno.h> header file. */
+#cmakedefine HAVE_ERRNO_H 1
+
+/* Define to 1 if you have the <wchar.h> header file. */
+#cmakedefine HAVE_WCHAR_H 1
+
+/* Define to 1 if you have the <langinfo.h> header file. */
+#cmakedefine HAVE_LANGINFO_H 1
+
+/* Define to 1 if you have the <valgrind/valgrind.h> header file. */
+#cmakedefine HAVE_VALGRIND_VALGRIND_H 1
+
+/* Define to 1 if you have the <fenv.h> header file. */
+#cmakedefine HAVE_FENV_H 1
+
+/* Define to 1 if you have the <intrin.h> header file. */
+#cmakedefine HAVE_INTRIN_H 1
+
+/* Define to 1 if you have the <xmmintrin.h> header file. */
+#cmakedefine HAVE_XMMINTRIN_H 1
+
+/* Define to 1 if you have the <emmintrin.h> header file. */
+#cmakedefine HAVE_EMMINTRIN_H 1
+
+/* Define to 1 if you have the <x86intrin.h> header file. */
+#cmakedefine HAVE_X86INTRIN_H 1
+
+/* Define to 1 if you have the <arm_neon.h> header file. */
+#cmakedefine HAVE_ARM_NEON_H 1
+
+/* Define to 1 if you have the <arm_acle.h> header file. */
+#cmakedefine HAVE_ARM_ACLE_H 1
+
+/* Define to 1 if you have the <mmintrin.h> header file. */
+#cmakedefine HAVE_MMINTRIN_H 1
+
+/* Define to 1 if you have the <altivec.h> header file. */
+#cmakedefine HAVE_ALTIVEC_H 1
+
+/* Define to 1 if you have the <spe.h> header file. */
+#cmakedefine HAVE_SPE_H 1
+
+/* Define to 1 if you have the <mbarrier.h> header file. */
+#cmakedefine HAVE_MBARRIER_H 1
+
+/* Define to 1 if you have the <stdbool.h> header file. */
+#cmakedefine HAVE_STDBOOL_H 1
+
+/* Define to 1 if the compiler supports C99 */
+#cmakedefine SAFECLIB_HAVE_C99 1
+
+/* Define to 1 if the compiler supports C11 */
+#cmakedefine HAVE_C11 1
+
+/* Define to 1 if __builtin_object_size is available */
+#cmakedefine HAVE___BUILTIN_OBJECT_SIZE 1
+
+/* Define to 1 if __builtin_ctz is available */
+#cmakedefine HAVE___BUILTIN_CTZ 1
+
+/* Define to 1 if __builtin_constant_p is available */
+#cmakedefine HAVE___BUILTIN_CONSTANT_P 1
+
+/* Define to 1 if __builtin_isinf is available */
+#cmakedefine HAVE___BUILTIN_ISINF 1
+
+/* Define to 1 if __builtin_isinfl is available */
+#cmakedefine HAVE___BUILTIN_ISINFL 1
+
+/* Define to 1 if the compiler supports diagnose_if attribute */
+#cmakedefine HAVE_ATTRIBUTE_DIAGNOSE_IF 1
+
+/* Define to 1 if the compiler supports format attribute */
+#cmakedefine HAVE_ATTRIBUTE_FORMAT 1
+
+/* Define to 1 if the compiler supports this format attribute */
+#cmakedefine HAVE_ATTRIBUTE_FORMAT_WPRINTF 1
+
+/* Define to 1 if the compiler supports this format attribute */
+#cmakedefine HAVE_ATTRIBUTE_FORMAT_WSCANF 1
+
+/* Define to 1 if the compiler supports malloc attribute */
+#cmakedefine HAVE_ATTRIBUTE_MALLOC 1
+
+/* Define to 1 if the compiler supports returns_nonnull attribute */
+#cmakedefine HAVE_ATTRIBUTE_RETURNS_NONNULL 1
+
+/* Define to 1 if inline assembly is available */
+#cmakedefine HAVE_ASM_INLINE 1
+
+/* Define to 1 if struct tm has tm_gmtoff member */
+#cmakedefine HAVE_TM_GMTOFF 1
+
+/* Define to 1 if __float128 is usable */
+#cmakedefine HAVE_FLOAT128 1
+
+/* Define to 1 if towupper is usable */
+#cmakedefine HAVE_TOWUPPER_OK 1
+
+/* Define to 1 if strnstr is usable */
+#cmakedefine HAVE_STRNSTR_OK 1
+
+/* Define to 1 if you have the `vswprintf' function. */
+#cmakedefine HAVE_VSWPRINTF 1
+
+/* Define to 1 if you have the `vswscanf' function. */
+#cmakedefine HAVE_VSWSCANF 1
+
+/* Define to 1 if you have the `mbsrtowcs' function. */
+#cmakedefine HAVE_MBSRTOWCS 1
+
+/* Define to 1 if you have the `memcmp' function. */
+#cmakedefine HAVE_MEMCMP 1
+
+/* Define to 1 if you have the `memset' function. */
+#cmakedefine HAVE_MEMSET 1
+
+/* Define to 1 if you have the `strcmp' function. */
+#cmakedefine HAVE_STRCMP 1
+
+/* Define to 1 if you have the `strcasecmp' function. */
+#cmakedefine HAVE_STRCASECMP 1
+
+/* Define to 1 if you have the `strcasestr' function. */
+#cmakedefine HAVE_STRCASESTR 1
+
+/* Define to 1 if you have the `strcspn' function. */
+#cmakedefine HAVE_STRCSPN 1
+
+/* Define to 1 if you have the `strpbrk' function. */
+#cmakedefine HAVE_STRPBRK 1
+
+/* Define to 1 if you have the `strspn' function. */
+#cmakedefine HAVE_STRSPN 1
+
+/* Define to 1 if you have the `strnstr' function. */
+#cmakedefine HAVE_STRNSTR 1
+
+/* Define to 1 if you have the `strnlen' function. */
+#cmakedefine HAVE_STRNLEN 1
+
+/* Define to 1 if you have the `strrchr' function. */
+#cmakedefine HAVE_STRRCHR 1
+
+/* Define to 1 if you have the `memrchr' function. */
+#cmakedefine HAVE_MEMRCHR 1
+
+/* Define to 1 if you have the `strstr' function. */
+#cmakedefine HAVE_STRSTR 1
+
+/* Define to 1 if you have the `bcmp' function. */
+#cmakedefine HAVE_BCMP 1
+
+/* Define to 1 if you have the `secure_getenv' function. */
+#cmakedefine HAVE_SECURE_GETENV 1
+
+/* Define to 1 if you have the `timingsafe_memcmp' function. */
+#cmakedefine HAVE_TIMINGSAFE_MEMCMP 1
+
+/* Define to 1 if you have the `timingsafe_bcmp' function. */
+#cmakedefine HAVE_TIMINGSAFE_BCMP 1
+
+/* Define to 1 if you have the `explicit_bzero' function. */
+#cmakedefine HAVE_EXPLICIT_BZERO 1
+
+/* Define to 1 if you have the `explicit_memset' function. */
+#cmakedefine HAVE_EXPLICIT_MEMSET 1
+
+/* Define to 1 if you have the `asctime_r' function. */
+#cmakedefine HAVE_ASCTIME_R 1
+
+/* Define to 1 if you have the `ctime_r' function. */
+#cmakedefine HAVE_CTIME_R 1
+
+/* Define to 1 if you have the `gmtime_r' function. */
+#cmakedefine HAVE_GMTIME_R 1
+
+/* Define to 1 if you have the `localtime_r' function. */
+#cmakedefine HAVE_LOCALTIME_R 1
+
+/* Define to 1 if you have the `memccpy' function. */
+#cmakedefine HAVE_MEMCCPY 1
+
+/* Define to 1 if you have the `stpcpy' function. */
+#cmakedefine HAVE_STPCPY 1
+
+/* Define to 1 if you have the `stpncpy' function. */
+#cmakedefine HAVE_STPNCPY 1
+
+/* Define to 1 if you have the `strerror' function. */
+#cmakedefine HAVE_STRERROR 1
+
+/* Define to 1 if you have the `fileno' function. */
+#cmakedefine HAVE_FILENO 1
+
+/* Define to 1 if you have the `ftruncate' function. */
+#cmakedefine HAVE_FTRUNCATE 1
+
+/* Define to 1 if you have the `isinfl' function. */
+#cmakedefine HAVE_ISINFL 1
+
+/* Define to 1 if you have the `isinf' function. */
+#cmakedefine HAVE_ISINF 1
+
+/* Define to 1 if you have the `wmemchr' function. */
+#cmakedefine HAVE_WMEMCHR 1
+
+/* Define to 1 if you have the `wmemcmp' function. */
+#cmakedefine HAVE_WMEMCMP 1
+
+/* Define to 1 if you have the `wcscmp' function. */
+#cmakedefine HAVE_WCSCMP 1
+
+/* Define to 1 if you have the `wcsstr' function. */
+#cmakedefine HAVE_WCSSTR 1
+
+/* Define to 1 if you have the `vsnwprintf' function. */
+#cmakedefine HAVE_VSNWPRINTF 1
+
+/* Define to 1 if you have the `mbstowcs' function. */
+#cmakedefine HAVE_MBSTOWCS 1
+
+/* Define to 1 if you have the `iswdigit' function. */
+#cmakedefine HAVE_ISWDIGIT 1
+
+/* Define to 1 if you have the `iswspace' function. */
+#cmakedefine HAVE_ISWSPACE 1
+
+/* Define to 1 if you have the `towlower' function. */
+#cmakedefine HAVE_TOWLOWER 1
+
+/* Define to 1 if you have the `towupper' function. */
+#cmakedefine HAVE_TOWUPPER 1
+
+/* Define to 1 if you have the `towctrans' function. */
+#cmakedefine HAVE_TOWCTRANS 1
+
+/* Define to 1 if you have the `__bnd_chk_ptr_bounds' function. */
+#cmakedefine HAVE___BND_CHK_PTR_BOUNDS 1
+
+/* Define to 1 if you have the `__bnd_set_ptr_bounds' function. */
+#cmakedefine HAVE___BND_SET_PTR_BOUNDS 1
+
+/* Define to 1 if you have the `__bnd_null_ptr_bounds' function. */
+#cmakedefine HAVE___BND_NULL_PTR_BOUNDS 1
+
+/* Define to 1 if you have the `__dsb' function. */
+#cmakedefine HAVE___DSB 1
+
+/* Define to 1 if you have the `__isb' function. */
+#cmakedefine HAVE___ISB 1
+
+/* Define to 1 if -Wrestrict is supported */
+#cmakedefine HAVE_WARNING_RESTRICT 1
+
+/* Define to 1 if user-defined warnings are supported */
+#cmakedefine HAVE_USER_DEFINED_WARNINGS 1
+
+/* Define to 1 if warn_dmax is enabled */
+#cmakedefine HAVE_WARN_DMAX 1
+
+/* Define to 1 if error_dmax is enabled */
+#cmakedefine HAVE_ERROR_DMAX 1
+
+/* Define to 1 if building on Windows/MinGW */
+#cmakedefine HAVE_MINGW 1
+
+/* Define to 1 if cross-compiling for MinGW */
+#cmakedefine HAVE_MINGW_CROSS 1
+
+/* Define to 1 if building on Darwin */
+#cmakedefine HAVE_DARWIN 1
+
+/* The size of `size_t', as computed by sizeof. */
+#define SIZEOF_SIZE_T @SIZEOF_SIZE_T@
+
+/* The number of bytes in type wchar_t */
+#define SIZEOF_WCHAR_T @SIZEOF_WCHAR_T@
+
+/* Package information */
+#define PACKAGE "@PROJECT_NAME@"
+#define PACKAGE_NAME "@PROJECT_NAME@"
+#define PACKAGE_VERSION "@PACKAGE_VERSION@"
+#define PACKAGE_STRING "@PROJECT_NAME@ @PACKAGE_VERSION@"
+#define PACKAGE_BUGREPORT "https://github.com/rurban/safeclib/issues"
+#define PACKAGE_URL "http://github.com/rurban/safeclib/"
+
+/* Version information */
+#define SAFEC_API_VERSION "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@"
+
+#endif /* __SAFECLIB_CONF_H__ */
+
