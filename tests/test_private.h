@@ -38,7 +38,9 @@
 
 #ifndef PERL
 #define PERL "perl"
+#ifndef PERL_VERSION
 #define PERL_VERSION "5.40"
+#endif
 #endif
 
 #ifdef __KERNEL__
@@ -194,7 +196,7 @@
 /* for a proper asctime string with 26 digits, i.e. max 4 digit year.
    01.01.10000 00:00 */
 #ifndef MAX_TIME_T_STR
-#if SIZEOF_TIME_T < 8
+#if !defined(SIZEOF_TIME_T) || SIZEOF_TIME_T < 8
 #define MAX_TIME_T_STR (0x7fffffff)
 #else
 #define MAX_TIME_T_STR (313360441200L)
