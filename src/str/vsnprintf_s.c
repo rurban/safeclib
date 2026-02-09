@@ -158,24 +158,7 @@
 #define PRINTF_SUPPORT_PTRDIFF_T
 #endif
 
-///////////////////////////////////////////////////////////////////////////////
-
-// internal flag definitions
-#define FLAGS_ZEROPAD (1U << 0U)
-#define FLAGS_LEFT (1U << 1U)
-#define FLAGS_PLUS (1U << 2U)
-#define FLAGS_SPACE (1U << 3U)
-#define FLAGS_HASH (1U << 4U) // ALTERNATE_FORM
-#define FLAGS_UPPERCASE (1U << 5U)
-#define FLAGS_CHAR (1U << 6U)
-#define FLAGS_SHORT (1U << 7U)
-#define FLAGS_LONG (1U << 8U)
-#define FLAGS_LONG_LONG (1U << 9U)
-#define FLAGS_PRECISION (1U << 10U)
-#define FLAGS_ADAPT_EXP (1U << 11U)
-#define FLAGS_LONG_DOUBLE (1U << 12U)
-
-// import float.h for DBL_MAX, math.h for isinf()
+// import float.h for DBL_MAX.
 #ifdef PRINTF_SUPPORT_FLOAT
 # ifdef HAVE_FLOAT_H
 #  include <float.h>
@@ -183,7 +166,9 @@
 #  undef PRINTF_SUPPORT_FLOAT
 # endif
 #endif
-#if defined(PRINTF_SUPPORT_FLOAT) && defined(PRINTF_SUPPORT_EXPONENTIAL)
+
+// if need math.h and isinf. isinfl below.
+#ifdef PRINTF_SUPPORT_FLOAT
 # ifdef HAVE_MATH_H
 #  include <math.h>
 # endif
@@ -225,6 +210,23 @@ static inline int portable_isinf(double x) {
 #  endif
 # endif
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+
+// internal flag definitions
+#define FLAGS_ZEROPAD (1U << 0U)
+#define FLAGS_LEFT (1U << 1U)
+#define FLAGS_PLUS (1U << 2U)
+#define FLAGS_SPACE (1U << 3U)
+#define FLAGS_HASH (1U << 4U) // ALTERNATE_FORM
+#define FLAGS_UPPERCASE (1U << 5U)
+#define FLAGS_CHAR (1U << 6U)
+#define FLAGS_SHORT (1U << 7U)
+#define FLAGS_LONG (1U << 8U)
+#define FLAGS_LONG_LONG (1U << 9U)
+#define FLAGS_PRECISION (1U << 10U)
+#define FLAGS_ADAPT_EXP (1U << 11U)
+#define FLAGS_LONG_DOUBLE (1U << 12U)
 
 // internal secure strlen
 // \return The length of the string (excluding the terminating 0) limited by
