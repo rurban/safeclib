@@ -90,7 +90,7 @@ extern "C" {
 
 EXTERN void abort_handler_s(const char *restrict msg, void *restrict ptr,
                             errno_t error)
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__KERNEL__)
     __attribute__((noreturn))
 #endif
     ;
