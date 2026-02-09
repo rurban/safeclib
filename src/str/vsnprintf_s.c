@@ -674,6 +674,8 @@ static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
     static char buf[64];
     char *p = (char *)buf;
     int rc = 0;
+    (void)funcname; // FIXME
+    (void)prec;
 
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
@@ -734,6 +736,8 @@ static inline size_t safec_atoa(out_fct_type out, const char *funcname,
     static char buf[64];
     char *p = (char *)buf;
     int rc = 0;
+    (void)funcname; // FIXME
+    (void)prec;
 
     if (value != value)
         return safec_out_rev(out, buffer, idx, maxlen,
