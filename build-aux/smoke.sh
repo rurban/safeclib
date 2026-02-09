@@ -1,4 +1,5 @@
 #!/bin/sh
+cd "$(dirname "$0")/.." || exit
 autoreconf
 make=make
 
@@ -294,47 +295,46 @@ if CC="cc -m32" ./configure; then
 fi
 ./configure && \
     $make -s -j4 check-log || exit
-./configure --disable-nullslack && \
-    $make -s -j4 check-log || exit
-./configure --disable-constraint-handler && \
-    $make -s -j4 check-log || exit
-./configure --disable-extensions && \
-    $make -s -j4 check-log || exit
-./configure --disable-wchar && \
-    $make -s -j4 check-log || exit
-./configure --disable-float && \
-    $make -s -j4 check-log || exit
-./configure --disable-float-exp && \
-    $make -s -j4 check-log || exit
-./configure --disable-long-long && \
-    $make -s -j4 check-log || exit
-./configure --disable-long-double && \
-    $make -s -j4 check-log || exit
-./configure --disable-printf-ptrdiff && \
-    $make -s -j4 check-log || exit
-./configure --disable-doc && \
-    $make -s -j4 check-log || exit
-./configure --disable-hardening && \
-    $make -s -j4 check-log || exit
-./configure --disable-shared && \
-    $make -s -j4 check-log || exit
-./configure --enable-debug && \
-    $make -s -j4 check-log || exit
-./configure --enable-unsafe && \
-    $make -s -j4 check-log || exit
-./configure --enable-norm-compat && \
-    $make -s -j4 check-log || exit
-./configure --enable-gcov && \
-    $make -s -j4 check-log || exit
-./configure --enable-memmax=262144 && \
-    $make -s -j4 check-log || exit
-./configure --enable-strmax=2056 && \
-    $make -s -j4 check-log || exit
-./configure --enable-warn-dmax && \
-    $make -s -j4 check-log || exit
-echo configure --enable-error-dmax must fail
-./configure --enable-error-dmax && \
-    $make -s -j4 check-log && exit
+OPTS=disable-nullslack disable-constraint-handler disable-extensions disable-wchar \
+     disable-float disable-float-exp disable-long-long disable-long-double disable-printf-ptrdiff \
+     disable-doc disable-hardening disable-shared enable-debug enable-unsafe enable-norm-compat \
+     enable-gcov enable-memmax=262144 enable-strmax=2056 enable-warn-dmax enable-error-dmax
+for opt in $OPTS
+do
+    ./configure --$opt && \
+        $make -s -j4 check-log || exit
+done
+
+$make clean
+if [ -d .build-cmake ]; then rm -rf .build-cmake; fi
+mkdir .build-cmake
+cd .build-cmake
+echo cmake ..
+cmake ..
+make -s -j4 test || exit
+make clean
+rm -f CMakeCache.txt
+for opt in $OPTS
+do
+    def="$(echo $opt|sed -e's,disable,ENABLE,' | tr 'a-z-' 'A-Z_')"
+    case "$opt" in
+      disable*) bool="=OFF" ;;
+      enable-*=*)
+          if [ $opt = "enable-memmax=262144" ]; then
+              def=RSIZE_MAX_MEM
+              bool=262144
+          else
+              def=RSIZE_MAX_STR
+              bool=2056
+          fi ;;
+      *) bool="=ON" ;;
+    esac
+    echo cmake -D$def$bool ..
+    cmake -D$def$bool ..
+    make -s -j4 test || exit
+    make clean
+done
+cd ..
 
 # different .deps format
 git clean -dxf src tests
