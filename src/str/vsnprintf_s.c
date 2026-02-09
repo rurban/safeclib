@@ -1160,6 +1160,11 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 if (*format) {
                     unsigned off = format - startformat;
                     char *s = (char *)malloc(off + 1);
+                    if (!s) {
+                        invoke_safe_str_constraint_handler("vsnprintf_s: malloc format arg failed",
+                                                           buffer, RCNEGATE(ENOMEM));
+                        return -(ENOMEM);
+                    }
                     memcpy(s, startformat, off);
                     s[off] = '\0';
                     idx = safec_ftoa_long(out, funcname, buffer, idx, bufsize,
@@ -1193,6 +1198,11 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 if (*format) {
                     unsigned off = format - startformat;
                     char *s = (char *)malloc(off + 1);
+                    if (!s) {
+                        invoke_safe_str_constraint_handler("vsnprintf_s: malloc format arg failed",
+                                                           buffer, RCNEGATE(ENOMEM));
+                        return -(ENOMEM);
+                    }
                     memcpy(s, startformat, off);
                     s[off] = '\0';
                     idx = safec_etoa_long(out, funcname, buffer, idx, bufsize,
@@ -1221,6 +1231,11 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 if (*format) {
                     unsigned off = format - startformat;
                     char *s = (char *)malloc(off + 1);
+                    if (!s) {
+                        invoke_safe_str_constraint_handler("vsnprintf_s: malloc format arg failed",
+                                                           buffer, RCNEGATE(ENOMEM));
+                        return -(ENOMEM);
+                    }
                     memcpy(s, startformat, off);
                     s[off] = '\0';
                     idx = safec_atoa_long(out, funcname, buffer, idx, bufsize,
@@ -1238,6 +1253,11 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 if (*format) {
                     unsigned off = format - startformat;
                     char *s = (char *)malloc(off + 1);
+                    if (!s) {
+                        invoke_safe_str_constraint_handler("vsnprintf_s: malloc format arg failed",
+                                                           buffer, RCNEGATE(ENOMEM));
+                        return -(ENOMEM);
+                    }
                     memcpy(s, startformat, off);
                     s[off] = '\0';
                     idx = safec_atoa(out, funcname, buffer, idx, bufsize,
@@ -1326,11 +1346,9 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                 l = wcsnlen_s(lp, precision ? precision : RSIZE_MAX_WSTR);
                 p = (char *)malloc(l + 1);
                 if (!p) {
-                    char msg[80];
-                    snprintf(msg, sizeof msg, "%s: malloc %%ls arg failed",
-                             funcname);
-                    invoke_safe_str_constraint_handler(msg, buffer, 1);
-                    return -1;
+                    invoke_safe_str_constraint_handler("vsnprintf_s: malloc precision arg failed",
+                                                       buffer, RCNEGATE(ENOMEM));
+                    return -(ENOMEM);
                 }
                 err = wcstombs_s(&len, p, l + 1, lp, l);
                 if (err != EOK) {
@@ -1520,6 +1538,7 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
  * @retval  -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval  -EOVERFLOW  when \c dmax > size of dest
  * @retval  -EINVAL     when fmt contains %n
+ * @retval  -ENOMEM     when malloc fails
  *
  * @see
  *    snprintf_s(), sprintf_s(), vsprintf_s(), vsnwprintf_s()

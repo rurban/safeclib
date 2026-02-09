@@ -207,6 +207,10 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
             va_end(ap2);
         } else {
             wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
+            if (!tmp) {
+                handle_werror(dest, dmax, "swprintf_s: malloc failed", ENOMEM);
+                return -(ENOMEM);
+            }
             va_start(ap2, fmt);
             ret = vswprintf(tmp, dmax, fmt, ap2);
             va_end(ap2);

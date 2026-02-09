@@ -64,6 +64,7 @@
  * @retval  EOVERFLOW  when dmax/smax > size of dest/src (optionally, when the
  * compiler knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != size of dest and --enable-error-dmax
+ * @retval  ENOMEM     on malloc error
  *
  * @see
  *    strcmp_s(), wcscmp_s(), wcsncmp_s(), wcsfc_s()
@@ -119,6 +120,12 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
     }
 
     d1 = (wchar_t *)malloc(2 * destsz);
+    if (!d1) {
+        invoke_safe_str_constraint_handler("wcsicmp_s"
+                                           ": Cannot allocate memory",
+                                           (void *)src, ENOMEM);
+        return RCNEGATE(ENOMEM);
+    }
     rc = wcsfc_s(d1, dmax * 2, (wchar_t * restrict) dest, &l1);
     if (rc != EOK) {
         free(d1);
@@ -126,6 +133,13 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
     }
 
     d2 = (wchar_t *)malloc(2 * srcsz);
+    if (!d2) {
+        free(d1);
+        invoke_safe_str_constraint_handler("wcsicmp_s"
+                                           ": Cannot allocate memory",
+                                           (void *)src, ENOMEM);
+        return RCNEGATE(ENOMEM);
+    }
     rc = wcsfc_s(d2, smax * 2, (wchar_t * restrict) src, &l2);
     if (rc != EOK) {
         free(d1);

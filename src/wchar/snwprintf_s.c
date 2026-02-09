@@ -106,7 +106,8 @@ any of the arguments corresponding to %s is a null pointer.
  * @retval  -ESLEMAX   when \c dmax > \c RSIZE_MAX_WSTR
  * @retval  -EOVERFLOW when \c dmax > size of dest
  * @retval  -EINVAL    when \c fmt contains \c %n
- * @retval  -1       on some other error. errno is set then
+ * @retval  -ENOMEM    when malloc fails
+ * @retval  -1         on some other error. errno is set then
  *
  * @see
  *    vswprintf_s(), swprintf_s(), vsnprintf_s()
@@ -217,6 +218,10 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
             va_end(ap2);
         } else {
             wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
+            if (!tmp) {
+                handle_werror(dest, dmax, "snwprintf_s: malloc failed", ENOMEM);
+                return -(ENOMEM);
+            }
             va_start(ap2, fmt);
             ret = vswprintf(tmp, dmax, fmt, ap2);
             va_end(ap2);

@@ -102,12 +102,13 @@ any of the arguments corresponding to %s is a null pointer.
  *          \c vswprintf_s guarantees that the buffer will be null-terminated
  *          unless the buffer size is zero.
  *
- * @retval  -ESNULLP when dest/fmt is NULL pointer
- * @retval  -ESZEROL when dmax = 0
- * @retval  -ESLEMAX when dmax > RSIZE_MAX_WSTR
+ * @retval  -ESNULLP   when dest/fmt is NULL pointer
+ * @retval  -ESZEROL   when dmax = 0
+ * @retval  -ESLEMAX   when dmax > RSIZE_MAX_WSTR
  * @retval  -EOVERFLOW when \c dmax > size of dest
- * @retval  -EINVAL  when fmt contains %n
- * @retval  -1       on some other error. errno is set then
+ * @retval  -EINVAL    when fmt contains %n
+ * @retval  -ENOMEM    when malloc fails
+ * @retval  -1         on some other error. errno is set then
  *
  * @see
  *    vswprintf_s(), snwprintf_s(), vsnprintf_s()
@@ -206,6 +207,10 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
             ret = vswprintf(tmp, 512, fmt, ap2);
         } else {
             wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
+            if (!tmp) {
+                handle_werror(dest, dmax, "vsnwprintf_s: malloc failed", ENOMEM);
+                return -(ENOMEM);
+            }
             ret = vswprintf(tmp, dmax, fmt, ap2);
             free(tmp);
         }

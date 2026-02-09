@@ -734,6 +734,7 @@ done:
  * dest.
  * @retval  EOK        on success
  * @retval  ESNOSPC    when dmax too small for the result buffer
+ * @retval  ENOMEM     on malloc error
  * @retval  EOF        on some normalization error
  *
  * @see
@@ -784,12 +785,28 @@ EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
                 seq_max = cc_pos + CC_SEQ_STEP; /* new size */
                 if (CC_SEQ_SIZE == cc_pos) {    /* seq_ary full */
                     seq_ext = (UNWIF_cc *)malloc(seq_max * sizeof(UNWIF_cc));
+                    if (!seq_ext) {
+                        handle_werror(orig_dest, orig_dmax,
+                                      "wcsnorm_reorder_s: "
+                                      "Cannot allocate memory",
+                                      ENOMEM);
+                        return RCNEGATE(ENOMEM);
+                    }
                     memcpy(seq_ext, seq_ary, cc_pos * sizeof(UNWIF_cc));
+                    seq_ptr = seq_ext;
                 } else {
-                    seq_ext = (UNWIF_cc *)realloc(seq_ext,
+                    seq_ptr = (UNWIF_cc *)realloc(seq_ext,
                                                   seq_max * sizeof(UNWIF_cc));
+                    if (!seq_ptr) {
+                        free(seq_ext);
+                        handle_werror(orig_dest, orig_dmax,
+                                      "wcsnorm_reorder_s: "
+                                      "Cannot reallocate memory",
+                                      ENOMEM);
+                        return RCNEGATE(ENOMEM);
+                    }
+                    seq_ext = seq_ptr;
                 }
-                seq_ptr = seq_ext; /* use seq_ext from now */
             }
 
             seq_ptr[cc_pos].cc = cur_cc;
@@ -869,6 +886,7 @@ EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
  * @retval  EOK        on success
  * @retval  ESNOSPC    when dmax too small for the result buffer
  * @retval  ESNULLP    when dest, src or lenp are NULL
+ * @retval  ENOMEM     on malloc error
  * @retval  EOF        on some normalization error
  *
  * @see
@@ -1007,12 +1025,28 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
                         if (CC_SEQ_SIZE == cc_pos) {    /* seq_ary full */
                             seq_ext =
                                 (uint32_t *)malloc(seq_max * sizeof(uint32_t));
+                            if (!seq_ext) {
+                                handle_werror(orig_dest, orig_dmax,
+                                              "wcsnorm_compose_s: "
+                                              "Cannot allocate memory",
+                                              ENOMEM);
+                                return RCNEGATE(ENOMEM);
+                            }
                             memcpy(seq_ext, seq_ary, cc_pos * sizeof(uint32_t));
+                            seq_ptr = seq_ext;
                         } else {
-                            seq_ext = (uint32_t *)realloc(
+                            seq_ptr = (uint32_t *)realloc(
                                 seq_ext, seq_max * sizeof(uint32_t));
+                            if (!seq_ptr) {
+                                free(seq_ext);
+                                handle_werror(orig_dest, orig_dmax,
+                                              "wcsnorm_compose_s: "
+                                              "Cannot reallocate memory",
+                                              ENOMEM);
+                                return RCNEGATE(ENOMEM);
+                            }
+                            seq_ext = seq_ptr; /* use seq_ext from now */
                         }
-                        seq_ptr = seq_ext; /* use seq_ext from now */
                     }
                     seq_ptr[cc_pos] = cp;
                     ++cc_pos;
@@ -1101,6 +1135,7 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
  * @retval  ESLEMAX    when dmax > RSIZE_MAX_WSTR
  * @retval  ESOVRLP    when buffers overlap
  * @retval  ESNOSPC    when dmax too small for the result buffer
+ * @retval  ENOMEM     on malloc error
  * @retval  EOF        any other normalization error
  *
  * @see
@@ -1139,8 +1174,16 @@ EXPORT errno_t _wcsnorm_s_chk(wchar_t *restrict dest, rsize_t dmax,
     /* temp. scratch space, on stack or heap */
     if (len + 2 < 128)
         tmp_ptr = tmp_stack;
-    else
+    else {
         tmp_ptr = tmp = (wchar_t *)malloc((len + 2) * sizeof(wchar_t));
+        if (!tmp) {
+            handle_werror(dest, dmax,
+                          "wcsnorm_s: "
+                          "Cannot allocate memory",
+                          ENOMEM);
+            return RCNEGATE(ENOMEM);
+        }
+    }
 
     rc = _wcsnorm_reorder_s_chk(tmp_ptr, len + 2, dest, len, destbos);
     if (unlikely(rc)) {
