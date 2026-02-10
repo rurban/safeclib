@@ -48,7 +48,7 @@ EXTERN void invoke_safe_str_constraint_handler(const char *restrict msg,
 
 /* Disable the constraint handlers with --disable-constraint-handler */
 #ifdef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
-#define invoke_safe_str_constraint_handler(msg, ptr, error)
+#define invoke_safe_str_constraint_handler(msg, ptr, error) (void)msg;(void)error;
 #define handle_str_bos_chk_warn(func, dest, dmax, destbos)
 #define handle_str_src_bos_chk_warn(func, dest, smax, srcbos, srcname, smaxname)
 #endif
