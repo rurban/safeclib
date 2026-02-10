@@ -567,6 +567,11 @@ clean-local:
 endif
 endif
 
+if HAVE_CPPCHECK
+cppcheck:
+	cppcheck -Iinclude -Isrc --suppress=unknownMacro --suppress=syntaxError src/
+endif
+
 if ENABLE_GCOV
 gcov: check
 	$(MAKE) -C tests gcov
@@ -586,7 +591,7 @@ endif
 # Additional make rules
 # ===============================================
 
-.PHONY: gcov docs man perf gh-pages release check-log check-wine
+.PHONY: cppcheck gcov docs man perf gh-pages release check-log check-wine
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:

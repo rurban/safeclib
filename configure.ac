@@ -782,6 +782,8 @@ if test -z "$PANDOC";
    then AC_MSG_WARN([pandoc not found - README.rst cannot be generated from README.md])
 fi
 AM_CONDITIONAL([HAVE_DSYMUTIL], [test -n "$ac_ct_DSYMUTIL"])
+AC_CHECK_PROGS([CPPCHECK], [cppcheck])
+AM_CONDITIONAL([HAVE_CPPCHECK], [test -n "$CPPCHECK"])
 
 case $host_os in
   darwin*)
