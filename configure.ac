@@ -769,6 +769,27 @@ if test "$host_os" = "mingw32" -a "$build_os" != "mingw32"; then
    fi
 fi
 
+AC_CHECK_PROGS([PERL], [perl])
+if test -z "$PERL";
+   then AC_MSG_WARN([perl not found - skip some unicode cross-tests])
+else
+   AC_DEFINE_UNQUOTED([PERL], ["$PERL"], [Defined to the perl being used for cross-testing])
+   AC_MSG_CHECKING([for PERL_VERSION])
+   perl_version=`$PERL -V::PERL_VERSION: | tr -d \'`
+   AC_MSG_RESULT([5.$perl_version])
+   AC_DEFINE_UNQUOTED([PERL_VERSION], ["5.$perl_version"], [Defined to the perl version])
+   AC_MSG_CHECKING([for perl UnicodeVersion])
+   unicode_version=`$PERL -MUnicode::UCD -e"print Unicode::UCD::UnicodeVersion()"`
+   AC_DEFINE_UNQUOTED([PERL_UNICODE_VERSION], ["$unicode_version"], [Defined to the perl UnicodeVersion version])
+   dnl check against our safe_str_lib.h SAFECLIB_UNICODE_VERSION (15)
+   our_unicode_version="`$PERL -ane 'if (/^#define SAFECLIB_UNICODE_VERSION/){print \$F[2];exit}' include/safe_str_lib.h`"
+   if test `echo $unicode_version | cut -d. -f1` = "$our_unicode_version" ; then
+      AC_MSG_RESULT([$unicode_version ok])
+      AC_DEFINE([PERL_TEST], 1, [Defined to cross-test unicode with perl])
+   else
+      AC_MSG_RESULT([$unicode_version not $our_unicode_version. skip the Unicode cross-testing])
+   fi
+fi
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 if test -z "$DOXYGEN";
    then AC_MSG_WARN([doxygen not found - continuing without doxygen support])
