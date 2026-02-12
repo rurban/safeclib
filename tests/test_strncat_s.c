@@ -161,7 +161,11 @@ int test_strncat_s(void) {
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     EXPECT_BOS("slen exceeds src") EXPECT_BOS("src overflow or empty")
     rc = strncat_s(str1, 32, "ROString", 31);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     ERR_MSVC(EOVERFLOW, EINVAL);
+#else
+    ERR_MSVC(ESUNTERM, EINVAL);
+#endif
     if (!use_msvcrt) {
         CHECK_SLACK(str1, 32);
     } else {

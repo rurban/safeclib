@@ -169,7 +169,7 @@ int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
                             const rsize_t dmax) {
     /* clear the min of strlen and dmax(=destbos) */
     size_t len = strnlen_s(dest, dmax);
-    errno_t err = EOVERFLOW;
+    errno_t err = EOVERFLOW; // not ESNOSPC. msvcrt returns EOVERFLOW
     if (unlikely(len > RSIZE_MAX_STR)) {
         len = 1;
         err = ESLEMAX;
