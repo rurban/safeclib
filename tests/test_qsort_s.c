@@ -72,11 +72,19 @@ int test_qsort_s(void) {
     if (!use_msvcrt) {
         EXPECT_BOS("base overflow")
         rc = qsort_s(array, RSIZE_MAX_MEM + 1, sizeof(array[0]), comp, NULL);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
         ERR(ESNOSPC);
+#else
+        ERR(ESLEMAX);
+#endif
 
         EXPECT_BOS("base overflow")
         rc = qsort_s(array, LEN, RSIZE_MAX_MEM + 1, comp, NULL);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
         ERR(ESNOSPC);
+#else
+        ERR(ESLEMAX);
+#endif
     }
 #endif
 
