@@ -59,17 +59,29 @@ int test_strpbrk_s(void) {
 
     EXPECT_BOS("dest overflow")
     rc = strpbrk_s(str1, LEN + 1, str2, LEN, &first);
-    ERR(EOVERFLOW)
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    ERR(EOVERFLOW);
+#else
+    ERR(ESNOTFND);
+#endif
     NOFIRST()
 
     EXPECT_BOS("slen exceeds src") EXPECT_BOS("src overflow or empty")
     rc = strpbrk_s(str1, LEN, str2, LEN + 1, &first);
-    ERR(EOVERFLOW)
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    ERR(EOVERFLOW);
+#else
+    ERR(ESNOTFND);
+#endif
     NOFIRST()
 
     EXPECT_BOS("src overflow")
     rc = strpbrk_s(str1, LEN, str2, LEN + 1, &first);
-    ERR(EOVERFLOW)
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    ERR(EOVERFLOW);
+#else
+    ERR(ESNOTFND);
+#endif
     NOFIRST()
 #endif
 

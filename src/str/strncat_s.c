@@ -5,9 +5,10 @@
  * October 2017, Reini Urban
  * January 2018, Reini Urban
  * October 2019, Reini Urban
+ * February 2026, Reini Urban
  *
  * Copyright (c) 2008-2011 by Cisco Systems, Inc
- * Copyright (c) 2017-2019 Reini Urban
+ * Copyright (c) 2017-2026 Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -154,7 +155,7 @@ EXPORT errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
-    } else if (unlikely(slen > srcbos)) {
+    } else if (unlikely((long)slen > (long)srcbos)) {
         return handle_str_bos_overflow("strncat_s: slen exceeds src",
                                        dest, destbos);
     }

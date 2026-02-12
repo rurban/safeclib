@@ -156,12 +156,18 @@ int test_strncpy_s(void) {
     strcpy(str1, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     EXPECT_BOS("slen exceeds src") EXPECT_BOS("src overflow or empty")
     rc = strncpy_s(str1, 32, "ROString", 31);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    // FIXME! this should be valid. 8 can be copied into 32
     ERR(EOVERFLOW); /* slen exceeds src */
     if (!use_msvcrt) {
         CHECK_SLACK(str1, 32);
     } else {
         EXPSTR(str1, "");
     }
+#else
+    ERR(0);
+    EXPSTR(str1, "ROString");
+#endif
 #endif
 
     /*--------------------------------------------------*/

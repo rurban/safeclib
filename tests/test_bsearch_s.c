@@ -77,13 +77,21 @@ int test_bsearch_s(void) {
 
     EXPECT_BOS("base overflow")
     vitem = bsearch_s(&key, array, RSIZE_MAX_MEM + 1, sizeof(array[0]), comp, NULL);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     ERRNO_MSVC(ESNOSPC, EOF);
+#else
+    ERRNO_MSVC(ESLEMAX, EOF);
+#endif
     if (!use_msvcrt)
         PTRNULL(vitem);
 
     EXPECT_BOS("base overflow")
     vitem = bsearch_s(&key, array, LEN, RSIZE_MAX_MEM + 1, comp, NULL);
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     ERRNO_MSVC(ESNOSPC, EOF);
+#else
+    ERRNO_MSVC(ESLEMAX, EOF);
+#endif
     if (!use_msvcrt)
         PTRNULL(vitem);
 #endif

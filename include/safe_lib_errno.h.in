@@ -76,7 +76,8 @@ extern "C" {
 #endif
 
 #ifndef ESNOSPC
-#define ESNOSPC         ( 406 )       /* not enough space for s2     */
+#define ESNOSPC         ( 406 )       /* not enough space for dest.
+                                         often also EOVERFLOW */
 #endif
 
 #ifndef ESUNTERM
