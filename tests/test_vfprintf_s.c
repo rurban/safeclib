@@ -12,6 +12,9 @@
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
+#ifdef HAVE_VALGRIND_VALGRIND_H
+#include <valgrind/valgrind.h>
+#endif
 
 #include "test_msvcrt.h"
 
@@ -221,6 +224,13 @@ int test_vfprintf_s(void) {
     /*--------------------------------------------------*/
 
     fclose(out);
+
+#ifdef HAVE_VALGRIND_VALGRIND_H
+    if (RUNNING_ON_VALGRIND) {
+        unlink(TMP);
+        return errs;
+    }
+#endif
 
     /* print to closed stream: across libc's unportable, and not valgrind-safe */
     rc = vtfprintf_s(out, "%s", str1);

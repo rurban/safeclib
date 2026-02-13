@@ -91,6 +91,9 @@
 /* Define to 1 if you have the <stdbool.h> header file. */
 #cmakedefine HAVE_STDBOOL_H 1
 
+/* Define to 1 if you have the <valgrind/valgrind.h> header file. */
+#cmakedefine HAVE_VALGRIND_VALGRIND_H 1
+
 /* Define to 1 if the compiler supports C99 */
 #cmakedefine SAFECLIB_HAVE_C99 1
 

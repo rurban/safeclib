@@ -225,6 +225,7 @@ check_include_file("altivec.h" HAVE_ALTIVEC_H)
 check_include_file("spe.h" HAVE_SPE_H)
 check_include_file("mbarrier.h" HAVE_MBARRIER_H)
 check_include_file("stdbool.h" HAVE_STDBOOL_H)
+check_include_file("valgrind/valgrind.h" HAVE_VALGRIND_VALGRIND_H)
 
 # Check types
 set(CMAKE_EXTRA_INCLUDE_FILES "stddef.h")

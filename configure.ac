@@ -833,6 +833,7 @@ AC_CHECK_HEADERS([stdlib.h	\
                   altivec.h     \
                   spe.h         \
                   mbarrier.h    \
+                  valgrind/valgrind.h \
                   ])
 
 INSERT_SYS_TYPES_H=""
