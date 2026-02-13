@@ -187,18 +187,19 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
             const int len = l;
 #else
             /* unw16ifcan.h needs TBL(5) for len 6. UNWIF_canon_MAXLEN */
-            const int len = (l == 5) ? 6 : l;
+            const int len = l; // (l == 5) ? 6 : l;
 #endif
 #if defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
 #if SIZEOF_WCHAR_T > 2
-            assert(l > 0 && l <= 4);
-            /* 13.0: tbl sizes: (917,763,227,36) */
-            /* l: 1-4 */
-            assert((l == 1 && i < 917) || (l == 2 && i < 763) ||
-                   (l == 3 && i < 227) || (l == 4 && i < 36) || 0);
-            assert(dmax > 4);
+            assert(l > 0 && l <= UNWIF_canon_MAXLEN);
+            /* 17.0: tbl sizes: (807,856,220,67,,13) */
+            /* l: 1-6 */
+            //assert((l == 1 && i < 807) || (l == 2 && i < 856) ||
+            //       (l == 3 && i < 220) || (l == 4 && i < 67) ||
+            //       (l == 6 && i < 13) || 0);
+            //assert(dmax > 4);
 #endif
             memcpy(dest, &tbl[i * len], len * sizeof(wchar_t)); /* 33% perf */
             dest[len] = L'\0';

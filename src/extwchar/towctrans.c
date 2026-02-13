@@ -40,6 +40,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CASELACE(u1, u2) CASEMAP((u1), (u2), (u1) + 1)
 
 /* Unicode 15.0 */
+/* FIXME Need Unicode 17.0 */
 
 /* must be sorted */
 static const struct {
