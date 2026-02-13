@@ -781,7 +781,7 @@ else
    AC_MSG_CHECKING([for perl UnicodeVersion])
    unicode_version=`$PERL -MUnicode::UCD -e"print Unicode::UCD::UnicodeVersion()"`
    AC_DEFINE_UNQUOTED([PERL_UNICODE_VERSION], ["$unicode_version"], [Defined to the perl UnicodeVersion version])
-   dnl check against our safe_str_lib.h SAFECLIB_UNICODE_VERSION (15)
+   dnl check against our safe_str_lib.h SAFECLIB_UNICODE_VERSION (17)
    our_unicode_version="`$PERL -ane 'if (/^#define SAFECLIB_UNICODE_VERSION/){print \$F[2];exit}' include/safe_str_lib.h`"
    if test `echo $unicode_version | cut -d. -f1` = "$our_unicode_version" ; then
       AC_MSG_RESULT([$unicode_version ok])
