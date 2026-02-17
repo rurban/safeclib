@@ -48,18 +48,18 @@ static const struct {
     signed char lower;
     unsigned char len;
 } casemaps[] = {
-    CASEMAP(0x00c0, 0xd6, 0xe0),
-    CASEMAP(0x00d8, 0xde, 0xf8),
+    CASEMAP(0x00c0, 0xd6, 0xe0), // 192 32 23
+    CASEMAP(0x00d8, 0xde, 0xf8), // 216 32 7
 
-    CASELACE(0x0100, 0x12e),
-    CASELACE(0x0132, 0x136),
-    CASELACE(0x0139, 0x147),
-    CASELACE(0x014a, 0x176),
-    CASELACE(0x0179, 0x17d),
+    CASELACE(0x0100, 0x12e), // 256 1 47
+    CASELACE(0x0132, 0x136), // 306 1 5
+    CASELACE(0x0139, 0x147), // 313 1 15
+    CASELACE(0x014a, 0x176), // 330 1 45
+    CASELACE(0x0179, 0x17d), // 377 1 5
 
-    CASELACE(0x01a0, 0x1a4),
-    CASELACE(0x01b3, 0x1b5),
-    CASELACE(0x01cd, 0x1db),
+    CASELACE(0x01a0, 0x1a4), // 416 1 5 O WITH HORN - P WITH HOOK
+    CASELACE(0x01b3, 0x1b5), // 435 1 3
+    CASELACE(0x01cd, 0x1db), // 461 1 15
     CASELACE(0x01de, 0x1ee),
     CASELACE(0x01f8, 0x21e),
     CASELACE(0x0222, 0x232),
@@ -372,8 +372,8 @@ static const unsigned short pairs[][2] = {
 
 EXPORT uint32_t _towcase(uint32_t wc, int lower) {
     int i;
-    int lmul = 2 * lower - 1;
-    int lmask = lower - 1;
+    int lmul = 2 * lower - 1; // 1 for lower, -1 for upper
+    int lmask = lower - 1; // 0 for lower, -1/0xffff for upper
     /* no letters with case in these large ranges */
     if (/*(!iswalpha(wc) is broken on some platforms) */
         wc < 0x41 || (unsigned)wc - 0x0600 <= 0x0fff - 0x0600 ||
