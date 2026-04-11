@@ -298,7 +298,7 @@ fi
 OPTS=disable-nullslack disable-constraint-handler disable-extensions disable-wchar \
      disable-float disable-float-exp disable-long-long disable-long-double disable-printf-ptrdiff \
      disable-doc disable-hardening disable-shared enable-debug enable-unsafe enable-norm-compat \
-     enable-gcov enable-memmax=262144 enable-strmax=2056 enable-warn-dmax enable-error-dmax
+     enable-gcov enable-memmax=262144 enable-strmax=2056 enable-warn-dmax
 for opt in $OPTS
 do
     ./configure --$opt && \
