@@ -1,10 +1,18 @@
 
         ChangeLog file for safeclib
 
-Changes in 3.??
-	- Fix vsnprintf_s two buffer sizes by 1 (Bernd Kuhls)
+Changes in 3.9.2
+	- Fix vsnprintf_s two buffer sizes by 1 (Bernd Kuhls, Khem Raj)
         - Fixes for !HAVE_VSNWPRINTF_S
+	- Fixes for mingw64 dropping MINGW_HAS_SECURE_API
+	- Fixed logic for --disable-float-exp
+	- Fixed kernel compilation, no __attribute__((noreturn))
+	  without slabort
+	- Update Unicode to 17
 	- Update Dockerfiles and CI
+	- Add ENOMEM errors when malloc fails
+	  in wcsicmp_s.c, wcsnatcmp_s, wcsnorm_s.c,
+          vsnprintf_s, snwprintf_s, swprintf_s, vsnwprintf_s
 
 Changes in 3.9.1
         - Forgot to bump SO_VERSION and API_VERSION to 3.9
