@@ -42,7 +42,7 @@
 #include <assert.h>
 #endif
 
-/* with lithuanian only grave, acute, tilde above, and ogonek
+/* With lithuanian only grave, acute, tilde above, and ogonek.
    See http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
 static inline int _is_lt_accented(uint32_t wc) {
     return (wc == 0x300 || /* grave */
@@ -63,8 +63,8 @@ static inline int _is_lt_accented(uint32_t wc) {
  * i.e. if iswfc() of a character > 1, the length of dest might be greater than
  * the length of src (max 4 per char), the conversion is done via \c towfc_s()
  * and Unicode 10.0, the Unicode special-casing rules are obeyed, and composed
- * characters are normalized to NFD via \c wcsnorm_decompose_s() and \c
- * wcsnorm_reorder_s(). If not, the conversion is per character done via normal
+ * characters are normalized to NFD via \c wcsnorm_decompose_s() and
+ * \c wcsnorm_reorder_s(). If not, the conversion is per character done via normal
  * \c towlower().  Note that decomposition creates larger strings, typically
  * 2-3 chars more.
  *
@@ -101,10 +101,10 @@ static inline int _is_lt_accented(uint32_t wc) {
  * @retval  ESLEWRNG    when dmax != size of dest and --enable-error-dmax
  * @retval  ESNOSPC     when dmax is too small for the decomposition.
  *                      *lenp is still written, to know how much space is
- * needed.
+ *                      needed.
  * @retval  ESNOTFND    Internal error as returned by towfc_s() for multi-char
- * foldings. happens only when the internal implementations of iswfc() and
- *                      towfc_s() are mismatched.
+ *                      foldings. happens only when the internal implementations
+ *                      of \c iswfc() and \c towfc_s() are mismatched.
  *
  * @see
  *    iswfc(), towfc_s(), towupper(), wcslwr_s(), wcsupr_s()
