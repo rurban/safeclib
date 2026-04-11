@@ -36,7 +36,8 @@
 #endif
 
 /* conflicting API. Use mingw's implementation */
-#if defined(HAVE_TMPFILE_S) && defined(MINGW_HAS_SECURE_API)
+#if defined(HAVE_TMPFILE_S) &&                                                 \
+    (defined(MINGW_HAS_SECURE_API) || defined(_STDIO_S_DEFINED))
 #else
 
 /**
@@ -108,4 +109,4 @@ EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
     return EOK;
 }
 
-#endif /* HAVE_TMPFILE_S on MINGW */
+#endif /* HAVE_TMPFILE_S on MINGW (MINGW_HAS_SECURE_API or _STDIO_S_DEFINED) */
