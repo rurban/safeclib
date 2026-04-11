@@ -70,6 +70,10 @@ extern "C" {
 #elif defined __MINGW32__
 #define HAVE_MINGW32 /* old mingw */
 #endif
+/* removed Feb 2026 */
+#if defined(HAVE_MINGW64) && !defined(MINGW_HAS_SECURE_API) && defined(_STDIO_S_DEFINED)
+#define MINGW_HAS_SECURE_API
+#endif
 
 /* duplicate decls */
 #ifndef __SAFE_STR_LIB_H__
@@ -119,7 +123,7 @@ EXTERN char *_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
 
 #ifndef __KERNEL__
 /* Windows sec_api does without restrict */
-#ifndef MINGW_HAS_SECURE_API
+#if !defined(MINGW_HAS_SECURE_API) && !defined(_STDIO_S_DEFINED)
 EXTERN errno_t tmpfile_s(FILE *restrict *restrict streamptr);
 EXTERN errno_t fopen_s(FILE *restrict *restrict streamptr,
                        const char *restrict filename,
@@ -128,8 +132,8 @@ EXTERN errno_t fopen_s(FILE *restrict *restrict streamptr,
 EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
                          const char *restrict mode, FILE *restrict stream);
-#else
-EXTERN errno_t tmpfile_s(FILE **streamptr);
+//#else
+//EXTERN errno_t tmpfile_s(FILE **streamptr);
 #endif
 #endif /* __KERNEL__ */
 

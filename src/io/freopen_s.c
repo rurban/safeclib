@@ -2,8 +2,9 @@
  * freopen_s.c
  *
  * September 2017, Reini Urban
+ * April 2026, Reini Urban
  *
- * Copyright (c) 2017 by Reini Urban
+ * Copyright (c) 2017,2026 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -37,7 +38,7 @@
 
 /* conflicting API */
 #if (defined(TEST_MSVCRT) && defined(HAVE_FREOPEN_S)) ||                       \
-    defined(MINGW_HAS_SECURE_API)
+    (defined(MINGW_HAS_SECURE_API) || defined(_STDIO_S_DEFINED))
 #else
 
 /**

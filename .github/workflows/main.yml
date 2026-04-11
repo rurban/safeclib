@@ -34,6 +34,16 @@ jobs:
       run: make -f Makefile.kernel && make clean
     - run: make
     - run: make check-log
+    - name: Upload configure artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: linux-config-${{ strategy.job-index }}
+        path: |
+          config.h
+          config.status
+          config.log
+        if-no-files-found: ignore
     - if: ${{ contains(matrix.CONF_ARGS, '--enable-gcov') }}
       name: Run make codecov if --enable-gcov
       run: |
@@ -71,6 +81,16 @@ jobs:
     - run: ./configure --disable-hardening --enable-debug
     - run: make V=1
     - run: make check-log
+    - name: Upload config artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: macOS-config
+        path: |
+          config.h
+          config.status
+          config.log
+        if-no-files-found: ignore
     #- run: make distcheck
   mingw:
     name: mingw
@@ -111,6 +131,16 @@ jobs:
       run: ./configure --enable-debug
     - shell: msys2 {0}
       run: make V=1
+    - name: Upload config artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: mingw-config
+        path: |
+          config.h
+          config.status
+          config.log
+        if-no-files-found: ignore
     - shell: msys2 {0}
       run: make check-log
     - shell: msys2 {0}
