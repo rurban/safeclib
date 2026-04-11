@@ -26,9 +26,6 @@ var vsnprintf__s_8c =
     [ "safec_out_rev", "db/d8d/vsnprintf__s_8c.html#a30a49e83042f742487ebb6c385f3752e", null ],
     [ "safec_ntoa_format", "db/d8d/vsnprintf__s_8c.html#a53f3d634fac7e7b2ea035f405ae5ceee", null ],
     [ "safec_ntoa_long", "db/d8d/vsnprintf__s_8c.html#ab4895c889998c22053ce37574fbebec9", null ],
-    [ "safec_etoa", "db/d8d/vsnprintf__s_8c.html#ab62cc7e1042258a510fa92165740ba9a", null ],
-    [ "safec_ftoa", "db/d8d/vsnprintf__s_8c.html#adaf644c48200420cdcabf70134976596", null ],
-    [ "safec_atoa", "db/d8d/vsnprintf__s_8c.html#a1b588f9a3b444df8959c535375b73e25", null ],
     [ "safec_vsnprintf_s", "db/d8d/vsnprintf__s_8c.html#a9b646f26fd513bc9b2135543b725553c", null ],
     [ "vsnprintf_s", "db/d8d/vsnprintf__s_8c.html#a9b12564d5336c2f55d2be3badbd54c40", null ]
 ];

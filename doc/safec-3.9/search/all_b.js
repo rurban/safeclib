@@ -29,5 +29,6 @@ var searchData=
   ['hangul_5fvfinal_26',['Hangul_VFinal',['../d5/dbc/hangul_8h.html#a078aeec76a63dba17b14ef790dcd2213',1,'hangul.h']]],
   ['have_5f_5f_5fbuiltin_5fconstant_5fp_27',['HAVE___BUILTIN_CONSTANT_P',['../d3/ddb/safe__config_8h.html#a5da2776f574864878f2ec7212a8ac51a',1,'safe_config.h']]],
   ['have_5f_5f_5fbuiltin_5fobject_5fsize_28',['HAVE___BUILTIN_OBJECT_SIZE',['../d3/ddb/safe__config_8h.html#a3da245532cc1c5dc120f6c045d2c1328',1,'safe_config.h']]],
-  ['huawei_20securec_29',['Huawei securec',['../d6/d31/md_doc_2libc-overview.html#autotoc_md15',1,'']]]
+  ['have_5flocale_5ftr_29',['HAVE_LOCALE_TR',['../d8/dbe/towctrans_8c.html#a15a701db98c56e8514dcaedea5d62460',1,'towctrans.c']]],
+  ['huawei_20securec_30',['Huawei securec',['../d6/d31/md_doc_2libc-overview.html#autotoc_md15',1,'']]]
 ];

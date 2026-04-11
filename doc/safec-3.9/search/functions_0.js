@@ -85,7 +85,7 @@ var searchData=
   ['_5ftimingsafe_5fbcmp_5fchk_82',['_timingsafe_bcmp_chk',['../d8/d03/safe__mem__lib_8h.html#a58eeb1fe07f21ab4bf9d27e7295004ca',1,'safe_mem_lib.h']]],
   ['_5ftimingsafe_5fmemcmp_5fchk_83',['_timingsafe_memcmp_chk',['../d8/d03/safe__mem__lib_8h.html#a6e8bca497a1aff8bc3a7692c568efc7b',1,'safe_mem_lib.h']]],
   ['_5ftmpnam_5fs_5fchk_84',['_tmpnam_s_chk',['../db/d69/safe__lib_8h.html#a93236bc36e86d792ec62b48a6686f16b',1,'safe_lib.h']]],
-  ['_5ftowcase_85',['_towcase',['../d8/dbe/towctrans_8c.html#a3d0c62b130209a2ccb00da7e029be9b3',1,'towctrans.c']]],
+  ['_5ftowcase_85',['_towcase',['../d8/dbe/towctrans_8c.html#af29b3312efe21ae37e6a972c80bd09b2',1,'towctrans.c']]],
   ['_5ftowfc_5fs_5fchk_86',['_towfc_s_chk',['../d8/dff/safe__str__lib_8h.html#a48c47cf89bfe769b2c1f73254c377723',1,'safe_str_lib.h']]],
   ['_5ftowfc_5fsingle_87',['_towfc_single',['../dc/d32/towfc__s_8c.html#a8da9727cfc1e30225ea73e6561456592',1,'towfc_s.c']]],
   ['_5ftowupper_88',['_towupper',['../d8/dbe/towctrans_8c.html#a5d087249fc40885cccf7ce269bb131ac',1,'towctrans.c']]],

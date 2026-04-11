@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['casemaps_0',['casemaps',['../d8/dbe/towctrans_8c.html#a3d1180608115e2c6a1959be18474032f',1,'towctrans.c']]],
-  ['casemapsl_1',['casemapsl',['../d8/dbe/towctrans_8c.html#aceed1aa4048df4fd02aeceba30156a03',1,'towctrans.c']]],
+  ['casemaps_0',['casemaps',['../d8/dbe/towctrans_8c.html#a6be38f8363535a01888491bbcdf98e8b',1,'towctrans.c']]],
+  ['casemapsl_1',['casemapsl',['../d8/dbe/towctrans_8c.html#ac48c256c08fd5ad5ff97aa4b1b67f119',1,'towctrans.c']]],
   ['cc_2',['cc',['../d9/df1/struct_u_n_w_i_f__cc.html#a6c93d5e8d40a234cd8ce2729a93ca08e',1,'UNWIF_cc']]],
   ['compar_3',['compar',['../db/d69/safe__lib_8h.html#a878a7d08a277d392c3b3128e279767ea',1,'safe_lib.h']]],
   ['composite_4',['composite',['../de/d84/struct_u_n_w_i_f__complist.html#a4d9f08966406fb12a69e06a74d0716f8',1,'UNWIF_complist::composite'],['../df/d74/struct_u_n_w_i_f__complist__s.html#a17058bf0267cd62a400cc8c9d6ff030a',1,'UNWIF_complist_s::composite']]],

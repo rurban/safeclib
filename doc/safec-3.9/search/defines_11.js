@@ -5,5 +5,6 @@ var searchData=
   ['timingsafe_5fmemcmp_2',['timingsafe_memcmp',['../d8/d03/safe__mem__lib_8h.html#a2f12645a1d8d720cf458ba5d0e72eae5',1,'safe_mem_lib.h']]],
   ['tmp_5fmax_5fs_3',['TMP_MAX_S',['../db/d69/safe__lib_8h.html#addf5a05115c692407cb6a1ade786b15f',1,'safe_lib.h']]],
   ['tmpnam_5fs_4',['tmpnam_s',['../db/d69/safe__lib_8h.html#a464c3f8aac500cbb310cb453ecf829d4',1,'safe_lib.h']]],
-  ['towfc_5fs_5',['towfc_s',['../d8/dff/safe__str__lib_8h.html#aed72cc72ac2cf05502a39db8504c6bd1',1,'safe_str_lib.h']]]
+  ['towctrans_5funicode_5fversion_5',['TOWCTRANS_UNICODE_VERSION',['../d8/dbe/towctrans_8c.html#a0f248d19d3b788f1a836188d22b442c1',1,'towctrans.c']]],
+  ['towfc_5fs_6',['towfc_s',['../d8/dff/safe__str__lib_8h.html#aed72cc72ac2cf05502a39db8504c6bd1',1,'safe_str_lib.h']]]
 ];

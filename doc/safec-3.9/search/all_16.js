@@ -1,8 +1,8 @@
 var searchData=
 [
   ['tbl_0',['TBL',['../d2/d1e/unw16ifcan_8h.html#a519b605160dc0e772858c108236b1164',1,'TBL:&#160;unw16ifcan.h'],['../d4/de0/unw16ifcpt_8h.html#a519b605160dc0e772858c108236b1164',1,'TBL:&#160;unw16ifcpt.h'],['../dc/d06/unwifcan_8h.html#a519b605160dc0e772858c108236b1164',1,'TBL:&#160;unwifcan.h'],['../d5/d38/unwifcpt_8h.html#a519b605160dc0e772858c108236b1164',1,'TBL:&#160;unwifcpt.h']]],
-  ['tbl2_1',['tbl2',['../dc/d32/towfc__s_8c.html#a91627d3cd4fbea01a27141729aed7c49',1,'towfc_s.c']]],
-  ['tbl3_2',['tbl3',['../dc/d32/towfc__s_8c.html#a14b1756f78aa67f4b0a8be879bd5b75d',1,'towfc_s.c']]],
+  ['tbl2_1',['tbl2',['../dc/d32/towfc__s_8c.html#a4fa6df82cb5a5f88aaf8b66df78f9e16',1,'towfc_s.c']]],
+  ['tbl3_2',['tbl3',['../dc/d32/towfc__s_8c.html#af0cba43db85b20ebc1a9d3c090c00d12',1,'towfc_s.c']]],
   ['tested_20platforms_3',['Tested Platforms',['../index.html#autotoc_md5',1,'']]],
   ['the_20secure_20c11_20extensions_4',['Overview of various libc&apos;s regarding the secure C11 extensions',['../d6/d31/md_doc_2libc-overview.html',1,'']]],
   ['thrd_5fmem_5fhandler_5',['thrd_mem_handler',['../d6/da6/safe__mem__constraint_8c.html#a3df5f623dbbcae711b8a579773dd7bf5',1,'safe_mem_constraint.c']]],
@@ -22,9 +22,10 @@ var searchData=
   ['to_20annex_20k_20but_20security_20related_19',['Unrelated to Annex K, but security related',['../d6/d31/md_doc_2libc-overview.html#autotoc_md10',1,'']]],
   ['todo_20list_20',['Todo List',['../dd/da0/todo.html',1,'']]],
   ['towctrans_2ec_21',['towctrans.c',['../d8/dbe/towctrans_8c.html',1,'']]],
-  ['towfc_5fs_22',['towfc_s',['../d8/dff/safe__str__lib_8h.html#aed72cc72ac2cf05502a39db8504c6bd1',1,'towfc_s:&#160;safe_str_lib.h'],['../dc/d32/towfc__s_8c.html#a73ce83cc846b93abf11895dfbf57709c',1,'towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src):&#160;towfc_s.c']]],
-  ['towfc_5fs_2ec_23',['towfc_s.c',['../dc/d32/towfc__s_8c.html',1,'']]],
-  ['towlower_24',['towlower',['../d8/dbe/towctrans_8c.html#adb71206a473b333789974b194daa80ec',1,'towlower(uint32_t wc):&#160;towctrans.c'],['../d8/d67/wcslwr__s_8c.html#a99e40a22bbdac9828b3a5afecf144b8a',1,'towlower(wint_t wc):&#160;wcslwr_s.c']]],
-  ['towupper_25',['towupper',['../d8/dbe/towctrans_8c.html#af9771d6d5b7a1bec35a2f1b67355a8d3',1,'towctrans.c']]],
-  ['trinkle_26',['trinkle',['../d2/d94/qsort__s_8c.html#a2b5791f02963a5e9623a5c62d13614b3',1,'qsort_s.c']]]
+  ['towctrans_5funicode_5fversion_22',['TOWCTRANS_UNICODE_VERSION',['../d8/dbe/towctrans_8c.html#a0f248d19d3b788f1a836188d22b442c1',1,'towctrans.c']]],
+  ['towfc_5fs_23',['towfc_s',['../d8/dff/safe__str__lib_8h.html#aed72cc72ac2cf05502a39db8504c6bd1',1,'towfc_s:&#160;safe_str_lib.h'],['../dc/d32/towfc__s_8c.html#a73ce83cc846b93abf11895dfbf57709c',1,'towfc_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t src):&#160;towfc_s.c']]],
+  ['towfc_5fs_2ec_24',['towfc_s.c',['../dc/d32/towfc__s_8c.html',1,'']]],
+  ['towlower_25',['towlower',['../d8/dbe/towctrans_8c.html#adb71206a473b333789974b194daa80ec',1,'towlower(uint32_t wc):&#160;towctrans.c'],['../d8/d67/wcslwr__s_8c.html#a99e40a22bbdac9828b3a5afecf144b8a',1,'towlower(wint_t wc):&#160;wcslwr_s.c']]],
+  ['towupper_26',['towupper',['../d8/dbe/towctrans_8c.html#af9771d6d5b7a1bec35a2f1b67355a8d3',1,'towctrans.c']]],
+  ['trinkle_27',['trinkle',['../d2/d94/qsort__s_8c.html#a2b5791f02963a5e9623a5c62d13614b3',1,'qsort_s.c']]]
 ];

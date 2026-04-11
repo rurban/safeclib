@@ -20,5 +20,6 @@ var searchData=
   ['hangul_5fvcount_17',['Hangul_VCount',['../d5/dbc/hangul_8h.html#a9dd40f4eba4298286b878e787cd8728e',1,'hangul.h']]],
   ['hangul_5fvfinal_18',['Hangul_VFinal',['../d5/dbc/hangul_8h.html#a078aeec76a63dba17b14ef790dcd2213',1,'hangul.h']]],
   ['have_5f_5f_5fbuiltin_5fconstant_5fp_19',['HAVE___BUILTIN_CONSTANT_P',['../d3/ddb/safe__config_8h.html#a5da2776f574864878f2ec7212a8ac51a',1,'safe_config.h']]],
-  ['have_5f_5f_5fbuiltin_5fobject_5fsize_20',['HAVE___BUILTIN_OBJECT_SIZE',['../d3/ddb/safe__config_8h.html#a3da245532cc1c5dc120f6c045d2c1328',1,'safe_config.h']]]
+  ['have_5f_5f_5fbuiltin_5fobject_5fsize_20',['HAVE___BUILTIN_OBJECT_SIZE',['../d3/ddb/safe__config_8h.html#a3da245532cc1c5dc120f6c045d2c1328',1,'safe_config.h']]],
+  ['have_5flocale_5ftr_21',['HAVE_LOCALE_TR',['../d8/dbe/towctrans_8c.html#a15a701db98c56e8514dcaedea5d62460',1,'towctrans.c']]]
 ];
