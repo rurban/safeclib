@@ -50,7 +50,7 @@ EXTERN wint_t towlower(wint_t wc);
  *    LC_CTYPE category setting of the locale. Other characters are not
  *    affected. It only performs simple case folding via \c towlower(), it
  *    does not do full multi-char folding and does not obey the special casing
- *    rules for context. See \c wcsfc_s() instead. Thus the length of buffer
+ *    rules for context. Use \c wcsfc_s() instead. Thus the length of buffer
  *    stays the same. It returns a pointer to the altered string. Because the
  *    modification is done in place, the pointer returned is the same as the
  *    pointer passed as the input argument.
