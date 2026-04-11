@@ -211,7 +211,8 @@ SAFEC_BUILT_PERFS += \
 endif
 
 SAFEC_TEST_COMMON = \
-	test_private.h
+	test_private.h \
+	test_uni.h
 SAFEC_TEST_MSVCRT = \
 	test_msvcrt.h \
 	test_msvcrt.c

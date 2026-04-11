@@ -1,14 +1,16 @@
 /*------------------------------------------------------------------
  * test_towupper.c
  *
- * Test the musl-inherited towupper regarding latest Unicode 15.0
- * Unicode has no explicit lower->upper mapping document.
+ * Test the musl-inherited, now Unicode-Towctrans generated towupper for
+ * the latest Unicode version.
+ * Unicode has no explicit lower->upper mapping document, just UnicodeData.txt
  *
  *------------------------------------------------------------------
  */
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include "test_uni.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -27,10 +29,6 @@ int test_towupper(void);
 
 #define GENCAT "DerivedGeneralCategory.txt"
 #define CFOLD "CaseFolding.txt"
-/* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32 with 13.0, 5.34 with 14.0,
-   5.37.4-5.40 with 15.0
- */
 #define TESTPL "test-upr.pl"
 
 char s[128];
@@ -40,6 +38,7 @@ char mapping[24];
 char name[80];
 FILE *f, *cf, *pl;
 static int init = 0;
+static int do_perl_test = 0;
 
 /* TODO: try to malloc the whole table with 2 status bits.
    This linear-searches in the file buffer for extremely low-memory systems.
@@ -81,23 +80,25 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
                       "cross-check U+%04X: U+%04X != U+%04X status=%s, name=%s:\n",
                       wc, lwr, mp, status, name);
                     /* cross-check with perl */
-                    if (!init) {
-                        fprintf(pl, "use v%s;\n", PERL_VERSION);
-                        fprintf(pl, "use Unicode::UCD;\n");
+                    if (do_perl_test) {
+                        if (!init) {
+                            fprintf(pl, "use v%s;\n", PERL_VERSION);
+                            fprintf(pl, "use Unicode::UCD;\n");
+                            fprintf(pl,
+                                    "warn \"Unicode::UCD::UnicodeVersion() must be "
+                                    "%d.0.0\" if Unicode::UCD::UnicodeVersion() ne "
+                                    "\"%d.0.0\";\n",
+                                    SAFECLIB_UNICODE_VERSION,
+                                    SAFECLIB_UNICODE_VERSION);
+                            fprintf(pl, "my ($l,$u,$got);\n");
+                            init = 1;
+                        }
                         fprintf(pl,
-                                "warn \"Unicode::UCD::UnicodeVersion() must be "
-                                "%d.0.0\" if Unicode::UCD::UnicodeVersion() ne "
-                                "\"%d.0.0\";\n",
-                                SAFECLIB_UNICODE_VERSION,
-                                SAFECLIB_UNICODE_VERSION);
-                        fprintf(pl, "my ($l,$u,$got);\n");
-                        init = 1;
+                                "$l=\"\\x{%X}\";$u=uc $l;$got=\"\\x{%X}\";"
+                                "printf \"uc %X = %%X; got: %X\\n\","
+                                "unpack(\"W*\",$u) if $u ne $got;\n",
+                                lwr, lwr, upr, upr);
                     }
-                    fprintf(pl,
-                            "$l=\"\\x{%X}\";$u=uc $l;$got=\"\\x{%X}\";"
-                            "printf \"uc %X = %%X; got: %X\\n\","
-                            "unpack(\"W*\",$u) if $u ne $got;\n",
-                            lwr, lwr, upr, upr);
                     return 1;
                     /*} else {
                           printf("%u U+%04X: U+%04X != U+%04X status=F,
@@ -150,7 +151,10 @@ int test_towupper(void) {
 
     /*--------------------------------------------------*/
 
-    pl = fopen(TESTPL, "w");
+    do_perl_test = perl_unicode_version_matches();
+    pl = do_perl_test ? fopen(TESTPL, "w") : NULL;
+    if (!pl)
+        do_perl_test = 0;
     f = fopen(GENCAT, "r");
     if (!f) {
         char url[256];
@@ -241,29 +245,31 @@ int test_towupper(void) {
     }
     fclose(f);
     fclose(cf);
+    if (do_perl_test) {
 #ifdef BSD_ALL_LIKE
-    fstat(pl->_file, &st);
-    fclose(pl);
+        fstat(pl->_file, &st);
+        fclose(pl);
 #elif defined __GLIBC__
-    fstat(pl->_fileno, &st);
-    fclose(pl);
+        fstat(pl->_fileno, &st);
+        fclose(pl);
 #else
-    fclose(pl);
-    stat(TESTPL, &st);
+        fclose(pl);
+        stat(TESTPL, &st);
 #endif
-    if (st.st_size) {
-        printf("Cross check with " PERL ":\n");
-        fflush(stdout);
-        if (system(PERL " " TESTPL)) {
-            printf("Redo with perl (probably wrong Unicode version):\n");
+        if (st.st_size) {
+            printf("Cross check with " PERL ":\n");
             fflush(stdout);
-            if (!system("perl " TESTPL))
-                printf("perl " TESTPL " failed\n");
+            if (system(PERL " " TESTPL)) {
+                printf("Redo with perl (probably wrong Unicode version):\n");
+                fflush(stdout);
+                if (!system("perl " TESTPL))
+                    printf("perl " TESTPL " failed\n");
+            }
         }
-    }
 #ifndef DEBUG
-    unlink(TESTPL);
+        unlink(TESTPL);
 #endif
+    }
     return (errs);
 }
 

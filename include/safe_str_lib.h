@@ -67,7 +67,9 @@ extern "C" {
 #endif
 
 /**
- * With this UCD version we generated our tables
+ * With this UCD version we generated our tables.
+ * Must be the same as TOWCTRANS_UNICODE_VERSION and
+ * the version used for src/extwchar/unwifcan.h.
  */
 #define SAFECLIB_UNICODE_VERSION 17
 

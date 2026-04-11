@@ -8,6 +8,7 @@
 
 #include "test_private.h"
 #include "safe_str_lib.h"
+#include "test_uni.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -16,12 +17,6 @@
 #define LEN (128)
 int test_wcsfc_s(void);
 
-//#define PERL_TEST
-/* Must have the same Unicode version 9.0, at least 5.26.
-   Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32, 5.36 with 14.0,
-   5.38 - 5.40 with 15.0, 5.42 for 16, 5.43 for 17.0
-   perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
-*/
 #define TESTPL "test-fc.pl"
 
 int test_wcsfc_s(void) {
@@ -34,10 +29,19 @@ int test_wcsfc_s(void) {
     int errs = 0;
     char *lc_cat, *lang;
 #ifdef PERL_TEST
-    FILE *pl;
+    FILE *pl = NULL;
     struct stat st;
-
-    pl = fopen(TESTPL, "w");
+    /* Must have the same Unicode version 9.0, at least 5.26.
+       Better 5.27.3 with Unicode 10, 5.30 with 12.1, 5.32, 5.36 with 14.0,
+       5.38 - 5.40 with 15.0, 5.42 for 16, 5.43 for 17.0
+       perl -MUnicode::UCD -e'print Unicode::UCD::UnicodeVersion()'
+    */
+    int do_perl_test = perl_unicode_version_matches();
+    if (do_perl_test) {
+        pl = fopen(TESTPL, "w");
+        if (!pl)
+            do_perl_test = 0;
+    }
 #endif
 
     /*--------------------------------------------------*/
@@ -434,7 +438,8 @@ int test_wcsfc_s(void) {
     /*--------------------------------------------------*/
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
-    fprintf_s(pl,
+    if (do_perl_test)
+        fprintf_s(pl,
               "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
               "use Unicode::UCD;\n"
               "warn \"Unicode::UCD::UnicodeVersion() must be "
@@ -488,7 +493,7 @@ int test_wcsfc_s(void) {
             errs++;
         }
 #ifdef PERL_TEST
-        {
+        if (do_perl_test) {
             int i;
             len = wcslen(str);
             /* cross-check with perl */
@@ -505,31 +510,33 @@ int test_wcsfc_s(void) {
     /*--------------------------------------------------*/
 
 #ifdef PERL_TEST
-    fprintf_s(pl, "exit $err;\n");
+    if (do_perl_test) {
+        fprintf_s(pl, "exit $err;\n");
 #ifdef BSD_ALL_LIKE
-    fstat(pl->_file, &st);
-    fclose(pl);
+        fstat(pl->_file, &st);
+        fclose(pl);
 #elif defined __GLIBC__
-    fstat(pl->_fileno, &st);
-    fclose(pl);
+        fstat(pl->_fileno, &st);
+        fclose(pl);
 #else
-    fclose(pl);
-    stat(TESTPL, &st);
+        fclose(pl);
+        stat(TESTPL, &st);
 #endif
-    if (st.st_size) {
-        printf("Cross check with " PERL ":\n");
-        fflush(stdout);
-        if (system(PERL " " TESTPL) < 0) {
-            printf("Redo with %s (probably wrong Unicode version):\n", PERL);
+        if (st.st_size) {
+            printf("Cross check with " PERL ":\n");
             fflush(stdout);
-            if (!system(PERL " " TESTPL))
-                printf(PERL " " TESTPL " failed\n");
+            if (system(PERL " " TESTPL) < 0) {
+                printf("Redo with %s (probably wrong Unicode version):\n",
+                       PERL);
+                fflush(stdout);
+                if (!system(PERL " " TESTPL))
+                    printf(PERL " " TESTPL " failed\n");
+            }
         }
-    }
 #ifndef DEBUG
-    unlink(TESTPL);
+        unlink(TESTPL);
 #endif
-
+    }
 #endif /* PERL_TEST */
 
     /*--------------------------------------------------*/

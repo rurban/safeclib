@@ -194,10 +194,10 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
 #endif
 #if SIZEOF_WCHAR_T > 2
             assert(l > 0 && l <= 4);
-            /* 13.0: tbl sizes: (917,763,227,36) */
+            /* 17.0: tbl sizes: (917,779,231,36) */
             /* l: 1-4 */
-            assert((l == 1 && i < 917) || (l == 2 && i < 763) ||
-                   (l == 3 && i < 227) || (l == 4 && i < 36) || 0);
+            assert((l == 1 && i < 917) || (l == 2 && i < 779) ||
+                   (l == 3 && i < 231) || (l == 4 && i < 36) || 0);
             assert(dmax > 4);
 #endif
             memcpy(dest, &tbl[i * len], len * sizeof(wchar_t)); /* 33% perf */
