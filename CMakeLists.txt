@@ -987,8 +987,8 @@ install(FILES
     include/safe_lib.h
     include/safe_mem_lib.h
     include/safe_str_lib.h
-    include/safe_types.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_config.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/safe_types.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_lib_errno.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
