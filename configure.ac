@@ -668,13 +668,16 @@ fi
 if test $ax_cv_check_cflags__Wrestrict = yes; then
    AC_DEFINE([HAVE_WARNING_RESTRICT], 1, [Have -Wrestrict])
 fi
-PEDANTIC="-pedantic"
+PEDANTIC=""
 WARN_CFLAGS_TEST="-Wall -Wextra"
+dnl Check if -pedantic is actually supported (rcc accepts but ignores it)
+AX_CHECK_COMPILE_FLAG([-pedantic],
+   [PEDANTIC="-pedantic"],
+   [PEDANTIC=""
+    if test $ac_compiler_gnu = no; then
+        WARN_CFLAGS_TEST=""
+    fi],[$ax_ccf_err])
 if test $ac_compiler_gnu = no; then
-    AX_CHECK_COMPILE_FLAG([-pedantic],
-       [PEDANTIC="-pedantic"],
-       [PEDANTIC=""
-        WARN_CFLAGS_TEST=""],[$ax_ccf_err])
     AX_CHECK_COMPILE_FLAG([-Werror],
        [],
        [WARN_CFLAGS=""
