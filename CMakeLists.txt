@@ -144,7 +144,6 @@ endif()
 set(COMMON_WARNINGS
     -Wall
     -Wextra
-    -pedantic
     -fno-strict-aliasing
     #-Wpedantic
     -Wshadow
@@ -188,6 +187,17 @@ foreach(flag ${COMMON_WARNINGS})
         list(APPEND WARN_CFLAGS ${flag})
     endif()
 endforeach()
+
+# Check -pedantic with -Werror=unknown-warning-option if supported (rcc silently ignores unknown flags)
+check_c_compiler_flag("-Werror=unknown-warning-option" HAS_WERROR_UNKNOWN_OPTION)
+if(HAS_WERROR_UNKNOWN_OPTION)
+    set(CMAKE_REQUIRED_FLAGS "-Werror=unknown-warning-option")
+endif()
+check_c_compiler_flag("-pedantic" HAS_PEDANTIC)
+unset(CMAKE_REQUIRED_FLAGS)
+if(HAS_PEDANTIC)
+    list(APPEND WARN_CFLAGS -pedantic)
+endif()
 
 # Apply all supported warnings
 add_compile_options(${WARN_CFLAGS})
