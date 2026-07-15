@@ -63,7 +63,7 @@ jobs:
     - if: matrix.CONF_ARGS == '' && startsWith(github.ref, 'refs/tags/')
       name: Release
       continue-on-error: true
-      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
       with:
         body_path: dist.sha256
         files: |
@@ -149,7 +149,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       run: make pkg; sha256sum safeclib-*-x86_64-w64-mingw32.zip > mingw.sha256
     - name: Release
-      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
+      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228
       if: startsWith(github.ref, 'refs/tags/')
       with:
         append_body: true
