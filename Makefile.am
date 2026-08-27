@@ -34,7 +34,10 @@
 ACLOCAL_AMFLAGS = -I m4 --install ${ACLOCAL_FLAGS}
 
 # Sub-directories to preform recursive make in
-SUBDIRS = src tests
+if ENABLE_TESTS
+  TEST_DIR = tests
+endif
+SUBDIRS = src $(TEST_DIR)
 
 # Library header files
 pkginclude_HEADERS    = \
