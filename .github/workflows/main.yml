@@ -16,6 +16,7 @@ jobs:
       matrix:
         CONF_ARGS:
           -
+          - --disable-tests
           - --disable-wchar
           - --enable-unsafe --enable-norm-compat
           - --enable-debug --enable-unsafe --enable-norm-compat --enable-gcov
@@ -44,6 +45,11 @@ jobs:
           config.status
           config.log
         if-no-files-found: ignore
+    - if: matrix.CONF_ARGS == '--disable-tests'
+      name: Manually build and run bare-metal tests
+      run: |
+        gcc -Iinclude tests/test_baremetal_edges.c src/.libs/libsafec.a -o test_edges
+        ./test_edges
     - if: ${{ contains(matrix.CONF_ARGS, '--enable-gcov') }}
       name: Run make codecov if --enable-gcov
       run: |
