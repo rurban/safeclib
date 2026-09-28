@@ -122,18 +122,30 @@ EXTERN char *_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
 #define gets_s(dest, dmax) _gets_s_chk(dest, dmax, BOS(dest))
 
 #ifndef __KERNEL__
-/* Windows sec_api does without restrict */
-#if !defined(MINGW_HAS_SECURE_API) && !defined(_STDIO_S_DEFINED)
+/* Windows sec_api does without restrict.
+   Skip our own declaration if either configure's AC_CHECK_FUNCS probe
+   (HAVE_TMPFILE_S/HAVE_FOPEN_S/HAVE_FREOPEN_S, only visible while building
+   safeclib itself, with config.h) or the mingw-w64 header macros
+   (MINGW_HAS_SECURE_API/_STDIO_S_DEFINED, visible to library consumers who
+   don't have our config.h) say the system <stdio.h> already declares it.
+   mingw-w64 has repeatedly renamed/removed the header macros across
+   releases, so the configure probe is the authoritative signal whenever
+   it's available. */
+#if !defined(HAVE_TMPFILE_S) && !defined(MINGW_HAS_SECURE_API) &&             \
+    !defined(_STDIO_S_DEFINED)
 EXTERN errno_t tmpfile_s(FILE *restrict *restrict streamptr);
+#endif
+#if !defined(HAVE_FOPEN_S) && !defined(MINGW_HAS_SECURE_API) &&               \
+    !defined(_STDIO_S_DEFINED)
 EXTERN errno_t fopen_s(FILE *restrict *restrict streamptr,
                        const char *restrict filename,
                        const char *restrict mode);
-
+#endif
+#if !defined(HAVE_FREOPEN_S) && !defined(MINGW_HAS_SECURE_API) &&             \
+    !defined(_STDIO_S_DEFINED)
 EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
                          const char *restrict mode, FILE *restrict stream);
-//#else
-//EXTERN errno_t tmpfile_s(FILE **streamptr);
 #endif
 #endif /* __KERNEL__ */
 

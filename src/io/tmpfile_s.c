@@ -35,9 +35,14 @@
 #include "safeclib_private.h"
 #endif
 
-/* conflicting API. Use mingw's implementation */
+/* conflicting API. Use mingw's implementation.
+   HAVE_MINGW64/HAVE_MINGW32 (from __MINGW64_VERSION_MAJOR/__MINGW32__) scope
+   this to mingw regardless of whether MINGW_HAS_SECURE_API/_STDIO_S_DEFINED
+   are still set by the installed mingw-w64 headers (renamed/removed across
+   releases). */
 #if defined(HAVE_TMPFILE_S) &&                                                 \
-    (defined(MINGW_HAS_SECURE_API) || defined(_STDIO_S_DEFINED))
+    (defined(MINGW_HAS_SECURE_API) || defined(_STDIO_S_DEFINED) ||             \
+     defined(HAVE_MINGW64) || defined(HAVE_MINGW32))
 #else
 
 /**
