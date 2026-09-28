@@ -69,7 +69,7 @@ jobs:
     - if: matrix.CONF_ARGS == '' && startsWith(github.ref, 'refs/tags/')
       name: Release
       continue-on-error: true
-      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
       with:
         body_path: dist.sha256
         files: |
@@ -113,7 +113,7 @@ jobs:
     steps:
       # see https://github.com/msys2/setup-msys2
     - name: setup-msys2
-      uses: msys2/setup-msys2@66cd2cce69caa17b53920067426061ca1de3a884 # v2.32.0
+      uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
       with:
         path-type: minimal
         update: true
