@@ -102,6 +102,42 @@ AC_SUBST(ISODATE)
 
 AC_CANONICAL_HOST
 
+# RTEMS multilib support (GH #151)
+# ===============================================
+# On RTEMS, gcc/newlib are built multilib (one variant per BSP ABI/FPU/etc).
+# When --enable-rtems-multilib is set (default: auto-enabled on host_os=rtems*),
+# install the library and the generated, target-specific headers
+# (safe_config.h, safe_types.h, safe_lib_errno.h, config.h) under the
+# GCC-selected multilib directory instead of the generic libdir/includedir,
+# so that co-installing several multilib variants doesn't clobber headers
+# built for a different ABI.
+AC_ARG_ENABLE([rtems-multilib],
+	AS_HELP_STRING([--enable-rtems-multilib],
+		       [auto-place library and headers in the GCC-selected RTEMS multilib dir @<:@default=auto@:>@]),
+	[], [enable_rtems_multilib=auto])
+
+AS_CASE([$host_os],
+  [rtems*],
+  [AS_IF([test "x$enable_rtems_multilib" != xno],
+    [AC_MSG_CHECKING([for RTEMS multilib os-directory])
+     SAFEC_MULTI_OSDIR=`$CC $CPPFLAGS $CFLAGS $LDFLAGS -print-multi-os-directory 2>/dev/null`
+     test -n "$SAFEC_MULTI_OSDIR" || SAFEC_MULTI_OSDIR=.
+     AC_MSG_RESULT([$SAFEC_MULTI_OSDIR])
+
+     AS_IF([test "x$libdir" = 'x${exec_prefix}/lib'],
+       [AS_IF([test "x$SAFEC_MULTI_OSDIR" != x.],
+         [libdir='${exec_prefix}/lib/'"$SAFEC_MULTI_OSDIR"
+          AC_MSG_NOTICE([--enable-rtems-multilib: libdir set to $libdir])])])
+
+     AS_IF([test "x$includedir" = 'x${prefix}/include'],
+       [includedir='${libdir}/include'
+        AC_MSG_NOTICE([--enable-rtems-multilib: includedir set to $includedir])])
+
+     enable_rtems_multilib=yes],
+    [enable_rtems_multilib=no])],
+  [AS_IF([test "x$enable_rtems_multilib" = xauto], [enable_rtems_multilib=no])])
+
+
 # Configure options
 # ===============================================
 
