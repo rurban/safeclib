@@ -71,7 +71,7 @@ extern "C" {
  * Must be the same as TOWCTRANS_UNICODE_VERSION and
  * the version used for src/extwchar/unwifcan.h.
  */
-#define SAFECLIB_UNICODE_VERSION 17
+#define SAFECLIB_UNICODE_VERSION 18
 
 /**
  * The shortest string is a null string!!
