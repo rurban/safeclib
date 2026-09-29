@@ -33,6 +33,7 @@
 #include "safe_u8_lib.h"
 #else
 #include "safeclib_private.h"
+#include "u8_private.h"
 #endif
 
 /**
@@ -91,6 +92,8 @@
  * @retval  ESUNTERM   when dest not terminated in the first dmax utf-8
  *                     bytes
  * @retval  ESOVRLP    when src overlaps with dest
+ * @retval  EILSEQ     when src contains an illegal or truncated UTF-8
+ *                     sequence
  * @retval  ESU8I      when disallowed mixed scripts or bidi changes were detected.
  *
  * @see
@@ -107,6 +110,8 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
     rsize_t orig_dmax;
     char *orig_dest;
     const char8_t *overlap_bumper;
+    int u8_need = 0; /* bytes remaining in the UTF-8 sequence in progress;
+                         0 means the next byte starts a new sequence */
 
     CHK_DEST_NULL("u8icat_s")
     CHK_DMAX_ZERO("u8icat_s")
@@ -156,6 +161,16 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(ESOVRLP);
             }
 
+            if (u8_need == 0) {
+                u8_need = u8_seqlen(src, RSIZE_MAX_STR);
+                if (unlikely(!u8_need)) {
+                    handle_error(orig_dest, orig_dmax,
+                                 "u8icat_s: illegal UTF-8 sequence in src",
+                                 EILSEQ);
+                    return RCNEGATE(EILSEQ);
+                }
+            }
+
             *dest = *src;
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -173,6 +188,7 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(EOK);
             }
 
+            u8_need--;
             dmax--;
             dest++;
             src++;
@@ -207,6 +223,16 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(ESOVRLP);
             }
 
+            if (u8_need == 0) {
+                u8_need = u8_seqlen(src, RSIZE_MAX_STR);
+                if (unlikely(!u8_need)) {
+                    handle_error(orig_dest, orig_dmax,
+                                 "u8icat_s: illegal UTF-8 sequence in src",
+                                 EILSEQ);
+                    return RCNEGATE(EILSEQ);
+                }
+            }
+
             *dest = *src;
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -224,6 +250,7 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(EOK);
             }
 
+            u8_need--;
             dmax--;
             dest++;
             src++;

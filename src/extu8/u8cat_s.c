@@ -99,6 +99,8 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
     rsize_t orig_dmax;
     char8_t *orig_dest;
     const char8_t *overlap_bumper;
+    int u8_need = 0; /* bytes remaining in the UTF-8 sequence in progress;
+                         0 means the next byte starts a new sequence */
 
     CHK_DEST_NULL("u8cat_s")
     CHK_DMAX_ZERO("u8cat_s")
@@ -114,11 +116,6 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
     orig_dmax = dmax;
     orig_dest = dest;
 
-    if (unlikely(!u8_is_valid(src, RSIZE_MAX_STR))) {
-        handle_error((char *)orig_dest, orig_dmax,
-                     "u8cat_s: illegal UTF-8 sequence in src", EILSEQ);
-        return RCNEGATE(EILSEQ);
-    }
     if (dest < src) {
         overlap_bumper = src;
 
@@ -153,6 +150,16 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
                 return RCNEGATE(ESOVRLP);
             }
 
+            if (u8_need == 0) {
+                u8_need = u8_seqlen(src, RSIZE_MAX_STR);
+                if (unlikely(!u8_need)) {
+                    handle_error((char *)orig_dest, orig_dmax,
+                                 "u8cat_s: illegal UTF-8 sequence in src",
+                                 EILSEQ);
+                    return RCNEGATE(EILSEQ);
+                }
+            }
+
             *dest = *src;
             if (unlikely(*dest == L'\0')) {
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -170,6 +177,7 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
                 return RCNEGATE(EOK);
             }
 
+            u8_need--;
             dmax--;
             dest++;
             src++;
@@ -204,6 +212,16 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
                 return RCNEGATE(ESOVRLP);
             }
 
+            if (u8_need == 0) {
+                u8_need = u8_seqlen(src, RSIZE_MAX_STR);
+                if (unlikely(!u8_need)) {
+                    handle_error((char *)orig_dest, orig_dmax,
+                                 "u8cat_s: illegal UTF-8 sequence in src",
+                                 EILSEQ);
+                    return RCNEGATE(EILSEQ);
+                }
+            }
+
             *dest = *src;
             if (*dest == L'\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -218,20 +236,10 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
                     }
                 }
 #endif
-                /*
-                if (*(dest-1) & 0x80) { // Last byte has been overwritten
-                  for (i=k; (i>0) && ((k-i) < 3) && ((dest[i] & 0xC0) == 0x80); i--) ;
-                  switch(k-i) {
-                  case 0:                                 dest[i] = '\0'; break;
-                  case 1:  if ( (dest[i] & 0xE0) != 0xC0) dest[i] = '\0'; break;
-                  case 2:  if ( (dest[i] & 0xF0) != 0xE0) dest[i] = '\0'; break;
-                  case 3:  if ( (dest[i] & 0xF8) != 0xF0) dest[i] = '\0'; break;
-                  }
-                }
-                */
                 return RCNEGATE(EOK);
             }
 
+            u8_need--;
             dmax--;
             dest++;
             src++;
