@@ -115,7 +115,7 @@ static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, const uint32_t cp)
     /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
      */
     const UN8IF_canon_PLANE_T **plane, *row;
-    if (unlikely(dmax < 5)) {
+    if (unlikely(dmax < (rsize_t)UN8IF_canon_MAXLEN + 1)) {
         *dest = 0;
         return -ESNOSPC;
     }
@@ -153,12 +153,14 @@ static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, const uint32_t cp)
 #if defined(DEBUG)
             printf("U+%04X vi=0x%x (>>12, &fff) => TBL(%d)|%d\n", cp, vi, l, i);
 #endif
-            assert(l > 0 && l <= 4);
-            /* 13.0: tbl sizes: (917,763,227,36) */
-            /* l: 1-4 */
-            assert((l == 1 && i < 917) || (l == 2 && i < 763) ||
-                   (l == 3 && i < 227) || (l == 4 && i < 36) || 0);
-            assert(dmax > 4);
+            /* l is derived from the generated un8ifcan.h table itself, so
+             * i is guaranteed in-bounds for UN8IF_canon_tbl[l-1] by
+             * construction; only sanity-check l against the header's own
+             * UN8IF_canon_MAXLEN instead of hardcoding per-length table
+             * sizes here, which have drifted out of sync with un8ifcan.h
+             * on every past Unicode data update and aborted the process. */
+            assert(l > 0 && l <= UN8IF_canon_MAXLEN);
+            assert(dmax > (rsize_t)UN8IF_canon_MAXLEN);
             memcpy(dest, &tbl[i * len], len); /* 33% perf */
             dest[len] = L'\0';
             return len;

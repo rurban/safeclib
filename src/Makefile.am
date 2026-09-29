@@ -354,7 +354,6 @@ update-u8-tables:
 	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakProperty.txt
 	cd $(srcdir) && $(PERL) extu8/gen-u8scripts.pl
 	cd $(srcdir) && $(PERL) extu8/gen-u8gbreaks.pl
-.PHONY: update-u8-tables
 endif
 
 # emacs flymake-mode
@@ -379,7 +378,6 @@ gcov:
 	    mv $$base.c.gcov $$dir/ ; \
 	  fi; \
 	done
-.PHONY: gcov
 endif
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)

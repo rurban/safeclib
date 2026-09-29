@@ -82,10 +82,13 @@ static uint32_t dec_utf8(char8_t** strp) {
     int shift;
     uint32_t codep;
 
-    if (bytes > 4) {
+    if (bytes > 4 || bytes < 1) {
         invoke_safe_str_constraint_handler("u8norm_s: "
                                            "illegal UTF-8 character",
                                            NULL, EILSEQ);
+        *strp = (char8_t *)(str + 1); /* skip the bad byte: guarantee
+                                          forward progress for callers
+                                          looping on dec_utf8 */
         return 0;
     }
     shift = utf[0]->bits_stored * (bytes - 1);
