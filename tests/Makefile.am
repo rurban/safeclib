@@ -200,7 +200,17 @@ endif
 if ENABLE_U8
 SAFEC_BUILT_TESTS += \
 	t_u8width_s   \
-	t_u8norm_s
+	t_u8norm_s    \
+	t_u8cat_s
+if ENABLE_WCHAR
+SAFEC_BUILT_TESTS += \
+	t_u8towcs_s   \
+	t_u8rtowcs_s  \
+	t_wcstou8_s   \
+	t_wcsrtou8_s  \
+	t_wcrtou8_s   \
+	t_wctou8_s
+endif
 endif
 
 SAFEC_BUILT_PERFS = \
@@ -510,6 +520,15 @@ endif
 if ENABLE_U8
 t_u8width_s_SOURCES            = test_u8width_s.c $(SAFEC_TEST_COMMON)
 t_u8norm_s_SOURCES            = test_u8norm_s.c $(SAFEC_TEST_COMMON)
+t_u8cat_s_SOURCES              = test_u8cat_s.c $(SAFEC_TEST_COMMON)
+if ENABLE_WCHAR
+t_u8towcs_s_SOURCES            = test_u8towcs_s.c $(SAFEC_TEST_COMMON)
+t_u8rtowcs_s_SOURCES           = test_u8rtowcs_s.c $(SAFEC_TEST_COMMON)
+t_wcstou8_s_SOURCES            = test_wcstou8_s.c $(SAFEC_TEST_COMMON)
+t_wcsrtou8_s_SOURCES           = test_wcsrtou8_s.c $(SAFEC_TEST_COMMON)
+t_wcrtou8_s_SOURCES            = test_wcrtou8_s.c $(SAFEC_TEST_COMMON)
+t_wctou8_s_SOURCES             = test_wctou8_s.c $(SAFEC_TEST_COMMON)
+endif
 endif
 
 @VALGRIND_CHECK_RULES@

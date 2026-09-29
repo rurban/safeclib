@@ -19,6 +19,7 @@ jobs:
           - --disable-tests
           - --disable-wchar
           - --enable-unsafe --enable-norm-compat
+          - --enable-u8 --enable-unsafe --enable-norm-compat
           - --enable-debug --enable-unsafe --enable-norm-compat --enable-gcov
           - --enable-debug --enable-unsafe --enable-norm-compat CFLAGS="-fsanitize=address"
           - --disable-nullslack --enable-warn-dmax

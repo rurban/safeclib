@@ -39,7 +39,7 @@ CORE_FILES = \
 	ignore_handler_s.c
 if ENABLE_U8
 CORE_FILES += \
-	u8_private.h
+	extu8/u8_private.h
 endif
 
 STD_MEM_FILES = \

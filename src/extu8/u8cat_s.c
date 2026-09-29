@@ -33,6 +33,7 @@
 #include "safe_u8_lib.h"
 #else
 #include "safeclib_private.h"
+#include "u8_private.h"
 #endif
 
 /**
@@ -82,6 +83,8 @@
  * @retval  ESUNTERM   when dest not terminated in the first dmax utf-8
  *                     characters
  * @retval  ESOVRLP    when src overlaps with dest
+ * @retval  EILSEQ     when src contains an illegal or truncated UTF-8
+ *                     sequence
  *
  * @see
  *    u8icat_s(), wcscat_s(), strcpy_s(), strncpy_s()
@@ -111,6 +114,11 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
     orig_dmax = dmax;
     orig_dest = dest;
 
+    if (unlikely(!u8_is_valid(src, RSIZE_MAX_STR))) {
+        handle_error((char *)orig_dest, orig_dmax,
+                     "u8cat_s: illegal UTF-8 sequence in src", EILSEQ);
+        return RCNEGATE(EILSEQ);
+    }
     if (dest < src) {
         overlap_bumper = src;
 

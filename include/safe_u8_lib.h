@@ -358,7 +358,7 @@ EXTERN errno_t _u8rtowcs_s_chk(size_t *restrict retvalp,
     _u8rtowcs_s_chk(retvalp, dest, dmax, srcp, len, ps, BOS(dest))
 
 EXTERN errno_t _wcstou8_s_chk(size_t *restrict retvalp, char8_t *restrict dest,
-                               rsize_t dmax, const char *restrict src,
+                               rsize_t dmax, const wchar_t *restrict src,
                                rsize_t len, const size_t destbos)
     BOS_NULL(retvalp) BOS_CHK(dest) BOSW_CHK2(src, len)
         BOS_ATTR(dmax &&len > dmax, "len overflow >dmax");
@@ -366,7 +366,7 @@ EXTERN errno_t _wcstou8_s_chk(size_t *restrict retvalp, char8_t *restrict dest,
     _wcstou8_s_chk(retvalp, dest, dmax, src, len, BOS(dest))
 
 EXTERN errno_t _wcsrtou8_s_chk(size_t *restrict retvalp, char8_t *restrict dest,
-                                rsize_t dmax, const char **restrict srcp,
+                                rsize_t dmax, const wchar_t **restrict srcp,
                                 rsize_t len, mbstate_t *restrict ps,
                                 const size_t destbos) BOS_NULL(retvalp)
     BOS_NULL(ps) BOS_ATTR(!_BOS_NULL(dest) && !dmax, "empty dmax")
@@ -378,14 +378,13 @@ EXTERN errno_t _wcsrtou8_s_chk(size_t *restrict retvalp, char8_t *restrict dest,
     _wcsrtou8_s_chk(retvalp, dest, dmax, srcp, len, ps, BOS(dest))
 
 EXTERN errno_t _wcrtou8_s_chk(size_t *restrict retvalp, char8_t *restrict dest,
-                              rsize_t dmax, char wc, mbstate_t *restrict ps,
+                              rsize_t dmax, wchar_t wc, mbstate_t *restrict ps,
                               const size_t destbos) BOS_NULL(retvalp)
     BOS_CHK(dest) BOS_NULL(ps) VAL_OVR2(wc, 0x10ffff);
 #define wcrtou8_s(retvalp, dest, dmax, wc, ps)                                 \
     _wcrtou8_s_chk(retvalp, dest, dmax, wc, ps, BOS(dest))
-
 EXTERN errno_t _wctou8_s_chk(int *restrict retvalp, char8_t *restrict dest,
-                             rsize_t dmax, char wc, const size_t destbos)
+                             rsize_t dmax, wchar_t wc, const size_t destbos)
     BOS_NULL(retvalp)
         BOS_ATTR(!_BOS_NULL(dest) &&
                      (!dmax || dmax > RSIZE_MAX_STR || _BOS_OVR(dest, dmax)),
