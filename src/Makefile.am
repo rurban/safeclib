@@ -217,6 +217,13 @@ EXT_U8_FILES = \
 	extu8/u8nset_s.c       \
 	extu8/u8tok_s.c        \
 	extu8/u8error_s.c      \
+	extu8/u8chr_s.c        \
+	extu8/u8rchr_s.c       \
+	extu8/u8cspn_s.c       \
+	extu8/u8spn_s.c        \
+	extu8/u8pbrk_s.c       \
+	extu8/u8str_s.c        \
+	extu8/u8u8_s.c         \
 	extu8/u8gbreaks.h      \
 	extu8/u8width_s.c
 

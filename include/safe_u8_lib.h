@@ -257,7 +257,7 @@ EXTERN errno_t _u8spn_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *sr
 #define u8spn_s(dest, dmax, src, slen, countp)                                \
     _u8spn_s_chk(dest, dmax, src, slen, countp, BOS(dest), BOS(src))
 
-/* find a substring, normalizing */
+/* find a literal utf-8 substring */
 EXTERN errno_t _u8u8_s_chk(char8_t *dest, rsize_t dmax, const char8_t *src,
                            rsize_t slen, char8_t **substringp,
                            const size_t destbos, const size_t srcbos)
@@ -394,12 +394,12 @@ EXTERN errno_t _wctou8_s_chk(int *restrict retvalp, char8_t *restrict dest,
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
 
-/* search wide substring */
+/* search utf-8 substring */
 EXTERN errno_t _u8str_s_chk(char8_t *restrict dest, rsize_t dmax,
                              const char8_t *restrict src, rsize_t slen,
                              char8_t **restrict substringp,
                              const size_t destbos, const size_t srcbos)
-    BOSW_CHK(dest) BOSW_OVR2(src, slen) BOS_NULL(substringp);
+    BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(substringp);
 #define u8str_s(dest, dmax, src, slen, substringp)                            \
     _u8str_s_chk(dest, dmax, src, slen, substringp, BOS(dest), BOS(src))
 
