@@ -224,6 +224,11 @@ EXT_U8_FILES = \
 	extu8/u8pbrk_s.c       \
 	extu8/u8str_s.c        \
 	extu8/u8u8_s.c         \
+	extu8/u8cmp_s.c        \
+	extu8/u8icmp_s.c       \
+	extu8/u8coll_s.c       \
+	extu8/u8fccmp_s.c      \
+	extu8/u8natcmp_s.c     \
 	extu8/u8gbreaks.h      \
 	extu8/u8width_s.c
 

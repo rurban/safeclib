@@ -183,7 +183,7 @@ EXTERN size_t u8errorlen_s(errno_t errnum);
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
-/* utf-8 string compare, normalizing */
+/* utf-8 string compare */
 EXTERN errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *src,
                             int *resultp, const size_t destbos,
                             const size_t srcbos) BOS_CHK(dest) BOS_NULL(src)
@@ -191,15 +191,15 @@ EXTERN errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *sr
 #define u8cmp_s(dest, dmax, src, resultp)                                     \
     _u8cmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src))
 
-/* utf-8 string compare, normalized (both being valid identifier-like) */
+/* utf-8 string compare, both being pre-normalized identifiers */
 EXTERN errno_t _u8icmp_s_chk(const char8i_t *dest, rsize_t dmax, const char8i_t *src,
                              int *resultp, const size_t destbos,
-                             const size_t srcbos) BOS_CHK(dest) BOS_NULL(src)
-    BOSW_CHK2(src, smax) BOS_NULL(resultp);
+                             const size_t srcbos) BOS_CHK(dest) BOS_CHK(src)
+    BOS_NULL(resultp);
 #define u8icmp_s(dest, dmax, src, resultp)                                     \
     _u8icmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src))
 
-/* utf-8 string compare fold-cased, normalizing */
+/* utf-8 string compare fold-cased */
 EXTERN errno_t _u8fccmp_s_chk(const char8_t *dest, rsize_t dmax,
                                  const char8_t *src, int *resultp,
                                  const size_t destbos) BOS_CHK(dest)
@@ -209,13 +209,13 @@ EXTERN errno_t _u8fccmp_s_chk(const char8_t *dest, rsize_t dmax,
 
 /* natural order string compare */
 EXTERN errno_t _u8natcmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *src,
-                                const int fold_case, int *resultp,
-                                const size_t destbos, const size_t srcbos)
+                               const int fold_case, int *resultp,
+                               const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
 #define u8natcmp_s(dest, dmax, src, resultp)                                  \
     _u8natcmp_s_chk(dest, dmax, src, 0, resultp, BOS(dest), BOS(src))
 #define u8natfccmp_s(dest, dmax, src, resultp)                              \
-    _u8natfccmp_s_chk(dest, dmax, src, 1, resultp, BOS(dest), BOS(src))
+    _u8natcmp_s_chk(dest, dmax, src, 1, resultp, BOS(dest), BOS(src))
 
 /* find a substring - fold-cased, normalizing */
 EXTERN errno_t _u8fcu8_s_chk(char8_t *dest, rsize_t dmax, const char8_t *src,
