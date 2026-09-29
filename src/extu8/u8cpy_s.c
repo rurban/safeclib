@@ -33,6 +33,7 @@
 #include "safe_str_lib.h"
 #else
 #include "safeclib_private.h"
+#include "u8_private.h"
 #endif
 
 /**
@@ -66,6 +67,8 @@
  * @retval  -ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  -ESOVRLP    when buffers overlap
  * @retval  -ESNOSPC    when dest < src
+ * @retval  EILSEQ      when src contains an illegal or truncated UTF-8
+ *                      sequence
  *
  * @see
  *    u8ncpy(), wmemcpy(), wmemmove(), strncpy_s()
@@ -82,6 +85,8 @@ EXPORT errno_t _u8cpy_s_chk(char8_t *restrict dest, rsize_t dmax,
     rsize_t orig_dmax;
     char *orig_dest;
     const char8_t *overlap_bumper;
+    int u8_need = 0; /* bytes remaining in the UTF-8 sequence in progress;
+                         0 means the next byte starts a new sequence */
 
     CHK_DEST_NULL("u8cpy_s")
     CHK_DMAX_ZERO("u8cpy_s")
@@ -113,6 +118,16 @@ EXPORT errno_t _u8cpy_s_chk(char8_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(ESOVRLP);
             }
 
+            if (u8_need == 0) {
+                u8_need = u8_seqlen(src, RSIZE_MAX_STR);
+                if (unlikely(!u8_need)) {
+                    handle_error(orig_dest, orig_dmax,
+                                 "u8cpy_s: illegal UTF-8 sequence in src",
+                                 EILSEQ);
+                    return RCNEGATE(EILSEQ);
+                }
+            }
+
             *dest = *src;
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -130,6 +145,7 @@ EXPORT errno_t _u8cpy_s_chk(char8_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(EOK);
             }
 
+            u8_need--;
             dmax--;
             dest++;
             src++;
@@ -146,6 +162,16 @@ EXPORT errno_t _u8cpy_s_chk(char8_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(ESOVRLP);
             }
 
+            if (u8_need == 0) {
+                u8_need = u8_seqlen(src, RSIZE_MAX_STR);
+                if (unlikely(!u8_need)) {
+                    handle_error(orig_dest, orig_dmax,
+                                 "u8cpy_s: illegal UTF-8 sequence in src",
+                                 EILSEQ);
+                    return RCNEGATE(EILSEQ);
+                }
+            }
+
             *dest = *src;
             if (*dest == '\0') {
 #ifdef SAFECLIB_STR_NULL_SLACK
@@ -163,6 +189,7 @@ EXPORT errno_t _u8cpy_s_chk(char8_t *restrict dest, rsize_t dmax,
                 return RCNEGATE(EOK);
             }
 
+            u8_need--;
             dmax--;
             dest++;
             src++;

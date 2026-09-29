@@ -201,7 +201,9 @@ if ENABLE_U8
 SAFEC_BUILT_TESTS += \
 	t_u8width_s   \
 	t_u8norm_s    \
-	t_u8cat_s
+	t_u8cat_s     \
+	t_u8cpy_s     \
+	t_u8ncpy_s
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
 	t_u8towcs_s   \
@@ -521,6 +523,8 @@ if ENABLE_U8
 t_u8width_s_SOURCES            = test_u8width_s.c $(SAFEC_TEST_COMMON)
 t_u8norm_s_SOURCES            = test_u8norm_s.c $(SAFEC_TEST_COMMON)
 t_u8cat_s_SOURCES              = test_u8cat_s.c $(SAFEC_TEST_COMMON)
+t_u8cpy_s_SOURCES              = test_u8cpy_s.c $(SAFEC_TEST_COMMON)
+t_u8ncpy_s_SOURCES             = test_u8ncpy_s.c $(SAFEC_TEST_COMMON)
 if ENABLE_WCHAR
 t_u8towcs_s_SOURCES            = test_u8towcs_s.c $(SAFEC_TEST_COMMON)
 t_u8rtowcs_s_SOURCES           = test_u8rtowcs_s.c $(SAFEC_TEST_COMMON)
