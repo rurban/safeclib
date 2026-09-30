@@ -274,6 +274,16 @@ else()
    set(FALLBACK_ERRNO_T "")
 endif()
 
+# Check for char8_t
+check_c_source_compiles("
+int main() { char8_t c = 0; return c; }
+" HAVE_CHAR8_T)
+if(NOT HAVE_CHAR8_T)
+    set(FALLBACK_CHAR8_T "typedef unsigned char char8_t;")
+else()
+    set(FALLBACK_CHAR8_T "")
+endif()
+
 # Check for mbstate_t
 check_type_size("mbstate_t" MBSTATE_T LANGUAGE C)
 if(NOT HAVE_MBSTATE_T)
@@ -950,6 +960,54 @@ if(ENABLE_WCHAR)
     endif()
 endif()
 
+if(ENABLE_U8)
+    list(APPEND SAFEC_SOURCES
+        src/extu8/u8cat_s.c
+        src/extu8/u8icat_s.c
+        src/extu8/u8norm_s.c
+        src/extu8/u8script.c
+        src/extu8/u8cpy_s.c
+        src/extu8/u8icpy_s.c
+        src/extu8/u8ncpy_s.c
+        src/extu8/u8ncat_s.c
+        src/extu8/u8nlen_s.c
+        src/extu8/u8len_s.c
+        src/extu8/u8zero_s.c
+        src/extu8/u8set_s.c
+        src/extu8/u8nset_s.c
+        src/extu8/u8tok_s.c
+        src/extu8/u8error_s.c
+        src/extu8/u8chr_s.c
+        src/extu8/u8rchr_s.c
+        src/extu8/u8cspn_s.c
+        src/extu8/u8spn_s.c
+        src/extu8/u8pbrk_s.c
+        src/extu8/u8str_s.c
+        src/extu8/u8u8_s.c
+        src/extu8/u8cmp_s.c
+        src/extu8/u8icmp_s.c
+        src/extu8/u8coll_s.c
+        src/extu8/u8natcmp_s.c
+        src/extu8/u8lwr_s.c
+        src/extu8/u8upr_s.c
+        src/extu8/u8width_s.c
+    )
+    if(ENABLE_WCHAR)
+        list(APPEND SAFEC_SOURCES
+            src/extu8/u8towcs_s.c
+            src/extu8/u8rtowcs_s.c
+            src/extu8/wcstou8_s.c
+            src/extu8/wcsrtou8_s.c
+            src/extu8/wcrtou8_s.c
+            src/extu8/wctou8_s.c
+            src/extu8/u8fc_s.c
+            src/extu8/u8fccmp_s.c
+        )
+    endif()
+endif()
+
+
+
 if(ENABLE_UNSAFE)
     list(APPEND SAFEC_SOURCES
         src/tmpnam_s.c
@@ -1008,6 +1066,8 @@ if(BUILD_STATIC_LIBS)
 endif()
 
 install(FILES
+    include/safec.h
+    include/safe_compile.h
     include/safe_lib.h
     include/safe_mem_lib.h
     include/safe_str_lib.h
@@ -1016,6 +1076,12 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_lib_errno.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+if(ENABLE_U8)
+    install(FILES include/safe_u8_lib.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endif()
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsafec.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
