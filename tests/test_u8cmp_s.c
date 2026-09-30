@@ -82,7 +82,7 @@ int test_u8cmp_s(void) {
         errs++;
     }
 
-    /* multibyte sequences compare bytewise */
+    /* multibyte sequences compare bytewise when not canonically equal */
     strcpy((char *)str1, "h\xC3\xA9llo");
     strcpy((char *)str2, "hello");
 
@@ -91,6 +91,22 @@ int test_u8cmp_s(void) {
     if (result <= 0) {
         debug_printf("%s %u  result=%d, expected >0\n", __FUNCTION__, __LINE__,
                      result);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* canonical equivalence: precomposed e-acute (U+00E9 = C3 A9) must
+       compare equal to the decomposed form (e U+0065 + combining
+       acute U+0301 = 65 CC 81), since u8cmp_s normalizes to NFC first */
+    strcpy((char *)str1, "caf\xC3\xA9");
+    strcpy((char *)str2, "cafe\xCC\x81");
+
+    rc = u8cmp_s(str1, LEN, str2, &result);
+    ERR(EOK)
+    if (result != 0) {
+        debug_printf("%s %u  result=%d, expected 0 (canonically equal)\n",
+                     __FUNCTION__, __LINE__, result);
         errs++;
     }
 

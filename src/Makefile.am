@@ -227,8 +227,9 @@ EXT_U8_FILES = \
 	extu8/u8cmp_s.c        \
 	extu8/u8icmp_s.c       \
 	extu8/u8coll_s.c       \
-	extu8/u8fccmp_s.c      \
 	extu8/u8natcmp_s.c     \
+	extu8/u8lwr_s.c        \
+	extu8/u8upr_s.c        \
 	extu8/u8gbreaks.h      \
 	extu8/u8width_s.c
 
@@ -239,7 +240,9 @@ EXT_U8_FILES += \
 	extu8/wcstou8_s.c      \
 	extu8/wcsrtou8_s.c     \
 	extu8/wcrtou8_s.c      \
-	extu8/wctou8_s.c
+	extu8/wctou8_s.c       \
+	extu8/u8fc_s.c         \
+	extu8/u8fccmp_s.c
 endif
 endif
 

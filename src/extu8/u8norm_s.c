@@ -63,6 +63,19 @@ bool isExclusion (uint32_t uv);
 #define CC_SEQ_SIZE 10
 #define CC_SEQ_STEP 5
 
+/* exact utf-8 encoded byte-length of a codepoint, for precise dmax
+   margin checks around enc_utf8() (which does not itself bounds-check
+   against a destination capacity) */
+static int u8_cpsize(uint32_t cp) {
+    if (cp < 0x80)
+        return 1;
+    else if (cp < 0x800)
+        return 2;
+    else if (cp < 0x10000)
+        return 3;
+    else
+        return 4;
+}
 
 #if defined(HAVE_NORM_COMPAT) || UN8IF_canon_exc_size > 0
 
@@ -138,6 +151,10 @@ static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, const uint32_t cp)
                 sizeof(UN8IF_canon_exc[0]), _bsearch_exc);
             if (e) {
                 size_t l = strlen(e->v);
+                if (unlikely(l + 1 > dmax)) {
+                    *dest = 0;
+                    return -ESNOSPC;
+                }
                 memcpy(dest, e->v, l + 1); /* incl \0 */
                 return (int)l;
             }
@@ -226,6 +243,10 @@ static int _u8decomp_compat_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
                 sizeof(UN8IF_compat_exc[0]), _bsearch_exc);
             if (e) {
                 size_t l = strlen(e->v);
+                if (unlikely(l + 1 > dmax)) {
+                    *dest = 0;
+                    return -(ESNOSPC);
+                }
                 memcpy(dest, e->v, l + 1); /* incl \0 */
                 return (int)l;
             }
@@ -574,12 +595,10 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
             if (c > 0) {
                 dest += c;
                 dmax -= c;
-                if (cp > 0xffff) {
-                    src++;
-                }
             } else if (c == 0) {
-                *dest++ = *src;
-                dmax--;
+                int n = enc_utf8(dest, cp);
+                dest += n;
+                dmax -= (rsize_t)n;
             } else {
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_decompose_s: "
@@ -587,7 +606,6 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                               -c);
                 return -c;
             }
-            src++;
         }
     } else {
         overlap_bumper = dest;
@@ -615,15 +633,10 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
             if (c > 0) {
                 dest += c;
                 dmax -= c;
-                if (cp > 0xffff)
-                    src++;
             } else if (c == 0) {
-                if (cp > 0xffff) {
-                    *dest++ = *src++;
-                    dmax--;
-                }
-                *dest++ = *src;
-                dmax--;
+                int n = enc_utf8(dest, cp);
+                dest += n;
+                dmax -= (rsize_t)n;
             } else {
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_decompose_s: "
@@ -631,7 +644,6 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                               -c);
                 return RCNEGATE(-c);
             }
-            src++;
         }
     }
 
@@ -740,44 +752,57 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
         if (cc_pos) {
             size_t i;
 
-            if (unlikely(dmax - cc_pos <= 0)) {
+            if (cc_pos > 1) /* reorder if there are two Combining Classes */
+                qsort((void *)seq_ptr, cc_pos, sizeof(UN8IF_cc), _compare_cc);
+
+            for (i = 0; i < cc_pos; i++) {
+                int n;
+                int need = u8_cpsize(seq_ptr[i].cp);
+                if (unlikely((rsize_t)need + 1 > dmax)) {
+                    if (seq_ext)
+                        free(seq_ext);
+                    handle_error(orig_dest, orig_dmax,
+                                  "u8norm_reorder_s: "
+                                  "dmax too small",
+                                  ESNOSPC);
+                    return RCNEGATE(ESNOSPC);
+                }
+                n = enc_utf8(dest, seq_ptr[i].cp);
+                dest += n;
+                dmax -= (rsize_t)n;
+            }
+            cc_pos = 0;
+        }
+
+        if (cur_cc == 0) {
+            int n;
+            int need = u8_cpsize(cp);
+            if (unlikely((rsize_t)need + 1 > dmax)) {
+                if (seq_ext)
+                    free(seq_ext);
                 handle_error(orig_dest, orig_dmax,
                               "u8norm_reorder_s: "
                               "dmax too small",
                               ESNOSPC);
                 return RCNEGATE(ESNOSPC);
             }
-
-            if (cc_pos > 1) /* reorder if there are two Combining Classes */
-                qsort((void *)seq_ptr, cc_pos, sizeof(UN8IF_cc), _compare_cc);
-
-            for (i = 0; i < cc_pos; i++) {
-              //enc_utf8(dest, dmax, seq_ptr[i].cp);
-            }
-            cc_pos = 0;
-        }
-
-        if (cur_cc == 0) {
-          //_ENC_W16(dest, dmax, cp);
-        }
-
-        if (unlikely(!dmax)) {
-            handle_error(orig_dest, orig_dmax,
-                          "u8norm_reorder_s: "
-                          "dmax too small",
-                          ESNOSPC);
-            return RCNEGATE(ESNOSPC);
+            n = enc_utf8(dest, cp);
+            dest += n;
+            dmax -= (rsize_t)n;
         }
     }
     if (seq_ext)
         free(seq_ext);
-#if 0
-    /* surrogate pairs can actually collapse */
-#if defined(SAFECLIB_STR_NULL_SLACK)
-    memset(dest, 0, dmax);
-#else
-    *dest = 0;
-#endif
+    if (unlikely(!dmax)) {
+        handle_error(orig_dest, orig_dmax,
+                      "u8norm_reorder_s: "
+                      "dmax too small",
+                      ESNOSPC);
+        return RCNEGATE(ESNOSPC);
+    }
+    *dest = '\0';
+#ifdef SAFECLIB_STR_NULL_SLACK
+    memset(dest + 1, 0, dmax - 1);
 #endif
     return EOK;
 }
@@ -872,14 +897,17 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 if (p < e)
                     continue;
             } else {
-                //_ENC_W16(dest, dmax, cp);
-                if (unlikely(!dmax)) {
+                int n, need = u8_cpsize(cp);
+                if (unlikely((rsize_t)need + 1 > dmax)) {
                     handle_error(orig_dest, orig_dmax,
                                   "u8norm_compose_s: "
                                   "dmax too small",
                                   ESNOSPC);
                     return RCNEGATE(ESNOSPC);
                 }
+                n = enc_utf8((char8_t *)dest, cp);
+                dest += n;
+                dmax -= (rsize_t)n;
                 continue;
             }
         } else {
@@ -935,22 +963,39 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
         }
 
         /* output */
-        //_ENC_W16(dest, dmax, cpS); /* starter (composed or not) */
-        if (unlikely(!dmax)) {
-            handle_error(orig_dest, orig_dmax,
-                          "u8norm_compose_s: "
-                          "dmax too small",
-                          ESNOSPC);
-            return RCNEGATE(ESNOSPC);
+        {
+            int n, need = u8_cpsize(cpS);
+            if (unlikely((rsize_t)need + 1 > dmax)) {
+                if (seq_ext)
+                    free(seq_ext);
+                handle_error(orig_dest, orig_dmax,
+                              "u8norm_compose_s: "
+                              "dmax too small",
+                              ESNOSPC);
+                return RCNEGATE(ESNOSPC);
+            }
+            n = enc_utf8(dest, cpS); /* starter (composed or not) */
+            dest += n;
+            dmax -= (rsize_t)n;
         }
 
-        if (cc_pos == 1) {
-            //_ENC_W16(dest, dmax, *seq_ptr);
-            cc_pos = 0;
-        } else if (cc_pos > 1) {
-            memcpy(dest, seq_ptr, cc_pos * sizeof(char));
-            dest += cc_pos;
-            dmax -= cc_pos;
+        if (cc_pos >= 1) {
+            size_t i;
+            for (i = 0; i < cc_pos; i++) {
+                int n, need = u8_cpsize(seq_ptr[i]);
+                if (unlikely((rsize_t)need + 1 > dmax)) {
+                    if (seq_ext)
+                        free(seq_ext);
+                    handle_error(orig_dest, orig_dmax,
+                                  "u8norm_compose_s: "
+                                  "dmax too small",
+                                  ESNOSPC);
+                    return RCNEGATE(ESNOSPC);
+                }
+                n = enc_utf8(dest, seq_ptr[i]);
+                dest += n;
+                dmax -= (rsize_t)n;
+            }
             cc_pos = 0;
         }
 
@@ -959,10 +1004,9 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
     if (seq_ext)
         free(seq_ext);
 
-#ifdef SAFECLIB_STR_NULL_SLACK
-    memset(dest, 0, dmax);
-#else
     *dest = 0;
+#ifdef SAFECLIB_STR_NULL_SLACK
+    memset(dest + 1, 0, dmax - 1);
 #endif
     *lenp = orig_dmax - dmax;
     return EOK;
@@ -1035,7 +1079,7 @@ EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
     char8_t *tmp_ptr;
     char8_t *tmp = NULL;
     rsize_t len;
-    const bool iscompat = (mode & WCSNORM_NFKD) || (mode & WCSNORM_NFKC);
+    const bool iscompat = (mode == WCSNORM_NFKD) || (mode == WCSNORM_NFKC);
 
     errno_t rc =
         _u8norm_decompose_s_chk(dest, dmax, src, &len, iscompat, destbos);
@@ -1067,6 +1111,8 @@ EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
         memcpy(dest, tmp_ptr, len + 1);
         if (tmp)
             free(tmp);
+        if (lenp)
+            *lenp = len;
         return (EOK);
     }
 

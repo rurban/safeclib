@@ -35,12 +35,46 @@
 #include "safeclib_private.h"
 #endif
 
+/* Normalize src (NUL-terminated, up to inlen bytes) to NFC into a
+   scratch buffer (stack if it fits, else heap), sized generously so
+   normalization (which can grow the string) always has room. On
+   success outp/outlenp describe the normalized, NUL-terminated
+   result and the caller must free() it if it is not stackbuf. */
+static errno_t u8cmp_normalize(const char8_t *src, rsize_t inlen,
+                               char8_t *stackbuf, rsize_t stackcap,
+                               char8_t **outp, rsize_t *outlenp) {
+    rsize_t cap = (inlen + 1) * 4;
+    char8_t *buf;
+    errno_t rc;
+
+    if (cap < 16)
+        cap = 16;
+    if (cap <= stackcap) {
+        buf = stackbuf;
+    } else {
+        buf = (char8_t *)malloc(cap);
+        if (!buf)
+            return ENOMEM;
+    }
+
+    rc = u8norm_s(buf, cap, src, WCSNORM_NFC, outlenp);
+    if (rc != EOK) {
+        if (buf != stackbuf)
+            free(buf);
+        return rc;
+    }
+    *outp = buf;
+    return EOK;
+}
+
 /**
  * @def u8cmp_s(dest,dmax,src,resultp)
  * @brief
- *    Compares utf-8 string src to utf-8 string dest, byte by byte.
- *    This is the utf-8 analogue of strcmp_s(): a plain byte-wise
- *    comparison without normalization or case folding.
+ *    Compares utf-8 string src to utf-8 string dest, after
+ *    normalizing both to NFC. This means two strings that are
+ *    canonically equivalent but use different Unicode
+ *    representations (e.g. a precomposed accented codepoint vs. the
+ *    base letter followed by a combining mark) compare equal.
  *
  * @param[in]   dest       pointer to utf-8 string to compare against
  * @param[in]   dmax       restricted maximum byte-length of string dest
@@ -48,7 +82,8 @@
  * @param[out]  resultp    pointer to int result, greater than 0,
  *                         equal to 0 or less than 0, if the string pointed
  *                         to by dest is greater than, equal to or less
- *                         than the string pointed to by src respectively.
+ *                         than the string pointed to by src respectively,
+ *                         after NFC normalization.
  *
  * @pre   Neither dest, src nor resultp shall be a null pointer.
  * @pre   dmax shall not be 0
@@ -64,9 +99,13 @@
  * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
  *                     knows the object_size statically)
  * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ENOMEM     when a normalization scratch buffer could not be
+ *                     allocated
+ * @retval  *          any error returned by u8norm_s() while normalizing
+ *                     dest or src (e.g. EILSEQ for malformed utf-8)
  *
  * @see
- *    u8icmp_s(), u8fccmp_s()
+ *    u8icmp_s(), u8fccmp_s(), u8norm_s()
  */
 #ifdef FOR_DOXYGEN
 errno_t u8cmp_s(const char8_t *dest, rsize_t dmax, const char8_t *src,
@@ -77,7 +116,11 @@ EXPORT errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax,
                             const size_t destbos, size_t srcbos)
 #endif
 {
-    size_t slen;
+    char8_t deststack[128], srcstack[128];
+    char8_t *normdest = NULL, *normsrc = NULL;
+    rsize_t destlen, srclen, normdestlen, normsrclen;
+    const char8_t *p;
+    errno_t rc;
 
     CHK_SRC_NULL("u8cmp_s", resultp)
     *resultp = 0;
@@ -92,26 +135,49 @@ EXPORT errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax,
         CHK_DEST_OVR("u8cmp_s", destbos)
     }
 
-    slen = 0;
-    while (*dest && *src && dmax) {
+    /* measure dest's actual content within dmax */
+    destlen = 0;
+    p = dest;
+    while (*p && destlen < dmax) {
+        p++;
+        destlen++;
+    }
 
-        if (*dest != *src) {
-            break;
-        }
-
-        dest++;
-        src++;
-        dmax--;
-        slen++;
-        /* sentinel srcbos -1 = ULONG_MAX */
-        if (unlikely(slen >= srcbos)) {
+    /* measure src, enforcing the srcbos/RSIZE_MAX_STR termination bound
+       like strcmp_s does */
+    srclen = 0;
+    p = src;
+    while (*p) {
+        p++;
+        srclen++;
+        if (unlikely(srclen >= srcbos)) {
             invoke_safe_str_constraint_handler("u8cmp_s"
                                                ": src unterminated",
                                                (void *)src, ESUNTERM);
             return RCNEGATE(ESUNTERM);
         }
     }
-    *resultp = *dest - *src;
+
+    rc = u8cmp_normalize(dest, destlen, deststack, sizeof(deststack),
+                         &normdest, &normdestlen);
+    if (rc != EOK)
+        return RCNEGATE(rc);
+
+    rc = u8cmp_normalize(src, srclen, srcstack, sizeof(srcstack), &normsrc,
+                         &normsrclen);
+    if (rc != EOK) {
+        if (normdest != deststack)
+            free(normdest);
+        return RCNEGATE(rc);
+    }
+
+    *resultp = strcmp((const char *)normdest, (const char *)normsrc);
+
+    if (normdest != deststack)
+        free(normdest);
+    if (normsrc != srcstack)
+        free(normsrc);
+
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__

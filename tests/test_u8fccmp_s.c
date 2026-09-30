@@ -88,6 +88,20 @@ int test_u8fccmp_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* canonical equivalence + fold-case combined: precomposed uppercase
+       E-acute vs. decomposed lowercase e + combining acute must compare
+       equal, since u8fccmp_s normalizes to NFC before fold-casing */
+    strcpy((char *)str1, "CAF\xC3\x89");
+    strcpy((char *)str2, "cafe\xCC\x81");
+
+    rc = u8fccmp_s(str1, LEN, str2, &result);
+    ERR(EOK)
+    if (result != 0) {
+        debug_printf("%s %u  result=%d, expected 0 (case+norm equal)\n",
+                     __FUNCTION__, __LINE__, result);
+        errs++;
+    }
+
     return (errs);
 }
 

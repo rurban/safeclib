@@ -183,7 +183,7 @@ EXTERN size_t u8errorlen_s(errno_t errnum);
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
-/* utf-8 string compare */
+/* utf-8 string compare, normalizing */
 EXTERN errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *src,
                             int *resultp, const size_t destbos,
                             const size_t srcbos) BOS_CHK(dest) BOS_NULL(src)
@@ -191,7 +191,7 @@ EXTERN errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *sr
 #define u8cmp_s(dest, dmax, src, resultp)                                     \
     _u8cmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src))
 
-/* utf-8 string compare, both being pre-normalized identifiers */
+/* utf-8 string compare, both operands pre-normalized identifiers */
 EXTERN errno_t _u8icmp_s_chk(const char8i_t *dest, rsize_t dmax, const char8i_t *src,
                              int *resultp, const size_t destbos,
                              const size_t srcbos) BOS_CHK(dest) BOS_CHK(src)
@@ -199,13 +199,15 @@ EXTERN errno_t _u8icmp_s_chk(const char8i_t *dest, rsize_t dmax, const char8i_t 
 #define u8icmp_s(dest, dmax, src, resultp)                                     \
     _u8icmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src))
 
-/* utf-8 string compare fold-cased */
+#ifndef SAFECLIB_DISABLE_WCHAR
+/* utf-8 string compare fold-cased, normalizing */
 EXTERN errno_t _u8fccmp_s_chk(const char8_t *dest, rsize_t dmax,
                                  const char8_t *src, int *resultp,
                                  const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(resultp);
 #define u8fccmp_s(dest, dmax, src, resultp)                                 \
     _u8fccmp_s_chk(dest, dmax, src, resultp, BOS(dest))
+#endif /* SAFECLIB_DISABLE_WCHAR */
 
 /* natural order string compare */
 EXTERN errno_t _u8natcmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *src,
@@ -407,12 +409,15 @@ EXTERN errno_t _u8str_s_chk(char8_t *restrict dest, rsize_t dmax,
    mixed scripts, bidi, ...
 */
   
-/* full foldcase + NFD normalization */
+#ifndef SAFECLIB_DISABLE_WCHAR
+/* full foldcase via Unicode CaseFolding.txt (no NFD decomposition, no
+   locale-conditional special-casing; see u8fc_s.c for the exact scope) */
 EXTERN errno_t _u8fc_s_chk(char8_t *restrict dest, rsize_t dmax,
                             const char8_t *restrict src, rsize_t *restrict lenp,
-                            const size_t destbos) BOSW_CHK(dest) BOS_NULL(src);
+                            const size_t destbos) BOS_CHK(dest) BOS_NULL(src);
 #define u8fc_s(dest, dmax, src, lenp)                                         \
     _u8fc_s_chk(dest, dmax, src, lenp, BOS(dest))
+#endif /* SAFECLIB_DISABLE_WCHAR */
 
 /* Normalize to FCD/pre-NFKD */
 EXTERN errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
