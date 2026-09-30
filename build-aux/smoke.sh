@@ -206,8 +206,8 @@ Linux)
     fi
 git clean -dxf src tests
 autoreconf
-echo "--disable-wchar -f Makefile.kernel"
-./configure --disable-wchar && \
+echo "--disable-wchar --disable-u8 -f Makefile.kernel"
+./configure --disable-wchar --disable-u8 && \
     make -s -j4 -f Makefile.kernel || exit
 make -s -j4 -f Makefile.kernel clean
 make -s clean
@@ -295,7 +295,7 @@ if CC="cc -m32" ./configure; then
 fi
 ./configure && \
     $make -s -j4 check-log || exit
-OPTS=disable-nullslack disable-constraint-handler disable-extensions disable-wchar \
+OPTS=disable-nullslack disable-constraint-handler disable-extensions disable-wchar disable-u8 \
      disable-float disable-float-exp disable-long-long disable-long-double disable-printf-ptrdiff \
      disable-doc disable-hardening disable-shared enable-debug enable-unsafe enable-norm-compat \
      enable-gcov enable-memmax=262144 enable-strmax=2056 enable-warn-dmax
