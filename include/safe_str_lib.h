@@ -79,7 +79,15 @@ extern "C" {
 #define RSIZE_MIN_STR (1)
 
 /** wide chars */
+#ifndef SAFECLIB_DISABLE_WCHAR
 #define RSIZE_MAX_WSTR (RSIZE_MAX_STR / sizeof(wchar_t))
+#else
+#define RSIZE_MAX_WSTR (RSIZE_MAX_STR / 2)
+#endif
+
+#if !defined SAFECLIB_DISABLE_WCHAR || defined SAFECLIB_ENABLE_U8
+#define UNICODE_VERSION_MAJOR 13
+#endif
 
 /** The makeup of a password */
 #define SAFE_STR_MIN_LOWERCASE (2)
@@ -869,6 +877,10 @@ EXTERN errno_t _wcsnorm_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
 #endif /* SAFECLIB_DISABLE_WCHAR */
 
+#ifdef SAFECLIB_ENABLE_U8
+#include "safe_u8_lib.h"
+#endif  
+  
 #ifdef __cplusplus
 }
 #endif

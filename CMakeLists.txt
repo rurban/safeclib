@@ -221,6 +221,7 @@ check_include_file("inttypes.h" HAVE_INTTYPES_H)
 check_include_file("stdint.h" HAVE_STDINT_H)
 check_include_file("errno.h" HAVE_ERRNO_H)
 check_include_file("wchar.h" HAVE_WCHAR_H)
+check_include_file("wctype.h" HAVE_WCTYPE_H)
 check_include_file("langinfo.h" HAVE_LANGINFO_H)
 check_include_file("valgrind/valgrind.h" HAVE_VALGRIND_VALGRIND_H)
 check_include_file("fenv.h" HAVE_FENV_H)
@@ -271,6 +272,16 @@ if(NOT HAVE_ERRNO_T)
     set(FALLBACK_ERRNO_T "typedef int errno_t;")
 else()
    set(FALLBACK_ERRNO_T "")
+endif()
+
+# Check for char8_t
+check_c_source_compiles("
+int main() { char8_t c = 0; return c; }
+" HAVE_CHAR8_T)
+if(NOT HAVE_CHAR8_T)
+    set(FALLBACK_CHAR8_T "typedef unsigned char char8_t;")
+else()
+    set(FALLBACK_CHAR8_T "")
 endif()
 
 # Check for mbstate_t
@@ -392,6 +403,14 @@ else()
 endif()
 option(ENABLE_WCHAR "Enable multibyte and wchar support" ${ENABLE_WCHAR_DEFAULT})
 
+# Determine u8 support
+if(HAVE_WCTYPE_H AND HAVE_CTYPE_H)
+    set(ENABLE_U8_DEFAULT ON)
+else()
+    set(ENABLE_U8_DEFAULT OFF)
+endif()
+option(ENABLE_U8 "Enable u8 UTF-8 support" ${ENABLE_U8_DEFAULT})
+
 # Standard functions
 check_function_exists(memcmp HAVE_MEMCMP)
 check_function_exists(memset HAVE_MEMSET)
@@ -498,6 +517,11 @@ if (SAFECLIB_DISABLE_WCHAR)
   set(INSERT_DISABLE_WCHAR "#define SAFECLIB_DISABLE_WCHAR 1")
 else()
   set(INSERT_DISABLE_WCHAR "#undef SAFECLIB_DISABLE_WCHAR")
+endif()
+if (ENABLE_U8)
+  set(INSERT_U8 "#define SAFECLIB_ENABLE_U8 1")
+else()
+  set(INSERT_U8 "#undef SAFECLIB_ENABLE_U8")
 endif()
 if (DISABLE_DLLIMPORT)
   set(INSERT_DISABLE_DLLIMPORT "#define DISABLE_DLLIMPORT 1")
@@ -936,6 +960,71 @@ if(ENABLE_WCHAR)
     endif()
 endif()
 
+if(ENABLE_U8)
+    list(APPEND SAFEC_SOURCES
+        src/extu8/u8cat_s.c
+        src/extu8/u8icat_s.c
+        src/extu8/u8norm_s.c
+        src/extu8/u8script.c
+        src/extu8/u8cpy_s.c
+        src/extu8/u8icpy_s.c
+        src/extu8/u8ncpy_s.c
+        src/extu8/u8ncat_s.c
+        src/extu8/u8nlen_s.c
+        src/extu8/u8len_s.c
+        src/extu8/u8zero_s.c
+        src/extu8/u8set_s.c
+        src/extu8/u8nset_s.c
+        src/extu8/u8tok_s.c
+        src/extu8/u8error_s.c
+        src/extu8/u8chr_s.c
+        src/extu8/u8rchr_s.c
+        src/extu8/u8cspn_s.c
+        src/extu8/u8spn_s.c
+        src/extu8/u8pbrk_s.c
+        src/extu8/u8str_s.c
+        src/extu8/u8u8_s.c
+        src/extu8/u8cmp_s.c
+        src/extu8/u8icmp_s.c
+        src/extu8/u8coll_s.c
+        src/extu8/u8natcmp_s.c
+        src/extu8/u8lwr_s.c
+        src/extu8/u8upr_s.c
+        src/extu8/u8width_s.c
+        src/extu8/u8iu8i_s.c
+        src/extu8/u8sprintf_s.c
+        src/extu8/vu8sprintf_s.c
+        src/extu8/u8snprintf_s.c
+        src/extu8/vu8snprintf_s.c
+        src/extu8/u8sscanf_s.c
+        src/extu8/fu8scanf_s.c
+        src/extu8/u8scanf_s.c
+        src/extu8/vu8scanf_s.c
+        src/extu8/vfu8scanf_s.c
+        src/extu8/vu8sscanf_s.c
+        src/extu8/u8printf_s.c
+        src/extu8/fu8printf_s.c
+        src/extu8/vu8printf_s.c
+        src/extu8/vfu8printf_s.c
+    )
+    if(ENABLE_WCHAR)
+        list(APPEND SAFEC_SOURCES
+            src/extu8/u8towcs_s.c
+            src/extu8/u8rtowcs_s.c
+            src/extu8/wcstou8_s.c
+            src/extu8/wcsrtou8_s.c
+            src/extu8/wcrtou8_s.c
+            src/extu8/wctou8_s.c
+            src/extu8/u8fc_s.c
+            src/extu8/u8fccmp_s.c
+            src/extu8/u8fcu8_s.c
+            src/extu8/u8ifcu8_s.c
+        )
+    endif()
+endif()
+
+
+
 if(ENABLE_UNSAFE)
     list(APPEND SAFEC_SOURCES
         src/tmpnam_s.c
@@ -994,6 +1083,8 @@ if(BUILD_STATIC_LIBS)
 endif()
 
 install(FILES
+    include/safec.h
+    include/safe_compile.h
     include/safe_lib.h
     include/safe_mem_lib.h
     include/safe_str_lib.h
@@ -1002,6 +1093,12 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_lib_errno.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+if(ENABLE_U8)
+    install(FILES include/safe_u8_lib.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endif()
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsafec.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
@@ -1036,6 +1133,7 @@ message(STATUS "  Shared libs: ${BUILD_SHARED_LIBS}")
 message(STATUS "  Static libs: ${BUILD_STATIC_LIBS}")
 message(STATUS "  Extensions: ${ENABLE_EXTENSIONS}")
 message(STATUS "  Wchar support: ${ENABLE_WCHAR}")
+message(STATUS "  u8 support: ${ENABLE_U8}")
 message(STATUS "  Constraint handler: ${ENABLE_CONSTRAINT_HANDLER}")
 message(STATUS "  Debug: ${ENABLE_DEBUG}")
 message(STATUS "  Gcov: ${ENABLE_GCOV}")

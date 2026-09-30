@@ -49,6 +49,8 @@ extern "C" {
 /* errno_t isn't defined in the kernel */
 typedef int errno_t;
 
+@INSERT_U8@
+
 #else
 
 #include <stdio.h>
@@ -56,8 +58,10 @@ typedef int errno_t;
 @INSERT_INTTYPES_H@
 @INSERT_STDINT_H@
 @INSERT_ERRNO_H@
-
 @FALLBACK_ERRNO_T@
+
+@FALLBACK_CHAR8_T@
+@INSERT_U8@
 
 #ifndef __cplusplus
 @INSERT_BOOL_SUPPORT@

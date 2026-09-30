@@ -1,6 +1,14 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.10
+	- Update Unicode to 18
+	- Add mknorm.pl to regenerate UTF-8, UTF-16 and UTF-32
+	  normalization tables from the Unicode Character Database
+	- Add --enable-u8, a new UTF-8 API, observing proper Unicode rules,
+	  unlike the unused and unusable wide API.
+	- Fix CMake: fallback char8_t
+
 Changes in 3.9.2
 	- Fix vsnprintf_s two buffer sizes by 1 (Bernd Kuhls, Khem Raj)
         - Fixes for !HAVE_VSNWPRINTF_S

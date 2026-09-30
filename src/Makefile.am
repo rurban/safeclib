@@ -37,6 +37,10 @@ CORE_FILES = \
 	safeclib_private.h    \
 	abort_handler_s.c     \
 	ignore_handler_s.c
+if ENABLE_U8
+CORE_FILES += \
+	extu8/u8_private.h
+endif
 
 STD_MEM_FILES = \
 	mem/safe_mem_constraint.h \
@@ -195,6 +199,70 @@ STD_WCHAR_FILES += \
 	extwchar/wcsnorm_s.c
 endif
 
+if ENABLE_U8
+EXT_U8_FILES = \
+	extu8/u8cat_s.c        \
+	extu8/u8icat_s.c       \
+	extu8/u8norm_s.c       \
+	extu8/u8script.c       \
+	extu8/u8scripts.h      \
+	extu8/u8cpy_s.c        \
+	extu8/u8icpy_s.c       \
+	extu8/u8ncpy_s.c       \
+	extu8/u8ncat_s.c       \
+	extu8/u8nlen_s.c       \
+	extu8/u8len_s.c        \
+	extu8/u8zero_s.c       \
+	extu8/u8set_s.c        \
+	extu8/u8nset_s.c       \
+	extu8/u8tok_s.c        \
+	extu8/u8error_s.c      \
+	extu8/u8chr_s.c        \
+	extu8/u8rchr_s.c       \
+	extu8/u8cspn_s.c       \
+	extu8/u8spn_s.c        \
+	extu8/u8pbrk_s.c       \
+	extu8/u8str_s.c        \
+	extu8/u8u8_s.c         \
+	extu8/u8cmp_s.c        \
+	extu8/u8icmp_s.c       \
+	extu8/u8coll_s.c       \
+	extu8/u8natcmp_s.c     \
+	extu8/u8lwr_s.c        \
+	extu8/u8upr_s.c        \
+	extu8/u8gbreaks.h      \
+	extu8/u8width_s.c      \
+	extu8/u8iu8i_s.c       \
+	extu8/u8sprintf_s.c    \
+	extu8/vu8sprintf_s.c   \
+	extu8/u8snprintf_s.c   \
+	extu8/vu8snprintf_s.c  \
+	extu8/u8sscanf_s.c     \
+	extu8/fu8scanf_s.c     \
+	extu8/u8scanf_s.c      \
+	extu8/vu8scanf_s.c     \
+	extu8/vfu8scanf_s.c    \
+	extu8/vu8sscanf_s.c    \
+	extu8/u8printf_s.c     \
+	extu8/fu8printf_s.c    \
+	extu8/vu8printf_s.c    \
+	extu8/vfu8printf_s.c
+
+if ENABLE_WCHAR
+EXT_U8_FILES += \
+	extu8/u8towcs_s.c      \
+	extu8/u8rtowcs_s.c     \
+	extu8/wcstou8_s.c      \
+	extu8/wcsrtou8_s.c     \
+	extu8/wcrtou8_s.c      \
+	extu8/wctou8_s.c       \
+	extu8/u8fc_s.c         \
+	extu8/u8fccmp_s.c      \
+	extu8/u8fcu8_s.c       \
+	extu8/u8ifcu8_s.c
+endif
+endif
+
 STD_IO_FILES = \
 	io/sscanf_s.c	\
 	io/fscanf_s.c	\
@@ -227,10 +295,16 @@ ALL_SRC_FILES =
 	$(STD_STR_FILES)    \
 	$(EXT_MEM_FILES)    \
 	$(EXT_STR_FILES)    \
+	$(EXT_U8_FILES)     \
 	$(STD_WCHAR_FILES)  \
 	$(STD_IO_FILES)     \
 	$(STD_OS_FILES)     \
 	$(STD_MISC_FILES)
+
+PERL = @PERL@
+if ENABLE_U8
+EXTRA_DIST = extu8/gen-u8scripts.pl extu8/gen-u8gbreaks.pl
+endif
 
 # Not all the code can support -Werror yet so we specifically enable it
 # for where it works
@@ -283,6 +357,12 @@ libsafec_la_SOURCES += \
 	$(EXT_MEM_FILES) \
 	$(EXT_STR_FILES)
 endif
+if ENABLE_U8
+libsafec_la_SOURCES += \
+	$(EXT_U8_FILES)
+lib_LTLIBRARIES += libsafecu8.la
+libsafecu8_la_SOURCES = $(EXT_U8_FILES)
+endif
 
 libsafec_la_LIBADD = \
 	libmemprims.la  \
@@ -297,6 +377,27 @@ libsafec_la_LDFLAGS = \
 	$(LDFLAGS) $(AM_LDFLAGS)
 #	-export-symbols $(EXPORT_SYM)
 #libsafec_la_DEPENDENCIES = $(EXPORT_SYM)
+
+# Unicode tables are committed and not rebuilt by normal builds because
+# regeneration requires network access.  Maintainers can refresh them with:
+#   make -C src update-u8-tables
+#   make -C src update-norm-tables
+# mknorm.pl generates the UTF-8, UTF-16 wchar_t, and UTF-32 wchar_t
+# normalization header families from the same Unicode data release.
+if ENABLE_U8
+update-u8-tables:
+	cd $(srcdir) && test -e Scripts.txt || \
+	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt
+	cd $(srcdir) && test -e GraphemeBreakProperty.txt || \
+	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakProperty.txt
+	cd $(srcdir) && $(PERL) extu8/gen-u8scripts.pl
+	cd $(srcdir) && $(PERL) extu8/gen-u8gbreaks.pl
+endif
+
+update-norm-tables:
+	cd $(top_srcdir) && $(PERL) mknorm.pl --ucd-dir=src --output-root=.
+
+.PHONY: update-norm-tables
 
 # emacs flymake-mode
 check-syntax:
@@ -324,6 +425,9 @@ endif
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
+if ENABLE_U8
+DISTCLEANFILES = Scripts.txt GraphemeBreakProperty.txt
+endif
 if ENABLE_GCOV
 CLEANFILES  += */*.gcov *.gcov gcov.log
 endif

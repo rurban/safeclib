@@ -214,6 +214,69 @@ if(ENABLE_WCHAR AND ENABLE_EXTENSIONS)
     list(APPEND SAFEC_TESTS ${SAFEC_WCHAR_EXT_TESTS})
 endif()
 
+if(ENABLE_U8)
+    list(APPEND SAFEC_TESTS
+        t_u8width_s
+        t_u8norm_s
+        t_u8cat_s
+        t_u8cpy_s
+        t_u8ncpy_s
+        t_u8ncat_s
+        t_u8len_s
+        t_u8zero_s
+        t_u8set_s
+        t_u8nset_s
+        t_u8tok_s
+        t_u8error_s
+        t_u8chr_s
+        t_u8rchr_s
+        t_u8cspn_s
+        t_u8spn_s
+        t_u8pbrk_s
+        t_u8str_s
+        t_u8u8_s
+        t_u8cmp_s
+        t_u8icmp_s
+        t_u8coll_s
+        t_u8natcmp_s
+        t_u8lwr_s
+        t_u8upr_s
+        t_u8iu8i_s
+        t_u8sprintf_s
+        t_vu8sprintf_s
+        t_u8snprintf_s
+        t_vu8snprintf_s
+        t_u8sscanf_s
+        t_vu8sscanf_s
+        t_u8printf_s
+        t_fu8printf_s
+        t_vu8printf_s
+        t_vfu8printf_s
+    )
+    if(ENABLE_DEBUG)
+        list(APPEND SAFEC_TESTS
+            t_u8scanf_s
+            t_vu8scanf_s
+            t_fu8scanf_s
+            t_vfu8scanf_s
+        )
+    endif()
+    if(ENABLE_WCHAR)
+        list(APPEND SAFEC_TESTS
+            t_u8towcs_s
+            t_u8rtowcs_s
+            t_wcstou8_s
+            t_wcsrtou8_s
+            t_wcrtou8_s
+            t_wctou8_s
+            t_u8fc_s
+            t_u8fccmp_s
+            t_u8fcu8_s
+            t_u8ifcu8_s
+        )
+    endif()
+endif()
+
 # Unsafe tests
 if(ENABLE_UNSAFE)
     list(APPEND SAFEC_TESTS t_tmpnam_s)

@@ -4,8 +4,9 @@
  *
  * August 2017, Reini Urban
  * September 2022, Reini Urban
+ * September 2026, Reini Urban
  *
- * Copyright (c) 2017,2022 by Reini Urban
+ * Copyright (c) 2017,2022,2026 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -87,6 +88,10 @@ extern "C" {
  * E.g. for the linux kernel
  */
 @INSERT_DISABLE_WCHAR@
+
+/* Define to disable u8 support.
+ */
+@INSERT_U8@
 
 /* Define to disable linking with dllimport, only relevant to windows.
  * Defined with a static libsafec.

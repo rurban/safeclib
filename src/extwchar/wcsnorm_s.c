@@ -39,7 +39,7 @@
 #endif
 
 #if SIZEOF_WCHAR_T > 2
-/* generated via cperl dist/Unicode-Normalize/mkheader -uni -ind -std */
+/* generated via mknorm.pl --type=w32 */
 #include "unwifcan.h" /* for NFD Canonical Decomposition */
 #include "unwifcmb.h" /* for reorder Canonical_Combining_Class_Values */
 #include "unwifcmp.h" /* for NFC Canonical Composition lists */
@@ -48,7 +48,7 @@
 #include "unwifcpt.h" /* for NFKD/NFKC Compat. Decomposition. */
 #endif
 #else                   /* with UTF-16 surrogate pairs */
-/* generated via cperl dist/Unicode-Normalize/mkheader -uni -ind -utf16 -std */
+/* generated via mknorm.pl --type=w16 */
 /* since Unicode 12 can also overflows to _exc lists */
 #include "unw16ifcan.h" /* for NFD Canonical Decomposition */
 #include "unw16ifcmb.h" /* for reorder Canonical_Combining_Class_Values */
@@ -146,8 +146,7 @@ static int _decomp_canonical_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         }
     }
 #else
-    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
-     */
+    /* Indirect tables generated via mknorm.pl. */
     const UNWIF_canon_PLANE_T **plane, *row;
     if (unlikely(dmax < 5)) {
         *dest = 0;
@@ -242,8 +241,7 @@ static int _decomp_compat_s(wchar_t *dest, rsize_t dmax, uint32_t cp) {
         }
     }
 #else
-    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
-     */
+    /* Indirect tables generated via mknorm.pl. */
     const UNWIF_compat_PLANE_T **plane, *row;
     plane = UNWIF_compat[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */
@@ -853,7 +851,7 @@ EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
     }
     if (seq_ext)
         free(seq_ext);
-        /* surrogate pairs can actually collapse */
+    /* surrogate pairs can actually collapse */
 #if defined(SAFECLIB_STR_NULL_SLACK) && SIZEOF_WCHAR_T == 2
     memset(dest, 0, dmax * sizeof(wchar_t));
 #else

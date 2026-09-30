@@ -53,6 +53,11 @@ dist_pkginclude_HEADERS = \
 	include/safe_types.h   \
 	include/safe_lib_errno.h
 
+if ENABLE_U8
+pkginclude_HEADERS    += \
+	include/safe_u8_lib.h
+endif
+
 # Support files
 SAFEC_INFRA = \
 	$(top_srcdir)/README.md                  \
@@ -63,6 +68,7 @@ SAFEC_INFRA = \
 	$(top_srcdir)/build-aux/version-gen.sh   \
 	$(top_srcdir)/doc/libc-overview.md     	 \
 	$(top_srcdir)/scripts                    \
+	$(top_srcdir)/mknorm.pl                  \
 	$(top_srcdir)/.version                   \
 	$(top_srcdir)/libsafec.pc.in
 

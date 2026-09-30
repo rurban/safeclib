@@ -332,6 +332,31 @@ else
 	AC_MSG_RESULT([no (default)])
 fi
 
+if test "$ac_cv_header_wctype_h" = "yes" -a "$ac_cv_header_ctype_h" = "yes"; then
+   AC_ARG_ENABLE(u8,
+	AS_HELP_STRING([--disable-u8],
+          [Disable the additional utf-8 string library API.
+	   @<:@default=no@:>@]),
+       [case "${enableval}" in
+	yes) enable_u8=true ;;
+	no)  enable_u8=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-u8]) ;;
+	esac], [enable_u8=true])
+   AC_MSG_CHECKING([for --disable-u8])
+   if test "$enable_u8" = "true" ; then
+	AC_MSG_RESULT([no] (default))
+	INSERT_U8="#define SAFECLIB_ENABLE_U8 1"
+   else
+	AC_MSG_RESULT([yes])
+	INSERT_U8="#undef SAFECLIB_ENABLE_U8"
+   fi
+else
+   enable_u8="false"
+   INSERT_U8="#undef SAFECLIB_ENABLE_U8"
+fi
+AM_CONDITIONAL(ENABLE_U8, test "$enable_u8" = "true")
+AC_SUBST(INSERT_U8)
+
 AC_ARG_ENABLE(memmax,
 	AS_HELP_STRING([--enable-memmax],
 		       [specify the largest object size allowed for the
@@ -890,6 +915,7 @@ AC_CHECK_HEADERS([stdlib.h	\
                   stdint.h	\
                   errno.h	\
                   wchar.h	\
+                  wctype.h	\
                   langinfo.h    \
                   valgrind/valgrind.h \
                   fenv.h        \
@@ -967,7 +993,7 @@ AC_TYPE_UINTPTR_T
 AC_CHECK_TYPES([long long])
 AC_TYPE_LONG_DOUBLE
 AC_TYPE_LONG_DOUBLE_WIDER
-AC_CHECK_SIZEOF(size_t)
+AC_SUBST(FALLBACK_CHAR8_T)
 AC_CHECK_TYPE([errno_t],
         [FALLBACK_ERRNO_T=""],
         [FALLBACK_ERRNO_T="typedef int errno_t;"],
@@ -979,6 +1005,7 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,
      [Define if struct tm has the tm_gmtoff member.])],
      ,
      [#include <time.h>])
+AC_CHECK_SIZEOF(size_t)
 AX_COMPILE_CHECK_SIZEOF(time_t, [#include <time.h>])
 AC_CHECK_TYPE([wchar_t],[],[],[[#include <wchar.h>]])
 AC_MSG_CHECKING(for __float128)
@@ -988,6 +1015,11 @@ AC_MSG_RESULT($have_float128)
 if test $have_float128 = yes; then
    AC_DEFINE([HAVE_FLOAT128], [1], [Define to 1 if __float128 is usable.])
 fi
+
+AC_CHECK_TYPE([char8_t],
+        [FALLBACK_CHAR8_T=""],
+        [FALLBACK_CHAR8_T="typedef unsigned char char8_t;"])
+
 AX_GCC_BUILTIN(__builtin_ctz)
 AX_GCC_BUILTIN(__builtin_constant_p)
 INSERT_CONSTANT_P="#undef HAVE___BUILTIN_CONSTANT_P"
@@ -1225,7 +1257,8 @@ AC_SUBST(INSERT_DISABLE_WCHAR)
 
 # Checks for system services
 # ===============================================
-# None
+
+AC_CHECK_TOOLS([PERL], [cperl perl])
 
 # Output to downstream tools, like automake
 # ===============================================

@@ -47,6 +47,7 @@ Makefile.in
 *.gcov
 cover_db
 /build-*
+compile_commands.json
 
 #
 # Top-level generic files
@@ -111,6 +112,10 @@ src/extwchar/un8if*.h
 /config.h*
 include/safe_config.h
 include/stamp-h2
+src/Scripts.txt
+src/GraphemeBreakProperty.txt
+src/UnicodeData.txt
+src/DerivedNormalizationProps.txt
 
 # stgit generated dirs
 patches-*
