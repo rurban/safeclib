@@ -311,6 +311,7 @@ mkdir .build-cmake
 cd .build-cmake
 echo cmake ..
 cmake ..
+make -s -j4 || exit
 make -s -j4 test || exit
 make clean
 rm -f CMakeCache.txt

@@ -140,7 +140,9 @@ int test_sprintf_s(void) {
     /*--------------------------------------------------*/
 
     GCC_DIAG_IGNORE(-Wformat)
+    GCC_DIAG_IGNORE(-Wformat-overflow)
     rc = sprintf_s(str1, LEN, "%s", NULL);
+    GCC_DIAG_RESTORE
     GCC_DIAG_RESTORE
     ERR(-ESNULLP);
     ERRNO_MSVC(0, EINVAL); // ??
@@ -499,11 +501,13 @@ int test_sprintf_s(void) {
         EXPSTR(str2, "0")
     // invalid length
     GCC_DIAG_IGNORE(-Wformat)
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
 #ifdef HAVE_STDDEF_H
     rc = sprintf_s(str2, LEN, "%t", pd);
 #else
     rc = sprintf_s(str2, LEN, "%t", str2 - str1);
 #endif
+    GCC_DIAG_RESTORE
     GCC_DIAG_RESTORE
     ERR(-1)
     }

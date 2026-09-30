@@ -70,7 +70,9 @@ int test_fprintf_s(void) {
     /*--------------------------------------------------*/
     print_msvcrt(use_msvcrt);
 
+    GCC_DIAG_IGNORE(-Wformat-overflow)
     rc = fprintf_s(NULL, "%s", (char*)NULL);
+    GCC_DIAG_RESTORE
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     NEGERR_MSVC(ESNULLP, EOF);
 
@@ -106,7 +108,9 @@ int test_fprintf_s(void) {
 
     /*--------------------------------------------------*/
 
+    GCC_DIAG_IGNORE(-Wformat-overflow)
     rc = fprintf_s(out, "%s", (char*)NULL);
+    GCC_DIAG_RESTORE
     NEGERR(ESNULLP)
 
     /*--------------------------------------------------*/

@@ -99,7 +99,9 @@ int test_snprintf_s(void) {
     strcpy(str1, "123456");
     strcpy(str2, "keep it simple");
     // note: compare to the insecure variant
+    GCC_DIAG_IGNORE(-Wformat-truncation)
     rc = snprintf(str1, 1, "%s", str2);
+    GCC_DIAG_RESTORE
     /* number of characters (not including the terminating NUL character)
        which would have been written to buffer if dmax was ignored */
 #if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
@@ -140,7 +142,9 @@ int test_snprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     // compare to the insecure variant
+    GCC_DIAG_IGNORE(-Wformat-truncation)
     rc = snprintf(str1, 2, "%s", str2);
+    GCC_DIAG_RESTORE
 #if !defined(HAVE_MINGW32) || defined(HAVE_MINGW64)
     ERR(14); /* but truncated, written only 2: k\0 */
     EXPSTR(str1, "k")

@@ -185,7 +185,9 @@ int test_vfprintf_s(void) {
 
 #if 1
     /* 0x7fffffff + 1 >INT_MAX */
+    GCC_DIAG_IGNORE(-Wformat-overflow)
     rc = printf_s("\n%2147483648d\n", INT_MAX);
+    GCC_DIAG_RESTORE
     NEGERR(ESLEMAX);
     CMP_AND_RESET(out, "");
     //#if defined(__GLIBC__)
