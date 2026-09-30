@@ -38,17 +38,23 @@
 #include "extu8/u8_private.h"
 #include "extu8/u8gbreaks.h"
 
-static int _bsearch_gbreak(const void *ptr1, const void *ptr2) {
-  const struct _u8_gbreak_t *e1 = (const struct _u8_gbreak_t *)ptr1;
-  const struct _u8_gbreak_t *e2 = (const struct _u8_gbreak_t *)ptr2;
-  return e1->gbreak > e2->gbreak ? 1 : e1->gbreak == e2->gbreak ? 0 : -1;
-}
-
 static _u8_gbreaks_t _u8_gbreak(const uint32_t cp) {
-  struct _u8_gbreak_t* e = (struct _u8_gbreak_t *)bsearch
-    (&cp, &_u8_gbreaks, sizeof(_u8_gbreaks),
-     sizeof(_u8_gbreaks[0]), _bsearch_gbreak);
-  return e ? e->gbreak : _U8_GBREAK_NONE;
+  size_t lo = 0;
+  size_t hi = sizeof(_u8_gbreaks) / sizeof(_u8_gbreaks[0]);
+  /* _u8_gbreaks is a range table sorted ascending by 'from': each entry
+     covers [from, next_entry.from). Find the rightmost entry whose
+     'from' is <= cp via binary search (plain bsearch() cannot express
+     this range-containment lookup, only exact matches). */
+  while (lo + 1 < hi) {
+    size_t mid = lo + (hi - lo) / 2;
+    if (_u8_gbreaks[mid].from <= cp)
+      lo = mid;
+    else
+      hi = mid;
+  }
+  if (_u8_gbreaks[lo].from <= cp)
+    return (_u8_gbreaks_t)_u8_gbreaks[lo].gbreak;
+  return _U8_GBREAK_NONE;
 }
 
 /**
@@ -125,21 +131,12 @@ EXPORT rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
       // Get neighboring char boundary classes (Grapheme_Cluster_Break) and compare them.
       // See the TR29 rules, named GB1 - GB9.
       char8_t *p = (char8_t *)str;
-      char8_t dest[19];
       _u8_gbreaks_t b1, b2;
       rsize_t c = 0;
       uint32_t cp1 = dec_utf8 (&p);
-      int ndecomp;
       smax -= (p - str);
-      if (!cp1 || smax <= 0)
+      if (!cp1)
         return 0;
-      /* normalize to NFD on the fly.
-         we ignore dest, just need the returned length */
-      ndecomp = _u8decomp_s (dest, 19, cp1, false);
-      if (ndecomp > 0) {
-        smax -= ndecomp;
-        p += ndecomp;
-      }
       c++; // GB1: start-of-text ÷ Any
       b1 = _u8_gbreak (cp1);
       /* Don't touch past smax */
@@ -151,12 +148,6 @@ EXPORT rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
         cp2 = dec_utf8 (&p);
         smax -= (p - z);
         b2 = _u8_gbreak (cp2);
-        /* normalize to NFD as above */
-        ndecomp = _u8decomp_s (dest, 19, cp2, false);
-        if (ndecomp > 0) {
-          smax -= ndecomp;
-          p += ndecomp;
-        }
         // TODO: Pre-compile counting valid state changes into branchless 13x13 bitmatrix.
         // The rules:
         // "Do not break between a CR and LF. Otherwise, break before and after controls."
