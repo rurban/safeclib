@@ -224,7 +224,24 @@ SAFEC_BUILT_TESTS += \
 	t_u8natcmp_s   \
 	t_u8lwr_s      \
 	t_u8upr_s     \
-	t_u8iu8i_s
+	t_u8iu8i_s    \
+	t_u8sprintf_s   \
+	t_vu8sprintf_s  \
+	t_u8snprintf_s  \
+	t_vu8snprintf_s \
+	t_u8sscanf_s    \
+	t_vu8sscanf_s   \
+	t_u8printf_s    \
+	t_fu8printf_s   \
+	t_vu8printf_s   \
+	t_vfu8printf_s
+if ENABLE_DEBUG
+SAFEC_BUILT_TESTS += \
+	t_u8scanf_s     \
+	t_vu8scanf_s    \
+	t_fu8scanf_s    \
+	t_vfu8scanf_s
+endif
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
 	t_u8towcs_s   \
@@ -571,6 +588,22 @@ t_u8natcmp_s_SOURCES           = test_u8natcmp_s.c $(SAFEC_TEST_COMMON)
 t_u8lwr_s_SOURCES              = test_u8lwr_s.c $(SAFEC_TEST_COMMON)
 t_u8upr_s_SOURCES              = test_u8upr_s.c $(SAFEC_TEST_COMMON)
 t_u8iu8i_s_SOURCES             = test_u8iu8i_s.c $(SAFEC_TEST_COMMON)
+t_u8sprintf_s_SOURCES          = test_u8sprintf_s.c $(SAFEC_TEST_COMMON)
+t_vu8sprintf_s_SOURCES         = test_vu8sprintf_s.c $(SAFEC_TEST_COMMON)
+t_u8snprintf_s_SOURCES         = test_u8snprintf_s.c $(SAFEC_TEST_COMMON)
+t_vu8snprintf_s_SOURCES        = test_vu8snprintf_s.c $(SAFEC_TEST_COMMON)
+t_u8sscanf_s_SOURCES           = test_u8sscanf_s.c $(SAFEC_TEST_COMMON)
+t_vu8sscanf_s_SOURCES          = test_vu8sscanf_s.c $(SAFEC_TEST_COMMON)
+t_u8printf_s_SOURCES           = test_u8printf_s.c $(SAFEC_TEST_COMMON)
+t_fu8printf_s_SOURCES          = test_fu8printf_s.c $(SAFEC_TEST_COMMON)
+t_vu8printf_s_SOURCES          = test_vu8printf_s.c $(SAFEC_TEST_COMMON)
+t_vfu8printf_s_SOURCES         = test_vfu8printf_s.c $(SAFEC_TEST_COMMON)
+if ENABLE_DEBUG
+t_u8scanf_s_SOURCES            = test_u8scanf_s.c $(SAFEC_TEST_COMMON)
+t_vu8scanf_s_SOURCES           = test_vu8scanf_s.c $(SAFEC_TEST_COMMON)
+t_fu8scanf_s_SOURCES           = test_fu8scanf_s.c $(SAFEC_TEST_COMMON)
+t_vfu8scanf_s_SOURCES          = test_vfu8scanf_s.c $(SAFEC_TEST_COMMON)
+endif
 if ENABLE_WCHAR
 t_u8towcs_s_SOURCES            = test_u8towcs_s.c $(SAFEC_TEST_COMMON)
 t_u8rtowcs_s_SOURCES           = test_u8rtowcs_s.c $(SAFEC_TEST_COMMON)

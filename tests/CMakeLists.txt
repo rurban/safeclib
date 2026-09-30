@@ -242,7 +242,25 @@ if(ENABLE_U8)
         t_u8lwr_s
         t_u8upr_s
         t_u8iu8i_s
+        t_u8sprintf_s
+        t_vu8sprintf_s
+        t_u8snprintf_s
+        t_vu8snprintf_s
+        t_u8sscanf_s
+        t_vu8sscanf_s
+        t_u8printf_s
+        t_fu8printf_s
+        t_vu8printf_s
+        t_vfu8printf_s
     )
+    if(ENABLE_DEBUG)
+        list(APPEND SAFEC_TESTS
+            t_u8scanf_s
+            t_vu8scanf_s
+            t_fu8scanf_s
+            t_vfu8scanf_s
+        )
+    endif()
     if(ENABLE_WCHAR)
         list(APPEND SAFEC_TESTS
             t_u8towcs_s

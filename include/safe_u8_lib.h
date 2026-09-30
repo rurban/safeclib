@@ -2,8 +2,9 @@
  * safe_u8_lib.h -- Safe C Library UTF-8 String APIs
  *
  * September 2020, Reini Urban
+ * September 2026, Reini Urban
  *
- * Copyright (c) 2020 by Reini Urban
+ * Copyright (c) 2020,2026 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person

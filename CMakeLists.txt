@@ -992,6 +992,20 @@ if(ENABLE_U8)
         src/extu8/u8upr_s.c
         src/extu8/u8width_s.c
         src/extu8/u8iu8i_s.c
+        src/extu8/u8sprintf_s.c
+        src/extu8/vu8sprintf_s.c
+        src/extu8/u8snprintf_s.c
+        src/extu8/vu8snprintf_s.c
+        src/extu8/u8sscanf_s.c
+        src/extu8/fu8scanf_s.c
+        src/extu8/u8scanf_s.c
+        src/extu8/vu8scanf_s.c
+        src/extu8/vfu8scanf_s.c
+        src/extu8/vu8sscanf_s.c
+        src/extu8/u8printf_s.c
+        src/extu8/fu8printf_s.c
+        src/extu8/vu8printf_s.c
+        src/extu8/vfu8printf_s.c
     )
     if(ENABLE_WCHAR)
         list(APPEND SAFEC_SOURCES
