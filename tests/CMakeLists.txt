@@ -253,6 +253,8 @@ if(ENABLE_U8)
             t_wctou8_s
             t_u8fc_s
             t_u8fccmp_s
+            t_u8fcu8_s
+            t_u8ifcu8_s
         )
     endif()
 endif()

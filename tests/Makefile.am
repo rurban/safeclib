@@ -234,7 +234,9 @@ SAFEC_BUILT_TESTS += \
 	t_wcrtou8_s   \
 	t_wctou8_s    \
 	t_u8fc_s       \
-	t_u8fccmp_s
+	t_u8fccmp_s    \
+	t_u8fcu8_s     \
+	t_u8ifcu8_s
 endif
 endif
 
@@ -578,6 +580,8 @@ t_wcrtou8_s_SOURCES            = test_wcrtou8_s.c $(SAFEC_TEST_COMMON)
 t_wctou8_s_SOURCES             = test_wctou8_s.c $(SAFEC_TEST_COMMON)
 t_u8fc_s_SOURCES               = test_u8fc_s.c $(SAFEC_TEST_COMMON)
 t_u8fccmp_s_SOURCES            = test_u8fccmp_s.c $(SAFEC_TEST_COMMON)
+t_u8fcu8_s_SOURCES             = test_u8fcu8_s.c $(SAFEC_TEST_COMMON)
+t_u8ifcu8_s_SOURCES            = test_u8ifcu8_s.c $(SAFEC_TEST_COMMON)
 endif
 endif
 

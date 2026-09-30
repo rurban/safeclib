@@ -243,7 +243,9 @@ EXT_U8_FILES += \
 	extu8/wcrtou8_s.c      \
 	extu8/wctou8_s.c       \
 	extu8/u8fc_s.c         \
-	extu8/u8fccmp_s.c
+	extu8/u8fccmp_s.c      \
+	extu8/u8fcu8_s.c       \
+	extu8/u8ifcu8_s.c
 endif
 endif
 

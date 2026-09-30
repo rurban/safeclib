@@ -1003,6 +1003,8 @@ if(ENABLE_U8)
             src/extu8/wctou8_s.c
             src/extu8/u8fc_s.c
             src/extu8/u8fccmp_s.c
+            src/extu8/u8fcu8_s.c
+            src/extu8/u8ifcu8_s.c
         )
     endif()
 endif()
