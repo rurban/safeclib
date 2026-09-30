@@ -241,6 +241,7 @@ if(ENABLE_U8)
         t_u8natcmp_s
         t_u8lwr_s
         t_u8upr_s
+        t_u8iu8i_s
     )
     if(ENABLE_WCHAR)
         list(APPEND SAFEC_TESTS

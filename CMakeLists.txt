@@ -991,6 +991,7 @@ if(ENABLE_U8)
         src/extu8/u8lwr_s.c
         src/extu8/u8upr_s.c
         src/extu8/u8width_s.c
+        src/extu8/u8iu8i_s.c
     )
     if(ENABLE_WCHAR)
         list(APPEND SAFEC_SOURCES

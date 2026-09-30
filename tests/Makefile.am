@@ -223,7 +223,8 @@ SAFEC_BUILT_TESTS += \
 	t_u8coll_s     \
 	t_u8natcmp_s   \
 	t_u8lwr_s      \
-	t_u8upr_s
+	t_u8upr_s     \
+	t_u8iu8i_s
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
 	t_u8towcs_s   \
@@ -567,6 +568,7 @@ t_u8coll_s_SOURCES             = test_u8coll_s.c $(SAFEC_TEST_COMMON)
 t_u8natcmp_s_SOURCES           = test_u8natcmp_s.c $(SAFEC_TEST_COMMON)
 t_u8lwr_s_SOURCES              = test_u8lwr_s.c $(SAFEC_TEST_COMMON)
 t_u8upr_s_SOURCES              = test_u8upr_s.c $(SAFEC_TEST_COMMON)
+t_u8iu8i_s_SOURCES             = test_u8iu8i_s.c $(SAFEC_TEST_COMMON)
 if ENABLE_WCHAR
 t_u8towcs_s_SOURCES            = test_u8towcs_s.c $(SAFEC_TEST_COMMON)
 t_u8rtowcs_s_SOURCES           = test_u8rtowcs_s.c $(SAFEC_TEST_COMMON)
