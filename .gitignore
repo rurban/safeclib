@@ -114,6 +114,8 @@ include/safe_config.h
 include/stamp-h2
 src/Scripts.txt
 src/GraphemeBreakProperty.txt
+src/UnicodeData.txt
+src/DerivedNormalizationProps.txt
 
 # stgit generated dirs
 patches-*

@@ -38,7 +38,7 @@
 
 #include "u8_private.h"
 
-/* generated via cperl dist/Unicode-Normalize/mkheader -ind -std */
+/* generated via mknorm.pl --type=u8 */
 #define TRUE 1
 #define FALSE 0
 #define STDCHAR unsigned char
@@ -125,8 +125,7 @@ static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, const uint32_t cp)
         }
     }
 #else
-    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
-     */
+    /* Indirect tables generated via mknorm.pl --type=u8. */
     const UN8IF_canon_PLANE_T **plane, *row;
     if (unlikely(dmax < (rsize_t)UN8IF_canon_MAXLEN + 1)) {
         *dest = 0;
@@ -220,8 +219,7 @@ static int _u8decomp_compat_s(char8_t *dest, rsize_t dmax, uint32_t cp) {
         }
     }
 #else
-    /* the new format generated with cperl Unicode-Normalize/mkheader -uni -ind -std
-     */
+    /* Indirect tables generated via mknorm.pl --type=u8. */
     const UN8IF_compat_PLANE_T **plane, *row;
     plane = UN8IF_compat[cp >> 16];
     if (!plane) { /* Only the first 3 of 16 are filled */

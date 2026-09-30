@@ -361,13 +361,12 @@ libsafec_la_LDFLAGS = \
 #	-export-symbols $(EXPORT_SYM)
 #libsafec_la_DEPENDENCIES = $(EXPORT_SYM)
 
-# u8scripts.h and u8gbreaks.h are committed, pre-generated Unicode tables
-# (like extwchar/unwifcan.h & co.), not rebuilt as part of the normal
-# build. Regenerating them requires network access to fetch Unicode's
-# Scripts.txt/GraphemeBreakProperty.txt, which isn't available (and
-# shouldn't be needed) on a plain `make`/`make check`/CI run.  Maintainers
-# who need to refresh them against a newer Unicode version can run:
+# Unicode tables are committed and not rebuilt by normal builds because
+# regeneration requires network access.  Maintainers can refresh them with:
 #   make -C src update-u8-tables
+#   make -C src update-norm-tables
+# mknorm.pl generates the UTF-8, UTF-16 wchar_t, and UTF-32 wchar_t
+# normalization header families from the same Unicode data release.
 if ENABLE_U8
 update-u8-tables:
 	cd $(srcdir) && test -e Scripts.txt || \
@@ -377,6 +376,11 @@ update-u8-tables:
 	cd $(srcdir) && $(PERL) extu8/gen-u8scripts.pl
 	cd $(srcdir) && $(PERL) extu8/gen-u8gbreaks.pl
 endif
+
+update-norm-tables:
+	cd $(top_srcdir) && $(PERL) mknorm.pl --ucd-dir=src --output-root=.
+
+.PHONY: update-norm-tables
 
 # emacs flymake-mode
 check-syntax:
