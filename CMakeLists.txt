@@ -983,6 +983,10 @@ endif()
 
 if(ENABLE_U8)
     list(APPEND SAFEC_SOURCES
+	src/extu8/un8ifcan.h
+	src/extu8/un8ifcmb.h
+	src/extu8/un8ifcmp.h
+	src/extu8/un8ifcpt.h
         src/extu8/u8cat_s.c
         src/extu8/u8icat_s.c
         src/extu8/u8norm_s.c

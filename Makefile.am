@@ -76,6 +76,27 @@ SAFEC_GENHEADERS = \
 	$(top_srcdir)/include/safe_config.h.in     \
 	$(top_srcdir)/include/safe_lib_errno.h.in  \
 	$(top_srcdir)/include/safe_types.h.in
+if ENABLE_U8
+SAFEC_GENHEADERS += \
+	$(top_srcdir)/src/extu8/un8ifcan.h \
+	$(top_srcdir)/src/extu8/un8ifcmb.h \
+	$(top_srcdir)/src/extu8/un8ifcmp.h \
+	$(top_srcdir)/src/extu8/un8ifcpt.h
+endif
+if ENABLE_WCHAR
+SAFEC_GENHEADERS += \
+	$(top_srcdir)/src/extwchar/hangul.h \
+	$(top_srcdir)/src/extwchar/unw16ifcan.h \
+	$(top_srcdir)/src/extwchar/unw16ifcpt.h \
+	$(top_srcdir)/src/extwchar/unw16ifcmb.h \
+	$(top_srcdir)/src/extwchar/unw16ifexc.h \
+	$(top_srcdir)/src/extwchar/unw16ifcmp.h \
+	$(top_srcdir)/src/extwchar/unwifcmb.h \
+	$(top_srcdir)/src/extwchar/unwifexc.h \
+	$(top_srcdir)/src/extwchar/unwifcmp.h \
+	$(top_srcdir)/src/extwchar/unwifcan.h \
+	$(top_srcdir)/src/extwchar/unwifcpt.h
+endif
 
 SAFEC_SLKM = \
 	$(top_srcdir)/tests/test_slkm.c            \
