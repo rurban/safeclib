@@ -22,7 +22,7 @@ int test_wcstou8_s(void) {
     /* ASCII-only */
 
     n = 0;
-    rc = wcstou8_s(&n, dest, LEN, L"hello", LEN);
+    rc = wcstou8_s(&n, dest, LEN, L"hello", 6);
     ERR(EOK)
     if (n != 5) {
         debug_printf("%s %u  n=%zu, expected 5\n", __FUNCTION__, __LINE__, n);
