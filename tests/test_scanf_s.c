@@ -23,7 +23,7 @@
 
 static char str1[LEN];
 static char str2[LEN];
-#define TMP "tmpscanf"
+#define TMP "tmpscanf_s"
 static FILE *stream = NULL;
 void stuff_stdin(const char *dest);
 int test_scanf_s(void);
