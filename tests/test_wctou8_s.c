@@ -44,9 +44,12 @@ int test_wctou8_s(void) {
 
     /*--------------------------------------------------*/
     /* illegal: codepoint beyond U+10FFFF */
+    /* a literal >0xffff wchar_t constant truncates on platforms with a
+       2-byte wchar_t (Windows/cygwin), so this check needs a real
+       wchar_t wide enough to hold it */
 
+#if !defined(HAVE_CT_BOS_OVR) && SIZEOF_WCHAR_T > 2
     n = 0;
-#ifndef HAVE_CT_BOS_OVR
     rc = wctou8_s(&n, dest, LEN, 0x110000);
     ERR(EILSEQ)
 #endif

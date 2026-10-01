@@ -47,7 +47,11 @@ int test_wcrtou8_s(void) {
 
     /*--------------------------------------------------*/
     /* 4-byte codepoint: U+1F600 GRINNING FACE */
+    /* a literal non-BMP wchar_t constant truncates on platforms with a
+       2-byte wchar_t (Windows/cygwin), so this needs a real wchar_t
+       that can hold it */
 
+#if SIZEOF_WCHAR_T > 2
     n = 0;
     rc = wcrtou8_s(&n, dest, LEN, 0x1F600, &ps);
     ERR(EOK)
@@ -56,6 +60,7 @@ int test_wcrtou8_s(void) {
         errs++;
     }
     EXPSTR((char *)dest, "\xF0\x9F\x98\x80")
+#endif
 
     /*--------------------------------------------------*/
     /* illegal: encoded surrogate half */
