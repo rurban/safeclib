@@ -113,7 +113,6 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
     int matches = 0;
     unsigned long long x;
     long double y;
-    off_t pos = 0;
     unsigned char scanset[257];
     size_t i, k;
     rsize_t destsize, cap;
@@ -138,7 +137,6 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
             while (isspace(shgetc(sf)))
                 ;
             shunget(sf);
-            pos += shcnt(sf);
             continue;
         }
         if (*p != '%' || p[1] == '%') {
@@ -156,7 +154,6 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     goto input_fail;
                 goto match_fail;
             }
-            pos += shcnt(sf);
             continue;
         }
 
@@ -281,7 +278,6 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
             while (isspace(shgetc(sf)))
                 ;
             shunget(sf);
-            pos += shcnt(sf);
         }
 
         shlim(sf, width);
@@ -461,7 +457,6 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
             goto fmt_fail;
         }
 
-        pos += shcnt(sf);
         if (dest)
             matches++;
     }
