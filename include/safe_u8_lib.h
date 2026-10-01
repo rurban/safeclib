@@ -95,8 +95,7 @@ EXTERN errno_t _u8ncpy_s_chk(char8_t *restrict dest, rsize_t dmax,
     _u8ncpy_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src))
 
 /* utf-8 string byte-length */
-EXTERN rsize_t _u8len_s_chk(const char8_t *str, size_t strbos)
-    BOS_CHK(str);
+EXTERN rsize_t _u8len_s_chk(const char8_t *str, size_t strbos);
 #define u8len_s(str) _u8len_s_chk(str, BOS(str))
 
 /* utf-8 string bounded byte-length */
