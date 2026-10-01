@@ -80,13 +80,8 @@ EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
     va_list ap;
     wchar_t *p;
     int ret;
-    unsigned char buf[256];
     _SAFEC_FILE sf = {
         .f = stdin,
-        .buf = buf,
-        .buf_size = sizeof buf,
-        .cookie = (void *)stdin,
-        .read = safec_wstring_read,
         .lock = -1
     };
 

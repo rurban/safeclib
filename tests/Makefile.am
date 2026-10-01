@@ -45,6 +45,7 @@ SAFEC_BUILT_TESTS = \
 	t_vsprintf_s	\
 	t_vsnprintf_s   \
 	t_sscanf_s	\
+	t_vsscanf_s	\
 	t_strerror_s	\
 	t_strerrorlen_s
 
@@ -166,7 +167,6 @@ SAFEC_BUILT_TESTS += \
 	t_memccpy_s
 endif
 
-# 	t_vsscanf_s
 SAFEC_BUILT_TESTS += 	\
 	t_fprintf_s	\
 	t_vprintf_s	\
@@ -188,9 +188,9 @@ SAFEC_BUILT_TESTS += 	\
 if ENABLE_DEBUG
 SAFEC_BUILT_TESTS += 	\
 	t_scanf_s	\
-	t_fscanf_s	
-# 	t_vfscanf_s	\
-# 	t_vscanf_s
+	t_fscanf_s	\
+	t_vfscanf_s	\
+	t_vscanf_s
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += 	\
 	t_wprintf_s	\
@@ -389,9 +389,12 @@ t_scanf_s_SOURCES             = test_scanf_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 t_fscanf_s_SOURCES            = test_fscanf_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
-#t_vfscanf_s_SOURCES           = test_vfscanf_s.c $(SAFEC_TEST_COMMON)
-#t_vscanf_s_SOURCES            = test_vscanf_s.c $(SAFEC_TEST_COMMON)
-#t_vsscanf_s_SOURCES           = test_vsscanf_s.c $(SAFEC_TEST_COMMON)
+t_vfscanf_s_SOURCES           = test_vfscanf_s.c $(SAFEC_TEST_COMMON) \
+	                        $(SAFEC_TEST_MSVCRT)
+t_vscanf_s_SOURCES            = test_vscanf_s.c $(SAFEC_TEST_COMMON) \
+	                        $(SAFEC_TEST_MSVCRT)
+t_vsscanf_s_SOURCES           = test_vsscanf_s.c $(SAFEC_TEST_COMMON) \
+	                        $(SAFEC_TEST_MSVCRT)
 t_printf_s_SOURCES            = test_printf_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 t_vfprintf_s_SOURCES          = test_vfprintf_s.c $(SAFEC_TEST_COMMON) \

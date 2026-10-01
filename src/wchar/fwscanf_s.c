@@ -80,13 +80,8 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
     va_list ap;
     wchar_t *p;
     int ret;
-    unsigned char buf[256];
     _SAFEC_FILE sf = {
         .f = stream,
-        .buf = buf,
-        .buf_size = sizeof buf,
-        .cookie = (void *)stream,
-        .read = safec_wstring_read,
         .lock = -1
     };
 

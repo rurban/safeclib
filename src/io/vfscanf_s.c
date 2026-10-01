@@ -88,7 +88,7 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
         .buf = buf,
         .buf_size = sizeof buf,
         .cookie = (void *)stream,
-        .read = safec_string_read,
+        .read = safec_stream_read,
         .lock = -1
     };
     

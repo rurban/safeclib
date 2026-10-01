@@ -87,7 +87,7 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
         .buf = buf,
         .buf_size = sizeof buf,
         .cookie = (void *)stdin,
-        .read = safec_string_read,
+        .read = safec_stream_read,
         .lock = -1
     };
 

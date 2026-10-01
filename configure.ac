@@ -332,30 +332,6 @@ else
 	AC_MSG_RESULT([no (default)])
 fi
 
-if test "$ac_cv_header_wctype_h" = "yes" -a "$ac_cv_header_ctype_h" = "yes"; then
-   AC_ARG_ENABLE(u8,
-	AS_HELP_STRING([--disable-u8],
-          [Disable the additional utf-8 string library API.
-	   @<:@default=no@:>@]),
-       [case "${enableval}" in
-	yes) enable_u8=true ;;
-	no)  enable_u8=false ;;
-	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-u8]) ;;
-	esac], [enable_u8=true])
-   AC_MSG_CHECKING([for --disable-u8])
-   if test "$enable_u8" = "true" ; then
-	AC_MSG_RESULT([no] (default))
-	INSERT_U8="#define SAFECLIB_ENABLE_U8 1"
-   else
-	AC_MSG_RESULT([yes])
-	INSERT_U8="#undef SAFECLIB_ENABLE_U8"
-   fi
-else
-   enable_u8="false"
-   INSERT_U8="#undef SAFECLIB_ENABLE_U8"
-fi
-AM_CONDITIONAL(ENABLE_U8, test "$enable_u8" = "true")
-AC_SUBST(INSERT_U8)
 
 AC_ARG_ENABLE(memmax,
 	AS_HELP_STRING([--enable-memmax],
@@ -931,6 +907,30 @@ AC_CHECK_HEADERS([stdlib.h	\
                   mbarrier.h    \
                   valgrind/valgrind.h \
                   ])
+if test "$ac_cv_header_wctype_h" = "yes" -a "$ac_cv_header_ctype_h" = "yes"; then
+   AC_ARG_ENABLE(u8,
+	AS_HELP_STRING([--disable-u8],
+          [Disable the additional utf-8 string library API.
+	   @<:@default=no@:>@]),
+       [case "${enableval}" in
+	yes) enable_u8=true ;;
+	no)  enable_u8=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --disable-u8]) ;;
+	esac], [enable_u8=true])
+   AC_MSG_CHECKING([for --disable-u8])
+   if test "$enable_u8" = "true" ; then
+	AC_MSG_RESULT([no] (default))
+	INSERT_U8="#define SAFECLIB_ENABLE_U8 1"
+   else
+	AC_MSG_RESULT([yes])
+	INSERT_U8="#undef SAFECLIB_ENABLE_U8"
+   fi
+else
+   enable_u8="false"
+   INSERT_U8="#undef SAFECLIB_ENABLE_U8"
+fi
+AM_CONDITIONAL(ENABLE_U8, test "$enable_u8" = "true")
+AC_SUBST(INSERT_U8)
 
 INSERT_SYS_TYPES_H=""
 if test "$ac_cv_header_sys_types_h" = "yes"; then

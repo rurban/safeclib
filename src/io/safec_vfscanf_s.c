@@ -35,6 +35,7 @@
 #else
 #include "safeclib_private.h"
 #include "io/safec_file.h"
+#include "io/safec_scan.h"
 #endif
 
 /* from musl: */
@@ -47,23 +48,16 @@
 #define SIZE_L 2
 #define SIZE_ll 3
 
-// CHECKME next 3
+// CHECKME next 2
 #define FLOCK(sf)
 #define FUNLOCK(sf)
 
-static void __toread(_SAFEC_FILE *sf) {
-    int n = fread(sf->buf, 1, 1, sf->f);
-    if (n != 1)
-        return;
-}
-static unsigned long long __intscan(_SAFEC_FILE *sf, int base, int zero,
-                                    unsigned long max) {
-    (void)*sf;
-    return 0;
-}
-static long double __floatscan(_SAFEC_FILE *sf, int size, int zero) {
-    (void)*sf;
-    return 0.0L;
+/* Cursor binding so safec_intscan()/safec_floatscan() can drive the
+ * same shgetc()/shunget()/shlim() machinery this scanner itself uses. */
+static int safec_ascii_cur_get(void *ctx) { return shgetc((_SAFEC_FILE *)ctx); }
+static void safec_ascii_cur_unget(void *ctx) { shunget((_SAFEC_FILE *)ctx); }
+static void safec_ascii_cur_setlim(void *ctx, long lim) {
+    shlim((_SAFEC_FILE *)ctx, lim);
 }
 
 static void safec_store_int(void *dest, int size, unsigned long long i) {
@@ -88,21 +82,6 @@ static void safec_store_int(void *dest, int size, unsigned long long i) {
     default:
         break;
     }
-}
-
-size_t safec_string_read(_SAFEC_FILE *f, unsigned char *buf, size_t len) {
-    char *src = f->cookie;
-    size_t k = len + 256;
-    char *end = memchr(src, 0, k);
-    if (end)
-        k = end - src;
-    if (k < len)
-        len = k;
-    memcpy(buf, src, len);
-    f->rpos = (void *)(src + len);
-    f->rend = (void *)(src + k);
-    f->cookie = src + k;
-    return len;
 }
 
 static void *safec_arg_n(va_list ap, unsigned int n) {
@@ -138,10 +117,12 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
     unsigned char scanset[257];
     size_t i, k;
     wchar_t wc;
+    safec_scan_cursor cur = {sf, safec_ascii_cur_get, safec_ascii_cur_unget,
+                             safec_ascii_cur_setlim};
 
     FLOCK(sf);
     if (!sf->rpos)
-        __toread(sf);
+        safec_toread(sf);
     if (!sf->rpos)
         goto input_fail;
 
@@ -419,7 +400,7 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         case 'i':
             base = 0;
         int_common:
-            x = __intscan(sf, base, 0, ULLONG_MAX);
+            x = safec_intscan(&cur, (unsigned)base, 0, ULLONG_MAX);
             if (!shcnt(sf))
                 goto match_fail;
             if (t == 'p' && dest)
@@ -435,7 +416,7 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         case 'F':
         case 'g':
         case 'G':
-            y = __floatscan(sf, size, 0);
+            y = safec_floatscan(&cur, size, 0);
             if (!shcnt(sf))
                 goto match_fail;
             if (dest)

@@ -80,12 +80,8 @@ EXPORT int vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
                       va_list ap) {
     wchar_t *p;
     int ret;
-    unsigned char buf[256];
     _SAFEC_FILE sf = {
-        .buf = buf,
-        .buf_size = sizeof buf,
         .cookie = (void *)src,
-        .read = safec_wstring_read,
         .lock = -1
     };
 
