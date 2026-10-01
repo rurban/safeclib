@@ -33,7 +33,7 @@
 # to provide a way for the user to supply additional arguments.
 ACLOCAL_AMFLAGS = -I m4 --install ${ACLOCAL_FLAGS}
 
-# Sub-directories to preform recursive make in
+# Sub-directories to perform recursive make in
 if ENABLE_TESTS
   TEST_DIR = tests
 endif

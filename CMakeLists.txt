@@ -770,6 +770,27 @@ configure_file(
 )
 add_compile_definitions(HAVE_CONFIG_H)
 
+# pkg-config variables for libsafec.pc.in (autoconf-style names).
+# Keep libdir/includedir relative to prefix so the installed .pc stays
+# relocatable (e.g. `pkg-config --define-variable=prefix=...`); only fall
+# back to an absolute path when CMAKE_INSTALL_LIBDIR/INCLUDEDIR is itself
+# absolute (not relative to CMAKE_INSTALL_PREFIX).
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "\${prefix}")
+if(IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}")
+    set(libdir "${CMAKE_INSTALL_LIBDIR}")
+else()
+    set(libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+endif()
+if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
+    set(includedir "${CMAKE_INSTALL_INCLUDEDIR}")
+else()
+    set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
+set(PACKAGE "safeclib")
+set(VERSION "${PACKAGE_VERSION}")
+set(PACKAGE_URL "${PROJECT_HOMEPAGE_URL}")
+
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/libsafec.pc.in"
     "${CMAKE_CURRENT_BINARY_DIR}/libsafec.pc"
@@ -1082,6 +1103,8 @@ if(BUILD_STATIC_LIBS)
     )
 endif()
 
+# Headers go to includedir/safeclib (matches pkginclude_HEADERS in
+# Makefile.am and the pc file's `Cflags: -I${includedir}/@PACKAGE@`).
 install(FILES
     include/safec.h
     include/safe_compile.h
@@ -1091,12 +1114,32 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_config.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_types.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/safe_lib_errno.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/safeclib
 )
 
 if(ENABLE_U8)
     install(FILES include/safe_u8_lib.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/safeclib
+    )
+endif()
+
+# check_for_unsafe_apis helper script (matches bin_SCRIPTS in Makefile.am)
+install(PROGRAMS scripts/check_for_unsafe_apis
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+# Generate and install its man1 page, as autotools does via HAVE_POD2MAN
+if(POD2MAN_EXECUTABLE)
+    install(CODE "
+        file(MAKE_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/doc/man/man1\")
+        execute_process(
+            COMMAND ${POD2MAN_EXECUTABLE} \"${CMAKE_CURRENT_SOURCE_DIR}/scripts/check_for_unsafe_apis\"
+            OUTPUT_FILE \"${CMAKE_CURRENT_BINARY_DIR}/doc/man/man1/check_for_unsafe_apis.1\"
+            COMMAND_ERROR_IS_FATAL ANY
+        )
+    ")
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/doc/man/man1/check_for_unsafe_apis.1"
+        DESTINATION ${CMAKE_INSTALL_MANDIR}/man1
     )
 endif()
 
@@ -1106,9 +1149,19 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsafec.pc
 
 # Documentation
 if(ENABLE_DOC AND DOXYGEN_FOUND)
+    # Doxyfile.in/footer.in need these (autoconf substitutes them via
+    # AC_SUBST/AC_INIT; CMake must provide the same @VAR@ names).
+    set(top_srcdir "${CMAKE_CURRENT_SOURCE_DIR}")
+    set(SAFEC_API_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
+    set(PACKAGE_STRING "${PROJECT_DESCRIPTION} ${PACKAGE_VERSION}")
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in"
         "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+        @ONLY
+    )
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/doc/footer.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/doc/footer"
         @ONLY
     )
     add_custom_target(doc
@@ -1116,6 +1169,12 @@ if(ENABLE_DOC AND DOXYGEN_FOUND)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM
+    )
+    # Generated man3 pages (requires `cmake --build . --target doc` first,
+    # matching dist_man_MANS under HAVE_DOXYGEN in Makefile.am).
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/man/man3
+        DESTINATION ${CMAKE_INSTALL_MANDIR}
+        OPTIONAL
     )
 endif()
 
