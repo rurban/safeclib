@@ -120,9 +120,13 @@ EXPORT int vu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt,
     ret = safec_vfscanf_s(&sf, "vu8sscanf_s", fmt, ap, 1);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
+        errno_t saved_errno = errno;
         char errstr[128] = "vu8sscanf_s: ";
-        strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, errno);
+        strcat(errstr, strerror(saved_errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, saved_errno);
+        /* strerror() is not guaranteed to leave errno untouched, esp.
+           for out-of-range (safeclib ES*) codes it doesn't recognize */
+        errno = saved_errno;
     }
 
     return ret;

@@ -128,9 +128,13 @@ EXPORT int u8sscanf_s(const char8_t *restrict buffer,
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
+        errno_t saved_errno = errno;
         char errstr[128] = "u8sscanf_s: ";
-        strcat(errstr, strerror(errno));
-        invoke_safe_str_constraint_handler(errstr, NULL, errno);
+        strcat(errstr, strerror(saved_errno));
+        invoke_safe_str_constraint_handler(errstr, NULL, saved_errno);
+        /* strerror() is not guaranteed to leave errno untouched, esp.
+           for out-of-range (safeclib ES*) codes it doesn't recognize */
+        errno = saved_errno;
     }
 
     return ret;
