@@ -120,7 +120,7 @@ EXPORT errno_t _wcstou8_s_chk(size_t *restrict retvalp, char8_t *restrict dest,
         handle_error((char *)dest, dmax, "wcstou8_s: src is null", ESNULLP);
         return RCNEGATE(ESNULLP);
     }
-    if (unlikely((const wchar_t *)dest == src)) {
+    if (unlikely((const void *)dest == (const void *)src)) {
         handle_error((char *)dest, dmax, "wcstou8_s: dest overlapping objects",
                      ESOVRLP);
         return RCNEGATE(ESOVRLP);
