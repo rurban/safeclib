@@ -126,7 +126,7 @@ int test_vsprintf_s(void) {
 
     rc = vtprintf_s(str1, (RSIZE_MAX_STR + 1), "%s", str2);
     ERR_MSVC(-ESLEMAX, 0);
-    ERRNO(0);
+    ERRNO_MSVC(0, 0);
 
     /*--------------------------------------------------*/
 

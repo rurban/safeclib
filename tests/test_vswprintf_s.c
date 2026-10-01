@@ -21,13 +21,20 @@
 #define LEN (128)
 
 #undef ERRNO_MSVC
+#define ERRNO_BROKEN(n)                                                        \
+    if (errno != (n)) {                                                        \
+        debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__,       \
+                     (int)errno);                                             \
+        if (!broken_errno)                                                     \
+            errs++;                                                           \
+    }
 #define ERRNO_MSVC(rc, err)                                                    \
     if (!use_msvcrt) {                                                         \
         ERR(rc);                                                               \
-        ERRNO(0);                                                              \
+        ERRNO_BROKEN(0);                                                       \
     } else {                                                                   \
         ERR(0);                                                                \
-        ERRNO(err);                                                            \
+        ERRNO_BROKEN(err);                                                     \
     }
 
 static wchar_t str1[LEN];

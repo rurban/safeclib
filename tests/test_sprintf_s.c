@@ -106,7 +106,7 @@ int test_sprintf_s(void) {
     EXPECT_BOS("dest overflow")
     rc = sprintf_s(str1, RSIZE_MAX_STR + 1, "%s", str2);
     ERR_MSVC(-ESLEMAX, 0);
-    ERRNO(0);
+    ERRNO_MSVC(0, 0);
 
     /*--------------------------------------------------*/
 

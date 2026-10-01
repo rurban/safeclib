@@ -18,13 +18,20 @@
 #include "test_msvcrt.h"
 
 #undef ERRNO_MSVC
+#define ERRNO_BROKEN(n)                                                        \
+    if (errno != (n)) {                                                        \
+        debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__,       \
+                     (int)errno);                                             \
+        if (!broken_errno)                                                     \
+            errs++;                                                           \
+    }
 #define ERRNO_MSVC(rc, err)                                                    \
     if (!use_msvcrt) {                                                         \
         ERR(rc);                                                               \
-        ERRNO(0);                                                              \
+        ERRNO_BROKEN(0);                                                       \
     } else {                                                                   \
         ERR(0);                                                                \
-        ERRNO(err);                                                            \
+        ERRNO_BROKEN(err);                                                     \
     }
 
 #define LEN (128)
@@ -189,7 +196,7 @@ int main(void) {
 
     rc = swprintf_s(str1, 8, L"%ls", &str1[7]);
     if (rc) {
-        ERRNO(0);
+        ERRNO_MSVC(0, 0);
         if (rc != -ESNOSPC) {
             ERRNO_MSVC(-EOVERFLOW, ERANGE);
             /* darwin throws errno 84 EOVERFLOW */
