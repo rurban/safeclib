@@ -34,8 +34,10 @@ int test_u8set_s(void) {
 #endif
 
     strcpy((char *)str1, "abc");
+#ifndef HAVE_CT_BOS_OVR
     rc = u8set_s(str1, LEN, 256);
     ERR(ESLEMAX)
+#endif
 
     /*--------------------------------------------------*/
 

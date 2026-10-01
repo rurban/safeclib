@@ -420,7 +420,7 @@ EXTERN errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                                        const char8_t *restrict src,
                                        rsize_t *restrict lenp,
                                        const bool iscompat,
-                                       const size_t destbos) BOSW_CHK(dest)
+                                       const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src);
 #define u8norm_decompose_s(dest, dmax, src, lenp, iscompat)                   \
     _u8norm_decompose_s_chk(dest, dmax, src, lenp, iscompat, BOS(dest))
@@ -429,7 +429,7 @@ EXTERN errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
 EXTERN errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
                                      const char8_t *restrict src,
                                      const rsize_t len, const size_t destbos)
-    BOSW_CHK(dest) BOSW_OVR2(src, len);
+    BOS_CHK(dest) BOS_OVR2(src, len);
 #define u8norm_reorder_s(dest, dmax, src, len)                                \
     _u8norm_reorder_s_chk(dest, dmax, src, len, BOS(dest))
 
@@ -437,7 +437,7 @@ EXTERN errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
 EXTERN errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                                      const char8_t *restrict src,
                                      rsize_t *restrict lenp, bool iscontig,
-                                     const size_t destbos) BOSW_CHK(dest)
+                                     const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(lenp);
 #define u8norm_compose_s(dest, dmax, src, lenp, iscontig)                     \
     _u8norm_compose_s_chk(dest, dmax, src, lenp, iscontig, BOS(dest))
@@ -459,7 +459,7 @@ typedef enum wcsnorm_mode wcsnorm_mode_t;
 EXTERN errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
                              const char8_t *restrict src,
                              const wcsnorm_mode_t mode, rsize_t *restrict lenp,
-                             const size_t destbos) BOSW_CHK(dest)
+                             const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src);
 #define u8norm_s(dest, dmax, src, mode, lenp)                                 \
     _u8norm_s_chk(dest, dmax, src, mode, lenp, BOS(dest))

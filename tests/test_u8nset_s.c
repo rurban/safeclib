@@ -34,12 +34,16 @@ int test_u8nset_s(void) {
 #endif
 
     strcpy((char *)str1, "abc");
+#ifndef HAVE_CT_BOS_OVR
     rc = u8nset_s(str1, LEN, 256, 3);
     ERR(ESLEMAX)
+#endif
 
     strcpy((char *)str1, "abc");
+#ifndef HAVE_CT_BOS_OVR
     rc = u8nset_s(str1, 5, 'x', 6);
     ERR(ESNOSPC)
+#endif
 
     /*--------------------------------------------------*/
 
