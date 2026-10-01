@@ -17,7 +17,7 @@ jobs:
         CONF_ARGS:
           -
           - --disable-tests
-          - --disable-wchar
+          - --disable-wchar --disable-u8
           - --disable-u8 --enable-unsafe --enable-norm-compat
           - --enable-unsafe --enable-norm-compat
           - --enable-debug --enable-unsafe --enable-norm-compat --enable-gcov
@@ -31,7 +31,7 @@ jobs:
     - run: sudo apt-get install doxygen libtext-diff-perl pkg-config
     - run: sh build-aux/autogen.sh
     - run: ./configure ${{ matrix.CONF_ARGS }}
-    - if: matrix.CONF_ARGS == '--disable-wchar'
+    - if: matrix.CONF_ARGS == '--disable-wchar --disable-u8'
       name: make kernel module
       run: make -f Makefile.kernel && make clean
     - run: make

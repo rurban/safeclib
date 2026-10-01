@@ -7,9 +7,12 @@
 
 #include "test_private.h"
 #include "safe_u8_lib.h"
+#define HAVE_NATIVE 0
+#include "test_msvcrt.h"
 
 #define LEN (128)
 
+#ifdef HAVE_WCHAR_H
 int test_u8towcs_s(void);
 
 int test_u8towcs_s(void) {
@@ -78,5 +81,14 @@ int test_u8towcs_s(void) {
 
     return (errs);
 }
+#endif
 
-int main(void) { return (test_u8towcs_s()); }
+#ifndef __KERNEL__
+int main(void) {
+#ifdef HAVE_WCHAR_H
+    return (test_u8towcs_s());
+#else
+    return 0;
+#endif
+}
+#endif
