@@ -75,6 +75,7 @@ int test_u8tok_s(void) {
     /*--------------------------------------------------*/
     /* runtime-constraint violations */
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dmaxp")
     tok = u8tok_s(str1, NULL, (char8_t *)",", &ptr);
     if (tok != NULL || errno != ESNULLP) {
@@ -82,6 +83,7 @@ int test_u8tok_s(void) {
                      __FUNCTION__, __LINE__, (void *)tok, errno);
         errs++;
     }
+#endif
 
     dmax = 0;
     EXPECT_BOS("empty *dmaxp")
@@ -94,20 +96,24 @@ int test_u8tok_s(void) {
 
     dmax = 5;
     EXPECT_BOS("empty delim")
+#ifndef HAVE_CT_BOS_OVR
     tok = u8tok_s(str1, &dmax, NULL, &ptr);
     if (tok != NULL || errno != ESNULLP) {
         debug_printf("%s %u  expected NULL/ESNULLP, got tok=%p errno=%d\n",
                      __FUNCTION__, __LINE__, (void *)tok, errno);
         errs++;
     }
+#endif
 
     EXPECT_BOS("empty ptr")
+#ifndef HAVE_CT_BOS_OVR
     tok = u8tok_s(str1, &dmax, (char8_t *)",", NULL);
     if (tok != NULL || errno != ESNULLP) {
         debug_printf("%s %u  expected NULL/ESNULLP, got tok=%p errno=%d\n",
                      __FUNCTION__, __LINE__, (void *)tok, errno);
         errs++;
     }
+#endif
 
     /*--------------------------------------------------*/
 
