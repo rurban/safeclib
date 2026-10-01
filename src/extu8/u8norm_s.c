@@ -435,8 +435,8 @@ static uint8_t _combin_class(uint32_t cp) {
  * @def u8norm_decompose_s(dest,dmax,src,lenp,iscompat)
  * @brief
  *    Converts the utf-8 string to the canonical NFD normalization,
- *    as defined in the latest Unicode standard, latest 10.0.  The conversion
- *    stops at the first null or after dmax characters.
+ *    as defined in the latest Unicode standard, \see SAFECLIB_UNICODE_VERSION.
+ *    The conversion stops at the first null or after dmax characters.
  *
  * @details
  *    Composed characters are checked for the left-hand-size of the
@@ -668,8 +668,8 @@ done:
  * @def u8norm_reorder_s(dest,dmax,src,len)
  * @brief
  *    Reorder all decomposed sequences in a utf-8 string to NFD,
- *    as defined in the latest Unicode standard, latest 10.0. The conversion
- *    stops at the first null or after dmax characters.
+ *    as defined in the latest Unicode standard, \see SAFECLIB_UNICODE_VERSION.
+ *    The conversion stops at the first null or after dmax characters.
  *
  * @param[out]  dest      utf-8 string to hold the result
  * @param[in]   dmax      maximum result buffer size
@@ -809,8 +809,8 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
  * @def u8norm_compose_s(dest,dmax,src,lenp,iscontig)
  * @brief
  *    Combine all decomposed sequences in a utf-8 string to NFC,
- *    as defined in the latest Unicode standard, latest 13.0. The conversion
- *    stops at the first null or after dmax characters.
+ *    as defined in the latest Unicode standard, \see SAFECLIB_UNICODE_VERSION.
+ *    The conversion stops at the first null or after dmax characters.
  *
  * @param[out]  dest      utf-8 string to hold the result
  * @param[in]   dmax      maximum result buffer size
@@ -1014,8 +1014,8 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
  * @def u8norm_s(dest,dmax,src,mode,lenp)
  * @brief
  *    Converts the utf-8 string to the canonical NFC or NFD normalization,
- *    as defined in the latest Unicode standard, latest 13.0.  The conversion
- *    stops at the first null or after dmax characters.
+ *    as defined in the latest Unicode standard, \see SAFECLIB_UNICODE_VERSION.
+ *    The conversion stops at the first null or after dmax characters.
  *
  * @details
  *    The default mode should always be NFD.
