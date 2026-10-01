@@ -152,23 +152,24 @@ static void *safec_arg_n(va_list ap, unsigned int n) {
 }
 
 static int safec_in_wset(const wchar_t *set, int c) {
-    int j;
+    wchar_t j;
+    const wchar_t wc = (wchar_t) c;
     const wchar_t *p = set;
     if (*p == '-') {
-        if (c == '-')
+        if (wc == '-')
             return 1;
         p++;
     } else if (*p == ']') {
-        if (c == ']')
+        if (wc == ']')
             return 1;
         p++;
     }
     for (; *p && *p != ']'; p++) {
         if (*p == '-' && p[1] && p[1] != ']')
             for (j = p++ [-1]; j < *p; j++)
-                if (c == j)
+                if (wc == j)
                     return 1;
-        if (c == *p)
+        if (wc == *p)
             return 1;
     }
     return 0;
@@ -222,7 +223,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
             } else {
                 c = shgetwc(sf);
             }
-            if (c != *p) {
+            if (c != (int)*p) {
                 shungetwc(c, sf);
                 if (c < 0)
                     goto input_fail;
