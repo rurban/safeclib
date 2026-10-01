@@ -190,7 +190,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
     int matches = 0;
     unsigned long long x;
     long double y;
-    off_t pos = 0, cnt;
+    off_t cnt;
     static const wchar_t *size_pfx[] = {L"hh", L"h", L"", L"l", L"L", L"ll"};
     char numfmt[3 * sizeof(int) + 10];
     wchar_t wnumfmt[3 * sizeof(int) + 10];
@@ -211,7 +211,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
             while (iswspace(p[1]))
                 p++;
             while (iswspace((c = shgetwc(sf))))
-                pos++;
+                ;
             shungetwc(c, sf);
             continue;
         }
@@ -219,7 +219,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
             if (*p == '%') {
                 p++;
                 while (iswspace((c = shgetwc(sf))))
-                    pos++;
+                    ;
             } else {
                 c = shgetwc(sf);
             }
@@ -229,7 +229,6 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                     goto input_fail;
                 goto match_fail;
             }
-            pos++;
             continue;
         }
 
@@ -340,7 +339,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
         if (t != 'n') {
             if (t != '[' && (t | 32) != 'c')
                 while (iswspace((c = shgetwc(sf))))
-                    pos++;
+                    ;
             else
                 c = shgetwc(sf);
             if (c < 0)
@@ -448,7 +447,6 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                         s = news;
                     }
                 }
-                pos++;
                 width -= (width > 0);
                 gotmatch = 1;
             }
@@ -505,7 +503,6 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                     goto input_fail;
                 else if (!cnt)
                     goto match_fail;
-                pos += cnt;
             } else {
                 /* In-memory wchar_t* source: no real FILE* to hand to
                  * fscanf(), so drive the shared numeric engine through
@@ -558,7 +555,6 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                         }
                     break;
                 }
-                pos += wctx.cnt;
             }
             break;
         default:
