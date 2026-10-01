@@ -51,6 +51,69 @@ int test_u8sscanf_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* malformed UTF-8 must be rejected, not silently scanned */
+    strcpy((char *)str1, "\x80zzz");
+    rc = u8sscanf_s(str1, " %d", &num);
+    ERREOF(EILSEQ);
+
+    strcpy((char *)str1, "abc\xC3");
+    rc = u8sscanf_s(str1, " %d", &num);
+    ERREOF(EILSEQ);
+
+    strcpy((char *)str1, "\xC0\xAF");
+    rc = u8sscanf_s(str1, " %d", &num);
+    ERREOF(EILSEQ);
+
+    /*--------------------------------------------------*/
+
+    /* %s followed by another real conversion used to misconsume the
+     * orphaned destination-size argument as that conversion's
+     * destination pointer and segfault; must now scan both safely. */
+    strcpy((char *)str1, "caf 42");
+    GCC_DIAG_IGNORE(-Wformat)
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = u8sscanf_s(str1, "%s %d", str2, LEN, &num);
+    GCC_DIAG_RESTORE
+    ERR(2);
+    ERRNO(0);
+    EXPSTR(str2, "caf");
+    if (num != 42) {
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__, num);
+        errs++;
+    }
+
+    /* a destination too small for the input must be rejected, not
+     * overflowed */
+    strcpy((char *)str1, "toolong");
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = u8sscanf_s(str1, "%s", str2, (rsize_t)2);
+    GCC_DIAG_RESTORE
+    ERREOF(ESNOSPC);
+
+    /* a zero destination size is a constraint violation, not UB */
+    strcpy((char *)str1, "x");
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = u8sscanf_s(str1, "%s", str2, (rsize_t)0);
+    GCC_DIAG_RESTORE
+    ERREOF(ESZEROL);
+
+    /* %c with an exact 1-element destination still works */
+    strcpy((char *)str1, "Z");
+    {
+        char c1 = 0;
+        GCC_DIAG_IGNORE(-Wformat-extra-args)
+        rc = u8sscanf_s(str1, "%c", &c1, (rsize_t)1);
+        GCC_DIAG_RESTORE
+        ERR(1);
+        ERRNO(0);
+        if (c1 != 'Z') {
+            debug_printf("%s %u wrong arg: %c\n", __FUNCTION__, __LINE__, c1);
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

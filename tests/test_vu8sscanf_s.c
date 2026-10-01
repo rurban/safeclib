@@ -64,6 +64,60 @@ int test_vu8sscanf_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* malformed UTF-8 must be rejected, not silently scanned */
+    strcpy((char *)str1, "\x80zzz");
+    rc = vtu8sscanf_s(str1, " %d", &num);
+    ERREOF(EILSEQ);
+
+    strcpy((char *)str1, "abc\xC3");
+    rc = vtu8sscanf_s(str1, " %d", &num);
+    ERREOF(EILSEQ);
+
+    strcpy((char *)str1, "\xC0\xAF");
+    rc = vtu8sscanf_s(str1, " %d", &num);
+    ERREOF(EILSEQ);
+
+    /*--------------------------------------------------*/
+
+    /* %s followed by another real conversion used to misconsume the
+     * orphaned destination-size argument as that conversion's
+     * destination pointer and segfault; must now scan both safely. */
+    strcpy((char *)str1, "caf 42");
+    rc = vtu8sscanf_s(str1, "%s %d", str2, LEN, &num);
+    ERR(2);
+    ERRNO(0);
+    EXPSTR(str2, "caf");
+    if (num != 42) {
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__, num);
+        errs++;
+    }
+
+    /* a destination too small for the input must be rejected, not
+     * overflowed */
+    strcpy((char *)str1, "toolong");
+    rc = vtu8sscanf_s(str1, "%s", str2, (rsize_t)2);
+    ERREOF(ESNOSPC);
+
+    /* a zero destination size is a constraint violation, not UB */
+    strcpy((char *)str1, "x");
+    rc = vtu8sscanf_s(str1, "%s", str2, (rsize_t)0);
+    ERREOF(ESZEROL);
+
+    /* %c with an exact 1-element destination still works */
+    strcpy((char *)str1, "Z");
+    {
+        char c1 = 0;
+        rc = vtu8sscanf_s(str1, "%c", &c1, (rsize_t)1);
+        ERR(1);
+        ERRNO(0);
+        if (c1 != 'Z') {
+            debug_printf("%s %u wrong arg: %c\n", __FUNCTION__, __LINE__, c1);
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 
