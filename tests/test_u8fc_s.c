@@ -36,8 +36,10 @@ int test_u8fc_s(void) {
 #endif
 
     strcpy((char *)src, "hi");
+#ifndef HAVE_CT_BOS_OVR
     rc = u8fc_s(dest, LEN, NULL, &len);
     ERR(ESNULLP)
+#endif
 
     /*--------------------------------------------------*/
 

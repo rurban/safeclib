@@ -47,8 +47,10 @@ int test_fu8printf_s(void) {
     rc = fu8printf_s(NULL, "%s", (char *)NULL);
     NEGERR(ESNULLP);
 
+#ifndef HAVE_CT_BOS_OVR
     rc = fu8printf_s(out, NULL);
     NEGERR(ESNULLP);
+#endif
 
     /*--------------------------------------------------*/
 

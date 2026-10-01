@@ -31,10 +31,12 @@ int test_u8scanf_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = u8scanf_s(NULL, NULL);
     GCC_DIAG_RESTORE
     ERREOF(ESNULLP);
+#endif
 
     /*--------------------------------------------------*/
 

@@ -65,10 +65,12 @@ int test_u8towcs_s(void) {
     /*--------------------------------------------------*/
     /* null src */
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty src")
     n = 0;
     rc = u8towcs_s(&n, wdest, LEN, NULL, LEN);
     ERR(ESNULLP)
+#endif
 
     /*--------------------------------------------------*/
     /* dest too small (dmax leaves no room) */

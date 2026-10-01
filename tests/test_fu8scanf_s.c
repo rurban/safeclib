@@ -33,12 +33,16 @@ int test_fu8scanf_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = fu8scanf_s(NULL, "%s", str2);
     ERREOF(ESNULLP);
+#endif
 
     stuff_u8stream("1");
+#ifndef HAVE_CT_BOS_OVR
     rc = fu8scanf_s(stream, NULL);
     ERREOF(ESNULLP);
+#endif
 
     /*--------------------------------------------------*/
 

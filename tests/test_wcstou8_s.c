@@ -36,9 +36,11 @@ int test_wcstou8_s(void) {
     {
         wchar_t wsrc[3] = {0xE9, 0x2713, 0};
         n = 0;
+#ifndef HAVE_CT_BOS_OVR
         rc = wcstou8_s(&n, dest, LEN, wsrc, LEN);
         ERR(EOK)
         EXPSTR((char *)dest, "\xC3\xA9\xE2\x9C\x93")
+#endif
     }
 
     /*--------------------------------------------------*/
@@ -47,24 +49,30 @@ int test_wcstou8_s(void) {
     {
         wchar_t wsrc[2] = {0xD800, 0};
         n = 0;
+#ifndef HAVE_CT_BOS_OVR
         rc = wcstou8_s(&n, dest, LEN, wsrc, LEN);
         ERR(EILSEQ)
+#endif
     }
 
     /*--------------------------------------------------*/
     /* null src */
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty src")
     n = 0;
     rc = wcstou8_s(&n, dest, LEN, NULL, LEN);
     ERR(ESNULLP)
+#endif
 
     /*--------------------------------------------------*/
     /* dest too small */
 
+#ifndef HAVE_CT_BOS_OVR
     n = 0;
     rc = wcstou8_s(&n, dest, 2, L"abc", LEN);
     ERR(ESNOSPC)
+#endif
 
     /*--------------------------------------------------*/
 

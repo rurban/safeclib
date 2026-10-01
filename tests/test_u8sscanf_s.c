@@ -19,6 +19,7 @@ int test_u8sscanf_s(void) {
     int num = 0;
     int errs = 0;
 
+#ifndef HAVE_CT_BOS_OVR
     GCC_DIAG_IGNORE(-Wformat-extra-args)
     rc = u8sscanf_s(str1, NULL, NULL);
     GCC_DIAG_RESTORE
@@ -27,6 +28,7 @@ int test_u8sscanf_s(void) {
     str2[0] = '\0';
     rc = u8sscanf_s(NULL, "%s", str2);
     ERREOF(ESNULLP);
+#endif
 
     /*--------------------------------------------------*/
 

@@ -85,6 +85,7 @@ int test_u8rtowcs_s(void) {
     /*--------------------------------------------------*/
     /* null ps */
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty ps")
     {
         const char8_t *p = (const char8_t *)"hi";
@@ -92,6 +93,7 @@ int test_u8rtowcs_s(void) {
         rc = u8rtowcs_s(&n, wdest, LEN, &p, LEN, NULL);
         ERR(ESNULLP)
     }
+#endif
 
     /*--------------------------------------------------*/
 

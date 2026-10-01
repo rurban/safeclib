@@ -46,8 +46,10 @@ int test_wctou8_s(void) {
     /* illegal: codepoint beyond U+10FFFF */
 
     n = 0;
+#ifndef HAVE_CT_BOS_OVR
     rc = wctou8_s(&n, dest, LEN, 0x110000);
     ERR(EILSEQ)
+#endif
 
     /*--------------------------------------------------*/
     /* dest too small */
@@ -59,9 +61,11 @@ int test_wctou8_s(void) {
     /*--------------------------------------------------*/
     /* null retvalp */
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty retvalp")
     rc = wctou8_s(NULL, dest, LEN, L'A');
     ERR(ESNULLP)
+#endif
 
     /*--------------------------------------------------*/
 

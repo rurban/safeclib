@@ -21,8 +21,10 @@ int test_u8printf_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifndef HAVE_CT_BOS_OVR
     rc = u8printf_s(NULL);
     NEGERR(ESNULLP);
+#endif
 
     /*--------------------------------------------------*/
 

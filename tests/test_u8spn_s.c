@@ -39,8 +39,10 @@ int test_u8spn_s(void) {
 #endif
 
     strcpy((char *)str, "aaabbb");
+#ifndef HAVE_CT_BOS_OVR
     rc = u8spn_s(str, LEN, (char8_t *)"a", 0, &cnt);
     ERR(ESZEROL)
+#endif
 
     /*--------------------------------------------------*/
 

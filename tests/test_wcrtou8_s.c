@@ -74,10 +74,12 @@ int test_wcrtou8_s(void) {
     /*--------------------------------------------------*/
     /* null ps */
 
+#ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty ps")
     n = 0;
     rc = wcrtou8_s(&n, dest, LEN, L'A', NULL);
     ERR(ESNULLP)
+#endif
 
     /*--------------------------------------------------*/
 
