@@ -48,11 +48,8 @@
 #ifdef HAVE_NORM_COMPAT
 #include "un8ifcpt.h" /* for NFKD/NFKC Compat. Decomposition. */
 #endif
-#ifndef SAFECLIB_DISABLE_WCHAR
-bool isExclusion (uint32_t uv);
-#else
-#include "../extwchar/unwifexc.h"
-#endif
+#include "un8ifexc.h" /* for NFC Composite exclusions, Singletons,
+                          non-starter decompositions, Comp2nd */
 /* Korean/Hangul has special (easy) normalization rules */
 #include "../extwchar/hangul.h"
 

@@ -117,7 +117,7 @@ my $type = $types[0];
 my ($is_uni, $is_utf16, $relative_prefix, $write_exc);
 if ($type eq 'u8') {
     ($is_uni, $is_utf16, $relative_prefix, $write_exc) =
-        (0, 0, [qw(src extu8 un8if)], 0);
+        (0, 0, [qw(src extu8 un8if)], 1);
 } elsif ($type eq 'w16') {
     ($is_uni, $is_utf16, $relative_prefix, $write_exc) =
         (1, 1, [qw(src extwchar unw16if)], 1);
@@ -436,17 +436,26 @@ foreach my $tbl (@boolfunc) {
     my $type = $tbl->{type};
     my $name = $tbl->{name};
     printf "/* %s */\n", $tbl->{desc};
-    # decl
-    if ($std) {
-        print "$type is$name (uint32_t uv);\n\n";
-    } else {
-        print "$type is$name (UV uv);\n\n";
+    # The u8 copies are file-local (only u8norm_s.c includes un8ifexc.h),
+    # so emit them static to avoid duplicate symbols with the global
+    # w16/w32 copies from unw*ifexc.h included by wcsnorm_s.c. u8_private.h
+    # (included first) provides U8_UNUSED for the unused helpers.
+    my $is_u8 = !$uni && !$utf16;
+    my $static = $is_u8 ? "static " : "";
+    my $unused = $is_u8 ? " U8_UNUSED" : "";
+    # decl (a static definition is its own declaration)
+    if (!$is_u8) {
+        if ($std) {
+            print "$type is$name (uint32_t uv);\n\n";
+        } else {
+            print "$type is$name (UV uv);\n\n";
+        }
     }
     # impl
     if ($std) {
-        print "$type is$name (uint32_t uv)\n{\n  return\n\t";
+        print "$static$type$unused is$name (uint32_t uv)\n{\n  return\n\t";
     } else {
-        print "$type is$name (UV uv)\n{\n  return\n\t";
+        print "$static$type$unused is$name (UV uv)\n{\n  return\n\t";
     }
 
     while (@temp) {

@@ -828,6 +828,12 @@ set(SAFEC_SOURCES
     src/str/snprintf_s.c
     src/str/vsnprintf_s.c
     src/str/strerror_s.c
+    src/io/safec_scan.h
+    src/io/safec_shgetc.c
+    src/io/safec_intscan.c
+    src/io/safec_floatscan.c
+    src/io/safec_vfscanf_s.c
+    src/io/safec_vfwscanf_s.c
     src/io/sscanf_s.c
     src/io/fscanf_s.c
     src/io/scanf_s.c
@@ -915,6 +921,7 @@ if(ENABLE_EXTENSIONS)
         src/extstr/strtolowercase_s.c
         src/extstr/strtouppercase_s.c
         src/extstr/strzero_s.c
+        src/extwchar/towctrans.c
     )
 endif()
 
@@ -963,7 +970,6 @@ if(ENABLE_WCHAR)
 	src/extwchar/wcslwr_s.c
 	src/extwchar/wcsupr_s.c
 	src/extwchar/towfc_s.c
-	src/extwchar/towctrans.c
 	src/extwchar/wcsfc_s.c
 	src/extwchar/hangul.h
 	src/extwchar/unw16ifcan.h
@@ -987,6 +993,7 @@ if(ENABLE_U8)
 	src/extu8/un8ifcmb.h
 	src/extu8/un8ifcmp.h
 	src/extu8/un8ifcpt.h
+	src/extu8/un8ifexc.h
         src/extu8/u8cat_s.c
         src/extu8/u8icat_s.c
         src/extu8/u8norm_s.c
@@ -1017,6 +1024,11 @@ if(ENABLE_U8)
         src/extu8/u8upr_s.c
         src/extu8/u8width_s.c
         src/extu8/u8iu8i_s.c
+        src/extu8/u8fc_tbl.c
+        src/extu8/u8fc_s.c
+        src/extu8/u8fccmp_s.c
+        src/extu8/u8fcu8_s.c
+        src/extu8/u8ifcu8_s.c
         src/extu8/u8sprintf_s.c
         src/extu8/vu8sprintf_s.c
         src/extu8/u8snprintf_s.c
@@ -1040,10 +1052,6 @@ if(ENABLE_U8)
             src/extu8/wcsrtou8_s.c
             src/extu8/wcrtou8_s.c
             src/extu8/wctou8_s.c
-            src/extu8/u8fc_s.c
-            src/extu8/u8fccmp_s.c
-            src/extu8/u8fcu8_s.c
-            src/extu8/u8ifcu8_s.c
         )
     endif()
 endif()

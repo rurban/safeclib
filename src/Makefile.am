@@ -184,7 +184,6 @@ STD_WCHAR_FILES += \
 	extwchar/wcslwr_s.c	\
 	extwchar/wcsupr_s.c	\
 	extwchar/towfc_s.c	\
-	extwchar/towctrans.c	\
 	extwchar/wcsfc_s.c	\
 	extwchar/hangul.h	\
 	extwchar/unw16ifcan.h	\
@@ -204,36 +203,15 @@ if ENABLE_U8
 EXT_U8_FILES = \
 	extu8/u8cat_s.c        \
 	extu8/u8icat_s.c       \
-	extu8/u8norm_s.c       \
-	extu8/u8script.c       \
-	extu8/u8scripts.h      \
 	extu8/u8cpy_s.c        \
 	extu8/u8icpy_s.c       \
 	extu8/u8ncpy_s.c       \
 	extu8/u8ncat_s.c       \
 	extu8/u8nlen_s.c       \
 	extu8/u8len_s.c        \
-	extu8/u8zero_s.c       \
-	extu8/u8set_s.c        \
-	extu8/u8nset_s.c       \
 	extu8/u8tok_s.c        \
 	extu8/u8error_s.c      \
-	extu8/u8chr_s.c        \
-	extu8/u8rchr_s.c       \
-	extu8/u8cspn_s.c       \
-	extu8/u8spn_s.c        \
-	extu8/u8pbrk_s.c       \
 	extu8/u8str_s.c        \
-	extu8/u8u8_s.c         \
-	extu8/u8cmp_s.c        \
-	extu8/u8icmp_s.c       \
-	extu8/u8coll_s.c       \
-	extu8/u8natcmp_s.c     \
-	extu8/u8lwr_s.c        \
-	extu8/u8upr_s.c        \
-	extu8/u8gbreaks.h      \
-	extu8/u8width_s.c      \
-	extu8/u8iu8i_s.c       \
 	extu8/u8sprintf_s.c    \
 	extu8/vu8sprintf_s.c   \
 	extu8/u8snprintf_s.c   \
@@ -248,7 +226,6 @@ EXT_U8_FILES = \
 	extu8/fu8printf_s.c    \
 	extu8/vu8printf_s.c    \
 	extu8/vfu8printf_s.c
-
 if ENABLE_WCHAR
 EXT_U8_FILES += \
 	extu8/u8towcs_s.c      \
@@ -256,8 +233,34 @@ EXT_U8_FILES += \
 	extu8/wcstou8_s.c      \
 	extu8/wcsrtou8_s.c     \
 	extu8/wcrtou8_s.c      \
-	extu8/wctou8_s.c       \
+	extu8/wctou8_s.c
+endif
+if ENABLE_EXTS
+EXT_U8_FILES += \
+	extu8/u8chr_s.c        \
+	extu8/u8rchr_s.c       \
+	extu8/u8cspn_s.c       \
+	extu8/u8zero_s.c       \
+	extu8/u8set_s.c        \
+	extu8/u8nset_s.c       \
+	extu8/u8spn_s.c        \
+	extu8/u8pbrk_s.c       \
+	extu8/u8u8_s.c         \
+	extu8/u8cmp_s.c        \
+	extu8/u8icmp_s.c       \
+	extu8/u8coll_s.c       \
+	extu8/u8natcmp_s.c     \
+	extu8/u8lwr_s.c        \
+	extu8/u8upr_s.c        \
+	extu8/u8gbreaks.h      \
+	extu8/u8width_s.c      \
+	extu8/u8norm_s.c       \
+	extu8/un8ifexc.h       \
+	extu8/u8script.c       \
+	extu8/u8scripts.h      \
+	extu8/u8iu8i_s.c       \
 	extu8/u8fc_s.c         \
+	extu8/u8fc_tbl.c       \
 	extu8/u8fccmp_s.c      \
 	extu8/u8fcu8_s.c       \
 	extu8/u8ifcu8_s.c
@@ -362,13 +365,17 @@ endif
 if ENABLE_EXTS
 libsafec_la_SOURCES += \
 	$(EXT_MEM_FILES) \
-	$(EXT_STR_FILES)
+	$(EXT_STR_FILES) \
+	extwchar/towctrans.c
 endif
 if ENABLE_U8
 libsafec_la_SOURCES += \
 	$(EXT_U8_FILES)
 lib_LTLIBRARIES += libsafecu8.la
 libsafecu8_la_SOURCES = $(EXT_U8_FILES)
+if ENABLE_EXTS
+libsafecu8_la_SOURCES += extwchar/towctrans.c
+endif
 endif
 
 libsafec_la_LIBADD = \

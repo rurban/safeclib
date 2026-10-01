@@ -44,7 +44,7 @@
 typedef struct {
     const char8_t *str;
     rsize_t remaining;
-    wchar_t folded[4];
+    uint32_t folded[4];
     unsigned int length;
     unsigned int position;
 } u8fcu8_iter_t;
@@ -70,9 +70,9 @@ static errno_t u8fcu8_next(u8fcu8_iter_t *iter, uint32_t *codepoint) {
         iter->str = next;
         iter->remaining -= (rsize_t)bytes;
 
-        folded = towfc_s(iter->folded, 4, cp);
+        folded = _u8_towfc(iter->folded, cp);
         if (folded < 0) {
-            iter->folded[0] = (wchar_t)cp;
+            iter->folded[0] = cp;
             iter->length = 1;
         } else {
             iter->length = (unsigned int)folded;
@@ -80,7 +80,7 @@ static errno_t u8fcu8_next(u8fcu8_iter_t *iter, uint32_t *codepoint) {
         iter->position = 0;
     }
 
-    *codepoint = (uint32_t)iter->folded[iter->position++];
+    *codepoint = iter->folded[iter->position++];
     return EOK;
 }
 

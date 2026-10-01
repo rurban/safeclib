@@ -18,6 +18,11 @@ static int enc_utf8(char8_t *dest, const uint32_t cp) U8_UNUSED;
 static int u8_seqlen(const char8_t *s, size_t n) U8_UNUSED;
 static bool u8_is_valid(const char8_t *s, rsize_t smax) U8_UNUSED;
 
+/* codepoint-pure (no wchar_t) full Unicode case-folding lookup, from
+   u8fc_tbl.c; writes up to 3 codepoints to dest (room for 3), returns
+   the count (1-3), or -1 if src is unchanged (dest[0] == src) */
+int _u8_towfc(uint32_t *dest, const uint32_t src);
+
 /* from https://rosettacode.org/wiki/UTF-8_encode_and_decode#C */
 typedef struct {
     uint8_t mask; /* char data will be bitwise AND with this */

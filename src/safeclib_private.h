@@ -635,8 +635,6 @@ EXTERN uint32_t _dec_w16(wchar_t *src);
 #define _IS_W16(cp) ((cp) >= 0xd800 && (cp) < 0xdc00)
 
 EXTERN errno_t _towfc_single(wchar_t *restrict dest, const uint32_t src);
-EXPORT uint32_t _towcase(uint32_t wc, int lower);
-EXPORT uint32_t _towupper(uint32_t wc);
 #ifndef HAVE_TOWLOWER
 EXTERN wint_t towlower(wint_t wc);
 #endif
@@ -644,6 +642,12 @@ EXTERN wint_t towlower(wint_t wc);
 EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
                      const bool iscompat);
 #endif /* SAFECLIB_DISABLE_WCHAR */
+
+/* pure Unicode codepoint case-mapping, from towctrans.c; no wchar_t
+   involved, available regardless of SAFECLIB_DISABLE_WCHAR so u8fc_tbl.c
+   (and thus u8fc_s()) can use it */
+EXPORT uint32_t _towcase(uint32_t wc, int lower);
+EXPORT uint32_t _towupper(uint32_t wc);
 
 // internal helpers for the *printf_s functions:
 

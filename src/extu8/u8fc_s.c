@@ -45,8 +45,8 @@
  * @details
  *    Full case-folding performs the 105 multi-codepoint expansions
  *    specified by CaseFolding.txt (e.g. U+00DF LATIN SMALL LETTER
- *    SHARP S folds to "ss"), via \c towfc_s(). All other codepoints
- *    are simple-folded via \c towlower(). Because a folded codepoint
+ *    SHARP S folds to "ss"). All other codepoints are simple-folded
+ *    like \c towlower(). Because a folded codepoint
  *    may encode to a different number of utf-8 bytes than the
  *    original, and multi-codepoint expansions grow the string, dest
  *    should be sized generously (dmax >= 3x the byte-length of src is
@@ -118,7 +118,7 @@ EXPORT errno_t _u8fc_s_chk(char8_t *restrict dest, rsize_t dmax,
     while (*s) {
         int bytes = u8_seqlen(s, remaining);
         uint32_t cp;
-        wchar_t tmp[4];
+        uint32_t tmp[4];
         int n, i;
 
         if (!bytes) {
@@ -130,13 +130,13 @@ EXPORT errno_t _u8fc_s_chk(char8_t *restrict dest, rsize_t dmax,
         cp = dec_utf8((char8_t **)&s);
         remaining -= (rsize_t)bytes;
 
-        n = towfc_s(tmp, 4, cp);
+        n = _u8_towfc(tmp, cp);
         if (n < 0)
-            n = 1; /* tmp[0] still holds towlower(cp) */
+            n = 1; /* tmp[0] still holds the simple-fold value */
 
         for (i = 0; i < n; i++) {
             char8_t encbuf[4];
-            int elen = enc_utf8(encbuf, (uint32_t)tmp[i]);
+            int elen = enc_utf8(encbuf, tmp[i]);
             if (used + (rsize_t)elen < dmax) {
                 memcpy(out, encbuf, (size_t)elen);
                 out += elen;

@@ -199,7 +199,6 @@ EXTERN errno_t _u8icmp_s_chk(const char8i_t *dest, rsize_t dmax, const char8i_t 
 #define u8icmp_s(dest, dmax, src, resultp)                                     \
     _u8icmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src))
 
-#ifndef SAFECLIB_DISABLE_WCHAR
 /* utf-8 string compare fold-cased, normalizing */
 EXTERN errno_t _u8fccmp_s_chk(const char8_t *dest, rsize_t dmax,
                                  const char8_t *src, int *resultp,
@@ -207,7 +206,6 @@ EXTERN errno_t _u8fccmp_s_chk(const char8_t *dest, rsize_t dmax,
     BOS_NULL(src) BOS_NULL(resultp);
 #define u8fccmp_s(dest, dmax, src, resultp)                                 \
     _u8fccmp_s_chk(dest, dmax, src, resultp, BOS(dest))
-#endif /* SAFECLIB_DISABLE_WCHAR */
 
 /* natural order string compare */
 EXTERN errno_t _u8natcmp_s_chk(const char8_t *dest, rsize_t dmax, const char8_t *src,
@@ -408,8 +406,7 @@ EXTERN errno_t _u8str_s_chk(char8_t *restrict dest, rsize_t dmax,
 /* TODO stricter security checks for identifiers: char8i_t
    mixed scripts, bidi, ...
 */
-  
-#ifndef SAFECLIB_DISABLE_WCHAR
+
 /* full foldcase via Unicode CaseFolding.txt (no NFD decomposition, no
    locale-conditional special-casing; see u8fc_s.c for the exact scope) */
 EXTERN errno_t _u8fc_s_chk(char8_t *restrict dest, rsize_t dmax,
@@ -417,7 +414,6 @@ EXTERN errno_t _u8fc_s_chk(char8_t *restrict dest, rsize_t dmax,
                             const size_t destbos) BOS_CHK(dest) BOS_NULL(src);
 #define u8fc_s(dest, dmax, src, lenp)                                         \
     _u8fc_s_chk(dest, dmax, src, lenp, BOS(dest))
-#endif /* SAFECLIB_DISABLE_WCHAR */
 
 /* Normalize to FCD/pre-NFKD */
 EXTERN errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
@@ -446,7 +442,7 @@ EXTERN errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
 #define u8norm_compose_s(dest, dmax, src, lenp, iscontig)                     \
     _u8norm_compose_s_chk(dest, dmax, src, lenp, iscontig, BOS(dest))
 
-#ifdef SAFECLIB_DISABLE_WCHAR
+#if defined(SAFECLIB_DISABLE_WCHAR) || defined(SAFECLIB_DISABLE_EXTENSIONS)
 enum wcsnorm_mode {
     WCSNORM_NFD = 0,
     WCSNORM_NFC = 1,  /* default */
@@ -456,7 +452,7 @@ enum wcsnorm_mode {
     WCSNORM_NFKC = 5  /* compat. OPTIONAL with --enable-norm-compat */
 };
 typedef enum wcsnorm_mode wcsnorm_mode_t;
-#endif /* SAFECLIB_DISABLE_WCHAR */
+#endif /* SAFECLIB_DISABLE_WCHAR | SAFECLIB_DISABLE_EXTENSIONS */
 
 /* Normalize to NFC (default), NFD nfc=0.
    experim. nfc>1: FCD, FCC */
