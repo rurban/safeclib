@@ -130,7 +130,7 @@ EXPORT int vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 
     errno = 0;
     //ret = vswscanf(src, fmt, ap);
-    ret = safec_vfwscanf_s(&sf, "vswscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "vswscanf_s", fmt, ap, 1);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vswscanf_s: ";

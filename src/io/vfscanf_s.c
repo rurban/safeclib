@@ -129,7 +129,7 @@ EXPORT int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
 #endif
 
     errno = 0;
-    ret = safec_vfscanf_s(&sf, "vfscanf_s", fmt, ap);
+    ret = safec_vfscanf_s(&sf, "vfscanf_s", fmt, ap, 1);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vfscanf_s: ";

@@ -82,7 +82,7 @@ int test_wscanf_s(void) {
     }
 
     stuff_stdin(L"      24");
-    rc = wscanf_s(L"%ls %%n", wstr2);
+    rc = wscanf_s(L"%ls %%n", wstr2, LEN);
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
         printf("%s %u wrong fwscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
@@ -175,7 +175,7 @@ int test_wscanf_s(void) {
     wcscpy(wstr2, L"keep it simple");
     stuff_stdin(wstr1);
 
-    rc = wscanf_s(L"%ls", wstr2);
+    rc = wscanf_s(L"%ls", wstr2, LEN);
     NOERR()
     WEXPSTR(wstr2, wstr1);
 

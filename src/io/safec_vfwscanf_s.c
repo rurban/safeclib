@@ -175,7 +175,7 @@ static int safec_in_wset(const wchar_t *set, int c) {
 }
 
 int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
-                     va_list ap) {
+                     va_list ap, int chk_destsize) {
     int width;
     int size;
     int alloc = 0;
@@ -195,6 +195,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
     wchar_t wnumfmt[3 * sizeof(int) + 10];
     const wchar_t *set;
     size_t i = 0, k = 0;
+    rsize_t destsize = (rsize_t)-1, cap = (rsize_t)-1;
     int gotmatch;
 
     FLOCK(sf);
@@ -321,6 +322,20 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
             size = SIZE_l;
         }
 
+        destsize = (rsize_t)-1;
+        if (chk_destsize && dest && !alloc &&
+            (t == 'c' || t == 's' || t == '[')) {
+            destsize = va_arg(ap, rsize_t);
+            if (unlikely(destsize == 0 || destsize > RSIZE_MAX_STR)) {
+                char etmp[96];
+                snprintf(etmp, sizeof etmp,
+                         "%s: invalid destination size", funcname);
+                invoke_safe_str_constraint_handler(etmp, NULL, ESZEROL);
+                errno = ESZEROL;
+                return EOF;
+            }
+        }
+
         if (t != 'n') {
             if (t != '[' && (t | 32) != 'c')
                 while (iswspace((c = shgetwc(sf))))
@@ -380,6 +395,9 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                 width = -1;
 
             i = 0;
+            cap = (destsize == (rsize_t)-1)
+                      ? (rsize_t)-1
+                      : (t == 'c' ? destsize : destsize - 1);
             if (alloc) {
                 k = t == 'c' ? width + 1U : 31;
                 if (size == SIZE_l) {
@@ -398,6 +416,8 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                 if (safec_in_wset(set, c) == invert)
                     break;
                 if (wcs) {
+                    if (chk_destsize && i >= cap)
+                        goto overflow_fail;
                     wcs[i++] = c;
                     if (alloc && i == k) {
                         wchar_t *newwcs;
@@ -408,9 +428,15 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                         wcs = newwcs;
                     }
                 } else if (size != SIZE_l) {
-                    int l = wctomb(s ? s + i : numfmt, c);
+                    char mbbuf[MB_LEN_MAX];
+                    int l = wctomb(s ? mbbuf : numfmt, c);
                     if (l < 0)
                         goto input_fail;
+                    if (s) {
+                        if (chk_destsize && i + (size_t)l > cap)
+                            goto overflow_fail;
+                        memcpy(s + i, mbbuf, (size_t)l);
+                    }
                     i += l;
                     if (alloc && i > k - 4) {
                         char *news;
@@ -556,4 +582,19 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
     }
     FUNLOCK(sf);
     return matches;
+
+overflow_fail:
+    if (s)
+        s[i] = 0;
+    if (wcs)
+        wcs[i] = 0;
+    FUNLOCK(sf);
+    {
+        char etmp[96];
+        snprintf(etmp, sizeof etmp, "%s: destination buffer too small",
+                 funcname);
+        invoke_safe_str_constraint_handler(etmp, NULL, ESNOSPC);
+    }
+    errno = ESNOSPC;
+    return EOF;
 }

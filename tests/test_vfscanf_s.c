@@ -140,7 +140,7 @@ int test_vfscanf_s(void) {
     strcpy(str1, "qqweqq");
     stuff_stream(str1);
 
-    rc = vtfscanf_s(stream, "%s", str2);
+    rc = vtfscanf_s(stream, "%s", str2, LEN);
     NOERR();
     EXPSTR(str2, str1);
 

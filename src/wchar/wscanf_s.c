@@ -118,7 +118,7 @@ EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfwscanf_s(&sf, "wscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "wscanf_s", fmt, ap, 1);
     //ret = vwscanf(fmt, ap);
     va_end(ap);
 

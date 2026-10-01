@@ -132,7 +132,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfwscanf_s(&sf, "swscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "swscanf_s", fmt, ap, 1);
     //ret = vswscanf(src, fmt, ap);
     va_end(ap);
 

@@ -65,7 +65,9 @@ int test_sscanf_s(void) {
     ERR(0);
     ERRNO(0);
 
-    rc = sscanf_s(str1, "%s %%n", str2);
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = sscanf_s(str1, "%s %%n", str2, LEN);
+    GCC_DIAG_RESTORE
     ERR(1);
     ERRNO(0);
 
@@ -158,7 +160,9 @@ int test_sscanf_s(void) {
     strcpy(str1, "qqweqq");
     strcpy(str2, "keep it simple");
 
-    rc = sscanf_s(str1, "%s", str2);
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = sscanf_s(str1, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     NOERR()
     EXPSTR(str1, str2);
 

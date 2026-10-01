@@ -134,7 +134,7 @@ int test_vscanf_s(void) {
     strcpy(str2, "keep it simple");
     stuff_stdin(str1);
 
-    rc = vtscanf_s("%s", str2);
+    rc = vtscanf_s("%s", str2, LEN);
     NOERR()
     EXPSTR(str2, str1);
 

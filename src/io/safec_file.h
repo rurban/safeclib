@@ -52,9 +52,15 @@ size_t safec_string_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len);
  * caller-owned scratch buffer to refill through fread(). */
 size_t safec_stream_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len);
 
+/* chk_destsize: when nonzero, %c/%s/%[ (with a non-suppressed, non-%m
+ * destination) consume an extra rsize_t destination-size argument
+ * immediately after the destination pointer and enforce it, per the
+ * Annex K two-argument convention -- raising ESNOSPC and returning
+ * EOF instead of writing past it. Every scanf_s family caller passes
+ * 1 (Annex K mandates the argument for every %c/%s/%[ conversion). */
 int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
-                    va_list ap);
+                    va_list ap, int chk_destsize);
 int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
-                     va_list ap);
+                     va_list ap, int chk_destsize);
 
 #endif // __SAFEC_FILE_H__

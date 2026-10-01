@@ -38,11 +38,6 @@
 #include "io/safec_file.h"
 #endif
 
-/* TODO:
- %s null pointer check
- the two-arg versions of \c %c, \c %s, and \c %[.
-*/
-
 /**
  * @brief
  *    The \c fscanf_s function reads a formatted string from a buffered
@@ -135,7 +130,7 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfscanf_s(&sf, "fscanf_s", fmt, ap);
+    ret = safec_vfscanf_s(&sf, "fscanf_s", fmt, ap, 1);
     //ret = vfscanf(stream, fmt, ap);
     va_end(ap);
 

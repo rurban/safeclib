@@ -135,7 +135,7 @@ EXPORT int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
 
     errno = 0;
     //ret = vfwscanf(stream, fmt, ap);
-    ret = safec_vfwscanf_s(&sf, "vfwscanf_s", fmt, ap);
+    ret = safec_vfwscanf_s(&sf, "vfwscanf_s", fmt, ap, 1);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vfwscanf_s: ";

@@ -184,7 +184,7 @@ static int test_vfwscanf_s(void) {
     wcscpy(wstr2, L"keep it simple");
     stuff_stream(L"qqweqq");
 
-    rc = vtwscanf_s(stream, L"%ls", wstr2);
+    rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
     NOERR()
     WEXPSTR(wstr1, wstr2);
 

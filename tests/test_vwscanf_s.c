@@ -65,7 +65,7 @@ int test_vwscanf_s(void) {
     rc = vtwscanf_s(wstr1, L"%ls %n", wstr2, LEN, &ind);
     ERREOF(EINVAL);
 
-    rc = vtwscanf_s(wstr1, L"%ls %%n", wstr2);
+    rc = vtwscanf_s(wstr1, L"%ls %%n", wstr2, LEN);
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
         printf("%s %u wrong vwscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
@@ -160,7 +160,7 @@ int test_vwscanf_s(void) {
     wcscpy(wstr1, L"qqweqq");
     wcscpy(wstr2, L"keep it simple");
 
-    rc = vtwscanf_s(wstr1, L"%ls", wstr2);
+    rc = vtwscanf_s(wstr1, L"%ls", wstr2, LEN);
     NOERR()
     WEXPSTR(wstr1, wstr2);
 

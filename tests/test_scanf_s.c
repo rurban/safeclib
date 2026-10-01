@@ -160,7 +160,9 @@ int test_scanf_s(void) {
     strcpy(str2, "keep it simple");
     stuff_stdin(str1);
 
-    rc = scanf_s("%s", str2);
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = scanf_s("%s", str2, LEN);
+    GCC_DIAG_RESTORE
     NOERR()
     EXPSTR(str2, str1);
 

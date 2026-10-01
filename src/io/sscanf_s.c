@@ -130,7 +130,7 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
     errno = 0;
     va_start(ap, fmt);
     //ret = vsscanf(buffer, fmt, ap);
-    ret = safec_vfscanf_s(&sf, "sscanf_s", fmt, ap);
+    ret = safec_vfscanf_s(&sf, "sscanf_s", fmt, ap, 1);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

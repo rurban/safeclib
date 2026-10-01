@@ -118,7 +118,7 @@ int test_fwscanf_s(void) {
     ERREOF(EINVAL);
 
     stuff_stream(L"      24");
-    rc = fwscanf_s(stream, L"%ls %%n", wstr2);
+    rc = fwscanf_s(stream, L"%ls %%n", wstr2, LEN);
 #ifdef BSD_LIKE
     if (rc != 0) { /* BSD's return -1 on %%n */
         printf("%s %u wrong fwscanf(\"\",L\"%%n\"): %d\n", __FUNCTION__,
@@ -177,7 +177,7 @@ int test_fwscanf_s(void) {
 
     stuff_stream(L"qqweqq");
 
-    rc = fwscanf_s(stream, L"%ls", wstr2);
+    rc = fwscanf_s(stream, L"%ls", wstr2, LEN);
     NOERR()
     WEXPSTR(wstr2, wstr1);
 

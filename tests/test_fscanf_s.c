@@ -139,7 +139,9 @@ int test_fscanf_s(void) {
     strcpy(str1, "qqweqq");
     stuff_stream(str1);
 
-    rc = fscanf_s(stream, "%s", str2);
+    GCC_DIAG_IGNORE(-Wformat-extra-args)
+    rc = fscanf_s(stream, "%s", str2, LEN);
+    GCC_DIAG_RESTORE
     NOERR();
     EXPSTR(str2, str1);
 
