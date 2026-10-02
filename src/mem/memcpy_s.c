@@ -150,4 +150,27 @@ EXPORT errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
 EXPORT_SYMBOL(_memcpy_s_chk);
 #endif
 
+#ifndef FOR_DOXYGEN
+/* All other constraints are already proven at compile-time. GH #48 */
+EXPORT errno_t _memcpy_s_uchk(void *restrict dest, rsize_t dmax,
+                              const void *restrict src, rsize_t slen) {
+    uint8_t *dp = (uint8_t *)dest;
+    const uint8_t *sp = (const uint8_t *)src;
+
+    /* overlap is disallowed, but allow dest==src */
+    if (unlikely(CHK_OVRLP_BUTSAME(dp, dmax, sp, slen))) {
+        mem_prim_set(dp, dmax, 0);
+        MEMORY_BARRIER;
+        invoke_safe_mem_constraint_handler("memcpy_s: overlap undefined", dest,
+                                           ESOVRLP);
+        return RCNEGATE(ESOVRLP);
+    }
+    mem_prim_move(dp, sp, slen);
+    return RCNEGATE(EOK);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_memcpy_s_uchk);
+#endif
+#endif
+
 #endif

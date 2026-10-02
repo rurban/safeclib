@@ -137,4 +137,16 @@ EXPORT errno_t _memset_s_chk(void *dest, rsize_t dmax, int value, rsize_t n,
 EXPORT_SYMBOL(_memset_s_chk);
 #endif
 
+#ifndef FOR_DOXYGEN
+/* All constraints are already proven at compile-time. GH #48 */
+EXPORT errno_t _memset_s_uchk(void *dest, int value, rsize_t n) {
+    mem_prim_set(dest, n, (uint8_t)value);
+    MEMORY_BARRIER;
+    return RCNEGATE(EOK);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_memset_s_uchk);
+#endif
+#endif
+
 #endif /* TEST_MSVCRT */

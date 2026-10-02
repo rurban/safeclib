@@ -163,6 +163,16 @@ deferred to run-time. This check is only possible with
 at compile-time, otherwise only the simplier `dest == NULL`, `dmax == 0`
 and `dmax > RSIZE_MAX` checks are performed.
 
+When all arguments relevant to the constraints of a fixed-size memory
+function are known at compile-time and proven valid, the call is
+dispatched to a fast unchecked `_uchk` worker, bypassing the run-time
+argument checks of the `_chk` variant (GH #48). This needs
+`__builtin_constant_p` and `__builtin_object_size`, i.e. gcc or clang,
+mostly with optimizations. Covered are `memcpy_s`, `memmove_s`,
+`memset_s`, `memzero_s`, their 16 and 32 bit variants, `wmemcpy_s` and
+`wmemmove_s`. Run-time only constraints, like overlapping memory in the
+`memcpy` variants, are still checked.
+
 * Header Files
 
 The specification states the various functions would be added to

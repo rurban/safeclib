@@ -1,6 +1,13 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.12
+	- Split _chk and _uchk at compile-time (GH #48): When all arguments of
+	  memcpy_s, memmove_s, memset_s, memzero_s, their 16 and 32 bit variants,
+	  wmemcpy_s and wmemmove_s are known and valid at compile-time, call the
+	  fast unchecked _uchk worker. Needs __builtin_constant_p and
+	  __builtin_object_size.
+
 Changes in 3.11.1
 	- make release hotfixes
 
