@@ -108,3 +108,19 @@ EXPORT errno_t _memzero_s_chk(void *dest, rsize_t len, const size_t destbos)
 #ifdef __KERNEL__
 EXPORT_SYMBOL(_memzero_s_chk);
 #endif
+
+#ifndef FOR_DOXYGEN
+/* All constraints are already proven at compile-time. GH #48 */
+EXPORT errno_t _memzero_s_uchk(void *dest, rsize_t len) {
+#ifdef HAVE_EXPLICIT_BZERO
+    explicit_bzero(dest, len);
+#else
+    mem_prim_set(dest, len, 0);
+#endif
+    MEMORY_BARRIER;
+    return (RCNEGATE(EOK));
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_memzero_s_uchk);
+#endif
+#endif

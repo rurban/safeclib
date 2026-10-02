@@ -87,6 +87,35 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #define bos_chk_err "warning"
 #endif
 
+/* GH #48: split _chk and _uchk at compile-time.
+   If all arguments relevant to the runtime-constraints are known at
+   compile-time (constant sizes and known object sizes) and are proven
+   valid, call the fast unchecked _uchk worker, else the checking _chk
+   variant. __builtin_constant_p is false for expressions with side effects,
+   so every macro argument is still evaluated exactly once, in the selected
+   call. Runtime-only constraints, like overlapping pointers, are still
+   checked in the _uchk worker. */
+#if defined(HAVE___BUILTIN_CONSTANT_P) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+#define _BOS_UCHK(ok, uchk, chk)                                               \
+    ((__builtin_constant_p(ok) && (ok)) ? (uchk) : (chk))
+#else
+#define _BOS_UCHK(ok, uchk, chk) (chk)
+#endif
+/* dest is known, and dmax of n elements of size is valid for it: non-zero,
+   not larger than dest, and with WARN_DMAX the same size as dest. */
+#ifdef HAVE_WARN_DMAX
+#define _BOS_DMAX_OK(dest, n, size)                                            \
+    (_BOS_KNOWN(dest) && (size_t)(n) != 0 && BOS(dest) % (size) == 0 &&       \
+     (size_t)(n) == BOS(dest) / (size))
+#else
+#define _BOS_DMAX_OK(dest, n, size)                                            \
+    (_BOS_KNOWN(dest) && (size_t)(n) != 0 &&                                   \
+     (size_t)(n) <= BOS(dest) / (size))
+#endif
+/* src is known, and n elements of size fit into it */
+#define _BOS_SRC_OK(src, n, size)                                              \
+    (_BOS_KNOWN(src) && (size_t)(n) <= BOS(src) / (size))
+
 #define _XSTR(s) _STR(s)
 #define _STR(s) #s
 

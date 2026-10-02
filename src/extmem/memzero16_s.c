@@ -93,3 +93,12 @@ EXPORT errno_t _memzero16_s_chk(uint16_t *dest, rsize_t len,
 
     return (RCNEGATE(EOK));
 }
+
+#ifndef FOR_DOXYGEN
+/* All constraints are already proven at compile-time. GH #48 */
+EXPORT errno_t _memzero16_s_uchk(uint16_t *dest, rsize_t len) {
+    mem_prim_set16(dest, len, 0);
+    MEMORY_BARRIER;
+    return (RCNEGATE(EOK));
+}
+#endif

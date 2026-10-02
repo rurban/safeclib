@@ -154,5 +154,22 @@ EXPORT errno_t _wmemcpy_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
     return (RCNEGATE(EOK));
 }
 
+#ifndef FOR_DOXYGEN
+/* All other constraints are already proven at compile-time. GH #48 */
+EXPORT errno_t _wmemcpy_s_uchk(wchar_t *restrict dest, rsize_t dlen,
+                               const wchar_t *restrict src, rsize_t count) {
+    /* overlap is disallowed, but allow dest==src */
+    if (unlikely(CHK_OVRLP_BUTSAME(dest, dlen, src, count))) {
+        wmem_set((wmem_type *)dest, (uint32_t)dlen, 0);
+        MEMORY_BARRIER;
+        invoke_safe_mem_constraint_handler("wmemcpy_s: overlap undefined",
+                                           (void *)dest, ESOVRLP);
+        return (RCNEGATE(ESOVRLP));
+    }
+    wmem_move((wmem_type *)dest, (wmem_type *)src, (uint32_t)count);
+    return (RCNEGATE(EOK));
+}
+#endif
+
 #endif /* TEST_MSVCRT */
 #endif /* HAVE_WCHAR_H */
