@@ -130,7 +130,7 @@ int test_u8norm_s(void) {
 
     rc = u8norm_s(str, LEN, (const char8_t *)("Café"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    EXPSTR((char *)str, "Café");
+    EXPSTR((char *)str, "Cafe\xcc\x81");
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
@@ -139,7 +139,7 @@ int test_u8norm_s(void) {
 #ifndef __PGI
     rc = u8norm_s(str, LEN, (const char8_t *)("Café"), WCSNORM_NFD, &ind);
     ERR(EOK)
-    EXPSTR((char *)str, "Café");
+    EXPSTR((char *)str, "Cafe\xcc\x81");
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 #endif
@@ -171,7 +171,7 @@ int test_u8norm_s(void) {
     /* echo "Aᾳ" | unorm -n nfd | iconv -t UTF-32LE | od -h */
     rc = u8norm_s(str, LEN, (const char8_t *)("Aᾳ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "Aᾳ");
+    strcpy((char *)str1, "A\xce\xb1\xcd\x85");
     EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
@@ -186,7 +186,7 @@ int test_u8norm_s(void) {
 
     rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "Aᾷ");
+    strcpy((char *)str1, "A\xce\xb1\xcd\x82\xcd\x85");
     EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
@@ -215,14 +215,14 @@ int test_u8norm_s(void) {
     /* reordering */
     rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "Aᾷ"); /* do reorder */
+    strcpy((char *)str1, "A\xce\xb1\xcd\x82\xcd\x85"); /* do reorder */
     EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_FCD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "Aᾷ"); /* no reorder */
+    strcpy((char *)str1, "A\xce\xb1\xcd\x82\xcd\x85"); /* no reorder */
     EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
@@ -245,7 +245,7 @@ int test_u8norm_s(void) {
 
     rc = u8norm_s(str, LEN, (const char8_t *)("ā"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "ā");
+    strcpy((char *)str1, "a\xcc\x84");
     EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
@@ -259,7 +259,7 @@ int test_u8norm_s(void) {
 
     rc = u8norm_s(str, LEN, (const char8_t *)("ĕ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "ĕ");
+    strcpy((char *)str1, "e\xcc\x86");
     EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
@@ -281,7 +281,7 @@ int test_u8norm_s(void) {
 
     rc = u8norm_s(str, LEN, (const char8_t *)("΅"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "΅");
+    strcpy((char *)str1, "\xc2\xa8\xcc\x81");
     EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
@@ -323,7 +323,7 @@ int test_u8norm_s(void) {
 
     rc = u8norm_s(str, LEN, (const char8_t *)("΅" /*\xe1\xbf\xae*/), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy((char *)str1, "΅" /*"\xa8" "\xcc\x81"*/);
+    strcpy((char *)str1, "\xc2\xa8\xcc\x81");
     EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
