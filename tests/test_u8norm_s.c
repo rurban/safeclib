@@ -46,74 +46,74 @@ int test_u8norm_s(void) {
 
 #ifndef HAVE_CT_BOS_OVR
     EXPECT_BOS("empty dest")
-    rc = u8norm_s(NULL, LEN, "test", WCSNORM_NFD, NULL);
+    rc = u8norm_s(NULL, LEN, (const char8_t *)("test"), WCSNORM_NFD, NULL);
     ERR(ESNULLP);
 
-    strcpy(str, "Aᾳ");
+    strcpy((char *)str, "Aᾳ");
     EXPECT_BOS("empty src")
-    rc = u8norm_s(str, LEN, NULL, WCSNORM_NFD, NULL);
+    rc = u8norm_s(str, LEN, (const char8_t *)(NULL), WCSNORM_NFD, NULL);
     ERR(ESNULLP);
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
 
     EXPECT_BOS("empty dest or dmax")
-    rc = u8norm_s(str, 0, "test", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, 0, (const char8_t *)("test"), WCSNORM_NFD, &ind);
     ERR(ESZEROL)
     INDZERO();
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
 
     ind = 4;
     EXPECT_BOS("dest overflow")
-    rc = u8norm_s(str, RSIZE_MAX_STR + 1, "test", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, RSIZE_MAX_STR + 1, (const char8_t *)("test"), WCSNORM_NFD, &ind);
     ERR(ESLEMAX);
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
     INDCMP(!= 0)
 
     if (_BOS_KNOWN(str)) {
         ind = 4;
         EXPECT_BOS("dest overflow")
-        rc = u8norm_s(str, LEN + 1, "test", WCSNORM_NFD, &ind);
+        rc = u8norm_s(str, LEN + 1, (const char8_t *)("test"), WCSNORM_NFD, &ind);
         ERR(EOVERFLOW);
-        EXPSTR(str, "\0");
+        EXPSTR((char *)str, "\0");
         INDCMP(!= 0)
     }
 
     if (_BOS_KNOWN(str)) {
         ind = 4;
         EXPECT_BOS("dest overflow")
-        rc = u8norm_decompose_s(str, LEN + 1, "test", &ind, false);
+        rc = u8norm_decompose_s(str, LEN + 1, (const char8_t *)("test"), &ind, false);
         ERR(EOVERFLOW);
-        EXPSTR(str, "\0");
+        EXPSTR((char *)str, "\0");
         INDCMP(!= 0)
 
         ind = 4;
         EXPECT_BOS("dest overflow")
-        rc = u8norm_reorder_s(str, LEN + 1, "test", ind);
+        rc = u8norm_reorder_s(str, LEN + 1, (const char8_t *)("test"), ind);
         ERR(EOVERFLOW);
-        EXPSTR(str, "\0");
+        EXPSTR((char *)str, "\0");
 
         EXPECT_BOS("dest overflow")
-        rc = u8norm_compose_s(str, LEN + 1, "test", &ind, false);
+        rc = u8norm_compose_s(str, LEN + 1, (const char8_t *)("test"), &ind, false);
         ERR(EOVERFLOW);
-        EXPSTR(str, "\0");
+        EXPSTR((char *)str, "\0");
         INDCMP(!= 0)
     }
 #endif
 
-#define OVMAX_WC "����" // 11ffff
+#define OVMAX_WC "\xf4\x9f\xbf\xbf" // 11ffff
 #define MAX_WC1 "􏿰"  // 10fff0
 
-    rc = u8norm_s(str, LEN, OVMAX_WC, WCSNORM_NFD, NULL);
+    rc = u8norm_s(str, LEN, (const char8_t *)(OVMAX_WC), WCSNORM_NFD, NULL);
     ERR(ESLEMAX);
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
 
-    rc = u8norm_decompose_s(str, LEN, OVMAX_WC, NULL, false);
+    rc = u8norm_decompose_s(str, LEN, (const char8_t *)(OVMAX_WC), NULL, false);
     ERR(ESLEMAX);
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
 
-    rc = u8norm_decompose_s(str, LEN, OVMAX_WC, NULL, true);
+    rc = u8norm_decompose_s(str, LEN, (const char8_t *)(OVMAX_WC), NULL, true);
 #ifdef HAVE_NORM_COMPAT
     ERR(ESLEMAX);
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
 #else
     if (rc == EOF) {
         ERR(EOF);
@@ -122,222 +122,222 @@ int test_u8norm_s(void) {
     }
 #endif
 
-    rc = u8norm_s(str, 4, MAX_WC1, WCSNORM_NFD, NULL);
+    rc = u8norm_s(str, 4, (const char8_t *)(MAX_WC1), WCSNORM_NFD, NULL);
     ERR(ESLEMIN);
-    EXPSTR(str, "\0");
+    EXPSTR((char *)str, "\0");
 
     /*--------------------------------------------------*/
 
-    rc = u8norm_s(str, LEN, "Café", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Café"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    EXPSTR(str, "Café");
+    EXPSTR((char *)str, "Café");
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /*--------------------------------------------------*/
 
 #ifndef __PGI
-    rc = u8norm_s(str, LEN, "Café", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Café"), WCSNORM_NFD, &ind);
     ERR(EOK)
-    EXPSTR(str, "Café");
+    EXPSTR((char *)str, "Café");
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 #endif
 
-    rc = u8norm_s(str, LEN, "Café", WCSNORM_NFC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Café"), WCSNORM_NFC, &ind);
     ERR(EOK)
-    EXPSTR(str, "Café");
+    EXPSTR((char *)str, "Café");
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /*--------------------------------------------------*/
 
-    strcpy(str, "Aᾳ");
-    rc = u8norm_s(str1, LEN, str, WCSNORM_NFC, NULL);
+    strcpy((char *)str, "Aᾳ");
+    rc = u8norm_s(str1, LEN, (const char8_t *)(str), WCSNORM_NFC, NULL);
     ERR(EOK);
 
-    strcpy(str, "Abcᾷ");
-    rc = u8norm_s(str1, 6, str, WCSNORM_NFD, NULL);
+    strcpy((char *)str, "Abcᾷ");
+    rc = u8norm_s(str1, 6, (const char8_t *)(str), WCSNORM_NFD, NULL);
     ERR(ESNOSPC);
-    EXPSTR(str1, "\0");
+    EXPSTR((char *)str1, "\0");
 
 #ifdef HAVE_NORM_COMPAT
-    strcpy(str, "A㈝");
-    rc = u8norm_s(str1, 18, str, WCSNORM_NFKC, NULL);
+    strcpy((char *)str, "A㈝");
+    rc = u8norm_s(str1, 18, (const char8_t *)(str), WCSNORM_NFKC, NULL);
     ERR(ESLEMIN);
-    EXPSTR(str1, "\0");
+    EXPSTR((char *)str1, "\0");
 #endif
 
     /* echo "Aᾳ" | unorm -n nfd | iconv -t UTF-32LE | od -h */
-    rc = u8norm_s(str, LEN, "Aᾳ", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾳ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾳ");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾳ");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /* Aᾳ => A≈ᾳ */
-    rc = u8norm_s(str, LEN, "Aᾳ", WCSNORM_NFC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾳ"), WCSNORM_NFC, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾳ");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾳ");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "Aᾷ", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾷ");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾷ");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "Aᾷ", WCSNORM_NFC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_NFC, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾷ");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾷ");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /* MUSICAL SYMBOL FUSA BLACK \xf0\x9d\x87\x80 */
-    rc = u8norm_s(str, LEN, "𝆺𝅥𝅯", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("𝆺𝅥𝅯"), WCSNORM_NFD, &ind);
     ERR(EOK);
     /* MUSICAL SYMBOL MINIMA BLACK (U+1D1BC) MUSICAL SYMBOL COMBINING FLAG-2
      * (U+1D16F) */
     /* => MUSICAL SYMBOL SEMIBREVIS BLACK (U+1D1BA) MUSICAL SYMBOL COMBINING
      * STEM (U+1D165) + U+1D16F */
-    strcpy(str1, "𝆺𝅥𝅯");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "𝆺𝅥𝅯");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /*--------------------------------------------------*/
 
     /* reordering */
-    rc = u8norm_s(str, LEN, "Aᾷ", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾷ"); /* do reorder */
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾷ"); /* do reorder */
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "Aᾷ", WCSNORM_FCD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_FCD, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾷ"); /* no reorder */
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾷ"); /* no reorder */
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "Aᾷ", WCSNORM_NFC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_NFC, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾷ"); /* nfc */
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾷ"); /* nfc */
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "Aᾷ", WCSNORM_FCC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("Aᾷ"), WCSNORM_FCC, &ind);
     ERR(EOK);
-    strcpy(str1, "Aᾷ"); /* the same in this case */
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "Aᾷ"); /* the same in this case */
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /*--------------------------------------------------*/
 
-    rc = u8norm_s(str, LEN, "ā", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("ā"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "ā");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "ā");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "ā", WCSNORM_NFC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("ā"), WCSNORM_NFC, &ind);
     ERR(EOK);
-    strcpy(str1, "ā");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "ā");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "ĕ", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("ĕ"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "ĕ");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "ĕ");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "ß", WCSNORM_NFD, &ind); /* !nfd */
+    rc = u8norm_s(str, LEN, (const char8_t *)("ß"), WCSNORM_NFD, &ind); /* !nfd */
     ERR(EOK);
-    strcpy(str1, "ß");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "ß");
+    EXPSTR((char *)str, (char *)str1);
     INDCMP(!= (int)strlen((char *)str));
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, ";", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)(";"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, ";"); /* NFKC => 3b */
-    len = strlen(str1);
+    strcpy((char *)str1, ";"); /* NFKC => 3b */
+    len = strlen((char *)str1);
     INDCMP(!= (int)len);
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "΅", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("΅"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "΅");
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "΅");
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xce\xac", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xce\xac"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xce\xb1"
+    strcpy((char *)str1, "\xce\xb1"
                  "\xcc\x81");
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xce\xad", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xce\xad"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xce\xb5"
+    strcpy((char *)str1, "\xce\xb5"
                  "\xcc\x81");
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xe1\xbd\xb1", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe1\xbd\xb1"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xce\xb1"
+    strcpy((char *)str1, "\xce\xb1"
                  "\xcc\x81");
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xe1\xbc\x82", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe1\xbc\x82"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xce\xb1"
+    strcpy((char *)str1, "\xce\xb1"
                  "\xcc\x93"
                  "\xcc\x80");
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xe1\xbf\xab", WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe1\xbf\xab"), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xce\xa5"
+    strcpy((char *)str1, "\xce\xa5"
                  "\xcc\x81");
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "΅" /*\xe1\xbf\xae*/, WCSNORM_NFD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("΅" /*\xe1\xbf\xae*/), WCSNORM_NFD, &ind);
     ERR(EOK);
-    strcpy(str1, "΅" /*"\xa8" "\xcc\x81"*/);
-    EXPSTR(str, str1);
+    strcpy((char *)str1, "΅" /*"\xa8" "\xcc\x81"*/);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /*--------------------------------------------------*/
 
     /* compat NFKD */
     /* echo "㈝" | unorm -n nfkd | iconv -t UTF-32LE | od -h */
-    rc = u8norm_s(str, LEN, "㈝" /*\xe3\x88\x9d*/, WCSNORM_NFKD, &ind); /* TODO wchar2 */
+    rc = u8norm_s(str, LEN, (const char8_t *)("㈝" /*\xe3\x88\x9d*/), WCSNORM_NFKD, &ind); /* TODO wchar2 */
 #ifdef HAVE_NORM_COMPAT
     ERR(EOK);
-    strcpy(str1, "(\xe1\x84\x8b\xe1\x85\xa9\xe1\x84\x8c\xe1\x85\xa5\xe1\x86\xab)");
-    len = strlen(str1);
+    strcpy((char *)str1, "(\xe1\x84\x8b\xe1\x85\xa9\xe1\x84\x8c\xe1\x85\xa5\xe1\x86\xab)");
+    len = strlen((char *)str1);
     INDCMP_(!= len);
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 #else
     if (rc == -1) {
@@ -348,55 +348,55 @@ int test_u8norm_s(void) {
 #endif
 
 #ifdef HAVE_NORM_COMPAT
-    rc = u8norm_s(str, LEN, "\xcd\xbe", WCSNORM_NFKC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xcd\xbe"), WCSNORM_NFKC, &ind);
     ERR(EOK);
-    strcpy(str1, "\x3b");
-    len = strlen(str1);
+    strcpy((char *)str1, "\x3b");
+    len = strlen((char *)str1);
     INDCMP_(!= len);
-    EXPSTR(str, str1);
+    EXPSTR((char *)str, (char *)str1);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
     /* (오전) */
-    rc = u8norm_s(str, LEN, "\xe3\x88\x9d", WCSNORM_NFKC, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe3\x88\x9d"), WCSNORM_NFKC, &ind);
     ERR(EOK);
-    strcpy(str1, "(\xec\x98\xa4\xec\xa0\x84)");
-    EXPSTR(str, str1);
-    len = strlen(str1);
+    strcpy((char *)str1, "(\xec\x98\xa4\xec\xa0\x84)");
+    EXPSTR((char *)str, (char *)str1);
+    len = strlen((char *)str1);
     INDCMP_(!= len);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xef\xb7\xbb", WCSNORM_NFKD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xef\xb7\xbb"), WCSNORM_NFKD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xd8\xac\xd9\x84\x20\xd8\xac\xd9\x84\xd8\xa7\xd9\x84\xd9\x87");
-    EXPSTR(str, str1);
-    len = strlen(str1);
+    strcpy((char *)str1, "\xd8\xac\xd9\x84\x20\xd8\xac\xd9\x84\xd8\xa7\xd9\x84\xd9\x87");
+    EXPSTR((char *)str, (char *)str1);
+    len = strlen((char *)str1);
     INDCMP_(!= len);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xe2\x84\x83", WCSNORM_NFKD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe2\x84\x83"), WCSNORM_NFKD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xc2\xb0"
+    strcpy((char *)str1, "\xc2\xb0"
                  "\x43");
-    EXPSTR(str, str1);
-    len = strlen(str1);
+    EXPSTR((char *)str, (char *)str1);
+    len = strlen((char *)str1);
     INDCMP_(!= len);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xe2\x85\x90", WCSNORM_NFKD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe2\x85\x90"), WCSNORM_NFKD, &ind);
     ERR(EOK);
-    strcpy(str1, "\x31"
+    strcpy((char *)str1, "\x31"
                  "\xe2\x81\x84"
                  "\x37");
-    EXPSTR(str, str1);
-    len = strlen(str1);
+    EXPSTR((char *)str, (char *)str1);
+    len = strlen((char *)str1);
     INDCMP_(!= len);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
-    rc = u8norm_s(str, LEN, "\xe3\x8e\x82", WCSNORM_NFKD, &ind);
+    rc = u8norm_s(str, LEN, (const char8_t *)("\xe3\x8e\x82"), WCSNORM_NFKD, &ind);
     ERR(EOK);
-    strcpy(str1, "\xce\xbc" "\x41");
-    EXPSTR(str, str1);
-    len = strlen(str1);
+    strcpy((char *)str1, "\xce\xbc" "\x41");
+    EXPSTR((char *)str, (char *)str1);
+    len = strlen((char *)str1);
     INDCMP_(!= len);
     CHECK_SLACK(&str[strlen((char *)str)], LEN - strlen((char *)str));
 
