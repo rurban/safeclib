@@ -76,10 +76,8 @@ specification to provide a complementary set of functions with like
 behavior.
 
 This library is meant to be used on top of all the existing libc’s which
-miss the secure C11 functions. Of course tighter integration into the
-system libc would be better, esp. with the printf, scanf and IO
-functions. See the seperate `libc-overview <doc/libc-overview.md>`__
-document.
+miss the secure C11 functions. See the seperate
+`libc-overview <doc/libc-overview.md>` document.
 
 Austin Group Review of ISO/IEC WDTR 24731
 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt

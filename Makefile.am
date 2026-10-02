@@ -653,6 +653,7 @@ gh-pages: docs
 	mkdir doc/safec-$(SAFEC_API_VERSION)
 	mv doc/html/* doc/safec-$(SAFEC_API_VERSION)/
 	rm -rf doc/html
+	sed -i -e"s,3\.??,$(SAFEC_API_VERSION),g" index.html 
 	git add doc/libc-overview.md doc/safec-$(SAFEC_API_VERSION)
 release: docs distcheck
 	git branch |grep '^* master'

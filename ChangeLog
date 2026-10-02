@@ -1,6 +1,12 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.11
+	- Implement full and proper scanf functions, with two-args API as in Annex K.
+	  i.e. every string argument must have two args, buffer and size.
+	- Fix several u8 functions and tests.
+	- Fix cmake installdirs (GH #142) as recommended by Fedora packaging.
+
 Changes in 3.10
 	- Add --enable-u8, a new UTF-8 API, observing proper Unicode rules,
 	  unlike the unused and unusable wide API. The u8i variants excpect already
