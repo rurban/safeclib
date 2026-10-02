@@ -80,9 +80,6 @@ rsize_t wcsnlen_s(const wchar_t *str, rsize_t smax)
 EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax, size_t strbos)
 #endif
 {
-    const wchar_t *z;
-    rsize_t orig_smax = smax;
-
     if (unlikely(str == NULL)) {
         return RCNEGATE(0);
     }
@@ -111,24 +108,32 @@ EXPORT rsize_t _wcsnlen_s_chk(const wchar_t *str, rsize_t smax, size_t strbos)
     }
 #endif
 
+    /* Dont touch past strbos. The old inlined loop stopped at
+       str[strbos / sizeof(wchar_t) - 1] for a known strbos multiple of
+       wchar_t (strbos == 0 never stopped). */
+    if (strbos != BOS_UNKNOWN && strbos && strbos % sizeof(wchar_t) == 0 &&
+        smax >= strbos / sizeof(wchar_t))
+        smax = strbos / sizeof(wchar_t) - 1;
+    return _wcsnlen_s_uchk(str, smax);
+}
+
+#ifndef FOR_DOXYGEN
+/* The str/smax constraints are already checked by _wcsnlen_s_chk or proven
+   at compile-time, the smax strbos limit already applied. GH #48 */
+EXPORT rsize_t _wcsnlen_s_uchk(const wchar_t *str, rsize_t smax) {
+    const wchar_t *z;
+    rsize_t orig_smax = smax;
+
 #if 0 && defined(HAVE_WMEMCHR) /* rather inline it */
     z = wmemchr(str, 0, smax);
     if (z) smax = z - str;
     return smax;
 #else
-    if (strbos != BOS_UNKNOWN) {
-        /* Dont touch past strbos */
-        for (z = str; smax && *str != 0; smax--, str++) {
-            strbos -= sizeof(wchar_t);
-            if (unlikely(strbos <= 0))
-                return smax ? (rsize_t)(str - z) : orig_smax;
-        }
-    } else {
-        for (z = str; smax && *str != 0; smax--, str++)
-            ;
-    }
+    for (z = str; smax && *str != 0; smax--, str++)
+        ;
     return smax ? (rsize_t)(str - z) : orig_smax;
 #endif
 }
+#endif
 
 #endif /* HAVE_WCHAR_H */

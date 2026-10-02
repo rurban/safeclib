@@ -83,9 +83,6 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
                               const size_t destbos, const size_t srcbos)
 #endif
 {
-    char *ps;
-    rsize_t len;
-
     CHK_SRC_NULL("strpbrk_s", firstp)
     *firstp = NULL;
 
@@ -118,6 +115,22 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
         return RCNEGATE(ESZEROL);
     }
 
+    return _strpbrk_s_uchk(dest, dmax, src, slen, firstp);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strpbrk_s_chk);
+#endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strpbrk_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strpbrk_s_uchk(char *dest, rsize_t dmax, char *src,
+                               rsize_t slen, char **firstp) {
+    char *ps;
+    rsize_t len;
+
+    *firstp = NULL;
+
     /*
      * look for a matching char in the substring src
      */
@@ -145,5 +158,6 @@ EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
     return RCNEGATE(ESNOTFND);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strpbrk_s_chk);
+EXPORT_SYMBOL(_strpbrk_s_uchk);
 #endif /* __KERNEL__ */
+#endif

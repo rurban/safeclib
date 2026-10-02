@@ -90,6 +90,15 @@ EXPORT errno_t _strlastchar_s_chk(char *dest, rsize_t dmax, char c,
         CHK_DEST_OVR("strlastchar_s", destbos)
     }
 
+    return _strlastchar_s_uchk(dest, dmax, c, lastp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strlastchar_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strlastchar_s_uchk(char *dest, rsize_t dmax, char c,
+                                   char **lastp) {
+    *lastp = NULL;
     while (*dest && dmax) {
 
         if (*dest == c) {
@@ -106,3 +115,4 @@ EXPORT errno_t _strlastchar_s_chk(char *dest, rsize_t dmax, char c,
         return (EOK);
     }
 }
+#endif

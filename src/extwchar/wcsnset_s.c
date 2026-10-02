@@ -81,9 +81,6 @@ EXPORT errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax, wchar_t valu
                               const size_t destbos)
 #endif
 {
-#ifdef SAFECLIB_STR_NULL_SLACK
-    wchar_t *orig_dest;
-#endif
     const size_t destsz = dmax * sizeof(wchar_t);
 
     CHK_DEST_NULL("wcsnset_s")
@@ -106,8 +103,18 @@ EXPORT errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax, wchar_t valu
         return (ESNOSPC);
     }
 
+    return _wcsnset_s_uchk(dest, dmax, value, n);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _wcsnset_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _wcsnset_s_uchk(wchar_t *dest, rsize_t dmax, wchar_t value,
+                               rsize_t n) {
 #ifdef SAFECLIB_STR_NULL_SLACK
-    orig_dest = dest;
+    wchar_t *orig_dest = dest;
+#else
+    (void)dmax;
 #endif
     while (n && *dest) {
         *dest = value;
@@ -122,3 +129,4 @@ EXPORT errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax, wchar_t valu
 
     return (EOK);
 }
+#endif

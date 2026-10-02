@@ -95,6 +95,14 @@ EXPORT errno_t _strcmpfld_s_chk(const char *dest, rsize_t dmax, const char *src,
     }
     BND_CHK_PTR_BOUNDS(src, dmax);
 
+    return _strcmpfld_s_uchk(dest, dmax, src, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strcmpfld_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strcmpfld_s_uchk(const char *dest, rsize_t dmax,
+                                 const char *src, int *resultp) {
     /* compare for dmax characters, ignoring the null */
     while (dmax) {
         if (*dest != *src) {
@@ -109,3 +117,4 @@ EXPORT errno_t _strcmpfld_s_chk(const char *dest, rsize_t dmax, const char *src,
     *resultp = *dest - *src;
     return (EOK);
 }
+#endif

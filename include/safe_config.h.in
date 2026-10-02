@@ -117,6 +117,14 @@ extern "C" {
 #endif
 
 /*
+ * Defined by your compiler when __builtin_memmove() is available,
+ * to inline the compile-time checked memmove_s variants.
+ */
+#ifndef HAVE___BUILTIN_MEMMOVE
+@INSERT_BUILTIN_MEMMOVE@
+#endif
+
+/*
  * Defined by --enable-warn-dmax, to enable dmax checks against
  *  __builtin_object_size(dest)
  */

@@ -1020,6 +1020,7 @@ AC_CHECK_TYPE([char8_t],
         [FALLBACK_CHAR8_T=""],
         [FALLBACK_CHAR8_T="typedef unsigned char char8_t;"])
 
+AX_GCC_BUILTIN(__builtin_expect)
 AX_GCC_BUILTIN(__builtin_ctz)
 AX_GCC_BUILTIN(__builtin_constant_p)
 INSERT_CONSTANT_P="#undef HAVE___BUILTIN_CONSTANT_P"
@@ -1027,6 +1028,12 @@ if test "$ax_cv_have___builtin_constant_p" = "yes"; then
   INSERT_CONSTANT_P="#define HAVE___BUILTIN_CONSTANT_P 1"
 fi
 AC_SUBST(INSERT_CONSTANT_P)
+AX_GCC_BUILTIN(__builtin_memmove)
+INSERT_BUILTIN_MEMMOVE="#undef HAVE___BUILTIN_MEMMOVE"
+if test "$ax_cv_have___builtin_memmove" = "yes"; then
+  INSERT_BUILTIN_MEMMOVE="#define HAVE___BUILTIN_MEMMOVE 1"
+fi
+AC_SUBST(INSERT_BUILTIN_MEMMOVE)
 
 AX_GCC_FUNC_ATTRIBUTE(format)
 AX_GCC_FUNC_ATTRIBUTE(malloc)

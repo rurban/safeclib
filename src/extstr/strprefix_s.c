@@ -87,6 +87,14 @@ EXPORT errno_t _strprefix_s_chk(const char *dest, rsize_t dmax, const char *src,
         CHK_DEST_OVR("strprefix_s", destbos)
     }
 
+    return _strprefix_s_uchk(dest, dmax, src);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strprefix_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strprefix_s_uchk(const char *dest, rsize_t dmax,
+                                 const char *src) {
     if (unlikely(*src == '\0')) {
         return (ESNOTFND);
     }
@@ -105,3 +113,4 @@ EXPORT errno_t _strprefix_s_chk(const char *dest, rsize_t dmax, const char *src,
 
     return (EOK);
 }
+#endif

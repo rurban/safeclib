@@ -82,8 +82,6 @@ EXPORT errno_t _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
                                    const size_t destbos)
 #endif
 {
-    const char *rp;
-
     CHK_SRC_NULL("strfirstdiff_s", resultp)
     *resultp = 0;
     CHK_DEST_NULL("strfirstdiff_s")
@@ -95,6 +93,18 @@ EXPORT errno_t _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
     } else {
         CHK_DEST_OVR("strfirstdiff_s", destbos)
     }
+
+    return _strfirstdiff_s_uchk(dest, dmax, src, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strfirstdiff_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strfirstdiff_s_uchk(const char *dest, rsize_t dmax,
+                                    const char *src, rsize_t *resultp) {
+    const char *rp;
+
+    *resultp = 0;
 
     /* hold reference point */
     rp = dest;
@@ -112,3 +122,4 @@ EXPORT errno_t _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
 
     return (ESNODIFF);
 }
+#endif

@@ -84,10 +84,6 @@ EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
                              const size_t destbos, const size_t srcbos)
 #endif
 {
-    rsize_t len;
-    rsize_t dlen;
-    int i;
-
     CHK_SRC_NULL("strstr_s", substringp)
     *substringp = NULL;
 
@@ -122,6 +118,30 @@ EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
             }
         }
     }
+    /* Since 3.3 allow slen=0 with src="" */
+    if (unlikely(slen == 0 && *src != '\0' && dest != src)) {
+        invoke_safe_str_constraint_handler("strstr_s: slen is 0", (void *)src,
+                                           ESZEROL);
+        return RCNEGATE(ESZEROL);
+    }
+
+    return _strstr_s_uchk(dest, dmax, src, slen, substringp);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strstr_s_chk);
+#endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strstr_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strstr_s_uchk(char *dest, rsize_t dmax, const char *src,
+                              rsize_t slen, char **substringp) {
+    rsize_t len;
+    rsize_t dlen;
+    int i;
+
+    *substringp = NULL;
+
     if (unlikely(slen > dmax)) { /* now check the actual lengths */
         len = strlen(src);
         dlen = strlen(dest);
@@ -136,12 +156,6 @@ EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
     if (unlikely(*src == '\0' || dest == src)) {
         *substringp = dest;
         return RCNEGATE(EOK);
-    }
-    /* Since 3.3 allow slen=0 with src="" */
-    if (unlikely(slen == 0)) {
-        invoke_safe_str_constraint_handler("strstr_s: slen is 0", (void *)src,
-                                           ESZEROL);
-        return RCNEGATE(ESZEROL);
     }
 
     while (*dest && dmax) {
@@ -177,5 +191,6 @@ EXPORT errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
     return RCNEGATE(ESNOTFND);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strstr_s_chk);
+EXPORT_SYMBOL(_strstr_s_uchk);
 #endif /* __KERNEL__ */
+#endif

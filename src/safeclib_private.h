@@ -175,11 +175,14 @@ typedef unsigned long uintptr_t;
 #endif
 #endif
 
-#if __GNUC__ >= 3
+#ifdef HAVE___BUILTIN_EXPECT
 #define _expect(expr, value) __builtin_expect((expr), (value))
-#define INLINE static inline
 #else
 #define _expect(expr, value) (expr)
+#endif
+#if __GNUC__ >= 3
+#define INLINE static inline
+#else
 #define INLINE static
 #endif
 #ifndef likely

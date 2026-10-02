@@ -96,6 +96,14 @@ EXPORT errno_t _wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t
         CHK_DESTW_OVR_CLEAR("wcsset_s", destsz, destbos)
     }
 
+    return _wcsset_s_uchk(dest, dmax, value);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _wcsset_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _wcsset_s_uchk(wchar_t *dest, rsize_t dmax,
+                              const wchar_t value) {
     while (dmax && *dest) {
         *dest = value;
         dmax--;
@@ -109,3 +117,4 @@ EXPORT errno_t _wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t
 
     return (EOK);
 }
+#endif

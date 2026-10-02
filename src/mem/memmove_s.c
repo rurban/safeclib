@@ -151,15 +151,4 @@ EXPORT errno_t _memmove_s_chk(void *dest, rsize_t dmax, const void *src,
 EXPORT_SYMBOL(_memmove_s_chk);
 #endif
 
-#ifndef FOR_DOXYGEN
-/* All constraints are already proven at compile-time. GH #48 */
-EXPORT errno_t _memmove_s_uchk(void *dest, const void *src, rsize_t slen) {
-    mem_prim_move((uint8_t *)dest, (const uint8_t *)src, slen);
-    return RCNEGATE(EOK);
-}
-#ifdef __KERNEL__
-EXPORT_SYMBOL(_memmove_s_uchk);
-#endif
-#endif
-
 #endif

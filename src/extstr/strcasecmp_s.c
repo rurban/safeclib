@@ -84,10 +84,6 @@ EXPORT errno_t _strcasecmp_s_chk(const char *dest, rsize_t dmax,
                                  const size_t destbos)
 #endif
 {
-    const unsigned char *udest = (const unsigned char *)dest;
-    const unsigned char *usrc = (const unsigned char *)src;
-    int result = 0;
-
     CHK_SRC_NULL("strcasecmp_s", resultp)
     *resultp = 0;
 
@@ -100,6 +96,21 @@ EXPORT errno_t _strcasecmp_s_chk(const char *dest, rsize_t dmax,
     } else {
         CHK_DEST_OVR("strcasecmp_s", destbos)
     }
+
+    return _strcasecmp_s_uchk(dest, dmax, src, resultp);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strcasecmp_s_chk);
+#endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strcasecmp_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strcasecmp_s_uchk(const char *dest, rsize_t dmax,
+                                  const char *src, int *resultp) {
+    const unsigned char *udest = (const unsigned char *)dest;
+    const unsigned char *usrc = (const unsigned char *)src;
+    int result = 0;
 
     while (*udest && *usrc && dmax) {
 
@@ -118,5 +129,6 @@ EXPORT errno_t _strcasecmp_s_chk(const char *dest, rsize_t dmax,
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strcasecmp_s_chk);
+EXPORT_SYMBOL(_strcasecmp_s_uchk);
 #endif /* __KERNEL__ */
+#endif

@@ -174,9 +174,17 @@ mostly with optimizations. Covered are `memcpy_s`, `memmove_s`,
 `strzero_s`, `strnterminate_s`, `strljustify_s`, `strremovews_s`,
 `strtolowercase_s`, `strtouppercase_s`, the `stris*_s` validators,
 `u8nlen_s`, `u8width_s`, `u8lwr_s`, `u8upr_s`, `u8zero_s`, `u8set_s`,
-`u8nset_s`, `u8chr_s`, `u8rchr_s` and `u8coll_s`. Run-time
-only constraints, like overlapping memory in the `memcpy` variants or
-unterminated strings, are still checked.
+`u8nset_s`, `u8chr_s`, `u8rchr_s` and `u8coll_s`, plus `memchr_s`,
+`memrchr_s`, `memccpy_s`, the `memcmp_s` variants, `wmemcmp_s`,
+`strchr_s`, `strrchr_s`, `strset_s`, `strnset_s`, `strcoll_s`,
+`strfirstchar_s`, `strlastchar_s`, `strerror_s`, `wcsset_s`, `wcsnset_s`,
+`towfc_s`, `wcsnlen_s` and the string compare/search functions
+`strcmp_s`, `strcasecmp_s`, `strnatcmp_s`, `strnatcasecmp_s`,
+`strcmpfld_s`, `strprefix_s`, `strfirst/lastdiff_s`,
+`strfirst/lastsame_s`, `strspn_s`, `strcspn_s`, `strpbrk_s`, `strstr_s`
+and `strcasestr_s`. The `memmove_s` variants are then inlined as
+`__builtin_memmove`. Run-time only constraints, like overlapping memory
+in the `memcpy` variants or unterminated strings, are still checked.
 
 * Header Files
 

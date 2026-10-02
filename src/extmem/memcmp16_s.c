@@ -181,6 +181,14 @@ EXPORT errno_t _memcmp16_s_chk(const uint16_t *dest, rsize_t dlen,
         return (RCNEGATE(ESNOSPC));
     }
 
+    return _memcmp16_s_uchk(dest, dlen, src, slen, diff);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _memcmp16_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _memcmp16_s_uchk(const uint16_t *dest, rsize_t dlen,
+                                const uint16_t *src, rsize_t slen, int *diff) {
     /*
      * no need to compare the same memory
      */
@@ -208,3 +216,4 @@ EXPORT errno_t _memcmp16_s_chk(const uint16_t *dest, rsize_t dlen,
 
     return (RCNEGATE(EOK));
 }
+#endif

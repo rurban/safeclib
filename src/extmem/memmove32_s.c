@@ -125,12 +125,3 @@ EXPORT errno_t _memmove32_s_chk(uint32_t *dest, rsize_t dmax,
 
     return (RCNEGATE(EOK));
 }
-
-#ifndef FOR_DOXYGEN
-/* All constraints are already proven at compile-time. GH #48 */
-EXPORT errno_t _memmove32_s_uchk(uint32_t *dest, const uint32_t *src,
-                                 rsize_t slen) {
-    mem_prim_move32(dest, src, slen);
-    return (RCNEGATE(EOK));
-}
-#endif

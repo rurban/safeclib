@@ -80,10 +80,6 @@ EXPORT errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                              const size_t destbos, const size_t srcbos)
 #endif
 {
-    const char *scan2;
-    rsize_t smax;
-    bool match_found;
-
     CHK_SRC_NULL("strspn_s", countp)
     *countp = 0;
 
@@ -124,6 +120,22 @@ EXPORT errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
         return RCNEGATE(ESZEROL);
     }
 
+    return _strspn_s_uchk(dest, dmax, src, slen, countp);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strspn_s_chk);
+#endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strspn_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strspn_s_uchk(const char *dest, rsize_t dmax, const char *src,
+                              rsize_t slen, rsize_t *countp) {
+    const char *scan2;
+    rsize_t smax;
+    bool match_found;
+
+    *countp = 0;
     while (*dest && dmax) {
         /*
          * Scan the entire src string for each dest character, counting
@@ -155,5 +167,6 @@ EXPORT errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strspn_s_chk);
+EXPORT_SYMBOL(_strspn_s_uchk);
 #endif /* __KERNEL__ */
+#endif

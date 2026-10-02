@@ -151,14 +151,5 @@ EXPORT errno_t _wmemmove_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
     return (RCNEGATE(EOK));
 }
 
-#ifndef FOR_DOXYGEN
-/* All constraints are already proven at compile-time. GH #48 */
-EXPORT errno_t _wmemmove_s_uchk(wchar_t *dest, const wchar_t *src,
-                                rsize_t count) {
-    wmem_move((wmem_type *)dest, (wmem_type *)src, (uint32_t)count);
-    return (RCNEGATE(EOK));
-}
-#endif
-
 #endif /* TEST_MSVCRT */
 #endif /* HAVE_WCHAR_H */
