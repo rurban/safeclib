@@ -37,6 +37,25 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The str/smax constraints are already checked by _strnlen_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT rsize_t _strnlen_s_uchk(const char *str, rsize_t smax) {
+    rsize_t count = 0;
+
+    while (*str && smax) {
+        count++;
+        smax--;
+        str++;
+    }
+
+    return count;
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strnlen_s_uchk);
+#endif /* __KERNEL__ */
+#endif
+
 /**
  * @def strnlen_s(str,smax)
  * @brief
@@ -74,8 +93,6 @@ rsize_t strnlen_s(const char *str, rsize_t smax, size_t strbos)
 EXPORT rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos)
 #endif
 {
-    rsize_t count;
-
     if (unlikely(str == NULL)) {
         invoke_safe_str_constraint_handler("strnlen_s: str is null", NULL,
                                            ESNULLP);
@@ -106,20 +123,11 @@ EXPORT rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos)
         }
     }
 
-    count = 0;
-    while (*str && smax) {
-        count++;
-        smax--;
-        str++;
-        /* Dont touch past strbos */
-        if (strbos != BOS_UNKNOWN) {
-            strbos--;
-            if (unlikely(!strbos))
-                return count;
-        }
-    }
-
-    return count;
+    /* Dont touch past strbos. Only a known strbos > 0 ever stopped the old
+       inlined loop (strbos == 0 wrapped around), at count == strbos. */
+    if (strbos != BOS_UNKNOWN && strbos && smax > strbos)
+        smax = strbos;
+    return _strnlen_s_uchk(str, smax);
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(_strnlen_s_chk);

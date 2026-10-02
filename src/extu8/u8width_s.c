@@ -57,76 +57,10 @@ static _u8_gbreaks_t _u8_gbreak(const uint32_t cp) {
   return _U8_GBREAK_NONE;
 }
 
-/**
- * @def u8width_s(str,smax)
- * @brief
- *    The u8width_s function computes the number of "graphemes" of the utf-8 string pointed
- *    to by str, stopping at smax bytes of str. This is equivalent to the number of extended
- *    grapheme clusters, the visual width of characters of the string. See
- *    the Unicode Text Segmentation Annex TR29.
- *
- * @param  str   pointer to utf-8 string
- * @param  smax  maximum byte-length of the given utf-8 string, incl. the final \0.
- *
- * @pre  str shall not be a null pointer.
- * @pre  smax shall not equal zero.
- * @pre  smax shall not be greater than RSIZE_MAX_STR and the size of str
- *       (inc. final null).
- *
- * @remark SPECIFIED IN
- *   * Unicode Text Segmentation Annex TR29
- *     http://www.unicode.org/reports/tr29/tr29-29.html
- *
- * @return The function returns the visual utf-8 string width, excluding the
- * terminating null character.  If \c str is NULL, then \c u8width_s returns
- * 0. Otherwise, the \c u8width_s function returns the number of extended grapheme
- * clusters that precede the terminating null character. (Not legacy).
- * If there is no null character in the first \c smax characters of str then \c u8width_s
- * returns \c smax. At most the first \c smax characters of str are accessed
- * by \c u8width_s.
- *
- * @see
- *    u8nlen_s()
- */
-#ifdef FOR_DOXYGEN
-rsize_t u8width_s(const char8_t *str, rsize_t smax)
-#else
-EXPORT rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
-#endif
-{
-    //const char8_t *z;
-    //rsize_t orig_smax = smax;
-
-    if (unlikely(str == NULL)) {
-        return RCNEGATE(0);
-    }
-    if (unlikely(smax == 0)) {
-        invoke_safe_str_constraint_handler("u8width_s: smax is 0", (void *)str,
-                                           ESZEROL);
-        return RCNEGATE(0);
-    }
-    if (unlikely(smax > RSIZE_MAX_STR)) {
-        invoke_safe_str_constraint_handler("u8width_s: smax exceeds max",
-                                           (void *)str, ESLEMAX);
-        return RCNEGATE(0);
-    }
-#if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX) ||                     \
-    defined(HAVE___BND_CHK_PTR_BOUNDS)
-    if (strbos == BOS_UNKNOWN) {
-        BND_CHK_PTR_BOUNDS(str, smax);
-#if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX)
-    } else {
-        if (unlikely(smax != strbos)) {
-            handle_str_bos_chk_warn("u8width_s", (char *)str, smax, strbos);
-            RETURN_ESLEWRNG;
-        }
-#endif
-    }
-#endif
-
-    if (strbos != BOS_UNKNOWN && smax > strbos) {
-      smax = strbos; // use the real length
-    }
+#ifndef FOR_DOXYGEN
+/* The str/smax constraints are already checked by _u8width_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT rsize_t _u8width_s_uchk(const char8_t *str, rsize_t smax) {
     {
       // Get neighboring char boundary classes (Grapheme_Cluster_Break) and compare them.
       // See the TR29 rules, named GB1 - GB9.
@@ -197,4 +131,78 @@ EXPORT rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
       //  c++;
       return c;
     }
+}
+#endif
+
+/**
+ * @def u8width_s(str,smax)
+ * @brief
+ *    The u8width_s function computes the number of "graphemes" of the utf-8 string pointed
+ *    to by str, stopping at smax bytes of str. This is equivalent to the number of extended
+ *    grapheme clusters, the visual width of characters of the string. See
+ *    the Unicode Text Segmentation Annex TR29.
+ *
+ * @param  str   pointer to utf-8 string
+ * @param  smax  maximum byte-length of the given utf-8 string, incl. the final \0.
+ *
+ * @pre  str shall not be a null pointer.
+ * @pre  smax shall not equal zero.
+ * @pre  smax shall not be greater than RSIZE_MAX_STR and the size of str
+ *       (inc. final null).
+ *
+ * @remark SPECIFIED IN
+ *   * Unicode Text Segmentation Annex TR29
+ *     http://www.unicode.org/reports/tr29/tr29-29.html
+ *
+ * @return The function returns the visual utf-8 string width, excluding the
+ * terminating null character.  If \c str is NULL, then \c u8width_s returns
+ * 0. Otherwise, the \c u8width_s function returns the number of extended grapheme
+ * clusters that precede the terminating null character. (Not legacy).
+ * If there is no null character in the first \c smax characters of str then \c u8width_s
+ * returns \c smax. At most the first \c smax characters of str are accessed
+ * by \c u8width_s.
+ *
+ * @see
+ *    u8nlen_s()
+ */
+#ifdef FOR_DOXYGEN
+rsize_t u8width_s(const char8_t *str, rsize_t smax)
+#else
+EXPORT rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
+#endif
+{
+    //const char8_t *z;
+    //rsize_t orig_smax = smax;
+
+    if (unlikely(str == NULL)) {
+        return RCNEGATE(0);
+    }
+    if (unlikely(smax == 0)) {
+        invoke_safe_str_constraint_handler("u8width_s: smax is 0", (void *)str,
+                                           ESZEROL);
+        return RCNEGATE(0);
+    }
+    if (unlikely(smax > RSIZE_MAX_STR)) {
+        invoke_safe_str_constraint_handler("u8width_s: smax exceeds max",
+                                           (void *)str, ESLEMAX);
+        return RCNEGATE(0);
+    }
+#if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX) ||                     \
+    defined(HAVE___BND_CHK_PTR_BOUNDS)
+    if (strbos == BOS_UNKNOWN) {
+        BND_CHK_PTR_BOUNDS(str, smax);
+#if defined(HAVE_WARN_DMAX) || defined(HAVE_ERROR_DMAX)
+    } else {
+        if (unlikely(smax != strbos)) {
+            handle_str_bos_chk_warn("u8width_s", (char *)str, smax, strbos);
+            RETURN_ESLEWRNG;
+        }
+#endif
+    }
+#endif
+
+    if (strbos != BOS_UNKNOWN && smax > strbos) {
+      smax = strbos; // use the real length
+    }
+    return _u8width_s_uchk(str, smax);
 }

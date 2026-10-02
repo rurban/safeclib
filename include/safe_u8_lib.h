@@ -101,12 +101,14 @@ EXTERN rsize_t _u8len_s_chk(const char8_t *str, size_t strbos);
 /* utf-8 string bounded byte-length */
 EXTERN rsize_t _u8nlen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
-#define u8nlen_s(str, smax) _u8nlen_s_chk(str, smax, BOS(str))
+EXTERN rsize_t _u8nlen_s_uchk(const char8_t *str, rsize_t smax);
+#define u8nlen_s(str, smax) _BOS_UCHK_STR(u8nlen_s, str, smax)
 
 /* utf-8 string bounded visual width (number of grapheme clusters) */
 EXTERN rsize_t _u8width_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
-#define u8width_s(str, smax) _u8width_s_chk(str, smax, BOS(str))
+EXTERN rsize_t _u8width_s_uchk(const char8_t *str, rsize_t smax);
+#define u8width_s(str, smax) _BOS_UCHK_STR(u8width_s, str, smax)
 
 /* string tokenizer */
 EXTERN char8_t *_u8tok_s_chk(char8_t *restrict dest, rsize_t *restrict dmaxp,
@@ -292,20 +294,21 @@ EXTERN errno_t _u8rchr_s_chk(const char8_t *restrict dest, rsize_t dmax,
 /* convert string to lowercase, normalizing */
 EXTERN errno_t _u8lwr_s_chk(char8_t *dest, rsize_t dmax,
                             const size_t destbos) BOS_CHK2(dest, dmax);
-#define u8lwr_s(dest, dmax)                                           \
-    _u8lwr_s_chk(dest, dmax, BOS(dest))
+EXTERN errno_t _u8lwr_s_uchk(char8_t *dest, rsize_t dmax);
+#define u8lwr_s(dest, dmax) _BOS_UCHK_DEST(u8lwr_s, dest, dmax)
 
 /* convert string to uppercase, normalizing */
 EXTERN errno_t _u8upr_s_chk(char8_t *dest, rsize_t dmax,
                             const size_t destbos) BOS_CHK2(dest, dmax);
-#define u8upr_s(dest, dmax)                                           \
-    _u8upr_s_chk(dest, dmax, BOS(dest))
+EXTERN errno_t _u8upr_s_uchk(char8_t *dest, rsize_t dmax);
+#define u8upr_s(dest, dmax) _BOS_UCHK_DEST(u8upr_s, dest, dmax)
 
 /* zero an entire string with nulls.
    mingw string_s.h has: _strset_s */
 EXTERN errno_t _u8zero_s_chk(char8_t *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
-#define u8zero_s(dest, dmax) _u8zero_s_chk(dest, dmax, BOS(dest))
+EXTERN errno_t _u8zero_s_uchk(char8_t *dest, rsize_t dmax);
+#define u8zero_s(dest, dmax) _BOS_UCHK_DEST(u8zero_s, dest, dmax)
 
 EXTERN errno_t _u8coll_s_chk(const char8_t *restrict dest, rsize_t dmax,
                              const char8_t *restrict src, int *resultp,

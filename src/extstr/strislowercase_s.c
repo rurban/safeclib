@@ -35,6 +35,27 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strislowercase_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT bool _strislowercase_s_uchk(const char *dest, rsize_t dmax) {
+    if (unlikely(*dest == '\0')) {
+        return (false);
+    }
+
+    while (*dest && dmax) {
+
+        if ((*dest < 'a') || (*dest > 'z')) {
+            return (false);
+        }
+        dest++;
+        dmax--;
+    }
+
+    return (true);
+}
+#endif
+
 /**
  * @def strislowercase_s(dest,dmax)
  * @brief
@@ -73,18 +94,5 @@ EXPORT bool _strislowercase_s_chk(const char *dest, rsize_t dmax,
 {
     CHK_DEST_DMAX_BOOL("strislowercase_s", RSIZE_MAX_STR)
 
-    if (unlikely(*dest == '\0')) {
-        return (false);
-    }
-
-    while (*dest && dmax) {
-
-        if ((*dest < 'a') || (*dest > 'z')) {
-            return (false);
-        }
-        dest++;
-        dmax--;
-    }
-
-    return (true);
+    return _strislowercase_s_uchk(dest, dmax);
 }

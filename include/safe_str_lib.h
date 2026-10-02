@@ -181,7 +181,8 @@ EXTERN errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
 /* string length */
 EXTERN rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
-#define strnlen_s(str, smax) _strnlen_s_chk(str, smax, BOS(str))
+EXTERN rsize_t _strnlen_s_uchk(const char *str, rsize_t smax);
+#define strnlen_s(str, smax) _BOS_UCHK_STR(strnlen_s, str, smax)
 
 /* string tokenizer */
 EXTERN char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
@@ -397,46 +398,55 @@ EXTERN errno_t _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
 /* validate alphanumeric string */
 EXTERN bool _strisalphanumeric_s_chk(const char *dest, rsize_t dmax,
                                      const size_t destbos) BOS_CHK2(dest, dmax);
+EXTERN bool _strisalphanumeric_s_uchk(const char *dest, rsize_t dmax);
 #define strisalphanumeric_s(dest, dmax)                                        \
-    _strisalphanumeric_s_chk(dest, dmax, BOS(dest))
+    _BOS_UCHK_DEST(strisalphanumeric_s, dest, dmax)
 
 /* validate ascii string */
 EXTERN bool _strisascii_s_chk(const char *dest, rsize_t dmax,
                               const size_t destbos) BOS_CHK2(dest, dmax);
-#define strisascii_s(dest, dmax) _strisascii_s_chk(dest, dmax, BOS(dest))
+EXTERN bool _strisascii_s_uchk(const char *dest, rsize_t dmax);
+#define strisascii_s(dest, dmax) _BOS_UCHK_DEST(strisascii_s, dest, dmax)
 
 /* validate string of digits */
 EXTERN bool _strisdigit_s_chk(const char *dest, rsize_t dmax,
                               const size_t destbos) BOS_CHK2(dest, dmax);
-#define strisdigit_s(dest, dmax) _strisdigit_s_chk(dest, dmax, BOS(dest))
+EXTERN bool _strisdigit_s_uchk(const char *dest, rsize_t dmax);
+#define strisdigit_s(dest, dmax) _BOS_UCHK_DEST(strisdigit_s, dest, dmax)
 
 /* validate hex string */
 EXTERN bool _strishex_s_chk(const char *dest, rsize_t dmax,
                             const size_t destbos) BOS_CHK2(dest, dmax);
-#define strishex_s(dest, dmax) _strishex_s_chk(dest, dmax, BOS(dest))
+EXTERN bool _strishex_s_uchk(const char *dest, rsize_t dmax);
+#define strishex_s(dest, dmax) _BOS_UCHK_DEST(strishex_s, dest, dmax)
 
 /* validate lower case */
 EXTERN bool _strislowercase_s_chk(const char *dest, rsize_t dmax,
                                   const size_t destbos) BOS_CHK2(dest, dmax);
+EXTERN bool _strislowercase_s_uchk(const char *dest, rsize_t dmax);
 #define strislowercase_s(dest, dmax)                                           \
-    _strislowercase_s_chk(dest, dmax, BOS(dest))
+    _BOS_UCHK_DEST(strislowercase_s, dest, dmax)
 
 /* validate mixed case */
 EXTERN bool _strismixedcase_s_chk(const char *dest, rsize_t dmax,
                                   const size_t destbos) BOS_CHK2(dest, dmax);
+EXTERN bool _strismixedcase_s_uchk(const char *dest, rsize_t dmax);
 #define strismixedcase_s(dest, dmax)                                           \
-    _strismixedcase_s_chk(dest, dmax, BOS(dest))
+    _BOS_UCHK_DEST(strismixedcase_s, dest, dmax)
 
 /* validate password */
 EXTERN bool _strispassword_s_chk(const char *dest, rsize_t dmax,
                                  const size_t destbos) BOS_CHK2(dest, dmax);
-#define strispassword_s(dest, dmax) _strispassword_s_chk(dest, dmax, BOS(dest))
+EXTERN bool _strispassword_s_uchk(const char *dest, rsize_t dmax);
+#define strispassword_s(dest, dmax)                                            \
+    _BOS_UCHK_DEST(strispassword_s, dest, dmax)
 
 /* validate upper case */
 EXTERN bool _strisuppercase_s_chk(const char *dest, rsize_t dmax,
                                   const size_t destbos) BOS_CHK2(dest, dmax);
+EXTERN bool _strisuppercase_s_uchk(const char *dest, rsize_t dmax);
 #define strisuppercase_s(dest, dmax)                                           \
-    _strisuppercase_s_chk(dest, dmax, BOS(dest))
+    _BOS_UCHK_DEST(strisuppercase_s, dest, dmax)
 
 /* returns  a pointer to the last occurrence of c in s1 */
 EXTERN errno_t _strlastchar_s_chk(char *dest, rsize_t dmax, char c,
@@ -456,12 +466,15 @@ EXTERN errno_t _strlastdiff_s_chk(const char *dest, rsize_t dmax,
 /* left justify */
 EXTERN errno_t _strljustify_s_chk(char *dest, rsize_t dmax,
                                   const size_t destbos) BOS_CHK(dest);
-#define strljustify_s(dest, dmax) _strljustify_s_chk(dest, dmax, BOS(dest))
+EXTERN errno_t _strljustify_s_uchk(char *dest, rsize_t dmax);
+#define strljustify_s(dest, dmax) _BOS_UCHK_DEST(strljustify_s, dest, dmax)
 
 /* string terminate */
 EXTERN rsize_t _strnterminate_s_chk(char *dest, rsize_t dmax,
                                     const size_t destbos) BOS_CHK2(dest, dmax);
-#define strnterminate_s(dest, dmax) _strnterminate_s_chk(dest, dmax, BOS(dest))
+EXTERN rsize_t _strnterminate_s_uchk(char *dest, rsize_t dmax);
+#define strnterminate_s(dest, dmax)                                            \
+    _BOS_UCHK_DEST(strnterminate_s, dest, dmax)
 
 /* get pointer to first occurrence from set of char */
 EXTERN errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
@@ -495,7 +508,8 @@ EXTERN errno_t _strprefix_s_chk(const char *dest, rsize_t dmax, const char *src,
 /* removes leading and trailing white space */
 EXTERN errno_t _strremovews_s_chk(char *dest, rsize_t dmax,
                                   const size_t destbos) BOS_CHK(dest);
-#define strremovews_s(dest, dmax) _strremovews_s_chk(dest, dmax, BOS(dest))
+EXTERN errno_t _strremovews_s_uchk(char *dest, rsize_t dmax);
+#define strremovews_s(dest, dmax) _BOS_UCHK_DEST(strremovews_s, dest, dmax)
 
 /* computes inclusive prefix length */
 EXTERN errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
@@ -532,15 +546,17 @@ EXTERN errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
    mingw string_s.h: _strlwr_s */
 EXTERN errno_t _strtolowercase_s_chk(char *dest, rsize_t dmax,
                                      const size_t destbos) BOS_CHK2(dest, dmax);
+EXTERN errno_t _strtolowercase_s_uchk(char *dest, rsize_t dmax);
 #define strtolowercase_s(dest, dmax)                                           \
-    _strtolowercase_s_chk(dest, dmax, BOS(dest))
+    _BOS_UCHK_DEST(strtolowercase_s, dest, dmax)
 
 /* convert string to uppercase
    mingw string_s.h: _strupr_s */
 EXTERN errno_t _strtouppercase_s_chk(char *dest, rsize_t dmax,
                                      const size_t destbos) BOS_CHK2(dest, dmax);
+EXTERN errno_t _strtouppercase_s_uchk(char *dest, rsize_t dmax);
 #define strtouppercase_s(dest, dmax)                                           \
-    _strtouppercase_s_chk(dest, dmax, BOS(dest))
+    _BOS_UCHK_DEST(strtouppercase_s, dest, dmax)
 
 #define strlwr_s(str, slen) strtolowercase_s((str), (slen))
 #define strupr_s(str, slen) strtouppercase_s((str), (slen))
@@ -549,7 +565,8 @@ EXTERN errno_t _strtouppercase_s_chk(char *dest, rsize_t dmax,
    mingw string_s.h has: _strset_s */
 EXTERN errno_t _strzero_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
-#define strzero_s(dest, dmax) _strzero_s_chk(dest, dmax, BOS(dest))
+EXTERN errno_t _strzero_s_uchk(char *dest, rsize_t dmax);
+#define strzero_s(dest, dmax) _BOS_UCHK_DEST(strzero_s, dest, dmax)
 
 EXTERN errno_t _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
                               const char *restrict src, int *resultp,
