@@ -2,7 +2,7 @@
 #define __SAFEC_FILE_H__
 
 /* Pseudo-FILE used by the scanf_s family, adapted from musl's internal
- * FILE/shgetc machinery (MIT licensed). It wraps either
+ * FILE/shgetc machinery (from musl, MIT licensed). It wraps either
  *  - a real stdio FILE* (fscanf_s/vfscanf_s/scanf_s/vscanf_s,
  *    fwscanf_s/vfwscanf_s/wscanf_s/vwscanf_s): `f' is set, `buf' is a
  *    scratch refill buffer owned by the caller;

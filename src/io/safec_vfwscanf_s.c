@@ -116,7 +116,7 @@ typedef struct {
     int last;
 } safec_wcur_ctx;
 static int safec_wcur_get(void *v) {
-    safec_wcur_ctx *x = v;
+    safec_wcur_ctx *x = (safec_wcur_ctx *)v;
     int c;
     if (x->lim > 0 && x->cnt >= x->lim)
         return -1;
@@ -128,13 +128,13 @@ static int safec_wcur_get(void *v) {
     return c;
 }
 static void safec_wcur_unget(void *v) {
-    safec_wcur_ctx *x = v;
+    safec_wcur_ctx *x = (safec_wcur_ctx *)v;
     if (x->cnt > 0)
         x->cnt--;
     safec_wungetc(x->last, x->sf);
 }
 static void safec_wcur_setlim(void *v, long lim) {
-    safec_wcur_ctx *x = v;
+    safec_wcur_ctx *x = (safec_wcur_ctx *)v;
     x->lim = lim;
     x->cnt = 0;
 }
@@ -386,8 +386,8 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                 }
             }
 
-            s = (size == SIZE_def) ? dest : 0;
-            wcs = (size == SIZE_l) ? dest : 0;
+            s = (size == SIZE_def) ? (char *)dest : NULL;
+            wcs = (size == SIZE_l) ? (wchar_t *)dest : NULL;
 
             gotmatch = 0;
 
@@ -401,11 +401,11 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
             if (alloc) {
                 k = t == 'c' ? width + 1U : 31;
                 if (size == SIZE_l) {
-                    wcs = malloc(k * sizeof(wchar_t));
+                    wcs = (wchar_t *)malloc(k * sizeof(wchar_t));
                     if (!wcs)
                         goto alloc_fail;
                 } else {
-                    s = malloc(k);
+                    s = (char *)malloc(k);
                     if (!s)
                         goto alloc_fail;
                 }
@@ -422,7 +422,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                     if (alloc && i == k) {
                         wchar_t *newwcs;
                         k += k + 1;
-                        newwcs = realloc(wcs, k * sizeof(wchar_t));
+                        newwcs = (wchar_t *)realloc(wcs, k * sizeof(wchar_t));
                         if (!newwcs)
                             goto alloc_fail;
                         wcs = newwcs;
@@ -441,7 +441,7 @@ int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
                     if (alloc && i > k - 4) {
                         char *news;
                         k += k + 1;
-                        news = realloc(s, k);
+                        news = (char *)realloc(s, k);
                         if (!news)
                             goto alloc_fail;
                         s = news;

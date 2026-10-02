@@ -85,7 +85,7 @@ EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
 #endif
     int ret;
     _SAFEC_FILE sf = {
-        .buf = (void *)buffer,
+        .buf = (unsigned char *)(void *)buffer,
         .cookie = (void *)buffer,
         .read = safec_string_read,
         .lock = -1

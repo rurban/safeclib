@@ -329,21 +329,20 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                       : (t == 'c' ? destsize : destsize - 1);
             if (size == SIZE_l) {
                 if (alloc) {
-                    wcs = malloc(k * sizeof(wchar_t));
+                    wcs = (wchar_t *)malloc(k * sizeof(wchar_t));
                     if (!wcs)
                         goto alloc_fail;
                 } else {
-                    wcs = dest;
+                    wcs = (wchar_t *)dest;
                 }
                 st = (mbstate_t){0};
                 while (scanset[(c = shgetc(sf)) + 1]) {
-                    switch (mbrtowc(&wc, &(char){c}, 1, &st)) {
-                    case -1:
+                    char c_mb = (char)c;
+                    size_t mbr = mbrtowc(&wc, &c_mb, 1, &st);
+                    if (mbr == (size_t)-1) {
                         goto input_fail;
-                    case -2:
+                    } else if (mbr == (size_t)-2) {
                         continue;
-                    default:
-                        break;
                     }
                     if (wcs) {
                         if (chk_destsize && i >= cap)
@@ -353,7 +352,7 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     if (alloc && i == k) {
                         wchar_t *tmp;
                         k += k + 1;
-                        tmp = realloc(wcs, k * sizeof(wchar_t));
+                        tmp = (wchar_t *)realloc(wcs, k * sizeof(wchar_t));
                         if (!tmp)
                             goto alloc_fail;
                         wcs = tmp;
@@ -362,7 +361,7 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                 if (!mbsinit(&st))
                     goto input_fail;
             } else if (alloc) {
-                s = malloc(k);
+                s = (char *)malloc(k);
                 if (!s)
                     goto alloc_fail;
                 while (scanset[(c = shgetc(sf)) + 1]) {
@@ -370,13 +369,13 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     if (i == k) {
                         char *tmp;
                         k += k + 1;
-                        tmp = realloc(s, k);
+                        tmp = (char *)realloc(s, k);
                         if (!tmp)
                             goto alloc_fail;
                         s = tmp;
                     }
                 }
-            } else if ((s = dest)) {
+            } else if ((s = (char *)dest)) {
                 while (scanset[(c = shgetc(sf)) + 1]) {
                     if (chk_destsize && i >= cap)
                         goto overflow_fail;

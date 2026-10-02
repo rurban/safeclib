@@ -48,9 +48,9 @@
  * populated so that subsequent shgetc() calls can take the fast
  * `*rpos++' path without calling back into read() for every byte. */
 size_t safec_string_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len) {
-    char *src = sf->cookie;
+    char *src = (char *)sf->cookie;
     size_t k = len + 256;
-    char *end = memchr(src, 0, k);
+    char *end = (char *)memchr((void *)src, 0, k);
     if (end)
         k = end - src;
     if (k < len)

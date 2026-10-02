@@ -81,7 +81,7 @@ EXPORT int u8sscanf_s(const char8_t *restrict buffer,
     va_list ap;
     int ret;
     _SAFEC_FILE sf = {
-        .buf = (void *)buffer,
+        .buf = (unsigned char *)(void *)buffer,
         .cookie = (void *)buffer,
         .read = safec_string_read,
         .lock = -1
