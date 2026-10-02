@@ -89,8 +89,6 @@ EXPORT errno_t _wmemcmp_s_chk(const wchar_t *dest, rsize_t dlen,
 {
     const rsize_t dmax = dlen * SIZEOF_WCHAR_T;
     const rsize_t smax = slen * SIZEOF_WCHAR_T;
-    const wchar_t *dp;
-    const wchar_t *sp;
 
     /* must be able to return the diff */
     if (unlikely(diff == NULL)) {
@@ -139,6 +137,17 @@ EXPORT errno_t _wmemcmp_s_chk(const wchar_t *dest, rsize_t dlen,
         return (RCNEGATE(ESNOSPC));
     }
 
+    return _wmemcmp_s_uchk(dest, dlen, src, slen, diff);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _wmemcmp_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _wmemcmp_s_uchk(const wchar_t *dest, rsize_t dlen,
+                               const wchar_t *src, rsize_t slen, int *diff) {
+    const wchar_t *dp;
+    const wchar_t *sp;
+
     /* no need to compare the same memory */
     if (unlikely(dest == src)) {
         *diff = 0;
@@ -166,3 +175,4 @@ EXPORT errno_t _wmemcmp_s_chk(const wchar_t *dest, rsize_t dlen,
 
     return (RCNEGATE(EOK));
 }
+#endif

@@ -93,8 +93,6 @@ EXPORT errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
                                const size_t destbos)
 #endif
 {
-    size_t len;
-
     CHK_DEST_NULL("strerror_s")
     CHK_DMAX_ZERO("strerror_s")
     if (destbos == BOS_UNKNOWN) {
@@ -103,6 +101,15 @@ EXPORT errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
     } else {
         CHK_DEST_OVR("strerror_s", destbos)
     }
+
+    return _strerror_s_uchk(dest, dmax, errnum);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strerror_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strerror_s_uchk(char *dest, rsize_t dmax, errno_t errnum) {
+    size_t len;
 
     len = strerrorlen_s(errnum);
     if (likely(len < dmax)) {
@@ -131,6 +138,7 @@ EXPORT errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
 
     return EOK;
 }
+#endif
 
 /**
  * @brief

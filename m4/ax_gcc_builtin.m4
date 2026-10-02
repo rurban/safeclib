@@ -98,6 +98,7 @@
 #    __builtin_nans
 #    __builtin_nansf
 #    __builtin_nansl
+#    __builtin_memmove
 #    __builtin_object_size
 #    __builtin_parity
 #    __builtin_parityl
@@ -209,6 +210,7 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_nans], [$1("")],
                 [__builtin_nansf], [$1("")],
                 [__builtin_nansl], [$1("")],
+                [__builtin_memmove], [$1((void*)0, "", 0)],
                 [__builtin_object_size], [$1("", 0)],
                 [__builtin_parity], [$1(0)],
                 [__builtin_parityl], [$1(0)],

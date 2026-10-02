@@ -732,7 +732,6 @@ EXPORT int _towfc_s_chk(wchar_t *restrict dest, rsize_t dmax, const uint32_t src
                         const size_t destbos)
 #endif
 {
-    int i;
     const size_t destsz = dmax * sizeof(wchar_t);
 
     if (unlikely(dest == NULL)) {
@@ -773,6 +772,15 @@ EXPORT int _towfc_s_chk(wchar_t *restrict dest, rsize_t dmax, const uint32_t src
 #endif
     }
 
+    return _towfc_s_uchk(dest, src);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _towfc_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT int _towfc_s_uchk(wchar_t *dest, const uint32_t src) {
+    int i;
+
     if (src < 128) {
         dest[1] = L'\0';
         dest[0] = tolower(src);
@@ -811,3 +819,4 @@ EXPORT int _towfc_s_chk(wchar_t *restrict dest, rsize_t dmax, const uint32_t src
     /* fc exceptions: not towlower, for c == 1 */
     return _towfc_single(dest, src);
 }
+#endif

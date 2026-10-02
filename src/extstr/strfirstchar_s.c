@@ -90,6 +90,15 @@ EXPORT errno_t _strfirstchar_s_chk(char *dest, rsize_t dmax, char c,
         CHK_DEST_OVR("strfirstchar_s", destbos)
     }
 
+    return _strfirstchar_s_uchk(dest, dmax, c, firstp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strfirstchar_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strfirstchar_s_uchk(char *dest, rsize_t dmax, char c,
+                                    char **firstp) {
+    *firstp = NULL;
     while (*dest && dmax) {
 
         if (*dest == c) {
@@ -102,3 +111,4 @@ EXPORT errno_t _strfirstchar_s_chk(char *dest, rsize_t dmax, char c,
 
     return (ESNOTFND);
 }
+#endif

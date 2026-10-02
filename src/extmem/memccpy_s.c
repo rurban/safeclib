@@ -90,13 +90,10 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
 #endif
 {
     uint8_t *dp;
-    const uint8_t *sp;
-    rsize_t orig_dmax = dmax;
 
     (void) srcbos;
 
     dp = (uint8_t *)dest;
-    sp = (uint8_t *)src;
 
     CHK_DEST_MEM_NULL("memccpy_s")
     CHK_DMAX_MEM_ZERO("memccpy_s")
@@ -113,6 +110,21 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
     }
     CHK_SRC_MEM_NULL_CLEAR("memccpy_s", src)
     CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memccpy_s", n, RSIZE_MAX_MEM)
+
+    return _memccpy_s_uchk(dest, dmax, src, c, n);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_memccpy_s_chk);
+#endif
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _memccpy_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _memccpy_s_uchk(void *dest, rsize_t dmax, const void *src,
+                               int c, rsize_t n) {
+    uint8_t *dp = (uint8_t *)dest;
+    const uint8_t *sp = (uint8_t *)src;
+    rsize_t orig_dmax = dmax;
 
     /* overlap is disallowed */
     if (unlikely(CHK_OVRLP(dp, dmax, sp, n))) {
@@ -152,5 +164,6 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
     return RCNEGATE(ESNOSPC);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_memccpy_s_chk);
+EXPORT_SYMBOL(_memccpy_s_uchk);
+#endif
 #endif

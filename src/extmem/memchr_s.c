@@ -96,6 +96,14 @@ EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
         return (ESLEMAX);
     }
 
+    return _memchr_s_uchk(dest, dmax, ch, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _memchr_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _memchr_s_uchk(const void *dest, rsize_t dmax, const int ch,
+                              void **resultp) {
     /* compares wordwise */
     *resultp = memchr((void *)dest, ch, (size_t)dmax);
 
@@ -103,3 +111,4 @@ EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
         return (ESNOTFND);
     return (EOK);
 }
+#endif

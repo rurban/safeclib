@@ -101,6 +101,13 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #else
 #define _BOS_UCHK(ok, uchk, chk) (chk)
 #endif
+/* inline the unchecked memmove_s variants, if __builtin_memmove is probed */
+#ifdef HAVE___BUILTIN_MEMMOVE
+#define _BOS_UCHK_MOVE(ok, dest, src, nbytes, chk)                             \
+    _BOS_UCHK(ok, (__builtin_memmove(dest, src, nbytes), EOK), chk)
+#else
+#define _BOS_UCHK_MOVE(ok, dest, src, nbytes, chk) (chk)
+#endif
 /* dest is known, and dmax of n elements of size is valid for it: non-zero,
    not larger than dest, and with WARN_DMAX the same size as dest. */
 #ifdef HAVE_WARN_DMAX

@@ -92,6 +92,13 @@ EXPORT errno_t _strset_s_chk(char *restrict dest, rsize_t dmax, int value,
         return (ESLEMAX);
     }
 
+    return _strset_s_uchk(dest, dmax, value);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strset_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strset_s_uchk(char *dest, rsize_t dmax, int value) {
     while (dmax && *dest) {
         *dest = (char)value;
         dmax--;
@@ -105,3 +112,4 @@ EXPORT errno_t _strset_s_chk(char *restrict dest, rsize_t dmax, int value,
 
     return (EOK);
 }
+#endif

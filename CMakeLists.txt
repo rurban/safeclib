@@ -315,12 +315,29 @@ int main() {
 }
 " HAVE___BUILTIN_CTZ)
 
+# __builtin_expect
+check_c_source_compiles("
+int main(int argc, char **argv) {
+    (void)argv;
+    return __builtin_expect(argc, 1) ? 0 : 1;
+}
+" HAVE___BUILTIN_EXPECT)
+
 # __builtin_constant_p
 check_c_source_compiles("
 int main() {
     return __builtin_constant_p(1) ? 0 : 1;
 }
 " HAVE___BUILTIN_CONSTANT_P)
+
+# __builtin_memmove
+check_c_source_compiles("
+char a[4], b[4];
+int main() {
+    __builtin_memmove(a, b, sizeof(a));
+    return a[0];
+}
+" HAVE___BUILTIN_MEMMOVE)
 
 # __builtin_isinf
 check_c_source_compiles("
@@ -555,6 +572,11 @@ if (HAVE___BUILTIN_CONSTANT_P)
   set(INSERT_CONSTANT_P "#define HAVE___BUILTIN_CONSTANT_P 1")
 else()
   set(INSERT_CONSTANT_P "#undef HAVE___BUILTIN_CONSTANT_P")
+endif()
+if (HAVE___BUILTIN_MEMMOVE)
+  set(INSERT_BUILTIN_MEMMOVE "#define HAVE___BUILTIN_MEMMOVE 1")
+else()
+  set(INSERT_BUILTIN_MEMMOVE "#undef HAVE___BUILTIN_MEMMOVE")
 endif()
 if(HAVE_SYS_TYPES_H)
   set(INSERT_SYS_TYPES_H "#include <sys/types.h>")

@@ -105,7 +105,16 @@ EXPORT errno_t _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
         CHK_DEST_OVR("strcoll_s", destbos)
     }
 
+    return _strcoll_s_uchk(dest, src, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strcoll_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strcoll_s_uchk(const char *dest, const char *src,
+                               int *resultp) {
     *resultp = strcoll(dest, src);
 
     return RCNEGATE(EOK);
 }
+#endif

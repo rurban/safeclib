@@ -282,8 +282,11 @@ EXTERN int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
 
 EXTERN errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
                                const size_t destbos) BOS_CHK(dest);
+EXTERN errno_t _strerror_s_uchk(char *dest, rsize_t dmax, errno_t errnum);
 #define strerror_s(dest, dmax, errnum)                                         \
-    _strerror_s_chk(dest, dmax, errnum, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1),                                     \
+              _strerror_s_uchk(dest, dmax, errnum),                            \
+              _strerror_s_chk(dest, dmax, errnum, BOS(dest)))
 
 EXTERN size_t strerrorlen_s(errno_t errnum);
 
@@ -312,41 +315,73 @@ EXTERN errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
                              int *resultp, const size_t destbos,
                              const size_t srcbos) BOS_CHK(dest) BOS_NULL(src)
     BOS_NULL(resultp);
+EXTERN errno_t _strcmp_s_uchk(const char *dest, rsize_t dmax, const char *src,
+                              int *resultp, const size_t srcbos);
 #define strcmp_s(dest, dmax, src, resultp)                                     \
-    _strcmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strcmp_s_uchk(dest, dmax, src, resultp, BOS(src)),              \
+              _strcmp_s_chk(dest, dmax, src, resultp, BOS(dest), BOS(src)))
 
 /* string compare case-insensitive */
 EXTERN errno_t _strcasecmp_s_chk(const char *dest, rsize_t dmax,
                                  const char *src, int *resultp,
                                  const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strcasecmp_s_uchk(const char *dest, rsize_t dmax,
+                                  const char *src, int *resultp);
 #define strcasecmp_s(dest, dmax, src, resultp)                                 \
-    _strcasecmp_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strcasecmp_s_uchk(dest, dmax, src, resultp),                    \
+              _strcasecmp_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* natural order string compare */
 EXTERN errno_t _strnatcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
                                 const int fold_case, int *resultp,
                                 const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strnatcmp_s_uchk(const char *dest, rsize_t dmax,
+                                 const char *src, const int fold_case,
+                                 int *resultp, const size_t srcbos);
+#define _strnatcmp_s_dispatch(dest, dmax, src, fold_case, resultp)            \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strnatcmp_s_uchk(dest, dmax, src, fold_case, resultp,           \
+                                BOS(src)),                                     \
+              _strnatcmp_s_chk(dest, dmax, src, fold_case, resultp,            \
+                               BOS(dest), BOS(src)))
 #define strnatcmp_s(dest, dmax, src, resultp)                                  \
-    _strnatcmp_s_chk(dest, dmax, src, 0, resultp, BOS(dest), BOS(src))
+    _strnatcmp_s_dispatch(dest, dmax, src, 0, resultp)
 #define strnatcasecmp_s(dest, dmax, src, resultp)                              \
-    _strnatcasecmp_s_chk(dest, dmax, src, 1, resultp, BOS(dest), BOS(src))
+    _strnatcmp_s_dispatch(dest, dmax, src, 1, resultp)
 
 /* find a substring - case insensitive */
 EXTERN errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
                                  rsize_t slen, char **substring,
                                  const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(substring);
+EXTERN errno_t _strcasestr_s_uchk(char *dest, rsize_t dmax, const char *src,
+                                  rsize_t slen, char **substring);
 #define strcasestr_s(dest, dmax, src, slen, substring)                         \
-    _strcasestr_s_chk(dest, dmax, src, slen, substring, BOS(dest), BOS(src))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_SRC_OK(src, slen, 1) &&     \
+                  (size_t)(slen) != 0 && (size_t)(slen) <= (size_t)(dmax) &&   \
+                  _BOS_KNOWN(substring),                                       \
+              _strcasestr_s_uchk(dest, dmax, src, slen, substring),            \
+              _strcasestr_s_chk(dest, dmax, src, slen, substring, BOS(dest),   \
+                                BOS(src)))
 
 /* fixed field string compare */
 EXTERN errno_t _strcmpfld_s_chk(const char *dest, rsize_t dmax, const char *src,
                                 int *resultp, const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strcmpfld_s_uchk(const char *dest, rsize_t dmax,
+                                 const char *src, int *resultp);
 #define strcmpfld_s(dest, dmax, src, resultp)                                  \
-    _strcmpfld_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_SRC_OK(src, dmax, 1) &&     \
+                  _BOS_KNOWN(resultp),                                         \
+              _strcmpfld_s_uchk(dest, dmax, src, resultp),                     \
+              _strcmpfld_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* fixed char array copy */
 EXTERN errno_t _strcpyfld_s_chk(char *dest, const rsize_t dmax, const char *src,
@@ -377,23 +412,40 @@ EXTERN errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                               rsize_t slen, rsize_t *countp,
                               const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(countp);
+EXTERN errno_t _strcspn_s_uchk(const char *dest, rsize_t dmax,
+                               const char *src, rsize_t slen,
+                               rsize_t *countp);
 #define strcspn_s(dest, dmax, src, slen, countp)                               \
-    _strcspn_s_chk(dest, dmax, src, slen, countp, BOS(dest), BOS(src))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_SRC_OK(src, slen, 1) &&     \
+                  (size_t)(slen) != 0 &&                                       \
+                  (size_t)(slen) <= RSIZE_MAX_STR && _BOS_KNOWN(countp),       \
+              _strcspn_s_uchk(dest, dmax, src, slen, countp),                  \
+              _strcspn_s_chk(dest, dmax, src, slen, countp, BOS(dest),         \
+                             BOS(src)))
 
 /* returns a pointer to the first occurrence of c in dest */
 EXTERN errno_t _strfirstchar_s_chk(char *dest, rsize_t dmax, char c,
                                    char **firstp, const size_t destbos)
     BOS_CHK(dest) BOS_NULL(firstp);
+EXTERN errno_t _strfirstchar_s_uchk(char *dest, rsize_t dmax, char c,
+                                    char **firstp);
 #define strfirstchar_s(dest, dmax, c, firstp)                                  \
-    _strfirstchar_s_chk(dest, dmax, c, firstp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(firstp),              \
+              _strfirstchar_s_uchk(dest, dmax, c, firstp),                     \
+              _strfirstchar_s_chk(dest, dmax, c, firstp, BOS(dest)))
 
 /* returns index of first difference */
 EXTERN errno_t _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
                                    const char *src, rsize_t *resultp,
                                    const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strfirstdiff_s_uchk(const char *dest, rsize_t dmax,
+                                    const char *src, rsize_t *resultp);
 #define strfirstdiff_s(dest, dmax, src, resultp)                               \
-    _strfirstdiff_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strfirstdiff_s_uchk(dest, dmax, src, resultp),                  \
+              _strfirstdiff_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* validate alphanumeric string */
 EXTERN bool _strisalphanumeric_s_chk(const char *dest, rsize_t dmax,
@@ -452,16 +504,25 @@ EXTERN bool _strisuppercase_s_uchk(const char *dest, rsize_t dmax);
 EXTERN errno_t _strlastchar_s_chk(char *dest, rsize_t dmax, char c,
                                   char **lastp, const size_t destbos)
     BOS_CHK(dest) BOS_NULL(lastp);
+EXTERN errno_t _strlastchar_s_uchk(char *dest, rsize_t dmax, char c,
+                                   char **lastp);
 #define strlastchar_s(dest, dmax, c, lastp)                                    \
-    _strlastchar_s_chk(dest, dmax, c, lastp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(lastp),               \
+              _strlastchar_s_uchk(dest, dmax, c, lastp),                       \
+              _strlastchar_s_chk(dest, dmax, c, lastp, BOS(dest)))
 
 /* returns index of last difference */
 EXTERN errno_t _strlastdiff_s_chk(const char *dest, rsize_t dmax,
                                   const char *src, rsize_t *resultp,
                                   const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strlastdiff_s_uchk(const char *dest, rsize_t dmax,
+                                   const char *src, rsize_t *resultp);
 #define strlastdiff_s(dest, dmax, src, resultp)                                \
-    _strlastdiff_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strlastdiff_s_uchk(dest, dmax, src, resultp),                   \
+              _strlastdiff_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* left justify */
 EXTERN errno_t _strljustify_s_chk(char *dest, rsize_t dmax,
@@ -481,29 +542,49 @@ EXTERN errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
                               char **firstp, const size_t destbos,
                               const size_t srcbos) BOS_CHK(dest)
     BOS_OVR2(src, slen) BOS_NULL(firstp);
+EXTERN errno_t _strpbrk_s_uchk(char *dest, rsize_t dmax, char *src,
+                               rsize_t slen, char **firstp);
 #define strpbrk_s(dest, dmax, src, slen, firstp)                               \
-    _strpbrk_s_chk(dest, dmax, src, slen, firstp, BOS(dest), BOS(src))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_SRC_OK(src, slen, 1) &&     \
+                  (size_t)(slen) != 0 && _BOS_KNOWN(firstp),                   \
+              _strpbrk_s_uchk(dest, dmax, src, slen, firstp),                  \
+              _strpbrk_s_chk(dest, dmax, src, slen, firstp, BOS(dest),         \
+                             BOS(src)))
 
 EXTERN errno_t _strfirstsame_s_chk(const char *dest, rsize_t dmax,
                                    const char *src, rsize_t *resultp,
                                    const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strfirstsame_s_uchk(const char *dest, rsize_t dmax,
+                                    const char *src, rsize_t *resultp);
 #define strfirstsame_s(dest, dmax, src, resultp)                               \
-    _strfirstsame_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strfirstsame_s_uchk(dest, dmax, src, resultp),                  \
+              _strfirstsame_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 EXTERN errno_t _strlastsame_s_chk(const char *dest, rsize_t dmax,
                                   const char *src, rsize_t *resultp,
                                   const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src) BOS_NULL(resultp);
+EXTERN errno_t _strlastsame_s_uchk(const char *dest, rsize_t dmax,
+                                   const char *src, rsize_t *resultp);
 #define strlastsame_s(dest, dmax, src, resultp)                                \
-    _strlastsame_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strlastsame_s_uchk(dest, dmax, src, resultp),                   \
+              _strlastsame_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* searches for a prefix */
 EXTERN errno_t _strprefix_s_chk(const char *dest, rsize_t dmax, const char *src,
                                 const size_t destbos) BOS_CHK(dest)
     BOS_NULL(src);
+EXTERN errno_t _strprefix_s_uchk(const char *dest, rsize_t dmax,
+                                 const char *src);
 #define strprefix_s(dest, dmax, src)                                           \
-    _strprefix_s_chk(dest, dmax, src, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src),                 \
+              _strprefix_s_uchk(dest, dmax, src),                              \
+              _strprefix_s_chk(dest, dmax, src, BOS(dest)))
 
 /* removes leading and trailing white space */
 EXTERN errno_t _strremovews_s_chk(char *dest, rsize_t dmax,
@@ -516,31 +597,53 @@ EXTERN errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                              rsize_t slen, rsize_t *countp,
                              const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_CHK2(src, slen) BOS_NULL(countp);
+EXTERN errno_t _strspn_s_uchk(const char *dest, rsize_t dmax, const char *src,
+                              rsize_t slen, rsize_t *countp);
 #define strspn_s(dest, dmax, src, slen, countp)                                \
-    _strspn_s_chk(dest, dmax, src, slen, countp, BOS(dest), BOS(src))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_SRC_OK(src, slen, 1) &&     \
+                  (size_t)(slen) != 0 && _BOS_KNOWN(countp),                   \
+              _strspn_s_uchk(dest, dmax, src, slen, countp),                   \
+              _strspn_s_chk(dest, dmax, src, slen, countp, BOS(dest),          \
+                            BOS(src)))
 
 /* find a substring */
 EXTERN errno_t _strstr_s_chk(char *dest, rsize_t dmax, const char *src,
                              rsize_t slen, char **substringp,
                              const size_t destbos, const size_t srcbos)
     BOS_CHK(dest) BOS_OVR2(src, slen) BOS_NULL(substringp);
+EXTERN errno_t _strstr_s_uchk(char *dest, rsize_t dmax, const char *src,
+                              rsize_t slen, char **substringp);
 #define strstr_s(dest, dmax, src, slen, substringp)                            \
-    _strstr_s_chk(dest, dmax, src, slen, substringp, BOS(dest), BOS(src))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_SRC_OK(src, slen, 1) &&     \
+                  (size_t)(slen) != 0 && _BOS_KNOWN(substringp),               \
+              _strstr_s_uchk(dest, dmax, src, slen, substringp),               \
+              _strstr_s_chk(dest, dmax, src, slen, substringp, BOS(dest),      \
+                            BOS(src)))
 
 /* find a character */
 EXTERN errno_t _strchr_s_chk(const char *restrict dest, rsize_t dmax,
                              const int ch, char **restrict resultp,
                              const size_t destbos) BOS_CHK(dest)
     VAL_OVR2(ch, 255) BOS_NULL(resultp);
+EXTERN errno_t _strchr_s_uchk(const char *dest, rsize_t dmax, const int ch,
+                              char **resultp);
 #define strchr_s(dest, dmax, ch, resultp)                                      \
-    _strchr_s_chk(dest, dmax, ch, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (int)(ch) <= 255 &&              \
+                  _BOS_KNOWN(resultp),                                         \
+              _strchr_s_uchk(dest, dmax, ch, resultp),                         \
+              _strchr_s_chk(dest, dmax, ch, resultp, BOS(dest)))
 
 EXTERN errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
                               const int ch, char **restrict resultp,
                               const size_t destbos) BOS_CHK(dest)
     VAL_OVR2(ch, 255) BOS_NULL(resultp) BOS_ATTR(!*dest, "empty *dest");
+EXTERN errno_t _strrchr_s_uchk(const char *dest, rsize_t dmax, const int ch,
+                               char **resultp);
 #define strrchr_s(dest, dmax, ch, resultp)                                     \
-    _strrchr_s_chk(dest, dmax, ch, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (int)(ch) <= 255 &&              \
+                  _BOS_KNOWN(resultp),                                         \
+              _strrchr_s_uchk(dest, dmax, ch, resultp),                        \
+              _strrchr_s_chk(dest, dmax, ch, resultp, BOS(dest)))
 
 /* convert string to lowercase.
    mingw string_s.h: _strlwr_s */
@@ -572,8 +675,13 @@ EXTERN errno_t _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
                               const char *restrict src, int *resultp,
                               const size_t destbos) BOS_CHK(dest) BOS_NULL(src)
     BOS_NULL(resultp);
+EXTERN errno_t _strcoll_s_uchk(const char *dest, const char *src,
+                               int *resultp);
 #define strcoll_s(dest, dmax, src, resultp)                                    \
-    _strcoll_s_chk(dest, dmax, src, resultp, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _strcoll_s_uchk(dest, src, resultp),                             \
+              _strcoll_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* Derived from windows extensions sec_api/string_s.h
    defined(MINGW_HAS_SECURE_API) */
@@ -581,13 +689,22 @@ EXTERN errno_t _strcoll_s_chk(const char *restrict dest, rsize_t dmax,
 EXTERN errno_t _strset_s_chk(char *restrict dest, rsize_t dmax, int value,
                              const size_t destbos) BOS_CHK(dest)
     VAL_OVR2(value, 255);
-#define strset_s(dest, dmax, value) _strset_s_chk(dest, dmax, value, BOS(dest))
+EXTERN errno_t _strset_s_uchk(char *dest, rsize_t dmax, int value);
+#define strset_s(dest, dmax, value)                                            \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (unsigned)(value) <= 255,        \
+              _strset_s_uchk(dest, dmax, value),                               \
+              _strset_s_chk(dest, dmax, value, BOS(dest)))
 
 EXTERN errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value,
                               rsize_t n, const size_t destbos) BOS_CHK(dest)
     BOS_OVR2_BUTZERO(dest, n) VAL_OVR2(value, 255) VAL_OVR2_BUTZERO(n, dmax);
+EXTERN errno_t _strnset_s_uchk(char *dest, rsize_t dmax, int value,
+                               rsize_t n);
 #define strnset_s(dest, dmax, value, n)                                        \
-    _strnset_s_chk(dest, dmax, value, n, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (unsigned)(value) <= 255 &&      \
+                  (size_t)(n) <= (size_t)(dmax),                               \
+              _strnset_s_uchk(dest, dmax, value, n),                           \
+              _strnset_s_chk(dest, dmax, value, n, BOS(dest)))
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 
@@ -662,7 +779,17 @@ EXTERN errno_t _wctomb_s_chk(int *restrict retvalp, char *restrict dest,
 
 EXTERN size_t _wcsnlen_s_chk(const wchar_t *str, size_t smax, size_t srcbos)
     BOSW_CHK2(str, smax);
-#define wcsnlen_s(str, smax) _wcsnlen_s_chk(str, smax, BOS(str))
+EXTERN size_t _wcsnlen_s_uchk(const wchar_t *str, size_t smax);
+/* the chk stops one wchar_t before a known str size multiple of wchar_t */
+#define wcsnlen_s(str, smax)                                                   \
+    _BOS_UCHK(_BOS_DMAX_OK(str, smax, sizeof(wchar_t)) &&                      \
+                  (size_t)(smax) <= RSIZE_MAX_WSTR,                            \
+              _wcsnlen_s_uchk(str,                                             \
+                              (BOS(str) % sizeof(wchar_t) == 0 &&              \
+                               (size_t)(smax) == BOS(str) / sizeof(wchar_t))   \
+                                  ? (size_t)(smax) - 1                         \
+                                  : (size_t)(smax)),                           \
+              _wcsnlen_s_chk(str, smax, BOS(str)))
 
 EXTERN errno_t _wcscpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
                              const wchar_t *restrict src, const size_t destbos)
@@ -827,14 +954,26 @@ EXTERN errno_t _wcsnatcmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
 EXTERN errno_t _wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax,
                              const wchar_t value, const size_t destbos)
     BOSW_CHK(dest) VAL_OVR2(value, 0x10ffff);
-#define wcsset_s(dest, dmax, value) _wcsset_s_chk(dest, dmax, value, BOS(dest))
+EXTERN errno_t _wcsset_s_uchk(wchar_t *dest, rsize_t dmax,
+                              const wchar_t value);
+#define wcsset_s(dest, dmax, value)                                            \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, sizeof(wchar_t)) &&                     \
+                  (wchar_t)(value) <= 0x10ffff,                                \
+              _wcsset_s_uchk(dest, dmax, value),                               \
+              _wcsset_s_chk(dest, dmax, value, BOS(dest)))
 
 EXTERN errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t value, size_t n,
                               const size_t destbos) BOSW_CHK(dest)
     VAL_OVR2(value, 0x10ffff);
+EXTERN errno_t _wcsnset_s_uchk(wchar_t *dest, rsize_t dmax,
+                               const wchar_t value, size_t n);
 #define wcsnset_s(dest, dmax, value, n)                                        \
-    _wcsnset_s_chk(dest, dmax, value, n, BOS(dest))
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, sizeof(wchar_t)) &&                     \
+                  (wchar_t)(value) <= 0x10ffff &&                              \
+                  (size_t)(n) <= (size_t)(dmax),                               \
+              _wcsnset_s_uchk(dest, dmax, value, n),                           \
+              _wcsnset_s_chk(dest, dmax, value, n, BOS(dest)))
 
 EXTERN errno_t _wcscoll_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict src, rsize_t smax,
@@ -861,7 +1000,12 @@ EXTERN int iswfc(const uint32_t wc) VAL_OVR2(wc, 0x10ffff);
 EXTERN int _towfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
                         const uint32_t src, const size_t destbos) BOSW_CHK(dest)
     BOS_ATTR(dmax < 4, "dmax underflow <4");
-#define towfc_s(dest, dmax, src) _towfc_s_chk(dest, dmax, src, BOS(dest))
+EXTERN int _towfc_s_uchk(wchar_t *dest, const uint32_t src);
+#define towfc_s(dest, dmax, src)                                               \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, sizeof(wchar_t)) &&                     \
+                  (size_t)(dmax) >= 4 && (size_t)(dmax) <= RSIZE_MAX_WSTR,     \
+              _towfc_s_uchk(dest, src),                                        \
+              _towfc_s_chk(dest, dmax, src, BOS(dest)))
 
 /* full foldcase + NFD normalization */
 EXTERN errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,

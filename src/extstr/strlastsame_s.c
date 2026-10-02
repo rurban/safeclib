@@ -81,9 +81,6 @@ EXPORT errno_t _strlastsame_s_chk(const char *dest, rsize_t dmax,
                                   const size_t destbos)
 #endif
 {
-    const char *rp;
-    bool found;
-
     CHK_SRC_NULL("strfirstsame_s", resultp)
     *resultp = 0;
 
@@ -96,6 +93,19 @@ EXPORT errno_t _strlastsame_s_chk(const char *dest, rsize_t dmax,
     } else {
         CHK_DEST_OVR("strlastsame_s", destbos)
     }
+
+    return _strlastsame_s_uchk(dest, dmax, src, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strlastsame_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strlastsame_s_uchk(const char *dest, rsize_t dmax,
+                                   const char *src, rsize_t *resultp) {
+    const char *rp;
+    bool found;
+
+    *resultp = 0;
 
     /* hold reference point */
     rp = dest;
@@ -122,3 +132,4 @@ EXPORT errno_t _strlastsame_s_chk(const char *dest, rsize_t dmax,
         return (ESNOTFND);
     }
 }
+#endif

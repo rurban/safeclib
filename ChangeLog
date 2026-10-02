@@ -10,8 +10,15 @@ Changes in 3.12
 	  strnlen_s, strzero_s, strnterminate_s, strljustify_s, strremovews_s,
 	  strtolowercase_s, strtouppercase_s, stris*_s, u8nlen_s, u8width_s,
 	  u8lwr_s, u8upr_s, u8zero_s, u8set_s, u8nset_s, u8chr_s, u8rchr_s
-	  and u8coll_s.
+	  and u8coll_s, memchr_s, memrchr_s, memccpy_s, memcmp*_s, wmemcmp_s,
+	  strchr_s, strrchr_s, strset_s, strnset_s, strcoll_s, strfirstchar_s,
+	  strlastchar_s, strerror_s, wcsset_s, wcsnset_s, towfc_s, wcsnlen_s,
+	  strcmp_s, strcasecmp_s, strnatcmp_s, strnatcasecmp_s, strcmpfld_s,
+	  strprefix_s, strfirst/lastdiff_s, strfirst/lastsame_s, strspn_s,
+	  strcspn_s, strpbrk_s, strstr_s and strcasestr_s.
+	  The memmove_s variants are then inlined via __builtin_memmove.
 	- strisdigit_s, strismixedcase_s, strisuppercase_s: stop at dmax.
+	- Fix strnatcasecmp_s macro, calling the non-existing _strnatcasecmp_s_chk.
 
 Changes in 3.11.1
 	- make release hotfixes

@@ -182,6 +182,20 @@ EXPORT errno_t _memcmp_s_chk(const void *dest, rsize_t dmax, const void *src,
         return (RCNEGATE(ESNOSPC));
     }
 
+    return _memcmp_s_uchk(dest, dmax, src, slen, diff);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_memcmp_s_chk);
+#endif
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _memcmp_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _memcmp_s_uchk(const void *dest, rsize_t dmax, const void *src,
+                              rsize_t slen, int *diff) {
+    const uint8_t *dp = (uint8_t *)dest;
+    const uint8_t *sp = (uint8_t *)src;
+
     /* no need to compare the same memory */
     if (unlikely(dp == sp)) {
         *diff = 0;
@@ -207,5 +221,6 @@ EXPORT errno_t _memcmp_s_chk(const void *dest, rsize_t dmax, const void *src,
     return (RCNEGATE(EOK));
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_memcmp_s_chk);
+EXPORT_SYMBOL(_memcmp_s_uchk);
+#endif
 #endif

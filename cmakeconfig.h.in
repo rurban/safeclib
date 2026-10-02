@@ -106,8 +106,14 @@
 /* Define to 1 if __builtin_ctz is available */
 #cmakedefine HAVE___BUILTIN_CTZ 1
 
+/* Define to 1 if __builtin_expect is available */
+#cmakedefine HAVE___BUILTIN_EXPECT 1
+
 /* Define to 1 if __builtin_constant_p is available */
 #cmakedefine HAVE___BUILTIN_CONSTANT_P 1
+
+/* Define to 1 if __builtin_memmove is available */
+#cmakedefine HAVE___BUILTIN_MEMMOVE 1
 
 /* Define to 1 if __builtin_isinf is available */
 #cmakedefine HAVE___BUILTIN_ISINF 1

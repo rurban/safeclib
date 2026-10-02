@@ -81,10 +81,6 @@ EXPORT errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
                                  const size_t destbos, const size_t srcbos)
 #endif
 {
-    rsize_t len;
-    rsize_t dlen;
-    int i;
-
     CHK_SRC_NULL("strcasestr_s", substring)
     *substring = NULL;
 
@@ -119,6 +115,18 @@ EXPORT errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
                                            (void *)dest, ESZEROL);
         return RCNEGATE(ESZEROL);
     }
+
+    return _strcasestr_s_uchk(dest, dmax, src, slen, substring);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strcasestr_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strcasestr_s_uchk(char *dest, rsize_t dmax, const char *src,
+                                  rsize_t slen, char **substring) {
+    rsize_t len;
+    rsize_t dlen;
+    int i;
 
     /*
      * src points to a string with zero length, or
@@ -162,3 +170,4 @@ EXPORT errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
     *substring = NULL;
     return RCNEGATE(ESNOTFND);
 }
+#endif

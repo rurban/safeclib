@@ -97,6 +97,14 @@ EXPORT errno_t _strchr_s_chk(const char *restrict dest, rsize_t dmax,
         return (ESLEMAX);
     }
 
+    return _strchr_s_uchk(dest, dmax, ch, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strchr_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strchr_s_uchk(const char *dest, rsize_t dmax, const int ch,
+                              char **resultp) {
     /* compares wordwise */
     /* XXX gcc-4.4 fails with logical ‘&&’ with non-zero constant
        will always evaluate as true.
@@ -119,3 +127,4 @@ EXPORT errno_t _strchr_s_chk(const char *restrict dest, rsize_t dmax,
     }
     return (EOK);
 }
+#endif

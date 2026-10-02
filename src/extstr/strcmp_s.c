@@ -81,7 +81,6 @@ EXPORT errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
                              size_t srcbos)
 #endif
 {
-    size_t slen;
     CHK_SRC_NULL("strcmp_s", resultp)
     *resultp = 0;
 
@@ -95,6 +94,20 @@ EXPORT errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
         CHK_DEST_OVR("strcmp_s", destbos)
     }
 
+    return _strcmp_s_uchk(dest, dmax, src, resultp, srcbos);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strcmp_s_chk);
+#endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strcmp_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strcmp_s_uchk(const char *dest, rsize_t dmax, const char *src,
+                              int *resultp, const size_t srcbos) {
+    size_t slen;
+
+    *resultp = 0;
     slen = 0;
     while (*dest && *src && dmax) {
 
@@ -118,5 +131,6 @@ EXPORT errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strcmp_s_chk);
+EXPORT_SYMBOL(_strcmp_s_uchk);
 #endif /* __KERNEL__ */
+#endif

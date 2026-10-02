@@ -83,9 +83,6 @@ EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                               const size_t destbos, const size_t srcbos)
 #endif
 {
-    const char *scan2;
-    rsize_t smax;
-
     CHK_SRC_NULL("strcspn_s", countp)
     *countp = 0;
 
@@ -118,6 +115,22 @@ EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
         return (RCNEGATE(EOVERFLOW));
     }
 
+    return _strcspn_s_uchk(dest, dmax, src, slen, countp);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_strcspn_s_chk);
+#endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strcspn_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strcspn_s_uchk(const char *dest, rsize_t dmax,
+                               const char *src, rsize_t slen,
+                               rsize_t *countp) {
+    const char *scan2;
+    rsize_t smax;
+
+    *countp = 0;
     while (*dest && dmax) {
 
         /*
@@ -143,5 +156,6 @@ EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
     return RCNEGATE(EOK);
 }
 #ifdef __KERNEL__
-EXPORT_SYMBOL(_strcspn_s_chk);
+EXPORT_SYMBOL(_strcspn_s_uchk);
 #endif /* __KERNEL__ */
+#endif

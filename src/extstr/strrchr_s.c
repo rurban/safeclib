@@ -79,8 +79,6 @@ EXPORT errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
                               const size_t destbos)
 #endif
 {
-    rsize_t len;
-
     CHK_SRC_NULL("strrchr_s", resultp)
     *resultp = NULL;
 
@@ -98,6 +96,17 @@ EXPORT errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
         return (ESLEMAX);
     }
 
+    return _strrchr_s_uchk(dest, dmax, ch, resultp);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _strrchr_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strrchr_s_uchk(const char *dest, rsize_t dmax, const int ch,
+                               char **resultp) {
+    rsize_t len;
+
+    *resultp = NULL;
     len = strnlen_s(dest, dmax);
     if (len)
         return memrchr_s(dest, dmax == len ? dmax : len + 1, ch,
@@ -105,3 +114,4 @@ EXPORT errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,
     else
         return (ESZEROL);
 }
+#endif
