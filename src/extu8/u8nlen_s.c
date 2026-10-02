@@ -35,6 +35,25 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The str/smax constraints are already checked by _u8nlen_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT rsize_t _u8nlen_s_uchk(const char8_t *str, rsize_t smax) {
+    const char8_t *z;
+    rsize_t orig_smax = smax;
+
+#if 0 && defined(HAVE_MEMCHR) /* rather inline it */
+    z = memchr(str, 0, smax);
+    if (z) smax = z - str;
+    return smax;
+#else
+    for (z = str; smax && *str != 0; smax--, str++)
+        ;
+    return smax ? (rsize_t)(str - z) : orig_smax;
+#endif
+}
+#endif
+
 /**
  * @def u8nlen_s(str,smax)
  * @brief
@@ -67,9 +86,6 @@ rsize_t u8nlen_s(const char8_t *str, rsize_t smax)
 EXPORT rsize_t _u8nlen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
 #endif
 {
-    const char8_t *z;
-    rsize_t orig_smax = smax;
-
     if (unlikely(str == NULL)) {
         return RCNEGATE(0);
     }
@@ -97,21 +113,9 @@ EXPORT rsize_t _u8nlen_s_chk(const char8_t *str, rsize_t smax, size_t strbos)
     }
 #endif
 
-#if 0 && defined(HAVE_MEMCHR) /* rather inline it */
-    z = memchr(str, 0, smax);
-    if (z) smax = z - str;
-    return smax;
-#else
-    if (strbos != BOS_UNKNOWN) {
-        /* Dont touch past strbos */
-      for (z = str; smax && *str != 0; smax--, str++, strbos--) {
-            if (unlikely(strbos <= 0))
-                return smax ? (rsize_t)(str - z) : orig_smax;
-        }
-    } else {
-        for (z = str; smax && *str != 0; smax--, str++)
-            ;
-    }
-    return smax ? (rsize_t)(str - z) : orig_smax;
-#endif
+    /* Dont touch past strbos. The old inlined loop returned
+       min(strlen, smax, strbos) for a known strbos (0 for strbos == 0). */
+    if (strbos != BOS_UNKNOWN && smax > strbos)
+        smax = strbos;
+    return _u8nlen_s_uchk(str, smax);
 }

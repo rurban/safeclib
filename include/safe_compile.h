@@ -115,6 +115,16 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 /* src is known, and n elements of size fit into it */
 #define _BOS_SRC_OK(src, n, size)                                              \
     (_BOS_KNOWN(src) && (size_t)(n) <= BOS(src) / (size))
+/* functions with a single dest/dmax pair: name_uchk(dest, dmax) or
+   name_chk(dest, dmax, BOS(dest)) */
+#define _BOS_UCHK_DEST(name, dest, dmax)                                       \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1), _##name##_uchk(dest, dmax),        \
+              _##name##_chk(dest, dmax, BOS(dest)))
+/* same with an additional smax <= RSIZE_MAX_STR check */
+#define _BOS_UCHK_STR(name, str, smax)                                         \
+    _BOS_UCHK(_BOS_DMAX_OK(str, smax, 1) &&                                    \
+                  (size_t)(smax) <= RSIZE_MAX_STR,                             \
+              _##name##_uchk(str, smax), _##name##_chk(str, smax, BOS(str)))
 
 #define _XSTR(s) _STR(s)
 #define _STR(s) #s

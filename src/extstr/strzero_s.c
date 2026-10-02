@@ -35,6 +35,25 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strzero_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strzero_s_uchk(char *dest, rsize_t dmax) {
+    /* null string to eliminate data */
+    while (dmax && *dest) {
+        *dest = '\0';
+        dmax--;
+        dest++;
+    }
+#ifdef SAFECLIB_STR_NULL_SLACK
+    if (!*dest)
+        memset(dest, 0, dmax);
+#endif
+
+    return (EOK);
+}
+#endif
+
 /**
  * @def strzero_s(dest,dmax)
  * @brief
@@ -80,16 +99,5 @@ EXPORT errno_t _strzero_s_chk(char *dest, rsize_t dmax,
         CHK_DEST_OVR("strzero_s", destbos)
     }
 
-    /* null string to eliminate data */
-    while (dmax && *dest) {
-        *dest = '\0';
-        dmax--;
-        dest++;
-    }
-#ifdef SAFECLIB_STR_NULL_SLACK
-    if (!*dest)
-        memset(dest, 0, dmax);
-#endif
-
-    return (EOK);
+    return _strzero_s_uchk(dest, dmax);
 }

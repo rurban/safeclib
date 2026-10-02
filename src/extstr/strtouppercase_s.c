@@ -35,6 +35,23 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strtouppercase_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strtouppercase_s_uchk(char *dest, rsize_t dmax) {
+    while (*dest && dmax) {
+
+        if ((*dest >= 'a') && (*dest <= 'z')) {
+            *dest = (char)(*dest - 32);
+        }
+        dest++;
+        dmax--;
+    }
+
+    return (EOK);
+}
+#endif
+
 /**
  * @def strtouppercase_s(dest, dmax)
  * @brief
@@ -83,14 +100,5 @@ EXPORT errno_t _strtouppercase_s_chk(char *dest, rsize_t dmax,
         CHK_DEST_OVR("strtouppercase_s", destbos)
     }
 
-    while (*dest && dmax) {
-
-        if ((*dest >= 'a') && (*dest <= 'z')) {
-            *dest = (char)(*dest - 32);
-        }
-        dest++;
-        dmax--;
-    }
-
-    return (EOK);
+    return _strtouppercase_s_uchk(dest, dmax);
 }

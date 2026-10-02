@@ -35,51 +35,15 @@
 #include "safeclib_private.h"
 #endif
 
-/**
- * @def strispassword_s(dest,dmax)
- * @brief
- *    This function validates the make-up of a password string.
- * @details
- *  - Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters \n
- *  - Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters \n
- *  - Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters \n
- *  - Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters \n
- *  - Password must have at least SAFE_STR_MIN_NUMBERS numbers \n
- *  - Password must have at least SAFE_STR_MIN_SPECIALS special characters
- *
- * @remark EXTENSION TO
- *    ISO/IEC TR 24731, Programming languages, environments
- *    and system software interfaces, Extensions to the C Library,
- *    Part I: Bounds-checking interfaces
- *
- * @param  dest  pointer to password string
- * @param  dmax  maximum length of password string
- *
- * @pre  dest shall not be a null pointer.
- * @pre  dmax > SAFE_STR_PASSWORD_MIN_LENGTH
- * @pre  dmax < SAFE_STR_PASSWORD_MAX_LENGTH
- * @pre  dest shall not be unterminated
- *
- * @return  true   when string iss valid password
- * @return  false  when string does not meet requirements or an error occurred
- *
- * @see
- *    strzero_s()
- */
-#ifdef FOR_DOXYGEN
-bool strispassword_s(const char *dest, rsize_t dmax)
-#else
-EXPORT bool _strispassword_s_chk(const char *dest, rsize_t dmax,
-                                 const size_t destbos)
-#endif
-{
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strispassword_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT bool _strispassword_s_uchk(const char *dest, rsize_t dmax) {
     uint32_t cnt_all;
     uint32_t cnt_lowercase;
     uint32_t cnt_uppercase;
     uint32_t cnt_numbers;
     uint32_t cnt_specials;
-
-    CHK_DEST_DMAX_BOOL("strispassword_s", SAFE_STR_PASSWORD_MAX_LENGTH)
 
     if (unlikely(dmax < SAFE_STR_PASSWORD_MIN_LENGTH)) {
         invoke_safe_str_constraint_handler("strispassword_s: "
@@ -141,4 +105,48 @@ EXPORT bool _strispassword_s_chk(const char *dest, rsize_t dmax,
     } else {
         return (false);
     }
+}
+#endif
+
+/**
+ * @def strispassword_s(dest,dmax)
+ * @brief
+ *    This function validates the make-up of a password string.
+ * @details
+ *  - Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters \n
+ *  - Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters \n
+ *  - Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters \n
+ *  - Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters \n
+ *  - Password must have at least SAFE_STR_MIN_NUMBERS numbers \n
+ *  - Password must have at least SAFE_STR_MIN_SPECIALS special characters
+ *
+ * @remark EXTENSION TO
+ *    ISO/IEC TR 24731, Programming languages, environments
+ *    and system software interfaces, Extensions to the C Library,
+ *    Part I: Bounds-checking interfaces
+ *
+ * @param  dest  pointer to password string
+ * @param  dmax  maximum length of password string
+ *
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax > SAFE_STR_PASSWORD_MIN_LENGTH
+ * @pre  dmax < SAFE_STR_PASSWORD_MAX_LENGTH
+ * @pre  dest shall not be unterminated
+ *
+ * @return  true   when string iss valid password
+ * @return  false  when string does not meet requirements or an error occurred
+ *
+ * @see
+ *    strzero_s()
+ */
+#ifdef FOR_DOXYGEN
+bool strispassword_s(const char *dest, rsize_t dmax)
+#else
+EXPORT bool _strispassword_s_chk(const char *dest, rsize_t dmax,
+                                 const size_t destbos)
+#endif
+{
+    CHK_DEST_DMAX_BOOL("strispassword_s", SAFE_STR_PASSWORD_MAX_LENGTH)
+
+    return _strispassword_s_uchk(dest, dmax);
 }

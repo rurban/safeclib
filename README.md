@@ -170,8 +170,12 @@ argument checks of the `_chk` variant (GH #48). This needs
 `__builtin_constant_p` and `__builtin_object_size`, i.e. gcc or clang,
 mostly with optimizations. Covered are `memcpy_s`, `memmove_s`,
 `memset_s`, `memzero_s`, their 16 and 32 bit variants, `wmemcpy_s` and
-`wmemmove_s`. Run-time only constraints, like overlapping memory in the
-`memcpy` variants, are still checked.
+`wmemmove_s`, and the single dest/dmax string functions `strnlen_s`,
+`strzero_s`, `strnterminate_s`, `strljustify_s`, `strremovews_s`,
+`strtolowercase_s`, `strtouppercase_s`, the `stris*_s` validators,
+`u8nlen_s`, `u8width_s`, `u8lwr_s`, `u8upr_s` and `u8zero_s`. Run-time
+only constraints, like overlapping memory in the `memcpy` variants or
+unterminated strings, are still checked.
 
 * Header Files
 

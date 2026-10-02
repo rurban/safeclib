@@ -35,6 +35,28 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strnterminate_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT rsize_t _strnterminate_s_uchk(char *dest, rsize_t dmax) {
+    rsize_t count;
+
+    count = 0;
+    while (dmax > 1) {
+        if (*dest) {
+            count++;
+            dmax--;
+            dest++;
+        } else {
+            break;
+        }
+    }
+    *dest = '\0';
+
+    return (count);
+}
+#endif
+
 /**
  * @def strnterminate_s(str,smax)
  * @brief
@@ -70,8 +92,6 @@ EXPORT rsize_t _strnterminate_s_chk(char *dest, rsize_t dmax,
                                     const size_t destbos)
 #endif
 {
-    rsize_t count;
-
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("strnterminate_s: dest is null",
                                            (void *)dest, ESNULLP);
@@ -97,17 +117,5 @@ EXPORT rsize_t _strnterminate_s_chk(char *dest, rsize_t dmax,
         }
     }
 
-    count = 0;
-    while (dmax > 1) {
-        if (*dest) {
-            count++;
-            dmax--;
-            dest++;
-        } else {
-            break;
-        }
-    }
-    *dest = '\0';
-
-    return (count);
+    return _strnterminate_s_uchk(dest, dmax);
 }

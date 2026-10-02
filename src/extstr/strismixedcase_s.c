@@ -35,6 +35,29 @@
 #include "safeclib_private.h"
 #endif
 
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strismixedcase_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT bool _strismixedcase_s_uchk(const char *dest, rsize_t dmax) {
+    if (unlikely(*dest == '\0')) {
+        return (false);
+    }
+
+    while (*dest && dmax) {
+
+        if (((*dest >= 'a') && (*dest <= 'z')) ||
+            ((*dest >= 'A') && (*dest <= 'Z'))) {
+            dest++;
+            dmax--;
+        } else {
+            return (false);
+        }
+    }
+
+    return (true);
+}
+#endif
+
 /**
  * @def strismixedcase_s(dest,dmax)
  * @brief
@@ -72,20 +95,5 @@ EXPORT bool _strismixedcase_s_chk(const char *dest, rsize_t dmax,
 {
     CHK_DEST_DMAX_BOOL("strismixedcase_s", RSIZE_MAX_STR)
 
-    if (unlikely(*dest == '\0')) {
-        return (false);
-    }
-
-    while (*dest) {
-
-        if (((*dest >= 'a') && (*dest <= 'z')) ||
-            ((*dest >= 'A') && (*dest <= 'Z'))) {
-            dest++;
-            dmax--;
-        } else {
-            return (false);
-        }
-    }
-
-    return (true);
+    return _strismixedcase_s_uchk(dest, dmax);
 }

@@ -35,63 +35,13 @@
 #include "safeclib_private.h"
 #endif
 
-/**
- * @def strremovews_s(dest,dmax)
- * @brief
- *    Removes beginning and trailing whitespace from the string pointed to by
- *    dest by shifting the text left over writting the beginning whitespace
- *    (space or tab).
- *
- * @details
- *    The shifted-trimmed text is zero terminated.
- *    The text is shifted so the original pointer can continue to be used. This
- *    is useful when the memory was malloc'ed and will need to be freed.
- *
- * @remark EXTENSION TO
- *    ISO/IEC TR 24731, Programming languages, environments
- *    and system software interfaces, Extensions to the C Library,
- *    Part I: Bounds-checking interfaces
- *
- * @param[out]  dest  pointer to string to left justify
- * @param[in]   dmax  restricted maximum length of string
- *
- * @pre  dest shall not be a null pointer.
- * @pre  dmax shall not be 0
- * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
- * @pre  dest shall be zero terminated
- *
- * @retval  EOK        when successful operation
- * @retval  ESNULLP    when dest is NULL pointer
- * @retval  ESZEROL    when dmax = 0
- * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
- * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
- *                     knows the object_size statically)
- * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESUNTERM   when dest was not zero terminated
- *
- * @see
- *    strljustify_s(),
- *
- */
-#ifdef FOR_DOXYGEN
-errno_t strremovews_s(char *dest, rsize_t dmax)
-#else
-EXPORT errno_t _strremovews_s_chk(char *dest, rsize_t dmax,
-                                  const size_t destbos)
-#endif
-{
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _strremovews_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _strremovews_s_uchk(char *dest, rsize_t dmax) {
     char *orig_dest;
     char *orig_end;
     rsize_t orig_dmax;
-
-    CHK_DEST_NULL("strremovews_s")
-    CHK_DMAX_ZERO("strremovews_s")
-    if (destbos == BOS_UNKNOWN) {
-        CHK_DMAX_MAX("strremovews_s", RSIZE_MAX_STR)
-        BND_CHK_PTR_BOUNDS(dest, dmax);
-    } else {
-        CHK_DEST_OVR("strremovews_s", destbos)
-    }
 
     /*
      * corner case, a dmax of one requires a null
@@ -152,4 +102,62 @@ EXPORT errno_t _strremovews_s_chk(char *dest, rsize_t dmax,
     }
 
     return (EOK);
+}
+#endif
+
+/**
+ * @def strremovews_s(dest,dmax)
+ * @brief
+ *    Removes beginning and trailing whitespace from the string pointed to by
+ *    dest by shifting the text left over writting the beginning whitespace
+ *    (space or tab).
+ *
+ * @details
+ *    The shifted-trimmed text is zero terminated.
+ *    The text is shifted so the original pointer can continue to be used. This
+ *    is useful when the memory was malloc'ed and will need to be freed.
+ *
+ * @remark EXTENSION TO
+ *    ISO/IEC TR 24731, Programming languages, environments
+ *    and system software interfaces, Extensions to the C Library,
+ *    Part I: Bounds-checking interfaces
+ *
+ * @param[out]  dest  pointer to string to left justify
+ * @param[in]   dmax  restricted maximum length of string
+ *
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not be 0
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest
+ * @pre  dest shall be zero terminated
+ *
+ * @retval  EOK        when successful operation
+ * @retval  ESNULLP    when dest is NULL pointer
+ * @retval  ESZEROL    when dmax = 0
+ * @retval  ESLEMAX    when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW  when dmax > size of dest (optionally, when the compiler
+ *                     knows the object_size statically)
+ * @retval  ESLEWRNG   when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESUNTERM   when dest was not zero terminated
+ *
+ * @see
+ *    strljustify_s(),
+ *
+ */
+#ifdef FOR_DOXYGEN
+errno_t strremovews_s(char *dest, rsize_t dmax)
+#else
+EXPORT errno_t _strremovews_s_chk(char *dest, rsize_t dmax,
+                                  const size_t destbos)
+#endif
+{
+    CHK_DEST_NULL("strremovews_s")
+    CHK_DMAX_ZERO("strremovews_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("strremovews_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("strremovews_s", destbos)
+    }
+
+    return _strremovews_s_uchk(dest, dmax);
 }

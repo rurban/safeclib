@@ -36,48 +36,11 @@
 #include <wctype.h>
 #endif
 #include "u8_private.h"
-/**
- * @def u8lwr_s(dest,dmax)
- * @brief
- *    Scans the utf-8 string converting each codepoint to simple
- *    lowercase via \c towlower(), leaving all other codepoints
- *    unchanged. The scanning stops at the first NUL or after dmax
- *    bytes. The conversion is determined by the LC_CTYPE category
- *    setting of the locale; with the default "C" locale only ASCII
- *    is affected. It only performs simple case folding, not full
- *    multi-char folding, and does not obey the special-casing
- *    context rules; use \c u8fc_s() for that. Since a codepoint's
- *    lowercase encoding may take a different number of utf-8 bytes
- *    than its original encoding, the resulting string may be shorter
- *    or longer than the input, but always fits within dmax.
- *
- * @param[in,out]  dest  utf-8 string
- * @param[in]      dmax  maximum byte-length of dest
- *
- * @pre  dest shall not be a null pointer.
- * @pre  dmax shall not be 0.
- * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest.
- *
- * @retval  EOK         on successful operation
- * @retval  ESNULLP     when dest is NULL pointer
- * @retval  ESZEROL     when dmax = 0
- * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
- * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
- *                      knows the object_size statically)
- * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
- * @retval  ESNOSPC     when the lowercased result needs more space than dmax
- * @retval  EILSEQ      when dest contains an illegal utf-8 sequence
- *
- * @see
- *    u8upr_s(), u8fc_s()
- */
-#ifdef FOR_DOXYGEN
-errno_t u8lwr_s(char8_t *dest, rsize_t dmax)
-#else
-EXPORT errno_t _u8lwr_s_chk(char8_t *dest, rsize_t dmax,
-                            const size_t destbos)
-#endif
-{
+
+#ifndef FOR_DOXYGEN
+/* The dest/dmax constraints are already checked by _u8lwr_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _u8lwr_s_uchk(char8_t *dest, rsize_t dmax) {
     char8_t stackbuf[128];
     char8_t *buf;
     char8_t *out;
@@ -85,15 +48,6 @@ EXPORT errno_t _u8lwr_s_chk(char8_t *dest, rsize_t dmax,
     rsize_t remaining;
     rsize_t outcap;
     rsize_t used;
-
-    CHK_DEST_NULL("u8lwr_s")
-    CHK_DMAX_ZERO("u8lwr_s")
-    if (destbos == BOS_UNKNOWN) {
-        CHK_DMAX_MAX("u8lwr_s", RSIZE_MAX_STR)
-        BND_CHK_PTR_BOUNDS(dest, dmax);
-    } else {
-        CHK_DEST_OVR("u8lwr_s", destbos)
-    }
 
     /* worst case: every byte is a single-byte codepoint whose lowercase
        mapping encodes to 4 bytes */
@@ -150,4 +104,59 @@ EXPORT errno_t _u8lwr_s_chk(char8_t *dest, rsize_t dmax,
         free(buf);
 
     return (EOK);
+}
+#endif
+
+/**
+ * @def u8lwr_s(dest,dmax)
+ * @brief
+ *    Scans the utf-8 string converting each codepoint to simple
+ *    lowercase via \c towlower(), leaving all other codepoints
+ *    unchanged. The scanning stops at the first NUL or after dmax
+ *    bytes. The conversion is determined by the LC_CTYPE category
+ *    setting of the locale; with the default "C" locale only ASCII
+ *    is affected. It only performs simple case folding, not full
+ *    multi-char folding, and does not obey the special-casing
+ *    context rules; use \c u8fc_s() for that. Since a codepoint's
+ *    lowercase encoding may take a different number of utf-8 bytes
+ *    than its original encoding, the resulting string may be shorter
+ *    or longer than the input, but always fits within dmax.
+ *
+ * @param[in,out]  dest  utf-8 string
+ * @param[in]      dmax  maximum byte-length of dest
+ *
+ * @pre  dest shall not be a null pointer.
+ * @pre  dmax shall not be 0.
+ * @pre  dmax shall not be greater than RSIZE_MAX_STR and size of dest.
+ *
+ * @retval  EOK         on successful operation
+ * @retval  ESNULLP     when dest is NULL pointer
+ * @retval  ESZEROL     when dmax = 0
+ * @retval  ESLEMAX     when dmax > RSIZE_MAX_STR
+ * @retval  EOVERFLOW   when dmax > size of dest (optionally, when the compiler
+ *                      knows the object_size statically)
+ * @retval  ESLEWRNG    when dmax != sizeof(dest) and --enable-error-dmax
+ * @retval  ESNOSPC     when the lowercased result needs more space than dmax
+ * @retval  EILSEQ      when dest contains an illegal utf-8 sequence
+ *
+ * @see
+ *    u8upr_s(), u8fc_s()
+ */
+#ifdef FOR_DOXYGEN
+errno_t u8lwr_s(char8_t *dest, rsize_t dmax)
+#else
+EXPORT errno_t _u8lwr_s_chk(char8_t *dest, rsize_t dmax,
+                            const size_t destbos)
+#endif
+{
+    CHK_DEST_NULL("u8lwr_s")
+    CHK_DMAX_ZERO("u8lwr_s")
+    if (destbos == BOS_UNKNOWN) {
+        CHK_DMAX_MAX("u8lwr_s", RSIZE_MAX_STR)
+        BND_CHK_PTR_BOUNDS(dest, dmax);
+    } else {
+        CHK_DEST_OVR("u8lwr_s", destbos)
+    }
+
+    return _u8lwr_s_uchk(dest, dmax);
 }
