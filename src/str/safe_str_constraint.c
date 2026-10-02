@@ -3,7 +3,7 @@
  *
  * October 2008, Bo Berry
  * 2012, Jonathan Toppins <jtoppins@users.sourceforge.net>
- * 2022, Reini Urban <rurban@cpan.org>
+ * 2022, Reini Urban <reini.urban@gmail.com>
  *
  * Copyright (c) 2008, 2009, 2012 Cisco Systems
  * Copyright (c) 2022 Reini Urban

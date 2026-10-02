@@ -16,7 +16,7 @@
 #
 #   Copyright (c) 2008 Alan Woodland <ajw05@aber.ac.uk>
 #   Copyright (c) 2009 Rhys Ulerich <rhys.ulerich@gmail.com>
-#   Copyright (c) 2017 Reini Urban <rurban@cpan.org>
+#   Copyright (c) 2017 Reini Urban <reini.urban@gmail.com>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice

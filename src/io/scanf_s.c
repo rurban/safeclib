@@ -3,8 +3,9 @@
  *
  * September 2017, Reini Urban
  * February 2022, Reini Urban
+ * September 2026, Reini Urban
  *
- * Copyright (c) 2017,2022 by Reini Urban
+ * Copyright (c) 2017,2022,2026 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person

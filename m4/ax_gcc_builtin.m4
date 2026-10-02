@@ -119,7 +119,7 @@
 # LICENSE
 #
 #   Copyright (c) 2013 Gabriele Svelto <gabriele.svelto@gmail.com>
-#   Copyright (c) 2018,2026 Reini Urban <rurban@cpan.org>
+#   Copyright (c) 2018,2026 Reini Urban <reini.urban@gmail.com>
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice

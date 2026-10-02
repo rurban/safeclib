@@ -2,9 +2,10 @@
  * safec_vfscanf_s.c
  *
  * February 2022, Reini Urban
+ * September 2026, Reini Urban
  *
  * Copyright © 2005-2014 Rich Felker, et al.
- * Copyright (c) 2022 by Reini Urban
+ * Copyright (c) 2022,2026 by Reini Urban
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person
@@ -96,7 +97,11 @@ static void *safec_arg_n(va_list ap, unsigned int n) {
     return p;
 }
 
-// from MUSL. TODO: safeties
+/* from MUSL.
+   with added safeties:
+   - each string argument must have 2 args, buffer and size.
+   - %n is forbidden
+*/
 int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     va_list ap, int chk_destsize) {
     int width;
@@ -225,7 +230,6 @@ int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         case 'S':
         case 'C':
         case 'p':
-        //case 'n':
             p--;
             break;
         case 'n': {

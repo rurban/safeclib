@@ -1,6 +1,6 @@
 # CMakeLists.txt - Safe C Library
 #
-# 2026  Reini Urban <rurban@cpan.org>
+# 2026  Reini Urban <reini.urban@gmail.com>
 #
 # Copyright (c) 2026 Reini Urban
 # All rights reserved.
