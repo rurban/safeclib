@@ -173,7 +173,8 @@ mostly with optimizations. Covered are `memcpy_s`, `memmove_s`,
 `wmemmove_s`, and the single dest/dmax string functions `strnlen_s`,
 `strzero_s`, `strnterminate_s`, `strljustify_s`, `strremovews_s`,
 `strtolowercase_s`, `strtouppercase_s`, the `stris*_s` validators,
-`u8nlen_s`, `u8width_s`, `u8lwr_s`, `u8upr_s` and `u8zero_s`. Run-time
+`u8nlen_s`, `u8width_s`, `u8lwr_s`, `u8upr_s`, `u8zero_s`, `u8set_s`,
+`u8nset_s`, `u8chr_s`, `u8rchr_s` and `u8coll_s`. Run-time
 only constraints, like overlapping memory in the `memcpy` variants or
 unterminated strings, are still checked.
 

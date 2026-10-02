@@ -93,10 +93,21 @@ EXPORT errno_t _u8coll_s_chk(const char8_t *restrict dest, rsize_t dmax,
         CHK_DEST_OVR("u8coll_s", destbos)
     }
 
-    *resultp = strcoll((const char *)dest, (const char *)src);
-
-    return RCNEGATE(EOK);
+    return _u8coll_s_uchk(dest, src, resultp);
 }
 #ifdef __KERNEL__
 EXPORT_SYMBOL(_u8coll_s_chk);
 #endif /* __KERNEL__ */
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _u8coll_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _u8coll_s_uchk(const char8_t *dest, const char8_t *src,
+                              int *resultp) {
+    *resultp = strcoll((const char *)dest, (const char *)src);
+    return RCNEGATE(EOK);
+}
+#ifdef __KERNEL__
+EXPORT_SYMBOL(_u8coll_s_uchk);
+#endif /* __KERNEL__ */
+#endif

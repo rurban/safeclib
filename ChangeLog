@@ -9,7 +9,8 @@ Changes in 3.12
 	  __builtin_object_size. Also for the single dest/dmax string functions
 	  strnlen_s, strzero_s, strnterminate_s, strljustify_s, strremovews_s,
 	  strtolowercase_s, strtouppercase_s, stris*_s, u8nlen_s, u8width_s,
-	  u8lwr_s, u8upr_s and u8zero_s.
+	  u8lwr_s, u8upr_s, u8zero_s, u8set_s, u8nset_s, u8chr_s, u8rchr_s
+	  and u8coll_s.
 	- strisdigit_s, strismixedcase_s, strisuppercase_s: stop at dmax.
 
 Changes in 3.11.1

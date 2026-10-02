@@ -280,16 +280,26 @@ EXTERN errno_t _u8chr_s_chk(const char8_t *restrict dest, rsize_t dmax,
                             const int ch, char8_t **restrict resultp,
                             const size_t destbos) BOS_CHK(dest)
     VAL_OVR2(ch, 255) BOS_NULL(resultp);
-#define u8chr_s(dest, dmax, ch, resultp)                                      \
-    _u8chr_s_chk(dest, dmax, ch, resultp, BOS(dest))
+EXTERN errno_t _u8chr_s_uchk(const char8_t *dest, rsize_t dmax, const int ch,
+                             char8_t **resultp);
+#define u8chr_s(dest, dmax, ch, resultp)                                       \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (int)(ch) <= 255 &&              \
+                  _BOS_KNOWN(resultp),                                         \
+              _u8chr_s_uchk(dest, dmax, ch, resultp),                          \
+              _u8chr_s_chk(dest, dmax, ch, resultp, BOS(dest)))
 
 /* find last character, normalizing */
 EXTERN errno_t _u8rchr_s_chk(const char8_t *restrict dest, rsize_t dmax,
                               const int ch, char8_t **restrict resultp,
                               const size_t destbos) BOS_CHK(dest)
     VAL_OVR2(ch, 255) BOS_NULL(resultp) BOS_ATTR(!*dest, "empty *dest");
-#define u8rchr_s(dest, dmax, ch, resultp)                                     \
-    _u8rchr_s_chk(dest, dmax, ch, resultp, BOS(dest))
+EXTERN errno_t _u8rchr_s_uchk(const char8_t *dest, rsize_t dmax,
+                              const int ch, char8_t **resultp);
+#define u8rchr_s(dest, dmax, ch, resultp)                                      \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (int)(ch) <= 255 &&              \
+                  _BOS_KNOWN(resultp),                                         \
+              _u8rchr_s_uchk(dest, dmax, ch, resultp),                         \
+              _u8rchr_s_chk(dest, dmax, ch, resultp, BOS(dest)))
 
 /* convert string to lowercase, normalizing */
 EXTERN errno_t _u8lwr_s_chk(char8_t *dest, rsize_t dmax,
@@ -314,8 +324,13 @@ EXTERN errno_t _u8coll_s_chk(const char8_t *restrict dest, rsize_t dmax,
                              const char8_t *restrict src, int *resultp,
                              const size_t destbos) BOS_CHK(dest) BOS_NULL(src)
     BOS_NULL(resultp);
-#define u8coll_s(dest, dmax, src, resultp)                                    \
-    _u8coll_s_chk(dest, dmax, src, resultp, BOS(dest))
+EXTERN errno_t _u8coll_s_uchk(const char8_t *dest, const char8_t *src,
+                              int *resultp);
+#define u8coll_s(dest, dmax, src, resultp)                                     \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&               \
+                  _BOS_KNOWN(resultp),                                         \
+              _u8coll_s_uchk(dest, src, resultp),                              \
+              _u8coll_s_chk(dest, dmax, src, resultp, BOS(dest)))
 
 /* Derived from windows extensions sec_api/string_s.h
    defined(MINGW_HAS_SECURE_API) */
@@ -323,13 +338,22 @@ EXTERN errno_t _u8coll_s_chk(const char8_t *restrict dest, rsize_t dmax,
 EXTERN errno_t _u8set_s_chk(char8_t *restrict dest, rsize_t dmax, int value,
                             const size_t destbos) BOS_CHK(dest)
     VAL_OVR2(value, 255);
-#define u8set_s(dest, dmax, value) _u8set_s_chk(dest, dmax, value, BOS(dest))
+EXTERN errno_t _u8set_s_uchk(char8_t *dest, rsize_t dmax, int value);
+#define u8set_s(dest, dmax, value)                                             \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (unsigned)(value) <= 255,        \
+              _u8set_s_uchk(dest, dmax, value),                                \
+              _u8set_s_chk(dest, dmax, value, BOS(dest)))
 
 EXTERN errno_t _u8nset_s_chk(char8_t *restrict dest, rsize_t dmax, int value,
                               rsize_t n, const size_t destbos) BOS_CHK(dest)
     BOS_OVR2_BUTZERO(dest, n) VAL_OVR2(value, 255) VAL_OVR2_BUTZERO(n, dmax);
-#define u8nset_s(dest, dmax, value, n)                                        \
-    _u8nset_s_chk(dest, dmax, value, n, BOS(dest))
+EXTERN errno_t _u8nset_s_uchk(char8_t *dest, rsize_t dmax, int value,
+                              rsize_t n);
+#define u8nset_s(dest, dmax, value, n)                                         \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (unsigned)(value) <= 255 &&      \
+                  (size_t)(n) <= (size_t)(dmax),                               \
+              _u8nset_s_uchk(dest, dmax, value, n),                            \
+              _u8nset_s_chk(dest, dmax, value, n, BOS(dest)))
 
 #endif /* SAFECLIB_DISABLE_EXTENSIONS */
 

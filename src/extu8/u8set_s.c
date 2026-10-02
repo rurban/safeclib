@@ -85,6 +85,13 @@ EXPORT errno_t _u8set_s_chk(char8_t *restrict dest, rsize_t dmax, int value,
         return (ESLEMAX);
     }
 
+    return _u8set_s_uchk(dest, dmax, value);
+}
+
+#ifndef FOR_DOXYGEN
+/* The constraints are already checked by _u8set_s_chk or proven at
+   compile-time. GH #48 */
+EXPORT errno_t _u8set_s_uchk(char8_t *dest, rsize_t dmax, int value) {
     while (dmax && *dest) {
         *dest = (char8_t)value;
         dmax--;
@@ -98,3 +105,4 @@ EXPORT errno_t _u8set_s_chk(char8_t *restrict dest, rsize_t dmax, int value,
 
     return (EOK);
 }
+#endif
