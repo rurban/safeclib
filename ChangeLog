@@ -1,6 +1,9 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.11.1
+	- make release hotfixes
+
 Changes in 3.11
 	- Implement full and proper scanf functions, with two-args API as in Annex K.
 	  i.e. every string argument must have two args, buffer and size.

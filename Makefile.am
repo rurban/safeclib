@@ -300,7 +300,6 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
 	-rm doc/man/man3/handle_{,w,mem_}error.3
 	-rm doc/man/man3/handle_{str,mem}_bos_*.3
 	-rm doc/man/man3/handle_str_src_bos_*.3
-endif
 if HAVE_PANDOC
 README.rst: README.md
 	pandoc -o README.rst README.md
@@ -309,6 +308,7 @@ all-local: Doxyfile doc/footer
 clean-local:
 	rm -rf $(builddir)/doc/html
 	rm -rf $(builddir)/doc/man
+endif
 endif
 
 if HAVE_CPPCHECK
