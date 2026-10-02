@@ -134,6 +134,13 @@ GRTAGS
 GSYMS
 GTAGS
 
+# Agent files
+.claude/
+.mcp.json
+.opencode/
+AGENTS.md
+CLAUDE.md
+
 # Editor backup files
 *.orig
 *~
