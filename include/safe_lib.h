@@ -58,7 +58,7 @@ extern "C" {
 #define EXTERN extern
 #endif
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 #include <time.h>
 #if defined HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -121,7 +121,7 @@ EXTERN char *_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
     BOS_CHK(dest);
 #define gets_s(dest, dmax) _gets_s_chk(dest, dmax, BOS(dest))
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 /* Windows sec_api does without restrict.
    Skip our own declaration if either configure's AC_CHECK_FUNCS probe
    (HAVE_TMPFILE_S/HAVE_FOPEN_S/HAVE_FREOPEN_S, only visible while building
@@ -149,6 +149,7 @@ EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
 #endif
 #endif /* __KERNEL__ */
 
+#ifndef SAFECLIB_DISABLE_IO
 #ifndef MINGW_HAS_SECURE_API
 #define asctime_s(dest, dmax, tm) _asctime_s_chk(dest, dmax, tm, BOS(dest))
 #define ctime_s(dest, dmax, timer) _ctime_s_chk(dest, dmax, timer, BOS(dest))
@@ -190,6 +191,7 @@ EXTERN errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
     BOS_ATTR(_BOS_NULL(name), "empty name");
 #define getenv_s(len, dest, dmax, name)                                        \
     _getenv_s_chk(len, dest, dmax, name, BOS(dest))
+#endif /* SAFECLIB_DISABLE_IO */
 
 EXTERN void *
 _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,

@@ -41,6 +41,8 @@
 #endif
 
 #include "config.h"
+/* SAFECLIB_DISABLE_IO et al. are needed below */
+#include "safe_config.h"
 /* Use the C99 conforming mingw-w64 printf family (long double, %a, %s in
    wide formats), not the UCRT one. */
 #if defined(__MINGW32__) && !defined(__USE_MINGW_ANSI_STDIO)
@@ -164,6 +166,19 @@ typedef unsigned long uintptr_t;
 #define EXPORT_SYMBOL(sym)
 #define RCNEGATE(x) (x)
 
+#ifdef SAFECLIB_DISABLE_IO
+/* freestanding: no stdio, no abort() */
+#define slabort()                                                              \
+    for (;;) {                                                                 \
+    }
+#ifndef SAFECLIB_HAVE_C99
+#define slprintf
+#define sldebug_printf
+#else
+#define slprintf(...)
+#define sldebug_printf(...)
+#endif
+#else
 #define slabort() abort()
 #ifndef SAFECLIB_HAVE_C99
 #define slprintf printf
@@ -172,6 +187,7 @@ typedef unsigned long uintptr_t;
 #define slprintf(...) fprintf(stderr, __VA_ARGS__)
 #ifdef DEBUG
 #define sldebug_printf(...) printf(__VA_ARGS__)
+#endif
 #endif
 #endif
 
@@ -682,6 +698,7 @@ static inline int safec_out_buffer(char character, void *buffer, size_t idx,
     }
 }
 
+#ifndef SAFECLIB_DISABLE_IO
 // internal putchar wrapper
 static inline int safec_out_char(char character, void *buffer, size_t idx,
                                   size_t maxlen)
@@ -701,8 +718,9 @@ static inline int safec_out_char(char character, void *buffer, size_t idx,
     else
         return 0;
 }
+#endif
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 // special-case of safec_out_fct for fprintf_s
 static inline int safec_out_fchar(char character, void *wrap, size_t idx,
                              size_t maxlen) {

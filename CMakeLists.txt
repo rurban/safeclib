@@ -66,6 +66,7 @@ option(ENABLE_HARDENING "Enable hardening flags" ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_STATIC_LIBS "Build static libraries" ON)
 option(ENABLE_VALGRIND "Add tests with valgrind" OFF)
+option(ENABLE_MINIMAL "Build only a minimal freestanding core (mem*, str*cpy/cat/nlen)" OFF)
 # TODO enable-memmax=262144 enable-strmax=2056
 
 # Set default handler (ignore, abort, or empty for runtime selection)
@@ -261,6 +262,26 @@ if (HAVE_WCHAR_H)
   check_type_size("wchar_t" SIZEOF_WCHAR_T)
 endif()
 unset(CMAKE_EXTRA_INCLUDE_FILES)
+# check_type_size cannot parse the sdcc objects. Fallback to compile-only
+# checks via negative array sizes.
+foreach(T "size_t;stddef.h;SIZEOF_SIZE_T" "wchar_t;wchar.h;SIZEOF_WCHAR_T")
+  list(GET T 0 _type)
+  list(GET T 1 _hdr)
+  list(GET T 2 _var)
+  if(HAVE_${_var} AND "${${_var}}" STREQUAL "")
+    foreach(_n 1 2 4 8)
+      check_c_source_compiles("
+#include <${_hdr}>
+typedef char safec_chk[sizeof(${_type}) == ${_n} ? 1 : -1];
+int main(void) { return 0; }
+" ${_var}_IS_${_n})
+      if(${_var}_IS_${_n})
+        set(${_var} ${_n})
+        break()
+      endif()
+    endforeach()
+  endif()
+endforeach()
 check_type_size("long long" LONG_LONG)
 check_type_size("long double" LONG_DOUBLE)
 
@@ -273,7 +294,8 @@ if(HAVE_STDINT_H)
     check_type_size("uintptr_t" UINTPTR_T)
 endif()
 
-set(CMAKE_C_FLAGS -Werror)
+# probe flags only, keep the user (toolchain) CMAKE_C_FLAGS
+set(CMAKE_REQUIRED_FLAGS -Werror)
 # Check for errno_t
 check_c_source_compiles("
 #include <errno.h>
@@ -310,7 +332,7 @@ check_c_source_compiles("__float128 x = 1.0Q; int main() { return 0; }" HAVE_FLO
 # Check compiler builtins
 include(CheckCSourceCompiles)
 
-set(CMAKE_C_FLAGS -O2)
+set(CMAKE_REQUIRED_FLAGS -O2)
 # __builtin_object_size
 check_c_source_compiles("
 int main() {
@@ -376,7 +398,7 @@ int main() {
 }
 " HAVE___BUILTIN_ISINFL)
 
-set(CMAKE_C_FLAGS -Werror)
+set(CMAKE_REQUIRED_FLAGS -Werror)
 # Check function attributes
 check_c_source_compiles("
 void __attribute__((format(printf, 1, 2))) myprintf(const char *fmt, ...);
@@ -426,7 +448,7 @@ int main() {
     return 0;
 }
 " HAVE_ASM_INLINE)
-set(CMAKE_C_FLAGS "-Wall -Wextra")
+unset(CMAKE_REQUIRED_FLAGS)
 
 # Check functions
 check_function_exists(vswprintf HAVE_VSWPRINTF)
@@ -552,10 +574,15 @@ if (DEFAULT_HANDLER)
 else()
   set(INSERT_DEFAULT_HANDLER "#undef SAFECLIB_DEFAULT_HANDLER")
 endif()
-if (SAFECLIB_DISABLE_WCHAR)
+if (NOT ENABLE_WCHAR)
   set(INSERT_DISABLE_WCHAR "#define SAFECLIB_DISABLE_WCHAR 1")
 else()
   set(INSERT_DISABLE_WCHAR "#undef SAFECLIB_DISABLE_WCHAR")
+endif()
+if (ENABLE_MINIMAL)
+  set(INSERT_DISABLE_IO "#define SAFECLIB_DISABLE_IO 1")
+else()
+  set(INSERT_DISABLE_IO "#undef SAFECLIB_DISABLE_IO")
 endif()
 if (ENABLE_U8)
   set(INSERT_U8 "#define SAFECLIB_ENABLE_U8 1")
@@ -659,7 +686,6 @@ endif()
 
 # Compiler flags
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    set(CMAKE_C_FLAGS "")
     add_compile_options(-Wall -Wextra)
 
     if(ENABLE_HARDENING)
@@ -1117,6 +1143,13 @@ if(ENABLE_UNSAFE)
         src/tmpnam_s.c
     )
 endif()
+# A minimal freestanding variant, e.g. for sdcc stm8: no stdio, time, env,
+# printf, scanf, errno strings. Keeps the mem, str and, with ENABLE_U8,
+# the u8 functions.
+if(ENABLE_MINIMAL)
+    list(FILTER SAFEC_SOURCES EXCLUDE REGEX
+        "^src/(io|os)/|printf|scanf|strerror|error_s|tmpnam|towctrans|towfc|wcsfc|wcsnorm|u8norm|u8fc|u8script|u8lwr|u8upr|u8width|timingsafe|misc/")
+endif()
 
 # prepend ${CMAKE_CURRENT_SOURCE_DIR}/ path
 list(JOIN SAFEC_SOURCES ";${CMAKE_CURRENT_SOURCE_DIR}/" SAFEC_SOURCES_WITH_PATH)
@@ -1244,9 +1277,15 @@ if(ENABLE_DOC AND DOXYGEN_FOUND)
     )
 endif()
 
-# Testing
+# Testing. The test suite needs stdio, so not with ENABLE_MINIMAL,
+# which only links tests/test_minimal.c instead.
 enable_testing()
-add_subdirectory(tests)
+if(ENABLE_MINIMAL)
+    add_executable(t_minimal tests/test_minimal.c)
+    target_link_libraries(t_minimal safec_static)
+else()
+    add_subdirectory(tests)
+endif()
 
 # Print configuration summary
 message(STATUS "")

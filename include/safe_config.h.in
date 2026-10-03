@@ -89,6 +89,11 @@ extern "C" {
  */
 @INSERT_DISABLE_WCHAR@
 
+/* Define to disable the stdio, time and env functions.
+ * E.g. for freestanding builds, like sdcc.
+ */
+@INSERT_DISABLE_IO@
+
 /* Define to disable u8 support.
  */
 @INSERT_U8@

@@ -151,16 +151,20 @@ EXTERN int _vu8snprintf_s_chk(char8_t *restrict dest, rsize_t dmax,
 EXTERN int u8sscanf_s(const char8_t *restrict buffer, const char *restrict fmt, ...)
     __attribute_format__(scanf,2,3) BOS_NULL(buffer) BOS_FMT(fmt);
 
+#ifndef SAFECLIB_DISABLE_IO
 EXTERN int fu8scanf_s(FILE *restrict stream, const char *restrict fmt, ...)
   __attribute_format__(scanf,2,3) BOS_NULL(stream) BOS_FMT(fmt);
+#endif
 
 EXTERN int u8scanf_s(const char *restrict fmt, ...)
   __attribute_format__(scanf,1,2) BOS_FMT(fmt);
 
 EXTERN int vu8scanf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
 
+#ifndef SAFECLIB_DISABLE_IO
 EXTERN int vfu8scanf_s(FILE *restrict stream, const char *restrict fmt,
                        va_list ap) BOS_NULL(stream) BOS_FMT(fmt);
+#endif
 
 EXTERN int vu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt,
                        va_list ap) BOS_NULL(dest) BOS_FMT(fmt);
@@ -168,13 +172,17 @@ EXTERN int vu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt,
 EXTERN int u8printf_s(const char *restrict fmt, ...)
   __attribute_format__(printf,1,2) BOS_FMT(fmt);
 
+#ifndef SAFECLIB_DISABLE_IO
 EXTERN int fu8printf_s(FILE *restrict stream, const char *restrict fmt, ...)
   __attribute_format__(printf,2,3) BOS_FMT(fmt);
+#endif
 
 EXTERN int vu8printf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
 
+#ifndef SAFECLIB_DISABLE_IO
 EXTERN int vfu8printf_s(FILE *restrict stream, const char *restrict fmt,
                         va_list arg) BOS_FMT(fmt);
+#endif
 
 EXTERN errno_t _u8error_s_chk(char8_t *dest, rsize_t dmax, errno_t errnum,
                               const size_t destbos) BOS_CHK(dest);

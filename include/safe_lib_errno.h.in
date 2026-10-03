@@ -105,6 +105,30 @@ extern "C" {
 #define EOK             ( 0 )
 #endif
 
+/* freestanding libc's, like sdcc, only have EDOM and ERANGE.
+   The values are from linux. */
+#ifndef ENOENT
+#define ENOENT 2
+#endif
+#ifndef EBADF
+#define EBADF 9
+#endif
+#ifndef ENOMEM
+#define ENOMEM 12
+#endif
+#ifndef EACCES
+#define EACCES 13
+#endif
+#ifndef EINVAL
+#define EINVAL 22
+#endif
+#ifndef ERANGE
+#define ERANGE 34
+#endif
+#ifndef EILSEQ
+#define EILSEQ 84
+#endif
+
 #ifdef __cplusplus
 }
 #endif
