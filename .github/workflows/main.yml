@@ -107,7 +107,7 @@ jobs:
     env:
       MSYS2_DIR: msys64
       MSYS2_ARCH: x86_64
-      MSYSTEM: MINGW64
+      MSYSTEM: UCRT64
       ARCH: win64
       PLATFORM: x64
       #PATH: "C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%"
@@ -116,15 +116,16 @@ jobs:
     - name: setup-msys2
       uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
       with:
+        msystem: UCRT64
         path-type: minimal
         update: true
         install: >-
           git
           base-devel
           coreutils
-          mingw-w64-x86_64-toolchain
-          mingw-w64-x86_64-libtool
-          mingw-w64-x86_64-perl
+          mingw-w64-ucrt-x86_64-toolchain
+          mingw-w64-ucrt-x86_64-libtool
+          mingw-w64-ucrt-x86_64-perl
           libtool
           autoconf-wrapper
           automake-wrapper
