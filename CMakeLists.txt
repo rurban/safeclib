@@ -506,9 +506,11 @@ check_function_exists(strtold HAVE_STRTOLD)
 check_function_exists(strtod HAVE_STRTOD)
 check_function_exists(snprintf HAVE_SNPRINTF)
 if(ENABLE_MINIMAL OR NOT HAVE_SNPRINTF)
-    # no float handling in the freestanding ENABLE_MINIMAL build. Also the
-    # float conversions in vsnprintf_s use the libc snprintf.
+    # no float handling in the freestanding ENABLE_MINIMAL build (sdcc
+    # doesn't support long double at all either). Also the float
+    # conversions in vsnprintf_s use the libc snprintf.
     set(ENABLE_FLOAT OFF)
+    set(ENABLE_LONG_DOUBLE OFF)
 endif()
 check_function_exists(isinfl HAVE_ISINFL)
 check_function_exists(isinf HAVE_ISINF)
