@@ -139,6 +139,17 @@ else()
     set(HAVE_C11 0)
 endif()
 
+# thread-local constraint handlers. Not on every newlib, which lacks
+# e.g. __aeabi_read_tp.
+check_c_source_compiles("
+_Thread_local int safec_tls;
+int main(void) { safec_tls = 1; return safec_tls; }
+" HAVE_THREAD_LOCAL)
+check_c_source_compiles("
+__thread int safec_tls;
+int main(void) { safec_tls = 1; return safec_tls; }
+" HAVE___THREAD)
+
 
 # Check warnings
 set(COMMON_WARNINGS

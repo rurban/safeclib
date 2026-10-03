@@ -43,9 +43,9 @@ static constraint_handler_t mem_handler =
 #endif
 
 static
-#if defined HAVE_C11
+#if defined HAVE_THREAD_LOCAL
     _Thread_local
-#elif defined SAFECLIB_HAVE_C99
+#elif defined HAVE___THREAD
     __thread
 #endif
     constraint_handler_t thrd_mem_handler =

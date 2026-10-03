@@ -577,6 +577,24 @@ if test "$ac_cv_prog_cc_c11" != "no"; then
 fi
 AC_SUBST(HAVE_C11)
 
+dnl thread-local constraint handlers. Not on every newlib, which lacks
+dnl e.g. __aeabi_read_tp.
+AC_CACHE_CHECK([for linkable _Thread_local], [safec_cv_thread_local],
+  [AC_LINK_IFELSE([AC_LANG_PROGRAM([[_Thread_local int safec_tls;]],
+                                   [[safec_tls = 1; return safec_tls;]])],
+    [safec_cv_thread_local=yes], [safec_cv_thread_local=no])])
+if test "$safec_cv_thread_local" = yes; then
+  AC_DEFINE([HAVE_THREAD_LOCAL], 1, [Define to 1 if _Thread_local links])
+else
+  AC_CACHE_CHECK([for linkable __thread], [safec_cv___thread],
+    [AC_LINK_IFELSE([AC_LANG_PROGRAM([[__thread int safec_tls;]],
+                                     [[safec_tls = 1; return safec_tls;]])],
+      [safec_cv___thread=yes], [safec_cv___thread=no])])
+  if test "$safec_cv___thread" = yes; then
+    AC_DEFINE([HAVE___THREAD], 1, [Define to 1 if __thread links])
+  fi
+fi
+
 dnl c++ needs less warnings
 if test -z $ax_compiler_cxx; then
   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
