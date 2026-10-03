@@ -330,14 +330,24 @@ int main() {
 }
 " HAVE___BUILTIN_CONSTANT_P)
 
-# __builtin_memmove
-check_c_source_compiles("
+# builtins inlined in the public headers for compile-time checked args
+set(SAFEC_BUILTINS MEMCHR MEMCMP MEMCPY MEMMOVE MEMSET STRCHR STRLEN STRNLEN)
+set(SAFEC_BUILTIN_MEMCHR "__builtin_memchr(a, 0, sizeof(a)) != 0")
+set(SAFEC_BUILTIN_MEMCMP "__builtin_memcmp(a, b, sizeof(a))")
+set(SAFEC_BUILTIN_MEMCPY "__builtin_memcpy(a, b, sizeof(a)) != 0")
+set(SAFEC_BUILTIN_MEMMOVE "__builtin_memmove(a, b, sizeof(a)) != 0")
+set(SAFEC_BUILTIN_MEMSET "__builtin_memset(a, 0, sizeof(a)) != 0")
+set(SAFEC_BUILTIN_STRCHR "__builtin_strchr(a, 0) != 0")
+set(SAFEC_BUILTIN_STRLEN "(int)__builtin_strlen(a)")
+set(SAFEC_BUILTIN_STRNLEN "(int)__builtin_strnlen(a, sizeof(a))")
+foreach(B ${SAFEC_BUILTINS})
+  check_c_source_compiles("
 char a[4], b[4];
 int main() {
-    __builtin_memmove(a, b, sizeof(a));
-    return a[0];
+    return ${SAFEC_BUILTIN_${B}};
 }
-" HAVE___BUILTIN_MEMMOVE)
+" HAVE___BUILTIN_${B})
+endforeach()
 
 # __builtin_isinf
 check_c_source_compiles("
@@ -573,11 +583,13 @@ if (HAVE___BUILTIN_CONSTANT_P)
 else()
   set(INSERT_CONSTANT_P "#undef HAVE___BUILTIN_CONSTANT_P")
 endif()
-if (HAVE___BUILTIN_MEMMOVE)
-  set(INSERT_BUILTIN_MEMMOVE "#define HAVE___BUILTIN_MEMMOVE 1")
-else()
-  set(INSERT_BUILTIN_MEMMOVE "#undef HAVE___BUILTIN_MEMMOVE")
-endif()
+foreach(B ${SAFEC_BUILTINS})
+  if (HAVE___BUILTIN_${B})
+    set(INSERT_BUILTIN_${B} "#define HAVE___BUILTIN_${B} 1")
+  else()
+    set(INSERT_BUILTIN_${B} "#undef HAVE___BUILTIN_${B}")
+  endif()
+endforeach()
 if(HAVE_SYS_TYPES_H)
   set(INSERT_SYS_TYPES_H "#include <sys/types.h>")
 endif()

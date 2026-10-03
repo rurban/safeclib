@@ -155,7 +155,32 @@ EXTERN errno_t _strcat_s_chk(char *restrict dest, rsize_t dmax,
 EXTERN errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
                              const char *restrict src, const size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
+/* With a compile-time known src length, copy inline if the ranges don't
+   overlap. */
+#if defined(HAVE___BUILTIN_STRLEN) && defined(HAVE___BUILTIN_MEMMOVE) &&      \
+    (!defined(SAFECLIB_STR_NULL_SLACK) || defined(HAVE___BUILTIN_MEMSET))
+#ifdef SAFECLIB_STR_NULL_SLACK
+#define _strcpy_s_copy(dest, dmax, src)                                        \
+    (_BOS_MEMCPY(dest, __builtin_strlen(src) + 1, src,                         \
+                 __builtin_strlen(src) + 1, __builtin_strlen(src)),            \
+     __builtin_memset((char *)(dest) + __builtin_strlen(src), 0,               \
+                      (size_t)(dmax) - __builtin_strlen(src)))
+#else
+#define _strcpy_s_copy(dest, dmax, src)                                        \
+    _BOS_MEMCPY(dest, __builtin_strlen(src) + 1, src,                          \
+                __builtin_strlen(src) + 1, __builtin_strlen(src) + 1)
+#endif
+#define strcpy_s(dest, dmax, src)                                              \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&                \
+                  __builtin_strlen(src) < (size_t)(dmax),                      \
+              (_BOS_DISJOINT(dest, __builtin_strlen(src) + 1, src,             \
+                             __builtin_strlen(src) + 1)                        \
+                   ? (_strcpy_s_copy(dest, dmax, src), EOK)                    \
+                   : _strcpy_s_chk(dest, dmax, src, BOS(dest))),               \
+              _strcpy_s_chk(dest, dmax, src, BOS(dest)))
+#else
 #define strcpy_s(dest, dmax, src) _strcpy_s_chk(dest, dmax, src, BOS(dest))
+#endif
 #endif
 
 /* fitted string concatenate */
@@ -182,7 +207,14 @@ EXTERN errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
 EXTERN rsize_t _strnlen_s_chk(const char *str, rsize_t smax, size_t strbos)
     BOS_CHK2(str, smax);
 EXTERN rsize_t _strnlen_s_uchk(const char *str, rsize_t smax);
+#ifdef HAVE___BUILTIN_STRNLEN
+#define strnlen_s(str, smax)                                                   \
+    _BOS_UCHK(_BOS_DMAX_OK(str, smax, 1) &&                                    \
+                  (size_t)(smax) <= RSIZE_MAX_STR,                             \
+              __builtin_strnlen(str, smax), _strnlen_s_chk(str, smax, BOS(str)))
+#else
 #define strnlen_s(str, smax) _BOS_UCHK_STR(strnlen_s, str, smax)
+#endif
 
 /* string tokenizer */
 EXTERN char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
@@ -627,10 +659,19 @@ EXTERN errno_t _strchr_s_chk(const char *restrict dest, rsize_t dmax,
     VAL_OVR2(ch, 255) BOS_NULL(resultp);
 EXTERN errno_t _strchr_s_uchk(const char *dest, rsize_t dmax, const int ch,
                               char **resultp);
+#ifdef HAVE___BUILTIN_STRCHR
+#define _strchr_s_uchk_inl(dest, dmax, ch, resultp)                            \
+    ((*(char **)(resultp) = (char *)__builtin_strchr(dest, ch)) &&             \
+             (long)(*(char **)(resultp) - (const char *)(dest)) <= (long)(dmax) \
+         ? EOK                                                                 \
+         : (*(char **)(resultp) = NULL, ESNOTFND))
+#else
+#define _strchr_s_uchk_inl _strchr_s_uchk
+#endif
 #define strchr_s(dest, dmax, ch, resultp)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (int)(ch) <= 255 &&              \
                   _BOS_KNOWN(resultp),                                         \
-              _strchr_s_uchk(dest, dmax, ch, resultp),                         \
+              _strchr_s_uchk_inl(dest, dmax, ch, resultp),                     \
               _strchr_s_chk(dest, dmax, ch, resultp, BOS(dest)))
 
 EXTERN errno_t _strrchr_s_chk(const char *restrict dest, rsize_t dmax,

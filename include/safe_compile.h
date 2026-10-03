@@ -101,12 +101,63 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #else
 #define _BOS_UCHK(ok, uchk, chk) (chk)
 #endif
+/* The builtins were probed with the compiler which configured safeclib.
+   Drop those the current compiler doesn't have, e.g. clang has no
+   __builtin_strnlen. */
+#ifdef __has_builtin
+#if defined(HAVE___BUILTIN_MEMCHR) && !__has_builtin(__builtin_memchr)
+#undef HAVE___BUILTIN_MEMCHR
+#endif
+#if defined(HAVE___BUILTIN_MEMCMP) && !__has_builtin(__builtin_memcmp)
+#undef HAVE___BUILTIN_MEMCMP
+#endif
+#if defined(HAVE___BUILTIN_MEMCPY) && !__has_builtin(__builtin_memcpy)
+#undef HAVE___BUILTIN_MEMCPY
+#endif
+#if defined(HAVE___BUILTIN_MEMMOVE) && !__has_builtin(__builtin_memmove)
+#undef HAVE___BUILTIN_MEMMOVE
+#endif
+#if defined(HAVE___BUILTIN_MEMSET) && !__has_builtin(__builtin_memset)
+#undef HAVE___BUILTIN_MEMSET
+#endif
+#if defined(HAVE___BUILTIN_STRCHR) && !__has_builtin(__builtin_strchr)
+#undef HAVE___BUILTIN_STRCHR
+#endif
+#if defined(HAVE___BUILTIN_STRLEN) && !__has_builtin(__builtin_strlen)
+#undef HAVE___BUILTIN_STRLEN
+#endif
+#if defined(HAVE___BUILTIN_STRNLEN) && !__has_builtin(__builtin_strnlen)
+#undef HAVE___BUILTIN_STRNLEN
+#endif
+#endif
 /* inline the unchecked memmove_s variants, if __builtin_memmove is probed */
 #ifdef HAVE___BUILTIN_MEMMOVE
 #define _BOS_UCHK_MOVE(ok, dest, src, nbytes, chk)                             \
     _BOS_UCHK(ok, (__builtin_memmove(dest, src, nbytes), EOK), chk)
 #else
 #define _BOS_UCHK_MOVE(ok, dest, src, nbytes, chk) (chk)
+#endif
+/* Args with a known object size have no side effects (else
+   __builtin_object_size returns unknown), so the inlined builtin variants
+   may evaluate them more than once. */
+#define _BOS_PTR(p) ((__UINTPTR_TYPE__)(const void *)(p))
+/* The byte ranges [dest, dest+dlen) and [src, src+slen) do not overlap.
+   Modular differences, no relational compare, which clang warns about with
+   string literals (-Wstring-compare). */
+#define _BOS_DISJOINT(dest, dlen, src, slen)                                   \
+    (_BOS_PTR(src) - _BOS_PTR(dest) >= (size_t)(dlen) &&                       \
+     _BOS_PTR(dest) - _BOS_PTR(src) >= (size_t)(slen))
+/* Copy n bytes between runtime-checked disjoint ranges: __builtin_memcpy if
+   the disjointness is also known at compile-time, else __builtin_memmove,
+   which avoids -Wrestrict false positives. */
+#ifdef HAVE___BUILTIN_MEMCPY
+#define _BOS_MEMCPY(dest, dlen, src, slen, n)                                  \
+    ((__builtin_constant_p(_BOS_DISJOINT(dest, dlen, src, slen)) &&            \
+      _BOS_DISJOINT(dest, dlen, src, slen))                                    \
+         ? __builtin_memcpy(dest, src, n)                                      \
+         : __builtin_memmove(dest, src, n))
+#else
+#define _BOS_MEMCPY(dest, dlen, src, slen, n) __builtin_memmove(dest, src, n)
 #endif
 /* dest is known, and dmax of n elements of size is valid for it: non-zero,
    not larger than dest, and with WARN_DMAX the same size as dest. */

@@ -98,7 +98,11 @@
 #    __builtin_nans
 #    __builtin_nansf
 #    __builtin_nansl
+#    __builtin_memchr
+#    __builtin_memcmp
+#    __builtin_memcpy
 #    __builtin_memmove
+#    __builtin_memset
 #    __builtin_object_size
 #    __builtin_parity
 #    __builtin_parityl
@@ -110,6 +114,9 @@
 #    __builtin_powif
 #    __builtin_powil
 #    __builtin_prefetch
+#    __builtin_strchr
+#    __builtin_strlen
+#    __builtin_strnlen
 #    __builtin_trap
 #    __builtin_types_compatible_p
 #    __builtin_unreachable
@@ -210,7 +217,11 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_nans], [$1("")],
                 [__builtin_nansf], [$1("")],
                 [__builtin_nansl], [$1("")],
+                [__builtin_memchr], [$1("", 0, 0)],
+                [__builtin_memcmp], [$1("", "", 0)],
+                [__builtin_memcpy], [$1((void*)0, "", 0)],
                 [__builtin_memmove], [$1((void*)0, "", 0)],
+                [__builtin_memset], [$1((void*)0, 0, 0)],
                 [__builtin_object_size], [$1("", 0)],
                 [__builtin_parity], [$1(0)],
                 [__builtin_parityl], [$1(0)],
@@ -222,6 +233,9 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_powif], [$1(0, 0)],
                 [__builtin_powil], [$1(0, 0)],
                 [__builtin_prefetch], [$1("")],
+                [__builtin_strchr], [$1("", 0)],
+                [__builtin_strlen], [$1("")],
+                [__builtin_strnlen], [$1("", 0)],
                 [__builtin_trap], [$1()],
                 [__builtin_types_compatible_p], [$1(int, int)],
                 [__builtin_unreachable], [$1()],

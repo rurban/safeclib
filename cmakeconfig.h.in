@@ -112,8 +112,15 @@
 /* Define to 1 if __builtin_constant_p is available */
 #cmakedefine HAVE___BUILTIN_CONSTANT_P 1
 
-/* Define to 1 if __builtin_memmove is available */
+/* Define to 1 if these builtins are available */
+#cmakedefine HAVE___BUILTIN_MEMCHR 1
+#cmakedefine HAVE___BUILTIN_MEMCMP 1
+#cmakedefine HAVE___BUILTIN_MEMCPY 1
 #cmakedefine HAVE___BUILTIN_MEMMOVE 1
+#cmakedefine HAVE___BUILTIN_MEMSET 1
+#cmakedefine HAVE___BUILTIN_STRCHR 1
+#cmakedefine HAVE___BUILTIN_STRLEN 1
+#cmakedefine HAVE___BUILTIN_STRNLEN 1
 
 /* Define to 1 if __builtin_isinf is available */
 #cmakedefine HAVE___BUILTIN_ISINF 1

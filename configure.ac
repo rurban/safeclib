@@ -1028,12 +1028,26 @@ if test "$ax_cv_have___builtin_constant_p" = "yes"; then
   INSERT_CONSTANT_P="#define HAVE___BUILTIN_CONSTANT_P 1"
 fi
 AC_SUBST(INSERT_CONSTANT_P)
-AX_GCC_BUILTIN(__builtin_memmove)
-INSERT_BUILTIN_MEMMOVE="#undef HAVE___BUILTIN_MEMMOVE"
-if test "$ax_cv_have___builtin_memmove" = "yes"; then
-  INSERT_BUILTIN_MEMMOVE="#define HAVE___BUILTIN_MEMMOVE 1"
-fi
+dnl builtins inlined in the public headers for compile-time checked args
+m4_foreach_w([safec_builtin], [memchr memcmp memcpy memmove memset strchr strlen strnlen],
+             [AX_GCC_BUILTIN([__builtin_]safec_builtin)])
+for b in memchr memcmp memcpy memmove memset strchr strlen strnlen; do
+  B=`echo $b | tr a-z A-Z`
+  eval "have=\$ax_cv_have___builtin_$b"
+  if test "$have" = "yes"; then
+    eval "INSERT_BUILTIN_$B=\"#define HAVE___BUILTIN_$B 1\""
+  else
+    eval "INSERT_BUILTIN_$B=\"#undef HAVE___BUILTIN_$B\""
+  fi
+done
+AC_SUBST(INSERT_BUILTIN_MEMCHR)
+AC_SUBST(INSERT_BUILTIN_MEMCMP)
+AC_SUBST(INSERT_BUILTIN_MEMCPY)
 AC_SUBST(INSERT_BUILTIN_MEMMOVE)
+AC_SUBST(INSERT_BUILTIN_MEMSET)
+AC_SUBST(INSERT_BUILTIN_STRCHR)
+AC_SUBST(INSERT_BUILTIN_STRLEN)
+AC_SUBST(INSERT_BUILTIN_STRNLEN)
 
 AX_GCC_FUNC_ATTRIBUTE(format)
 AX_GCC_FUNC_ATTRIBUTE(malloc)
