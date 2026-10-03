@@ -100,32 +100,54 @@ jobs:
         if-no-files-found: ignore
     #- run: make distcheck
   mingw:
-    name: mingw
+    name: mingw ${{ matrix.msystem }}
     runs-on: windows-latest
     permissions:
       contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # msvcrt
+          - msystem: MINGW64
+            pkg: mingw-w64-x86_64
+            perl: mingw-w64-x86_64-perl
+            triplet: x86_64-w64-mingw32
+            release: true
+          # msvcrt, 32bit
+          - msystem: MINGW32
+            pkg: mingw-w64-i686
+            # no i686 perl anymore, use the msys perl
+            perl: perl
+            triplet: i686-w64-mingw32
+            release: true
+          # ucrt, same triplet as MINGW64
+          - msystem: UCRT64
+            pkg: mingw-w64-ucrt-x86_64
+            perl: mingw-w64-ucrt-x86_64-perl
+            triplet: x86_64-w64-mingw32
+            release: false
     env:
       MSYS2_DIR: msys64
-      MSYS2_ARCH: x86_64
-      MSYSTEM: UCRT64
-      ARCH: win64
-      PLATFORM: x64
+      MSYSTEM: ${{ matrix.msystem }}
       #PATH: "C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%"
     steps:
       # see https://github.com/msys2/setup-msys2
     - name: setup-msys2
       uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2.33.0
       with:
-        msystem: UCRT64
+        msystem: ${{ matrix.msystem }}
+        # keep testing msvcrt
+        suppress-deprecation-warnings: msystem-mingw64 msystem-mingw32
         path-type: minimal
         update: true
         install: >-
           git
           base-devel
           coreutils
-          mingw-w64-ucrt-x86_64-toolchain
-          mingw-w64-ucrt-x86_64-libtool
-          mingw-w64-ucrt-x86_64-perl
+          ${{ matrix.pkg }}-toolchain
+          ${{ matrix.pkg }}-libtool
+          ${{ matrix.perl }}
           libtool
           autoconf-wrapper
           automake-wrapper
@@ -145,7 +167,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
-        name: mingw-config
+        name: mingw-${{ matrix.msystem }}-config
         path: |
           config.h
           config.status
@@ -154,17 +176,17 @@ jobs:
     - shell: msys2 {0}
       run: make check-log
     - shell: msys2 {0}
-      if: startsWith(github.ref, 'refs/tags/')
-      run: make pkg; sha256sum safeclib-*-x86_64-w64-mingw32.zip > mingw.sha256
+      if: startsWith(github.ref, 'refs/tags/') && matrix.release
+      run: make pkg; sha256sum safeclib-*-${{ matrix.triplet }}.zip > ${{ matrix.msystem }}.sha256
     - name: Release
       uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/') && matrix.release
       with:
         append_body: true
-        body_path: mingw.sha256
+        body_path: ${{ matrix.msystem }}.sha256
         files: |
-          mingw.sha256
-          safeclib-*-x86_64-w64-mingw32.zip
+          ${{ matrix.msystem }}.sha256
+          safeclib-*-${{ matrix.triplet }}.zip
     #- name: Create Release
     #  id: create_release
     #  uses: actions/create-release@v1
