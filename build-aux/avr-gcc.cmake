@@ -4,10 +4,10 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR avr)
 
-# must match the simavr/avr-sim-test.sh "-m" device name and
-# AVR_MCU() in tests/test_minimal.c. atmega328's 2K SRAM is too small
-# for the u8+extensions ENABLE_MINIMAL variant; atmega2560's 8K fits
-# both, and keeps the plain and u8 builds on the same simulated core.
+# must match the simavr/avr-sim-test.sh "-m" device name. atmega328's
+# 2K SRAM is too small for the u8+extensions ENABLE_MINIMAL variant;
+# atmega2560's 8K fits both, and keeps the plain and u8 builds on the
+# same simulated core.
 set(AVR_MCU atmega2560 CACHE STRING "AVR device for -mmcu")
 
 find_program(AVR_GCC NAMES avr-gcc REQUIRED)
@@ -15,16 +15,10 @@ find_program(AVR_AR NAMES avr-ar REQUIRED)
 set(CMAKE_C_COMPILER ${AVR_GCC})
 set(CMAKE_AR ${AVR_AR} CACHE FILEPATH "avr archiver")
 
-# libsimavr-dev's avr/avr_mcu_section.h, used by tests/test_minimal.c to
-# tag the ELF for the simavr simulator; harmless if not installed (only
-# the ENABLE_MINIMAL test target includes it, under __AVR__)
-find_path(SIMAVR_INCLUDE_DIR NAMES avr/avr_mcu_section.h
-    PATHS /usr/include/simavr)
-if(SIMAVR_INCLUDE_DIR)
-    set(CMAKE_C_FLAGS_INIT "-mmcu=${AVR_MCU} -Os -I${SIMAVR_INCLUDE_DIR}")
-else()
-    set(CMAKE_C_FLAGS_INIT "-mmcu=${AVR_MCU} -Os")
-endif()
+# -g: avr-sim-test.sh reads tests/test_minimal.c's result via avr-gdb,
+# which needs real debug info to resolve symbol addresses/types over
+# the simavr gdbserver remote protocol.
+set(CMAKE_C_FLAGS_INIT "-mmcu=${AVR_MCU} -Os -g")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-mmcu=${AVR_MCU}")
 
 # avr-gcc accepts -fstack-protector-strong at compile time (cc1 just

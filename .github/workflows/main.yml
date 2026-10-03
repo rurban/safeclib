@@ -132,7 +132,8 @@ jobs:
     - run: sh build-aux/sdcc-stm8-test.sh build-stm8
   avr-gcc:
     # freestanding 8-bit: avr-gcc with cmake, minimal core without
-    # stdio, time, env. Run in the simavr AVR simulator.
+    # stdio, time, env. Run in the simavr AVR simulator, result read
+    # back over the simulated UART0 peripheral (simavr -v).
     name: avr-gcc ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -148,7 +149,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 1
-    - run: sudo apt-get install gcc-avr avr-libc simavr libsimavr-dev cmake
+    - run: sudo apt-get install gcc-avr avr-libc simavr cmake
     - run: >-
         cmake -B build-avr -DCMAKE_TOOLCHAIN_FILE=build-aux/avr-gcc.cmake
         -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF

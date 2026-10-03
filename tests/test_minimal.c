@@ -20,15 +20,34 @@ static char src[16] = "hello";
 volatile unsigned char test_result;
 volatile unsigned char test_marker;
 #ifdef __AVR__
+/* simavr's avr-gdb remote stub does not actually execute the
+   simulated core: 'continue' to a breakpoint reports a stop at the
+   right PC without ever running the intervening instructions, and
+   'stepi' just walks the PC forward one word at a time without
+   decoding/executing it either (verified against gdb-avr 13/15 +
+   simavr 1.6: both "step through call main" and memory/register
+   reads after a real run come back as if main() never ran). So the
+   AVR path can't drive or observe the test via avr-gdb like the
+   sdcc stm8 ucsim job does below with native ucsim commands.
+   Instead, report test_result/test_marker over the real UART0
+   peripheral: simavr's avr_uart model genuinely runs the core and
+   echoes transmitted bytes to its own stdout (with -v), which is
+   how avr-sim-test.sh reads the result. */
 #include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/sleep.h>
-#include <avr/avr_mcu_section.h>
-/* simavr's documented debug-console convention: bytes written to the
-   designated register (any otherwise-unused one, GPIOR0 here) are
-   printed to simavr's stdout as-is, no command-line flags needed. */
-AVR_MCU(1000000, "atmega2560");
-AVR_MCU_SIMAVR_CONSOLE(&GPIOR0);
+static void avr_uart_init(void) {
+    UCSR0B = (1 << TXEN0);
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
+}
+static void avr_uart_putc(unsigned char c) {
+    while (!(UCSR0A & (1 << UDRE0)))
+        ;
+    UDR0 = c;
+}
+static void avr_uart_puthex(unsigned char v) {
+    static const char hex[] = "0123456789abcdef";
+    avr_uart_putc(hex[(v >> 4) & 0xf]);
+    avr_uart_putc(hex[v & 0xf]);
+}
 #endif
 
 int main(void) {
@@ -80,11 +99,19 @@ int main(void) {
     test_result = 0x5a + errs;
     test_marker = 0xc3;
 #ifdef __AVR__
-    GPIOR0 = (unsigned char)(0x5a + errs);
-    /* simavr detects "sleeping with interrupts off" and terminates the
-       simulation gracefully right here. */
-    cli();
-    sleep_cpu();
+    avr_uart_init();
+    avr_uart_putc('R');
+    avr_uart_putc('=');
+    avr_uart_puthex(test_result);
+    avr_uart_putc(' ');
+    avr_uart_putc('M');
+    avr_uart_putc('=');
+    avr_uart_puthex(test_marker);
+    avr_uart_putc('\n');
+    for (;;) {
+        /* avr-sim-test.sh kills the simulator once it has read the
+           "R=.. M=.." line from simavr's UART-echo stdout */
+    }
 #endif
     return errs;
 }
