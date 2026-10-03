@@ -17,6 +17,7 @@
    version as an integer, or 0 if perl is unavailable or the query
    fails. */
 static inline int perl_unicode_major_version(void) {
+#ifdef HAVE_POPEN
     FILE *pipe_fp;
     int major = 0;
     char buf[32];
@@ -30,6 +31,9 @@ static inline int perl_unicode_major_version(void) {
         major = atoi(buf);
     pclose(pipe_fp);
     return major;
+#else /* e.g. newlib */
+    return 0;
+#endif
 }
 
 /* Return 1 if perl's Unicode major version matches safeclib's

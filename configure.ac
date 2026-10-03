@@ -702,14 +702,20 @@ case $host_os in
 esac
 
 if test "$enable_hardening" = "true" ; then
+	dnl with a real stack frame: e.g. Thumb-1 accepts -fstack-clash-protection
+	dnl for trivial functions, but not for functions with locals.
 	AX_APPEND_COMPILE_FLAGS(
 	        [-fstack-protector-strong -fstack-clash-protection -fcf-protection \
 	         -fno-strict-aliasing -fno-strict-overflow -fno-delete-null-pointer-checks \
 	         -fno-lifetime-dse],
-	        [WARN_CFLAGS],[$ax_ccf_err])
+	        [WARN_CFLAGS],[$ax_ccf_err],
+	        [AC_LANG_PROGRAM([[int f(int n); int f(int n){ volatile char b[64]; b[n] = 1; return b[63]; }]],
+	                         [[return f(1);]])])
 	AX_APPEND_LINK_FLAGS(
 	        [-fstack-protector-strong -fstack-clash-protection -fcf-protection],
-	        [WARN_LDFLAGS],[$ax_ccf_err])
+	        [WARN_LDFLAGS],[$ax_ccf_err],
+	        [AC_LANG_PROGRAM([[int f(int n); int f(int n){ volatile char b[64]; b[n] = 1; return b[63]; }]],
+	                         [[return f(1);]])])
 fi
 
 if test $ax_cv_check_cflags__Wrestrict = yes; then
@@ -1174,7 +1180,7 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         strnstr strnlen strrchr memrchr strstr bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror \
-        fileno ftruncate isinfl isinf])
+        fileno ftruncate isinfl isinf popen])
 
 if test "$enable_wchar" = "true" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \

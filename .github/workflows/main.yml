@@ -76,6 +76,35 @@ jobs:
         files: |
           dist.sha256
           safeclib-*.tar.*
+  arm-none-eabi:
+    # gcc with newlib, no glibc: armv6-m Cortex-M0, run via qemu-arm semihosting
+    name: arm-none-eabi newlib
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 1
+    - run: sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi qemu-user
+    - run: sh build-aux/autogen.sh
+    - run: ./configure --host=arm-none-eabi --disable-shared CFLAGS="-mcpu=cortex-m0 -mthumb -O2" LDFLAGS="--specs=rdimon.specs"
+    - run: make
+    # known newlib/semihosting failures: no env, stdin, files, locales
+    - run: >-
+        make check-log LOG_COMPILER="qemu-arm -cpu cortex-m0"
+        XFAIL_TESTS="t_sprintf_s t_strerrorlen_s t_vwscanf_s t_wscanf_s
+        t_wcstombs_s t_mbstowcs_s t_gets_s t_vfprintf_s t_vu8scanf_s
+        t_u8scanf_s t_getenv_s"
+    - name: Upload configure artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: arm-none-eabi-config
+        path: |
+          config.h
+          config.status
+          config.log
+        if-no-files-found: ignore
   macOS:
     name: macOS
     runs-on: macOS-latest
