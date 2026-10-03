@@ -37,6 +37,9 @@
 #include "io/safec_file.h"
 #endif
 
+/* The mingw-w64 UCRT stdio.h defines it inline */
+#if !(defined(__MINGW32__) && defined(_UCRT))
+
 /**
  * @brief
  *    The \c vscanf_s function reads a formatted string from stdin,
@@ -132,3 +135,4 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
 
     return ret;
 }
+#endif

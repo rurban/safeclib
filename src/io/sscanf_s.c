@@ -37,6 +37,9 @@
 #include "io/safec_file.h"
 #endif
 
+/* The mingw-w64 UCRT stdio.h defines it inline */
+#if !(defined(__MINGW32__) && defined(_UCRT))
+
 /**
  * @brief
  *    The \c sscanf_s function reads a formatted string, and writes
@@ -141,3 +144,4 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 
     return ret;
 }
+#endif

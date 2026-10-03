@@ -37,6 +37,9 @@
 #include "io/safec_file.h"
 #endif
 
+/* The mingw-w64 UCRT stdio.h defines it inline */
+#if !(defined(__MINGW32__) && defined(_UCRT))
+
 /**
  * @brief
  *    The \c vfwscanf_s function reads a formatted wide string.
@@ -450,4 +453,5 @@ int safec_vfwscanf(FILE *restrict f, const wchar_t *restrict fmt, va_list ap) {
     FUNLOCK(f);
     return matches;
 }
+#endif
 #endif

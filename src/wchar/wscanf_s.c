@@ -37,7 +37,9 @@
 #include "io/safec_file.h"
 #endif
 
-#if !(defined(TEST_MSVCRT) && defined(HAVE_WSCANF_S))
+/* The mingw-w64 UCRT stdio.h defines it inline */
+#if !(defined(TEST_MSVCRT) && defined(HAVE_WSCANF_S)) &&                      \
+    !(defined(__MINGW32__) && defined(_UCRT))
 
 /**
  * @brief
