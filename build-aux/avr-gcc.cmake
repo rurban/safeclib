@@ -4,8 +4,11 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR avr)
 
-# must match the simavr/avr-sim-test.sh "-m" device name
-set(AVR_MCU atmega328 CACHE STRING "AVR device for -mmcu")
+# must match the simavr/avr-sim-test.sh "-m" device name and
+# AVR_MCU() in tests/test_minimal.c. atmega328's 2K SRAM is too small
+# for the u8+extensions ENABLE_MINIMAL variant; atmega2560's 8K fits
+# both, and keeps the plain and u8 builds on the same simulated core.
+set(AVR_MCU atmega2560 CACHE STRING "AVR device for -mmcu")
 
 find_program(AVR_GCC NAMES avr-gcc REQUIRED)
 find_program(AVR_AR NAMES avr-ar REQUIRED)

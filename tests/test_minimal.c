@@ -27,7 +27,7 @@ volatile unsigned char test_marker;
 /* simavr's documented debug-console convention: bytes written to the
    designated register (any otherwise-unused one, GPIOR0 here) are
    printed to simavr's stdout as-is, no command-line flags needed. */
-AVR_MCU(1000000, "atmega328");
+AVR_MCU(1000000, "atmega2560");
 AVR_MCU_SIMAVR_CONSOLE(&GPIOR0);
 #endif
 

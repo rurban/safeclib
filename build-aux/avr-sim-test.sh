@@ -7,9 +7,8 @@
 # the GNU "simulavr" project's CLI, a different, unrelated tool). The
 # firmware then does cli(); sleep_cpu();, which simavr detects as
 # "sleeping with interrupts off" and exits on its own.
-# usage: build-aux/avr-sim-test.sh build-dir [mcu]
 dir=${1:-build-avr}
-mcu=${2:-atmega328}
+mcu=${2:-atmega2560}
 sim=$(command -v simavr)
 if [ -z "$sim" ]; then
     echo "no simavr found"
