@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_memcmp16_s
  * File 'extmem/memcmp16_s.c'
- * Lines executed:85.45% of 55
+ * Lines executed:85.96% of 57
  *
  *------------------------------------------------------------------
  * fails: ubuntu-aarch64-linux-native and aarch64-fedora-docker,

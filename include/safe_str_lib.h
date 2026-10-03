@@ -171,13 +171,12 @@ EXTERN errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
                 __builtin_strlen(src) + 1, __builtin_strlen(src) + 1)
 #endif
 #define strcpy_s(dest, dmax, src)                                              \
-    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&                \
-                  __builtin_strlen(src) < (size_t)(dmax),                      \
-              (_BOS_DISJOINT(dest, __builtin_strlen(src) + 1, src,             \
-                             __builtin_strlen(src) + 1)                        \
-                   ? (_strcpy_s_copy(dest, dmax, src), EOK)                    \
-                   : _strcpy_s_chk(dest, dmax, src, BOS(dest))),               \
-              _strcpy_s_chk(dest, dmax, src, BOS(dest)))
+    _BOS_UCHK_IF(_BOS_DMAX_OK(dest, dmax, 1) && _BOS_KNOWN(src) &&             \
+                     __builtin_strlen(src) < (size_t)(dmax),                   \
+                 _BOS_DISJOINT(dest, __builtin_strlen(src) + 1, src,           \
+                               __builtin_strlen(src) + 1),                     \
+                 (_strcpy_s_copy(dest, dmax, src), EOK),                       \
+                 _strcpy_s_chk(dest, dmax, src, BOS(dest)))
 #else
 #define strcpy_s(dest, dmax, src) _strcpy_s_chk(dest, dmax, src, BOS(dest))
 #endif

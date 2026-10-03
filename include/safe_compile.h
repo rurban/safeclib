@@ -98,8 +98,13 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #if defined(HAVE___BUILTIN_CONSTANT_P) && defined(HAVE___BUILTIN_OBJECT_SIZE)
 #define _BOS_UCHK(ok, uchk, chk)                                               \
     ((__builtin_constant_p(ok) && (ok)) ? (uchk) : (chk))
+/* with an additional run-time condition, still with a single chk call, so
+   its diagnose_if attributes are evaluated only once. */
+#define _BOS_UCHK_IF(ok, cond, uchk, chk)                                      \
+    ((__builtin_constant_p(ok) && (ok) && (cond)) ? (uchk) : (chk))
 #else
 #define _BOS_UCHK(ok, uchk, chk) (chk)
+#define _BOS_UCHK_IF(ok, cond, uchk, chk) (chk)
 #endif
 /* The builtins were probed with the compiler which configured safeclib.
    Drop those the current compiler doesn't have, e.g. clang has no
