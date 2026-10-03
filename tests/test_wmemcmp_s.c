@@ -17,8 +17,8 @@ int main(void) {
     errno_t rc;
 
     uint32_t len;
-    int32_t ind;
-    int32_t std_ind;
+    int ind;
+    int std_ind;
     wchar_t i;
 
     wchar_t mem1[LEN];

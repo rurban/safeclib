@@ -468,6 +468,7 @@ check_function_exists(stpncpy HAVE_STPNCPY)
 check_function_exists(strerror HAVE_STRERROR)
 check_function_exists(fileno HAVE_FILENO)
 check_function_exists(ftruncate HAVE_FTRUNCATE)
+check_function_exists(popen HAVE_POPEN)
 check_function_exists(isinfl HAVE_ISINFL)
 check_function_exists(isinf HAVE_ISINF)
 
@@ -652,7 +653,15 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 
     if(ENABLE_HARDENING)
         check_c_compiler_flag(-fstack-protector-strong HAVE_STACK_PROTECTOR_STRONG)
-        check_c_compiler_flag(-fstack-clash-protection HAVE_STACK_CLASH_PROTECTION)
+        # with a real stack frame: Thumb-1 accepts -fstack-clash-protection
+        # for trivial functions, but not for functions with locals.
+        set(CMAKE_REQUIRED_FLAGS "-fstack-clash-protection")
+        check_c_source_compiles("
+int f(int n);
+int f(int n) { volatile char b[64]; b[n] = 1; return b[63]; }
+int main(void) { return f(1); }
+" HAVE_STACK_CLASH_PROTECTION)
+        unset(CMAKE_REQUIRED_FLAGS)
         check_c_compiler_flag(-fcf-protection HAVE_CF_PROTECTION)
 
         if(HAVE_STACK_PROTECTOR_STRONG)
