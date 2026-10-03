@@ -15,7 +15,7 @@ From the following tested libc implementations:
 * uClibc
 * minilibc
 * Microsoft Windows under wine
-* Microsoft Windows msvcrt and ulibc w/ secure API
+* Microsoft Windows msvcrt and ucrt w/ secure API
 * Open Watcom
 * Android Bionic
 * Huawei securec
@@ -121,6 +121,35 @@ See my [libu8ident](https://rurban.github.io/libu8ident/) which checks for these
 * `getenv_s` returns in len the size of the env buffer, not the len, as described in the
    standard (https://en.cppreference.com/w/c/program/getenv). The Microsoft size is len + 1.
    Their usage example is also wrong: https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/getenv-s-wgetenv-s?view=msvc-170
+
+## Microsoft Windows UCRT (mingw-w64 UCRT64)
+
+* The mingw-w64 UCRT `stdio.h` and `corecrt_wstdio.h` define `fprintf_s`,
+  `fscanf_s`, `printf_s`, `scanf_s`, `sscanf_s`, `vfprintf_s`, `vfscanf_s`,
+  `vprintf_s`, `vscanf_s`, `vsscanf_s`, `fwprintf_s`, `fwscanf_s`,
+  `swscanf_s`, `vfwprintf_s`, `vfwscanf_s`, `vswscanf_s`, `vwprintf_s`,
+  `vwscanf_s`, `wprintf_s` and `wscanf_s` as `static inline` functions over
+  `__stdio_common_*`, without opt-out macro. Any other definition or
+  `dllimport` declaration with the same name clashes (gcc-16 even ICEs).
+
+* The `printf_s` family accepts `%n`, and prints `(null)` for a NULL `%s`
+  argument, instead of a constraint violation.
+
+* The `fprintf_s`/`fwprintf_s` families return different counts or `-1`
+  where the standard expects a constraint error.
+
+* The wide `scanf_s` family (`swscanf_s`, `wscanf_s`, `fwscanf_s` and the
+  `v` variants) reads only 1 char for `%s` with a buffer size argument,
+  "24" scans as "2".
+
+* The narrow `scanf_s` family returns `1` with `errno` 0 on some constraint
+  violations, or sets `errno` to `EINVAL` (22) instead of the specific
+  error.
+
+* Built against UCRT, our own `sprintf_s` float conversions (`%f`, `%g`,
+  `%a`) print garbage (e.g. `3.22103e-312` for 0.1), `vsnprintf_s` reports
+  `%s` overflows (ESNOSPC), `wctomb_s` fails in the UTF-8 locale, and the
+  `u8printf_s`/`u8scanf_s` families fail. Not yet fixed.
 
 ## safeclib
 
