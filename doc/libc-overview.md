@@ -146,10 +146,17 @@ See my [libu8ident](https://rurban.github.io/libu8ident/) which checks for these
   violations, or sets `errno` to `EINVAL` (22) instead of the specific
   error.
 
-* Built against UCRT, our own `sprintf_s` float conversions (`%f`, `%g`,
-  `%a`) print garbage (e.g. `3.22103e-312` for 0.1), `vsnprintf_s` reports
-  `%s` overflows (ESNOSPC), `wctomb_s` fails in the UTF-8 locale, and the
-  `u8printf_s`/`u8scanf_s` families fail. Not yet fixed.
+* The UCRT printf family does not support the gcc 80-bit `long double`
+  (`%Lf`, `%Le`, `%Lg`, `%La` print garbage like `3.22103e-312` for 0.1),
+  `%a` prints trailing zeros (`0x1.99999a0000000p-4`), and `%s` in the
+  wide formats expects a `wchar_t*`. The mingw-w64 ansi stdio
+  (`__USE_MINGW_ANSI_STDIO`) is C99 conforming.
+
+* `wctomb` rejects a lone UTF-16 surrogate with `EILSEQ`, msvcrt converts it.
+
+* safeclib keeps its own implementations of all the above functions on
+  UCRT, renamed via macros to `safec_sscanf_s` etc., and builds with
+  `__USE_MINGW_ANSI_STDIO`.
 
 ## safeclib
 
