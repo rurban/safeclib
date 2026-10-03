@@ -149,6 +149,12 @@ otherwise the whole dest buffer.
 
 * Compile-time constraints
 
+safeclib uses the same `__builtin_object_size` checks as glibc's
+`_FORTIFY_SOURCE` at compile-time: buffer overflows, wrong dmax
+values and NULL arguments are caught as compile-time errors or warnings
+earlier, instead of at run-time. And when the compiler can prove all
+arguments valid, the superfluous run-time checks are omitted.
+
 With supporting compilers the dmax overflow checks and several more
 are performed at compile-time.  Currently only since clang-5 with
 `diagnose_if` support. This checks similar to `_FORTIFY_SOURCE=2` if
