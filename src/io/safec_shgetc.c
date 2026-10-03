@@ -62,6 +62,7 @@ size_t safec_string_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len) {
     return len;
 }
 
+#ifndef SAFECLIB_DISABLE_IO
 /* Same contract, but for a real stdio stream: fread() a chunk into
  * sf->buf (the caller-owned scratch buffer), return up to len bytes
  * of it via `buf', and leave the rest buffered in rpos/rend for the
@@ -85,6 +86,7 @@ size_t safec_stream_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len) {
     sf->rend = sf->buf + n;
     return len;
 }
+#endif
 
 void safec_toread(_SAFEC_FILE *sf) {
     sf->rpos = sf->rend = sf->buf + sf->buf_size;
@@ -98,7 +100,7 @@ static int safec_uflow(_SAFEC_FILE *sf) {
     return EOF;
 }
 
-void safec_shlim(_SAFEC_FILE *sf, off_t lim) {
+void safec_shlim(_SAFEC_FILE *sf, safec_off_t lim) {
     sf->shlim = lim;
     sf->shcnt = sf->buf - sf->rpos;
     /* If lim is nonzero, rend must be a valid pointer. */
@@ -110,7 +112,7 @@ void safec_shlim(_SAFEC_FILE *sf, off_t lim) {
 
 int safec_shgetc(_SAFEC_FILE *sf) {
     int c;
-    off_t cnt = shcnt(sf);
+    safec_off_t cnt = shcnt(sf);
     if ((sf->shlim && cnt >= sf->shlim) || (c = safec_uflow(sf)) < 0) {
         sf->shcnt = sf->buf - sf->rpos + cnt;
         sf->shend = sf->rpos;

@@ -1,9 +1,11 @@
 /*------------------------------------------------------------------
  * test_minimal.c
  * Freestanding smoke test for the cmake ENABLE_MINIMAL build, e.g. sdcc
- * stm8: no stdio, the result is the exit status, 0 on success.
+ * stm8 or avr-gcc: no stdio, the result is the exit status, 0 on success.
  *------------------------------------------------------------------
  */
+
+#include <string.h>
 
 #include "safe_mem_lib.h"
 #include "safe_str_lib.h"
@@ -13,8 +15,15 @@
 
 static char dest[16];
 static char src[16] = "hello";
-/* for simulators, which cannot see the exit status: 0x5a + errs */
+/* for simulators, which cannot see the exit status: 0x5a + errs.
+   the marker is written last, so the simulator can watch for it. */
 volatile unsigned char test_result;
+volatile unsigned char test_marker;
+#ifdef __AVR__
+/* simulavr's documented debug port convention: run with
+   "-W 0x20,-" to pipe writes to this address out to stdout. */
+#define SIMAVR_EXIT_PORT (*(volatile unsigned char *)0x20)
+#endif
 
 int main(void) {
     int errs = 0;
@@ -34,11 +43,38 @@ int main(void) {
     /* constraint violation */
     if (strcpy_s(dest, 4, src) == EOK)
         errs++;
+    /* string printf and scanf */
+    {
+        int num = 0;
+        int rc;
+        memset(dest, 0, sizeof(dest));
+        rc = sprintf_s(dest, sizeof(dest), "%s %d", "n=", 42);
+        if (rc != 5 || dest[4] != '2' || dest[0] != 'n')
+            errs++;
+        rc = sscanf_s("77", "%d", &num);
+        if (rc != 1 || num != 77)
+            errs++;
+    }
 #ifdef SAFECLIB_ENABLE_U8
     if (u8cpy_s((char8_t *)dest, sizeof(dest), (const char8_t *)src) != EOK ||
         u8nlen_s((const char8_t *)dest, sizeof(dest)) != 5)
         errs++;
+    {
+        int num = 0;
+        int rc;
+        memset(dest, 0, sizeof(dest));
+        rc = u8sprintf_s((char8_t *)dest, sizeof(dest), "%s %d", "n=", 7);
+        if (rc != 4 || dest[3] != '7')
+            errs++;
+        rc = u8sscanf_s((const char8_t *)"55", "%d", &num);
+        if (rc != 1 || num != 55)
+            errs++;
+    }
 #endif
     test_result = 0x5a + errs;
+    test_marker = 0xc3;
+#ifdef __AVR__
+    SIMAVR_EXIT_PORT = (unsigned char)(0x5a + errs);
+#endif
     return errs;
 }

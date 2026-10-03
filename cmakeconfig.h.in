@@ -264,6 +264,11 @@
 /* Define to 1 if you have the `popen' function. */
 #cmakedefine HAVE_POPEN 1
 
+/* Define to 1 if you have the `strtold', `strtod', `snprintf' functions. */
+#cmakedefine HAVE_STRTOLD 1
+#cmakedefine HAVE_STRTOD 1
+#cmakedefine HAVE_SNPRINTF 1
+
 /* Define to 1 if you have the `isinfl' function. */
 #cmakedefine HAVE_ISINFL 1
 
@@ -335,6 +340,9 @@
 
 /* Define to 1 if cross-compiling for MinGW */
 #cmakedefine HAVE_MINGW_CROSS 1
+
+/* Define to 1 for the freestanding ENABLE_MINIMAL build */
+#cmakedefine SAFECLIB_DISABLE_IO 1
 
 /* Define to 1 if building on Darwin */
 #cmakedefine HAVE_DARWIN 1

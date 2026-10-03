@@ -48,7 +48,27 @@
 #include <stdlib.h>
 #endif
 
+/* e.g. sdcc has only atof(), float and no NAN */
+#if defined(HAVE_STRTOLD)
+#define safec_strtold(buf) strtold((buf), NULL)
+#elif defined(HAVE_STRTOD)
+#define safec_strtold(buf) ((long double)strtod((buf), NULL))
+#else
+#define safec_strtold(buf) ((long double)atof(buf))
+#endif
+#ifndef INFINITY
+#define INFINITY HUGE_VALF
+#endif
+#ifndef NAN
+#define NAN (INFINITY - INFINITY)
+#endif
+
+#if defined(SIZEOF_SIZE_T) && SIZEOF_SIZE_T <= 2
+/* 8/16-bit targets, e.g. sdcc: max 255 byte stack frames, floats only */
+#define SAFEC_FLOATSCAN_BUFSZ 64
+#else
 #define SAFEC_FLOATSCAN_BUFSZ 560
+#endif
 
 static int is_ascii_space(int c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' ||
@@ -127,7 +147,7 @@ static long double scan_decimal(safec_scan_cursor *cur, int c, int neg,
     if (c >= 0)
         cur->unget(cur->ctx);
     buf[*n] = 0;
-    return strtold(buf, NULL) * (neg ? -1 : 1);
+    return safec_strtold(buf) * (neg ? -1 : 1);
 }
 
 /* 0x-prefixed hex float, "c" is the first char after "0x"/"0X". A
@@ -177,7 +197,7 @@ static long double scan_hexfloat(safec_scan_cursor *cur, int c, int neg,
     if (c >= 0)
         cur->unget(cur->ctx);
     buf[*n] = 0;
-    return strtold(buf, NULL) * (neg ? -1 : 1);
+    return safec_strtold(buf) * (neg ? -1 : 1);
 }
 
 long double safec_floatscan(safec_scan_cursor *cur, int prec, int pok) {

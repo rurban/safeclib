@@ -1,5 +1,5 @@
 # CMake toolchain file for a freestanding sdcc STM8 build.
-# cmake -B build-stm8 -DCMAKE_TOOLCHAIN_FILE=build-aux/cmake/sdcc-stm8.cmake \
+# cmake -B build-stm8 -DCMAKE_TOOLCHAIN_FILE=build-aux/sdcc-stm8.cmake \
 #   -DENABLE_MINIMAL=ON
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR stm8)

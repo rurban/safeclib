@@ -125,11 +125,36 @@ jobs:
         fetch-depth: 1
     - run: sudo apt-get install sdcc sdcc-ucsim cmake
     - run: >-
-        cmake -B build-stm8 -DCMAKE_TOOLCHAIN_FILE=build-aux/cmake/sdcc-stm8.cmake
+        cmake -B build-stm8 -DCMAKE_TOOLCHAIN_FILE=build-aux/sdcc-stm8.cmake
         -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF
         ${{ matrix.CMAKE_ARGS }}
     - run: cmake --build build-stm8
     - run: sh build-aux/sdcc-stm8-test.sh build-stm8
+  avr-gcc:
+    # freestanding 8-bit: avr-gcc with cmake, minimal core without
+    # stdio, time, env. Run in the simulavr AVR simulator.
+    name: avr-gcc ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: minimal
+            CMAKE_ARGS: -DENABLE_U8=OFF -DENABLE_EXTENSIONS=OFF
+          - name: minimal u8
+            CMAKE_ARGS: -DENABLE_U8=ON -DENABLE_EXTENSIONS=ON
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 1
+    - run: sudo apt-get install gcc-avr avr-libc simulavr cmake
+    - run: >-
+        cmake -B build-avr -DCMAKE_TOOLCHAIN_FILE=build-aux/avr-gcc.cmake
+        -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF
+        ${{ matrix.CMAKE_ARGS }}
+    - run: cmake --build build-avr
+    - run: sh build-aux/avr-sim-test.sh build-avr
   macOS:
     name: macOS
     runs-on: macOS-latest

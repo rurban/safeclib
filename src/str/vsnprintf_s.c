@@ -80,6 +80,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #ifdef FOR_DOXYGEN
 #include "safe_str_lib.h"

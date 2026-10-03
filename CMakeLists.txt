@@ -502,6 +502,14 @@ check_function_exists(strerror HAVE_STRERROR)
 check_function_exists(fileno HAVE_FILENO)
 check_function_exists(ftruncate HAVE_FTRUNCATE)
 check_function_exists(popen HAVE_POPEN)
+check_function_exists(strtold HAVE_STRTOLD)
+check_function_exists(strtod HAVE_STRTOD)
+check_function_exists(snprintf HAVE_SNPRINTF)
+if(ENABLE_MINIMAL OR NOT HAVE_SNPRINTF)
+    # no float handling in the freestanding ENABLE_MINIMAL build. Also the
+    # float conversions in vsnprintf_s use the libc snprintf.
+    set(ENABLE_FLOAT OFF)
+endif()
 check_function_exists(isinfl HAVE_ISINFL)
 check_function_exists(isinf HAVE_ISINF)
 
@@ -809,6 +817,10 @@ endif()
 
 if(NOT ENABLE_WCHAR)
     set(SAFECLIB_DISABLE_WCHAR 1)
+endif()
+
+if(ENABLE_MINIMAL)
+    set(SAFECLIB_DISABLE_IO 1)
 endif()
 
 # Default handler
@@ -1144,11 +1156,11 @@ if(ENABLE_UNSAFE)
     )
 endif()
 # A minimal freestanding variant, e.g. for sdcc stm8: no stdio, time, env,
-# printf, scanf, errno strings. Keeps the mem, str and, with ENABLE_U8,
-# the u8 functions.
+# errno strings. Keeps the mem, str, the string sprintf/sscanf variants and,
+# with ENABLE_U8, the u8 functions.
 if(ENABLE_MINIMAL)
     list(FILTER SAFEC_SOURCES EXCLUDE REGEX
-        "^src/(io|os)/|printf|scanf|strerror|error_s|tmpnam|towctrans|towfc|wcsfc|wcsnorm|u8norm|u8fc|u8script|u8lwr|u8upr|u8width|timingsafe|misc/")
+        "^src/os/|/(f|v|vf)?(u8)?(printf|scanf)_s\\.c$|/(tmpfile|fopen|freopen|gets)_s\\.c$|floatscan|wscanf|wprintf|strerror|error_s|tmpnam|towctrans|towfc|wcsfc|wcsnorm|u8norm|u8fc|u8script|u8lwr|u8upr|u8width|timingsafe|misc/")
 endif()
 
 # prepend ${CMAKE_CURRENT_SOURCE_DIR}/ path
