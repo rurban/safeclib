@@ -111,19 +111,38 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
     const unsigned char *p;
     int c, t;
     char *s = NULL;
+#ifndef SAFECLIB_DISABLE_WCHAR
     wchar_t *wcs = NULL;
     mbstate_t st;
+#endif
     void *dest = NULL;
     int invert;
     int matches = 0;
     unsigned long long x;
+#ifndef PRINTF_DISABLE_SUPPORT_FLOAT
     long double y;
+#endif
+#ifdef __SDCC
+    /* 257 bytes overflows the tiny hardware/simulator stack on 8-bit
+       targets; safec_vfscanf_s/vsscanf_s/sscanf_s are not reentrant
+       there anyway (no threads). */
+    static unsigned char scanset[257];
+#else
     unsigned char scanset[257];
+#endif
     size_t i, k;
     rsize_t destsize, cap;
+#ifndef SAFECLIB_DISABLE_WCHAR
     wchar_t wc;
-    safec_scan_cursor cur = {sf, safec_ascii_cur_get, safec_ascii_cur_unget,
-                             safec_ascii_cur_setlim};
+#endif
+    safec_scan_cursor cur;
+
+    /* field-wise: sdcc miscompiles function-pointer struct initializers
+       with --stack-auto */
+    cur.ctx = sf;
+    cur.get = safec_ascii_cur_get;
+    cur.unget = safec_ascii_cur_unget;
+    cur.setlim = safec_ascii_cur_setlim;
 
     FLOCK(sf);
     if (!sf->rpos)
@@ -178,7 +197,9 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         }
 
         if (*p == 'm') {
+#ifndef SAFECLIB_DISABLE_WCHAR
             wcs = 0;
+#endif
             s = 0;
             alloc = !!dest;
             p++;
@@ -324,7 +345,9 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     scanset[1 + *p] = 1 - invert;
                 }
             }
+#ifndef SAFECLIB_DISABLE_WCHAR
             wcs = 0;
+#endif
             s = 0;
             i = 0;
             k = t == 'c' ? width + 1U : 31;
@@ -332,6 +355,12 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                       ? (rsize_t)-1
                       : (t == 'c' ? destsize : destsize - 1);
             if (size == SIZE_l) {
+#ifdef SAFECLIB_DISABLE_WCHAR
+                /* no wide-char support on this freestanding target, e.g.
+                   avr-libc: reject %ls/%lc/%l[ as an unsupported format,
+                   like the other unreachable specifiers below. */
+                goto fmt_fail;
+#else
                 if (alloc) {
                     wcs = (wchar_t *)malloc(k * sizeof(wchar_t));
                     if (!wcs)
@@ -339,7 +368,7 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                 } else {
                     wcs = (wchar_t *)dest;
                 }
-                st = (mbstate_t){0};
+                memset(&st, 0, sizeof(st));
                 while (scanset[(c = shgetc(sf)) + 1]) {
                     char c_mb = (char)c;
                     size_t mbr = mbrtowc(&wc, &c_mb, 1, &st);
@@ -364,6 +393,7 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                 }
                 if (!mbsinit(&st))
                     goto input_fail;
+#endif
             } else if (alloc) {
                 s = (char *)malloc(k);
                 if (!s)
@@ -395,14 +425,18 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
             if (t == 'c' && shcnt(sf) != width)
                 goto match_fail;
             if (alloc) {
+#ifndef SAFECLIB_DISABLE_WCHAR
                 if (size == SIZE_l)
                     *(wchar_t **)dest = wcs;
                 else
+#endif
                     *(char **)dest = s;
             }
             if (t != 'c') {
+#ifndef SAFECLIB_DISABLE_WCHAR
                 if (wcs)
                     wcs[i] = 0;
+#endif
                 if (s)
                     s[i] = 0;
             }
@@ -438,6 +472,10 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
         case 'F':
         case 'g':
         case 'G':
+#ifdef PRINTF_DISABLE_SUPPORT_FLOAT
+            /* e.g. the freestanding ENABLE_MINIMAL build */
+            goto fmt_fail;
+#else
             y = safec_floatscan(&cur, size, 0);
             if (!shcnt(sf))
                 goto match_fail;
@@ -456,6 +494,7 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                     goto fmt_fail;
                 }
             break;
+#endif
         default:
             goto fmt_fail;
         }
@@ -472,7 +511,9 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
     match_fail:
         if (alloc) {
             free(s);
+#ifndef SAFECLIB_DISABLE_WCHAR
             free(wcs);
+#endif
         }
     }
     FUNLOCK(sf);
@@ -481,8 +522,10 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
 overflow_fail:
     if (s)
         s[i] = 0;
+#ifndef SAFECLIB_DISABLE_WCHAR
     if (wcs)
         wcs[i] = 0;
+#endif
     FUNLOCK(sf);
     {
         char etmp[96];

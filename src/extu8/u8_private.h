@@ -1,6 +1,6 @@
 #ifndef __U8_PRIVATE_H__
 #define __U8_PRIVATE_H__
-#include <inttypes.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 #if defined(__GNUC__) && !defined(__SDCC)

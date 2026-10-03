@@ -80,12 +80,11 @@ EXPORT int u8sscanf_s(const char8_t *restrict buffer,
                       const char *restrict fmt, ...) {
     va_list ap;
     int ret;
-    _SAFEC_FILE sf = {
-        .buf = (unsigned char *)(void *)buffer,
-        .cookie = (void *)buffer,
-        .read = safec_string_read,
-        .lock = -1
-    };
+    /* positional: sdcc miscompiles designated initializers with
+       --stack-auto */
+    _SAFEC_FILE sf = { NULL, (unsigned char *)(void *)buffer, 0,
+                       (void *)buffer, NULL, NULL, safec_string_read, -1,
+                       NULL, 0, 0 };
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("u8sscanf_s: buffer is null", NULL,

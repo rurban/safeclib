@@ -41,8 +41,6 @@
 #endif
 
 #include "config.h"
-/* SAFECLIB_DISABLE_IO et al. are needed below */
-#include "safe_config.h"
 /* Use the C99 conforming mingw-w64 printf family (long double, %a, %s in
    wide formats), not the UCRT one. */
 #if defined(__MINGW32__) && !defined(__USE_MINGW_ANSI_STDIO)
@@ -160,6 +158,17 @@ typedef unsigned long uintptr_t;
 /* broken in cygwin/newlib until Aug 2017 */
 #elif !defined HAVE_STRNSTR_OK
 #define strnstr(a, b, c) strstr(a, b)
+#endif
+#ifdef SAFECLIB_DISABLE_IO
+/* freestanding libc, e.g. sdcc. snprintf is only used for our short,
+   fixed-size error messages; the float conversions needing it are
+   disabled then. */
+#if !defined(HAVE_SNPRINTF) && defined(SAFECLIB_HAVE_C99)
+#define snprintf(buf, len, ...) sprintf((buf), __VA_ARGS__)
+#endif
+#ifndef HAVE_STRERROR
+#define strerror(errnum) "error"
+#endif
 #endif
 
 /* Only needed for the linux kernel */

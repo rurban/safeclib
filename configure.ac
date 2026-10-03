@@ -1197,7 +1197,7 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         strnstr strnlen strrchr memrchr strstr bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror \
-        fileno ftruncate isinfl isinf popen])
+        fileno ftruncate isinfl isinf popen strtold strtod snprintf])
 
 if test "$enable_wchar" = "true" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \

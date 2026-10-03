@@ -13,8 +13,18 @@
  *    `cookie' is walked directly as a wchar_t* by the wide scanner,
  *    which never touches `buf'/`rpos'/`rend' at all.
  */
+#ifndef HAVE_SYS_TYPES_H
+/* freestanding, e.g. sdcc */
+typedef long safec_off_t;
+#else
+typedef off_t safec_off_t;
+#endif
 typedef struct _SAFEC_FILE {
+#ifndef SAFECLIB_DISABLE_IO
     FILE *f;
+#else
+    void *f; /* only the string scanners */
+#endif
     unsigned char *buf;
     size_t buf_size;
     void *cookie;
@@ -22,7 +32,7 @@ typedef struct _SAFEC_FILE {
     size_t (*read)(struct _SAFEC_FILE *, unsigned char *, size_t);
     volatile int lock;
     unsigned char *shend;
-    off_t shlim, shcnt;
+    safec_off_t shlim, shcnt;
 } _SAFEC_FILE;
 
 /* Scan helper "stdio" functions for use by the scanf_s family. To
@@ -40,7 +50,7 @@ typedef struct _SAFEC_FILE {
  * shgetc() to refill through sf->read(). Safe to call unconditionally
  * (including repeatedly); mirrors musl's __toread(). */
 void safec_toread(_SAFEC_FILE *sf);
-void safec_shlim(_SAFEC_FILE *sf, off_t lim);
+void safec_shlim(_SAFEC_FILE *sf, safec_off_t lim);
 int safec_shgetc(_SAFEC_FILE *sf);
 
 /* sf->read callback for a plain NUL-terminated char* source

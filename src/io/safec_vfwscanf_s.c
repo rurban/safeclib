@@ -190,7 +190,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
     int matches = 0;
     unsigned long long x;
     long double y;
-    off_t cnt;
+    safec_off_t cnt;
     static const wchar_t *size_pfx[] = {L"hh", L"h", L"", L"l", L"L", L"ll"};
     char numfmt[3 * sizeof(int) + 10];
     wchar_t wnumfmt[3 * sizeof(int) + 10];
