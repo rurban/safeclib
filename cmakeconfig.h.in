@@ -100,6 +100,10 @@
 /* Define to 1 if the compiler supports C11 */
 #cmakedefine HAVE_C11 1
 
+/* Define to 1 if _Thread_local resp. __thread links */
+#cmakedefine HAVE_THREAD_LOCAL 1
+#cmakedefine HAVE___THREAD 1
+
 /* Define to 1 if __builtin_object_size is available */
 #cmakedefine HAVE___BUILTIN_OBJECT_SIZE 1
 
