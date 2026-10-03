@@ -41,6 +41,11 @@
 #endif
 
 #include "config.h"
+/* Use the C99 conforming mingw-w64 printf family (long double, %a, %s in
+   wide formats), not the UCRT one. */
+#if defined(__MINGW32__) && !defined(__USE_MINGW_ANSI_STDIO)
+#define __USE_MINGW_ANSI_STDIO 1
+#endif
 
 #ifdef __KERNEL__
 /* linux kernel environment */

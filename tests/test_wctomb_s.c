@@ -166,8 +166,11 @@ int test_wctomb_s(void) {
     /* 32bit: hex escape sequence out of range */
     rc = wctomb_s(&ind, dest, LEN, L'\xd834df01');
 #if SIZEOF_WCHAR_T == 2
-    ERR(0);
-    CHECK_SLACK(&dest[ind], LEN - ind);
+    if (rc == 0) {
+        CHECK_SLACK(&dest[ind], LEN - ind);
+    } else { /* UCRT rejects the lone surrogate */
+        ERR(EILSEQ);
+    }
 #else
     ERR(EILSEQ); /* FIXME NOSPC */
     INDCMP(!= -1);

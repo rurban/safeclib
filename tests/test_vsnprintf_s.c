@@ -170,7 +170,7 @@ int test_vsnprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 5, "%s", str2);
-#ifndef HAVE_MINGW32
+#ifndef USE_MSVCRT
     ERR(-ESNOSPC);
 #else
     ERR(-1);
@@ -183,7 +183,7 @@ int test_vsnprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 2, "%s", str2);
-#ifndef HAVE_MINGW32
+#ifndef USE_MSVCRT
     ERR(-ESNOSPC);
 #else
     ERR(-1);
@@ -232,7 +232,7 @@ int test_vsnprintf_s(void) {
     strcpy(str2, "keep it simple");
 
     rc = vtprintf_s(str1, 12, "%s", str2);
-#ifndef HAVE_MINGW32
+#ifndef USE_MSVCRT
     ERR(-ESNOSPC);
 #else
     ERR(-1);
@@ -253,7 +253,7 @@ int test_vsnprintf_s(void) {
     strcpy(str1, "12345678901234567890");
 
     rc = vtprintf_s(str1, 8, "%s", &str1[7]);
-#ifndef HAVE_MINGW32
+#ifndef USE_MSVCRT
     EXPSTR(str1, "")
 #else
     ERR(-1);
