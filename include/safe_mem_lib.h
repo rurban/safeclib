@@ -82,11 +82,19 @@ EXTERN errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
                      "dest overlaps with src");
 EXTERN errno_t _memcpy_s_uchk(void *restrict dest, rsize_t dmax,
                               const void *restrict src, rsize_t slen);
+#ifdef HAVE___BUILTIN_MEMMOVE
+#define _memcpy_s_uchk_inl(dest, dmax, src, slen)                              \
+    (_BOS_DISJOINT(dest, dmax, src, slen)                                      \
+         ? (_BOS_MEMCPY(dest, dmax, src, slen, (size_t)(slen)), EOK)           \
+         : _memcpy_s_uchk(dest, dmax, src, slen))
+#else
+#define _memcpy_s_uchk_inl _memcpy_s_uchk
+#endif
 #define memcpy_s(dest, dmax, src, slen)                                        \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (size_t)(slen) != 0 &&           \
                   (size_t)(slen) <= (size_t)(dmax) &&                          \
                   _BOS_SRC_OK(src, slen, 1),                                   \
-              _memcpy_s_uchk(dest, dmax, src, slen),                           \
+              _memcpy_s_uchk_inl(dest, dmax, src, slen),                       \
               _memcpy_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src)))
 
 /* move memory, including overlapping memory */
@@ -154,11 +162,19 @@ EXTERN errno_t _memcmp_s_chk(const void *dest, rsize_t dmax, const void *src,
         VAL_OVR2_BUTZERO(slen, dmax);
 EXTERN errno_t _memcmp_s_uchk(const void *dest, rsize_t dmax, const void *src,
                               rsize_t slen, int *diff);
+#ifdef HAVE___BUILTIN_MEMCMP
+#define _memcmp_s_uchk_inl(dest, dmax, src, slen, diff)                        \
+    (*(int *)(diff) = (__builtin_memcmp(dest, src, (size_t)(slen)) > 0) -      \
+               (__builtin_memcmp(dest, src, (size_t)(slen)) < 0),              \
+     EOK)
+#else
+#define _memcmp_s_uchk_inl _memcmp_s_uchk
+#endif
 #define memcmp_s(dest, dmax, src, slen, diff)                                  \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (size_t)(slen) != 0 &&           \
                   (size_t)(slen) <= (size_t)(dmax) &&                          \
                   _BOS_SRC_OK(src, slen, 1) && _BOS_KNOWN(diff),               \
-              _memcmp_s_uchk(dest, dmax, src, slen, diff),                     \
+              _memcmp_s_uchk_inl(dest, dmax, src, slen, diff),                 \
               _memcmp_s_chk(dest, dmax, src, slen, diff, BOS(dest), BOS(src)))
 
 /* compare uint16_t memory */
@@ -201,12 +217,22 @@ EXTERN errno_t _memcpy16_s_chk(uint16_t *dest, rsize_t dmax,
         VAL_OVR2_BUTZERO(slen, dmax / 2);
 EXTERN errno_t _memcpy16_s_uchk(uint16_t *dest, rsize_t dmax,
                                 const uint16_t *src, rsize_t slen);
+#ifdef HAVE___BUILTIN_MEMMOVE
+#define _memcpy16_s_uchk_inl(dest, dmax, src, slen)                            \
+    (_BOS_DISJOINT(dest, dmax, src, (size_t)(slen) * 2)                        \
+         ? (_BOS_MEMCPY(dest, dmax, src, (size_t)(slen) * 2,                   \
+                        (size_t)(slen) * 2),                                   \
+            EOK)                                                               \
+         : _memcpy16_s_uchk(dest, dmax, src, slen))
+#else
+#define _memcpy16_s_uchk_inl _memcpy16_s_uchk
+#endif
 /* the _chk variant overrides a known dmax with the dest size */
 #define memcpy16_s(dest, dmax, src, slen)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (size_t)(slen) != 0 &&           \
                   (size_t)(slen) <= (size_t)(dmax) / 2 &&                      \
                   _BOS_SRC_OK(src, slen, 2),                                   \
-              _memcpy16_s_uchk(dest, BOS(dest), src, slen),                    \
+              _memcpy16_s_uchk_inl(dest, BOS(dest), src, slen),                \
               _memcpy16_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src)))
 
 /* copy uint32_t memory */
@@ -217,12 +243,22 @@ EXTERN errno_t _memcpy32_s_chk(uint32_t *dest, rsize_t dmax,
         VAL_OVR2_BUTZERO(slen, dmax / 4);
 EXTERN errno_t _memcpy32_s_uchk(uint32_t *dest, rsize_t dmax,
                                 const uint32_t *src, rsize_t slen);
+#ifdef HAVE___BUILTIN_MEMMOVE
+#define _memcpy32_s_uchk_inl(dest, dmax, src, slen)                            \
+    (_BOS_DISJOINT(dest, dmax, src, (size_t)(slen) * 4)                        \
+         ? (_BOS_MEMCPY(dest, dmax, src, (size_t)(slen) * 4,                   \
+                        (size_t)(slen) * 4),                                   \
+            EOK)                                                               \
+         : _memcpy32_s_uchk(dest, dmax, src, slen))
+#else
+#define _memcpy32_s_uchk_inl _memcpy32_s_uchk
+#endif
 /* the _chk variant overrides a known dmax with the dest size */
 #define memcpy32_s(dest, dmax, src, slen)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (size_t)(slen) != 0 &&           \
                   (size_t)(slen) <= (size_t)(dmax) / 4 &&                      \
                   _BOS_SRC_OK(src, slen, 4),                                   \
-              _memcpy32_s_uchk(dest, BOS(dest), src, slen),                    \
+              _memcpy32_s_uchk_inl(dest, BOS(dest), src, slen),                \
               _memcpy32_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src)))
 
 /* uint16_t move memory, including overlapping memory */
@@ -281,10 +317,18 @@ EXTERN errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
     BOS_CHK(dest) VAL_OVR2(ch, 255) BOS_NULL(resultp);
 EXTERN errno_t _memchr_s_uchk(const void *dest, rsize_t dmax, const int ch,
                               void **resultp);
+#ifdef HAVE___BUILTIN_MEMCHR
+#define _memchr_s_uchk_inl(dest, dmax, ch, resultp)                            \
+    ((*(void **)(resultp) = (void *)__builtin_memchr(dest, ch, (size_t)(dmax))) \
+         ? EOK                                                                 \
+         : ESNOTFND)
+#else
+#define _memchr_s_uchk_inl _memchr_s_uchk
+#endif
 #define memchr_s(dest, dmax, ch, resultp)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (int)(ch) <= 255 &&              \
                   _BOS_KNOWN(resultp),                                         \
-              _memchr_s_uchk(dest, dmax, ch, resultp),                         \
+              _memchr_s_uchk_inl(dest, dmax, ch, resultp),                     \
               _memchr_s_chk(dest, dmax, ch, resultp, BOS(dest)))
 
 EXTERN errno_t _memrchr_s_chk(const void *restrict dest, rsize_t dmax,
@@ -338,12 +382,24 @@ EXTERN errno_t _wmemcpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
     BOSW_CHK_BUTZERO(dest, smax) BOSW_OVR2_BUTZERO(src, smax);
 EXTERN errno_t _wmemcpy_s_uchk(wchar_t *restrict dest, rsize_t dlen,
                                const wchar_t *restrict src, rsize_t count);
+#ifdef HAVE___BUILTIN_MEMMOVE
+#define _wmemcpy_s_uchk_inl(dest, dlen, src, count)                            \
+    (_BOS_DISJOINT(dest, (size_t)(dlen) * sizeof(wchar_t), src,                \
+                   (size_t)(count) * sizeof(wchar_t))                          \
+         ? (_BOS_MEMCPY(dest, (size_t)(dlen) * sizeof(wchar_t), src,           \
+                        (size_t)(count) * sizeof(wchar_t),                     \
+                        (size_t)(count) * sizeof(wchar_t)),                    \
+            EOK)                                                               \
+         : _wmemcpy_s_uchk(dest, dlen, src, count))
+#else
+#define _wmemcpy_s_uchk_inl _wmemcpy_s_uchk
+#endif
 #define wmemcpy_s(dest, dlen, src, count)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dlen, sizeof(wchar_t)) &&                     \
                   (size_t)(count) != 0 &&                                      \
                   (size_t)(count) <= (size_t)(dlen) &&                         \
                   _BOS_SRC_OK(src, count, sizeof(wchar_t)),                    \
-              _wmemcpy_s_uchk(dest, dlen, src, count),                         \
+              _wmemcpy_s_uchk_inl(dest, dlen, src, count),                     \
               _wmemcpy_s_chk(dest, dlen, src, count, BOS(dest), BOS(src)))
 
 EXTERN errno_t _wmemmove_s_chk(wchar_t *dest, rsize_t dmax, const wchar_t *src,

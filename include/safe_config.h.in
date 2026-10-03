@@ -117,11 +117,32 @@ extern "C" {
 #endif
 
 /*
- * Defined by your compiler when __builtin_memmove() is available,
- * to inline the compile-time checked memmove_s variants.
+ * Defined by your compiler when these builtins are available,
+ * to inline the compile-time checked variants.
  */
+#ifndef HAVE___BUILTIN_MEMCHR
+@INSERT_BUILTIN_MEMCHR@
+#endif
+#ifndef HAVE___BUILTIN_MEMCMP
+@INSERT_BUILTIN_MEMCMP@
+#endif
+#ifndef HAVE___BUILTIN_MEMCPY
+@INSERT_BUILTIN_MEMCPY@
+#endif
 #ifndef HAVE___BUILTIN_MEMMOVE
 @INSERT_BUILTIN_MEMMOVE@
+#endif
+#ifndef HAVE___BUILTIN_MEMSET
+@INSERT_BUILTIN_MEMSET@
+#endif
+#ifndef HAVE___BUILTIN_STRCHR
+@INSERT_BUILTIN_STRCHR@
+#endif
+#ifndef HAVE___BUILTIN_STRLEN
+@INSERT_BUILTIN_STRLEN@
+#endif
+#ifndef HAVE___BUILTIN_STRNLEN
+@INSERT_BUILTIN_STRNLEN@
 #endif
 
 /*

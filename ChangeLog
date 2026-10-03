@@ -16,7 +16,11 @@ Changes in 3.12
 	  strcmp_s, strcasecmp_s, strnatcmp_s, strnatcasecmp_s, strcmpfld_s,
 	  strprefix_s, strfirst/lastdiff_s, strfirst/lastsame_s, strspn_s,
 	  strcspn_s, strpbrk_s, strstr_s and strcasestr_s.
-	  The memmove_s variants are then inlined via __builtin_memmove.
+	  With the probed __builtin_memmove, __builtin_memset, __builtin_memcmp,
+	  __builtin_memchr, __builtin_strlen, __builtin_strnlen and
+	  __builtin_strchr, the memmove_s, memcpy_s, memcmp_s, memchr_s,
+	  strnlen_s and strchr_s variants are then inlined, and strcpy_s with a
+	  constant source string.
 	- strisdigit_s, strismixedcase_s, strisuppercase_s: stop at dmax.
 	- Fix strnatcasecmp_s macro, calling the non-existing _strnatcasecmp_s_chk.
 

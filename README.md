@@ -182,9 +182,11 @@ mostly with optimizations. Covered are `memcpy_s`, `memmove_s`,
 `strcmp_s`, `strcasecmp_s`, `strnatcmp_s`, `strnatcasecmp_s`,
 `strcmpfld_s`, `strprefix_s`, `strfirst/lastdiff_s`,
 `strfirst/lastsame_s`, `strspn_s`, `strcspn_s`, `strpbrk_s`, `strstr_s`
-and `strcasestr_s`. The `memmove_s` variants are then inlined as
-`__builtin_memmove`. Run-time only constraints, like overlapping memory
-in the `memcpy` variants or unterminated strings, are still checked.
+and `strcasestr_s`. With the probed compiler builtins, the `memmove_s`,
+`memcpy_s`, `memcmp_s`, `memchr_s`, `strnlen_s` and `strchr_s` variants
+are then inlined, and `strcpy_s` with a constant source string.
+Run-time only constraints, like overlapping memory in the `memcpy`
+variants or unterminated strings, are still checked.
 
 * Header Files
 
