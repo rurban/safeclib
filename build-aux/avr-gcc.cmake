@@ -23,3 +23,11 @@ else()
     set(CMAKE_C_FLAGS_INIT "-mmcu=${AVR_MCU} -Os")
 endif()
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-mmcu=${AVR_MCU}")
+
+# avr-gcc accepts -fstack-protector-strong at compile time (cc1 just
+# warns "not supported for this target" and silently skips it per
+# function), but the link driver's spec file still tries to pull in
+# -lssp/-lssp_nonshared, which this target's sysroot doesn't ship.
+# Preempt CMakeLists.txt's check_c_compiler_flag() probe, which only
+# exercises a trivial program and doesn't trip over the missing libs.
+set(HAVE_STACK_PROTECTOR_STRONG 0 CACHE INTERNAL "")
