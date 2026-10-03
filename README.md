@@ -298,6 +298,8 @@ The library has been tested on the following systems:
 - x86_64-w64-mingw32 native and cross-compiled
 - i686-w64-mingw32 native, and cross-compiled and tested under wine
 - i386-mingw32 cross-compiled
+- MSYS2 MINGW64, MINGW32 and UCRT64 (keeps its own printf/scanf family,
+  renamed to `safec_*`, on UCRT64; see `doc/libc-overview.md`)
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
 - freebsd 10 - 13 amd64
@@ -305,6 +307,12 @@ The library has been tested on the following systems:
   i386/debian, x86_64/rhel, arm32v7/debian, aarch64: arm64v8/{debian,centos,rhel,fedora},
   s390x/fedora (the only big endian test I could find), ppc64le/{debian,ubuntu,fedora,centos,rhel}
 - User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze rootfs
+- freestanding/bare-metal, via `cmake -DENABLE_MINIMAL=ON` (no stdio, time,
+  env; see the `arm-none-eabi`, `sdcc-stm8` and `avr-gcc` CI jobs)
+- arm-none-eabi gcc armv6-m (cortex-m0) w/ newlib, under qemu-user
+- sdcc for the STM8, w/ sdcc's own freestanding libc, under the ucsim
+  simulator
+- avr-gcc for the atmega328, w/ avr-libc, under the simavr simulator
 
 with most available compilers. See `build-aux/smoke.sh` and the various CI configs.
 

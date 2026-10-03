@@ -20,9 +20,15 @@ static char src[16] = "hello";
 volatile unsigned char test_result;
 volatile unsigned char test_marker;
 #ifdef __AVR__
-/* simulavr's documented debug port convention: run with
-   "-W 0x20,-" to pipe writes to this address out to stdout. */
-#define SIMAVR_EXIT_PORT (*(volatile unsigned char *)0x20)
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/avr_mcu_section.h>
+/* simavr's documented debug-console convention: bytes written to the
+   designated register (any otherwise-unused one, GPIOR0 here) are
+   printed to simavr's stdout as-is, no command-line flags needed. */
+AVR_MCU(1000000, "atmega328");
+AVR_MCU_SIMAVR_CONSOLE(&GPIOR0);
 #endif
 
 int main(void) {
@@ -74,7 +80,11 @@ int main(void) {
     test_result = 0x5a + errs;
     test_marker = 0xc3;
 #ifdef __AVR__
-    SIMAVR_EXIT_PORT = (unsigned char)(0x5a + errs);
+    GPIOR0 = (unsigned char)(0x5a + errs);
+    /* simavr detects "sleeping with interrupts off" and terminates the
+       simulation gracefully right here. */
+    cli();
+    sleep_cpu();
 #endif
     return errs;
 }
