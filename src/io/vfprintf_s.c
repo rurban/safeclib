@@ -36,9 +36,6 @@
 #include "safeclib_private.h"
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines it inline */
-#if !(defined(__MINGW32__) && defined(_UCRT))
-
 /**
  * @brief
  *    The vfprintf_s function composes a string via the format string
@@ -124,4 +121,3 @@ EXPORT int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
 
     return ret;
 }
-#endif

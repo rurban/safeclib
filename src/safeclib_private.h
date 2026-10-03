@@ -720,8 +720,8 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
 
 // internal helpers for the *scanf_s functions:
 //#include "io/safec_file.h"
-//int safec_vfscanf_s(_SAFEC_FILE* sf, const char *funcname, const char *fmt, va_list ap);
-//int safec_vfwscanf_s(_SAFEC_FILE* sf, const char *funcname, const wchar_t *fmt, va_list ap);
+//int _safec_vfscanf_impl(_SAFEC_FILE* sf, const char *funcname, const char *fmt, va_list ap);
+//int _safec_vfwscanf_impl(_SAFEC_FILE* sf, const char *funcname, const wchar_t *fmt, va_list ap);
 
 #ifdef SAFECLIB_ENABLE_U8
 /* from u8norm_s.c */

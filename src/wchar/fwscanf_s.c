@@ -37,9 +37,6 @@
 #include "io/safec_file.h"
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines it inline */
-#if !(defined(__MINGW32__) && defined(_UCRT))
-
 /**
  * @brief
  *    The \c fwscanf_s function reads a formatted wide string.
@@ -134,7 +131,7 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfwscanf_s(&sf, "fwscanf_s", fmt, ap, 1);
+    ret = _safec_vfwscanf_impl(&sf, "fwscanf_s", fmt, ap, 1);
     //ret = vfwscanf(stream, fmt, ap);
     va_end(ap);
 
@@ -146,4 +143,3 @@ EXPORT int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
 
     return ret;
 }
-#endif

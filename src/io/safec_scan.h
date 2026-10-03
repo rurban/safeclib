@@ -33,7 +33,7 @@
 #define __SAFEC_SCAN_H__
 
 /* safec_intscan()/safec_floatscan() are the numeric conversion engines
- * shared by the ascii (safec_vfscanf_s) and wide (safec_vfwscanf_s)
+ * shared by the ascii (_safec_vfscanf_impl) and wide (_safec_vfwscanf_impl)
  * scanners. Both flavors drive them through this tiny cursor so the
  * numeric grammar only has to be implemented once: the ascii side binds
  * it to shgetc()/shunget()/shlim() on a byte-oriented _SAFEC_FILE, the

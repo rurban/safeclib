@@ -37,9 +37,7 @@
 #include "io/safec_file.h"
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines it inline */
-#if !(defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S)) &&                     \
-    !(defined(__MINGW32__) && defined(_UCRT))
+#if !(defined(TEST_MSVCRT) && defined(HAVE_SWSCANF_S))
 
 /**
  * @brief
@@ -134,7 +132,7 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfwscanf_s(&sf, "swscanf_s", fmt, ap, 1);
+    ret = _safec_vfwscanf_impl(&sf, "swscanf_s", fmt, ap, 1);
     //ret = vswscanf(src, fmt, ap);
     va_end(ap);
 

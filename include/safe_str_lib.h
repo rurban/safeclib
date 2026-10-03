@@ -55,6 +55,33 @@ extern "C" {
 #include <wchar.h>
 #endif
 
+/* The mingw-w64 UCRT stdio.h and wchar.h (included above) define these
+   static inline, with different semantics. Use ours under safec_ names. */
+#if defined(__MINGW32__) && defined(_UCRT)
+#define sscanf_s safec_sscanf_s
+#define fscanf_s safec_fscanf_s
+#define scanf_s safec_scanf_s
+#define vscanf_s safec_vscanf_s
+#define vfscanf_s safec_vfscanf_s
+#define vsscanf_s safec_vsscanf_s
+#define printf_s safec_printf_s
+#define fprintf_s safec_fprintf_s
+#define vprintf_s safec_vprintf_s
+#define vfprintf_s safec_vfprintf_s
+#ifndef SAFECLIB_DISABLE_WCHAR
+#define wprintf_s safec_wprintf_s
+#define vwprintf_s safec_vwprintf_s
+#define fwprintf_s safec_fwprintf_s
+#define vfwprintf_s safec_vfwprintf_s
+#define swscanf_s safec_swscanf_s
+#define vswscanf_s safec_vswscanf_s
+#define wscanf_s safec_wscanf_s
+#define vwscanf_s safec_vwscanf_s
+#define fwscanf_s safec_fwscanf_s
+#define vfwscanf_s safec_vfwscanf_s
+#endif
+#endif
+
 #if defined _WIN32 && !defined(DISABLE_DLLIMPORT)
 #undef EXTERN
 #if defined(EXPORT) && defined(__SAFECLIB_PRIVATE_H__)
@@ -215,8 +242,6 @@ int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
     _vsnprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines these inline. Use those */
-#if !(defined(__MINGW32__) && defined(_UCRT))
 /* Note: there is no __vsscanf_chk yet. Unchecked */
 EXTERN int sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
     __attribute_format__(scanf,2,3) BOS_NULL(buffer) BOS_FMT(fmt);
@@ -253,7 +278,6 @@ EXTERN int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
 EXTERN int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                       va_list arg) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
-#endif /* !_UCRT */
 
 EXTERN errno_t _strerror_s_chk(char *dest, rsize_t dmax, errno_t errnum,
                                const size_t destbos) BOS_CHK(dest);
@@ -703,8 +727,6 @@ EXTERN int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #define vsnwprintf_s(dest, dmax, fmt, ap)               \
     _vsnwprintf_s_chk(dest, dmax, BOS(dest), fmt, ap)
 
-/* The mingw-w64 UCRT wchar.h defines these inline. Use those */
-#if !(defined(__MINGW32__) && defined(_UCRT))
 EXTERN int wprintf_s(const wchar_t *restrict fmt, ...)
   __attribute_format_wprintf(1,2) BOS_FMT(fmt);
 
@@ -736,7 +758,6 @@ EXTERN int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
 EXTERN int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
                       va_list ap) BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
-#endif /* !_UCRT */
 
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 

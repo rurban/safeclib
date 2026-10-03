@@ -35,9 +35,6 @@
 #include "safeclib_private.h"
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines it inline */
-#if !(defined(__MINGW32__) && defined(_UCRT))
-
 /* TODO:
 any of the arguments corresponding to %s is a null pointer
 */
@@ -125,4 +122,3 @@ EXPORT int fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...) {
 
     return ret;
 }
-#endif

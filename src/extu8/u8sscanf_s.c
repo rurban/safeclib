@@ -124,7 +124,7 @@ EXPORT int u8sscanf_s(const char8_t *restrict buffer,
 
     errno = 0;
     va_start(ap, fmt);
-    ret = safec_vfscanf_s(&sf, "u8sscanf_s", fmt, ap, 1);
+    ret = _safec_vfscanf_impl(&sf, "u8sscanf_s", fmt, ap, 1);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

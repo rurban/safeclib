@@ -58,9 +58,9 @@ size_t safec_stream_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len);
  * Annex K two-argument convention -- raising ESNOSPC and returning
  * EOF instead of writing past it. Every scanf_s family caller passes
  * 1 (Annex K mandates the argument for every %c/%s/%[ conversion). */
-int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
-                    va_list ap, int chk_destsize);
-int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
-                     va_list ap, int chk_destsize);
+int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
+                        va_list ap, int chk_destsize);
+int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
+                         const wchar_t *fmt, va_list ap, int chk_destsize);
 
 #endif // __SAFEC_FILE_H__

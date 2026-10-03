@@ -35,9 +35,7 @@
 #include "safeclib_private.h"
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines it inline */
-#if !(defined(TEST_MSVCRT) && defined(HAVE_VWPRINTF_S)) &&                    \
-    !(defined(__MINGW32__) && defined(_UCRT))
+#if !(defined(TEST_MSVCRT) && defined(HAVE_VWPRINTF_S))
 
 /* TODO:
 any of the arguments corresponding to %s is a null pointer

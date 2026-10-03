@@ -102,8 +102,8 @@ static void *safec_arg_n(va_list ap, unsigned int n) {
    - each string argument must have 2 args, buffer and size.
    - %n is forbidden
 */
-int safec_vfscanf_s(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
-                    va_list ap, int chk_destsize) {
+int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
+                        va_list ap, int chk_destsize) {
     int width;
     int size;
     int alloc = 0;

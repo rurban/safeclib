@@ -37,9 +37,6 @@
 #include "io/safec_file.h"
 #endif
 
-/* The mingw-w64 UCRT stdio.h defines it inline */
-#if !(defined(__MINGW32__) && defined(_UCRT))
-
 /**
  * @brief
  *    The \c sscanf_s function reads a formatted string, and writes
@@ -133,7 +130,7 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
     errno = 0;
     va_start(ap, fmt);
     //ret = vsscanf(buffer, fmt, ap);
-    ret = safec_vfscanf_s(&sf, "sscanf_s", fmt, ap, 1);
+    ret = _safec_vfscanf_impl(&sf, "sscanf_s", fmt, ap, 1);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
@@ -144,4 +141,3 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 
     return ret;
 }
-#endif

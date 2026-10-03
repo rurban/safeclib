@@ -117,7 +117,7 @@ EXPORT int vu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt,
 #endif
 
     errno = 0;
-    ret = safec_vfscanf_s(&sf, "vu8sscanf_s", fmt, ap, 1);
+    ret = _safec_vfscanf_impl(&sf, "vu8sscanf_s", fmt, ap, 1);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         errno_t saved_errno = errno;

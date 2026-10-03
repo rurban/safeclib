@@ -175,8 +175,8 @@ static int safec_in_wset(const wchar_t *set, int c) {
     return 0;
 }
 
-int safec_vfwscanf_s(_SAFEC_FILE *sf, const char *funcname, const wchar_t *fmt,
-                     va_list ap, int chk_destsize) {
+int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
+                         const wchar_t *fmt, va_list ap, int chk_destsize) {
     int width;
     int size;
     int alloc = 0;
