@@ -585,14 +585,13 @@ AC_CACHE_CHECK([for linkable _Thread_local], [safec_cv_thread_local],
     [safec_cv_thread_local=yes], [safec_cv_thread_local=no])])
 if test "$safec_cv_thread_local" = yes; then
   AC_DEFINE([HAVE_THREAD_LOCAL], 1, [Define to 1 if _Thread_local links])
-else
-  AC_CACHE_CHECK([for linkable __thread], [safec_cv___thread],
-    [AC_LINK_IFELSE([AC_LANG_PROGRAM([[__thread int safec_tls;]],
-                                     [[safec_tls = 1; return safec_tls;]])],
-      [safec_cv___thread=yes], [safec_cv___thread=no])])
-  if test "$safec_cv___thread" = yes; then
-    AC_DEFINE([HAVE___THREAD], 1, [Define to 1 if __thread links])
-  fi
+fi
+AC_CACHE_CHECK([for linkable __thread], [safec_cv___thread],
+  [AC_LINK_IFELSE([AC_LANG_PROGRAM([[__thread int safec_tls;]],
+                                   [[safec_tls = 1; return safec_tls;]])],
+    [safec_cv___thread=yes], [safec_cv___thread=no])])
+if test "$safec_cv___thread" = yes; then
+  AC_DEFINE([HAVE___THREAD], 1, [Define to 1 if __thread links])
 fi
 
 dnl c++ needs less warnings
@@ -1298,6 +1297,9 @@ else
 fi
 AM_CONDITIONAL([ENABLE_WCHAR], [test "$enable_wchar" = "true"])
 AC_SUBST(INSERT_DISABLE_WCHAR)
+dnl only the cmake ENABLE_MINIMAL freestanding build disables io
+INSERT_DISABLE_IO="#undef SAFECLIB_DISABLE_IO"
+AC_SUBST(INSERT_DISABLE_IO)
 
 
 # Checks for system services

@@ -46,8 +46,13 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
  * gcc violations might be caught with _Static_assert, but this is limited.
  */
 
-#ifndef __has_attribute
-#define __has_attribute(x) 0
+/* sdcpp defines __has_attribute and __has_builtin, but crashes on them */
+#define _SAFEC_HAS_DIAGNOSE_IF 0
+#if defined(__has_attribute) && !defined(__SDCC)
+#if __has_attribute(diagnose_if)
+#undef _SAFEC_HAS_DIAGNOSE_IF
+#define _SAFEC_HAS_DIAGNOSE_IF 1
+#endif
 #endif
 
 /* clang-5+ BOS checks */
@@ -74,11 +79,16 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #else
 #define BOS(dest) BOS_UNKNOWN
 #define BOSW(dest) BOS_UNKNOWN
-#define _BOS_CHK(dest) 0
-#define _BOSW_CHK(dest) 0
-#define _BOS_ZERO(dest) 0
-#define _BOS_NULL(dest) 0
+#define _BOS_CHK(dest, dmax) 0
+#define _BOS_OVR(dest, dmax) 0
+#define _BOS_ZERO(dest, dmax) ((dmax) == 0)
+#define _BOS_NULL(dest) (!(dest))
+#define _BOSW_CHK(dest, dmax) 0
+#define _BOSW_OVR(dest, dmax) 0
+#define _BOS_CHK_N(dest, dmax) 0
 #define _BOS_OVR_N(dest, dmax) 0
+#define _BOSW_CHK_N(dest, dmax) 0
+#define _BOSW_OVR_N(dest, dmax) 0
 #endif
 
 #ifndef TEST_BOS
@@ -104,30 +114,48 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 /* The builtins were probed with the compiler which configured safeclib.
    Drop those the current compiler doesn't have, e.g. clang has no
    __builtin_strnlen. */
-#ifdef __has_builtin
-#if defined(HAVE___BUILTIN_MEMCHR) && !__has_builtin(__builtin_memchr)
+#if defined(__has_builtin) && !defined(__SDCC)
+/* Nested, so __has_builtin is only evaluated for probed builtins: sdcpp
+   defines it, but crashes on it. */
+#ifdef HAVE___BUILTIN_MEMCHR
+#if !__has_builtin(__builtin_memchr)
 #undef HAVE___BUILTIN_MEMCHR
 #endif
-#if defined(HAVE___BUILTIN_MEMCMP) && !__has_builtin(__builtin_memcmp)
+#endif
+#ifdef HAVE___BUILTIN_MEMCMP
+#if !__has_builtin(__builtin_memcmp)
 #undef HAVE___BUILTIN_MEMCMP
 #endif
-#if defined(HAVE___BUILTIN_MEMCPY) && !__has_builtin(__builtin_memcpy)
+#endif
+#ifdef HAVE___BUILTIN_MEMCPY
+#if !__has_builtin(__builtin_memcpy)
 #undef HAVE___BUILTIN_MEMCPY
 #endif
-#if defined(HAVE___BUILTIN_MEMMOVE) && !__has_builtin(__builtin_memmove)
+#endif
+#ifdef HAVE___BUILTIN_MEMMOVE
+#if !__has_builtin(__builtin_memmove)
 #undef HAVE___BUILTIN_MEMMOVE
 #endif
-#if defined(HAVE___BUILTIN_MEMSET) && !__has_builtin(__builtin_memset)
+#endif
+#ifdef HAVE___BUILTIN_MEMSET
+#if !__has_builtin(__builtin_memset)
 #undef HAVE___BUILTIN_MEMSET
 #endif
-#if defined(HAVE___BUILTIN_STRCHR) && !__has_builtin(__builtin_strchr)
+#endif
+#ifdef HAVE___BUILTIN_STRCHR
+#if !__has_builtin(__builtin_strchr)
 #undef HAVE___BUILTIN_STRCHR
 #endif
-#if defined(HAVE___BUILTIN_STRLEN) && !__has_builtin(__builtin_strlen)
+#endif
+#ifdef HAVE___BUILTIN_STRLEN
+#if !__has_builtin(__builtin_strlen)
 #undef HAVE___BUILTIN_STRLEN
 #endif
-#if defined(HAVE___BUILTIN_STRNLEN) && !__has_builtin(__builtin_strnlen)
+#endif
+#ifdef HAVE___BUILTIN_STRNLEN
+#if !__has_builtin(__builtin_strnlen)
 #undef HAVE___BUILTIN_STRNLEN
+#endif
 #endif
 #endif
 /* inline the unchecked memmove_s variants, if __builtin_memmove is probed */
@@ -188,7 +216,7 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #define _STR(s) #s
 
 /* diagnose_if compile-time check since clang-5, gcc not yet */
-#if __has_attribute(diagnose_if) && defined(HAVE___BUILTIN_OBJECT_SIZE)
+#if _SAFEC_HAS_DIAGNOSE_IF && defined(HAVE___BUILTIN_OBJECT_SIZE)
 #ifdef HAVE_WARN_DMAX
 #ifdef HAVE_ERROR_DMAX
 #define bos_chk_sev "error"
@@ -375,7 +403,7 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #define BOSW_OVR2_BUTZERO(buf, bufsize)
 #define BOS_OVR2_BUTNULL(buf, bufsize)
 #define BOSW_OVR2_BUTNULL(buf, bufsize)
-#if __has_attribute(diagnose_if)
+#if _SAFEC_HAS_DIAGNOSE_IF
 /* independent on BOS for pointer sizes, pure value checks */
 #define VAL_OVR2(value, vmax)                                                  \
     __attribute__(                                                             \

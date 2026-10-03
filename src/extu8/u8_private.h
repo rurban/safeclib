@@ -3,10 +3,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-#ifndef __has_attribute
-#define __has_attribute(x) 0
-#endif
-#if __has_attribute(__unused__) || defined(__GNUC__)
+#if defined(__GNUC__) && !defined(__SDCC)
 #define U8_UNUSED __attribute__((__unused__))
 #else
 #define U8_UNUSED

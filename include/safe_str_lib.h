@@ -46,9 +46,11 @@ extern "C" {
 
 #ifndef __KERNEL__
 #include <stdarg.h>
+#ifndef SAFECLIB_DISABLE_IO
 #include <time.h>
 #if defined HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
 #endif
 #endif /* __KERNEL__ */
 #ifndef SAFECLIB_DISABLE_WCHAR
@@ -147,7 +149,7 @@ thrd_set_str_constraint_handler_s(constraint_handler_t handler);
 /* string concatenate */
 #if !defined(TEST_MSVCRT)
 EXTERN errno_t _strcat_s_chk(char *restrict dest, rsize_t dmax,
-                             const char *restrict src, const size_t destbos)
+                             const char *restrict src, size_t destbos)
     BOS_CHK(dest) BOS_NULL(src);
 #define strcat_s(dest, dmax, src) _strcat_s_chk(dest, dmax, src, BOS(dest))
 
@@ -186,7 +188,7 @@ EXTERN errno_t _strcpy_s_chk(char *restrict dest, rsize_t dmax,
 /* fitted string concatenate */
 EXTERN errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
                               const char *restrict src, rsize_t slen,
-                              const size_t destbos, const size_t srcbos)
+                              size_t destbos, const size_t srcbos)
     BOS_ATTR((slen || dest || dmax) &&
                  (_BOS_NULL(dest) || _BOS_ZERO(dest, dmax)),
              "empty dest or dmax")
@@ -279,7 +281,7 @@ int vsnprintf_s(char *_DstBuf, size_t _DstSize, size_t _MaxCount,
 EXTERN int sscanf_s(const char *restrict buffer, const char *restrict fmt, ...)
     __attribute_format__(scanf,2,3) BOS_NULL(buffer) BOS_FMT(fmt);
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 EXTERN int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...)
   __attribute_format__(scanf,2,3) BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
@@ -289,7 +291,7 @@ EXTERN int scanf_s(const char *restrict fmt, ...)
 
 EXTERN int vscanf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 EXTERN int vfscanf_s(FILE *restrict stream, const char *restrict fmt,
                      va_list ap) BOS_NULL(stream) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
@@ -300,14 +302,14 @@ EXTERN int vsscanf_s(const char *restrict dest, const char *restrict fmt,
 EXTERN int printf_s(const char *restrict fmt, ...)
   __attribute_format__(printf,1,2) BOS_FMT(fmt);
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 EXTERN int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...)
   __attribute_format__(printf,2,3) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
 
   EXTERN int vprintf_s(const char *restrict fmt, va_list ap) BOS_FMT(fmt);
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 EXTERN int vfprintf_s(FILE *restrict stream, const char *restrict fmt,
                       va_list arg) BOS_FMT(fmt);
 #endif /* __KERNEL__ */
@@ -917,7 +919,7 @@ EXTERN int wprintf_s(const wchar_t *restrict fmt, ...)
 
 EXTERN int vwprintf_s(const wchar_t *restrict fmt, va_list ap) BOS_FMT(fmt);
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 EXTERN int fwprintf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
   __attribute_format_wprintf(2,3) BOS_NULL(stream) BOS_FMT(fmt);
 
@@ -936,7 +938,7 @@ EXTERN int wscanf_s(const wchar_t *restrict fmt, ...)
 
   EXTERN int vwscanf_s(const wchar_t *restrict fmt, va_list ap) BOS_FMT(fmt);
 
-#ifndef __KERNEL__
+#if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 EXTERN int fwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt, ...)
   __attribute_format_wscanf(2,3) BOS_NULL(stream) BOS_FMT(fmt);
 

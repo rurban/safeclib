@@ -43,7 +43,7 @@ static constraint_handler_t mem_handler =
 #endif
 
 static
-#if defined HAVE_THREAD_LOCAL
+#if defined HAVE_THREAD_LOCAL && __STDC_VERSION__ >= 201112L
     _Thread_local
 #elif defined HAVE___THREAD
     __thread
