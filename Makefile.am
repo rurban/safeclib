@@ -371,6 +371,12 @@ gh-pages: docs
 	git add index.html doc/libc-overview.md doc/safec-$(SAFEC_API_VERSION)
 release: docs distcheck
 	git branch |grep '^* master'
+	if test "$(shell git log -1 --pretty=%G?)" != "G" && \
+	   test "$(shell git log -1 --pretty=%G?)" != "U" ; then \
+	  echo 'HEAD commit is not GPG-signed (git commit -S), aborting.'; \
+	  exit 1; \
+	fi
+	build-aux/changelog-check.sh $(PACKAGE_VERSION)
 	-git tag -f v$(PACKAGE_VERSION)
 	build-aux/autogen.sh
 	./configure
@@ -379,8 +385,7 @@ release: docs distcheck
 	$(MAKE) docs
 	$(MAKE) dist
 	echo build-aux/smoke.sh
-	git push
-	git push --tags
+	build-aux/mk-release.sh $(PACKAGE_VERSION)
 	./configure --enable-unsafe --enable-wchar
 	$(MAKE)
 	$(MAKE) docs
