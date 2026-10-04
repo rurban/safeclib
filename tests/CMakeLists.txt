@@ -557,4 +557,3 @@ endif()
 if(VALGRIND_EXECUTABLE AND ENABLE_VALGRIND)
     message(STATUS "  Valgrind tests: enabled")
 endif()
-

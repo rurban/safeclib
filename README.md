@@ -1,16 +1,13 @@
-Safe C Library - README
-=======================
+# Safe C Library - README
 
 [![safeclib](doc/safeclib-banner.png)](https://github.com/rurban/safeclib/issues)
 
-Copying
--------
+## Copying
 
 This project's licensing restrictions are documented in the file 'COPYING'
 under the root directory of this release. Basically it's MIT licensed.
 
-Overview
---------
+## Overview
 
 This library implements the secure C11 Annex K[^5] functions on top of most libc
 implementations, which are missing from them.
@@ -56,19 +53,18 @@ and the following can be added...
 - provide a library of functions that are efficient
 
 The C11 Standard adopted many of these points, and added some secure
-`_s` variants in the Annex K.  The Microsoft Windows/MINGW secure API
+`_s` variants in the Annex K. The Microsoft Windows/MINGW secure API
 did the same, but deviated in some functions from the standard.
 Besides Windows (with its msvcrt, ucrt, reactos msvcrt and wine msvcrt
 variants) only the unused stlport, Android's Bionic, Huawei securec
-and Embarcadero implemented this C11 secure Annex K API so far.  They
+and Embarcadero implemented this C11 secure Annex K API so far. They
 are still missing from glibc, musl, FreeBSD, darwin and DragonFly
 libc, OpenBSD libc, newlib, dietlibc, uClibc, minilibc.
 
-Design Considerations
----------------------
+## Design Considerations
 
 This library implements since 3.0 all functions defined in the
-specifications.[^3]  Included in the library are extensions to the specification
+specifications.[^3] Included in the library are extensions to the specification
 to provide a complementary set of functions with like behavior.
 
 This library is meant to be used on top of all the existing libc's
@@ -94,7 +90,7 @@ C17 reconsidered safeclib but looked only at the old incomplete Cisco version,
 not our complete and fixed version.
 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm
 
-* Use of errno
+- Use of errno
 
 The TR24731 specification says an implementation may set errno for the
 functions deﬁned in the technical report, but is not required to.
@@ -103,13 +99,13 @@ This library does not set `errno` in most functions, only in
 `scanf_s`, `sscanf_s`, `swscanf_s`, `strtok_s`, `vfscanf_s`,
 `vfwscanf_s`, `vsscanf_s`, `vswscanf_s`, `wcstok_s`, `wscanf_s`.
 
-In most cases the safeclib extended ES* errors do not set `errno`, only
-when the underlying insecure system call fails, errno is set.  The
+In most cases the safeclib extended ES\* errors do not set `errno`, only
+when the underlying insecure system call fails, errno is set. The
 library does use `errno` return codes as required by functional APIs.
 Specific Safe C String and Safe C Memory errno codes are defined in
 the `safe_errno.h` file.
 
-* Runtime-constraints
+- Runtime-constraints
 
 Per the spec, the library verifies that the calling program does not violate
 the function's runtime-constraints. If a runtime-constraint is violated, the
@@ -134,20 +130,20 @@ With valid dest and dmax values, dest is cleared. With the optional
 otherwise the whole dest buffer.
 
 `rsize_t`
-	The specification defines a new type.  This type, `rsize_t`, is
-    conditionally defined in the `safe_lib.h` header file.
+The specification defines a new type. This type, `rsize_t`, is
+conditionally defined in the `safe_lib.h` header file.
 
 `RSIZE_MAX`
-	The specification defines the macro `RSIZE_MAX` which expands to a value
-	of type `rsize_t`. The specification uses `RSIZE_MAX` for both the string
-	functions and the memory functions. This implementation defines two
-	macros: `RSIZE_MAX_STR` and `RSIZE_MAX_MEM`.  `RSIZE_MAX_STR` defines the
-	range limit for the safe string functions. `RSIZE_MAX_MEM` defines the
-	range limit for the safe memory functions.  The point is that string
-	limits can and should be different from memory limits.
-	There also exist `RSIZE_MAX_WSTR`, `RSIZE_MAX_MEM16`, `RSIZE_MAX_MEM32`.
+The specification defines the macro `RSIZE_MAX` which expands to a value
+of type `rsize_t`. The specification uses `RSIZE_MAX` for both the string
+functions and the memory functions. This implementation defines two
+macros: `RSIZE_MAX_STR` and `RSIZE_MAX_MEM`. `RSIZE_MAX_STR` defines the
+range limit for the safe string functions. `RSIZE_MAX_MEM` defines the
+range limit for the safe memory functions. The point is that string
+limits can and should be different from memory limits.
+There also exist `RSIZE_MAX_WSTR`, `RSIZE_MAX_MEM16`, `RSIZE_MAX_MEM32`.
 
-* Compile-time constraints
+- Compile-time constraints
 
 safeclib uses the same `__builtin_object_size` checks as glibc's
 `_FORTIFY_SOURCE` at compile-time: buffer overflows, wrong dmax
@@ -156,7 +152,7 @@ earlier, instead of at run-time. And when the compiler can prove all
 arguments valid, the superfluous run-time checks are omitted.
 
 With supporting compilers the dmax overflow checks and several more
-are performed at compile-time.  Currently only since clang-5 with
+are performed at compile-time. Currently only since clang-5 with
 `diagnose_if` support. This checks similar to `_FORTIFY_SOURCE=2` if
 the `__builtin_object_size` of the dest buffer is the same size as
 dmax, and errors if dmax is too big. With the optional
@@ -194,10 +190,10 @@ are then inlined, and `strcpy_s` with a constant source string.
 Run-time only constraints, like overlapping memory in the `memcpy`
 variants or unterminated strings, are still checked.
 
-* Header Files
+- Header Files
 
 The specification states the various functions would be added to
-existing Standard C header files: stdio.h, string.h, etc.  This
+existing Standard C header files: stdio.h, string.h, etc. This
 implementation separates the memory related functions into the
 `safe_mem_lib.h` header, the string related functions into the
 `safe_str_lib.h` header, and the rest into the `safe_lib.h`
@@ -209,22 +205,20 @@ The make file builds a single library `libsafec-VERSION.a` and `.so`.
 Built but not installed are also libmemprims, libsafeccore and libstdunsafe.
 
 It is possible to split the make such that a separate `safe_mem_lib.so` and
-`safe_str_lib.so` are built.  It is also possible to integrate the prototypes
+`safe_str_lib.so` are built. It is also possible to integrate the prototypes
 into the Standard C header files, but that may require changes to your
 development tool chain.
 
+## Userspace Library
 
-Userspace Library
------------------
-
-The build system for the userspace library is the well known *GNU build
-system*, a.k.a. Autotools. This system is well understood and supported
+The build system for the userspace library is the well known _GNU build
+system_, a.k.a. Autotools. This system is well understood and supported
 by many different platforms and distributions which should allow this
 library to be built on a wide variety of platforms. See the
 [Tested platforms](#tested-platforms) section for details on what
 platforms this library was tested on during its development.
 
-* Building
+- Building
 
 For those familiar with autotools you can probably skip this part. For those
 not and want to get right to building the code see below. And, for those that
@@ -247,22 +241,20 @@ On Apple M1-M3 hardware I was told to use this:
 
 This builds safeclib as a fat lib for macOS arm64 + X86-64 using clang.
 
-* Installing
+- Installing
 
 Installation must be preformed by `root`, an `Administrator` on most
 systems. The following is used to install the library.
 
     sudo make install
 
-Safe Linux Kernel Module
-------------------------
+## Safe Linux Kernel Module
 
 The build for the kernel module has not been integrated into the autotools
 build infrastructure. Consequently, you have to run a different makefile to
 build the kernel module.
 
-
-* Building
+- Building
 
 .To build do the following:
 
@@ -274,19 +266,17 @@ standard kernel build system infrastructure documented in:
 `/usr/src/linux-kernel/Documentation/kbuild/modules.txt`
 
 NOTE: If you build the kernel module then wish to build the userspace library
-      or vice versa you will need to do a `make clean` otherwise a `make check`
-      will fail to build.
+or vice versa you will need to do a `make clean` otherwise a `make check`
+will fail to build.
 
-
-* Installing
+- Installing
 
 The kernel module will be found at the root of the source tree called
 `slkm.ko`. The file `testslkm.ko` are the unit tests run on the userspace
 library but in Linux kernel module form to verify functionality within the
 kernel.
 
-Tested Platforms
-----------------
+## Tested Platforms
 
 The library has been tested on the following systems:
 
@@ -322,8 +312,7 @@ with most available compilers. See `build-aux/smoke.sh` and the various CI confi
 - https://cirrus-ci.com/github/rurban/safeclib
 - https://cloud.drone.io/rurban/safeclib/
 
-Known Issues
-------------
+## Known Issues
 
 1. If you are building the library from the git repository you will have to
    first run `build-aux/autogen.sh` which runs autoreconf to `install` the
@@ -332,21 +321,24 @@ Known Issues
 2. If you use cmake, you'd need to add `-DCMAKE_APPLE_SILICON_PROCESSOR=$(uname -m)`
    for Apple Silicon M1 or M2 processors.
 
-References
-----------
+## References
 
-[^1]: Programming languages, their environments and system software
-      interfaces, Extensions to the C Library, Part I: Bounds-checking
-      interfaces, ISO/IEC TR 24731-1.
+[^1]:
+    Programming languages, their environments and system software
+    interfaces, Extensions to the C Library, Part I: Bounds-checking
+    interfaces, ISO/IEC TR 24731-1.
 
-[^2]: Rationale for TR 24731 Extensions to the C Library Part I:
-      Bounds-checking interfaces, ISO/IEC JTC1 SC22 WG14 N1225.
+[^2]:
+    Rationale for TR 24731 Extensions to the C Library Part I:
+    Bounds-checking interfaces, ISO/IEC JTC1 SC22 WG14 N1225.
 
-[^3]: The Open Group Base Specifications Issue 7
-      http://pubs.opengroup.org/onlinepubs/9699919799/functions/contents.html
+[^3]:
+    The Open Group Base Specifications Issue 7
+    http://pubs.opengroup.org/onlinepubs/9699919799/functions/contents.html
 
-[^4]: CERT C Secure Coding Standard
-      https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard
+[^4]:
+    CERT C Secure Coding Standard
+    https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard
 
 [^5]: C11 Standard (ISO/IEC 9899:2011) Annex K
 

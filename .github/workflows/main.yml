@@ -363,6 +363,7 @@ jobs:
       - name: Build
         run: |
           sh build-aux/autogen.sh
+          git reset --hard
           ./configure --enable-unsafe --enable-wchar
           make
 

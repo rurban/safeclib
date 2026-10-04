@@ -5,31 +5,31 @@ C11 defined the optional secure extensions to be demanded by
 
 From the following tested libc implementations:
 
-* glibc
-* musl
-* FreeBSD and DragonFly libc
-* FreeBSD-derived darwin libc
-* OpenBSD libc
-* newlib (Cygwin)
-* dietlibc
-* uClibc
-* minilibc
-* Microsoft Windows under wine
-* Microsoft Windows msvcrt and ucrt w/ secure API
-* Open Watcom
-* Android Bionic
-* Huawei securec
-* Embarcadero C++ libc
-* slibc
+- glibc
+- musl
+- FreeBSD and DragonFly libc
+- FreeBSD-derived darwin libc
+- OpenBSD libc
+- newlib (Cygwin)
+- dietlibc
+- uClibc
+- minilibc
+- Microsoft Windows under wine
+- Microsoft Windows msvcrt and ucrt w/ secure API
+- Open Watcom
+- Android Bionic
+- Huawei securec
+- Embarcadero C++ libc
+- slibc
 
 only the last 6 implement the secure C11 extensions:
 
-* Microsoft Windows
-* Open Watcom since 1.5
-* Android Bionic w/ stlport
-* Huawei securec
-* Embarcadero C++ libc
-* slibc
+- Microsoft Windows
+- Open Watcom since 1.5
+- Android Bionic w/ stlport
+- Huawei securec
+- Embarcadero C++ libc
+- slibc
 
 # General quirks
 
@@ -70,11 +70,11 @@ See my [libu8ident](https://rurban.github.io/libu8ident/) which checks for these
 
 # C11 Annex K/safec caveats
 
-* `tmpnam_s`:
+- `tmpnam_s`:
 
   Is considered unsafe. `tmpnam_s` and `tmpnam` are racy.
 
-* `sprintf_s` and `vsprintf_s` retval on errors.
+- `sprintf_s` and `vsprintf_s` retval on errors.
 
   They were revised by the author from Microsoft in
   [n1141](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf)
@@ -88,43 +88,43 @@ See my [libu8ident](https://rurban.github.io/libu8ident/) which checks for these
 
 ## Microsoft Windows/MINGW_HAS_SECURE_API
 
-* `fopen_s`, `freopen_s` deviate in the API: restrict is missing.
+- `fopen_s`, `freopen_s` deviate in the API: restrict is missing.
 
-* `strtok_s`, `wcstok_s`,`vsnprintf_s` miss the dmax argument.
+- `strtok_s`, `wcstok_s`,`vsnprintf_s` miss the dmax argument.
 
-* `vsnprintf_s` adds a maxarg argument.
+- `vsnprintf_s` adds a maxarg argument.
 
-* `vswprintf` adds a maxarg argument on w32. (with `__STRICT_ANSI__`
+- `vswprintf` adds a maxarg argument on w32. (with `__STRICT_ANSI__`
   undefined)
 
-* no `strnlen` on mingw32.
+- no `strnlen` on mingw32.
 
-* no `errno_t` return type for `qsort_s`, only `void`.
+- no `errno_t` return type for `qsort_s`, only `void`.
 
-* reversed argument order for `localtime_s` and `gmtime_s`.
+- reversed argument order for `localtime_s` and `gmtime_s`.
 
-* older mingw versions have `wchar.h` with only 2 functions:
+- older mingw versions have `wchar.h` with only 2 functions:
   `wcscmp`, `wcslen`
 
-* no `RSIZE_MAX`
+- no `RSIZE_MAX`
 
-* `memmove_s` does not clear dest with ERANGE when `count > dmax` and EINVAL when
+- `memmove_s` does not clear dest with ERANGE when `count > dmax` and EINVAL when
   src is a NULL pointer.
 
-* `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
+- `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
   (Wrong standard)
 
-* With `wcsrtombs` (used by `wcsrtomb_s`) the `*retval` result
+- With `wcsrtombs` (used by `wcsrtomb_s`) the `*retval` result
   includes the terminating zero, i.e. the result is `+1` from the
   spec.
 
-* `getenv_s` returns in len the size of the env buffer, not the len, as described in the
-   standard (https://en.cppreference.com/w/c/program/getenv). The Microsoft size is len + 1.
-   Their usage example is also wrong: https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/getenv-s-wgetenv-s?view=msvc-170
+- `getenv_s` returns in len the size of the env buffer, not the len, as described in the
+  standard (https://en.cppreference.com/w/c/program/getenv). The Microsoft size is len + 1.
+  Their usage example is also wrong: https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/getenv-s-wgetenv-s?view=msvc-170
 
 ## Microsoft Windows UCRT (mingw-w64 UCRT64)
 
-* The mingw-w64 UCRT `stdio.h` and `corecrt_wstdio.h` define `fprintf_s`,
+- The mingw-w64 UCRT `stdio.h` and `corecrt_wstdio.h` define `fprintf_s`,
   `fscanf_s`, `printf_s`, `scanf_s`, `sscanf_s`, `vfprintf_s`, `vfscanf_s`,
   `vprintf_s`, `vscanf_s`, `vsscanf_s`, `fwprintf_s`, `fwscanf_s`,
   `swscanf_s`, `vfwprintf_s`, `vfwscanf_s`, `vswscanf_s`, `vwprintf_s`,
@@ -132,63 +132,63 @@ See my [libu8ident](https://rurban.github.io/libu8ident/) which checks for these
   `__stdio_common_*`, without opt-out macro. Any other definition or
   `dllimport` declaration with the same name clashes (gcc-16 even ICEs).
 
-* The `printf_s` family accepts `%n`, and prints `(null)` for a NULL `%s`
+- The `printf_s` family accepts `%n`, and prints `(null)` for a NULL `%s`
   argument, instead of a constraint violation.
 
-* The `fprintf_s`/`fwprintf_s` families return different counts or `-1`
+- The `fprintf_s`/`fwprintf_s` families return different counts or `-1`
   where the standard expects a constraint error.
 
-* The wide `scanf_s` family (`swscanf_s`, `wscanf_s`, `fwscanf_s` and the
+- The wide `scanf_s` family (`swscanf_s`, `wscanf_s`, `fwscanf_s` and the
   `v` variants) reads only 1 char for `%s` with a buffer size argument,
   "24" scans as "2".
 
-* The narrow `scanf_s` family returns `1` with `errno` 0 on some constraint
+- The narrow `scanf_s` family returns `1` with `errno` 0 on some constraint
   violations, or sets `errno` to `EINVAL` (22) instead of the specific
   error.
 
-* The UCRT printf family does not support the gcc 80-bit `long double`
+- The UCRT printf family does not support the gcc 80-bit `long double`
   (`%Lf`, `%Le`, `%Lg`, `%La` print garbage like `3.22103e-312` for 0.1),
   `%a` prints trailing zeros (`0x1.99999a0000000p-4`), and `%s` in the
   wide formats expects a `wchar_t*`. The mingw-w64 ansi stdio
   (`__USE_MINGW_ANSI_STDIO`) is C99 conforming.
 
-* `wctomb` rejects a lone UTF-16 surrogate with `EILSEQ`, msvcrt converts it.
+- `wctomb` rejects a lone UTF-16 surrogate with `EILSEQ`, msvcrt converts it.
 
-* safeclib keeps its own implementations of all the above functions on
+- safeclib keeps its own implementations of all the above functions on
   UCRT, renamed via macros to `safec_sscanf_s` etc., and builds with
   `__USE_MINGW_ANSI_STDIO`.
 
 ## safeclib
 
-* safeclib does not check optional NULL parameters to the vararg
+- safeclib does not check optional NULL parameters to the vararg
   `scanf_s` and `printf_s` functions. This would need tighter
   integration into the upstream libc.
   Similarily the 2nd size parameter for `%s`, `%c` and `%[`
   is not implemented.
 
-* safeclib `fgets_s` permits temporary writes of `dmax+1` characters
+- safeclib `fgets_s` permits temporary writes of `dmax+1` characters
   into dest.
 
-* `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
+- `vsprintf_s`, `sprintf_s` return `-1` on all errors, not just encoding errors.
   (Wrong standard)
 
-## Android FORTIFY and _STLP_USE_SAFE_STRING_FUNCTIONS
+## Android FORTIFY and \_STLP_USE_SAFE_STRING_FUNCTIONS
 
-Not yet tested. Hard to find as open source.  Apparently once
-implemented as part of the *stlport* library, but unused and I cannot
+Not yet tested. Hard to find as open source. Apparently once
+implemented as part of the _stlport_ library, but unused and I cannot
 find it in Bionic (orea), which is mostly an improved FreeBSD libc.
-*stlport* had a portable rewrite of the secure Windows API, written in 1999.
+_stlport_ had a portable rewrite of the secure Windows API, written in 1999.
 Now they use just the fortified POSIX API,
 e.g. for `strncpy_s` `strncpy_chk` and `__strncpy_chk2` with known src size.
 
-See [Wikipedia: Bionic Fortify_source](https://en.wikipedia.org/wiki/Bionic_(software)#Fortify_source),
+See [Wikipedia: Bionic Fortify_source](<https://en.wikipedia.org/wiki/Bionic_(software)#Fortify_source>),
 and their blog post [FORTIFY in Android](https://android-developers.googleblog.com/2017/04/fortify-in-android.html).
 
 Basically they use a `__bos()` or `__builtin_object_size` macro which
 is a better `sizeof` and expands to the size of the compile-time
 pointer when the size of the buffer is known at compile-time. They
 also try to use the `alloc_size` extension which looks at a malloc'ed
-pointer into the previous word for its size.  So there's no secure API,
+pointer into the previous word for its size. So there's no secure API,
 just the normal POSIX and glibc API with compile-time `_chk` checks as
 in glibc with FORTIFY. Just a bit better than glibc.
 
@@ -220,6 +220,7 @@ and thus unsuitable for production use without considerable
 changes. It does provide a good referefence implementation of the
 library. A proposal to incorporate slibc into the GNU C library was
 submitted in 2012 to the GNU C library community and rejected."
+
 - http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm#alternatives
 
 Available at https://code.google.com/archive/p/slibc/
@@ -228,10 +229,10 @@ Available at https://code.google.com/archive/p/slibc/
 
 ## glibc
 
-* SEGV with `freopen(NULL, "rb", stdin)` with asan on some systems,
+- SEGV with `freopen(NULL, "rb", stdin)` with asan on some systems,
   calling an invalid `strlen()` on NULL.
 
-* quirky declaration of various standards, which conflict with each other.
+- quirky declaration of various standards, which conflict with each other.
 
   glibc needs the correct standard to include some extensions
   when we declare the standard by ourselves.
@@ -242,9 +243,9 @@ Available at https://code.google.com/archive/p/slibc/
 
 ## newlib
 
-* `vswscanf` is broken with a format string containing `L"%%n"`
+- `vswscanf` is broken with a format string containing `L"%%n"`
 
-* The following multibyte API's are missing, and can be defined like
+- The following multibyte API's are missing, and can be defined like
   this:
 
 ```
@@ -256,15 +257,15 @@ Available at https://code.google.com/archive/p/slibc/
 
 ## FreeBSD libc
 
-* `vswscanf` is broken with a format string containing `L"%%n"`
+- `vswscanf` is broken with a format string containing `L"%%n"`
 
-* `mbstowcs` is broken with `(NULL, '\0')`
+- `mbstowcs` is broken with `(NULL, '\0')`
 
 ## musl
 
-* `wmemcmp` returns not `-1`, `0` or `1` but the full ptr diff.
+- `wmemcmp` returns not `-1`, `0` or `1` but the full ptr diff.
 
-* `mbtowc` and `wctomb` accept and convert illegal 4 byte characters
+- `mbtowc` and `wctomb` accept and convert illegal 4 byte characters
   in the ASCII locale to surrogate pairs, as it would be unicode.
   e.g. it converts `\xa0` to `\xdfa0`.
 
@@ -272,14 +273,14 @@ Available at https://code.google.com/archive/p/slibc/
 
 As of wine-2.0.4 its libc has several more errors than the msvcrt sec_api:
 
-* `asctime_s` with `tm->mday=0` returns not `EINVAL` but `0`.
-* `wcsncat_s(dest, dmax, src, 0)` returns not `EINVAL` but `0`.
-* `wcsncat_s(NULL, 0, src, 0);` returns not `0` but `EINVAL`.
-* more `wcsncat_s`: ESUNTERM and ESOVRLP do not clear dest
-* `wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps)`  returns not `EINVAL` but `0`,
+- `asctime_s` with `tm->mday=0` returns not `EINVAL` but `0`.
+- `wcsncat_s(dest, dmax, src, 0)` returns not `EINVAL` but `0`.
+- `wcsncat_s(NULL, 0, src, 0);` returns not `0` but `EINVAL`.
+- more `wcsncat_s`: ESUNTERM and ESOVRLP do not clear dest
+- `wcsrtombs_s(&ind, dest, 0, &cs, 0, &ps)` returns not `EINVAL` but `0`,
   with `ind` kept at `0`.
 
-----
+---
 
 It's now 10 years after the secure libc extensions were designed, C11
 adopted them, and still almost nobody implements them. Only for
