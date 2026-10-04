@@ -2,7 +2,7 @@
 
 rm -rf src/*/.deps src/.deps tests/.deps
 
-case `uname` in
+case $(uname) in
 Darwin) # linux is preferred
 
     echo "The repo has the stats from linux" # expect minor differences

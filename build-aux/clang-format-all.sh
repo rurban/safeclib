@@ -52,11 +52,11 @@ find-dominating-file() {
     return $?
 }
 
-pushd tests; grep -l ' EXPECT_BOS.* EXPECT_BOS' test_*.c > .format-ignore; popd
+pushd tests || exit; grep -l ' EXPECT_BOS.* EXPECT_BOS' test_*.c > .format-ignore; popd || exit
 
 # Run clang-format -i on all of the things
 for dir in $dirs; do
-    pushd "${dir}"
+    pushd "${dir}" || exit
     if ! find-dominating-file . .clang-format; then
         echo "Failed to find dominating .clang-format starting at $PWD"
         continue
@@ -64,8 +64,10 @@ for dir in $dirs; do
     # skip tests/.format-ignore (no spaces in filenames allowed)
     ign=
     if [ -f .format-ignore ]; then
-        ign=`perl -n00 -e'print q(-o ),join(q( -o ),split/\n/,$_)' .format-ignore`
+        ign=$(perl -n00 -e'print q(-o ),join(q( -o ),split/\n/,$_)' .format-ignore)
     fi
+    # shellcheck disable=SC2086  # $ign: intentional word-split into
+    # multiple `-o -name '...'` find(1) predicate tokens, not a scalar.
     find . \
          \( -name '*.c' \
          -o -name '*.h' \) \
@@ -73,10 +75,12 @@ for dir in $dirs; do
                -o -name 'hangul.h' $ign \) \
          -exec "${FMT}" -i -verbose '{}' \;
     echo "post clang-format fixups (clang-format bugs)"
+    # shellcheck disable=SC2046,SC2006  # intentional word-split into
+    # multiple sed -i filename arguments, not a scalar.
     sed -i -e's,IGNORE(-Wcast - align),IGNORE(-Wcast-align),;' \
            -e's,IGNORE(-Wuser - defined - warnings),IGNORE(-Wuser-defined-warnings),;' \
-        `git grep -l 'DIAG_IGNORE' . | grep -v all.sh`
-    popd &>/dev/null
+        $(git grep -l 'DIAG_IGNORE' . | grep -v all.sh)
+    popd &>/dev/null || exit
 done
 
 rm tests/.format-ignore

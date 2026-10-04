@@ -163,7 +163,7 @@ nl='
 v=
 
 if test -f "$tarball_version_file"; then
-	v=$(cat $tarball_version_file) || v=''
+	v=$(cat "$tarball_version_file") || v=''
 	case $v in
 	*$nl*) v= ;; # reject multi-line output
 	[0-9]*) ;;
@@ -176,7 +176,7 @@ fi
 # read git version, if the repo has uncommitted changes append
 # '-dirty' to version.
 if test -z "$v"; then
-	v=$(git describe --tags --match "$prefix*" --abbrev=$abbrev \
+	v=$(git describe --tags --match "$prefix*" --abbrev="$abbrev" \
 		--dirty 2>/dev/null) || v=UNKNOWN
 	v=$(echo "$v" | sed "$tag_sed_script" | sed "s/^$prefix//")
 fi

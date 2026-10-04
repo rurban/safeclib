@@ -1,6 +1,9 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.13
+	- add make lint and pre-commit hooks
+
 Changes in 3.12
 	- Split _chk and _uchk at compile-time (GH #48): When all arguments of
 	  memcpy_s, memmove_s, memset_s, memzero_s, their 16 and 32 bit variants,

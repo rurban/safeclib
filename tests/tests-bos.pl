@@ -1,5 +1,6 @@
 #!/usr/bin/perl -n
 =pod
+
 arg1: tests-bos.log
 check every log -Wuser-defined-warnings against the test src
 if one TEST_BOS warning is missing.

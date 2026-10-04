@@ -400,12 +400,7 @@ libsafec_la_LDFLAGS = \
 # normalization header families from the same Unicode data release.
 if ENABLE_U8
 update-u8-tables:
-	cd $(srcdir) && test -e Scripts.txt || \
-	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/Scripts.txt
-	cd $(srcdir) && test -e GraphemeBreakProperty.txt || \
-	  wget -q https://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakProperty.txt
-	cd $(srcdir) && $(PERL) extu8/gen-u8scripts.pl
-	cd $(srcdir) && $(PERL) extu8/gen-u8gbreaks.pl
+	$(top_srcdir)/build-aux/update-u8-tables.sh $(srcdir) $(PERL)
 endif
 
 update-norm-tables:
@@ -423,18 +418,7 @@ if ENABLE_GCOV
 AM_CFLAGS += @GCOV_CFLAGS@
 LIBS      += @GCOV_LIBS@
 gcov:
-	-test -f $(builddir)/gcov.log && rm $(builddir)/gcov.log
-	for c in $(libsafec_la_SOURCES); do \
-	  dir="`dirname $$c`"; base="`basename $$c .c`"; \
-	  if test -e "$$dir/.libs/$$base.gcno" -a -e $$c; then \
-	    mv $$dir/.libs/$$base.gcno $$dir/ ; \
-	    mv $$dir/.libs/$$base.gcda $$dir/ ; \
-	  fi; \
-	  if test -e "$$dir/$$base.gcno" -a -e $$c; then \
-	    $(GCOV) -s $$dir $$c | tee -a $(builddir)/gcov.log; \
-	    mv $$base.c.gcov $$dir/ ; \
-	  fi; \
-	done
+	$(top_srcdir)/build-aux/gcov-collect.sh $(builddir) $(GCOV) $(libsafec_la_SOURCES)
 endif
 
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)

@@ -1,11 +1,14 @@
-#!/bin/sh
+#!/bin/bash
+# bash, not sh: relies on brace expansion (clang-{19,18,...}) to walk
+# every installed compiler minor version below.
 cd "$(dirname "$0")/.." || exit
 autoreconf
+# shellcheck disable=SC2209  # intentional plain string, not command output; overridden to "gmake" on Darwin below
 make=make
 
 rm -rf src/*/.deps src/.deps tests/.deps 2>/dev/null
 
-case `uname` in
+case $(uname) in
 Darwin) # macports compilers
     make=gmake
 
@@ -113,8 +116,8 @@ if [ -e /opt/local/bin/arm-elf-gcc-4.7 ]; then
     # $make -s -j4 check-log
     m -C tests tests
     for t in tests/t*_s; do
-        b=$(basename $t)
-        qemu-arm -L /opt/local/arm-elf $t | tee tests/$b.log
+        b=$(basename "$t")
+        qemu-arm -L /opt/local/arm-elf "$t" | tee tests/"$b".log
     done
     gmake -s -j4 clean
 fi
@@ -130,7 +133,7 @@ fi
 
 Linux)
     make -s clean
-    if test -n "`which clang`"; then
+    if test -n "$(which clang)"; then
         echo clang -fsanitize=address -fno-omit-frame-pointer --enable-debug --enable-unsafe --enable-norm-compat
         CC="clang -fsanitize=address -fno-omit-frame-pointer" \
           ./configure --enable-debug --enable-unsafe --enable-norm-compat && \
@@ -139,8 +142,8 @@ Linux)
     fi
     for clang in clang clang-{19,18,17,16,15,14,13,12,11,10,7,5.0}
     do
-        if test -n `which $clang`; then
-            echo $clang -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
+        if test -n "$(which "$clang")"; then
+            echo "$clang" -march=native --disable-constraint-handler --enable-unsafe --enable-norm-compat
             CC="$clang -march=native" \
               ./configure --disable-constraint-handler --enable-unsafe --enable-norm-compat && \
                 make -s -j4 check-log && make -s -j4 -C tests tests-bos
@@ -148,8 +151,8 @@ Linux)
     done
     for clang in clang-{3.7,3.6,3.5,3.4}
     do
-        if test -n "`which $clang`"; then
-            echo $clang -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
+        if test -n "$(which "$clang")"; then
+            echo "$clang" -std=c99 --enable-debug --enable-unsafe --enable-norm-compat
             if CC="#clang -std=c99" \
                  ./configure --enable-debug --enable-unsafe --enable-norm-compat; then
                 make -s -j4 check-log || exit
@@ -158,7 +161,7 @@ Linux)
             #    #make -s -j4 check-valgrind
         fi
     done
-    if test -n "`which gcc-4.4`"; then
+    if test -n "$(which gcc-4.4)"; then
         echo gcc-4.4 -ansi
         if CC="gcc-4.4 -ansi" ./configure; then
             make -s -j4 check-log || exit
@@ -172,20 +175,20 @@ Linux)
         #    make -s -j4 check-log || exit
     for gcc in gcc-{15,14,13,12,11,10,9,8,7,6,5}
     do
-        if test -n "`which $gcc`"; then
+        if test -n "$(which "$gcc")"; then
             if CC="$gcc" ./configure; then
                 make -s -j4 check-log || exit
             fi
         fi
     done
-    if test -n "`which clang-5.0`"; then
+    if test -n "$(which clang-5.0)"; then
         # since clang 5 with diagnose_if BOS compile-time checks, but on linux it is flappy
         if CC="clang-5.0" \
           ./configure --enable-debug --enable-unsafe --enable-norm-compat; then
             make -s -j4 check-log && make -s -j4 -C tests tests-bos
         fi
     fi
-    if test -n "`which clang`"; then
+    if test -n "$(which clang)"; then
         if CC="clang -fsanitize=address,undefined -fno-omit-frame-pointer" \
           ./configure --enable-debug --enable-unsafe --enable-norm-compat; then
             make -s -j4 check-log || exit
@@ -240,14 +243,14 @@ if [ -e /usr/bin/arm-linux-gnueabihf-gcc ]; then
         make -s -j4 || exit;
     # $make -s -j4 check-log
     if [ ! -e /usr/arm-linux-gnueabihf/lib/libsafec-3.5.so.3 ]; then
-        cd /usr/arm-linux-gnueabihf/lib/;
-        sudo ln -s $OLDPWD/src/.libs/libsafec-3.5.so.3;
-        cd -
+        cd /usr/arm-linux-gnueabihf/lib/ || exit
+        sudo ln -s "$OLDPWD"/src/.libs/libsafec-3.5.so.3
+        cd - || exit
     fi
     make -s -j4 -C tests tests;
     for t in tests/.libs/t*_s; do
-        b=$(basename $t)
-        qemu-arm -L /usr/arm-linux-gnueabihf $t | tee tests/$b.log
+        b=$(basename "$t")
+        qemu-arm -L /usr/arm-linux-gnueabihf "$t" | tee tests/"$b".log
     done
 fi
 
@@ -271,13 +274,14 @@ git clean -dxf include
 
 # matches the CI "sdcc stm8" job: cmake + sdcc, no apt-get here, see
 # build-aux/sdcc-stm8.cmake's comment for the packages needed
-if (test -n "`which sdcc 2>/dev/null`" || test -n "`which sdcc-sdcc 2>/dev/null`") && \
-   (test -n "`which sdcc-ucsim_stm8 2>/dev/null`" || test -n "`which ucsim_stm8 2>/dev/null`"); then
+if { test -n "$(which sdcc 2>/dev/null)" || test -n "$(which sdcc-sdcc 2>/dev/null)"; } && \
+   { test -n "$(which sdcc-ucsim_stm8 2>/dev/null)" || test -n "$(which ucsim_stm8 2>/dev/null)"; }; then
     for stm8opts in "build-stm8:-DENABLE_U8=OFF -DENABLE_EXTENSIONS=OFF" \
                     "build-stm8-u8:-DENABLE_U8=ON -DENABLE_EXTENSIONS=ON"; do
         d=${stm8opts%%:*}
         echo "sdcc stm8 $d"
         rm -rf "$d"
+        # shellcheck disable=SC2086  # ${stm8opts#*:}: intentional word-split cmake -D... flags
         cmake -S . -B "$d" -DCMAKE_TOOLCHAIN_FILE=build-aux/sdcc-stm8.cmake \
             -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF \
             ${stm8opts#*:} && \
@@ -290,14 +294,15 @@ fi
 git clean -dxf include
 # matches the CI "avr-gcc" job: cmake + avr-gcc/avr-libc, simulated with
 # simavr+avr-gdb (Debian/Ubuntu packages only; not in Fedora's repos)
-if test -n "`grep -is ubuntu /etc/os-release 2>/dev/null`" && \
-   test -n "`which avr-gcc`" && test -n "`which simavr`" && \
-   test -n "`which avr-gdb`"; then
+if test -n "$(grep -is ubuntu /etc/os-release 2>/dev/null)" && \
+   test -n "$(which avr-gcc)" && test -n "$(which simavr)" && \
+   test -n "$(which avr-gdb)"; then
     for avropts in "build-avr:-DENABLE_U8=OFF -DENABLE_EXTENSIONS=OFF" \
                    "build-avr-u8:-DENABLE_U8=ON -DENABLE_EXTENSIONS=ON"; do
         d=${avropts%%:*}
         echo "avr-gcc $d"
         rm -rf "$d"
+        # shellcheck disable=SC2086  # ${avropts#*:}: intentional word-split cmake -D... flags
         cmake -B "$d" -DCMAKE_TOOLCHAIN_FILE=build-aux/avr-gcc.cmake \
             -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF \
             ${avropts#*:} && \
@@ -347,20 +352,20 @@ if CC="cc -m32" ./configure; then
 fi
 ./configure && \
     $make -s -j4 check-log || exit
-OPTS=disable-nullslack disable-constraint-handler disable-extensions disable-wchar disable-u8 \
+OPTS="disable-nullslack disable-constraint-handler disable-extensions disable-wchar disable-u8 \
      disable-float disable-float-exp disable-long-long disable-long-double disable-printf-ptrdiff \
      disable-doc disable-hardening disable-shared enable-debug enable-unsafe enable-norm-compat \
-     enable-gcov enable-memmax=262144 enable-strmax=2056 enable-warn-dmax
+     enable-gcov enable-memmax=262144 enable-strmax=2056 enable-warn-dmax"
 for opt in $OPTS
 do
-    ./configure --$opt && \
+    ./configure --"$opt" && \
         $make -s -j4 check-log || exit
 done
 
 $make clean
 if [ -d .build-cmake ]; then rm -rf .build-cmake; fi
 mkdir .build-cmake
-cd .build-cmake
+cd .build-cmake || exit
 echo cmake ..
 cmake ..
 make -s -j4 || exit
@@ -369,11 +374,11 @@ make clean
 rm -f CMakeCache.txt
 for opt in $OPTS
 do
-    def="$(echo $opt|sed -e's,disable,ENABLE,' | tr 'a-z-' 'A-Z_')"
+    def="$(echo "$opt" | sed -e's,disable,ENABLE,' | tr 'a-z-' 'A-Z_')"
     case "$opt" in
       disable*) bool="=OFF" ;;
       enable-*=*)
-          if [ $opt = "enable-memmax=262144" ]; then
+          if [ "$opt" = "enable-memmax=262144" ]; then
               def=RSIZE_MAX_MEM
               bool=262144
           else
@@ -382,8 +387,8 @@ do
           fi ;;
       *) bool="=ON" ;;
     esac
-    echo cmake -D$def$bool ..
-    cmake -D$def$bool ..
+    echo cmake -D"$def"$bool ..
+    cmake -D"$def"$bool ..
     make -s -j4 test || exit
     make clean
 done
@@ -392,30 +397,30 @@ cd ..
 # different .deps format
 git clean -dxf src tests
 autoreconf
-if test -n "`which x86_64-w64-mingw32-gcc`"; then
+if test -n "$(which x86_64-w64-mingw32-gcc)"; then
     #CC="x86_64-w64-mingw32-gcc"
-    test -f libssp-0.dll.m64 && cp tests/libssp-0.dll
+    test -f libssp-0.dll.m64 && cp libssp-0.dll.m64 tests/libssp-0.dll
     ./configure --enable-unsafe --host=x86_64-w64-mingw32 && \
     $make -s -j4 && $make -s -j4 -C tests tests && \
-    if [ `uname` = Linux ]; then
+    if [ "$(uname)" = Linux ]; then
         cp src/.libs/*.dll . && \
         for t in tests/.libs/t_*.exe; do
-            b=$(basename $t); wine $t | tee tests/$b.log; done
-        rm *.dll
+            b=$(basename "$t"); wine "$t" | tee tests/"$b".log; done
+        rm -- *.dll
     fi
     git clean -dxf src tests
     autoreconf
 fi
-if test -n "`which i686-w64-mingw32-gcc`"; then
-    test -f libssp-0.dll.m32 && cp tests/libssp-0.dll
+if test -n "$(which i686-w64-mingw32-gcc)"; then
+    test -f libssp-0.dll.m32 && cp libssp-0.dll.m32 tests/libssp-0.dll
     ./configure --enable-unsafe --host=i686-w64-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
-    if [ `uname` = Linux ]; then
+    if [ "$(uname)" = Linux ]; then
         cp src/.libs/*.dll . && \
         for t in tests/t_*.exe; do
-            b=$(basename $t .exe); wine $t | tee tests/$b.log;
+            b=$(basename "$t" .exe); wine "$t" | tee tests/"$b".log;
         done
-        rm *.dll
+        rm -- *.dll
     fi
     $make clean
     CFLAGS="-g -gdwarf-2 -DTEST_MSVCRT" \
@@ -423,7 +428,7 @@ if test -n "`which i686-w64-mingw32-gcc`"; then
     $make -s -j4  && $make -s -j4 -C tests tests && \
     cp src/.libs/*.dll . && \
     for t in tests/t_*.exe; do
-        b=$(basename $t .exe); wine $t | tee tests/$b.log;
+        b=$(basename "$t" .exe); wine "$t" | tee tests/"$b".log;
     done
     $make clean
     git clean -dxf src tests
@@ -433,29 +438,29 @@ fi
 # through the MSYS_NT* case above). Build only, no wine run: this is a
 # cross-compiler smoke check matching the CI "mingw UCRT64" matrix
 # entry's toolchain, not a full test pass like the native MSYS2 job.
-if test -n "`which x86_64-w64-mingw32ucrt-gcc`"; then
+if test -n "$(which x86_64-w64-mingw32ucrt-gcc)"; then
     ./configure --enable-unsafe --host=x86_64-w64-mingw32ucrt && \
     $make -s -j4 || exit
     $make clean
     git clean -dxf src tests
     autoreconf
 fi
-if test -n "`i386-mingw32-gcc`"; then
+if test -n "$(which i386-mingw32-gcc)"; then
     #CC="i386-mingw32-gcc"
-    test -f libssp-0.dll.m32 && cp tests/libssp-0.dll
+    test -f libssp-0.dll.m32 && cp libssp-0.dll.m32 tests/libssp-0.dll
     ./configure --enable-unsafe --host=i386-mingw32 && \
     $make -s -j4  && $make -s -j4 -C tests tests && \
-    if [ `uname` = Linux ]; then
+    if [ "$(uname)" = Linux ]; then
         cp src/.libs/*.dll . && \
         for t in tests/.libs/t_*.exe; do
-          b=$(basename $t); wine $t | tee tests/$b.log; done
-        rm *.dll
+          b=$(basename "$t"); wine "$t" | tee tests/"$b".log; done
+        rm -- *.dll
     fi
     $make clean
 fi
 git clean -dxf src tests
 # if all clean, try out-of-tree build and distcheck
-if [ -z "`git status --porcelain`" ]; then
+if [ -z "$(git status --porcelain)" ]; then
     echo build from outside
     build-aux/autogen.sh
     mkdir .build && cd .build && \
@@ -468,7 +473,7 @@ if [ -z "`git status --porcelain`" ]; then
         ./configure && $make distcheck
 else
     echo "not clean srcdir, out-of-tree + make distcheck skipped"
-    echo `git status --short`
+    git status --short
 fi
 rm .slkm.ko.cmd .testslkm.ko.cmd  CaseFolding.txt test-upr.pl \
    tmpfopen tmpvwscanf tmpwscanf

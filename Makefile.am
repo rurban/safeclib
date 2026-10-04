@@ -364,40 +364,7 @@ else
 endif
 	rm -rf inst
 gh-pages: docs
-	echo ensure ./configure --enable-unsafe --enable-wchar
-	ls doc/man/man3/tmpnam_s.3
-	cp -f doc/libc-overview.md doc/libc-overview.md.master
-	git checkout gh-pages
-	-mv doc/libc-overview.md.master doc/libc-overview.md
-	rm -rf doc/man
-	rm -rf doc/safec-$(SAFEC_API_VERSION)
-	mkdir doc/safec-$(SAFEC_API_VERSION)
-	mv doc/html/* doc/safec-$(SAFEC_API_VERSION)/
-	rm -rf doc/html
-	sed -i -e"s,3\...,$(SAFEC_API_VERSION),g" index.html
-	git add index.html doc/libc-overview.md doc/safec-$(SAFEC_API_VERSION)
+	build-aux/gh-pages.sh $(SAFEC_API_VERSION)
 release: docs distcheck
-	git branch |grep '^* master'
-	if test "$(shell git log -1 --pretty=%G?)" != "G" && \
-	   test "$(shell git log -1 --pretty=%G?)" != "U" ; then \
-	  echo 'HEAD commit is not GPG-signed (git commit -S), aborting.'; \
-	  exit 1; \
-	fi
-	build-aux/changelog-check.sh $(PACKAGE_VERSION)
-	-git tag -f v$(PACKAGE_VERSION)
-	build-aux/autogen.sh
-	./configure
-	$(MAKE)
-	$(MAKE) check
-	$(MAKE) docs
-	$(MAKE) dist
-	echo build-aux/smoke.sh
-	build-aux/mk-release.sh $(PACKAGE_VERSION)
-	./configure --enable-unsafe --enable-wchar
-	$(MAKE)
-	$(MAKE) docs
-	$(MAKE) gh-pages
-	git branch |grep '^* gh-pages'
-	git commit -m"Update to v$(PACKAGE_VERSION)"
-	git push
-	git checkout master
+	build-aux/release-checks.sh $(PACKAGE_VERSION)
+	build-aux/release-build.sh $(PACKAGE_VERSION)

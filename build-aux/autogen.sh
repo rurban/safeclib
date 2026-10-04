@@ -39,7 +39,7 @@ require_clean_work_tree () {
 	fi
 }
 
-if test -n "`which git`"; then
+if test -n "$(which git)"; then
     if test -z "$1" || test "$1" != "-f"; then
 	require_clean_work_tree "WARNING" "Please commit them or use the '-f' option"
     fi

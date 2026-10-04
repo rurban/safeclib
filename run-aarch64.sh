@@ -5,4 +5,4 @@
 # echo to avoid libssp:
 # sed -i 's,-fstack-protector-strong -fstack-clash-protection,,' Makefile */Makefile
 docker build -f Dockerfile-aarch64 -t safeclib-aarch64 .
-docker run --rm -it safeclib-aarch64 $@
+docker run --rm -it safeclib-aarch64 "$@"
