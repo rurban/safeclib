@@ -1,0 +1,117 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+#
+# Adapted from rcc's .pre-commit-config.yaml.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # see https://github.com/pre-commit/pre-commit-hooks/
+      - id: check-added-large-files # prevents giant files from being committed.
+        exclude: doc/.*\.(pdf|png)$
+      - id: check-case-conflict # checks for files that would conflict in case-insensitive filesystems.
+      - id: check-merge-conflict # checks for files that contain merge conflict strings.
+      - id: check-json # checks json for syntax errors and duplicate keys
+      - id: check-yaml # checks yaml files for parseable syntax.
+        args: [--allow-multiple-documents] # .drone.yml: multiple `---`-separated pipelines
+      - id: detect-private-key # detects the presence of private keys.
+      - id: end-of-file-fixer # ensures that a file is either empty, or ends with one newline.
+        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$
+      - id: fix-byte-order-marker # removes utf-8 byte order marker.
+      - id: mixed-line-ending # replaces or checks mixed line ending.
+      - id: requirements-txt-fixer # sorts entries in requirements.txt.
+      - id: trailing-whitespace # trims trailing whitespace.
+        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$
+      - id: check-executables-have-shebangs
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-vcs-permalinks
+      - id: file-contents-sorter
+
+  - repo: https://github.com/pycontribs/mirrors-prettier
+    rev: v3.6.2
+    hooks:
+      - id: prettier
+        types: ["markdown"]
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+
+  - repo: https://github.com/checkmake/checkmake
+    rev: v0.3.2
+    hooks:
+      # Lucas-C/pre-commit-hooks-go's checkmake hook is unmaintained since
+      # its checkmake.go source drifted from mrtazz/checkmake's own
+      # cmd/checkmake/main.go (broken as of pre-commit-hooks-go v1.0.1;
+      # see its README). Use checkmake's own hook instead: checkmake-system
+      # (language: system) runs the locally installed `checkmake` binary
+      # rather than pre-commit provisioning its own Go build, so it picks
+      # up ./checkmake.ini and any local fixes not yet released upstream.
+      - id: checkmake-system
+
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v22.1.8
+    hooks:
+      - id: clang-format
+        entry: ./build-aux/clang-format.sh
+        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$
+
+  - repo: https://github.com/rurban/check-agent-trailer
+    rev: v0.3
+    hooks:
+      - id: check-agent-trailer
+
+  # Lints GitHub Actions workflows: expression syntax, undefined context
+  # variables (e.g. a `matric.cc` typo passes check-yaml but breaks CI),
+  # shellcheck of run: blocks, deprecated actions/versions.
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      # actionlint-system (language: system) runs the locally installed
+      # `actionlint` binary rather than pre-commit building it with Go;
+      # same rationale as checkmake-system above.
+      - id: actionlint-system
+
+  - repo: local
+    hooks:
+      - id: podchecker
+        name: podchecker
+        entry: perl -S podchecker -warnings
+        language: system
+        # safeclib has no standalone .pod files (unlike rcc's
+        # docs/rcc.pod); its POD lives embedded in a handful of Perl
+        # scripts instead. List them explicitly rather than matching
+        # on *.pl -- most *.pl files here (mknorm.pl, tests/tests-bos.pl's
+        # driver) carry none, and podchecker treats "no POD" as an error.
+        files: ^(build-aux/gcov-upd\.pl|src/extu8/gen-u8(gbreaks|scripts)\.pl|scripts/check_for_unsafe_apis|tests/tests-bos\.pl)$
+        pass_filenames: true
+      - id: changelog-check
+        # Lint-mode only (no VERSION arg): checks ChangeLog heading
+        # format and newest-first ordering. Whether ChangeLog documents
+        # a *specific released version* is a release-time check (see
+        # `make release`, which runs this same script in release mode),
+        # not a per-commit one.
+        name: changelog-check
+        entry: build-aux/changelog-check.sh
+        language: system
+        files: ^ChangeLog$
+        pass_filenames: false
+      - id: cppcheck
+        name: cppcheck
+        entry: ./build-aux/cppcheck-timeout.sh
+        language: system
+        args:
+          [
+            -Iinclude,
+            -Isrc,
+            --suppress=unknownMacro,
+            --suppress=syntaxError,
+            --error-exitcode=1,
+          ]
+        # Matches the scope of the Makefile.am `cppcheck:` target
+        # (`cppcheck -Iinclude -Isrc ... src/`): src/ only, and not the
+        # machine-generated normalization tables.
+        files: ^src/.*\.(c|h)$
+        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$

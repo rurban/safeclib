@@ -335,7 +335,14 @@ endif
 # Additional make rules
 # ===============================================
 
-.PHONY: cppcheck gcov docs man perf gh-pages release check-log check-wine
+.PHONY: cppcheck gcov docs man perf gh-pages release check-log check-wine lint lint-changed
+lint:
+	if command -v prek > /dev/null 2>&1; then prek run -a; \
+	elif command -v pre-commit > /dev/null 2>&1; then pre-commit run --all-files; fi
+	if command -v checkmake > /dev/null 2>&1; then checkmake Makefile.am; fi
+lint-changed:
+	if command -v prek > /dev/null 2>&1; then prek run -s HEAD~1; \
+	elif command -v pre-commit > /dev/null 2>&1; then pre-commit run --from-ref HEAD~1 --to-ref HEAD; fi
 $(top_srcdir)/.version:
 	echo $(PACKAGE_VERSION) > $@-t && mv $@-t $@
 dist-hook:

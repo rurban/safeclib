@@ -1291,6 +1291,55 @@ if(ENABLE_DOC AND DOXYGEN_FOUND)
     )
 endif()
 
+# Linting: runs the same pre-commit hooks as `make lint` (see Makefile.am).
+# prek is preferred over pre-commit when both are installed (same
+# precedence as the Makefile.am target); checkmake is additionally run
+# directly since .pre-commit-config.yaml's checkmake-system hook only
+# fires on changed files, not on an explicit `cmake --build . --target
+# lint`.
+find_program(PREK_EXECUTABLE prek)
+find_program(PRE_COMMIT_EXECUTABLE pre-commit)
+find_program(CHECKMAKE_EXECUTABLE checkmake)
+if(PREK_EXECUTABLE)
+    add_custom_target(lint
+        COMMAND ${PREK_EXECUTABLE} run -a
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running prek hooks"
+        VERBATIM
+    )
+elseif(PRE_COMMIT_EXECUTABLE)
+    add_custom_target(lint
+        COMMAND ${PRE_COMMIT_EXECUTABLE} run --all-files
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running pre-commit hooks"
+        VERBATIM
+    )
+endif()
+if(CHECKMAKE_EXECUTABLE)
+    if(TARGET lint)
+        add_custom_command(TARGET lint POST_BUILD
+            COMMAND ${CHECKMAKE_EXECUTABLE} Makefile.am
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Running checkmake"
+            VERBATIM
+        )
+    else()
+        add_custom_target(lint
+            COMMAND ${CHECKMAKE_EXECUTABLE} Makefile.am
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Running checkmake"
+            VERBATIM
+        )
+    endif()
+endif()
+if(NOT TARGET lint)
+    add_custom_target(lint
+        COMMAND ${CMAKE_COMMAND} -E echo
+                "lint: neither prek, pre-commit nor checkmake found, nothing to run"
+        VERBATIM
+    )
+endif()
+
 # Testing. The test suite needs stdio, so not with ENABLE_MINIMAL,
 # which only links tests/test_minimal.c instead.
 enable_testing()

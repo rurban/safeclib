@@ -308,3 +308,63 @@ jobs:
     - run: cmake .
     - run: make
     - run: make test || (cat Testing/Temporary/LastTest.log; false)
+
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck doxygen libtext-diff-perl pkg-config
+          pip install prek
+
+      - name: Install checkmake
+        env:
+          # Keep in sync with the checkmake/checkmake rev in
+          # .pre-commit-config.yaml. There's no apt/pip package; install
+          # the goreleaser-built binary from the pinned GitHub release,
+          # verified against its published checksum.
+          CHECKMAKE_VERSION: v0.3.2
+        run: |
+          asset="checkmake-${CHECKMAKE_VERSION}.linux.amd64"
+          base="https://github.com/checkmake/checkmake/releases/download/${CHECKMAKE_VERSION}"
+          curl -sSLO "$base/$asset"
+          curl -sSLO "$base/checksums.txt"
+          grep "$asset" checksums.txt | sed 's#\.release_artifacts/##' | sha256sum -c -
+          chmod +x "$asset"
+          sudo mv "$asset" /usr/local/bin/checkmake
+          rm -f checksums.txt
+          checkmake --version
+
+      - name: Install actionlint
+        env:
+          # Keep in sync with the rhysd/actionlint rev in
+          # .pre-commit-config.yaml. The actionlint-system hook runs the
+          # local binary; install the goreleaser-built release tarball,
+          # verified against its published checksums.
+          ACTIONLINT_VERSION: 1.7.7
+        run: |
+          tmpdir="$(mktemp -d)"
+          asset="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          base="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}"
+          curl -sSLo "$tmpdir/$asset" "$base/$asset"
+          curl -sSLo "$tmpdir/checksums.txt" "$base/actionlint_${ACTIONLINT_VERSION}_checksums.txt"
+          (cd "$tmpdir" && grep " $asset\$" checksums.txt | sha256sum -c -)
+          tar xzf "$tmpdir/$asset" -C "$tmpdir" actionlint
+          sudo mv "$tmpdir/actionlint" /usr/local/bin/
+          rm -rf "$tmpdir"
+          actionlint --version
+
+      - name: Build
+        run: |
+          sh build-aux/autogen.sh
+          ./configure --enable-unsafe --enable-wchar
+          make
+
+      - name: Run lint
+        run: make lint-changed
