@@ -259,11 +259,51 @@ if [ -e /opt/pgi/linux86-64/2019/pgcc ]; then
     make clean
 fi
 
+# matches the CI "sdcc stm8" job: cmake + sdcc, no apt-get here, see
+# build-aux/sdcc-stm8.cmake's comment for the packages needed
+if (test -n "`which sdcc 2>/dev/null`" || test -n "`which sdcc-sdcc 2>/dev/null`") && \
+   (test -n "`which sdcc-ucsim_stm8 2>/dev/null`" || test -n "`which ucsim_stm8 2>/dev/null`"); then
+    for stm8opts in "build-stm8:-DENABLE_U8=OFF -DENABLE_EXTENSIONS=OFF" \
+                    "build-stm8-u8:-DENABLE_U8=ON -DENABLE_EXTENSIONS=ON"; do
+        d=${stm8opts%%:*}
+        echo "sdcc stm8 $d"
+        rm -rf "$d"
+        cmake -S . -B "$d" -DCMAKE_TOOLCHAIN_FILE=build-aux/sdcc-stm8.cmake \
+            -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF \
+            ${stm8opts#*:} && \
+        cmake --build "$d" && \
+        sh build-aux/sdcc-stm8-test.sh "$d" || exit
+        rm -rf "$d"
+    done
+fi
+
+# matches the CI "avr-gcc" job: cmake + avr-gcc/avr-libc, simulated with
+# simavr+avr-gdb (Debian/Ubuntu packages only; not in Fedora's repos)
+if test -n "`grep -is ubuntu /etc/os-release 2>/dev/null`" && \
+   test -n "`which avr-gcc`" && test -n "`which simavr`" && \
+   test -n "`which avr-gdb`"; then
+    for avropts in "build-avr:-DENABLE_U8=OFF -DENABLE_EXTENSIONS=OFF" \
+                   "build-avr-u8:-DENABLE_U8=ON -DENABLE_EXTENSIONS=ON"; do
+        d=${avropts%%:*}
+        echo "avr-gcc $d"
+        rm -rf "$d"
+        cmake -B "$d" -DCMAKE_TOOLCHAIN_FILE=build-aux/avr-gcc.cmake \
+            -DENABLE_MINIMAL=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_WCHAR=OFF \
+            ${avropts#*:} && \
+        cmake --build "$d" && \
+        sh build-aux/avr-sim-test.sh "$d" || exit
+        rm -rf "$d"
+    done
+fi
+
 ;;
 
 MSYS_NT*)
+# covers all 3 CI matrix entries (MINGW64, MINGW32, UCRT64, see
+# .github/workflows/main.yml's "mingw" job): run this once per MSYS2
+# shell, $MSYSTEM selects the active toolchain/libc via PATH.
+echo "MSYSTEM=$MSYSTEM"
 # static, usually ours
-echo "--disable-shared --enable-debug --enable-unsafe --enable-norm-compat"
 ./configure --disable-shared --enable-debug --enable-unsafe --enable-norm-compat && \
     make check-log || exit
 # shared, might be the msvcrt overriding ours
@@ -373,6 +413,17 @@ if test -n "`which i686-w64-mingw32-gcc`"; then
     for t in tests/t_*.exe; do
         b=$(basename $t .exe); wine $t | tee tests/$b.log;
     done
+    $make clean
+    git clean -dxf src tests
+    autoreconf
+fi
+# UCRT64 (Fedora: ucrt64-gcc; MSYS2 itself runs the native UCRT64 build
+# through the MSYS_NT* case above). Build only, no wine run: this is a
+# cross-compiler smoke check matching the CI "mingw UCRT64" matrix
+# entry's toolchain, not a full test pass like the native MSYS2 job.
+if test -n "`which x86_64-w64-mingw32ucrt-gcc`"; then
+    ./configure --enable-unsafe --host=x86_64-w64-mingw32ucrt && \
+    $make -s -j4 || exit
     $make clean
     git clean -dxf src tests
     autoreconf
