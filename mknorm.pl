@@ -98,6 +98,33 @@ for my $name (@ucd_names) {
     -e $path or die "Cannot download or find $path\n";
 }
 
+# clang-format the generated .h/.c files so they match the rest of the
+# tree's style (and pass the clang-format pre-commit hook/CI check
+# without needing a special-cased exclusion). Best-effort: silently
+# skipped if clang-format isn't installed, matching e.g.
+# build-aux/clang-format.sh's own graceful fallback.
+my $CLANG_FORMAT;
+for my $c ('clang-format',
+           map { "clang-format-$_" } qw(22 21 20 19 18 15 8 7 6 5 4 3)) {
+    for my $dir (split /:/, $ENV{PATH} // '') {
+        next unless length $dir;
+        if (-x "$dir/$c") {
+            $CLANG_FORMAT = $c;
+            last;
+        }
+    }
+    last if $CLANG_FORMAT;
+}
+warn "$PACKAGE: clang-format not found, generated files won't be formatted\n"
+    unless $CLANG_FORMAT;
+
+sub format_file {
+    my ($file) = @_;
+    return unless $CLANG_FORMAT;
+    system($CLANG_FORMAT, '-i', $file) == 0
+        or warn "$PACKAGE: $CLANG_FORMAT -i $file failed (exit $?)\n";
+}
+
 # Generate multiple families in fresh subprocesses.  The table writer retains
 # the selected encoding in package globals, so one process emits one family.
 if (@types > 1) {
@@ -480,6 +507,7 @@ foreach my $tbl (@boolfunc) {
 }
 
 close FH;
+format_file($file);
 }
 
 ####################################
@@ -624,8 +652,8 @@ EOF
               unless $uv <= 0x10FFFF;
             my @v = $utf16 ? split_utf16(@{ $hash->{$uv} }) : @{ $hash->{$uv} };
             if ($doind) {
-                $stringify = $uni 
-                  ? ($utf16 ? \&_utf16_ind_stringify : \&_uni_ind_stringify) 
+                $stringify = $uni
+                  ? ($utf16 ? \&_utf16_ind_stringify : \&_uni_ind_stringify)
                   : \&_utf8_ind_stringify;
                 # length in wchar/byte
                 my $n = $lensub->(@v);
@@ -872,6 +900,7 @@ EOF
     }
     print "};\n\n";
     close FH;
+    format_file($file);
 }
 
 select STDOUT;

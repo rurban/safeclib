@@ -71,10 +71,8 @@ for dir in $dirs; do
     find . \
          \( -name '*.c' \
          -o -name '*.h' \) \
-         -a \! \( -name 'unw*.h' \
-               -o -name 'hangul.h' \
-               -o -name 'towctrans.c' \
-               -o -name 'un8if*.h' $ign \) \
+         -a \! \( -name 'hangul.h' \
+               -o -name 'towctrans.c' $ign \) \
          -exec "${FMT}" -i -verbose '{}' \;
     echo "post clang-format fixups (clang-format bugs)"
     diag_files=$(git grep -l 'DIAG_IGNORE' . | grep -v all.sh)

@@ -16,12 +16,12 @@ repos:
         args: [--allow-multiple-documents] # .drone.yml: multiple `---`-separated pipelines
       - id: detect-private-key # detects the presence of private keys.
       - id: end-of-file-fixer # ensures that a file is either empty, or ends with one newline.
-        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$
+        exclude: src/extwchar/(hangul\.h|towctrans\.c)$
       - id: fix-byte-order-marker # removes utf-8 byte order marker.
       - id: mixed-line-ending # replaces or checks mixed line ending.
       - id: requirements-txt-fixer # sorts entries in requirements.txt.
       - id: trailing-whitespace # trims trailing whitespace.
-        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$
+        exclude: src/extwchar/(hangul\.h|towctrans\.c)$
       - id: check-executables-have-shebangs
       - id: check-symlinks
       - id: destroyed-symlinks
@@ -56,7 +56,7 @@ repos:
     hooks:
       - id: clang-format
         entry: ./build-aux/clang-format.sh
-        exclude: src/extwchar/(unw.*|hangul)\.h$|src/extwchar/towctrans\.c$|src/extu8/un8if.*\.h$
+        exclude: src/extwchar/(hangul\.h|towctrans\.c)$
 
   - repo: https://github.com/rurban/check-agent-trailer
     rev: v0.3
