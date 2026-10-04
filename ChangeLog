@@ -3,6 +3,7 @@
 
 Changes in 3.13
 	- add make lint and pre-commit hooks
+	- Update u8scripts and u8gbreaks from Unicode 13 to 18 (forgot to regen them)
 
 Changes in 3.12
 	- Split _chk and _uchk at compile-time (GH #48): When all arguments of

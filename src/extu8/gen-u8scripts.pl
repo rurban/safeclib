@@ -33,7 +33,7 @@ use File::Basename 'dirname';
 use File::Spec;
 
 my $src = "Scripts.txt";
-my $cmd = "wget -q ftp://ftp.unicode.org/Public/UNIDATA/Scripts.txt";
+my $cmd = "wget -q https://www.unicode.org/Public/UNIDATA/Scripts.txt";
 system $cmd  unless -e $src;
 die "$cmd failed" unless -e $src;
 open my $in, "<", $src or die "$! $src";
@@ -132,7 +132,7 @@ for (0 .. $last) {
     #$script = ":Han" if $sc =~ /^(Hangul|Han|Bopomofo)$/;
     #$script = ":Japanese" if $sc =~ /^(Katakana|Hiragana)$/;
     if ($psc ne $script) {
-      printf $out "  { 0x%x, $script },\n", $_;
+      printf $out "    { 0x%x, $script },\n", $_;
       $psc = $script;
     }
   }

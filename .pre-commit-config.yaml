@@ -56,7 +56,7 @@ repos:
     hooks:
       - id: clang-format
         entry: ./build-aux/clang-format.sh
-        exclude: src/extwchar/(hangul\.h|towctrans\.c)$
+        exclude: src/extwchar/(hangul\.h|towctrans\.c)|src/extu8/u8(scripts|gbreaks)\.h$
 
   - repo: https://github.com/rurban/check-agent-trailer
     rev: v0.3

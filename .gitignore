@@ -84,6 +84,8 @@ tests/test-norm.pl
 tests/test-upr.pl
 tests/CaseFolding.txt
 tests/DerivedGeneralCategory.txt
+Scripts.txt
+GraphemeBreakProperty.txt
 Doxyfile
 doc/footer
 doc/html

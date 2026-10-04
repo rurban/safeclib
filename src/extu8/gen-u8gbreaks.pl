@@ -33,7 +33,7 @@ use File::Basename 'dirname';
 use File::Spec;
 
 my $src = "GraphemeBreakProperty.txt";
-my $cmd = "wget -q ftp://ftp.unicode.org/Public/UNIDATA/auxiliary/GraphemeBreakProperty.txt";
+my $cmd = "wget -q https://www.unicode.org/Public/UNIDATA/auxiliary/GraphemeBreakProperty.txt";
 system $cmd  unless -e $src;
 die "$cmd failed" unless -e $src;
 open my $in, "<", $src or die "$! $src";
@@ -110,7 +110,7 @@ print $out <<EOF;
 /* Sorted Unicode Grapheme_Cluster_Break properties.
 */
 typedef enum {
-  _U8_GBREAK_NONE                 = 0,
+    _U8_GBREAK_NONE                 = 0,
 EOF
 
 my $last = 0;
@@ -133,7 +133,7 @@ my $last_break = $breaks{$#breaks};
 undef %breaks;
 # warn $last;
 for (@breaks) {
-  printf $out "  _U8_GBREAK_%-20s = %d,", uc($_), $i++;
+  printf $out "    _U8_GBREAK_%-20s = %d,", uc($_), $i++;
   printf $out " /* Regional_Indicator */" if $_ eq 'RI';
   printf $out "\n";
 }
@@ -155,8 +155,8 @@ print $out <<EOF;
    Currently needed: from:$maxfbits ($lasthex), gbreak:$maxgbits bits
  */
 struct _u8_gbreak_t {
-  const unsigned from:24;
-  const unsigned gbreak:8;
+    const unsigned from:24;
+    const unsigned gbreak:8;
 };
 EOF
 
@@ -174,7 +174,7 @@ for (0 .. $last) {
     $name = "_U8_GBREAK_NONE";
   }
   if ($prevname ne $name) {
-    printf $out "  { 0x%x, %s },\n", $_, $name;
+    printf $out "    { 0x%x, %s },\n", $_, $name;
     $prevname = $name;
   }
 }
