@@ -64,7 +64,7 @@ for dir in $dirs; do
     # skip tests/.format-ignore (no spaces in filenames allowed)
     ign=
     if [ -f .format-ignore ]; then
-        ign=$(perl -n00 -e'print q(-o ),join(q( -o ),split/\n/,$_)' .format-ignore)
+        ign=$(perl -n00 -e'print join(" ", map { "-o -name $_" } split /\n/, $_)' .format-ignore)
     fi
     # shellcheck disable=SC2086  # $ign: intentional word-split into
     # multiple `-o -name '...'` find(1) predicate tokens, not a scalar.
@@ -72,14 +72,19 @@ for dir in $dirs; do
          \( -name '*.c' \
          -o -name '*.h' \) \
          -a \! \( -name 'unw*.h' \
-               -o -name 'hangul.h' $ign \) \
+               -o -name 'hangul.h' \
+               -o -name 'towctrans.c' \
+               -o -name 'un8if*.h' $ign \) \
          -exec "${FMT}" -i -verbose '{}' \;
     echo "post clang-format fixups (clang-format bugs)"
-    # shellcheck disable=SC2046,SC2006  # intentional word-split into
-    # multiple sed -i filename arguments, not a scalar.
-    sed -i -e's,IGNORE(-Wcast - align),IGNORE(-Wcast-align),;' \
-           -e's,IGNORE(-Wuser - defined - warnings),IGNORE(-Wuser-defined-warnings),;' \
-        $(git grep -l 'DIAG_IGNORE' . | grep -v all.sh)
+    diag_files=$(git grep -l 'DIAG_IGNORE' . | grep -v all.sh)
+    if [ -n "$diag_files" ]; then
+        # shellcheck disable=SC2086  # intentional word-split into
+        # multiple sed -i filename arguments, not a scalar.
+        sed -i -e's,IGNORE(-Wcast - align),IGNORE(-Wcast-align),;' \
+               -e's,IGNORE(-Wuser - defined - warnings),IGNORE(-Wuser-defined-warnings),;' \
+            $diag_files
+    fi
     popd &>/dev/null || exit
 done
 
