@@ -37,7 +37,7 @@ project(safeclib
 # Library version info (current:revision:age)
 # https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 set(SAFEC_SO_CURRENT 3)
-set(SAFEC_SO_REVISION 9)
+set(SAFEC_SO_REVISION 12)
 set(SAFEC_SO_AGE 0)
 math(EXPR SAFEC_SO_MAJOR "${SAFEC_SO_CURRENT} - ${SAFEC_SO_AGE}")
 set(SAFEC_SO_VERSION "${SAFEC_SO_MAJOR}.${SAFEC_SO_AGE}.${SAFEC_SO_REVISION}")

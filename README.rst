@@ -35,28 +35,28 @@ strategies.”*\  [4]_
 
 The rationale document lists the following key points for TR24731:
 
--  Guard against overflowing a buffer
--  Do not produce unterminated strings
--  Do not unexpectedly truncate strings
--  Provide a library useful to existing code
--  Preserve the zero terminated string datatype
--  Only require local edits to programs
--  Library based solution
--  Support compile-time checking
--  Make failures obvious
--  Zero buffers, null strings
--  Runtime-constraint handler mechanism
--  Support re-entrant code
--  Consistent naming scheme
--  Have a uniform pattern for the function parameters and return type
--  Deference to existing technology
+- Guard against overflowing a buffer
+- Do not produce unterminated strings
+- Do not unexpectedly truncate strings
+- Provide a library useful to existing code
+- Preserve the zero terminated string datatype
+- Only require local edits to programs
+- Library based solution
+- Support compile-time checking
+- Make failures obvious
+- Zero buffers, null strings
+- Runtime-constraint handler mechanism
+- Support re-entrant code
+- Consistent naming scheme
+- Have a uniform pattern for the function parameters and return type
+- Deference to existing technology
 
 and the following can be added…
 
--  provide a library of functions with like behavior
--  provide a library of functions that promote and increase code safety
-   and security
--  provide a library of functions that are efficient
+- provide a library of functions with like behavior
+- provide a library of functions that promote and increase code safety
+  and security
+- provide a library of functions that are efficient
 
 The C11 Standard adopted many of these points, and added some secure
 ``_s`` variants in the Annex K. The Microsoft Windows/MINGW secure API
@@ -76,8 +76,10 @@ specification to provide a complementary set of functions with like
 behavior.
 
 This library is meant to be used on top of all the existing libc’s which
-miss the secure C11 functions. See the seperate
-`libc-overview <doc/libc-overview.md>` document.
+miss the secure C11 functions. Of course tighter integration into the
+system libc would be better, esp. with the printf, scanf and IO
+functions. See the seperate `libc-overview <doc/libc-overview.md>`__
+document.
 
 Austin Group Review of ISO/IEC WDTR 24731
 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1106.txt
@@ -96,7 +98,7 @@ C17 reconsidered safeclib but looked only at the old incomplete Cisco
 version, not our complete and fixed version.
 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1967.htm
 
--  Use of errno
+- Use of errno
 
 The TR24731 specification says an implementation may set errno for the
 functions deﬁned in the technical report, but is not required to. This
@@ -112,7 +114,7 @@ library does use ``errno`` return codes as required by functional APIs.
 Specific Safe C String and Safe C Memory errno codes are defined in the
 ``safe_errno.h`` file.
 
--  Runtime-constraints
+- Runtime-constraints
 
 Per the spec, the library verifies that the calling program does not
 violate the function’s runtime-constraints. If a runtime-constraint is
@@ -152,7 +154,13 @@ safe memory functions. The point is that string limits can and should be
 different from memory limits. There also exist ``RSIZE_MAX_WSTR``,
 ``RSIZE_MAX_MEM16``, ``RSIZE_MAX_MEM32``.
 
--  Compile-time constraints
+- Compile-time constraints
+
+safeclib uses the same ``__builtin_object_size`` checks as glibc’s
+``_FORTIFY_SOURCE`` at compile-time: buffer overflows, wrong dmax values
+and NULL arguments are caught as compile-time errors or warnings
+earlier, instead of at run-time. And when the compiler can prove all
+arguments valid, the superfluous run-time checks are omitted.
 
 With supporting compilers the dmax overflow checks and several more are
 performed at compile-time. Currently only since clang-5 with
@@ -168,7 +176,34 @@ deferred to run-time. This check is only possible with
 at compile-time, otherwise only the simplier ``dest == NULL``,
 ``dmax == 0`` and ``dmax > RSIZE_MAX`` checks are performed.
 
--  Header Files
+When all arguments relevant to the constraints of a fixed-size memory
+function are known at compile-time and proven valid, the call is
+dispatched to a fast unchecked ``_uchk`` worker, bypassing the run-time
+argument checks of the ``_chk`` variant (GH #48). This needs
+``__builtin_constant_p`` and ``__builtin_object_size``, i.e. gcc or
+clang, mostly with optimizations. Covered are ``memcpy_s``,
+``memmove_s``, ``memset_s``, ``memzero_s``, their 16 and 32 bit
+variants, ``wmemcpy_s`` and ``wmemmove_s``, and the single dest/dmax
+string functions ``strnlen_s``, ``strzero_s``, ``strnterminate_s``,
+``strljustify_s``, ``strremovews_s``, ``strtolowercase_s``,
+``strtouppercase_s``, the ``stris*_s`` validators, ``u8nlen_s``,
+``u8width_s``, ``u8lwr_s``, ``u8upr_s``, ``u8zero_s``, ``u8set_s``,
+``u8nset_s``, ``u8chr_s``, ``u8rchr_s`` and ``u8coll_s``, plus
+``memchr_s``, ``memrchr_s``, ``memccpy_s``, the ``memcmp_s`` variants,
+``wmemcmp_s``, ``strchr_s``, ``strrchr_s``, ``strset_s``, ``strnset_s``,
+``strcoll_s``, ``strfirstchar_s``, ``strlastchar_s``, ``strerror_s``,
+``wcsset_s``, ``wcsnset_s``, ``towfc_s``, ``wcsnlen_s`` and the string
+compare/search functions ``strcmp_s``, ``strcasecmp_s``,
+``strnatcmp_s``, ``strnatcasecmp_s``, ``strcmpfld_s``, ``strprefix_s``,
+``strfirst/lastdiff_s``, ``strfirst/lastsame_s``, ``strspn_s``,
+``strcspn_s``, ``strpbrk_s``, ``strstr_s`` and ``strcasestr_s``. With
+the probed compiler builtins, the ``memmove_s``, ``memcpy_s``,
+``memcmp_s``, ``memchr_s``, ``strnlen_s`` and ``strchr_s`` variants are
+then inlined, and ``strcpy_s`` with a constant source string. Run-time
+only constraints, like overlapping memory in the ``memcpy`` variants or
+unterminated strings, are still checked.
+
+- Header Files
 
 The specification states the various functions would be added to
 existing Standard C header files: stdio.h, string.h, etc. This
@@ -198,7 +233,7 @@ library to be built on a wide variety of platforms. See the `Tested
 platforms <#tested-platforms>`__ section for details on what platforms
 this library was tested on during its development.
 
--  Building
+- Building
 
 For those familiar with autotools you can probably skip this part. For
 those not and want to get right to building the code see below. And, for
@@ -226,7 +261,7 @@ On Apple M1-M3 hardware I was told to use this:
 
 This builds safeclib as a fat lib for macOS arm64 + X86-64 using clang.
 
--  Installing
+- Installing
 
 Installation must be preformed by ``root``, an ``Administrator`` on most
 systems. The following is used to install the library.
@@ -242,7 +277,7 @@ The build for the kernel module has not been integrated into the
 autotools build infrastructure. Consequently, you have to run a
 different makefile to build the kernel module.
 
--  Building
+- Building
 
 .To build do the following:
 
@@ -259,7 +294,7 @@ NOTE: If you build the kernel module then wish to build the userspace
 library or vice versa you will need to do a ``make clean`` otherwise a
 ``make check`` will fail to build.
 
--  Installing
+- Installing
 
 The kernel module will be found at the root of the source tree called
 ``slkm.ko``. The file ``testslkm.ko`` are the unit tests run on the
@@ -271,35 +306,44 @@ Tested Platforms
 
 The library has been tested on the following systems:
 
--  Linux Fedora core 31 - 41 amd64/i386 glibc 2.28 - 2.40 (all gcc’s +
-   clang’s)
--  Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc’s +
-   clang’s)
--  Linux Debian/Ubuntu since Debian 9 amd64/i386 glibc 2.24 - 2.40 (all
-   gcc’s + clang’s)
--  Linux centos 7 amd64
--  Linux Void amd64 musl-1.1.16
--  x86_64-w64-mingw32 native and cross-compiled
--  i686-w64-mingw32 native, and cross-compiled and tested under wine
--  i386-mingw32 cross-compiled
--  cygwin32 gcc (newlib)
--  cygwin64 gcc -std=c99 (newlib)
--  freebsd 10 - 13 amd64
--  linux docker images under qemu: i386/debian, x86_64/rhel,
-   arm32v7/debian, aarch64: arm64v8/{debian,centos,rhel,fedora},
-   s390x/fedora (the only big endian test I could find),
-   ppc64le/{debian,ubuntu,fedora,centos,rhel}
--  User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze
-   rootfs
+- Linux Fedora core 31 - 41 amd64/i386 glibc 2.28 - 2.40 (all gcc’s +
+  clang’s)
+- Mac OS X 10.6-12 w/ Apple developer tools and macports (all gcc’s +
+  clang’s)
+- Linux Debian/Ubuntu since Debian 9 amd64/i386 glibc 2.24 - 2.40 (all
+  gcc’s + clang’s)
+- Linux centos 7 amd64
+- Linux Void amd64 musl-1.1.16
+- x86_64-w64-mingw32 native and cross-compiled
+- i686-w64-mingw32 native, and cross-compiled and tested under wine
+- i386-mingw32 cross-compiled
+- MSYS2 MINGW64, MINGW32 and UCRT64 (keeps its own printf/scanf family,
+  renamed to ``safec_*``, on UCRT64; see ``doc/libc-overview.md``)
+- cygwin32 gcc (newlib)
+- cygwin64 gcc -std=c99 (newlib)
+- freebsd 10 - 13 amd64
+- linux docker images under qemu: i386/debian, x86_64/rhel,
+  arm32v7/debian, aarch64: arm64v8/{debian,centos,rhel,fedora},
+  s390x/fedora (the only big endian test I could find),
+  ppc64le/{debian,ubuntu,fedora,centos,rhel}
+- User Mode Linux (UML), Linux kernel version v3.5.3 w/ Debian Squeeze
+  rootfs
+- freestanding/bare-metal, via ``cmake -DENABLE_MINIMAL=ON`` (no stdio,
+  time, env; see the ``arm-none-eabi``, ``sdcc-stm8`` and ``avr-gcc`` CI
+  jobs)
+- arm-none-eabi gcc armv6-m (cortex-m0) w/ newlib, under qemu-user
+- sdcc for the STM8, w/ sdcc’s own freestanding libc, under the ucsim
+  simulator
+- avr-gcc for the atmega328, w/ avr-libc, under the simavr simulator
 
 with most available compilers. See ``build-aux/smoke.sh`` and the
 various CI configs.
 
--  https://github.com/rurban/safeclib/actions
--  https://travis-ci.org/github/rurban/safeclib/
--  https://ci.appveyor.com/project/rurban/safeclib/
--  https://cirrus-ci.com/github/rurban/safeclib
--  https://cloud.drone.io/rurban/safeclib/
+- https://github.com/rurban/safeclib/actions
+- https://travis-ci.org/github/rurban/safeclib/
+- https://ci.appveyor.com/project/rurban/safeclib/
+- https://cirrus-ci.com/github/rurban/safeclib
+- https://cloud.drone.io/rurban/safeclib/
 
 Known Issues
 ------------

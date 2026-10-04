@@ -23,6 +23,30 @@ Changes in 3.12
 	  constant source string.
 	- strisdigit_s, strismixedcase_s, strisuppercase_s: stop at dmax.
 	- Fix strnatcasecmp_s macro, calling the non-existing _strnatcasecmp_s_chk.
+	- Fix strcpy_s macro to only expand to a single _strcpy_s_chk call,
+	  avoiding double evaluation of its arguments. (GH #48)
+	- mingw-w64 UCRT64: our printf_s/scanf_s family clashes with the UCRT
+	  headers' own static inline secure functions (gcc-16 ICE). Rename our
+	  internal implementations to safec_* and keep them mapped to the public
+	  *_s names via macros, routing around the UCRT inline variants, which
+	  also fail our tests (no 80-bit long double, no %a, no C99 wide %s).
+	  Define __USE_MINGW_ANSI_STDIO for the library build. Documented the
+	  remaining UCRT printf/scanf and wctomb_s behavioural differences.
+	- Add the cmake ENABLE_MINIMAL option, building only the freestanding
+	  mem and str core (and the u8 functions with ENABLE_U8), without
+	  stdio, time, env or printf/scanf support (SAFECLIB_DISABLE_IO).
+	  Verified on the sdcc stm8 and avr-gcc freestanding targets via
+	  tests/test_minimal.c.
+	- Probe for a linkable _Thread_local resp. __thread and fall back to
+	  plain statics for the thread-local constraint handlers when neither
+	  is available, e.g. on newlib targets lacking __aeabi_read_tp
+	  (Ubuntu's arm-none-eabi).
+	- Portability fixes found by new arm-none-eabi newlib and sdcc stm8 CI
+	  jobs: wrong arities in the !HAVE___BUILTIN_OBJECT_SIZE _BOS_* fallbacks,
+	  SAFECLIB_DISABLE_WCHAR never undef'd under cmake, errno fallbacks for
+	  ENOMEM/EINVAL/EILSEQ, non-const destbos decl mismatch in
+	  _strcat_s_chk/_strncat_s_chk, and avoid __has_attribute/__has_builtin
+	  on sdcc.
 
 Changes in 3.11.1
 	- make release hotfixes
