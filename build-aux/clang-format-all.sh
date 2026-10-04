@@ -81,8 +81,11 @@ for dir in $dirs; do
     if [ -n "$diag_files" ]; then
         # shellcheck disable=SC2086  # intentional word-split into
         # multiple sed -i filename arguments, not a scalar.
-        sed -i -e's,IGNORE(-Wcast - align),IGNORE(-Wcast-align),;' \
-               -e's,IGNORE(-Wuser - defined - warnings),IGNORE(-Wuser-defined-warnings),;' \
+        # clang-format mis-parses *_DIAG_IGNORE(-Wfoo-bar) as arithmetic
+        # (-Wfoo MINUS bar) and inserts spaces around every embedded
+        # hyphen, breaking the macro argument; undo it. Scoped to lines
+        # with "DIAG_IGNORE(-W" so it can't touch an unrelated "a - b".
+        sed -i -E '/DIAG_IGNORE\(-W/ s/ - /-/g' \
             $diag_files
     fi
     popd &>/dev/null || exit

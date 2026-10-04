@@ -108,5 +108,14 @@ for file in "$@"; do
 	if ! ${FMT} --dry-run --Werror "$file" 2>/dev/null; then
 		echo "  Formatted $file"
 		${FMT} -i "$file"
+		# clang-format mis-parses *_DIAG_IGNORE(-Wfoo-bar) as
+		# arithmetic (-Wfoo MINUS bar) and inserts spaces around
+		# every embedded hyphen, breaking the macro argument; undo
+		# it. Scoped to lines with "DIAG_IGNORE(-W" so it can't
+		# touch an unrelated "a - b". Same post-fixup as
+		# build-aux/clang-format-all.sh; keep both in sync.
+		if grep -q 'DIAG_IGNORE(-W' "$file" 2>/dev/null; then
+			sed -i -E '/DIAG_IGNORE\(-W/ s/ - /-/g' "$file"
+		fi
 	fi
 done
