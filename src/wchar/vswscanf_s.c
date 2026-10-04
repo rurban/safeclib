@@ -80,10 +80,7 @@ EXPORT int vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
                       va_list ap) {
     wchar_t *p;
     int ret;
-    _SAFEC_FILE sf = {
-        .cookie = (void *)src,
-        .lock = -1
-    };
+    _SAFEC_FILE sf = {.cookie = (void *)src, .lock = -1};
 
     if (unlikely(src == NULL)) {
         invoke_safe_str_constraint_handler("vswscanf_s: src is null", NULL,
@@ -129,7 +126,7 @@ EXPORT int vswscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 #endif
 
     errno = 0;
-    //ret = vswscanf(src, fmt, ap);
+    // ret = vswscanf(src, fmt, ap);
     ret = _safec_vfwscanf_impl(&sf, "vswscanf_s", fmt, ap, 1);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

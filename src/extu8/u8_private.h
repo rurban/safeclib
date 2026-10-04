@@ -10,7 +10,7 @@
 #endif
 
 static int utf8_len(const char8_t ch) U8_UNUSED;
-static uint32_t dec_utf8(char8_t** strp) U8_UNUSED;
+static uint32_t dec_utf8(char8_t **strp) U8_UNUSED;
 static int enc_utf8(char8_t *dest, const uint32_t cp) U8_UNUSED;
 static int u8_seqlen(const char8_t *s, size_t n) U8_UNUSED;
 static bool u8_is_valid(const char8_t *s, rsize_t smax) U8_UNUSED;
@@ -30,12 +30,13 @@ typedef struct {
 } _utf_t;
 
 static const _utf_t utf[] = {
-    /*             mask                 lead                beg      end    bits */
-    {0x3f/*0b00111111*/, 0x80/*0b10000000*/, 0,       0,        6},
-    {0x7f/*0b01111111*/, 0x00/*0b00000000*/, 0000,    0177,     7},
-    {0x1f/*0b00011111*/, 0xc0/*0b11000000*/, 0200,    03777,    5},
-    {0x0f/*0b00001111*/, 0xe0/*0b11100000*/, 04000,   0177777,  4},
-    {0x07/*0b00000111*/, 0xf0/*0b11110000*/, 0200000, 04177777, 3},
+    /*             mask                 lead                beg      end    bits
+     */
+    {0x3f /*0b00111111*/, 0x80 /*0b10000000*/, 0, 0, 6},
+    {0x7f /*0b01111111*/, 0x00 /*0b00000000*/, 0000, 0177, 7},
+    {0x1f /*0b00011111*/, 0xc0 /*0b11000000*/, 0200, 03777, 5},
+    {0x0f /*0b00001111*/, 0xe0 /*0b11100000*/, 04000, 0177777, 4},
+    {0x07 /*0b00000111*/, 0xf0 /*0b11110000*/, 0200000, 04177777, 3},
 };
 #define UTF_N (sizeof(utf) / sizeof(utf[0]))
 
@@ -78,7 +79,7 @@ static int utf8_len(const char8_t ch) {
 }
 
 /* convert utf8 to unicode codepoint (to_cp) */
-static uint32_t dec_utf8(char8_t** strp) {
+static uint32_t dec_utf8(char8_t **strp) {
     const char8_t *restrict str = *strp;
     int bytes = utf8_len(*str);
     int shift;
@@ -99,7 +100,7 @@ static uint32_t dec_utf8(char8_t** strp) {
         shift -= utf[0].bits_stored;
         codep |= (*str & utf[0].mask) << shift;
     }
-    *strp = (char8_t*)str;
+    *strp = (char8_t *)str;
     return codep;
 }
 

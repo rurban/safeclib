@@ -59,7 +59,8 @@ int test_u8ncpy_s(void) {
        never a dangling lead byte 0xC3. */
 
     {
-        char8_t src[] = "a\xC3\xA9" "b";
+        char8_t src[] = "a\xC3\xA9"
+                        "b";
         memset(dest, 'X', sizeof(dest));
         rc = u8ncpy_s(dest, LEN, src, 2);
         ERR(EOK)
@@ -75,7 +76,8 @@ int test_u8ncpy_s(void) {
     /* slen exactly fits the multi-byte character */
 
     {
-        char8_t src[] = "a\xC3\xA9" "b";
+        char8_t src[] = "a\xC3\xA9"
+                        "b";
         rc = u8ncpy_s(dest, LEN, src, 3);
         ERR(EOK)
         EXPSTR((char *)dest, "a\xC3\xA9")

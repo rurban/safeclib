@@ -71,8 +71,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strchr_s(const char *restrict dest, rsize_t dmax,
-                 const int ch, char **restrict resultp)
+errno_t strchr_s(const char *restrict dest, rsize_t dmax, const int ch,
+                 char **restrict resultp)
 #else
 EXPORT errno_t _strchr_s_chk(const char *restrict dest, rsize_t dmax,
                              const int ch, char **restrict resultp,

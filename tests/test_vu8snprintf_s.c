@@ -13,7 +13,7 @@
 
 static char8_t str1[LEN];
 int vtu8nprintf_s(char8_t *restrict dest, rsize_t dmax,
-                 const char *restrict fmt, ...);
+                  const char *restrict fmt, ...);
 int test_vu8snprintf_s(void);
 
 int vtu8nprintf_s(char8_t *restrict dest, rsize_t dmax,

@@ -143,7 +143,8 @@ EXPORT errno_t _u8natcmp_s_chk(const char8_t *dest, rsize_t dmax,
             cb = (char)src[++bi];
 
         /* process run of digits */
-        if (isdigit((int)(unsigned char)ca) && isdigit((int)(unsigned char)cb)) {
+        if (isdigit((int)(unsigned char)ca) &&
+            isdigit((int)(unsigned char)cb)) {
             fractional = (ca == '0' || cb == '0');
 
             if (fractional) {

@@ -281,7 +281,7 @@ static inline void *bnd_chk_malloc(size_t n) {
 /* msvcrt wprintf prints one byte less. cygwin not */
 #if defined(HAVE_MINGW32) && !defined(HAVE_MINGW64)
 #define ERRWCHAR(n)                                                            \
-    if (rc != (n)-1) {                                                         \
+    if (rc != (n) - 1) {                                                       \
         debug_printf("%s %u  Error rc=%d \n", __FUNCTION__, __LINE__,          \
                      (int)rc);                                                 \
         errs++;                                                                \
@@ -564,7 +564,7 @@ static inline void *bnd_chk_malloc(size_t n) {
 #ifdef _WIN32
 /* hangs at appveyor */
 #define SKIP_APPVEYOR(str)                                                     \
-    if (getenv_s(NULL, (char *restrict) & (str), LEN, "APPVEYOR") == EOK) {    \
+    if (getenv_s(NULL, (char *restrict)&(str), LEN, "APPVEYOR") == EOK) {      \
         printf(__FILE__ ": SKIP appveyor %u\n", __LINE__);                     \
         return 0;                                                              \
     }
@@ -586,7 +586,7 @@ static inline void *bnd_chk_malloc(size_t n) {
         (dmax)--;                                                              \
     } else {                                                                   \
         *dest++ = ((cp) >> 10) + 0xd7c0;                                       \
-        *dest++ = ((cp)&0x3ff) + 0xdc00;                                       \
+        *dest++ = ((cp) & 0x3ff) + 0xdc00;                                     \
         (dmax)--;                                                              \
         (dmax)--;                                                              \
     }

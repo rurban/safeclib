@@ -95,8 +95,7 @@ int test_fscanf_s(void) {
     ERR(1);
     ERRNO(0);
     if (i1 != 24) {
-        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__,
-                     i1);
+        debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__, i1);
         errs++;
     }
 

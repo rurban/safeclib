@@ -98,7 +98,7 @@ int test_strcat_s(void) {
     /* some not so good compilers have destbos == BOS_UNKNOWN, like pgcc.
        hence they do just CHK_DMAX_MAX, and don't clear str1 at all */
     if (_BOS_KNOWN(str1))
-      EXPSTR(str1, !use_msvcrt ? "" : "aaaaa")
+        EXPSTR(str1, !use_msvcrt ? "" : "aaaaa")
 #endif
 
     /*--------------------------------------------------*/
@@ -182,8 +182,9 @@ int test_strcat_s(void) {
     ERR(EOK)
     len3 = strlen(str1);
     if (len3 != (len1 + len2)) {
-        debug_printf("%s %u lengths wrong: %" PRId32 "  %" PRId32 "  %" PRId32 " \n", __FUNCTION__,
-                     __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %" PRId32 "  %" PRId32 "  %" PRId32
+                     " \n",
+                     __FUNCTION__, __LINE__, len1, len2, len3);
         errs++;
     }
     CHECK_SLACK(&str1[len3], LEN - len3);

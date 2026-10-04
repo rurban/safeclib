@@ -88,10 +88,10 @@ errno_t u8rtowcs_s(size_t *restrict retvalp, wchar_t *restrict dest,
                    rsize_t dmax, const char8_t **restrict srcp, rsize_t len,
                    mbstate_t *restrict ps)
 #else
-EXPORT errno_t _u8rtowcs_s_chk(size_t *restrict retvalp,
-                               wchar_t *restrict dest, rsize_t dmax,
-                               const char8_t **restrict srcp, rsize_t len,
-                               mbstate_t *restrict ps, const size_t destbos)
+EXPORT errno_t _u8rtowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
+                               rsize_t dmax, const char8_t **restrict srcp,
+                               rsize_t len, mbstate_t *restrict ps,
+                               const size_t destbos)
 #endif
 {
     wchar_t *orig_dest;
@@ -112,8 +112,7 @@ EXPORT errno_t _u8rtowcs_s_chk(size_t *restrict retvalp,
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
                 invoke_safe_str_constraint_handler(
-                    "u8rtowcs_s: dmax/len exceeds max", (void *)dest,
-                    ESLEMAX);
+                    "u8rtowcs_s: dmax/len exceeds max", (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             BND_CHK_PTR_BOUNDS(dest, destsz);

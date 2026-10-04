@@ -75,8 +75,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strcspn_s(const char *dest, rsize_t dmax, const char *src,
-                  rsize_t slen, rsize_t *countp)
+errno_t strcspn_s(const char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                  rsize_t *countp)
 #else
 EXPORT errno_t _strcspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                               rsize_t slen, rsize_t *countp,
@@ -124,9 +124,8 @@ EXPORT_SYMBOL(_strcspn_s_chk);
 #ifndef FOR_DOXYGEN
 /* The constraints are already checked by _strcspn_s_chk or proven at
    compile-time. GH #48 */
-EXPORT errno_t _strcspn_s_uchk(const char *dest, rsize_t dmax,
-                               const char *src, rsize_t slen,
-                               rsize_t *countp) {
+EXPORT errno_t _strcspn_s_uchk(const char *dest, rsize_t dmax, const char *src,
+                               rsize_t slen, rsize_t *countp) {
     const char *scan2;
     rsize_t smax;
 

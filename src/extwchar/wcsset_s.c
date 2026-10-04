@@ -74,8 +74,8 @@
 #ifdef FOR_DOXYGEN
 errno_t wcsset_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t value)
 #else
-EXPORT errno_t _wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t value,
-                             const size_t destbos)
+EXPORT errno_t _wcsset_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                             const wchar_t value, const size_t destbos)
 #endif
 {
     const size_t destsz = dmax * sizeof(wchar_t);

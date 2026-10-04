@@ -128,8 +128,8 @@ static errno_t u8fcu8_next(u8fcu8_iter_t *iter, uint32_t *codepoint) {
  *    u8u8_s(), u8fccmp_s(), u8ifcu8_s(), u8norm_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8fcu8_s(char8_t *dest, rsize_t dmax, const char8_t *src,
-                 rsize_t slen, char8_t **substring)
+errno_t u8fcu8_s(char8_t *dest, rsize_t dmax, const char8_t *src, rsize_t slen,
+                 char8_t **substring)
 #else
 EXPORT errno_t _u8fcu8_s_chk(char8_t *dest, rsize_t dmax, const char8_t *src,
                              rsize_t slen, char8_t **substring,

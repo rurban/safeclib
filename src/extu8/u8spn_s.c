@@ -70,9 +70,8 @@ errno_t u8spn_s(const char8_t *dest, rsize_t dmax, const char8_t *src,
                 rsize_t slen, rsize_t *countp)
 #else
 EXPORT errno_t _u8spn_s_chk(const char8_t *dest, rsize_t dmax,
-                            const char8_t *src, rsize_t slen,
-                            rsize_t *countp, const size_t destbos,
-                            const size_t srcbos)
+                            const char8_t *src, rsize_t slen, rsize_t *countp,
+                            const size_t destbos, const size_t srcbos)
 #endif
 {
     const char8_t *scan2;
@@ -103,8 +102,8 @@ EXPORT errno_t _u8spn_s_chk(const char8_t *dest, rsize_t dmax,
     } else {
         if (unlikely(slen > srcbos)) {
             if (unlikely(slen > RSIZE_MAX_STR)) {
-                invoke_safe_str_constraint_handler(
-                    "u8spn_s: slen exceeds dmax", (void *)src, ESLEMAX);
+                invoke_safe_str_constraint_handler("u8spn_s: slen exceeds dmax",
+                                                   (void *)src, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             } else {
                 invoke_safe_str_constraint_handler("u8spn_s: slen exceeds src",

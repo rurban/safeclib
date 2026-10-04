@@ -106,8 +106,7 @@ EXPORT errno_t _wctou8_s_chk(int *restrict retvalp, char8_t *restrict dest,
         return RCNEGATE(EILSEQ);
     }
     if (unlikely((rsize_t)blen >= dmax)) {
-        handle_error((char *)dest, dmax, "wctou8_s: not enough space",
-                     ESNOSPC);
+        handle_error((char *)dest, dmax, "wctou8_s: not enough space", ESNOSPC);
         return RCNEGATE(ESNOSPC);
     }
 

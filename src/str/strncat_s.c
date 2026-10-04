@@ -119,8 +119,8 @@
  *    http://www.informit.com/articles/article.aspx?p=2036582&seqNum=5
  */
 #ifdef FOR_DOXYGEN
-errno_t strncat_s(char *restrict dest, rsize_t dmax,
-                  const char *restrict src, rsize_t slen)
+errno_t strncat_s(char *restrict dest, rsize_t dmax, const char *restrict src,
+                  rsize_t slen)
 #else
 EXPORT errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
                               const char *restrict src, rsize_t slen,
@@ -156,8 +156,8 @@ EXPORT errno_t _strncat_s_chk(char *restrict dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely((long)slen > (long)srcbos)) {
-        return handle_str_bos_overflow("strncat_s: slen exceeds src",
-                                       dest, destbos);
+        return handle_str_bos_overflow("strncat_s: slen exceeds src", dest,
+                                       destbos);
     }
 
     /* hold base of dest in case src was not copied */

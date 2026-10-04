@@ -72,8 +72,8 @@
  */
 
 #ifdef FOR_DOXYGEN
-errno_t strspn_s(const char *dest, rsize_t dmax, const char *src,
-                 rsize_t slen, rsize_t *countp)
+errno_t strspn_s(const char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                 rsize_t *countp)
 #else
 EXPORT errno_t _strspn_s_chk(const char *dest, rsize_t dmax, const char *src,
                              rsize_t slen, rsize_t *countp,

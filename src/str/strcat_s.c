@@ -108,8 +108,7 @@
  */
 
 #ifdef FOR_DOXYGEN
-errno_t strcat_s(char *restrict dest, rsize_t dmax,
-                 const char *restrict src)
+errno_t strcat_s(char *restrict dest, rsize_t dmax, const char *restrict src)
 #else
 EXPORT errno_t _strcat_s_chk(char *restrict dest, rsize_t dmax,
                              const char *restrict src, size_t destbos)

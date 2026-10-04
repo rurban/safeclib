@@ -80,10 +80,7 @@ EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
     va_list ap;
     wchar_t *p;
     int ret;
-    _SAFEC_FILE sf = {
-        .f = stdin,
-        .lock = -1
-    };
+    _SAFEC_FILE sf = {.f = stdin, .lock = -1};
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("wscanf_s: fmt is null", NULL,
@@ -119,7 +116,7 @@ EXPORT int wscanf_s(const wchar_t *restrict fmt, ...) {
     errno = 0;
     va_start(ap, fmt);
     ret = _safec_vfwscanf_impl(&sf, "wscanf_s", fmt, ap, 1);
-    //ret = vwscanf(fmt, ap);
+    // ret = vwscanf(fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

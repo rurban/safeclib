@@ -39,8 +39,8 @@ int test_u8lwr_s(void) {
     rc = u8lwr_s(str, LEN);
     ERR(EOK)
     if (strcmp((char *)str, "hello") != 0) {
-        debug_printf("%s %u  str=%s, expected hello\n", __FUNCTION__,
-                     __LINE__, str);
+        debug_printf("%s %u  str=%s, expected hello\n", __FUNCTION__, __LINE__,
+                     str);
         errs++;
     }
 
@@ -76,8 +76,8 @@ int test_u8lwr_s(void) {
     rc = u8lwr_s(str, LEN);
     ERR(EOK)
     if (strcmp((char *)str, "already lower") != 0) {
-        debug_printf("%s %u  str=%s, expected 'already lower'\n",
-                     __FUNCTION__, __LINE__, str);
+        debug_printf("%s %u  str=%s, expected 'already lower'\n", __FUNCTION__,
+                     __LINE__, str);
         errs++;
     }
 

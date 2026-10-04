@@ -41,7 +41,7 @@
 
 /* from musl: */
 
-//#include <locale.h>
+// #include <locale.h>
 #define SIZE_hh -2
 #define SIZE_h -1
 #define SIZE_def 0
@@ -153,7 +153,7 @@ static void *safec_arg_n(va_list ap, unsigned int n) {
 
 static int safec_in_wset(const wchar_t *set, int c) {
     wchar_t j;
-    const wchar_t wc = (wchar_t) c;
+    const wchar_t wc = (wchar_t)c;
     const wchar_t *p = set;
     if (*p == '-') {
         if (wc == '-')
@@ -300,7 +300,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
         case 'S':
         case 'C':
         case 'p':
-        //case 'n':
+            // case 'n':
             p--;
             break;
         case 'n': {
@@ -328,8 +328,8 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
             destsize = va_arg(ap, rsize_t);
             if (unlikely(destsize == 0 || destsize > RSIZE_MAX_STR)) {
                 char etmp[96];
-                snprintf(etmp, sizeof etmp,
-                         "%s: invalid destination size", funcname);
+                snprintf(etmp, sizeof etmp, "%s: invalid destination size",
+                         funcname);
                 invoke_safe_str_constraint_handler(etmp, NULL, ESZEROL);
                 errno = ESZEROL;
                 return EOF;
@@ -496,8 +496,8 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
                  * such restriction, which is why musl's own vfwscanf()
                  * gets away with delegating to plain fscanf() here). */
                 swprintf(wnumfmt, sizeof(wnumfmt) / sizeof(wchar_t),
-                        L"%.*s%.0d%ls%lc%%lln", 1 + !dest, L"%*", width,
-                        size_pfx[size + 2], (wint_t)t);
+                         L"%.*s%.0d%ls%lc%%lln", 1 + !dest, L"%*", width,
+                         size_pfx[size + 2], (wint_t)t);
                 cnt = 0;
                 if (fwscanf(sf->f, wnumfmt, dest ? dest : &cnt, &cnt) == -1)
                     goto input_fail;

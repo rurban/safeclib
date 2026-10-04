@@ -55,8 +55,8 @@ typedef struct safec_scan_cursor {
     void (*setlim)(void *ctx, long lim);
 } safec_scan_cursor;
 
-unsigned long long safec_intscan(safec_scan_cursor *cur, unsigned base,
-                                 int pok, unsigned long long lim);
+unsigned long long safec_intscan(safec_scan_cursor *cur, unsigned base, int pok,
+                                 unsigned long long lim);
 #ifndef PRINTF_DISABLE_SUPPORT_FLOAT
 /* sdcc, and any other freestanding target without long double, must not
    see this declaration at all: ENABLE_MINIMAL excludes safec_floatscan.c

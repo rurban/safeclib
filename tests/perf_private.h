@@ -69,57 +69,54 @@ static inline clock_t rdtsc() {
     ASM_INLINE volatile("rdtsc" : "=A"(x));
     return x;
 #elif defined(__ARM_ARCH) && (__ARM_ARCH >= 7) && (SIZEOF_SIZE_T == 4)
-  // V7 is the earliest arch that has a standard cyclecount (some say 6)
-  uint32_t pmccntr;
-  uint32_t pmuseren;
-  uint32_t pmcntenset;
-  // Read the user mode perf monitor counter access permissions.
-  ASM_INLINE volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
-  if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
-    ASM_INLINE volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
-    if (pmcntenset & 0x80000000ul) {  // Is it counting?
-      ASM_INLINE volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
-      // The counter is set up to count every 64th cycle
-      return (int64_t)(pmccntr) * 64;  // Should optimize to << 6
+    // V7 is the earliest arch that has a standard cyclecount (some say 6)
+    uint32_t pmccntr;
+    uint32_t pmuseren;
+    uint32_t pmcntenset;
+    // Read the user mode perf monitor counter access permissions.
+    ASM_INLINE volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
+    if (pmuseren & 1) { // Allows reading perfmon counters for user mode code.
+        ASM_INLINE volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
+        if (pmcntenset & 0x80000000ul) { // Is it counting?
+            ASM_INLINE volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
+            // The counter is set up to count every 64th cycle
+            return (int64_t)(pmccntr) * 64; // Should optimize to << 6
+        }
     }
-  }
-  return (uint64_t)rdtsc();
+    return (uint64_t)rdtsc();
 #elif defined(__aarch64__) && (SIZEOF_SIZE_T == 8)
-  uint64_t pmccntr;
-  uint64_t pmuseren = 1UL;
-  // Read the user mode perf monitor counter access permissions.
-  //ASM_INLINE volatile("mrs cntv_ctl_el0,  %0" : "=r" (pmuseren));
-  if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
-    ASM_INLINE volatile("mrs %0, cntvct_el0" : "=r" (pmccntr));
-    return (uint64_t)(pmccntr) * 64;  // Should optimize to << 6
-  }
-  return (uint64_t)rdtsc();
+    uint64_t pmccntr;
+    uint64_t pmuseren = 1UL;
+    // Read the user mode perf monitor counter access permissions.
+    // ASM_INLINE volatile("mrs cntv_ctl_el0,  %0" : "=r" (pmuseren));
+    if (pmuseren & 1) { // Allows reading perfmon counters for user mode code.
+        ASM_INLINE volatile("mrs %0, cntvct_el0" : "=r"(pmccntr));
+        return (uint64_t)(pmccntr) * 64; // Should optimize to << 6
+    }
+    return (uint64_t)rdtsc();
 #elif defined(__powerpc64__) || defined(__ppc64__)
     uint64_t tb;
-    ASM_INLINE volatile (\
-      "mfspr %0, 268"
-      : "=r" (tb));
+    ASM_INLINE volatile("mfspr %0, 268" : "=r"(tb));
     return tb;
 #elif defined(__powerpc__) || defined(__ppc__)
     // This returns a time-base, which is not always precisely a cycle-count.
     uint32_t tbu, tbl, tmp;
-    ASM_INLINE volatile (\
-      "0:\n"
-      "mftbu %0\n"
-      "mftb %1\n"
-      "mftbu %2\n"
-      "cmpw %0, %2\n"
-      "bne- 0b"
-      : "=r" (tbu), "=r" (tbl), "=r" (tmp));
-    return (((uint64_t) tbu << 32) | tbl);
+    ASM_INLINE volatile("0:\n"
+                        "mftbu %0\n"
+                        "mftb %1\n"
+                        "mftbu %2\n"
+                        "cmpw %0, %2\n"
+                        "bne- 0b" : "=r"(tbu),
+                        "=r"(tbl), "=r"(tmp));
+    return (((uint64_t)tbu << 32) | tbl);
 #elif defined(__sparc__)
     uint64_t tick;
     ASM_INLINE(".byte 0x83, 0x41, 0x00, 0x00");
-    ASM_INLINE("mov   %%g1, %0" : "=r" (tick));
+    ASM_INLINE("mov   %%g1, %0" : "=r"(tick));
     return tick;
 #elif defined(__ia64__)
     uint64_t itc;
-    ASM_INLINE("mov %0 = ar.itc" : "=r" (itc));
+    ASM_INLINE("mov %0 = ar.itc" : "=r"(itc));
     return itc;
 #else
 #define NO_CYCLE_COUNTER
@@ -127,59 +124,54 @@ static inline clock_t rdtsc() {
 #endif
 }
 
-// see https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/ia-32-ia-64-benchmark-code-execution-paper.pdf
+// see
+// https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/ia-32-ia-64-benchmark-code-execution-paper.pdf
 // 3.2.1 The Improved Benchmarking Method
-static inline uint64_t timer_start()
-{
+static inline uint64_t timer_start() {
 #ifndef ASM_INLINE
     return (uint64_t)rdtsc();
-#elif defined (__i386__) || (defined(__x86_64__) && SIZEOF_SIZE_T == 4)
-  uint32_t cycles_high, cycles_low;
-  ASM_INLINE volatile
-      ("cpuid\n\t"
-       "rdtsc\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%eax", "%ebx", "%ecx", "%edx");
+#elif defined(__i386__) || (defined(__x86_64__) && SIZEOF_SIZE_T == 4)
+    uint32_t cycles_high, cycles_low;
+    ASM_INLINE volatile("cpuid\n\t"
+                        "rdtsc\n\t"
+                        "mov %%edx, %0\n\t"
+                        "mov %%eax, %1\n\t" : "=r"(cycles_high),
+                        "=r"(cycles_low)::"%eax", "%ebx", "%ecx", "%edx");
     return ((uint64_t)cycles_high << 32) | cycles_low;
 #elif defined __x86_64__
-  uint32_t cycles_high, cycles_low;
-  ASM_INLINE volatile
-      ("cpuid\n\t"
-       "rdtsc\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%rax", "%rbx", "%rcx", "%rdx");
-  return ((uint64_t)cycles_high << 32) | cycles_low;
+    uint32_t cycles_high, cycles_low;
+    ASM_INLINE volatile("cpuid\n\t"
+                        "rdtsc\n\t"
+                        "mov %%edx, %0\n\t"
+                        "mov %%eax, %1\n\t" : "=r"(cycles_high),
+                        "=r"(cycles_low)::"%rax", "%rbx", "%rcx", "%rdx");
+    return ((uint64_t)cycles_high << 32) | cycles_low;
 #else
-  return (uint64_t)rdtsc();
+    return (uint64_t)rdtsc();
 #endif
 }
 
-static inline uint64_t timer_end()
-{
+static inline uint64_t timer_end() {
 #ifndef ASM_INLINE
     return (uint64_t)rdtsc();
-#elif defined (__i386__) || (defined(__x86_64__) && defined (HAVE_BIT32))
-  uint32_t cycles_high, cycles_low;
- ASM_INLINE volatile
-      ("rdtscp\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t"
-       "cpuid\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%eax", "%ebx", "%ecx", "%edx");
+#elif defined(__i386__) || (defined(__x86_64__) && defined(HAVE_BIT32))
+    uint32_t cycles_high, cycles_low;
+    ASM_INLINE volatile("rdtscp\n\t"
+                        "mov %%edx, %0\n\t"
+                        "mov %%eax, %1\n\t"
+                        "cpuid\n\t" : "=r"(cycles_high),
+                        "=r"(cycles_low)::"%eax", "%ebx", "%ecx", "%edx");
     return ((uint64_t)cycles_high << 32) | cycles_low;
 #elif defined __x86_64__
-  uint32_t cycles_high, cycles_low;
-  ASM_INLINE volatile
-      ("rdtscp\n\t"
-       "mov %%edx, %0\n\t"
-       "mov %%eax, %1\n\t"
-       "cpuid\n\t": "=r" (cycles_high), "=r" (cycles_low)::
-       "%rax", "%rbx", "%rcx", "%rdx");
-  return ((uint64_t)cycles_high << 32) | cycles_low;
+    uint32_t cycles_high, cycles_low;
+    ASM_INLINE volatile("rdtscp\n\t"
+                        "mov %%edx, %0\n\t"
+                        "mov %%eax, %1\n\t"
+                        "cpuid\n\t" : "=r"(cycles_high),
+                        "=r"(cycles_low)::"%rax", "%rbx", "%rcx", "%rdx");
+    return ((uint64_t)cycles_high << 32) | cycles_low;
 #else
-  return (uint64_t)rdtsc();
+    return (uint64_t)rdtsc();
 #endif
 }
 

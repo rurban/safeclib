@@ -69,17 +69,18 @@
  * @retval  -ESLEMAX    when dmax > RSIZE_MAX_STR
  * @retval  -ESOVRLP    when buffers overlap
  * @retval  -ESNOSPC    when dest < src
- * @retval  -ESU8I      when disallowed mixed scripts or bidi changes were detected.
+ * @retval  -ESU8I      when disallowed mixed scripts or bidi changes were
+ * detected.
  *
  * @see
  *    u8cpy(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8icpy_s(char8i_t *restrict dest, rsize_t dmax, const char8_t *restrict src)
+errno_t u8icpy_s(char8i_t *restrict dest, rsize_t dmax,
+                 const char8_t *restrict src)
 #else
 EXPORT errno_t _u8icpy_s_chk(char8i_t *restrict dest, rsize_t dmax,
-                             const char8_t *restrict src,
-                             const size_t destbos)
+                             const char8_t *restrict src, const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
@@ -104,7 +105,7 @@ EXPORT errno_t _u8icpy_s_chk(char8i_t *restrict dest, rsize_t dmax,
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = (char*)dest;
+    orig_dest = (char *)dest;
 
     if (dest < src) {
         overlap_bumper = src;
@@ -112,9 +113,9 @@ EXPORT errno_t _u8icpy_s_chk(char8i_t *restrict dest, rsize_t dmax,
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icpy_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8icpy_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -145,9 +146,9 @@ EXPORT errno_t _u8icpy_s_chk(char8i_t *restrict dest, rsize_t dmax,
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icpy_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8icpy_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -179,8 +180,8 @@ EXPORT errno_t _u8icpy_s_chk(char8i_t *restrict dest, rsize_t dmax,
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
     handle_error(orig_dest, orig_dmax,
-                  "u8icpy_s: not "
-                  "enough space for src",
-                  ESNOSPC);
+                 "u8icpy_s: not "
+                 "enough space for src",
+                 ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }

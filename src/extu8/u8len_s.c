@@ -59,5 +59,5 @@ rsize_t u8len_s(const char8_t *str)
 EXPORT rsize_t _u8len_s_chk(const char8_t *str, size_t strbos)
 #endif
 {
-    return _u8nlen_s_chk(str, str ? (rsize_t)strlen((char*)str) : 0, strbos);
+    return _u8nlen_s_chk(str, str ? (rsize_t)strlen((char *)str) : 0, strbos);
 }

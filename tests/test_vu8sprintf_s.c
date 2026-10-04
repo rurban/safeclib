@@ -12,12 +12,12 @@
 #define LEN (128)
 
 static char8_t str1[LEN];
-int vtu8printf_s(char8_t *restrict dest, rsize_t dmax,
-                const char *restrict fmt, ...);
+int vtu8printf_s(char8_t *restrict dest, rsize_t dmax, const char *restrict fmt,
+                 ...);
 int test_vu8sprintf_s(void);
 
-int vtu8printf_s(char8_t *restrict dest, rsize_t dmax,
-                 const char *restrict fmt, ...) {
+int vtu8printf_s(char8_t *restrict dest, rsize_t dmax, const char *restrict fmt,
+                 ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);

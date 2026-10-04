@@ -71,8 +71,8 @@
  *    u8sprintf_s(), vu8snprintf_s()
  */
 #ifdef FOR_DOXYGEN
-int u8snprintf_s(char8_t *restrict dest, rsize_t dmax,
-                 const char *restrict fmt, ...)
+int u8snprintf_s(char8_t *restrict dest, rsize_t dmax, const char *restrict fmt,
+                 ...)
 #else
 EXPORT int _u8snprintf_s_chk(char8_t *restrict dest, rsize_t dmax,
                              const size_t destbos, const char *restrict fmt,

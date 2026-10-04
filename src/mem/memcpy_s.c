@@ -89,8 +89,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t memcpy_s(void *restrict dest, rsize_t dmax,
-                 const void *restrict src, rsize_t slen)
+errno_t memcpy_s(void *restrict dest, rsize_t dmax, const void *restrict src,
+                 rsize_t slen)
 #else
 EXPORT errno_t _memcpy_s_chk(void *restrict dest, rsize_t dmax,
                              const void *restrict src, rsize_t slen,

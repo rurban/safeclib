@@ -36,8 +36,8 @@
 #endif
 
 #ifndef FOR_DOXYGEN
-/* The dest/dmax constraints are already checked by _strnterminate_s_chk or proven at
-   compile-time. GH #48 */
+/* The dest/dmax constraints are already checked by _strnterminate_s_chk or
+   proven at compile-time. GH #48 */
 EXPORT rsize_t _strnterminate_s_uchk(char *dest, rsize_t dmax) {
     rsize_t count;
 

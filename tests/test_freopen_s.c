@@ -46,10 +46,10 @@ int test_freopen_s(void) {
     if (errno)
         ERRNO(ENOENT);
 
-        /*--------------------------------------------------*/
+    /*--------------------------------------------------*/
 
-        /* TODO: fails with asan and valgrind on some glibc systems (not repro)
-           in strlen or __open_nocancel. glibc bug. */
+    /* TODO: fails with asan and valgrind on some glibc systems (not repro)
+       in strlen or __open_nocancel. glibc bug. */
 #ifndef __GLIBC__
 #ifndef HAVE_ASAN
     file = stdin;

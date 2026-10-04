@@ -64,8 +64,8 @@
  * @param[out] len    pointer to a size_t where getenv_s will store the length
  *                    of the found environment variable. Might be NULL.
  *                    Note that on Microsoft Windows we return len+1, the
- *                    size of the buffer, including the terminating NUL, to match
- *                    the wrong getenv_s implementation und usages in the wild there.
+ *                    size of the buffer, including the terminating NUL, to
+ * match the wrong getenv_s implementation und usages in the wild there.
  * @param[out] dest   pointer to a string where getenv_s will store the
  *                    contents of the found environment variable. Might be NULL.
  * @param[in]  dmax   maximum number of characters that getenv_s is allowed
@@ -75,7 +75,8 @@
  *
  * @pre name shall not be a null pointer.
  * @pre dmax shall not be greater than RSIZE_MAX_STR and size of dest.
- * @pre dmax shall be 0 if dest is NULL or greater than the strlen of the returned env value.
+ * @pre dmax shall be 0 if dest is NULL or greater than the strlen of the
+ * returned env value.
  *
  * @return zero if the environment variable was found, non-zero if it was not
  *         found of if a runtime constrant violation occurred. On any error,
@@ -92,8 +93,8 @@
  */
 
 #ifdef FOR_DOXYGEN
-errno_t getenv_s(size_t *restrict len, char *restrict dest,
-                     rsize_t dmax, const char *restrict name)
+errno_t getenv_s(size_t *restrict len, char *restrict dest, rsize_t dmax,
+                 const char *restrict name)
 #else
 EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
                              rsize_t dmax, const char *restrict name,
@@ -119,13 +120,12 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
                 return RCNEGATE(ESLEMAX);
             }
         }
-    }
-    else {
+    } else {
         if (dmax != 0) { // with dest == NULL
             if (len)
                 *len = 0;
-            invoke_safe_str_constraint_handler("getenv_s: dmax must be 0",
-                                               NULL, ESNULLP);
+            invoke_safe_str_constraint_handler("getenv_s: dmax must be 0", NULL,
+                                               ESNULLP);
             return ESNULLP;
         }
     }
@@ -134,10 +134,9 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
             *len = 0;
         if (likely(dest)) {
             handle_error(dest, dmax, "getenv_s: name is null", ESNULLP);
-        }
-        else {
-            invoke_safe_str_constraint_handler("getenv_s: name is null",
-                                               NULL, ESNULLP);
+        } else {
+            invoke_safe_str_constraint_handler("getenv_s: name is null", NULL,
+                                               ESNULLP);
         }
         return ESNULLP;
     }

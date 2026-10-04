@@ -73,8 +73,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strcasestr_s(char *dest, rsize_t dmax, const char *src,
-                     rsize_t slen, char **substring)
+errno_t strcasestr_s(char *dest, rsize_t dmax, const char *src, rsize_t slen,
+                     char **substring)
 #else
 EXPORT errno_t _strcasestr_s_chk(char *dest, rsize_t dmax, const char *src,
                                  rsize_t slen, char **substring,

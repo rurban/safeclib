@@ -76,11 +76,12 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strpbrk_s(char *dest, rsize_t dmax, char *src, rsize_t slen, char **firstp)
+errno_t strpbrk_s(char *dest, rsize_t dmax, char *src, rsize_t slen,
+                  char **firstp)
 #else
 EXPORT errno_t _strpbrk_s_chk(char *dest, rsize_t dmax, char *src, rsize_t slen,
-                              char **firstp,
-                              const size_t destbos, const size_t srcbos)
+                              char **firstp, const size_t destbos,
+                              const size_t srcbos)
 #endif
 {
     CHK_SRC_NULL("strpbrk_s", firstp)

@@ -78,17 +78,24 @@
  */
 
 EXPORT int vsscanf_s(const char *restrict buffer, const char *restrict fmt,
-                     va_list ap)
-{
+                     va_list ap) {
 #if defined(HAVE_STRSTR)
     char *p;
 #endif
     int ret;
     /* positional: sdcc miscompiles designated initializers with
        --stack-auto */
-    _SAFEC_FILE sf = { NULL, (unsigned char *)(void *)buffer, 0,
-                       (void *)buffer, NULL, NULL, safec_string_read, -1,
-                       NULL, 0, 0 };
+    _SAFEC_FILE sf = {NULL,
+                      (unsigned char *)(void *)buffer,
+                      0,
+                      (void *)buffer,
+                      NULL,
+                      NULL,
+                      safec_string_read,
+                      -1,
+                      NULL,
+                      0,
+                      0};
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("vsscanf_s: buffer is null", NULL,

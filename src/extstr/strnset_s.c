@@ -77,8 +77,8 @@
 #ifdef FOR_DOXYGEN
 errno_t strnset_s(char *restrict dest, rsize_t dmax, int value, rsize_t n)
 #else
-EXPORT errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value, rsize_t n,
-                              const size_t destbos)
+EXPORT errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value,
+                              rsize_t n, const size_t destbos)
 #endif
 {
     CHK_DEST_NULL("strnset_s")
@@ -106,8 +106,7 @@ EXPORT errno_t _strnset_s_chk(char *restrict dest, rsize_t dmax, int value, rsiz
 #ifndef FOR_DOXYGEN
 /* The constraints are already checked by _strnset_s_chk or proven at
    compile-time. GH #48 */
-EXPORT errno_t _strnset_s_uchk(char *dest, rsize_t dmax, int value,
-                               rsize_t n) {
+EXPORT errno_t _strnset_s_uchk(char *dest, rsize_t dmax, int value, rsize_t n) {
 #ifdef SAFECLIB_STR_NULL_SLACK
     char *orig_dest = dest;
 #else

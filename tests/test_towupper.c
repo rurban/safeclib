@@ -76,20 +76,21 @@ int check_casefolding(uint32_t lwr, uint32_t upr) {
             if (lwr != mp) {
                 if (*status != 'F') {
                     /* false positives */
-                    debug_printf(
-                      "cross-check U+%04X: U+%04X != U+%04X status=%s, name=%s:\n",
-                      wc, lwr, mp, status, name);
+                    debug_printf("cross-check U+%04X: U+%04X != U+%04X "
+                                 "status=%s, name=%s:\n",
+                                 wc, lwr, mp, status, name);
                     /* cross-check with perl */
                     if (do_perl_test) {
                         if (!init) {
                             fprintf(pl, "use v%s;\n", PERL_VERSION);
                             fprintf(pl, "use Unicode::UCD;\n");
-                            fprintf(pl,
-                                    "warn \"Unicode::UCD::UnicodeVersion() must be "
-                                    "%d.0.0\" if Unicode::UCD::UnicodeVersion() ne "
-                                    "\"%d.0.0\";\n",
-                                    SAFECLIB_UNICODE_VERSION,
-                                    SAFECLIB_UNICODE_VERSION);
+                            fprintf(
+                                pl,
+                                "warn \"Unicode::UCD::UnicodeVersion() must be "
+                                "%d.0.0\" if Unicode::UCD::UnicodeVersion() ne "
+                                "\"%d.0.0\";\n",
+                                SAFECLIB_UNICODE_VERSION,
+                                SAFECLIB_UNICODE_VERSION);
                             fprintf(pl, "my ($l,$u,$got);\n");
                             init = 1;
                         }
@@ -177,8 +178,7 @@ int test_towupper(void) {
     cf = fopen(CFOLD, "r");
     if (!cf) {
         char url[256];
-        snprintf(url, 255,
-                 "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
+        snprintf(url, 255, "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
                  SAFECLIB_UNICODE_VERSION, CFOLD);
         printf("downloading %s via %s ...", CFOLD, url);
         fflush(stdout);

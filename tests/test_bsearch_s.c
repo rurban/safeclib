@@ -69,14 +69,16 @@ int test_bsearch_s(void) {
         PTRNULL(vitem);
 
     EXPECT_BOS("empty compar")
-    vitem = bsearch_s(&key, (const void *)array, LEN, sizeof(array[0]), NULL, NULL);
+    vitem =
+        bsearch_s(&key, (const void *)array, LEN, sizeof(array[0]), NULL, NULL);
     ERRNO_MSVC(ESNULLP, EINVAL);
     PTRNULL(vitem);
 
     /*--------------------------------------------------*/
 
     EXPECT_BOS("base overflow")
-    vitem = bsearch_s(&key, array, RSIZE_MAX_MEM + 1, sizeof(array[0]), comp, NULL);
+    vitem =
+        bsearch_s(&key, array, RSIZE_MAX_MEM + 1, sizeof(array[0]), comp, NULL);
 #ifdef HAVE___BUILTIN_OBJECT_SIZE
     ERRNO_MSVC(ESNOSPC, EOF);
 #else

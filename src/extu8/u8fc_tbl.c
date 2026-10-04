@@ -593,12 +593,11 @@ static int _u8_towfc_single(uint32_t *dest, const uint32_t src) {
         goto single;
     }
 
-single:
-    {
-        uint32_t cp = src < 128 ? (uint32_t)tolower(src) : _towcase(src, 1);
-        dest[0] = cp;
-        return cp == src ? -1 : 1;
-    }
+single: {
+    uint32_t cp = src < 128 ? (uint32_t)tolower(src) : _towcase(src, 1);
+    dest[0] = cp;
+    return cp == src ? -1 : 1;
+}
 }
 
 /* Writes the fold-cased codepoint(s) to dest (room for 3) for the given

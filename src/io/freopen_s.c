@@ -41,7 +41,8 @@
    installed mingw-w64 headers (renamed/removed across releases). */
 #if (defined(TEST_MSVCRT) && defined(HAVE_FREOPEN_S)) ||                       \
     (defined(MINGW_HAS_SECURE_API) || defined(_STDIO_S_DEFINED) ||             \
-     (defined(HAVE_FREOPEN_S) && (defined(HAVE_MINGW64) || defined(HAVE_MINGW32))))
+     (defined(HAVE_FREOPEN_S) &&                                               \
+      (defined(HAVE_MINGW64) || defined(HAVE_MINGW32))))
 #else
 
 /**

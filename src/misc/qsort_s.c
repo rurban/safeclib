@@ -204,7 +204,8 @@ static inline void shr(size_t p[2], int n) {
         p[1] = 0;
     }
     p[0] >>= n;
-    // TODO: The result of the left shift is undefined due to shifting by '64', which is greater or equal to the width of type 'size_t'
+    // TODO: The result of the left shift is undefined due to shifting by '64',
+    // which is greater or equal to the width of type 'size_t'
     p[0] |= p[1] << (sizeof(size_t) * 8 - n);
     p[1] >>= n;
 }
@@ -344,8 +345,7 @@ static void qsort_musl(void *base, size_t nel, size_t width, cmpfun cmp,
 
 #ifdef FOR_DOXYGEN
 errno_t qsort_s(void *base, rsize_t nmemb, rsize_t size,
-                int (*compar)(const void *k, const void *y,
-                              void *context),
+                int (*compar)(const void *k, const void *y, void *context),
                 void *context)
 #else
 EXPORT errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
@@ -357,24 +357,24 @@ EXPORT errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
     (void)basebos;
     if (likely(nmemb != 0)) {
         if (unlikely(base == NULL || compar == NULL)) {
-            invoke_safe_str_constraint_handler("qsort_s: base or compar is null",
-                                               NULL, ESNULLP);
+            invoke_safe_str_constraint_handler(
+                "qsort_s: base or compar is null", NULL, ESNULLP);
             return RCNEGATE(ESNULLP);
         }
     }
     if (basebos == BOS_UNKNOWN) {
         if (unlikely(nmemb > RSIZE_MAX_MEM || size > RSIZE_MAX_MEM ||
                      ((basebos != BOS_UNKNOWN) && (basebos > RSIZE_MAX_MEM)))) {
-            invoke_safe_str_constraint_handler("qsort_s: nmemb or size exceeds max",
-                                               NULL, ESLEMAX);
+            invoke_safe_str_constraint_handler(
+                "qsort_s: nmemb or size exceeds max", NULL, ESLEMAX);
             return RCNEGATE(ESLEMAX);
         }
         BND_CHK_PTR_BOUNDS(base, nmemb * size);
     } else {
         rsize_t basesz = nmemb * size;
         if (unlikely(basesz > basebos)) {
-            invoke_safe_str_constraint_handler("qsort_s: nmemb*size exceeds sizeof base",
-                                               NULL, ESNOSPC);
+            invoke_safe_str_constraint_handler(
+                "qsort_s: nmemb*size exceeds sizeof base", NULL, ESNOSPC);
             return RCNEGATE(ESNOSPC);
         }
 #ifdef HAVE_WARN_DMAX

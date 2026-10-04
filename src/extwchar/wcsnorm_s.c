@@ -502,8 +502,7 @@ static uint8_t _combin_class(uint32_t cp) {
 /* create an unordered decomposed wide string */
 #ifdef FOR_DOXYGEN
 errno_t wcsnorm_decompose_s(wchar_t *restrict dest, rsize_t dmax,
-                            const wchar_t *restrict src,
-                            rsize_t *restrict lenp,
+                            const wchar_t *restrict src, rsize_t *restrict lenp,
                             const bool iscompat)
 #else
 EXPORT errno_t _wcsnorm_decompose_s_chk(wchar_t *restrict dest, rsize_t dmax,
@@ -741,12 +740,12 @@ done:
 
 /* reorder decomposed sequence to NFD */
 #ifdef FOR_DOXYGEN
-errno_t wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-                          const rsize_t len)
+errno_t wcsnorm_reorder_s(wchar_t *restrict dest, rsize_t dmax,
+                          const wchar_t *restrict src, const rsize_t len)
 #else
 EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
-                                      const wchar_t *restrict src, const rsize_t len,
-                                      const size_t destbos)
+                                      const wchar_t *restrict src,
+                                      const rsize_t len, const size_t destbos)
 #endif
 {
     UNWIF_cc seq_ary[CC_SEQ_SIZE];
@@ -895,15 +894,13 @@ EXPORT errno_t _wcsnorm_reorder_s_chk(wchar_t *restrict dest, rsize_t dmax,
 /* iscontig = false; composeContiguous? FCC if true */
 #ifdef FOR_DOXYGEN
 errno_t wcsnorm_compose_s(wchar_t *restrict dest, rsize_t dmax,
-                          const wchar_t *restrict src,
-                          rsize_t *restrict lenp,
+                          const wchar_t *restrict src, rsize_t *restrict lenp,
                           const bool iscontig)
 #else
 EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
                                       const wchar_t *restrict src,
                                       rsize_t *restrict lenp,
-                                      const bool iscontig,
-                                      const size_t destbos)
+                                      const bool iscontig, const size_t destbos)
 #endif
 {
     wchar_t *p = (wchar_t *)src;
@@ -1144,8 +1141,8 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
  * NFKD, NFKC */
 #ifdef FOR_DOXYGEN
 errno_t wcsnorm_s(wchar_t *restrict dest, rsize_t dmax,
-                  const wchar_t *restrict src,
-                  const wcsnorm_mode_t mode, rsize_t *restrict lenp)
+                  const wchar_t *restrict src, const wcsnorm_mode_t mode,
+                  rsize_t *restrict lenp)
 #else
 EXPORT errno_t _wcsnorm_s_chk(wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict src,

@@ -89,8 +89,7 @@
  */
 #ifdef FOR_DOXYGEN
 errno_t wcscoll_s(const wchar_t *restrict dest, rsize_t dmax,
-                  const wchar_t *restrict src, rsize_t smax,
-                  int *resultp)
+                  const wchar_t *restrict src, rsize_t smax, int *resultp)
 #else
 EXPORT errno_t _wcscoll_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict src, rsize_t smax,

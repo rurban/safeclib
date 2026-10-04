@@ -58,23 +58,26 @@ static int tests_run = 0;
 static int tests_passed = 0;
 static int tests_failed = 0;
 
-static void check_test(const char* test_name, errno_t actual, errno_t expected) {
+static void check_test(const char *test_name, errno_t actual,
+                       errno_t expected) {
     tests_run++;
     if (actual == expected) {
         tests_passed++;
     } else {
         tests_failed++;
-        printf("[FAIL] %s: Expected errno %d, got %d\n", test_name, expected, actual);
+        printf("[FAIL] %s: Expected errno %d, got %d\n", test_name, expected,
+               actual);
     }
 }
 
-static void check_int(const char* test_name, int actual, int expected) {
+static void check_int(const char *test_name, int actual, int expected) {
     tests_run++;
     if (actual == expected) {
         tests_passed++;
     } else {
         tests_failed++;
-        printf("[FAIL] %s: Expected value %d, got %d\n", test_name, expected, actual);
+        printf("[FAIL] %s: Expected value %d, got %d\n", test_name, expected,
+               actual);
     }
 }
 
@@ -88,7 +91,8 @@ static void test_string_copy_concat(void) {
     check_test("strcpy_s valid", rc, EOK);
     check_test("strcpy_s content", strcmp(dest, "RTEMS"), 0);
 
-    rc = strcpy_s(dest, sizeof(dest), "This is way too long for a 10-byte buffer!");
+    rc = strcpy_s(dest, sizeof(dest),
+                  "This is way too long for a 10-byte buffer!");
     check_test("strcpy_s overflow caught", rc, ESNOSPC);
     check_test("strcpy_s dest zeroed on error", dest[0], '\0');
 
@@ -136,8 +140,8 @@ static void test_string_length(void) {
 }
 
 static void test_memory_operations(void) {
-    uint8_t src[16] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
-                        0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00 };
+    uint8_t src[16] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+                       0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00};
     uint8_t dest[16];
     errno_t rc;
 
@@ -158,10 +162,12 @@ static void test_memory_operations(void) {
     check_test("memcpy_s overflow caught", rc, ESNOSPC);
     check_int("memcpy_s dest zeroed on error", dest[0], 0x00);
 
-    uint8_t overlap_buf[10] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+    uint8_t overlap_buf[10] = {'A', 'B', 'C', 'D', 'E',
+                               'F', 'G', 'H', 'I', 'J'};
     rc = memmove_s(&overlap_buf[2], 8, &overlap_buf[0], 5);
     check_test("memmove_s overlapping copy", rc, EOK);
-    check_test("memmove_s overlap integrity", overlap_buf[2] == 'A' && overlap_buf[6] == 'E', 1);
+    check_test("memmove_s overlap integrity",
+               overlap_buf[2] == 'A' && overlap_buf[6] == 'E', 1);
 
     /* --- NEW MEMORY EDGE CASE TESTS --- */
     rc = memcpy_s(NULL, sizeof(dest), src, sizeof(src));
@@ -171,7 +177,8 @@ static void test_memory_operations(void) {
     check_test("memcpy_s NULL src caught", rc, ESNULLP);
     check_int("memcpy_s dest zeroed on NULL src", dest[0], 0x00);
 
-    uint8_t copy_overlap[10] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+    uint8_t copy_overlap[10] = {'A', 'B', 'C', 'D', 'E',
+                                'F', 'G', 'H', 'I', 'J'};
     rc = memcpy_s(&copy_overlap[2], 8, &copy_overlap[0], 5);
     check_test("memcpy_s overlap rejection", rc, ESOVRLP);
     check_int("memcpy_s dest zeroed on overlap", copy_overlap[2], 0x00);
@@ -195,12 +202,17 @@ static void test_tokenization(void) {
     token = strtok_s(str, &len, ",", &next_token);
     while (token != NULL) {
         token_count++;
-        if (token_count == 1) check_int("strtok_s token 1", strcmp(token, "SPARC"), 0);
-        else if (token_count == 2) check_int("strtok_s token 2", strcmp(token, "ERC32"), 0);
-        else if (token_count == 3) check_int("strtok_s token 3", strcmp(token, "RTEMS"), 0);
-        else if (token_count == 4) check_int("strtok_s token 4", strcmp(token, "7"), 0);
+        if (token_count == 1)
+            check_int("strtok_s token 1", strcmp(token, "SPARC"), 0);
+        else if (token_count == 2)
+            check_int("strtok_s token 2", strcmp(token, "ERC32"), 0);
+        else if (token_count == 3)
+            check_int("strtok_s token 3", strcmp(token, "RTEMS"), 0);
+        else if (token_count == 4)
+            check_int("strtok_s token 4", strcmp(token, "7"), 0);
         else {
-            tests_failed++; tests_run++;
+            tests_failed++;
+            tests_run++;
             printf("[FAIL] strtok_s unexpected extra token: %s\n", token);
         }
         token = strtok_s(NULL, &len, ",", &next_token);
@@ -221,16 +233,19 @@ static void test_formatted_io(void) {
         tests_passed++;
     } else {
         tests_failed++;
-        printf("[FAIL] sprintf_s valid formatting failed. Wrote: %d\n", chars_written);
+        printf("[FAIL] sprintf_s valid formatting failed. Wrote: %d\n",
+               chars_written);
     }
 
-    chars_written = sprintf_s(buf, 10, "This string is way too long for a 10 byte buffer");
+    chars_written =
+        sprintf_s(buf, 10, "This string is way too long for a 10 byte buffer");
     tests_run++;
     if (chars_written < 0 && buf[0] == '\0') {
         tests_passed++;
     } else {
         tests_failed++;
-        printf("[FAIL] sprintf_s overflow was NOT caught! Return: %d\n", chars_written);
+        printf("[FAIL] sprintf_s overflow was NOT caught! Return: %d\n",
+               chars_written);
     }
 }
 
@@ -254,11 +269,12 @@ int main(void) {
     printf("==================================================\n\n");
 
     if (tests_failed == 0) {
-        printf("SUCCESS: All standard C11 Annex K bounds-checking paths validated!\n");
+        printf("SUCCESS: All standard C11 Annex K bounds-checking paths "
+               "validated!\n");
         return EXIT_SUCCESS;
     } else {
-        printf("FAILURE: One or more safeclib tests failed. Check log above.\n");
+        printf(
+            "FAILURE: One or more safeclib tests failed. Check log above.\n");
         return EXIT_FAILURE;
     }
 }
-

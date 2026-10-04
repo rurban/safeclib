@@ -77,8 +77,8 @@ extern void *memrchr(const void *, int, size_t);
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t memrchr_s(const void *restrict dest, rsize_t dmax,
-                  const int ch, void **resultp)
+errno_t memrchr_s(const void *restrict dest, rsize_t dmax, const int ch,
+                  void **resultp)
 #else
 EXPORT errno_t _memrchr_s_chk(const void *restrict dest, rsize_t dmax,
                               const int ch, void **resultp,

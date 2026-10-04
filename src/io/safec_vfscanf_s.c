@@ -41,7 +41,7 @@
 
 /* from musl: */
 
-//#include <locale.h>
+// #include <locale.h>
 #define SIZE_hh -2
 #define SIZE_h -1
 #define SIZE_def 0
@@ -277,8 +277,8 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
             destsize = va_arg(ap, rsize_t);
             if (unlikely(destsize == 0 || destsize > RSIZE_MAX_STR)) {
                 char etmp[96];
-                snprintf(etmp, sizeof etmp,
-                         "%s: invalid destination size", funcname);
+                snprintf(etmp, sizeof etmp, "%s: invalid destination size",
+                         funcname);
                 invoke_safe_str_constraint_handler(etmp, NULL, ESZEROL);
                 errno = ESZEROL;
                 return EOF;

@@ -79,8 +79,8 @@
  * @retval -ESZEROL    when \c dmax = 0 and dest is not NULL
  * @retval -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR
  * @retval -EOVERFLOW  when \c dmax > size of dest
- * @retval -ESNOSPC    when return value exceeds dmax unless dmax is zero and dest
- *                     is NULL
+ * @retval -ESNOSPC    when return value exceeds dmax unless dmax is zero and
+ * dest is NULL
  * @retval -EINVAL     when \c fmt contains \c %n
  *
  * @note The C11 standard was most likely wrong with changing the return value

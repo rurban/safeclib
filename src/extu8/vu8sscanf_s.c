@@ -76,9 +76,17 @@ EXPORT int vu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt,
     int ret;
     /* positional: sdcc miscompiles designated initializers with
        --stack-auto */
-    _SAFEC_FILE sf = { NULL, (unsigned char *)(void *)dest, 0,
-                       (void *)dest, NULL, NULL, safec_string_read, -1,
-                       NULL, 0, 0 };
+    _SAFEC_FILE sf = {NULL,
+                      (unsigned char *)(void *)dest,
+                      0,
+                      (void *)dest,
+                      NULL,
+                      NULL,
+                      safec_string_read,
+                      -1,
+                      NULL,
+                      0,
+                      0};
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("vu8sscanf_s: dest is null", NULL,

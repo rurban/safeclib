@@ -56,14 +56,14 @@
  * @param[out]  dest      pointer to a normalized utf-8 string that will be
  *                        extended by a normalized copy of src if dmax allows.
  *                        The utf-8 string is normalized, follows the strict
- *                        security guidelines for identifiers (esp. no bidi changes,
- *                        no mixed scripts) and will be null terminated.
- *                        If the resulting concatenated utf-8 string is less
- *                        than dmax, the remaining slack space is nulled.
+ *                        security guidelines for identifiers (esp. no bidi
+ * changes, no mixed scripts) and will be null terminated. If the resulting
+ * concatenated utf-8 string is less than dmax, the remaining slack space is
+ * nulled.
  * @param[in]   dmax      restricted maximum byte-length of the resulting
  *                        dest buffer, including the null.
- * @param[in]   src       pointer to the utf-8 string that will be normalized and 
- *                        concatenated to identifier dest.
+ * @param[in]   src       pointer to the utf-8 string that will be normalized
+ * and concatenated to identifier dest.
  *
  * @pre  Neither dest nor src shall be a null pointer
  * @pre  dest must be already normalized and contain no disallowed mixed scripts
@@ -80,8 +80,8 @@
  * @return  If there is a runtime-constraint violation, then if dest is
  *          not a null pointer and dmax is greater than zero and not
  *          greater than RSIZE_MAX_STR, then u8icat_s nulls dest.
- * @retval  EOK        when successful operation, all the normalized utf-8 characters
- *                     from src were appended to dest and the result in dest is null
+ * @retval  EOK        when successful operation, all the normalized utf-8
+ * characters from src were appended to dest and the result in dest is null
  *                     terminated.
  * @retval  ESNULLP    when dest or src is a NULL pointer
  * @retval  ESZEROL    when dmax = 0
@@ -94,17 +94,18 @@
  * @retval  ESOVRLP    when src overlaps with dest
  * @retval  EILSEQ     when src contains an illegal or truncated UTF-8
  *                     sequence
- * @retval  ESU8I      when disallowed mixed scripts or bidi changes were detected.
+ * @retval  ESU8I      when disallowed mixed scripts or bidi changes were
+ * detected.
  *
  * @see
  *    u8icat_s(), wcscat_s(), strcpy_s(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8icat_s(char8i_t *restrict dest, rsize_t dmax, const char8_t *restrict src)
+errno_t u8icat_s(char8i_t *restrict dest, rsize_t dmax,
+                 const char8_t *restrict src)
 #else
 EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
-                             const char8_t *restrict src,
-                             const size_t destbos)
+                             const char8_t *restrict src, const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
@@ -125,7 +126,7 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = (char*)dest;
+    orig_dest = (char *)dest;
 
     if (dest < src) {
         overlap_bumper = src;
@@ -135,9 +136,9 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
 
             if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icat_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8icat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -145,9 +146,9 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
             dmax--;
             if (unlikely(dmax == 0)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icat_s: "
-                              "dest unterminated",
-                              ESUNTERM);
+                             "u8icat_s: "
+                             "dest unterminated",
+                             ESUNTERM);
                 return RCNEGATE(ESUNTERM);
             }
         }
@@ -155,9 +156,9 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icat_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8icat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -207,9 +208,9 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
             dmax--;
             if (unlikely(dmax == 0)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icat_s: "
-                              "dest unterminated",
-                              ESUNTERM);
+                             "u8icat_s: "
+                             "dest unterminated",
+                             ESUNTERM);
                 return RCNEGATE(ESUNTERM);
             }
         }
@@ -217,9 +218,9 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8icat_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8icat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -261,9 +262,9 @@ EXPORT errno_t _u8icat_s_chk(char8i_t *restrict dest, rsize_t dmax,
      * the entire src was not copied, so null the string
      */
     handle_error(orig_dest, orig_dmax,
-                  "u8icat_s: not enough "
-                  "space for src",
-                  ESNOSPC);
+                 "u8icat_s: not enough "
+                 "space for src",
+                 ESNOSPC);
 
     return RCNEGATE(ESNOSPC);
 }

@@ -43,7 +43,8 @@ typedef struct _SAFEC_FILE {
 
 #define shcnt(sf) ((sf)->shcnt + ((sf)->rpos - (sf)->buf))
 #define shlim(sf, lim) safec_shlim((sf), (lim))
-#define shgetc(sf) (((sf)->rpos != (sf)->shend) ? *(sf)->rpos++ : safec_shgetc(sf))
+#define shgetc(sf)                                                             \
+    (((sf)->rpos != (sf)->shend) ? *(sf)->rpos++ : safec_shgetc(sf))
 #define shunget(sf) ((sf)->shlim >= 0 ? (void)(sf)->rpos-- : (void)0)
 
 /* Ensures sf->rpos/rend reflect an empty window, forcing the next

@@ -83,14 +83,12 @@ EXPORT int scanf_s(const char *restrict fmt, ...) {
     char *p;
 #endif
     unsigned char buf[256];
-    _SAFEC_FILE sf = {
-        .f = stdin,
-        .buf = buf,
-        .buf_size = sizeof buf,
-        .cookie = (void *)stdin,
-        .read = safec_stream_read,
-        .lock = -1
-    };
+    _SAFEC_FILE sf = {.f = stdin,
+                      .buf = buf,
+                      .buf_size = sizeof buf,
+                      .cookie = (void *)stdin,
+                      .read = safec_stream_read,
+                      .lock = -1};
 
     if (unlikely(fmt == NULL)) {
         invoke_safe_str_constraint_handler("scanf_s: fmt is null", NULL,
@@ -123,7 +121,7 @@ EXPORT int scanf_s(const char *restrict fmt, ...) {
 
     errno = 0;
     va_start(ap, fmt);
-    //ret = vscanf(fmt, ap);
+    // ret = vscanf(fmt, ap);
     ret = _safec_vfscanf_impl(&sf, "scanf_s", fmt, ap, 1);
     va_end(ap);
 

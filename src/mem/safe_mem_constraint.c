@@ -50,9 +50,9 @@ static
 #endif
     constraint_handler_t thrd_mem_handler =
 #ifdef SAFECLIB_DEFAULT_HANDLER
-    SAFECLIB_DEFAULT_HANDLER;
+        SAFECLIB_DEFAULT_HANDLER;
 #else
-    NULL;
+        NULL;
 #endif
 
 /**

@@ -119,8 +119,8 @@
  *    wctomb_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t wcrtomb_s(size_t *restrict retvalp, char *restrict dest,
-                  rsize_t dmax, wchar_t wc, mbstate_t *restrict ps)
+errno_t wcrtomb_s(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,
+                  wchar_t wc, mbstate_t *restrict ps)
 #else
 EXPORT errno_t _wcrtomb_s_chk(size_t *restrict retvalp, char *restrict dest,
                               rsize_t dmax, wchar_t wc, mbstate_t *restrict ps,

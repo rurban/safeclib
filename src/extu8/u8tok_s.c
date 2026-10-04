@@ -113,8 +113,8 @@ EXPORT char8_t *_u8tok_s_chk(char8_t *restrict dest, rsize_t *restrict dmaxp,
         return (NULL);
     }
     if (unlikely(*dmaxp == 0)) {
-        invoke_safe_str_constraint_handler("u8tok_s: *dmaxp is 0",
-                                           (void *)dest, ESZEROL);
+        invoke_safe_str_constraint_handler("u8tok_s: *dmaxp is 0", (void *)dest,
+                                           ESZEROL);
         errno = ESZEROL;
         return (NULL);
     }
@@ -126,8 +126,8 @@ EXPORT char8_t *_u8tok_s_chk(char8_t *restrict dest, rsize_t *restrict dmaxp,
         return (NULL);
     }
     if (unlikely(ptr == NULL)) {
-        invoke_safe_str_constraint_handler("u8tok_s: ptr is null",
-                                           (void *)dest, ESNULLP);
+        invoke_safe_str_constraint_handler("u8tok_s: ptr is null", (void *)dest,
+                                           ESNULLP);
         errno = ESNULLP;
         return (NULL);
     }

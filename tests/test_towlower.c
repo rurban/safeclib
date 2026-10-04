@@ -37,8 +37,7 @@ int test_towlower(void) {
     f = fopen(CFOLD, "r");
     if (!f) {
         char url[256];
-        snprintf(url, 255,
-                 "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
+        snprintf(url, 255, "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
                  SAFECLIB_UNICODE_VERSION, CFOLD);
         printf("downloading %s ...", CFOLD);
         fflush(stdout);

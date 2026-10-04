@@ -46,7 +46,9 @@ int test_u8cpy_s(void) {
     /*--------------------------------------------------*/
     /* stray continuation byte with no lead byte */
 
-    rc = u8cpy_s(dest, LEN, (char8_t *)"\x80" "bc");
+    rc = u8cpy_s(dest, LEN,
+                 (char8_t *)"\x80"
+                            "bc");
     ERR(EILSEQ)
 
     /*--------------------------------------------------*/

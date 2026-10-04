@@ -72,13 +72,13 @@
  *    u8u8_s(), u8spn_s(), u8cspn_s(), u8pbrk_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8str_s(char8_t *dest, rsize_t dmax, const char8_t *src,
-                rsize_t slen, char8_t **substringp)
+errno_t u8str_s(char8_t *dest, rsize_t dmax, const char8_t *src, rsize_t slen,
+                char8_t **substringp)
 #else
 EXPORT errno_t _u8str_s_chk(char8_t *restrict dest, rsize_t dmax,
                             const char8_t *restrict src, rsize_t slen,
-                            char8_t **restrict substringp,
-                            const size_t destbos, const size_t srcbos)
+                            char8_t **restrict substringp, const size_t destbos,
+                            const size_t srcbos)
 #endif
 {
     rsize_t len;
@@ -109,8 +109,8 @@ EXPORT errno_t _u8str_s_chk(char8_t *restrict dest, rsize_t dmax,
     } else {
         if (unlikely(slen > srcbos)) {
             if (unlikely(slen > RSIZE_MAX_STR)) {
-                invoke_safe_str_constraint_handler(
-                    "u8str_s: slen exceeds dmax", (void *)src, ESLEMAX);
+                invoke_safe_str_constraint_handler("u8str_s: slen exceeds dmax",
+                                                   (void *)src, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             } else {
                 invoke_safe_str_constraint_handler("u8str_s: slen exceeds src",

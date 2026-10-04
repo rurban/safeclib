@@ -509,23 +509,25 @@ int test_wcsnorm_s(void) {
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
     if (do_perl_test)
-    fprintf_s(pl,
-              "use v5.27.2;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
-              "sub wstr ($) {\n"
-              "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
-              "}\n"
-              "sub chknfd {\n"
-              "  my ($ch, $got) = @_;\n"
-              "  my $nfd = NFD($ch);\n"
-              "  if ($nfd ne $got) {\n"
-              "    printf \"Error NFD \\\\x{%%X} = %%s; got: %%s\\n\",\n"
-              "         unpack('W*',$ch), wstr $nfd, wstr $got;\n"
-              "    1\n"
-              "  }\n"
-              "}\n");
+        fprintf_s(
+            pl,
+            "use v5.27.2;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
+            "sub wstr ($) {\n"
+            "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
+            "}\n"
+            "sub chknfd {\n"
+            "  my ($ch, $got) = @_;\n"
+            "  my $nfd = NFD($ch);\n"
+            "  if ($nfd ne $got) {\n"
+            "    printf \"Error NFD \\\\x{%%X} = %%s; got: %%s\\n\",\n"
+            "         unpack('W*',$ch), wstr $nfd, wstr $got;\n"
+            "    1\n"
+            "  }\n"
+            "}\n");
 #ifdef HAVE_NORM_COMPAT
     if (do_perl_test)
-    fprintf_s(pl, "sub chknfkd {\n"
+        fprintf_s(pl,
+                  "sub chknfkd {\n"
                   "  my ($ch, $got) = @_;\n"
                   "  my $nfd = NFKD($ch);\n"
                   "  if ($nfd ne $got) {\n"
@@ -559,8 +561,8 @@ int test_wcsnorm_s(void) {
         if (do_perl_test) {
             size_t i;
             /* cross-check with perl */
-            fprintf_s(pl, "$err += chknfd (\"\\N{U+%04X}\",\"\\N{U+%04X}", (unsigned)ind,
-                      (unsigned)str[0]);
+            fprintf_s(pl, "$err += chknfd (\"\\N{U+%04X}\",\"\\N{U+%04X}",
+                      (unsigned)ind, (unsigned)str[0]);
             for (i = 1; i < len; i++) {
                 fprintf_s(pl, "\\N{U+%04X}", (unsigned)str[i]);
             }
@@ -568,8 +570,8 @@ int test_wcsnorm_s(void) {
 
 #ifdef HAVE_NORM_COMPAT
             rc = wcsnorm_s(str, LEN, src, WCSNORM_NFKD, &len);
-            fprintf_s(pl, "$err += chknfkd(\"\\N{U+%04X}\",\"\\N{U+%04X}", (unsigned)ind,
-                      (unsigned)str[0]);
+            fprintf_s(pl, "$err += chknfkd(\"\\N{U+%04X}\",\"\\N{U+%04X}",
+                      (unsigned)ind, (unsigned)str[0]);
             for (i = 1; i < len; i++) {
                 fprintf_s(pl, "\\N{U+%04X}", (unsigned)str[i]);
             }

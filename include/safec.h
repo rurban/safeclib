@@ -45,4 +45,3 @@ extern "C" {
 #endif
 
 #endif /* __SAFEC_H__ */
-

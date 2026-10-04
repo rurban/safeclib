@@ -208,7 +208,8 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
         } else {
             wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
             if (!tmp) {
-                handle_werror(dest, dmax, "vsnwprintf_s: malloc failed", ENOMEM);
+                handle_werror(dest, dmax, "vsnwprintf_s: malloc failed",
+                              ENOMEM);
                 return -(ENOMEM);
             }
             ret = vswprintf(tmp, dmax, fmt, ap2);

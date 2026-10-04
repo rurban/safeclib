@@ -73,8 +73,8 @@ EXPORT int printf_s(const char *restrict fmt, ...) {
     char buffer[1];
 
     if (unlikely(fmt == NULL)) {
-        invoke_safe_str_constraint_handler("vsnprintf_s: fmt is null",
-                                           NULL, ESNULLP);
+        invoke_safe_str_constraint_handler("vsnprintf_s: fmt is null", NULL,
+                                           ESNULLP);
         return -ESNULLP;
     }
     // catch %n early, before it outputs anything
@@ -88,7 +88,8 @@ EXPORT int printf_s(const char *restrict fmt, ...) {
     }
 
     va_start(va, fmt);
-    ret = safec_vsnprintf_s(safec_out_char, "printf_s", buffer, (rsize_t)-1, fmt, va);
+    ret = safec_vsnprintf_s(safec_out_char, "printf_s", buffer, (rsize_t)-1,
+                            fmt, va);
     va_end(va);
 
     if (unlikely(ret < 0 && errno != 0)) {

@@ -94,7 +94,8 @@ static int _bsearch_exc(const void *ptr1, const void *ptr2) {
  * used in Unicode::Normalize, and the new 3x smaller NORMALIZE_IND_TBL cperl
  * variant, as used here and in cperl core since 5.27.2.
  */
-static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax, const uint32_t cp) {
+static int _u8decomp_canonical_s(char8_t *dest, rsize_t dmax,
+                                 const uint32_t cp) {
 #ifndef NORMALIZE_IND_TBL
     /* the old big format */
     if (unlikely(dmax < 5)) {
@@ -315,8 +316,7 @@ static int _u8decomp_hangul_s(char8_t *dest, rsize_t dmax, const uint32_t cp) {
 */
 
 EXPORT int _u8decomp_s(char8_t *restrict dest, rsize_t dmax, const uint32_t cp,
-                       const bool iscompat)
-{
+                       const bool iscompat) {
     /*assert(dmax > 4);*/
 
     /* The costly is_HANGUL_cp_high(cp) checks also all composing chars.
@@ -479,8 +479,7 @@ static uint8_t _combin_class(uint32_t cp) {
 /* create an unordered decomposed utf-8 string */
 #ifdef FOR_DOXYGEN
 errno_t u8norm_decompose_s(char8_t *restrict dest, rsize_t dmax,
-                           const char8_t *restrict src,
-                           rsize_t *restrict lenp,
+                           const char8_t *restrict src, rsize_t *restrict lenp,
                            const bool iscompat)
 #else
 EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
@@ -561,26 +560,26 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
 
     /* hold base of dest in case src was not copied */
     orig_dmax = dmax;
-    orig_dest = (char*)dest;
+    orig_dest = (char *)dest;
 
     if (dest < src) {
         overlap_bumper = src;
 
         while (dmax > 0) {
-            cp = dec_utf8((char8_t**)&src);
+            cp = dec_utf8((char8_t **)&src);
             if (unlikely(dest == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_decompose_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8norm_decompose_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
             /* A surrogate pair can only represent max _UNICODE_MAX */
             if (unlikely(_UNICODE_MAX < cp)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_decompose_s: "
-                              "cp is too high",
-                              ESLEMAX);
+                             "u8norm_decompose_s: "
+                             "cp is too high",
+                             ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             if (!cp)
@@ -596,9 +595,9 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 dmax -= (rsize_t)n;
             } else {
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_decompose_s: "
-                              "decomposition error",
-                              -c);
+                             "u8norm_decompose_s: "
+                             "decomposition error",
+                             -c);
                 return -c;
             }
         }
@@ -606,19 +605,19 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
         overlap_bumper = dest;
 
         while (dmax > 0) {
-            cp = dec_utf8((char8_t**)&src);
+            cp = dec_utf8((char8_t **)&src);
             if (unlikely(src == overlap_bumper)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_decompose_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                             "u8norm_decompose_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
             if (unlikely(_UNICODE_MAX < cp)) {
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_decompose_s: "
-                              "cp is too high",
-                              ESLEMAX);
+                             "u8norm_decompose_s: "
+                             "cp is too high",
+                             ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             if (!cp)
@@ -634,9 +633,9 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 dmax -= (rsize_t)n;
             } else {
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_decompose_s: "
-                              "decomposition error",
-                              -c);
+                             "u8norm_decompose_s: "
+                             "decomposition error",
+                             -c);
                 return RCNEGATE(-c);
             }
         }
@@ -645,9 +644,9 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
     if (lenp)
         *lenp = orig_dmax - dmax;
     handle_error(orig_dest, orig_dmax,
-                  "u8norm_decompose_s: "
-                  "dmax too small",
-                  ESNOSPC);
+                 "u8norm_decompose_s: "
+                 "dmax too small",
+                 ESNOSPC);
     return RCNEGATE(ESNOSPC);
 
 done:
@@ -691,12 +690,12 @@ done:
 
 /* reorder decomposed sequence to NFD */
 #ifdef FOR_DOXYGEN
-errno_t u8norm_reorder_s(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src,
-                          const rsize_t len)
+errno_t u8norm_reorder_s(char8_t *restrict dest, rsize_t dmax,
+                         const char8_t *restrict src, const rsize_t len)
 #else
 EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
-                                     const char8_t *restrict src, const rsize_t len,
-                                     const size_t destbos)
+                                     const char8_t *restrict src,
+                                     const rsize_t len, const size_t destbos)
 #endif
 {
     UN8IF_cc seq_ary[CC_SEQ_SIZE];
@@ -706,7 +705,7 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
     size_t cc_pos = 0;
     char *p = (char *)src;
     const char *e = p + len;
-    char *orig_dest = (char*)dest;
+    char *orig_dest = (char *)dest;
     rsize_t orig_dmax = dmax;
 
     if (destbos == BOS_UNKNOWN) {
@@ -718,7 +717,7 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
 
     while (p < e) {
         uint8_t cur_cc;
-        uint32_t cp = dec_utf8((char8_t**)&p);
+        uint32_t cp = dec_utf8((char8_t **)&p);
 
         cur_cc = _combin_class(cp);
         if (cur_cc != 0) {
@@ -757,9 +756,9 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
                     if (seq_ext)
                         free(seq_ext);
                     handle_error(orig_dest, orig_dmax,
-                                  "u8norm_reorder_s: "
-                                  "dmax too small",
-                                  ESNOSPC);
+                                 "u8norm_reorder_s: "
+                                 "dmax too small",
+                                 ESNOSPC);
                     return RCNEGATE(ESNOSPC);
                 }
                 n = enc_utf8(dest, seq_ptr[i].cp);
@@ -776,9 +775,9 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
                 if (seq_ext)
                     free(seq_ext);
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_reorder_s: "
-                              "dmax too small",
-                              ESNOSPC);
+                             "u8norm_reorder_s: "
+                             "dmax too small",
+                             ESNOSPC);
                 return RCNEGATE(ESNOSPC);
             }
             n = enc_utf8(dest, cp);
@@ -790,9 +789,9 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
         free(seq_ext);
     if (unlikely(!dmax)) {
         handle_error(orig_dest, orig_dmax,
-                      "u8norm_reorder_s: "
-                      "dmax too small",
-                      ESNOSPC);
+                     "u8norm_reorder_s: "
+                     "dmax too small",
+                     ESNOSPC);
         return RCNEGATE(ESNOSPC);
     }
     *dest = '\0';
@@ -835,15 +834,13 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
 /* iscontig = false; composeContiguous? FCC if true */
 #ifdef FOR_DOXYGEN
 errno_t u8norm_compose_s(char8_t *restrict dest, rsize_t dmax,
-                          const char8_t *restrict src,
-                          rsize_t *restrict lenp,
-                          const bool iscontig)
+                         const char8_t *restrict src, rsize_t *restrict lenp,
+                         const bool iscontig)
 #else
 EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
-                                      const char8_t *restrict src,
-                                      rsize_t *restrict lenp,
-                                      const bool iscontig,
-                                      const size_t destbos)
+                                     const char8_t *restrict src,
+                                     rsize_t *restrict lenp,
+                                     const bool iscontig, const size_t destbos)
 #endif
 {
     char *p = (char *)src;
@@ -857,7 +854,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
     uint32_t *seq_ext = NULL;                /* heap */
     size_t seq_max = CC_SEQ_SIZE;
     size_t cc_pos = 0;
-    char *orig_dest = (char*)dest;
+    char *orig_dest = (char *)dest;
     rsize_t orig_dmax = dmax;
 
     if (destbos == BOS_UNKNOWN) {
@@ -873,15 +870,15 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
         const size_t destsz = dmax;
         if (unlikely(destsz > destbos)) {
             *lenp = 0;
-            handle_error((char*)dest, destbos,
-                          "u8norm_compose_s: dmax exceeds dest", EOVERFLOW);
+            handle_error((char *)dest, destbos,
+                         "u8norm_compose_s: dmax exceeds dest", EOVERFLOW);
             return EOVERFLOW;
         }
     }
 
     while (p < e) {
         uint8_t cur_cc;
-        uint32_t cp = dec_utf8((char8_t**)&p);
+        uint32_t cp = dec_utf8((char8_t **)&p);
 
         cur_cc = _combin_class(cp);
 
@@ -895,9 +892,9 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 int n, need = u8_cpsize(cp);
                 if (unlikely((rsize_t)need + 1 > dmax)) {
                     handle_error(orig_dest, orig_dmax,
-                                  "u8norm_compose_s: "
-                                  "dmax too small",
-                                  ESNOSPC);
+                                 "u8norm_compose_s: "
+                                 "dmax too small",
+                                 ESNOSPC);
                     return RCNEGATE(ESNOSPC);
                 }
                 n = enc_utf8((char8_t *)dest, cp);
@@ -964,9 +961,9 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                 if (seq_ext)
                     free(seq_ext);
                 handle_error(orig_dest, orig_dmax,
-                              "u8norm_compose_s: "
-                              "dmax too small",
-                              ESNOSPC);
+                             "u8norm_compose_s: "
+                             "dmax too small",
+                             ESNOSPC);
                 return RCNEGATE(ESNOSPC);
             }
             n = enc_utf8(dest, cpS); /* starter (composed or not) */
@@ -982,9 +979,9 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                     if (seq_ext)
                         free(seq_ext);
                     handle_error(orig_dest, orig_dmax,
-                                  "u8norm_compose_s: "
-                                  "dmax too small",
-                                  ESNOSPC);
+                                 "u8norm_compose_s: "
+                                 "dmax too small",
+                                 ESNOSPC);
                     return RCNEGATE(ESNOSPC);
                 }
                 n = enc_utf8(dest, seq_ptr[i]);
@@ -1061,8 +1058,9 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
 /* Normalize to NFC, NFD, FCC, FCD (fastest, used in u8fc_s), and
  * optionally NFKD, NFKC */
 #ifdef FOR_DOXYGEN
-errno_t u8norm_s(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src,
-                 const wcsnorm_mode_t mode, rsize_t *restrict lenp)
+errno_t u8norm_s(char8_t *restrict dest, rsize_t dmax,
+                 const char8_t *restrict src, const wcsnorm_mode_t mode,
+                 rsize_t *restrict lenp)
 #else
 EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
                              const char8_t *restrict src,
@@ -1112,7 +1110,7 @@ EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
     }
 
     rc = _u8norm_compose_s_chk(dest, dmax, tmp_ptr, &len, mode == WCSNORM_FCC,
-                                destbos);
+                               destbos);
     if (tmp)
         free(tmp);
     if (unlikely(rc))

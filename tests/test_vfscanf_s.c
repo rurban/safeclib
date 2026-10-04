@@ -80,8 +80,8 @@ int test_vfscanf_s(void) {
     GCC_DIAG_RESTORE
 #ifdef BSD_LIKE
     if (rc != -1) { /* BSD's return -1 on %%n */
-        printf("%s %u wrong fscanf(\"\",\"%%n\"): %d\n", __FUNCTION__,
-               __LINE__, (int)rc);
+        printf("%s %u wrong fscanf(\"\",\"%%n\"): %d\n", __FUNCTION__, __LINE__,
+               (int)rc);
     }
 #else
     if (rc != 1) {

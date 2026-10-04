@@ -196,12 +196,11 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
    not larger than dest, and with WARN_DMAX the same size as dest. */
 #ifdef HAVE_WARN_DMAX
 #define _BOS_DMAX_OK(dest, n, size)                                            \
-    (_BOS_KNOWN(dest) && (size_t)(n) != 0 && BOS(dest) % (size) == 0 &&       \
+    (_BOS_KNOWN(dest) && (size_t)(n) != 0 && BOS(dest) % (size) == 0 &&        \
      (size_t)(n) == BOS(dest) / (size))
 #else
 #define _BOS_DMAX_OK(dest, n, size)                                            \
-    (_BOS_KNOWN(dest) && (size_t)(n) != 0 &&                                   \
-     (size_t)(n) <= BOS(dest) / (size))
+    (_BOS_KNOWN(dest) && (size_t)(n) != 0 && (size_t)(n) <= BOS(dest) / (size))
 #endif
 /* src is known, and n elements of size fit into it */
 #define _BOS_SRC_OK(src, n, size)                                              \
@@ -209,12 +208,11 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 /* functions with a single dest/dmax pair: name_uchk(dest, dmax) or
    name_chk(dest, dmax, BOS(dest)) */
 #define _BOS_UCHK_DEST(name, dest, dmax)                                       \
-    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1), _##name##_uchk(dest, dmax),        \
+    _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1), _##name##_uchk(dest, dmax),         \
               _##name##_chk(dest, dmax, BOS(dest)))
 /* same with an additional smax <= RSIZE_MAX_STR check */
 #define _BOS_UCHK_STR(name, str, smax)                                         \
-    _BOS_UCHK(_BOS_DMAX_OK(str, smax, 1) &&                                    \
-                  (size_t)(smax) <= RSIZE_MAX_STR,                             \
+    _BOS_UCHK(_BOS_DMAX_OK(str, smax, 1) && (size_t)(smax) <= RSIZE_MAX_STR,   \
               _##name##_uchk(str, smax), _##name##_chk(str, smax, BOS(str)))
 
 #define _XSTR(s) _STR(s)
@@ -229,102 +227,96 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #define bos_chk_sev "warning"
 #endif
 #define BOS_CHK(dest)                                                          \
-    __attribute__(                                                             \
-        (diagnose_if(_BOS_OVR(dest, dmax), "dest overflow", bos_chk_err)))     \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))         \
-            __attribute__((diagnose_if(_BOS_ZERO(dest, dmax),                  \
-                                       "empty dest or dmax", bos_chk_err)))    \
-                __attribute__((diagnose_if(_BOS_CHK(dest, dmax), "wrong dmax", \
-                                           bos_chk_sev)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_OVR(dest, dmax), "dest overflow", bos_chk_err)))      \
+    __attribute__((diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))   \
+    __attribute__((diagnose_if(_BOS_ZERO(dest, dmax), "empty dest or dmax",    \
+                               bos_chk_err)))                                  \
+    __attribute__((                                                            \
+        diagnose_if(_BOS_CHK(dest, dmax), "wrong dmax", bos_chk_sev)))
 #define BOSW_CHK(dest)                                                         \
-    __attribute__(                                                             \
-        (diagnose_if(_BOSW_OVR(dest, dmax), "dest overflow", bos_chk_err)))    \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))         \
-            __attribute__((diagnose_if(_BOS_ZERO(dest, dmax),                  \
-                                       "empty dest or dmax", bos_chk_err)))    \
-                __attribute__((diagnose_if(_BOSW_CHK(dest, dmax),              \
-                                           "wrong dmax", bos_chk_sev)))
+    __attribute__((                                                            \
+        diagnose_if(_BOSW_OVR(dest, dmax), "dest overflow", bos_chk_err)))     \
+    __attribute__((diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))   \
+    __attribute__((diagnose_if(_BOS_ZERO(dest, dmax), "empty dest or dmax",    \
+                               bos_chk_err)))                                  \
+    __attribute__((                                                            \
+        diagnose_if(_BOSW_CHK(dest, dmax), "wrong dmax", bos_chk_sev)))
 #define BOS_CHK2(buf, bufsize)                                                 \
     __attribute__((diagnose_if(_BOS_OVR(buf, bufsize), _XSTR(buf) " overflow", \
                                bos_chk_err)))                                  \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))   \
-            __attribute__((diagnose_if(                                        \
-                _BOS_ZERO(buf, bufsize),                                       \
-                "empty " _XSTR(buf) " or " _XSTR(bufsize), bos_chk_err)))      \
-                __attribute__(                                                 \
-                    (diagnose_if(_BOS_CHK(buf, bufsize),                       \
-                                 "wrong " _XSTR(bufsize), bos_chk_sev)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))        \
+    __attribute__((diagnose_if(_BOS_ZERO(buf, bufsize),                        \
+                               "empty " _XSTR(buf) " or " _XSTR(bufsize),      \
+                               bos_chk_err)))                                  \
+    __attribute__((diagnose_if(_BOS_CHK(buf, bufsize),                         \
+                               "wrong " _XSTR(bufsize), bos_chk_sev)))
 #define BOSW_CHK2(buf, bufsize)                                                \
     __attribute__((diagnose_if(_BOSW_OVR(buf, bufsize),                        \
                                _XSTR(buf) " overflow", bos_chk_err)))          \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))   \
-            __attribute__((diagnose_if(                                        \
-                _BOS_ZERO(buf, bufsize),                                       \
-                "empty " _XSTR(buf) " or " _XSTR(bufsize), bos_chk_err)))      \
-                __attribute__(                                                 \
-                    (diagnose_if(_BOSW_CHK(buf, bufsize),                      \
-                                 "wrong " _XSTR(bufsize), bos_chk_sev)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))        \
+    __attribute__((diagnose_if(_BOS_ZERO(buf, bufsize),                        \
+                               "empty " _XSTR(buf) " or " _XSTR(bufsize),      \
+                               bos_chk_err)))                                  \
+    __attribute__((diagnose_if(_BOSW_CHK(buf, bufsize),                        \
+                               "wrong " _XSTR(bufsize), bos_chk_sev)))
 /* allow slen=0, even with dest=NULL or dest overflow */
 #define BOS_CHK_BUTZERO(dest, slen)                                            \
-    __attribute__(                                                             \
-        (diagnose_if(slen && (_BOS_OVR(dest, dmax) || _BOS_NULL(dest) ||       \
-                              _BOS_ZERO(dest, dmax)),                          \
-                     "dest overflow or empty", bos_chk_err)))                  \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_CHK(dest, dmax), "wrong dmax", bos_chk_sev)))
+    __attribute__((                                                            \
+        diagnose_if(slen && (_BOS_OVR(dest, dmax) || _BOS_NULL(dest) ||        \
+                             _BOS_ZERO(dest, dmax)),                           \
+                    "dest overflow or empty", bos_chk_err)))                   \
+    __attribute__((                                                            \
+        diagnose_if(_BOS_CHK(dest, dmax), "wrong dmax", bos_chk_sev)))
 #define BOSW_CHK_BUTZERO(dest, slen)                                           \
-    __attribute__(                                                             \
-        (diagnose_if(slen && (_BOSW_OVR(dest, dmax) || _BOS_NULL(dest) ||      \
-                              _BOS_ZERO(dest, dmax)),                          \
-                     "dest overflow or empty", bos_chk_err)))                  \
-        __attribute__(                                                         \
-            (diagnose_if(_BOSW_CHK(dest, dmax), "wrong dmax", bos_chk_sev)))
+    __attribute__((                                                            \
+        diagnose_if(slen && (_BOSW_OVR(dest, dmax) || _BOS_NULL(dest) ||       \
+                             _BOS_ZERO(dest, dmax)),                           \
+                    "dest overflow or empty", bos_chk_err)))                   \
+    __attribute__((                                                            \
+        diagnose_if(_BOSW_CHK(dest, dmax), "wrong dmax", bos_chk_sev)))
 #else /* !HAVE_WARN_DMAX */
 #define BOS_CHK(dest)                                                          \
-    __attribute__(                                                             \
-        (diagnose_if(_BOS_OVR(dest, dmax), "dest overflow", bos_chk_err)))     \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))         \
-            __attribute__((diagnose_if(_BOS_ZERO(dest, dmax),                  \
-                                       "empty dest or dmax", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_OVR(dest, dmax), "dest overflow", bos_chk_err)))      \
+    __attribute__((diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))   \
+    __attribute__((diagnose_if(_BOS_ZERO(dest, dmax), "empty dest or dmax",    \
+                               bos_chk_err)))
 /* allow slen=0, even with dest=NULL or dest overflow */
 #define BOS_CHK_BUTZERO(dest, slen)                                            \
-    __attribute__(                                                             \
-        (diagnose_if(slen && (_BOS_OVR(dest, dmax) || _BOS_NULL(dest) ||       \
-                              _BOS_ZERO(dest, dmax)),                          \
-                     "dest overflow or empty", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(slen && (_BOS_OVR(dest, dmax) || _BOS_NULL(dest) ||        \
+                             _BOS_ZERO(dest, dmax)),                           \
+                    "dest overflow or empty", bos_chk_err)))
 #define BOSW_CHK_BUTZERO(dest, slen)                                           \
-    __attribute__(                                                             \
-        (diagnose_if(slen && (_BOSW_OVR(dest, dmax) || _BOS_NULL(dest) ||      \
-                              _BOS_ZERO(dest, dmax)),                          \
-                     "dest overflow or empty", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(slen && (_BOSW_OVR(dest, dmax) || _BOS_NULL(dest) ||       \
+                             _BOS_ZERO(dest, dmax)),                           \
+                    "dest overflow or empty", bos_chk_err)))
 #define BOSW_CHK(dest)                                                         \
-    __attribute__(                                                             \
-        (diagnose_if(_BOSW_OVR(dest, dmax), "dest overflow", bos_chk_err)))    \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))         \
-            __attribute__((diagnose_if(_BOS_ZERO(dest, dmax),                  \
-                                       "empty dest or dmax", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOSW_OVR(dest, dmax), "dest overflow", bos_chk_err)))     \
+    __attribute__((diagnose_if(_BOS_NULL(dest), "empty dest", bos_chk_err)))   \
+    __attribute__((diagnose_if(_BOS_ZERO(dest, dmax), "empty dest or dmax",    \
+                               bos_chk_err)))
 #define BOS_CHK2(buf, bufsize)                                                 \
     __attribute__((diagnose_if(_BOS_OVR(buf, bufsize), _XSTR(buf) " overflow", \
                                bos_chk_err)))                                  \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))   \
-            __attribute__((diagnose_if(                                        \
-                _BOS_ZERO(buf, bufsize),                                       \
-                "empty " _XSTR(buf) " or " _XSTR(bufsize), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))        \
+    __attribute__((diagnose_if(_BOS_ZERO(buf, bufsize),                        \
+                               "empty " _XSTR(buf) " or " _XSTR(bufsize),      \
+                               bos_chk_err)))
 #define BOSW_CHK2(buf, bufsize)                                                \
     __attribute__((diagnose_if(_BOSW_OVR(buf, bufsize),                        \
                                _XSTR(buf) " overflow", bos_chk_err)))          \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))   \
-            __attribute__((diagnose_if(                                        \
-                _BOS_ZERO(buf, bufsize),                                       \
-                "empty " _XSTR(buf) " or " _XSTR(bufsize), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))        \
+    __attribute__((diagnose_if(_BOS_ZERO(buf, bufsize),                        \
+                               "empty " _XSTR(buf) " or " _XSTR(bufsize),      \
+                               bos_chk_err)))
 #endif
 
 /* independent on WARN_DMAX, pure overflow/null/zero checks */
@@ -332,64 +324,64 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #define BOS_OVR2(buf, bufsize)                                                 \
     __attribute__((diagnose_if(_BOS_OVR(buf, bufsize), _XSTR(buf) " overflow", \
                                bos_chk_err)))                                  \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))
 #define BOS_OVR_BUTNULL(dest)                                                  \
-    __attribute__(                                                             \
-        (diagnose_if(_BOS_OVR(dest, dmax), "dest overflow", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_OVR(dest, dmax), "dest overflow", bos_chk_err)))
 #define BOS_OVR2_BUTNULL(buf, bufsize)                                         \
     __attribute__((diagnose_if(_BOS_OVR(buf, bufsize), _XSTR(buf) " overflow", \
                                bos_chk_err)))
 /* allow bufsize=0, even with buf=NULL */
 #define BOS_OVR2_BUTZERO(buf, bufsize)                                         \
-    __attribute__(                                                             \
-        (diagnose_if(bufsize && (_BOS_OVR(buf, bufsize) || _BOS_NULL(buf)),    \
-                     _XSTR(buf) " overflow or empty", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(bufsize && (_BOS_OVR(buf, bufsize) || _BOS_NULL(buf)),     \
+                    _XSTR(buf) " overflow or empty", bos_chk_err)))
 #define BOSW_OVR_BUTNULL(dest)                                                 \
-    __attribute__(                                                             \
-        (diagnose_if(_BOSW_OVR(dest, dmax), "dest overflow", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOSW_OVR(dest, dmax), "dest overflow", bos_chk_err)))
 #define BOSW_OVR2_BUTZERO(buf, bufsize)                                        \
-    __attribute__(                                                             \
-        (diagnose_if(bufsize && (_BOSW_OVR(buf, bufsize) || _BOS_NULL(buf)),   \
-                     _XSTR(buf) " overflow or empty", bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(bufsize && (_BOSW_OVR(buf, bufsize) || _BOS_NULL(buf)),    \
+                    _XSTR(buf) " overflow or empty", bos_chk_err)))
 #define BOSW_OVR2_BUTNULL(buf, bufsize)                                        \
     __attribute__((diagnose_if(_BOSW_OVR(buf, bufsize),                        \
                                _XSTR(buf) " overflow", bos_chk_err)))
 #define BOS_NULL(buf)                                                          \
-    __attribute__(                                                             \
-        (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))
 #define BOS_FMT(fmt)                                                           \
     __attribute__((diagnose_if(_BOS_NULL(fmt), "empty fmt", bos_chk_err)))
 /* with zero check */
 #define BOS_OVR2Z(buf, bufsize)                                                \
     __attribute__((diagnose_if(_BOS_OVR(buf, bufsize), _XSTR(buf) " overflow", \
                                bos_chk_err)))                                  \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))   \
-            __attribute__((diagnose_if(                                        \
-                _BOS_ZERO(buf, bufsize),                                       \
-                "empty " _XSTR(buf) " or " _XSTR(bufsize), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))        \
+    __attribute__((diagnose_if(_BOS_ZERO(buf, bufsize),                        \
+                               "empty " _XSTR(buf) " or " _XSTR(bufsize),      \
+                               bos_chk_err)))
 #define BOSW_OVR2(buf, bufsize)                                                \
     __attribute__((diagnose_if(_BOSW_OVR(buf, bufsize),                        \
                                _XSTR(buf) " overflow", bos_chk_err)))          \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))
 #define BOSW_OVR2Z(buf, bufsize)                                               \
     __attribute__((diagnose_if(_BOSW_OVR(buf, bufsize),                        \
                                _XSTR(buf) " overflow", bos_chk_err)))          \
-        __attribute__(                                                         \
-            (diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))   \
-            __attribute__((diagnose_if(                                        \
-                _BOS_ZERO(buf, bufsize),                                       \
-                "empty " _XSTR(buf) " or " _XSTR(bufsize), bos_chk_err)))
+    __attribute__((                                                            \
+        diagnose_if(_BOS_NULL(buf), "empty " _XSTR(buf), bos_chk_err)))        \
+    __attribute__((diagnose_if(_BOS_ZERO(buf, bufsize),                        \
+                               "empty " _XSTR(buf) " or " _XSTR(bufsize),      \
+                               bos_chk_err)))
 #define VAL_OVR2(value, vmax)                                                  \
-    __attribute__(                                                             \
-        (diagnose_if((value) > (vmax), _XSTR(value) " overflow >" _XSTR(vmax), \
-                     bos_chk_err)))
+    __attribute__((diagnose_if((value) > (vmax),                               \
+                               _XSTR(value) " overflow >" _XSTR(vmax),         \
+                               bos_chk_err)))
 #define VAL_OVR2_BUTZERO(value, vmax)                                          \
-    __attribute__(                                                             \
-        (diagnose_if((value) && (value) > (vmax),                              \
-                     _XSTR(value) " overflow >" _XSTR(vmax), bos_chk_err)))
+    __attribute__((diagnose_if((value) && (value) > (vmax),                    \
+                               _XSTR(value) " overflow >" _XSTR(vmax),         \
+                               bos_chk_err)))
 #define BOS_ATTR(chk, msg) __attribute__((diagnose_if(chk, msg, bos_chk_err)))
 #else
 #define BOS_CHK(dest)
@@ -411,13 +403,13 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 #if _SAFEC_HAS_DIAGNOSE_IF
 /* independent on BOS for pointer sizes, pure value checks */
 #define VAL_OVR2(value, vmax)                                                  \
-    __attribute__(                                                             \
-        (diagnose_if((value) > (vmax), _XSTR(value) " overflow >" _XSTR(vmax), \
-                     bos_chk_err)))
+    __attribute__((diagnose_if((value) > (vmax),                               \
+                               _XSTR(value) " overflow >" _XSTR(vmax),         \
+                               bos_chk_err)))
 #define VAL_OVR2_BUTZERO(value, vmax)                                          \
-    __attribute__(                                                             \
-        (diagnose_if((value) && (value) > (vmax),                              \
-                     _XSTR(value) " overflow >" _XSTR(vmax), bos_chk_err)))
+    __attribute__((diagnose_if((value) && (value) > (vmax),                    \
+                               _XSTR(value) " overflow >" _XSTR(vmax),         \
+                               bos_chk_err)))
 #define BOS_NULL(buf)                                                          \
     __attribute__((diagnose_if(!buf, "empty " _XSTR(buf), bos_chk_err)))
 #define BOS_FMT(fmt)                                                           \

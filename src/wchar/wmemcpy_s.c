@@ -99,7 +99,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t wmemcpy_s(wchar_t *dest, rsize_t dlen, const wchar_t *src, rsize_t count)
+errno_t wmemcpy_s(wchar_t *dest, rsize_t dlen, const wchar_t *src,
+                  rsize_t count)
 #else
 EXPORT errno_t _wmemcpy_s_chk(wchar_t *dest, rsize_t dlen, const wchar_t *src,
                               rsize_t count, const size_t destbos,

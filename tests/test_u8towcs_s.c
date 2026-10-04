@@ -37,21 +37,21 @@ int test_u8towcs_s(void) {
     /* multi-byte codepoints: e-acute (2 bytes), check mark (3 bytes) */
 
     n = 0;
-    rc = u8towcs_s(&n, wdest, LEN, (const char8_t *)"\xC3\xA9\xE2\x9C\x93",
-                   LEN);
+    rc =
+        u8towcs_s(&n, wdest, LEN, (const char8_t *)"\xC3\xA9\xE2\x9C\x93", LEN);
     ERR(EOK)
     if (n != 2) {
         debug_printf("%s %u  n=%zu, expected 2\n", __FUNCTION__, __LINE__, n);
         errs++;
     }
     if (wdest[0] != 0xE9) {
-        debug_printf("%s %u  wdest[0]=U+%04X, expected U+00E9\n",
-                     __FUNCTION__, __LINE__, (unsigned)wdest[0]);
+        debug_printf("%s %u  wdest[0]=U+%04X, expected U+00E9\n", __FUNCTION__,
+                     __LINE__, (unsigned)wdest[0]);
         errs++;
     }
     if (wdest[1] != 0x2713) {
-        debug_printf("%s %u  wdest[1]=U+%04X, expected U+2713\n",
-                     __FUNCTION__, __LINE__, (unsigned)wdest[1]);
+        debug_printf("%s %u  wdest[1]=U+%04X, expected U+2713\n", __FUNCTION__,
+                     __LINE__, (unsigned)wdest[1]);
         errs++;
     }
 

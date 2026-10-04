@@ -83,7 +83,7 @@ int test_u8width_s(void) {
     len = u8width_s((const char8_t *)"test", 5);
     EXPLEN(4)
 
-    //return errs;
+    // return errs;
     /*--------------------------------------------------*/
 
     std_len = 0;

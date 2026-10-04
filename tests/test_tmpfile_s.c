@@ -42,8 +42,7 @@ int test_tmpfile_s(void) {
           // old mingw
           rc == EACCES ||
 #endif
-          rc == ESLEMAX))
-    {
+          rc == ESLEMAX)) {
         debug_printf("%s %u   Error rc=%d \n", __FUNCTION__, __LINE__, rc);
         errs++;
     }

@@ -79,8 +79,8 @@
  */
 
 #ifdef FOR_DOXYGEN
-errno_t wmemcmp_s(const wchar_t *dest, rsize_t dlen,
-                  const wchar_t *src, rsize_t slen, int *diff)
+errno_t wmemcmp_s(const wchar_t *dest, rsize_t dlen, const wchar_t *src,
+                  rsize_t slen, int *diff)
 #else
 EXPORT errno_t _wmemcmp_s_chk(const wchar_t *dest, rsize_t dlen,
                               const wchar_t *src, rsize_t slen, int *diff,

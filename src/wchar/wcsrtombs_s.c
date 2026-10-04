@@ -35,7 +35,8 @@
 #include "safeclib_private.h"
 #endif
 
-#if (defined(TEST_MSVCRT) && defined(HAVE_WCSRTOMBS_S)) || !defined(HAVE_WCHAR_H)
+#if (defined(TEST_MSVCRT) && defined(HAVE_WCSRTOMBS_S)) ||                     \
+    !defined(HAVE_WCHAR_H)
 #else
 
 /**
@@ -128,9 +129,9 @@
  *    wcrtomb_s(), wcstombs_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t wcsrtombs_s(size_t *restrict retvalp, char *restrict dest,
-                    rsize_t dmax, const wchar_t **restrict srcp,
-                    rsize_t len, mbstate_t *restrict ps)
+errno_t wcsrtombs_s(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,
+                    const wchar_t **restrict srcp, rsize_t len,
+                    mbstate_t *restrict ps)
 #else
 EXPORT errno_t _wcsrtombs_s_chk(size_t *restrict retvalp, char *restrict dest,
                                 rsize_t dmax, const wchar_t **restrict srcp,

@@ -64,7 +64,8 @@ static inline int _is_lt_accented(uint32_t wc) {
  * the length of src (max 4 per char), the conversion is done via \c towfc_s()
  * and Unicode 10.0, the Unicode special-casing rules are obeyed, and composed
  * characters are normalized to NFD via \c wcsnorm_decompose_s() and
- * \c wcsnorm_reorder_s(). If not, the conversion is per character done via normal
+ * \c wcsnorm_reorder_s(). If not, the conversion is per character done via
+ * normal
  * \c towlower().  Note that decomposition creates larger strings, typically
  * 2-3 chars more.
  *
@@ -211,18 +212,17 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
             }
             src++;
         } else { /* c = 0 or 1. 1 might still be special case */
-            //if (c == 0) {
-            //    *dest++ = *src++;
-            //    dmax--;
-            //    continue;
-            //}
+            // if (c == 0) {
+            //     *dest++ = *src++;
+            //     dmax--;
+            //     continue;
+            // }
             if (unlikely(c == 0 &&
-                         (*src == 0x1cbb || *src == 0x1cbc ||
-                          *src == 0x1057B || *src == 0x1058B || *src == 0x10593))) {
+                         (*src == 0x1cbb || *src == 0x1cbc || *src == 0x1057B ||
+                          *src == 0x1058B || *src == 0x10593))) {
                 *dest++ = *src++;
                 dmax--;
-            }
-            else if (unlikely(*src == 0x3a3)) {
+            } else if (unlikely(*src == 0x3a3)) {
                 if (iswspace(*(src + 1))) /* final sigma? */
                     *dest++ = 0x3c2;
                 else

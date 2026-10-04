@@ -55,7 +55,8 @@
 #include <linux/ctype.h>
 
 /* Needed since the switch to time64_t */
-#if defined CONFIG_COMPAT_32BIT_TIME && defined _LINUX_TIME64_H && defined __VDSO_TIME32_H
+#if defined CONFIG_COMPAT_32BIT_TIME && defined _LINUX_TIME64_H &&             \
+    defined __VDSO_TIME32_H
 #define time_t old_time32_t
 #elif defined _LINUX_TIME64_H && !defined __VDSO_TIME32_H
 #define time_t time64_t
@@ -341,7 +342,7 @@ typedef unsigned long uintptr_t;
     if (unlikely(dmax != destbos)) {                                           \
         if (unlikely(dmax > destbos)) {                                        \
             if (dmax > RSIZE_MAX_STR) {                                        \
-              handle_error((char*)dest, destbos, func ": dmax exceeds max",    \
+                handle_error((char *)dest, destbos, func ": dmax exceeds max", \
                              ESLEMAX);                                         \
                 return RCNEGATE(ESLEMAX);                                      \
             } else {                                                           \
@@ -437,7 +438,8 @@ typedef unsigned long uintptr_t;
 #define CHK_DEST_OVR_CLEAR(func, destbos)                                      \
     if (unlikely(dmax > destbos)) {                                            \
         if (dmax > RSIZE_MAX_STR) {                                            \
-            handle_error((char*)dest, destbos, func ": dmax exceeds max", ESLEMAX); \
+            handle_error((char *)dest, destbos, func ": dmax exceeds max",     \
+                         ESLEMAX);                                             \
             return RCNEGATE(ESLEMAX);                                          \
         } else {                                                               \
             return handle_str_bos_overflow(func ": dmax exceeds dest",         \
@@ -512,7 +514,7 @@ typedef unsigned long uintptr_t;
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                          \
     if (unlikely(src == NULL)) {                                               \
-        handle_error((char*)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax,         \
+        handle_error((char *)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax,        \
                      func ": " _XSTR(src) " is null", ESNULLP);                \
         return RCNEGATE(ESNULLP);                                              \
     }
@@ -560,7 +562,7 @@ typedef unsigned long uintptr_t;
 #endif
 #define CHK_SLEN_MAX_CLEAR(func, slen, max)                                    \
     if (unlikely(slen > (max))) {                                              \
-        handle_error((char*)dest,                                              \
+        handle_error((char *)dest,                                             \
                      _BOS_KNOWN(dest) ? BOS(dest) : strnlen_s(dest, dmax),     \
                      func ": " _XSTR(slen) " exceeds max", ESLEMAX);           \
         return RCNEGATE(ESLEMAX);                                              \
@@ -568,8 +570,9 @@ typedef unsigned long uintptr_t;
 #define CHK_SLEN_MAX_NOSPC_CLEAR(func, slen, max)                              \
     if (unlikely(slen > dmax)) {                                               \
         errno_t error = slen > max ? ESLEMAX : ESNOSPC;                        \
-        handle_error((char*)dest,                                              \
-                     _BOS_KNOWN(dest) ? BOS(dest) : strnlen_s((char*)dest, dmax), \
+        handle_error((char *)dest,                                             \
+                     _BOS_KNOWN(dest) ? BOS(dest)                              \
+                                      : strnlen_s((char *)dest, dmax),         \
                      func ": " _XSTR(slen) " exceeds max", error);             \
         return RCNEGATE(error);                                                \
     }
@@ -658,7 +661,7 @@ EXTERN uint32_t _dec_w16(wchar_t *src);
         (dmax)--;                                                              \
     } else {                                                                   \
         *dest++ = ((cp) >> 10) + 0xd7c0;                                       \
-        *dest++ = ((cp)&0x3ff) + 0xdc00;                                       \
+        *dest++ = ((cp) & 0x3ff) + 0xdc00;                                     \
         (dmax)--;                                                              \
         (dmax)--;                                                              \
     }
@@ -695,14 +698,13 @@ typedef struct {
 
 // internal buffer output
 static inline int safec_out_buffer(char character, void *buffer, size_t idx,
-                                    size_t maxlen)
-{
+                                   size_t maxlen) {
     if (idx < maxlen) {
         ((char *)buffer)[idx] = character;
         return 1;
     } else {
         invoke_safe_str_constraint_handler("vsnprintf_s: exceeds dmax",
-                                           (char*)buffer, ESNOSPC);
+                                           (char *)buffer, ESNOSPC);
         return -(ESNOSPC);
     }
 }
@@ -710,8 +712,7 @@ static inline int safec_out_buffer(char character, void *buffer, size_t idx,
 #ifndef SAFECLIB_DISABLE_IO
 // internal putchar wrapper
 static inline int safec_out_char(char character, void *buffer, size_t idx,
-                                  size_t maxlen)
-{
+                                 size_t maxlen) {
     (void)buffer;
     (void)idx;
     (void)maxlen;
@@ -723,8 +724,7 @@ static inline int safec_out_char(char character, void *buffer, size_t idx,
         rc = slprintf("%c", character);
         return rc;
 #endif
-    }
-    else
+    } else
         return 0;
 }
 #endif
@@ -732,21 +732,23 @@ static inline int safec_out_char(char character, void *buffer, size_t idx,
 #if !defined(__KERNEL__) && !defined(SAFECLIB_DISABLE_IO)
 // special-case of safec_out_fct for fprintf_s
 static inline int safec_out_fchar(char character, void *wrap, size_t idx,
-                             size_t maxlen) {
+                                  size_t maxlen) {
     (void)idx;
     (void)maxlen;
-    //((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
-    return fputc(character, (FILE*)((out_fct_wrap_type *)wrap)->arg);
+    //((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type
+    //*)wrap)->arg);
+    return fputc(character, (FILE *)((out_fct_wrap_type *)wrap)->arg);
 }
 #endif
 
 // internal output function wrapper
 static inline int safec_out_fct(char character, void *wrap, size_t idx,
-                                 size_t maxlen) {
+                                size_t maxlen) {
     (void)idx;
     (void)maxlen;
     // wrap is the output fct pointer
-    return ((out_fct_wrap_type *)wrap)->fct(character, ((out_fct_wrap_type *)wrap)->arg);
+    return ((out_fct_wrap_type *)wrap)
+        ->fct(character, ((out_fct_wrap_type *)wrap)->arg);
 }
 
 // mingw has a _vsnprintf_s. we use our own.
@@ -754,15 +756,16 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                       const size_t bufsize, const char *format, va_list va);
 
 // internal helpers for the *scanf_s functions:
-//#include "io/safec_file.h"
-//int _safec_vfscanf_impl(_SAFEC_FILE* sf, const char *funcname, const char *fmt, va_list ap);
-//int _safec_vfwscanf_impl(_SAFEC_FILE* sf, const char *funcname, const wchar_t *fmt, va_list ap);
+// #include "io/safec_file.h"
+// int _safec_vfscanf_impl(_SAFEC_FILE* sf, const char *funcname, const char
+// *fmt, va_list ap); int _safec_vfwscanf_impl(_SAFEC_FILE* sf, const char
+// *funcname, const wchar_t *fmt, va_list ap);
 
 #ifdef SAFECLIB_ENABLE_U8
 /* from u8norm_s.c */
 EXTERN int _u8decomp_s(char8_t *restrict dest, rsize_t dmax, const uint32_t cp,
                        const bool iscompat);
-const char* _u8_get_script(uint32_t cp);
+const char *_u8_get_script(uint32_t cp);
 int _u8_init_script(void);
 int _u8_chk_script(char8_t *restrict str, rsize_t len);
 int _u8_err_script(char8_t *restrict str, const char *script, uint32_t cp);

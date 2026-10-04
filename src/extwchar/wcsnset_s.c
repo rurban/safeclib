@@ -75,10 +75,11 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n)
+errno_t wcsnset_s(wchar_t *restrict dest, rsize_t dmax, wchar_t value,
+                  rsize_t n)
 #else
-EXPORT errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax, wchar_t value, rsize_t n,
-                              const size_t destbos)
+EXPORT errno_t _wcsnset_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                              wchar_t value, rsize_t n, const size_t destbos)
 #endif
 {
     const size_t destsz = dmax * sizeof(wchar_t);

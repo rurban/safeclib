@@ -83,7 +83,7 @@
  */
 #ifdef FOR_DOXYGEN
 errno_t u8fc_s(char8_t *restrict dest, rsize_t dmax,
-              const char8_t *restrict src, rsize_t *restrict lenp)
+               const char8_t *restrict src, rsize_t *restrict lenp)
 #else
 EXPORT errno_t _u8fc_s_chk(char8_t *restrict dest, rsize_t dmax,
                            const char8_t *restrict src, rsize_t *restrict lenp,

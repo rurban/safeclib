@@ -40,7 +40,7 @@
 
 #if defined(__CYGWIN__) && defined(__x86_64)
 #define wcstombs(dest, src, len)                                               \
-    wcsrtombs((dest), (const wchar_t **restrict) & (src), (len), &st)
+    wcsrtombs((dest), (const wchar_t **restrict)&(src), (len), &st)
 #endif
 
 /**
@@ -121,9 +121,8 @@
  *    mbstowc_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t wcstombs_s(size_t *restrict retvalp, char *restrict dest,
-                   rsize_t dmax, const wchar_t *restrict src,
-                   rsize_t len)
+errno_t wcstombs_s(size_t *restrict retvalp, char *restrict dest, rsize_t dmax,
+                   const wchar_t *restrict src, rsize_t len)
 #else
 EXPORT errno_t _wcstombs_s_chk(size_t *restrict retvalp, char *restrict dest,
                                rsize_t dmax, const wchar_t *restrict src,

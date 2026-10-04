@@ -83,10 +83,11 @@
  *    wcsncpy(), wmemcpy(), wmemmove(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t wcscpy_s(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src)
+errno_t wcscpy_s(wchar_t *restrict dest, rsize_t dmax,
+                 const wchar_t *restrict src)
 #else
-EXPORT errno_t _wcscpy_s_chk(wchar_t *restrict dest, rsize_t dmax, const wchar_t *restrict src,
-                             const size_t destbos)
+EXPORT errno_t _wcscpy_s_chk(wchar_t *restrict dest, rsize_t dmax,
+                             const wchar_t *restrict src, const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;

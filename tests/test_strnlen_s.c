@@ -116,7 +116,8 @@ int test_strnlen_s(void) {
     EXPECT_BOS("str overflow")
     len = strnlen_s("testing", 9);
 #else
-    len = strnlen_s("testing", max_len); /* depends on optimizer's var-tracking */
+    len =
+        strnlen_s("testing", max_len); /* depends on optimizer's var-tracking */
 #endif
     STDLEN()
 

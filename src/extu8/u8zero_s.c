@@ -80,8 +80,7 @@ EXPORT errno_t _u8zero_s_uchk(char8_t *dest, rsize_t dmax) {
 #ifdef FOR_DOXYGEN
 errno_t u8zero_s(char8_t *dest, rsize_t dmax)
 #else
-EXPORT errno_t _u8zero_s_chk(char8_t *dest, rsize_t dmax,
-                             const size_t destbos)
+EXPORT errno_t _u8zero_s_chk(char8_t *dest, rsize_t dmax, const size_t destbos)
 #endif
 {
     CHK_DEST_NULL("u8zero_s")

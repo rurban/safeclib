@@ -76,13 +76,13 @@
  * @retval -ESZEROL    when \c dmax = 0 and dest is not NULL
  * @retval -ESLEMAX    when \c dmax > \c RSIZE_MAX_STR or dmax > size of dest
  * @retval -EOVERFLOW  when \c dmax > size of dest
- * @retval -ESNOSPC    when return value exceeds dmax unless dmax is zero and dest
- *                     is NULL
+ * @retval -ESNOSPC    when return value exceeds dmax unless dmax is zero and
+ * dest is NULL
  * @retval -EINVAL     when \c fmt contains \c %n
  *
- * @note The C11 standard was most likely wrong with changing the return value to
- * 0 on errors. All other functions and existing C11 implementations do return
- * -1, so we return negative error codes. See the
+ * @note The C11 standard was most likely wrong with changing the return value
+ * to 0 on errors. All other functions and existing C11 implementations do
+ * return -1, so we return negative error codes. See the
  * http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1141.pdf revision for their
  * rationale. sprintf_s does not set \c errno.
  *

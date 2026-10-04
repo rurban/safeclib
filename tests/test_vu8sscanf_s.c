@@ -16,8 +16,7 @@ static char str2[LEN];
 int vtu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt, ...);
 int test_vu8sscanf_s(void);
 
-int vtu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt,
-                 ...) {
+int vtu8sscanf_s(const char8_t *restrict dest, const char *restrict fmt, ...) {
     int rc;
     va_list ap;
     va_start(ap, fmt);

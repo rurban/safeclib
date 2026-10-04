@@ -105,19 +105,18 @@ EXPORT errno_t _u8ncpy_s_chk(char8_t *restrict dest, rsize_t dmax,
         CHK_DEST_OVR_CLEAR("u8ncpy_s", destbos)
     }
     CHK_SRC_NULL_CLEAR("u8ncpy_s", src)
-    orig_dest = (char*)dest;
+    orig_dest = (char *)dest;
     if (unlikely(slen > RSIZE_MAX_STR)) {
-      handle_error(orig_dest, u8nlen_s(dest, dmax),
-                         "u8ncpy_s: slen exceeds max",
-                         ESLEMAX);
+        handle_error(orig_dest, u8nlen_s(dest, dmax),
+                     "u8ncpy_s: slen exceeds max", ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else {
         if (unlikely(slen > srcbos)) {
-          handle_error(orig_dest, u8nlen_s(dest, dmax),
-                          "u8ncpy_s: slen exceeds src", EOVERFLOW);
+            handle_error(orig_dest, u8nlen_s(dest, dmax),
+                         "u8ncpy_s: slen exceeds src", EOVERFLOW);
             return RCNEGATE(EOVERFLOW);
         }
     }
@@ -260,8 +259,8 @@ EXPORT errno_t _u8ncpy_s_chk(char8_t *restrict dest, rsize_t dmax,
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
     handle_error(orig_dest, orig_dmax,
-                  "u8ncpy_s: not "
-                  "enough space for src",
-                  ESNOSPC);
+                 "u8ncpy_s: not "
+                 "enough space for src",
+                 ESNOSPC);
     return RCNEGATE(ESNOSPC);
 }

@@ -95,7 +95,7 @@ int test_wcsnlen_s(void) {
     len = wcsnlen_s(L"test", 5);
     EXPLEN(4)
 
-    //return errs;
+    // return errs;
     /*--------------------------------------------------*/
 
     std_len = 0;

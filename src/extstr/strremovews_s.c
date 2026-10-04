@@ -36,8 +36,8 @@
 #endif
 
 #ifndef FOR_DOXYGEN
-/* The dest/dmax constraints are already checked by _strremovews_s_chk or proven at
-   compile-time. GH #48 */
+/* The dest/dmax constraints are already checked by _strremovews_s_chk or proven
+   at compile-time. GH #48 */
 EXPORT errno_t _strremovews_s_uchk(char *dest, rsize_t dmax) {
     char *orig_dest;
     char *orig_end;

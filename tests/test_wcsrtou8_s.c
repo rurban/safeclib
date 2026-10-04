@@ -76,8 +76,7 @@ int test_wcsrtou8_s(void) {
     /* null ps */
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty ps")
-    {
+    EXPECT_BOS("empty ps") {
         const wchar_t *p = L"hi";
         n = 0;
         rc = wcsrtou8_s(&n, dest, LEN, &p, LEN, NULL);

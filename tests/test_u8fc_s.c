@@ -61,7 +61,8 @@ int test_u8fc_s(void) {
     /*--------------------------------------------------*/
 
     /* full fold-case multi-char expansion: U+00DF (sharp s) -> "ss" */
-    strcpy((char *)src, "stra\xC3\x9F" "e");
+    strcpy((char *)src, "stra\xC3\x9F"
+                        "e");
     rc = u8fc_s(dest, LEN, src, &len);
     ERR(EOK)
     if (strcmp((char *)dest, "strasse") != 0) {

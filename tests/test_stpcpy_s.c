@@ -26,7 +26,7 @@ int test_stpcpy_s(void);
 int test_stpcpy_s(void) {
     errno_t rc;
     int len;
-    char* dest;
+    char *dest;
     int errs = 0;
 
     /*--------------------------------------------------*/
@@ -201,7 +201,7 @@ int test_stpcpy_s(void) {
     }*/
     /*--------------------------------------------------*/
 
-    (void) dest;
+    (void)dest;
 
     return (errs);
 }

@@ -58,8 +58,8 @@ EXPORT rsize_t _u8nlen_s_uchk(const char8_t *str, rsize_t smax) {
  * @def u8nlen_s(str,smax)
  * @brief
  *    The u8nlen_s function computes the byte-length of the utf-8 string pointed
- *    to by str, stopping at smax, providing limited support for non-null terminated
- *    strings.
+ *    to by str, stopping at smax, providing limited support for non-null
+ * terminated strings.
  *
  * @param  str   pointer to utf-8 string
  * @param  smax  maximum byte-length of utf-8 string, incl. the final \0.

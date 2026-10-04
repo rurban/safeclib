@@ -6,8 +6,8 @@
  *------------------------------------------------------------------
  */
 
-#if defined(HAVE_FENV_H) && defined(HAVE_FEENABLEEXCEPT) && defined(HAVE_XMMINTRIN_H) \
-    && defined(__SSE__)
+#if defined(HAVE_FENV_H) && defined(HAVE_FEENABLEEXCEPT) &&                    \
+    defined(HAVE_XMMINTRIN_H) && defined(__SSE__)
 
 #define _GNU_SOURCE
 #include <fenv.h>
@@ -40,11 +40,11 @@ int test_sprintf_s_exc(void) {
 
         feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
 #ifdef __SSE__
-        _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON); 
+        _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
 #endif
         sprintf_s(s, 200, "  %e", 0.0);
     }
-        
+
     return (errs);
 }
 

@@ -74,8 +74,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strfirstdiff_s(const char *dest, rsize_t dmax,
-                       const char *src, rsize_t *resultp)
+errno_t strfirstdiff_s(const char *dest, rsize_t dmax, const char *src,
+                       rsize_t *resultp)
 #else
 EXPORT errno_t _strfirstdiff_s_chk(const char *dest, rsize_t dmax,
                                    const char *src, rsize_t *resultp,

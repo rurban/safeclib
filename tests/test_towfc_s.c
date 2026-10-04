@@ -68,8 +68,7 @@ int test_towfc_s(void) {
         char url[256];
         printf("downloading %s ...", CFOLD);
         fflush(stdout);
-        snprintf(url, 255,
-                 "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
+        snprintf(url, 255, "wget https://www.unicode.org/Public/%d.0.0/ucd/%s",
                  SAFECLIB_UNICODE_VERSION, CFOLD);
         if (system(url))
             printf(" done\n");
@@ -195,14 +194,15 @@ int test_towfc_s(void) {
                         if (wc == 0x130) {
                             INDCMP(!= 2);
                             if (_BOS_KNOWN(result)) {
-                              WEXPSTR(result, L"i̇");
+                                WEXPSTR(result, L"i̇");
                             }
                         } else {
                             INDCMP(!= 1);
                             WEXPSTR(result, L"i");
                         }
                     }
-                } else if (*status == 'S') { /* ignore as we handle the other F case */
+                } else if (*status ==
+                           'S') { /* ignore as we handle the other F case */
                     ;
                 } else { /* the simple 1:1 C case */
 #if SIZEOF_WCHAR_T > 2
@@ -213,13 +213,15 @@ int test_towfc_s(void) {
                     {
                         errs++;
                         printf("%s %u  Error: iswfc(U+%04X) => %d (towfc=>%d) "
-                               "\"%s\" status=%s %s\n", __FUNCTION__, __LINE__, wc,
-                               n, len, mapping, status, name);
+                               "\"%s\" status=%s %s\n",
+                               __FUNCTION__, __LINE__, wc, n, len, mapping,
+                               status, name);
                     } else if (cp != m0) {
                         errs++;
                         printf("%s %u  Error: towfc(U+%04X) => %X != %X \"%s\" "
-                               "status=%s %s\n", __FUNCTION__, __LINE__, wc, cp, m0,
-                               mapping, status, name);
+                               "status=%s %s\n",
+                               __FUNCTION__, __LINE__, wc, cp, m0, mapping,
+                               status, name);
                     }
                 }
             }

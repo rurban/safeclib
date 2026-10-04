@@ -86,9 +86,17 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 #endif
     /* positional: sdcc miscompiles designated initializers with
        --stack-auto */
-    _SAFEC_FILE sf = { NULL, (unsigned char *)(void *)buffer, 0,
-                       (void *)buffer, NULL, NULL, safec_string_read, -1,
-                       NULL, 0, 0 };
+    _SAFEC_FILE sf = {NULL,
+                      (unsigned char *)(void *)buffer,
+                      0,
+                      (void *)buffer,
+                      NULL,
+                      NULL,
+                      safec_string_read,
+                      -1,
+                      NULL,
+                      0,
+                      0};
 
     if (unlikely(buffer == NULL)) {
         invoke_safe_str_constraint_handler("sscanf_s: buffer is null", NULL,
@@ -128,7 +136,7 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 
     errno = 0;
     va_start(ap, fmt);
-    //ret = vsscanf(buffer, fmt, ap);
+    // ret = vsscanf(buffer, fmt, ap);
     ret = _safec_vfscanf_impl(&sf, "sscanf_s", fmt, ap, 1);
     va_end(ap);
 

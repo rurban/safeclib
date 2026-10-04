@@ -41,33 +41,22 @@
 // TODO static hash of scripts in u8i string
 
 // return the const script ptr of the codepoint
-const char* _u8_get_script(uint32_t cp)
-{
-  // binary search over _u8_script_ranges[]
-  return "";
+const char *_u8_get_script(uint32_t cp) {
+    // binary search over _u8_script_ranges[]
+    return "";
 }
 
 // resets the current set of scripts of each u8i string
-int _u8_init_script(void)
-{
-  return 0;
-}
+int _u8_init_script(void) { return 0; }
 
 // check if the codepoint fits to the current set of scripts
-int _u8_chk_script(char8_t *restrict str, rsize_t len)
-{
-  return 0;
-}
+int _u8_chk_script(char8_t *restrict str, rsize_t len) { return 0; }
 
 // throw the invalid mixed string error
-int _u8_err_script(char8_t *restrict str, const char *script, uint32_t cp)
-{
-  return 0;
+int _u8_err_script(char8_t *restrict str, const char *script, uint32_t cp) {
+    return 0;
 }
 
 // check if the string needs to be normalized or not.
 // it needs if any decomposed sequence is found.
-int _u8_is_decomposed(char8_t *restrict str, rsize_t len)
-{
-  return 0;
-}
+int _u8_is_decomposed(char8_t *restrict str, rsize_t len) { return 0; }

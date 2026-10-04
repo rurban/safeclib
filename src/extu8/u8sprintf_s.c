@@ -74,12 +74,11 @@
  *    vu8sprintf_s(), u8snprintf_s(), sprintf_s()
  */
 #ifdef FOR_DOXYGEN
-int u8sprintf_s(char8_t *restrict dest, rsize_t dmax,
-               const char *restrict fmt, ...)
+int u8sprintf_s(char8_t *restrict dest, rsize_t dmax, const char *restrict fmt,
+                ...)
 #else
 EXPORT int _u8sprintf_s_chk(char8_t *restrict dest, const rsize_t dmax,
-                            const size_t destbos, const char *restrict fmt,
-                            ...)
+                            const size_t destbos, const char *restrict fmt, ...)
 #endif
 {
     va_list va;

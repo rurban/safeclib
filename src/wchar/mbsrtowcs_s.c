@@ -120,9 +120,8 @@
  *    mbstowc_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t mbsrtowcs_s(size_t *restrict retvalp,
-                    wchar_t *restrict dest, rsize_t dmax,
-                    const char **restrict srcp, rsize_t len,
+errno_t mbsrtowcs_s(size_t *restrict retvalp, wchar_t *restrict dest,
+                    rsize_t dmax, const char **restrict srcp, rsize_t len,
                     mbstate_t *restrict ps)
 #else
 EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,

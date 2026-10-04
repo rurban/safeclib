@@ -80,8 +80,8 @@
  * @pre nmemb or size shall not be greater than RSIZE_MAX_MEM.
  *
  *    If the array contains several elements that compar would indicate as
- *    equal to the element searched for, then it is unspecified which element the
- *    function will return as the result.
+ *    equal to the element searched for, then it is unspecified which element
+ * the function will return as the result.
  *
  * @return Pointer to an element in the array that compares equal to *key, or
  *         null pointer if such element has not been found, or any run-time
@@ -107,10 +107,9 @@
  */
 
 #ifdef FOR_DOXYGEN
-void *
-bsearch_s(const void *key, const void *base, rsize_t nmemb, rsize_t size,
-               int (*compar)(const void *k, const void *y, void *context),
-               void *context)
+void *bsearch_s(const void *key, const void *base, rsize_t nmemb, rsize_t size,
+                int (*compar)(const void *k, const void *y, void *context),
+                void *context)
 #else
 EXPORT void *
 _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
@@ -138,7 +137,8 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
         rsize_t basesz = nmemb * size;
         if (unlikely(basesz > basebos)) {
             invoke_safe_mem_constraint_handler(
-                "bsearch_s: nmemb*size exceeds sizeof base", (void *)base, ESNOSPC);
+                "bsearch_s: nmemb*size exceeds sizeof base", (void *)base,
+                ESNOSPC);
             errno = ESNOSPC;
             return NULL;
         }

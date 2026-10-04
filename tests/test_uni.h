@@ -43,8 +43,8 @@ static inline int perl_unicode_version_matches(void) {
     int major = perl_unicode_major_version();
     if (major == SAFECLIB_UNICODE_VERSION)
         return 1;
-    printf("skipping PERL_TEST: perl Unicode %d != safeclib %d\n",
-           major, SAFECLIB_UNICODE_VERSION);
+    printf("skipping PERL_TEST: perl Unicode %d != safeclib %d\n", major,
+           SAFECLIB_UNICODE_VERSION);
     return 0;
 }
 

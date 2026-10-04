@@ -49,7 +49,7 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
-    //EXPECT_BOS("dest is too short")
+    // EXPECT_BOS("dest is too short")
     rc = strispassword_s("a", 1);
     ERR(false)
 

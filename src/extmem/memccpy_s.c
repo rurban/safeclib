@@ -81,8 +81,8 @@
  *    memcpy_s(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t memccpy_s(void *restrict dest, rsize_t dmax,
-                  const void *restrict src, int c, rsize_t n)
+errno_t memccpy_s(void *restrict dest, rsize_t dmax, const void *restrict src,
+                  int c, rsize_t n)
 #else
 EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
                               const void *restrict src, int c, rsize_t n,
@@ -91,7 +91,7 @@ EXPORT errno_t _memccpy_s_chk(void *restrict dest, rsize_t dmax,
 {
     uint8_t *dp;
 
-    (void) srcbos;
+    (void)srcbos;
 
     dp = (uint8_t *)dest;
 
@@ -120,8 +120,8 @@ EXPORT_SYMBOL(_memccpy_s_chk);
 #ifndef FOR_DOXYGEN
 /* The constraints are already checked by _memccpy_s_chk or proven at
    compile-time. GH #48 */
-EXPORT errno_t _memccpy_s_uchk(void *dest, rsize_t dmax, const void *src,
-                               int c, rsize_t n) {
+EXPORT errno_t _memccpy_s_uchk(void *dest, rsize_t dmax, const void *src, int c,
+                               rsize_t n) {
     uint8_t *dp = (uint8_t *)dest;
     const uint8_t *sp = (uint8_t *)src;
     rsize_t orig_dmax = dmax;

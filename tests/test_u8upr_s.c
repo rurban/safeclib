@@ -39,8 +39,8 @@ int test_u8upr_s(void) {
     rc = u8upr_s(str, LEN);
     ERR(EOK)
     if (strcmp((char *)str, "HELLO") != 0) {
-        debug_printf("%s %u  str=%s, expected HELLO\n", __FUNCTION__,
-                     __LINE__, str);
+        debug_printf("%s %u  str=%s, expected HELLO\n", __FUNCTION__, __LINE__,
+                     str);
         errs++;
     }
 
@@ -76,8 +76,8 @@ int test_u8upr_s(void) {
     rc = u8upr_s(str, LEN);
     ERR(EOK)
     if (strcmp((char *)str, "ALREADY UPPER") != 0) {
-        debug_printf("%s %u  str=%s, expected 'ALREADY UPPER'\n",
-                     __FUNCTION__, __LINE__, str);
+        debug_printf("%s %u  str=%s, expected 'ALREADY UPPER'\n", __FUNCTION__,
+                     __LINE__, str);
         errs++;
     }
 

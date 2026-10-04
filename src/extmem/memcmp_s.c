@@ -81,8 +81,8 @@
  */
 
 #ifdef FOR_DOXYGEN
-errno_t memcmp_s(const void *dest, rsize_t dmax, const void *src,
-                 rsize_t slen, int *diff)
+errno_t memcmp_s(const void *dest, rsize_t dmax, const void *src, rsize_t slen,
+                 int *diff)
 #else
 EXPORT errno_t _memcmp_s_chk(const void *dest, rsize_t dmax, const void *src,
                              rsize_t slen, int *diff, const size_t destbos,

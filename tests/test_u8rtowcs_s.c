@@ -86,8 +86,7 @@ int test_u8rtowcs_s(void) {
     /* null ps */
 
 #ifndef HAVE_CT_BOS_OVR
-    EXPECT_BOS("empty ps")
-    {
+    EXPECT_BOS("empty ps") {
         const char8_t *p = (const char8_t *)"hi";
         n = 0;
         rc = u8rtowcs_s(&n, wdest, LEN, &p, LEN, NULL);

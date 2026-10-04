@@ -65,13 +65,16 @@
  * @param[in]   src   pointer to the string that will be copied to dest
  * @param[in]   slen  the maximum number of bytes to copy from src
  * @param[out]  errp  EOK        success. the characters in src were
- *                               copied into dest and the result is zero terminated.
+ *                               copied into dest and the result is zero
+ terminated.
  *                    ESNULLP    when dest or src is a NULL pointer
  *                    ESZEROL    when dmax = 0
  *                    ESLEMAX    when dmax or slen > RSIZE_MAX_STR
- *                    EOVERFLOW  when dmax/slen > size of dest/slen (optionally, when the compiler
+ *                    EOVERFLOW  when dmax/slen > size of dest/slen (optionally,
+ when the compiler
  *                               knows the object_size statically)
- *                    ESLEWRNG   when dmax != size of dest and --enable-error-dmax
+ *                    ESLEWRNG   when dmax != size of dest and
+ --enable-error-dmax
  *                    ESUNTERM   when src is unterminated
  *                    ESOVRLP    when strings overlap
  *                    ESNOSPC    when src longer than dest
@@ -87,8 +90,8 @@
  *
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_STR.
  *
- * @return  stpncpy() returns a pointer to the terminating null byte in dest, or,
-            if dest is not null-terminated, dest+n.
+ * @return  stpncpy() returns a pointer to the terminating null byte in dest,
+ or, if dest is not null-terminated, dest+n.
  * @return  If there is a runtime-constraint violation, and if dest
  *          and dmax are valid, then stpncpy_s nulls dest.
  *
@@ -102,12 +105,12 @@ char *stpncpy_s(char *restrict dest, rsize_t dmax, const char *restrict src,
 #else
 EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
                             const char *restrict src, rsize_t slen,
-                            errno_t *restrict errp,
-                            const size_t destbos, const size_t srcbos)
+                            errno_t *restrict errp, const size_t destbos,
+                            const size_t srcbos)
 #endif
 {
     rsize_t orig_dmax = dmax;
-    char* orig_dest = dest;
+    char *orig_dest = dest;
     const char *overlap_bumper;
 
     if (unlikely(errp == NULL)) {
@@ -144,7 +147,7 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
                 return NULL;
             } else {
                 *errp = handle_str_bos_overflow("stpncpy_s: dmax exceeds dest",
-                                               (char *)dest, destbos);
+                                                (char *)dest, destbos);
                 return NULL;
             }
         }
@@ -155,11 +158,11 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
         *errp = RCNEGATE(ESNULLP);
         return NULL;
     }
-    //CHK_SRC_OVR_CLEAR("stpncpy_s", src, slen)
+    // CHK_SRC_OVR_CLEAR("stpncpy_s", src, slen)
     if (_BOS_KNOWN(src)) {
         if (unlikely(_BOS_OVR_N(src, slen))) {
-            *errp = handle_str_bos_overflow("stpncpy_s", (char *)dest,
-                                           _BOS_KNOWN(dest) ? BOS(dest) : dmax);
+            *errp = handle_str_bos_overflow(
+                "stpncpy_s", (char *)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax);
             return NULL;
         }
         BND_CHK_PTR_BOUNDS(src, slen);
@@ -175,7 +178,7 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
         *errp = handle_str_bos_overflow("stpncpy_s: slen exceeds src", dest,
-                                       destbos);
+                                        destbos);
         return NULL;
     }
 
@@ -219,8 +222,8 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
             dest++;
             src++;
             if (unlikely(slen >= srcbos)) {
-                invoke_safe_str_constraint_handler("stpncpy_s: src unterminated",
-                                                   (void *)src, ESUNTERM);
+                invoke_safe_str_constraint_handler(
+                    "stpncpy_s: src unterminated", (void *)src, ESUNTERM);
                 *errp = RCNEGATE(ESUNTERM);
                 return NULL;
             }
@@ -248,7 +251,7 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
 
             *dest = *src;
             if (*dest == '\0') {
-              eok:
+            eok:
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
@@ -270,21 +273,20 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
             dest++;
             src++;
             if (unlikely(slen >= srcbos)) {
-                invoke_safe_str_constraint_handler("stpncpy_s: src unterminated",
-                                                   (void *)src, ESUNTERM);
+                invoke_safe_str_constraint_handler(
+                    "stpncpy_s: src unterminated", (void *)src, ESUNTERM);
                 *errp = RCNEGATE(ESUNTERM);
                 return NULL;
             }
         }
     }
 
-  enospc:
+enospc:
     /*
      * the entire src must have been copied, if not reset dest
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
-    handle_error(orig_dest, orig_dmax,
-                 "stpncpy_s: not enough space for src",
+    handle_error(orig_dest, orig_dmax, "stpncpy_s: not enough space for src",
                  ESNOSPC);
     *errp = RCNEGATE(ESNOSPC);
     return NULL;
@@ -292,4 +294,3 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
 #ifdef __KERNEL__
 EXPORT_SYMBOL(_stpncpy_s_chk);
 #endif /* __KERNEL__ */
-

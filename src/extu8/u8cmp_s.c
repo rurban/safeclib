@@ -158,8 +158,8 @@ EXPORT errno_t _u8cmp_s_chk(const char8_t *dest, rsize_t dmax,
         }
     }
 
-    rc = u8cmp_normalize(dest, destlen, deststack, sizeof(deststack),
-                         &normdest, &normdestlen);
+    rc = u8cmp_normalize(dest, destlen, deststack, sizeof(deststack), &normdest,
+                         &normdestlen);
     if (rc != EOK)
         return RCNEGATE(rc);
 

@@ -19,21 +19,21 @@
 // support for the long long types (%llu or %p)
 // default: activated
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
-# ifdef HAVE_LONG_LONG
-#  define PRINTF_SUPPORT_LONG_LONG
-# else
-#  undef PRINTF_SUPPORT_LONG_LONG
-# endif
+#ifdef HAVE_LONG_LONG
+#define PRINTF_SUPPORT_LONG_LONG
+#else
+#undef PRINTF_SUPPORT_LONG_LONG
+#endif
 #endif
 
 // support for the long double types (%Lf %Le %Lg %La)
 // default: probed
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
-# ifdef HAVE_LONG_DOUBLE
-#  define PRINTF_SUPPORT_LONG_DOUBLE
-# else
-#  undef PRINTF_SUPPORT_LONG_DOUBLE
-# endif
+#ifdef HAVE_LONG_DOUBLE
+#define PRINTF_SUPPORT_LONG_DOUBLE
+#else
+#undef PRINTF_SUPPORT_LONG_DOUBLE
+#endif
 #endif
 
 // support for the floating point type (%f)
@@ -63,11 +63,11 @@ EXTERN int sprintf_s(char *restrict dest, rsize_t dmax,
 #endif
 #endif
 
-//#ifdef HAVE_SPRINTF_S
-//#define HAVE_NATIVE 1
-//#else
-//#define HAVE_NATIVE 0
-//#endif
+// #ifdef HAVE_SPRINTF_S
+// #define HAVE_NATIVE 1
+// #else
+// #define HAVE_NATIVE 0
+// #endif
 #include "test_msvcrt.h"
 
 #define LEN (128)
@@ -95,7 +95,8 @@ int test_sprintf_s(void) {
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
     ERR_MSVC(-ESNULLP, -1);
 #if defined(__aarch64__) && defined(__linux__)
-    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
+    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns
+     * ENOMEM. */
     if (errno == 12 && is_ubuntu())
         broken_errno = 1;
 #endif
@@ -116,7 +117,7 @@ int test_sprintf_s(void) {
     rc = sprintf_s(str1, LEN, NULL);
     ERR_MSVC(-ESNULLP, -1);
     ERRNO_MSVC(0, EINVAL);
- #endif
+#endif
 
     /*--------------------------------------------------*/
 
@@ -364,11 +365,11 @@ int test_sprintf_s(void) {
     ERR(1)
     EXPSTR(str2, "1")
     // 64-bit only:
-    //if (sizeof(intmax_t) == sizeof(long))
+    // if (sizeof(intmax_t) == sizeof(long))
 #if SIZEOF_SIZE_T == 8
-        rc = sprintf_s(str2, LEN, "%ju", 1UL);
+    rc = sprintf_s(str2, LEN, "%ju", 1UL);
 #else
-        rc = sprintf_s(str2, LEN, "%ju", 1ULL);
+    rc = sprintf_s(str2, LEN, "%ju", 1ULL);
 #endif
     ERR(1)
     EXPSTR(str2, "1")
@@ -424,64 +425,64 @@ int test_sprintf_s(void) {
     NOERRNULL()
     EXPSTR(str2, "0x1.99999ap-4")
 
-    rc = sprintf_s(str2, LEN, "%g", 0.0/0.0);
+    rc = sprintf_s(str2, LEN, "%g", 0.0 / 0.0);
     NOERRNULL()
     EXPSTR(str2, "nan")
-    rc = sprintf_s(str2, LEN, "%G", 0.0/0.0);
+    rc = sprintf_s(str2, LEN, "%G", 0.0 / 0.0);
     NOERRNULL()
     EXPSTR(str2, "NAN")
-    rc = sprintf_s(str2, LEN, "%g", 1.0/0.0);
+    rc = sprintf_s(str2, LEN, "%g", 1.0 / 0.0);
     NOERRNULL()
     EXPSTR(str2, "inf")
-    rc = sprintf_s(str2, LEN, "%g", -1.0/0.0);
+    rc = sprintf_s(str2, LEN, "%g", -1.0 / 0.0);
     NOERRNULL()
     EXPSTR_OR(str2, "-inf", "inf") // "inf" on BSD/mingw
-    rc = sprintf_s(str2, LEN, "%G", 1.0/0.0);
+    rc = sprintf_s(str2, LEN, "%G", 1.0 / 0.0);
     NOERRNULL()
     EXPSTR(str2, "INF")
-    rc = sprintf_s(str2, LEN, "%G", -1.0/0.0);
+    rc = sprintf_s(str2, LEN, "%G", -1.0 / 0.0);
     NOERRNULL()
     EXPSTR_OR(str2, "-INF", "INF") // "INF" on BSD/mingw
-    rc = sprintf_s(str2, LEN, "%+g", 1.0/0.0);
+    rc = sprintf_s(str2, LEN, "%+g", 1.0 / 0.0);
     NOERRNULL()
     EXPSTR(str2, "+inf")
-    rc = sprintf_s(str2, LEN, "%+G", 1.0/0.0);
+    rc = sprintf_s(str2, LEN, "%+G", 1.0 / 0.0);
     NOERRNULL()
     EXPSTR(str2, "+INF")
 #endif
 #endif
     {
-    const long double ld = 0.1;
+        const long double ld = 0.1;
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
-    rc = sprintf_s(str2, LEN, "%Ld", 1LL);
-    ERR(-1)
-    rc = sprintf_s(str2, LEN, "%Li", 1LL);
-    ERR(-1)
+        rc = sprintf_s(str2, LEN, "%Ld", 1LL);
+        ERR(-1)
+        rc = sprintf_s(str2, LEN, "%Li", 1LL);
+        ERR(-1)
 
 #ifdef PRINTF_SUPPORT_FLOAT
 #ifdef PRINTF_SUPPORT_EXPONENTIAL
-    rc = sprintf_s(str2, LEN, "%Le", ld);
-    NOERRNULL()
-    EXPSTR(str2, "1.000000e-01")
-    rc = sprintf_s(str2, LEN, "%LE", ld);
-    NOERRNULL()
-    EXPSTR(str2, "1.000000E-01")
-    rc = sprintf_s(str2, LEN, "%Lf", ld);
-    NOERRNULL()
-    EXPSTR(str2, "0.100000")
-    rc = sprintf_s(str2, LEN, "%LF", ld);
-    NOERRNULL()
-    EXPSTR(str2, "0.100000")
-    rc = sprintf_s(str2, LEN, "%Lg", ld);
-    NOERRNULL()
-    EXPSTR(str2, "0.1")
-    rc = sprintf_s(str2, LEN, "%LG", ld);
-    NOERRNULL()
-    EXPSTR(str2, "0.1")
-    rc = sprintf_s(str2, LEN, "%La", ld);
-    NOERRNULL()
-    // OR-case with macOS, aarch64
-    EXPSTR_OR(str2, "0xc.cccccccccccdp-7", "0x1.999999999999ap-4")
+        rc = sprintf_s(str2, LEN, "%Le", ld);
+        NOERRNULL()
+        EXPSTR(str2, "1.000000e-01")
+        rc = sprintf_s(str2, LEN, "%LE", ld);
+        NOERRNULL()
+        EXPSTR(str2, "1.000000E-01")
+        rc = sprintf_s(str2, LEN, "%Lf", ld);
+        NOERRNULL()
+        EXPSTR(str2, "0.100000")
+        rc = sprintf_s(str2, LEN, "%LF", ld);
+        NOERRNULL()
+        EXPSTR(str2, "0.100000")
+        rc = sprintf_s(str2, LEN, "%Lg", ld);
+        NOERRNULL()
+        EXPSTR(str2, "0.1")
+        rc = sprintf_s(str2, LEN, "%LG", ld);
+        NOERRNULL()
+        EXPSTR(str2, "0.1")
+        rc = sprintf_s(str2, LEN, "%La", ld);
+        NOERRNULL()
+        // OR-case with macOS, aarch64
+        EXPSTR_OR(str2, "0xc.cccccccccccdp-7", "0x1.999999999999ap-4")
 #endif
 #endif
 #endif
@@ -489,27 +490,27 @@ int test_sprintf_s(void) {
 #ifdef PRINTF_SUPPORT_PTRDIFF_T
     {
 #ifdef HAVE_STDDEF_H
-    const ptrdiff_t pd = str2 - str1;
-    rc = sprintf_s(str2, LEN, "%td", pd);
+        const ptrdiff_t pd = str2 - str1;
+        rc = sprintf_s(str2, LEN, "%td", pd);
 #else
-    rc = sprintf_s(str2, LEN, "%td", str2 - str1);
+        rc = sprintf_s(str2, LEN, "%td", str2 - str1);
 #endif
-    NOERRNULL()
-    if (str2 - str1)
-        EXPNSTR(str2, "0")
-    else
-        EXPSTR(str2, "0")
-    // invalid length
-    GCC_DIAG_IGNORE(-Wformat)
-    GCC_DIAG_IGNORE(-Wformat-extra-args)
+        NOERRNULL()
+        if (str2 - str1)
+            EXPNSTR(str2, "0")
+        else
+            EXPSTR(str2, "0")
+        // invalid length
+        GCC_DIAG_IGNORE(-Wformat)
+        GCC_DIAG_IGNORE(-Wformat-extra-args)
 #ifdef HAVE_STDDEF_H
-    rc = sprintf_s(str2, LEN, "%t", pd);
+        rc = sprintf_s(str2, LEN, "%t", pd);
 #else
-    rc = sprintf_s(str2, LEN, "%t", str2 - str1);
+        rc = sprintf_s(str2, LEN, "%t", str2 - str1);
 #endif
-    GCC_DIAG_RESTORE
-    GCC_DIAG_RESTORE
-    ERR(-1)
+        GCC_DIAG_RESTORE
+        GCC_DIAG_RESTORE
+        ERR(-1)
     }
 #endif
 

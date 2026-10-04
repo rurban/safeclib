@@ -36,8 +36,8 @@
 #endif
 
 #ifndef FOR_DOXYGEN
-/* The dest/dmax constraints are already checked by _strisascii_s_chk or proven at
-   compile-time. GH #48 */
+/* The dest/dmax constraints are already checked by _strisascii_s_chk or proven
+   at compile-time. GH #48 */
 EXPORT bool _strisascii_s_uchk(const char *dest, rsize_t dmax) {
     while (*dest && dmax) {
         if ((unsigned char)*dest > 127) {

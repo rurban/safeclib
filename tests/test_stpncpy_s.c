@@ -25,7 +25,7 @@ int test_strncpy_s(void);
 int test_stpncpy_s(void) {
     errno_t rc;
     int len;
-    char* dest;
+    char *dest;
     int errs = 0;
     rsize_t slen = LEN;
 
@@ -206,7 +206,7 @@ int test_stpncpy_s(void) {
     }*/
     /*--------------------------------------------------*/
 
-    (void) dest;
+    (void)dest;
 
     return (errs);
 }

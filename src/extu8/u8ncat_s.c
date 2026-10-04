@@ -109,8 +109,7 @@ EXPORT errno_t _u8ncat_s_chk(char8_t *restrict dest, rsize_t dmax,
     }
     CHK_SRC_NULL_CLEAR("u8ncat_s", src)
     if (unlikely(slen > RSIZE_MAX_STR)) {
-        handle_error((char *)dest, dmax, "u8ncat_s: slen exceeds max",
-                     ESLEMAX);
+        handle_error((char *)dest, dmax, "u8ncat_s: slen exceeds max", ESLEMAX);
         return RCNEGATE(ESLEMAX);
     }
     if (srcbos == BOS_UNKNOWN) {

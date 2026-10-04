@@ -36,8 +36,8 @@
 #endif
 
 #ifndef FOR_DOXYGEN
-/* The dest/dmax constraints are already checked by _strispassword_s_chk or proven at
-   compile-time. GH #48 */
+/* The dest/dmax constraints are already checked by _strispassword_s_chk or
+   proven at compile-time. GH #48 */
 EXPORT bool _strispassword_s_uchk(const char *dest, rsize_t dmax) {
     uint32_t cnt_all;
     uint32_t cnt_lowercase;
@@ -78,7 +78,7 @@ EXPORT bool _strispassword_s_uchk(const char *dest, rsize_t dmax) {
         } else if ((*dest >= 'A') && (*dest <= 'Z')) {
             cnt_uppercase++;
 
-        /* allow all specials */
+            /* allow all specials */
         } else if ((*dest >= 33) && (*dest <= 47)) {
             cnt_specials++;
         } else if ((*dest >= 58) && (*dest <= 64)) {
@@ -115,8 +115,10 @@ EXPORT bool _strispassword_s_uchk(const char *dest, rsize_t dmax) {
  * @details
  *  - Password must have mininmum SAFE_STR_PASSWORD_MIN_LENGTH characters \n
  *  - Password can have maximum SAFE_STR_PASSWORD_MAX_LENGTH characters \n
- *  - Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters \n
- *  - Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters \n
+ *  - Password must have at least SAFE_STR_MIN_LOWERCASE lower case characters
+ * \n
+ *  - Password must have at least SAFE_STR_MIN_UPPERCASE upper case characters
+ * \n
  *  - Password must have at least SAFE_STR_MIN_NUMBERS numbers \n
  *  - Password must have at least SAFE_STR_MIN_SPECIALS special characters
  *

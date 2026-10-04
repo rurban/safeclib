@@ -49,7 +49,9 @@ int test_u8cat_s(void) {
     /* stray continuation byte with no lead byte */
 
     strcpy((char *)str1, "x");
-    rc = u8cat_s(str1, LEN, (char8_t *)"\x80" "bc");
+    rc = u8cat_s(str1, LEN,
+                 (char8_t *)"\x80"
+                            "bc");
     ERR(EILSEQ)
 
     /*--------------------------------------------------*/

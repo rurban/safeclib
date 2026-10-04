@@ -81,8 +81,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t memcpy16_s(uint16_t *dest, rsize_t dmax,
-                   const uint16_t *src, rsize_t slen)
+errno_t memcpy16_s(uint16_t *dest, rsize_t dmax, const uint16_t *src,
+                   rsize_t slen)
 #else
 EXPORT errno_t _memcpy16_s_chk(uint16_t *dest, rsize_t dmax,
                                const uint16_t *src, rsize_t slen,

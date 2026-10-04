@@ -36,8 +36,8 @@
 #endif
 
 #ifndef FOR_DOXYGEN
-/* The dest/dmax constraints are already checked by _strislowercase_s_chk or proven at
-   compile-time. GH #48 */
+/* The dest/dmax constraints are already checked by _strislowercase_s_chk or
+   proven at compile-time. GH #48 */
 EXPORT bool _strislowercase_s_uchk(const char *dest, rsize_t dmax) {
     if (unlikely(*dest == '\0')) {
         return (false);

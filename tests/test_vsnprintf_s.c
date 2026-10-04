@@ -10,11 +10,11 @@
 #include "safe_str_lib.h"
 #include <stdarg.h>
 
-//#ifdef HAVE_VSNPRINTF_S
-//#define HAVE_NATIVE 1
-//#else
-//#define HAVE_NATIVE 0
-//#endif
+// #ifdef HAVE_VSNPRINTF_S
+// #define HAVE_NATIVE 1
+// #else
+// #define HAVE_NATIVE 0
+// #endif
 #include "test_msvcrt.h"
 
 #if defined(_WIN32) && defined(HAVE_VSNPRINTF_S)
@@ -158,8 +158,8 @@ int test_vsnprintf_s(void) {
     if (len3 != len2) {
 #ifdef DEBUG
         int len1 = strlen(str1);
-        debug_printf("%s %u lengths wrong: %d  %" PRId32 "  %" PRId32 " \n", __FUNCTION__,
-                     __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %" PRId32 "  %" PRId32 " \n",
+                     __FUNCTION__, __LINE__, len1, len2, len3);
 #endif
         errs++;
     }

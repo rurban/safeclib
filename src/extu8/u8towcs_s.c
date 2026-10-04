@@ -119,8 +119,7 @@ EXPORT errno_t _u8towcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
         if (destbos == BOS_UNKNOWN) {
             if (unlikely(dmax > RSIZE_MAX_WSTR || len > RSIZE_MAX_WSTR)) {
                 invoke_safe_str_constraint_handler(
-                    "u8towcs_s: dmax/len exceeds max", (void *)dest,
-                    ESLEMAX);
+                    "u8towcs_s: dmax/len exceeds max", (void *)dest, ESLEMAX);
                 return RCNEGATE(ESLEMAX);
             }
             BND_CHK_PTR_BOUNDS(dest, destsz);
@@ -160,12 +159,10 @@ EXPORT errno_t _u8towcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
         if (dest) {
             /* on a 2-byte wchar_t, codepoints >= 0x10000 need a surrogate
                pair, i.e. 2 wchar_t slots instead of 1 */
-            const rsize_t need =
-                (SIZEOF_WCHAR_T <= 2 && cp >= 0x10000) ? 2 : 1;
+            const rsize_t need = (SIZEOF_WCHAR_T <= 2 && cp >= 0x10000) ? 2 : 1;
             if (unlikely(dmax <= need)) { /* keep room for final NUL */
                 handle_werror(orig_dest, orig_dmax,
-                              "u8towcs_s: not enough space for src",
-                              ESNOSPC);
+                              "u8towcs_s: not enough space for src", ESNOSPC);
                 return RCNEGATE(ESNOSPC);
             }
             _ENC_W16(dest, dmax, cp);

@@ -86,8 +86,7 @@ EXPORT errno_t _strzero_s_uchk(char *dest, rsize_t dmax) {
 #ifdef FOR_DOXYGEN
 errno_t strzero_s(char *dest, rsize_t dmax)
 #else
-EXPORT errno_t _strzero_s_chk(char *dest, rsize_t dmax,
-                              const size_t destbos)
+EXPORT errno_t _strzero_s_chk(char *dest, rsize_t dmax, const size_t destbos)
 #endif
 {
     CHK_DEST_NULL("strzero_s")

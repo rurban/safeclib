@@ -99,8 +99,8 @@ EXPORT errno_t _u8rchr_s_chk(const char8_t *restrict dest, rsize_t dmax,
 #ifndef FOR_DOXYGEN
 /* The constraints are already checked by _u8rchr_s_chk or proven at
    compile-time. GH #48 */
-EXPORT errno_t _u8rchr_s_uchk(const char8_t *dest, rsize_t dmax,
-                              const int ch, char8_t **resultp) {
+EXPORT errno_t _u8rchr_s_uchk(const char8_t *dest, rsize_t dmax, const int ch,
+                              char8_t **resultp) {
     rsize_t len;
 
     *resultp = NULL;

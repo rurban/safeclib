@@ -439,26 +439,28 @@ int test_wcsfc_s(void) {
     /* see if we can lower-case and decompose all */
 #ifdef PERL_TEST
     if (do_perl_test)
-        fprintf_s(pl,
-              "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
-              "use Unicode::UCD;\n"
-              "warn \"Unicode::UCD::UnicodeVersion() must be "
-                "%d.0.0, is \" . Unicode::UCD::UnicodeVersion()\n"
-              "  if Unicode::UCD::UnicodeVersion() ne \"%d.0.0\";\n"
-              "sub wstr ($) {\n"
-              "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
-              "}\n"
-              "sub chk {\n"
-              "  my ($ch, $got) = @_;\n"
-              "  my $fc = fc($ch);\n"
-              "  my $nfd = NFD($fc);\n"
-              "  if ($nfd ne $got) {\n"
-              "    print \"Error \" if $fc ne $got;\n"
-              "    printf \"NFD \\\\x{%%X} = %%s; fc = %%s; got: %%s\\n\",\n"
-              "         unpack('W*',$ch), wstr($nfd), wstr($fc), wstr($got);\n"
-              "    1\n"
-              "  }\n"
-                  "}\n", PERL_VERSION, SAFECLIB_UNICODE_VERSION, SAFECLIB_UNICODE_VERSION);
+        fprintf_s(
+            pl,
+            "use v%s;\nno warnings;\nuse Unicode::Normalize;\nmy $err;\n"
+            "use Unicode::UCD;\n"
+            "warn \"Unicode::UCD::UnicodeVersion() must be "
+            "%d.0.0, is \" . Unicode::UCD::UnicodeVersion()\n"
+            "  if Unicode::UCD::UnicodeVersion() ne \"%d.0.0\";\n"
+            "sub wstr ($) {\n"
+            "  join('',map{sprintf'\\x{%%X}',$_} unpack 'W*',shift);\n"
+            "}\n"
+            "sub chk {\n"
+            "  my ($ch, $got) = @_;\n"
+            "  my $fc = fc($ch);\n"
+            "  my $nfd = NFD($fc);\n"
+            "  if ($nfd ne $got) {\n"
+            "    print \"Error \" if $fc ne $got;\n"
+            "    printf \"NFD \\\\x{%%X} = %%s; fc = %%s; got: %%s\\n\",\n"
+            "         unpack('W*',$ch), wstr($nfd), wstr($fc), wstr($got);\n"
+            "    1\n"
+            "  }\n"
+            "}\n",
+            PERL_VERSION, SAFECLIB_UNICODE_VERSION, SAFECLIB_UNICODE_VERSION);
 #endif
     for (wc = 0xc0; wc < 0x02fa20; wc++) {
         static wchar_t src[5];

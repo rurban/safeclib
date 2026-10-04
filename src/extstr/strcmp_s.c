@@ -73,12 +73,10 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strcmp_s(const char *dest, rsize_t dmax, const char *src,
-                 int *resultp)
+errno_t strcmp_s(const char *dest, rsize_t dmax, const char *src, int *resultp)
 #else
 EXPORT errno_t _strcmp_s_chk(const char *dest, rsize_t dmax, const char *src,
-                             int *resultp, const size_t destbos,
-                             size_t srcbos)
+                             int *resultp, const size_t destbos, size_t srcbos)
 #endif
 {
     CHK_SRC_NULL("strcmp_s", resultp)

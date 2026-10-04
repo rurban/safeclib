@@ -86,7 +86,8 @@
  * @return  If there is a runtime-constraint violation, and if dest and
  *          dmax are valid, then strncpy_s zeros dest.
  * @retval  EOK        successful operation, when slen == 0 or the characters
- *                     in src were copied to dest and the result is zero terminated.
+ *                     in src were copied to dest and the result is zero
+ * terminated.
  * @retval  ESNULLP    when dest/src is NULL pointer
  * @retval  ESZEROL    when dmax = 0
  * @retval  ESLEMAX    when dmax/slen > RSIZE_MAX_STR
@@ -107,8 +108,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strncpy_s(char *restrict dest, rsize_t dmax,
-                  const char *restrict src, rsize_t slen)
+errno_t strncpy_s(char *restrict dest, rsize_t dmax, const char *restrict src,
+                  rsize_t slen)
 #else
 EXPORT errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
                               const char *restrict src, rsize_t slen,
@@ -137,8 +138,8 @@ EXPORT errno_t _strncpy_s_chk(char *restrict dest, rsize_t dmax,
     if (srcbos == BOS_UNKNOWN) {
         BND_CHK_PTR_BOUNDS(src, slen);
     } else if (unlikely(slen > srcbos)) {
-        return handle_str_bos_overflow("strncpy_s: slen exceeds src",
-                                       dest, destbos);
+        return handle_str_bos_overflow("strncpy_s: slen exceeds src", dest,
+                                       destbos);
     }
 
     /* hold base in case src was not copied */

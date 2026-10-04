@@ -72,8 +72,7 @@
  */
 #ifdef FOR_DOXYGEN
 errno_t wcsicmp_s(const wchar_t *restrict dest, rsize_t dmax,
-                  const wchar_t *restrict src, rsize_t smax,
-                  int *resultp)
+                  const wchar_t *restrict src, rsize_t smax, int *resultp)
 #else
 EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict src, rsize_t smax,
@@ -126,7 +125,7 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                                            (void *)src, ENOMEM);
         return RCNEGATE(ENOMEM);
     }
-    rc = wcsfc_s(d1, dmax * 2, (wchar_t * restrict) dest, &l1);
+    rc = wcsfc_s(d1, dmax * 2, (wchar_t *restrict)dest, &l1);
     if (rc != EOK) {
         free(d1);
         return rc;
@@ -140,7 +139,7 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                                            (void *)src, ENOMEM);
         return RCNEGATE(ENOMEM);
     }
-    rc = wcsfc_s(d2, smax * 2, (wchar_t * restrict) src, &l2);
+    rc = wcsfc_s(d2, smax * 2, (wchar_t *restrict)src, &l2);
     if (rc != EOK) {
         free(d1);
         free(d2);

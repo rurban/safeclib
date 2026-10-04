@@ -71,7 +71,8 @@ extern "C" {
 #define HAVE_MINGW32 /* old mingw */
 #endif
 /* removed Feb 2026 */
-#if defined(HAVE_MINGW64) && !defined(MINGW_HAS_SECURE_API) && defined(_STDIO_S_DEFINED)
+#if defined(HAVE_MINGW64) && !defined(MINGW_HAS_SECURE_API) &&                 \
+    defined(_STDIO_S_DEFINED)
 #define MINGW_HAS_SECURE_API
 #endif
 
@@ -131,17 +132,17 @@ EXTERN char *_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
    mingw-w64 has repeatedly renamed/removed the header macros across
    releases, so the configure probe is the authoritative signal whenever
    it's available. */
-#if !defined(HAVE_TMPFILE_S) && !defined(MINGW_HAS_SECURE_API) &&             \
+#if !defined(HAVE_TMPFILE_S) && !defined(MINGW_HAS_SECURE_API) &&              \
     !defined(_STDIO_S_DEFINED)
 EXTERN errno_t tmpfile_s(FILE *restrict *restrict streamptr);
 #endif
-#if !defined(HAVE_FOPEN_S) && !defined(MINGW_HAS_SECURE_API) &&               \
+#if !defined(HAVE_FOPEN_S) && !defined(MINGW_HAS_SECURE_API) &&                \
     !defined(_STDIO_S_DEFINED)
 EXTERN errno_t fopen_s(FILE *restrict *restrict streamptr,
                        const char *restrict filename,
                        const char *restrict mode);
 #endif
-#if !defined(HAVE_FREOPEN_S) && !defined(MINGW_HAS_SECURE_API) &&             \
+#if !defined(HAVE_FREOPEN_S) && !defined(MINGW_HAS_SECURE_API) &&              \
     !defined(_STDIO_S_DEFINED)
 EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
@@ -160,7 +161,8 @@ EXTERN errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
     BOS_ATTR(dmax < 26, "dmax underflow") BOS_NULL(tm);
 
 /* TODO time64_t
-   https://www.gnu.org/software/libc/manual/html_node/64_002dbit-time-symbol-handling.html */
+   https://www.gnu.org/software/libc/manual/html_node/64_002dbit-time-symbol-handling.html
+ */
 EXTERN errno_t _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer,
                             const size_t destbos) BOS_CHK(dest)
     BOS_ATTR(dmax < 26, "dmax underflow") BOS_NULL(timer);
@@ -199,7 +201,7 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
                void *context, const size_t basebos)
     BOS_ATTR(nmemb && (_BOS_NULL(key) || _BOS_NULL(base) ||
                        _BOS_ZERO(base, nmemb *size)),
-             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb * size)
+             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb *size)
         BOS_ATTR(nmemb && !compar, "empty compar");
 #define bsearch_s(key, base, nmemb, size, compar, context)                     \
     _bsearch_s_chk(key, base, nmemb, size, compar, context, BOS(base))
@@ -208,8 +210,8 @@ EXTERN errno_t _qsort_s_chk(void *base, rsize_t nmemb, rsize_t size,
                             int (*compar)(const void *x, const void *y,
                                           void *context),
                             void *context, const size_t basebos)
-    BOS_ATTR(nmemb && (_BOS_NULL(base) || _BOS_ZERO(base, nmemb * size)),
-             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb * size)
+    BOS_ATTR(nmemb && (_BOS_NULL(base) || _BOS_ZERO(base, nmemb *size)),
+             "empty buf or bufsize") BOS_OVR2_BUTNULL(base, nmemb *size)
         BOS_ATTR(nmemb && !compar, "empty compar");
 #ifndef MINGW_HAS_SECURE_API
 #define qsort_s(base, nmemb, size, compar, context)                            \

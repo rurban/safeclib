@@ -53,8 +53,8 @@ EXTERN void invoke_safe_mem_constraint_handler(const char *msg, void *ptr,
 
 static inline void handle_mem_error(void *restrict dest, rsize_t dmax,
                                     const char *err_msg, errno_t err_code) {
-    (void) err_msg;
-    (void) err_code;
+    (void)err_msg;
+    (void)err_code;
 
     memset(dest, 0, dmax);
     invoke_safe_mem_constraint_handler(err_msg, dest, err_code);

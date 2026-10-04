@@ -77,10 +77,9 @@
 errno_t u8iu8i_s(char8i_t *dest, rsize_t dmax, const char8i_t *src,
                  rsize_t slen, char8i_t **substringp)
 #else
-EXPORT errno_t _u8iu8i_s_chk(char8i_t *dest, rsize_t dmax,
-                             const char8i_t *src, rsize_t slen,
-                             char8i_t **substringp, const size_t destbos,
-                             const size_t srcbos)
+EXPORT errno_t _u8iu8i_s_chk(char8i_t *dest, rsize_t dmax, const char8i_t *src,
+                             rsize_t slen, char8i_t **substringp,
+                             const size_t destbos, const size_t srcbos)
 #endif
 {
     return _u8str_s_chk((char8_t *)dest, dmax, (const char8_t *)src, slen,

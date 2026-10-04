@@ -31,28 +31,28 @@ EXTERN int vsprintf_s(char *restrict dest, rsize_t dmax,
 // support for the long long types (%llu or %p)
 // default: activated
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
-# ifdef HAVE_LONG_LONG
-#  define PRINTF_SUPPORT_LONG_LONG
-# else
-#  undef PRINTF_SUPPORT_LONG_LONG
-# endif
+#ifdef HAVE_LONG_LONG
+#define PRINTF_SUPPORT_LONG_LONG
+#else
+#undef PRINTF_SUPPORT_LONG_LONG
+#endif
 #endif
 
 // support for the long double types (%Lf %Le %Lg %La)
 // default: probed
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
-# ifdef HAVE_LONG_DOUBLE
-#  define PRINTF_SUPPORT_LONG_DOUBLE
-# else
-#  undef PRINTF_SUPPORT_LONG_DOUBLE
-# endif
+#ifdef HAVE_LONG_DOUBLE
+#define PRINTF_SUPPORT_LONG_DOUBLE
+#else
+#undef PRINTF_SUPPORT_LONG_DOUBLE
+#endif
 #endif
 
-//#ifdef HAVE_VSPRINTF_S
-//#define HAVE_NATIVE 1
-//#else
-//#define HAVE_NATIVE 0
-//#endif
+// #ifdef HAVE_VSPRINTF_S
+// #define HAVE_NATIVE 1
+// #else
+// #define HAVE_NATIVE 0
+// #endif
 #include "test_msvcrt.h"
 
 #define LEN (128)
@@ -85,7 +85,8 @@ int test_vsprintf_s(void) {
     rc = vtprintf_s(str1, LEN, "%s", NULL);
     ERR(-ESNULLP);
 #if defined(__aarch64__) && defined(__linux__)
-    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
+    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns
+     * ENOMEM. */
     if (errno == 12 && is_ubuntu())
         broken_errno = 1;
 #endif
@@ -180,8 +181,8 @@ int test_vsprintf_s(void) {
     if (len3 != len2) {
 #ifdef DEBUG
         int len1 = strlen(str1);
-        debug_printf("%s %u lengths wrong: %d  %" PRId32 "  %" PRId32 " \n", __FUNCTION__,
-                     __LINE__, len1, len2, len3);
+        debug_printf("%s %u lengths wrong: %d  %" PRId32 "  %" PRId32 " \n",
+                     __FUNCTION__, __LINE__, len1, len2, len3);
 #endif
         errs++;
     }

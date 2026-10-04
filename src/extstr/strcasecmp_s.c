@@ -76,8 +76,8 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t strcasecmp_s(const char *dest, rsize_t dmax,
-                     const char *src, int *resultp)
+errno_t strcasecmp_s(const char *dest, rsize_t dmax, const char *src,
+                     int *resultp)
 #else
 EXPORT errno_t _strcasecmp_s_chk(const char *dest, rsize_t dmax,
                                  const char *src, int *resultp,

@@ -68,12 +68,11 @@
  *
  */
 #ifdef FOR_DOXYGEN
-errno_t memchr_s(const void *restrict dest, rsize_t dmax,
-                 const int ch, void **resultp)
+errno_t memchr_s(const void *restrict dest, rsize_t dmax, const int ch,
+                 void **resultp)
 #else
 EXPORT errno_t _memchr_s_chk(const void *restrict dest, rsize_t dmax,
-                             const int ch, void **resultp,
-                             const size_t destbos)
+                             const int ch, void **resultp, const size_t destbos)
 #endif
 {
     if (unlikely(resultp == NULL)) {

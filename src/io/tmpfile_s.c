@@ -114,4 +114,5 @@ EXPORT errno_t tmpfile_s(FILE *restrict *restrict streamptr) {
     return EOK;
 }
 
-#endif /* HAVE_TMPFILE_S on MINGW (MINGW_HAS_SECURE_API or _STDIO_S_DEFINED) */
+#endif /* HAVE_TMPFILE_S on MINGW (MINGW_HAS_SECURE_API or _STDIO_S_DEFINED)   \
+        */

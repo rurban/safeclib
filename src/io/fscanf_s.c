@@ -83,14 +83,12 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     char *p;
 #endif
     unsigned char buf[256];
-    _SAFEC_FILE sf = {
-        .f = stream,
-        .buf = buf,
-        .buf_size = sizeof buf,
-        .cookie = (void *)stream,
-        .read = safec_stream_read,
-        .lock = -1
-    };
+    _SAFEC_FILE sf = {.f = stream,
+                      .buf = buf,
+                      .buf_size = sizeof buf,
+                      .cookie = (void *)stream,
+                      .read = safec_stream_read,
+                      .lock = -1};
 
     if (unlikely(stream == NULL)) {
         invoke_safe_str_constraint_handler("fscanf_s: stream is null", NULL,
@@ -131,7 +129,7 @@ EXPORT int fscanf_s(FILE *restrict stream, const char *restrict fmt, ...) {
     errno = 0;
     va_start(ap, fmt);
     ret = _safec_vfscanf_impl(&sf, "fscanf_s", fmt, ap, 1);
-    //ret = vfscanf(stream, fmt, ap);
+    // ret = vfscanf(stream, fmt, ap);
     va_end(ap);
 
     if (unlikely(ret < 0)) { /* always -1 EOF */

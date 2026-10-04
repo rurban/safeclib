@@ -39,6 +39,7 @@
    via the (((X) - 0x0101010101010101) & ~(X) & 0x8080808080808080)
    trick */
 
+// clang-format off
 /**
  * @def stpcpy_s(dest,dmax,src,errp)
  * @brief
@@ -89,6 +90,7 @@
  *    stpncpy_s(), strcpy_s(), strncpy_s()
  *
  */
+// clang-format on
 #ifdef FOR_DOXYGEN
 char *stpcpy_s(char *restrict dest, rsize_t dmax, const char *restrict src,
                errno_t *restrict errp)
@@ -99,7 +101,7 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
 #endif
 {
     rsize_t orig_dmax = dmax;
-    char* orig_dest = dest;
+    char *orig_dest = dest;
     const char *overlap_bumper;
     size_t slen;
 
@@ -137,7 +139,7 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
                 return NULL;
             } else {
                 *errp = handle_str_bos_overflow("stpcpy_s: dmax exceeds dest",
-                                               (char *)dest, destbos);
+                                                (char *)dest, destbos);
                 return NULL;
             }
         }
@@ -205,7 +207,7 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
 
             *dest = *src;
             if (*dest == '\0') {
-              eok:
+            eok:
 #ifdef SAFECLIB_STR_NULL_SLACK
                 /* null slack to clear any data */
                 if (dmax > 0x20)
@@ -235,13 +237,12 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
         }
     }
 
-  enospc:
+enospc:
     /*
      * the entire src must have been copied, if not reset dest
      * to null the string. (only with SAFECLIB_STR_NULL_SLACK)
      */
-    handle_error(orig_dest, orig_dmax,
-                 "stpcpy_s: not enough space for src",
+    handle_error(orig_dest, orig_dmax, "stpcpy_s: not enough space for src",
                  ESNOSPC);
     *errp = RCNEGATE(ESNOSPC);
     return NULL;
@@ -249,4 +250,3 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
 #ifdef __KERNEL__
 EXPORT_SYMBOL(_stpcpy_s_chk);
 #endif /* __KERNEL__ */
-

@@ -90,10 +90,11 @@
  *    u8icat_s(), wcscat_s(), strcpy_s(), strncpy_s()
  */
 #ifdef FOR_DOXYGEN
-errno_t u8cat_s(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src)
+errno_t u8cat_s(char8_t *restrict dest, rsize_t dmax,
+                const char8_t *restrict src)
 #else
-EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t *restrict src,
-                            const size_t destbos)
+EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax,
+                            const char8_t *restrict src, const size_t destbos)
 #endif
 {
     rsize_t orig_dmax;
@@ -123,30 +124,30 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
         while (*dest != L'\0') {
 
             if (unlikely(dest == overlap_bumper)) {
-              handle_error((char*)orig_dest, orig_dmax,
-                              "u8cat_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                handle_error((char *)orig_dest, orig_dmax,
+                             "u8cat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error((char*)orig_dest, orig_dmax,
-                              "u8cat_s: "
-                              "dest unterminated",
-                              ESUNTERM);
+                handle_error((char *)orig_dest, orig_dmax,
+                             "u8cat_s: "
+                             "dest unterminated",
+                             ESUNTERM);
                 return RCNEGATE(ESUNTERM);
             }
         }
 
         while (dmax > 0) {
             if (unlikely(dest == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax,
-                              "u8cat_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                handle_error((char *)orig_dest, orig_dmax,
+                             "u8cat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -195,20 +196,20 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
             dest++;
             dmax--;
             if (unlikely(dmax == 0)) {
-                handle_error((char*)orig_dest, orig_dmax,
-                              "u8cat_s: "
-                              "dest unterminated",
-                              ESUNTERM);
+                handle_error((char *)orig_dest, orig_dmax,
+                             "u8cat_s: "
+                             "dest unterminated",
+                             ESUNTERM);
                 return RCNEGATE(ESUNTERM);
             }
         }
 
         while (dmax > 0) {
             if (unlikely(src == overlap_bumper)) {
-                handle_error((char*)orig_dest, orig_dmax,
-                              "u8cat_s: "
-                              "overlapping objects",
-                              ESOVRLP);
+                handle_error((char *)orig_dest, orig_dmax,
+                             "u8cat_s: "
+                             "overlapping objects",
+                             ESOVRLP);
                 return RCNEGATE(ESOVRLP);
             }
 
@@ -245,14 +246,14 @@ EXPORT errno_t _u8cat_s_chk(char8_t *restrict dest, rsize_t dmax, const char8_t 
             src++;
         }
     }
-    
+
     /*
      * the entire src was not copied, so null the string
      */
-    handle_error((char*)orig_dest, orig_dmax,
-                  "u8cat_s: not enough "
-                  "space for src",
-                  ESNOSPC);
+    handle_error((char *)orig_dest, orig_dmax,
+                 "u8cat_s: not enough "
+                 "space for src",
+                 ESNOSPC);
 
     return RCNEGATE(ESNOSPC);
 }

@@ -24,9 +24,9 @@
 #define ERRNO_BROKEN(n)                                                        \
     if (errno != (n)) {                                                        \
         debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__,       \
-                     (int)errno);                                             \
+                     (int)errno);                                              \
         if (!broken_errno)                                                     \
-            errs++;                                                           \
+            errs++;                                                            \
     }
 #define ERRNO_MSVC(rc, err)                                                    \
     if (!use_msvcrt) {                                                         \
@@ -74,7 +74,8 @@ int test_vswprintf_s(void) {
     rc = vtwprintf_s(NULL, LEN, 0, L"%ls", str2);
     init_msvcrt(rc == -ESNULLP, &use_msvcrt);
 #if defined(__aarch64__) && defined(__linux__)
-    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns ENOMEM. */
+    /* ubuntu aarch64 glibc is broken here, fedora works fine. ubuntu returns
+     * ENOMEM. */
     if (errno == 12 && is_ubuntu())
         broken_errno = 1;
 #endif
@@ -101,8 +102,8 @@ int test_vswprintf_s(void) {
     ERRNO_MSVC(-ESLEMAX, 0);
 
     if (_BOS_KNOWN(str1)) {
-      rc = vtwprintf_s(str1, (LEN + 1), BOS(str1), L"%ls", str2);
-      ERRNO_MSVC(-EOVERFLOW, 0);
+        rc = vtwprintf_s(str1, (LEN + 1), BOS(str1), L"%ls", str2);
+        ERRNO_MSVC(-EOVERFLOW, 0);
     }
 
     /*--------------------------------------------------*/
@@ -223,12 +224,12 @@ int test_vswprintf_s(void) {
 #if defined(__GLIBC__) || defined(_WIN32)
     // both are valid
     if (str1[0] == L'\0') {
-      WEXPNULL(str1);
-      ERR(-ESNOSPC);
+        WEXPNULL(str1);
+        ERR(-ESNOSPC);
     } else if (wcscmp(str1, L"8901234") == 0) {
-      NOERR();
+        NOERR();
     } else {
-      WEXPNULL(str1);
+        WEXPNULL(str1);
     }
 #else
     NOERR();

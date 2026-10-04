@@ -64,17 +64,13 @@ static size_t cmp_and_reset(FILE *out, const char *s) {
         nread = ftruncate(fileno(out), 0L);
 #endif
     }
-    (void) nread;
+    (void)nread;
     return pos;
 }
 
 #if !(defined(HAVE_FTRUNCATE) && defined(HAVE_FILENO))
-size_t ftruncate(int fd, long length) {
-    return 0UL;
-}
-int fileno(const char* path) {
-    return 0;
-}
+size_t ftruncate(int fd, long length) { return 0UL; }
+int fileno(const char *path) { return 0; }
 #endif
 
 int test_vfprintf_s(void) {
@@ -160,8 +156,8 @@ int test_vfprintf_s(void) {
         return errs;
     }
     ERR(3)
-    //rewind(out);
-    CMP_AND_RESET(out, "%n\n"); //FIXME
+    // rewind(out);
+    CMP_AND_RESET(out, "%n\n"); // FIXME
 
     rc = vtfprintf_s(out, "%%n\n");
     ERR(3);
@@ -190,9 +186,9 @@ int test_vfprintf_s(void) {
     GCC_DIAG_RESTORE
     NEGERR(ESLEMAX);
     CMP_AND_RESET(out, "");
-    //#if defined(__GLIBC__)
-    //ERRNO(EOVERFLOW);
-    //#endif
+    // #if defined(__GLIBC__)
+    // ERRNO(EOVERFLOW);
+    // #endif
 #endif
 
 #if 0
@@ -213,8 +209,8 @@ int test_vfprintf_s(void) {
     rc = vtfprintf_s(out, "%s", str1);
     ANYERR(); // Linux may produce EINVAL, most others EBADF
     if (errno == 0) {
-        debug_printf("%s %u  Error errno=%d \n", __FUNCTION__,
-                     __LINE__, (int)errno);
+        debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__,
+                     (int)errno);
         errs++;
     }
     CMP_AND_RESET(out, "");
@@ -234,13 +230,14 @@ int test_vfprintf_s(void) {
     }
 #endif
 
-    /* print to closed stream: across libc's unportable, and not valgrind-safe */
+    /* print to closed stream: across libc's unportable, and not valgrind-safe
+     */
     rc = vtfprintf_s(out, "%s", str1);
     ANYERR(); // Windows may produce EOF, most others EBADF
     // EBADF (linux, mingw) or EINVAL (bsd)
     if (errno == 0) {
-        debug_printf("%s %u  Error errno=%d \n", __FUNCTION__,
-                     __LINE__, (int)errno);
+        debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__,
+                     (int)errno);
         errs++;
     }
 

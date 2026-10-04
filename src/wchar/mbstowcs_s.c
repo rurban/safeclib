@@ -35,8 +35,7 @@
 #include "safeclib_private.h"
 #endif
 
-#if (defined(TEST_MSVCRT) && defined(HAVE_MBSTOWCS_S)) ||                      \
-    !defined(HAVE_WCHAR_H)
+#if (defined(TEST_MSVCRT) && defined(HAVE_MBSTOWCS_S)) || !defined(HAVE_WCHAR_H)
 #else
 
 /* newlib, cygwin64 has no STDC_HEADERS!
@@ -44,7 +43,7 @@
  */
 #ifdef HAVE_CYGWIN64
 #define mbstowcs(dest, src, len)                                               \
-    mbsrtowcs((dest), (const char **restrict) & (src), (len), &st)
+    mbsrtowcs((dest), (const char **restrict)&(src), (len), &st)
 #endif
 
 /**
@@ -120,8 +119,7 @@
  */
 #ifdef FOR_DOXYGEN
 errno_t mbstowcs_s(size_t *restrict retvalp, wchar_t *restrict dest,
-                   rsize_t dmax, const char *restrict src,
-                   rsize_t len)
+                   rsize_t dmax, const char *restrict src, rsize_t len)
 #else
 EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
                                rsize_t dmax, const char *restrict src,
