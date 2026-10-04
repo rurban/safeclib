@@ -35,12 +35,12 @@ repos:
         types: ["markdown"]
 
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.11.0.1
+    rev: v0.11.0.1-1
     hooks:
       - id: shellcheck
 
   - repo: https://github.com/checkmake/checkmake
-    rev: v0.3.2
+    rev: v0.3.0
     hooks:
       # Lucas-C/pre-commit-hooks-go's checkmake hook is unmaintained since
       # its checkmake.go source drifted from mrtazz/checkmake's own
@@ -52,7 +52,7 @@ repos:
       - id: checkmake-system
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v22.1.8
+    rev: v23.1.2
     hooks:
       - id: clang-format
         entry: ./build-aux/clang-format.sh
@@ -67,7 +67,7 @@ repos:
   # variables (e.g. a `matric.cc` typo passes check-yaml but breaks CI),
   # shellcheck of run: blocks, deprecated actions/versions.
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.7
+    rev: v1.7.12
     hooks:
       # actionlint-system (language: system) runs the locally installed
       # `actionlint` binary rather than pre-commit building it with Go;
