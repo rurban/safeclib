@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 #include <stdarg.h>
+#ifdef HAVE_STDDEF_H
+#include <stddef.h> // for ptrdiff_t
+#endif
 
 #ifdef HAVE_SWSCANF_S
 #define HAVE_NATIVE 1
@@ -125,6 +128,164 @@ int main(void) {
     if (num != 24) {
         debug_printf("%s %u wrong arg: %d\n", __FUNCTION__, __LINE__, num);
         errs++;
+    }
+
+    /*--------------------------------------------------*/
+    /* floating point / long long / long double / ptrdiff_t coverage,
+       exercising --disable-float, --disable-float-exp,
+       --disable-long-long, --disable-long-double and
+       --disable-printf-ptrdiff */
+    {
+        float fval;
+        double dval;
+        long double ldval;
+        long long llval;
+#ifdef HAVE_STDDEF_H
+        ptrdiff_t tval;
+#endif
+
+        /* %f: plain decimal, gated only by --disable-float */
+        wcscpy(wstr1, L"3.5");
+        fval = -1;
+        rc = swscanf_s(wstr1, L"%f", &fval);
+#ifdef PRINTF_DISABLE_SUPPORT_FLOAT
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (fval != 3.5f) {
+            debug_printf("%s %u wrong float arg: %f\n", __FUNCTION__, __LINE__,
+                         (double)fval);
+            errs++;
+        }
+#endif
+
+        /* %lf: double, same gate as %f */
+        wcscpy(wstr1, L"-2.25");
+        dval = -1;
+        rc = swscanf_s(wstr1, L"%lf", &dval);
+#ifdef PRINTF_DISABLE_SUPPORT_FLOAT
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (dval != -2.25) {
+            debug_printf("%s %u wrong double arg: %f\n", __FUNCTION__, __LINE__,
+                         dval);
+            errs++;
+        }
+#endif
+
+        /* %e: exponential notation, additionally gated by
+           --disable-float-exp */
+        wcscpy(wstr1, L"3.5e2");
+        fval = -1;
+        rc = swscanf_s(wstr1, L"%e", &fval);
+#if defined(PRINTF_DISABLE_SUPPORT_FLOAT) ||                                   \
+    defined(PRINTF_DISABLE_SUPPORT_EXPONENTIAL)
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (fval != 350.0f) {
+            debug_printf("%s %u wrong float arg: %f\n", __FUNCTION__, __LINE__,
+                         (double)fval);
+            errs++;
+        }
+#endif
+
+        /* %g: adaptive exponential notation, same gate as %e */
+        wcscpy(wstr1, L"3.5e2");
+        fval = -1;
+        rc = swscanf_s(wstr1, L"%g", &fval);
+#if defined(PRINTF_DISABLE_SUPPORT_FLOAT) ||                                   \
+    defined(PRINTF_DISABLE_SUPPORT_EXPONENTIAL)
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (fval != 350.0f) {
+            debug_printf("%s %u wrong float arg: %f\n", __FUNCTION__, __LINE__,
+                         (double)fval);
+            errs++;
+        }
+#endif
+
+        /* %a: hex float notation, same gate as %e */
+        wcscpy(wstr1, L"0x1.cp+1");
+        fval = -1;
+        rc = swscanf_s(wstr1, L"%a", &fval);
+#if defined(PRINTF_DISABLE_SUPPORT_FLOAT) ||                                   \
+    defined(PRINTF_DISABLE_SUPPORT_EXPONENTIAL)
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (fval != 3.5f) {
+            debug_printf("%s %u wrong float arg: %f\n", __FUNCTION__, __LINE__,
+                         (double)fval);
+            errs++;
+        }
+#endif
+
+        /* %Lf: long double, gated by --disable-long-double */
+        wcscpy(wstr1, L"1.125");
+        ldval = -1;
+        rc = swscanf_s(wstr1, L"%Lf", &ldval);
+#if defined(PRINTF_DISABLE_SUPPORT_FLOAT) ||                                   \
+    defined(PRINTF_DISABLE_SUPPORT_LONG_DOUBLE)
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (ldval != 1.125L) {
+            debug_printf("%s %u wrong long double arg: %Lf\n", __FUNCTION__,
+                         __LINE__, ldval);
+            errs++;
+        }
+#endif
+
+        /* %lld: long long, gated by --disable-long-long */
+        wcscpy(wstr1, L"123456789012");
+        llval = -1;
+        rc = swscanf_s(wstr1, L"%lld", &llval);
+#ifdef PRINTF_DISABLE_SUPPORT_LONG_LONG
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (llval != 123456789012LL) {
+            debug_printf("%s %u wrong long long arg: %lld\n", __FUNCTION__,
+                         __LINE__, llval);
+            errs++;
+        }
+#endif
+
+#ifdef HAVE_STDDEF_H
+        /* %td: ptrdiff_t, gated by --disable-printf-ptrdiff */
+        wcscpy(wstr1, L"42");
+        tval = -1;
+        rc = swscanf_s(wstr1, L"%td", &tval);
+#ifdef PRINTF_DISABLE_SUPPORT_PTRDIFF_T
+        ERR(-1);
+        ERRNO(0);
+#else
+        ERR(1);
+        ERRNO(0);
+        if (tval != 42) {
+            debug_printf("%s %u wrong ptrdiff_t arg: %td\n", __FUNCTION__,
+                         __LINE__, (ptrdiff_t)tval);
+            errs++;
+        }
+#endif
+#endif
     }
 
     /*--------------------------------------------------*/

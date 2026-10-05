@@ -671,18 +671,18 @@ single:
     dest[0] = src < 128 ? (wchar_t)tolower(src) : (wchar_t)_towcase(src, 1);
     return (uint32_t)dest[0] == src ? -1 : 1;
 #else
-{
-    uint32_t cp = src < 128 ? (uint32_t)tolower(src) : _towcase(src, 1);
-    if (unlikely(cp > 0xffff)) {
-        dest[0] = 0xd800 + (((cp - 0x10000) >> 10) & 0x3ff);
-        dest[1] = 0xdc00 + (cp & 0x3ff);
-        dest[2] = 0;
-        return cp == src ? -1 : 2;
-    } else {
-        dest[0] = cp;
-        return cp == src ? -1 : 1;
+    {
+        uint32_t cp = src < 128 ? (uint32_t)tolower(src) : _towcase(src, 1);
+        if (unlikely(cp > 0xffff)) {
+            dest[0] = 0xd800 + (((cp - 0x10000) >> 10) & 0x3ff);
+            dest[1] = 0xdc00 + (cp & 0x3ff);
+            dest[2] = 0;
+            return cp == src ? -1 : 2;
+        } else {
+            dest[0] = cp;
+            return cp == src ? -1 : 1;
+        }
     }
-}
 #endif
 }
 

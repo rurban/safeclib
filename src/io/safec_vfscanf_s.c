@@ -216,20 +216,43 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
                 size = SIZE_h;
             break;
         case 'l':
-            if (*p == 'l')
-                p++, size = SIZE_ll;
-            else
+            if (*p == 'l') {
+                p++;
+#ifdef PRINTF_DISABLE_SUPPORT_LONG_LONG
+                goto fmt_fail;
+#else
+                size = SIZE_ll;
+#endif
+            } else
                 size = SIZE_l;
             break;
         case 'j':
+#ifdef PRINTF_DISABLE_SUPPORT_LONG_LONG
+            goto fmt_fail;
+#else
             size = SIZE_ll;
+#endif
             break;
         case 'z':
-        case 't':
             size = SIZE_l;
             break;
+        case 't':
+#ifdef PRINTF_DISABLE_SUPPORT_PTRDIFF_T
+            goto fmt_fail;
+#else
+#ifdef _WIN32
+            size = SIZE_ll;
+#else
+            size = SIZE_l;
+#endif
+#endif
+            break;
         case 'L':
+#ifdef PRINTF_DISABLE_SUPPORT_LONG_DOUBLE
+            goto fmt_fail;
+#else
             size = SIZE_L;
+#endif
             break;
         case 'd':
         case 'i':
@@ -476,6 +499,10 @@ int _safec_vfscanf_impl(_SAFEC_FILE *sf, const char *funcname, const char *fmt,
             /* e.g. the freestanding ENABLE_MINIMAL build */
             goto fmt_fail;
 #else
+#ifdef PRINTF_DISABLE_SUPPORT_EXPONENTIAL
+            if (t != 'f' && t != 'F')
+                goto fmt_fail;
+#endif
             y = safec_floatscan(&cur, size, 0);
             if (!shcnt(sf))
                 goto match_fail;

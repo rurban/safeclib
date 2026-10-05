@@ -8,6 +8,12 @@ Changes in 3.13
 	  only compiled in and declared when the platform libc does not
 	  already provide them (probed via configure/cmake HAVE_STRLCPY,
 	  HAVE_STRLCAT).
+	- Honor --disable-float, --disable-float-exp, --disable-long-long,
+	  --disable-long-double and --disable-printf-ptrdiff in the scanf
+	  family (vfscanf_s/vfwscanf_s and the sscanf_s/fscanf_s/u8sscanf_s/etc.
+	  wrappers built on them): the respective %e/%g/%a, %ll/%j, %L and
+	  %t conversions now fail cleanly instead of being silently accepted
+	  when the feature was configured out. Extend test coverage for those.
 
 Changes in 3.12
 	- Split _chk and _uchk at compile-time (GH #48): When all arguments of
