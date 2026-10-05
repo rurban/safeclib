@@ -103,6 +103,20 @@ extern "C" {
  */
 @INSERT_DISABLE_DLLIMPORT@
 
+/* Define to 1 if your platform libc already provides strlcpy().
+ * Lets safe_str_lib.h skip its own declaration/export of strlcpy().
+ */
+#ifndef HAVE_STRLCPY
+@INSERT_STRLCPY@
+#endif
+
+/* Define to 1 if your platform libc already provides strlcat().
+ * Lets safe_str_lib.h skip its own declaration/export of strlcat().
+ */
+#ifndef HAVE_STRLCAT
+@INSERT_STRLCAT@
+#endif
+
 /*
  * Defined by your compiler when __builtin_object_size() is available
  * for compile-time dmax checks. Override when you use a different compiler.

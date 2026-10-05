@@ -85,6 +85,16 @@ STD_STR_FILES = \
 	str/snprintf_s.c	\
 	str/vsnprintf_s.c
 
+if !HAVE_STRLCPY
+STD_STR_FILES += \
+	extstr/strlcpy.c
+endif
+
+if !HAVE_STRLCAT
+STD_STR_FILES += \
+	extstr/strlcat.c
+endif
+
 # but they are in the C11 standard
 STD_UNSAFE_FILES = \
 	io/tmpnam_s.c

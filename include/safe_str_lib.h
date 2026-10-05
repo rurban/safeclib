@@ -325,6 +325,19 @@ EXTERN size_t strerrorlen_s(errno_t errnum);
 
 /* for the other safe IO funcs see safe_lib.h */
 
+/* BSD strlcpy()/strlcat(). Skip our own declaration when the probed
+   HAVE_STRLCPY/HAVE_STRLCAT (published via the installed safe_config.h,
+   included above, not just the build-internal config.h) say the
+   platform libc's <string.h> already declares and provides them. */
+#ifndef HAVE_STRLCPY
+EXTERN size_t strlcpy(char *restrict dest, const char *restrict src,
+                      size_t dsize);
+#endif
+#ifndef HAVE_STRLCAT
+EXTERN size_t strlcat(char *restrict dest, const char *restrict src,
+                      size_t dsize);
+#endif
+
 #ifndef SAFECLIB_DISABLE_EXTENSIONS
 
 /* improved strcpy */

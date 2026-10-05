@@ -1197,7 +1197,25 @@ AC_CHECK_FUNCS([ memset strcmp strcasecmp strcasestr strcspn strpbrk strspn \
         strnstr strnlen strrchr memrchr strstr bcmp secure_getenv timingsafe_memcmp \
         timingsafe_bcmp explicit_bzero explicit_memset \
         asctime_r ctime_r gmtime_r localtime_r memccpy stpcpy stpncpy strerror \
-        fileno ftruncate isinfl isinf popen strtold strtod snprintf])
+        fileno ftruncate isinfl isinf popen strtold strtod snprintf \
+        strlcpy strlcat])
+
+dnl Published to the installed safe_config.h (unlike plain AC_CHECK_FUNCS'
+dnl HAVE_STRLCPY/HAVE_STRLCAT in the private config.h) so that external
+dnl consumers of safe_str_lib.h know whether their own libc already
+dnl declares strlcpy()/strlcat(), and safeclib's declaration doesn't clash.
+if test "$ac_cv_func_strlcpy" = "yes"; then
+  INSERT_STRLCPY="#define HAVE_STRLCPY 1"
+else
+  INSERT_STRLCPY="#undef HAVE_STRLCPY"
+fi
+AC_SUBST(INSERT_STRLCPY)
+if test "$ac_cv_func_strlcat" = "yes"; then
+  INSERT_STRLCAT="#define HAVE_STRLCAT 1"
+else
+  INSERT_STRLCAT="#undef HAVE_STRLCAT"
+fi
+AC_SUBST(INSERT_STRLCAT)
 
 if test "$enable_wchar" = "true" ; then
    AC_CHECK_FUNCS([ wmemchr wmemcmp wcscmp wcsstr \
@@ -1244,6 +1262,8 @@ $GREP -v '__STDC_WANT_LIB_EXT1__' confdefs.h > confdefs.h.tmp
 mv confdefs.h.tmp confdefs.h
 
 AM_CONDITIONAL([HAVE_WCSSTR], [test "$ac_cv_func_wcsstr" = "yes"])
+AM_CONDITIONAL([HAVE_STRLCPY], [test "$ac_cv_func_strlcpy" = "yes"])
+AM_CONDITIONAL([HAVE_STRLCAT], [test "$ac_cv_func_strlcat" = "yes"])
 AM_CONDITIONAL([HAVE_MBSTOWCS], [test "$ac_cv_func_mbstowcs" = "yes"])
 AM_CONDITIONAL([HAVE_VSNWPRINTF_S], [test "$ac_cv_func_vsnwprintf_s" = "yes"])
 AM_CONDITIONAL([HAVE_MEMCPY_S], [test "$ac_cv_func_memcpy_s" = "yes"])

@@ -4,6 +4,10 @@
 Changes in 3.13
 	- add make lint and pre-commit hooks
 	- Update u8scripts and u8gbreaks from Unicode 13 to 18 (forgot to regen them)
+	- Add portable strlcpy()/strlcat() (src/extstr/strlcpy.c, strlcat.c),
+	  only compiled in and declared when the platform libc does not
+	  already provide them (probed via configure/cmake HAVE_STRLCPY,
+	  HAVE_STRLCAT).
 
 Changes in 3.12
 	- Split _chk and _uchk at compile-time (GH #48): When all arguments of

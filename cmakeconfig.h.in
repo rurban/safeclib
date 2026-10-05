@@ -252,6 +252,12 @@
 /* Define to 1 if you have the `stpncpy' function. */
 #cmakedefine HAVE_STPNCPY 1
 
+/* Define to 1 if you have the `strlcpy' function. */
+#cmakedefine HAVE_STRLCPY 1
+
+/* Define to 1 if you have the `strlcat' function. */
+#cmakedefine HAVE_STRLCAT 1
+
 /* Define to 1 if you have the `strerror' function. */
 #cmakedefine HAVE_STRERROR 1
 

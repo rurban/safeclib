@@ -47,7 +47,9 @@ SAFEC_BUILT_TESTS = \
 	t_sscanf_s	\
 	t_vsscanf_s	\
 	t_strerror_s	\
-	t_strerrorlen_s
+	t_strerrorlen_s	\
+	t_strlcpy	\
+	t_strlcat
 
 if ENABLE_WCHAR
 SAFEC_BUILT_TESTS += \
@@ -405,6 +407,8 @@ t_fprintf_s_SOURCES           = test_fprintf_s.c $(SAFEC_TEST_COMMON) \
 t_strerror_s_SOURCES          = test_strerror_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 t_strerrorlen_s_SOURCES       = test_strerrorlen_s.c $(SAFEC_TEST_COMMON)
+t_strlcpy_SOURCES             = test_strlcpy.c $(SAFEC_TEST_COMMON)
+t_strlcat_SOURCES             = test_strlcat.c $(SAFEC_TEST_COMMON)
 t_tmpfile_s_SOURCES           = test_tmpfile_s.c $(SAFEC_TEST_COMMON) \
 	                        $(SAFEC_TEST_MSVCRT)
 t_gets_s_SOURCES              = test_gets_s.c $(SAFEC_TEST_COMMON)
