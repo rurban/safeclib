@@ -248,7 +248,7 @@ AM_CONDITIONAL(ENABLE_EXTS, test "$enable_extensions" = "true")
 
 AC_ARG_ENABLE(float,
 	AS_HELP_STRING([--disable-float],
-          [Disable float support in the printf funcstions.
+          [Disable float support in the printf/scanf functions.
 	   @<:@default=no@:>@]),
        [case "${enableval}" in
 	yes) enable_float=true ;;
@@ -259,13 +259,13 @@ AC_MSG_CHECKING([for --disable-float])
 if test "$enable_float" = "false" ; then
 	AC_MSG_RESULT([yes])
         AC_DEFINE([PRINTF_DISABLE_SUPPORT_FLOAT], 1,
-          [Defined to 1 to disable float support in the printf functions])
+          [Defined to 1 to disable float support in the printf/scanf functions])
 else
 	AC_MSG_RESULT([no (default)])
 fi
 AC_ARG_ENABLE(float-exp,
 	AS_HELP_STRING([--disable-float-exp],
-          [Disable exponential floating point notation (%e/%g) in the printf funcstions.
+          [Disable exponential floating point notation (%e/%g) in the printf/scanf functions.
 	   @<:@default=no@:>@]),
        [case "${enableval}" in
 	yes) enable_float_exp=true ;;
@@ -276,13 +276,13 @@ AC_MSG_CHECKING([for --disable-float_exp])
 if test "$enable_float_exp" = "false" ; then
 	AC_MSG_RESULT([yes])
         AC_DEFINE([PRINTF_DISABLE_SUPPORT_EXPONENTIAL], 1,
-          [Defined to 1 to disable exponential floating point notation (%e/%g) in the printf functions])
+          [Defined to 1 to disable exponential floating point notation (%e/%g) in the printf/scanf functions])
 else
 	AC_MSG_RESULT([no (default)])
 fi
 AC_ARG_ENABLE(long-long,
 	AS_HELP_STRING([--disable-long-long],
-          [Disable exponential floating point notation (%e/%g) in the printf funcstions.
+          [Disable long long types (%llu/%p) in the printf/scanf functions.
 	   @<:@default=no@:>@]),
        [case "${enableval}" in
 	yes) enable_long_long=true ;;
@@ -293,13 +293,13 @@ AC_MSG_CHECKING([for --disable-long-long])
 if test "$enable_long_long" = "false" ; then
 	AC_MSG_RESULT([yes])
         AC_DEFINE([PRINTF_DISABLE_SUPPORT_LONG_LONG], 1,
-          [Defined to 1 to disable long long types (%llu/%p) in the printf functions])
+          [Defined to 1 to disable long long types (%llu/%p) in the printf/scanf functions])
 else
 	AC_MSG_RESULT([no (default)])
 fi
 AC_ARG_ENABLE(long-double,
 	AS_HELP_STRING([--disable-long-double],
-          [Disable exponential floating point notation (%e/%g) in the printf funcstions.
+          [Disable long double types (%Lf/%Le/%Lg/%La) in the printf/scanf functions.
 	   @<:@default=no@:>@]),
        [case "${enableval}" in
 	yes) enable_long_double=true ;;
@@ -310,13 +310,13 @@ AC_MSG_CHECKING([for --disable-long-double])
 if test "$enable_long_double" = "false" ; then
 	AC_MSG_RESULT([yes])
         AC_DEFINE([PRINTF_DISABLE_SUPPORT_LONG_DOUBLE], 1,
-          [Defined to 1 to disable long double types (%Lf/%Le/%Lg/%La) in the printf functions])
+          [Defined to 1 to disable long double types (%Lf/%Le/%Lg/%La) in the printf/scanf functions])
 else
 	AC_MSG_RESULT([no (default)])
 fi
 AC_ARG_ENABLE(printf-ptrdiff,
 	AS_HELP_STRING([--disable-printf-ptrdiff],
-          [Disable exponential floating point notation (%e/%g) in the printf funcstions.
+          [Disable ptrdiff_t type (%t/%ti/%td) in the printf/scanf functions.
 	   @<:@default=no@:>@]),
        [case "${enableval}" in
 	yes) enable_printf_ptrdiff=true ;;
@@ -327,7 +327,7 @@ AC_MSG_CHECKING([for --disable-printf-ptrdiff])
 if test "$enable_printf_ptrdiff" = "false" ; then
 	AC_MSG_RESULT([yes])
         AC_DEFINE([PRINTF_DISABLE_SUPPORT_PTRDIFF_T], 1,
-          [Defined to 1 to disable ptrdiff_t type (%t) in the printf functions])
+          [Defined to 1 to disable ptrdiff_t type (%t/%ti/%td) in the printf/scanf functions])
 else
 	AC_MSG_RESULT([no (default)])
 fi
