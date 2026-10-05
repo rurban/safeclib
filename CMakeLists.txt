@@ -505,6 +505,18 @@ check_function_exists(popen HAVE_POPEN)
 check_function_exists(strtold HAVE_STRTOLD)
 check_function_exists(strtod HAVE_STRTOD)
 check_function_exists(snprintf HAVE_SNPRINTF)
+check_function_exists(strlcpy HAVE_STRLCPY)
+check_function_exists(strlcat HAVE_STRLCAT)
+if(HAVE_STRLCPY)
+    set(INSERT_STRLCPY "#define HAVE_STRLCPY 1")
+else()
+    set(INSERT_STRLCPY "#undef HAVE_STRLCPY")
+endif()
+if(HAVE_STRLCAT)
+    set(INSERT_STRLCAT "#define HAVE_STRLCAT 1")
+else()
+    set(INSERT_STRLCAT "#undef HAVE_STRLCAT")
+endif()
 if(ENABLE_MINIMAL OR NOT HAVE_SNPRINTF)
     # no float handling in the freestanding ENABLE_MINIMAL build (sdcc
     # doesn't support long double at all either). Also the float
@@ -950,6 +962,13 @@ set(SAFEC_SOURCES
     src/os/ctime_s.c
     src/os/getenv_s.c
 )
+
+if(NOT HAVE_STRLCPY)
+    list(APPEND SAFEC_SOURCES src/extstr/strlcpy.c)
+endif()
+if(NOT HAVE_STRLCAT)
+    list(APPEND SAFEC_SOURCES src/extstr/strlcat.c)
+endif()
 
 if(ENABLE_EXTENSIONS)
     list(APPEND SAFEC_SOURCES

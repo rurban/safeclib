@@ -61,6 +61,8 @@ set(SAFEC_TESTS
     t_sscanf_s
     t_strerror_s
     t_strerrorlen_s
+    t_strlcpy
+    t_strlcat
     t_fprintf_s
     t_vprintf_s
     t_printf_s
@@ -324,7 +326,7 @@ function(add_safec_test test_name)
     # Check content for special requirements
     if(test_name MATCHES "^t_")
         # Most t_* tests need msvcrt
-        if(NOT test_name MATCHES "t_strcspn_s|t_strnlen_s|t_strerrorlen_s|t_strspn_s|t_strpbrk_s|t_strfirstchar_s|t_strfirstdiff_s|t_strfirstsame_s|t_strisalphanumeric_s|t_strisascii_s|t_strisdigit_s|t_strishex_s|t_strislowercase_s|t_strismixed_s|t_strispassword_s|t_strisuppercase_s|t_strlastchar_s|t_strlastdiff_s|t_strlastsame_s|t_strljustify_s|t_strnatcmp_s|t_strnterminate_s|t_strprefix_s|t_strremovews_s|t_strchr_s|t_memchr_s|t_strrchr_s|t_memrchr_s|t_strstr_s|t_strtolowercase_s|t_strtouppercase_s|t_strzero_s|t_strset_s|t_strnset_s|t_strcoll_s|t_timingsafe_memcmp|t_timingsafe_bcmp|t_wmemcmp_s|t_wcscmp_s|t_wcsncmp_s|t_wcsicmp_s|t_wcsnatcmp_s|t_wcsstr_s|t_wcsset_s|t_wcsnset_s|t_wcscoll_s|t_wcslwr_s|t_wcsupr_s|t_towfc_s|t_towlower|t_towupper|t_wcsfc_s|t_wcsnorm_s|t_wcsnlen_s|t_vswscanf_s|t_vwscanf_s|t_gmtime_s|t_localtime_s|t_vprintf_s")
+        if(NOT test_name MATCHES "t_strcspn_s|t_strnlen_s|t_strerrorlen_s|t_strlcpy|t_strlcat|t_strspn_s|t_strpbrk_s|t_strfirstchar_s|t_strfirstdiff_s|t_strfirstsame_s|t_strisalphanumeric_s|t_strisascii_s|t_strisdigit_s|t_strishex_s|t_strislowercase_s|t_strismixed_s|t_strispassword_s|t_strisuppercase_s|t_strlastchar_s|t_strlastdiff_s|t_strlastsame_s|t_strljustify_s|t_strnatcmp_s|t_strnterminate_s|t_strprefix_s|t_strremovews_s|t_strchr_s|t_memchr_s|t_strrchr_s|t_memrchr_s|t_strstr_s|t_strtolowercase_s|t_strtouppercase_s|t_strzero_s|t_strset_s|t_strnset_s|t_strcoll_s|t_timingsafe_memcmp|t_timingsafe_bcmp|t_wmemcmp_s|t_wcscmp_s|t_wcsncmp_s|t_wcsicmp_s|t_wcsnatcmp_s|t_wcsstr_s|t_wcsset_s|t_wcsnset_s|t_wcscoll_s|t_wcslwr_s|t_wcsupr_s|t_towfc_s|t_towlower|t_towupper|t_wcsfc_s|t_wcsnorm_s|t_wcsnlen_s|t_vswscanf_s|t_vwscanf_s|t_gmtime_s|t_localtime_s|t_vprintf_s")
             set(need_msvcrt TRUE)
         endif()
 
