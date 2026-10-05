@@ -91,10 +91,12 @@ int test_snprintf_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifndef PRINTF_DISABLE_SUPPORT_FLOAT
     str1[0] = '\0';
     rc = snprintf_s(str1, 32, "%0.1f", 1.95);
     ERR(3);
     EXPSTR_OR(str1, "2.0", "1.9"); /* proper rounding: GH #170 */
+#endif
 
     strcpy(str1, "123456");
     strcpy(str2, "keep it simple");

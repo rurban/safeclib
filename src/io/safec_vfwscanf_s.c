@@ -189,7 +189,9 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
     int invert;
     int matches = 0;
     unsigned long long x;
+#ifndef PRINTF_DISABLE_SUPPORT_FLOAT
     long double y;
+#endif
     safec_off_t cnt;
     static const wchar_t *size_pfx[] = {L"hh", L"h", L"", L"l", L"L", L"ll"};
     char numfmt[3 * sizeof(int) + 10];
@@ -535,7 +537,12 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
                     else
                         safec_store_int(dest, size, x);
                     break;
-                default: /* a,e,f,g,A,E,F,G */
+                default:
+#ifdef PRINTF_DISABLE_SUPPORT_FLOAT
+                    /* e.g. the freestanding ENABLE_MINIMAL build */
+                    goto fmt_fail;
+#else
+                    /* a,e,f,g,A,E,F,G */
                     y = safec_floatscan(&cur, size, 0);
                     if (!wctx.cnt)
                         goto match_fail;
@@ -553,6 +560,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
                         default:
                             goto fmt_fail;
                         }
+#endif
                     break;
                 }
             }

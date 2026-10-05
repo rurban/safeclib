@@ -70,6 +70,7 @@
 #define SAFEC_FLOATSCAN_BUFSZ 560
 #endif
 
+#ifndef PRINTF_DISABLE_SUPPORT_FLOAT
 static int is_ascii_space(int c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' ||
            c == '\r';
@@ -271,3 +272,4 @@ long double safec_floatscan(safec_scan_cursor *cur, int prec, int pok) {
     }
     return scan_decimal(cur, c, neg, buf, &n, sizeof buf);
 }
+#endif // PRINTF_DISABLE_SUPPORT_FLOAT
