@@ -41,5 +41,5 @@ make gh-pages
 
 git branch | grep '^\* gh-pages'
 git commit -m "Update to v${version}"
-git push
+git push gh-pages
 git checkout master
