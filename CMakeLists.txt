@@ -306,6 +306,11 @@ if(NOT HAVE_ERRNO_T)
 else()
    set(FALLBACK_ERRNO_T "")
 endif()
+if(NOT HAVE_UINTPTR_T)
+    set(FALLBACK_UINTPTR_T "typedef unsigned long uintptr_t;")
+else()
+    set(FALLBACK_UINTPTR_T "")
+endif()
 
 # Check for char8_t
 check_c_source_compiles("

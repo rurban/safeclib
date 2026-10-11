@@ -173,7 +173,7 @@ typedef void (*constraint_handler_t)(const char *restrict /* msg */,
 /* Args with a known object size have no side effects (else
    __builtin_object_size returns unknown), so the inlined builtin variants
    may evaluate them more than once. */
-#define _BOS_PTR(p) ((__UINTPTR_TYPE__)(const void *)(p))
+#define _BOS_PTR(p) ((uintptr_t)(const void *)(p))
 /* The byte ranges [dest, dest+dlen) and [src, src+slen) do not overlap.
    Modular differences, no relational compare, which clang warns about with
    string literals (-Wstring-compare). */

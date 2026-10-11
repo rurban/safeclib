@@ -60,6 +60,7 @@ typedef int errno_t;
 @INSERT_STDINT_H@
 @INSERT_ERRNO_H@
 @FALLBACK_ERRNO_T@
+@FALLBACK_UINTPTR_T@
 
 #if !defined(__cplusplus) || !(defined(__cpp_char8_t) || __cplusplus >= 202002L)
 @FALLBACK_CHAR8_T@

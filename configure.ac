@@ -1022,6 +1022,14 @@ AC_CHECK_TYPE([errno_t],
         [FALLBACK_ERRNO_T="typedef int errno_t;"],
         [[#include <errno.h>]])
 AC_SUBST(FALLBACK_ERRNO_T)
+AC_CHECK_TYPE([uintptr_t],
+        [FALLBACK_UINTPTR_T=""],
+        [FALLBACK_UINTPTR_T="typedef unsigned long uintptr_t;"],
+        [[#include <stddef.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif]])
+AC_SUBST(FALLBACK_UINTPTR_T)
 AC_TYPE_MBSTATE_T
 AC_CHECK_MEMBER(struct tm.tm_gmtoff,
   [AC_DEFINE(HAVE_TM_GMTOFF, 1,
