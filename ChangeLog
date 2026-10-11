@@ -1,6 +1,16 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.14
+	- Add strlcpy()/strlcat() only when missing.
+	- Honor --disable-float, --disable-float-exp, --disable-long-long,
+	  --disable-long-double and --disable-printf-ptrdiff in the scanf
+	  family (vfscanf_s/vfwscanf_s and the sscanf_s/fscanf_s/u8sscanf_s/etc.
+	  wrappers built on them): the respective %e/%g/%a, %ll/%j, %L and
+	  %t conversions now fail cleanly instead of being silently accepted
+	  when the feature was configured out. Extend test coverage for scanf.
+	- Replace __UINTPTR_TYPE__ with uintptr_t (Fixes macOS < 10.10, GH #177)
+
 Changes in 3.13
 	- add make lint and pre-commit hooks
 	- Update u8scripts and u8gbreaks from Unicode 13 to 18 (forgot to regen them)
