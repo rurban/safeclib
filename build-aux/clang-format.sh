@@ -8,7 +8,7 @@
 # Adapted from rcc's clang-format.sh.
 #
 # Copyright (C) 2016 Evan Klitzke <evan@eklitzke.org>
-# Copyright (C) 2019 Reini Urban <rurban@cpan.org>
+# Copyright (C) 2019 Reini Urban <reini.urban@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

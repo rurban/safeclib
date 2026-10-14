@@ -1,0 +1,7 @@
+# For https://github.com/anthropics/oss-scanner,
+# to be placed at projects/safeclib/project.yaml
+repo: https://github.com/rurban/safeclib
+primary_contact: reini.urban@gmail.com
+homepage: https://github.com/rurban/safeclib
+dockerfile: .oss-scanner/Dockerfile
+threat_model: .oss-scanner/threat_model.md
