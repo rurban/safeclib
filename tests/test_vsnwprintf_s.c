@@ -270,19 +270,27 @@ int test_vsnwprintf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* output longer than the internal 512 temp buffer: the underlying
-       vswprintf fails again and the error is returned. */
+    /* output longer than 512 wchar_t: truncated, returning the untruncated
+       length. */
     wmemset(bigsrc, L'a', 1099);
     bigsrc[1099] = L'\0';
     wcscpy(str1, L"keep");
     rc = vtwprintf_s(str1, 20, L"%ls", bigsrc);
-    ANYERR();
+    ERR(1099);
+    if (wcslen(str1) != 19 || str1[18] != L'a') {
+        debug_printf("%s %u truncation wrong\n", __FUNCTION__, __LINE__);
+        errs++;
+    }
 
-    /* dmax >= 512: a bigger temp buffer is allocated. Too long for dmax. */
+    /* dmax >= 512, too long for dmax: truncated */
     wmemset(bigsrc, L'a', 700);
     bigsrc[700] = L'\0';
     rc = vtwprintf_s(big, 600, L"%ls", bigsrc);
-    ANYERR();
+    ERR(700);
+    if (wcslen(big) != 599) {
+        debug_printf("%s %u truncation wrong\n", __FUNCTION__, __LINE__);
+        errs++;
+    }
 
     /* dmax >= 512 and it fits */
     rc = vtwprintf_s(big, 800, L"%ls", bigsrc);

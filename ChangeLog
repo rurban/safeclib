@@ -1,6 +1,18 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.15
+	- Security: fix write past dmax in wcstombs_s, mbstowcs_s,
+	  wcsrtombs_s and mbsrtowcs_s when len >= dmax and the dest size is not
+	  known at compile-time. They now measure first and return ESNOSPC
+	  without writing. Reported by ucsurf.
+	- Fix snwprintf_s and vsnwprintf_s truncation (without a native
+	  vsnwprintf_s) for output >= 512 wchar_t or dmax >= 512, which failed
+	  instead of truncating, and for output of exactly dmax, which was not
+	  NUL-terminated with SAFECLIB_STR_NULL_SLACK. snwprintf_s now calls
+	  vsnwprintf_s.
+	- Extend wchar test coverage, esp. ESLEMAX and EILSEQ.
+
 Changes in 3.14
 	- Add strlcpy()/strlcat() only when missing.
 	- Honor --disable-float, --disable-float-exp, --disable-long-long,

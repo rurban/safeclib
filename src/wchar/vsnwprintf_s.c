@@ -40,6 +40,10 @@
 /* This file is not compiled when vsnwprintf_s is already defined: mingw */
 #if !defined(HAVE_VSNWPRINTF_S)
 
+/* Longest output (in wchar_t) which can be truncated, if it does not fit
+ * into dest. */
+#define VSNWPRINTF_MAX_TMP (1UL << 18)
+
 /* TODO:
 any of the arguments corresponding to %s is a null pointer.
 */
@@ -196,42 +200,47 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
     va_copy(ap2, ap);
     ret = vswprintf(dest, dmax, fmt, ap);
 
-    /* check for ESNOSPC or some other error */
-    if (unlikely(ret == -1)) {
-        if (likely(dmax < 512)) { /* stacksize 0.5k */
-            static wchar_t tmp[512];
-            if (unlikely(dmax == 1)) {
-                *dest = L'\0';
-                return 1;
-            }
-            ret = vswprintf(tmp, 512, fmt, ap2);
-        } else {
-            wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
-            if (!tmp) {
+    /* dest is too small (errno E2BIG or EOVERFLOW, libc dependent) or some
+     * other error. vswprintf does not return the needed length, so format
+     * into a growing heap buffer until it fits to get it, and truncate. */
+    if (unlikely(ret == -1) && (errno == 0 || errno == E2BIG ||
+                                errno == EOVERFLOW)) {
+        size_t n = dmax < 512 ? 512 : dmax * 2;
+        wchar_t *tmp = NULL;
+        while (1) {
+            va_list ap3;
+            wchar_t *t = (wchar_t *)realloc(tmp, n * sizeof(wchar_t));
+            if (!t) {
+                free(tmp);
+                va_end(ap2);
                 handle_werror(dest, dmax, "vsnwprintf_s: malloc failed",
                               ENOMEM);
                 return -(ENOMEM);
             }
-            ret = vswprintf(tmp, dmax, fmt, ap2);
-            free(tmp);
+            tmp = t;
+            errno = 0;
+            va_copy(ap3, ap2);
+            ret = vswprintf(tmp, n, fmt, ap3);
+            va_end(ap3);
+            if (ret >= 0 || n >= VSNWPRINTF_MAX_TMP ||
+                !(errno == 0 || errno == E2BIG || errno == EOVERFLOW)) {
+                break;
+            }
+            n *= 2;
         }
-        /* this will bump ret to > 0 */
+        if (ret >= 0 && (size_t)ret >= dmax) {
+            /* manual truncation. ret is the length which would have been
+             * written. dest is always NUL terminated, also with ret == dmax.
+             * (With overlapping src and dest the first vswprintf may have
+             * changed the arguments, then leave dest alone.) */
+            wmemcpy(dest, tmp, dmax - 1);
+            dest[dmax - 1] = L'\0';
+        }
+        free(tmp);
     }
     va_end(ap2);
 
-    /* manual truncation */
-    if (unlikely(ret >= (int)dmax)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* oops, ret would have been written if dmax was ignored */
-        if ((rsize_t)ret > dmax) {
-            dest[dmax - 1] = L'\0';
-        } else {
-            memset(&dest[ret], 0, (dmax - ret) * sizeof(wchar_t));
-        }
-#else
-        dest[dmax - 1] = L'\0';
-#endif
-    } else if (unlikely(ret < 0)) {
+    if (unlikely(ret < 0)) {
         /* no truncation. some other error */
         char errstr[128] = "vsnwprintf_s: ";
         strcat(errstr, strerror(errno));

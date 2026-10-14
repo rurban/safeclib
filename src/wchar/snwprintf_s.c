@@ -125,9 +125,6 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #endif
 {
     va_list ap;
-#ifndef HAVE_VSNWPRINTF_S
-    va_list ap2;
-#endif
     wchar_t *p;
     int ret = -1;
     const size_t destsz = dmax * sizeof(wchar_t);
@@ -194,62 +191,14 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 
     errno = 0;
     /* C11 solves the ESNOSPC problem */
-#ifdef HAVE_VSNWPRINTF_S
     va_start(ap, fmt);
+#ifdef HAVE_VSNWPRINTF_S
     ret = vsnwprintf_s(dest, dmax, fmt, ap);
 #else
-    va_start(ap, fmt);
-    va_copy(ap2, ap);
-    ret = vswprintf(dest, dmax, fmt, ap);
+    /* does the truncation */
+    ret = _vsnwprintf_s_chk(dest, dmax, destbos, fmt, ap);
 #endif
     va_end(ap);
-
-#ifndef HAVE_VSNWPRINTF_S
-    /* check for ESNOSPC or some other error */
-    if (unlikely(ret == -1)) {
-        if (likely(dmax < 512)) { /* stacksize 0.5k */
-            static wchar_t tmp[512];
-            if (unlikely(dmax == 1)) {
-                *dest = L'\0';
-                return 1;
-            }
-            va_start(ap2, fmt);
-            ret = vswprintf(tmp, 512, fmt, ap2);
-            va_end(ap2);
-        } else {
-            wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
-            if (!tmp) {
-                handle_werror(dest, dmax, "snwprintf_s: malloc failed", ENOMEM);
-                return -(ENOMEM);
-            }
-            va_start(ap2, fmt);
-            ret = vswprintf(tmp, dmax, fmt, ap2);
-            va_end(ap2);
-            free(tmp);
-        }
-        /* this will bump ret to > 0 */
-    }
-
-    /* manual truncation */
-    if (unlikely(ret >= (int)dmax)) {
-#ifdef SAFECLIB_STR_NULL_SLACK
-        /* oops, ret would have been written if dmax was ignored */
-        if ((rsize_t)ret > dmax) {
-            dest[dmax - 1] = L'\0';
-        } else {
-            memset(&dest[ret], 0, (dmax - ret) * sizeof(wchar_t));
-        }
-#else
-        dest[dmax - 1] = L'\0';
-#endif
-    } else if (unlikely(ret < 0)) {
-        /* no truncation. some other error */
-        char errstr[128] = "snwprintf_s: ";
-        strcat(errstr, strerror(errno));
-        handle_werror(dest, dmax, errstr, -ret);
-        return ret;
-    }
-#endif
 
     return ret;
 }
