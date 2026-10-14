@@ -200,6 +200,26 @@ int test_fscanf_s(void) {
 
     unlink(TMP);
 
+    /*--------------------------------------------------*/
+
+    /* read from a write-only stream: EOF with errno set */
+    {
+        FILE *wo = fopen(TMP "w", "w");
+        if (wo) {
+            errno = 0;
+            rc = fscanf_s(wo, "%d", &i1);
+            ERR(EOF);
+            if (errno != EBADF) {
+                debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__, errno);
+                errs++;
+            }
+            fclose(wo);
+            unlink(TMP "w");
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

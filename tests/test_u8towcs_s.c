@@ -81,6 +81,46 @@ int test_u8towcs_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* len smaller than the converted string */
+
+    n = 0;
+    rc = u8towcs_s(&n, wdest, LEN, (const char8_t *)"abc", 2);
+    ERR(ESNOSPC)
+
+    /*--------------------------------------------------*/
+    /* dest overlaps src */
+
+    {
+        wchar_t ov[8];
+        wchar_t *volatile vov = ov;
+        n = 0;
+        rc = u8towcs_s(&n, ov, 8, (const char8_t *)(void *)vov, LEN);
+        ERR(ESOVRLP)
+    }
+
+    /*--------------------------------------------------*/
+    /* dmax/len > RSIZE_MAX_WSTR is only checked for a dest of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 8 * sizeof(wchar_t);
+        wchar_t *hp = (wchar_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        n = 0;
+        rc = u8towcs_s(&n, hp, RSIZE_MAX_WSTR + 1, (const char8_t *)"abc", 3);
+        ERR(ESLEMAX)
+        rc = u8towcs_s(&n, hp, 8, (const char8_t *)"abc", RSIZE_MAX_WSTR + 1);
+        ERR(ESLEMAX)
+        rc = u8towcs_s(&n, hp, 8, (const char8_t *)"abc", 3);
+        ERR(EOK)
+        if (n != 3 || hp[0] != L'a' || hp[2] != L'c' || hp[3] != L'\0') {
+            debug_printf("%s %u  wrong result\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        free(hp);
+    }
+
     return (errs);
 }
 #endif

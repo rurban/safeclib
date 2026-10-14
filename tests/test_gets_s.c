@@ -16,6 +16,7 @@
 
 static FILE *out;
 static char dest[LEN];
+static volatile size_t vdmax;
 int test_gets_s(void);
 
 int test_gets_s(void) {
@@ -52,7 +53,22 @@ int test_gets_s(void) {
     sub = gets_s(dest, RSIZE_MAX_STR + 1);
     SUBNULL();
     ERRNO(ESLEMAX);
+
+    EXPECT_BOS("dest overflow")
+    sub = gets_s(dest, LEN + 1);
+    SUBNULL();
+    ERRNO(EOVERFLOW);
 #endif
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        char *heap = (char *)malloc(LEN);
+        vdmax = RSIZE_MAX_STR + 1;
+        sub = gets_s(heap, vdmax);
+        SUBNULL();
+        ERRNO(ESLEMAX);
+        free(heap);
+    }
 
     /*--------------------------------------------------*/
 
@@ -87,6 +103,26 @@ int test_gets_s(void) {
 
     sub = gets_s(dest, LEN); /* EOF */
     SUBNULL();
+    ERRNO(0);
+
+    /* NUL byte inside the line, then a last line without newline */
+    out = fopen(TMP, "wb");
+    fwrite("ab\0cd\nxyz", 1, 9, out);
+    fclose(out);
+    if (!freopen(TMP, "r", stdin)) {
+        printf("freopen failed: %s\n", strerror(errno));
+        return errs;
+    }
+    sub = gets_s(dest, 3); /* "ab\0" is dmax chars, strlen == dmax-1 */
+    SUBNULL();
+    ERRNO(ESNOSPC);
+    sub = gets_s(dest, 10);
+    SUBNN()
+    else EXPSTR(dest, "cd");
+    ERRNO(0);
+    sub = gets_s(dest, 10); /* EOF without newline */
+    SUBNN()
+    else EXPSTR(dest, "xyz");
     ERRNO(0);
 
     fclose(stdin);

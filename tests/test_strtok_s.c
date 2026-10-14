@@ -370,5 +370,49 @@ int main(void) {
     }
     /*--------------------------------------------------*/
 
+    /* dest is NULL and the saved context is NULL too */
+    p2str = NULL;
+    len = LEN;
+    strcpy(str2, ",.;*");
+    rc = strtok_s(NULL, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO_MSVC(ESNULLP, EINVAL);
+
+    /*--------------------------------------------------*/
+
+#ifndef _WIN32
+    /* dest is NULL, the context is valid but *dmaxp exceeds RSIZE_MAX_STR */
+    strcpy(str1, "aa,bb");
+    p2str = str1;
+    len = RSIZE_MAX_STR + 1;
+    rc = strtok_s(NULL, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO(ESLEMAX);
+
+    /*--------------------------------------------------*/
+
+    /* unterminated delim: longer than STRTOK_DELIM_MAX_LEN chars */
+    {
+        char delim[STRTOK_DELIM_MAX_LEN + 8];
+        memset(delim, 'x', sizeof(delim) - 1);
+        delim[sizeof(delim) - 1] = '\0';
+
+        strcpy(str1, "abc,def");
+        len = strlen(str1);
+        p2str = str1;
+        rc = strtok_s(str1, &len, delim, &p2str);
+        ERRPTR(NULL);
+        ERRNO(ESUNTERM);
+        if (p2str != NULL || len != 0) {
+            debug_printf("%s %u  context not reset: len=%d\n", __FUNCTION__,
+                         __LINE__, (int)len);
+            errs++;
+        }
+        EXPSTR(str1, ""); /* first char nulled */
+    }
+#endif
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

@@ -109,6 +109,25 @@ int test_strerror_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t hsz = 8;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        strcpy(hp, "ab");
+        rc = strerror_s(hp, RSIZE_MAX_STR + 1, ESNULLP);
+        ERR(ESLEMAX);
+        if (strcmp(hp, "ab") != 0) { /* not touched */
+            errs++;
+        }
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

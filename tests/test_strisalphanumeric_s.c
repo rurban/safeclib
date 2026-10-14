@@ -107,5 +107,12 @@ int main(void) {
     ERR(false)
     /*--------------------------------------------------*/
 
+    /* empty string in a known-size buffer */
+    str[0] = '\0';
+    len = 2;
+    rc = strisalphanumeric_s(str, len);
+    ERR(false)
+    /*--------------------------------------------------*/
+
     return (errs);
 }

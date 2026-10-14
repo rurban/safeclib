@@ -115,6 +115,75 @@ int test_qsort_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* sort many sizes and patterns, to exercise all heap rebalancing paths */
+    if (!use_msvcrt) {
+        static struct items big[300];
+        unsigned seed = 12345;
+        size_t n, j;
+        int pattern;
+
+        for (pattern = 0; pattern < 4; pattern++) {
+            for (n = 1; n <= 300; n += (n < 140 ? 1 : 29)) {
+                long sum = 0, sum1 = 0;
+                for (j = 0; j < n; j++) {
+                    seed = seed * 1103515245u + 12345u;
+                    switch (pattern) {
+                    case 0: /* random */
+                        big[j].iv = (int)((seed >> 8) % 1000);
+                        break;
+                    case 1: /* reversed */
+                        big[j].iv = (int)(n - j);
+                        break;
+                    case 2: /* few distinct values */
+                        big[j].iv = (int)((seed >> 8) % 4);
+                        break;
+                    default: /* organ pipe */
+                        big[j].iv = (int)(j < n / 2 ? j : n - j);
+                        break;
+                    }
+                    big[j].sv = NULL;
+                    sum += big[j].iv;
+                }
+                rc = qsort_s(big, n, sizeof(big[0]), comp, NULL);
+                ERR(EOK);
+                for (j = 0; j < n; j++) {
+                    sum1 += big[j].iv;
+                    if (j && big[j - 1].iv > big[j].iv) {
+                        debug_printf("%s %u  pattern %d n=%u not sorted at %u\n",
+                                     __FUNCTION__, __LINE__, pattern,
+                                     (unsigned)n, (unsigned)j);
+                        errs++;
+                        break;
+                    }
+                }
+                if (sum != sum1) {
+                    debug_printf("%s %u  pattern %d n=%u elements lost\n",
+                                 __FUNCTION__, __LINE__, pattern, (unsigned)n);
+                    errs++;
+                }
+            }
+        }
+    }
+
+    /*--------------------------------------------------*/
+
+    /* unknown base size: nmemb or size > RSIZE_MAX_MEM */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 32;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        rc = qsort_s(hp, RSIZE_MAX_MEM + 1, 1, comp, NULL);
+        ERR(ESLEMAX);
+        rc = qsort_s(hp, 1, RSIZE_MAX_MEM + 1, comp, NULL);
+        ERR(ESLEMAX);
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

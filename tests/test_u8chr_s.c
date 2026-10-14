@@ -72,6 +72,32 @@ int test_u8chr_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* found, but beyond dmax: reported as not found */
+    strcpy((char *)str, "abc");
+    rc = u8chr_s(str, 1, 'c', &sub);
+    ERR(ESNOTFND)
+    SUBNULL()
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 16;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            strcpy((char *)ubuf, "abc");
+            rc = u8chr_s(ubuf, RSIZE_MAX_STR + 1, 'b', &sub);
+            ERR(ESLEMAX)
+            SUBNULL()
+            rc = u8chr_s(ubuf, usize, 'b', &sub);
+            ERR(EOK)
+            PTREQ(sub, &ubuf[1])
+            free(ubuf);
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

@@ -297,6 +297,49 @@ int test_wcsncpy_s(void) {
         free(hp);
     }
 
+    /* long slack (dmax > 0x20) is cleared by memset, short one in a loop,
+       nothing past dmax. */
+    if (!use_msvcrt) {
+        /* dest < src, truncated by slen */
+        wmemset(dest, L'x', LEN);
+        wcscpy(&dest[70], L"abcdefgh");
+        rc = wcsncpy_s(&dest[0], 100, &dest[70], 3);
+        ERR(EOK)
+        WEXPSTR(dest, L"abc")
+        WCHECK_SLACK(&dest[3], 97)
+        if (dest[100] != L'x')
+            errs++;
+
+        wmemset(dest, L'x', LEN);
+        wcscpy(&dest[70], L"abcdefgh");
+        rc = wcsncpy_s(&dest[0], 10, &dest[70], 3);
+        ERR(EOK)
+        WEXPSTR(dest, L"abc")
+        WCHECK_SLACK(&dest[3], 7)
+        if (dest[10] != L'x')
+            errs++;
+
+        /* dest > src, truncated by slen */
+        wmemset(dest, L'x', LEN);
+        wcscpy(dest, L"abcdefgh");
+        rc = wcsncpy_s(&dest[10], 100, dest, 3);
+        ERR(EOK)
+        WEXPSTR(&dest[10], L"abc")
+        WCHECK_SLACK(&dest[13], 97)
+        if (dest[110] != L'x')
+            errs++;
+
+        /* dest > src, src terminated */
+        wmemset(dest, L'x', LEN);
+        wcscpy(dest, L"abc");
+        rc = wcsncpy_s(&dest[10], 100, dest, 8);
+        ERR(EOK)
+        WEXPSTR(&dest[10], L"abc")
+        WCHECK_SLACK(&dest[13], 97)
+        if (dest[110] != L'x')
+            errs++;
+    }
+
     /*--------------------------------------------------*/
 
     return (errs);

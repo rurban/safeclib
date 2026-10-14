@@ -90,6 +90,45 @@ int test_u8lwr_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+
+    /* full dmax uses the heap scratch buffer */
+    strcpy((char *)str, "HEAP Buffer");
+    rc = u8lwr_s(str, LEN);
+    ERR(EOK)
+    if (strcmp((char *)str, "heap buffer") != 0) {
+        debug_printf("%s %u  str=%s, expected 'heap buffer'\n", __FUNCTION__,
+                     __LINE__, str);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* illegal UTF-8 (overlong NUL), stack and heap scratch buffers */
+    strcpy((char *)str, "A\xC0\x80");
+    rc = u8lwr_s(str, 4);
+    ERR(EILSEQ)
+    strcpy((char *)str, "A\xC0\x80");
+    rc = u8lwr_s(str, LEN);
+    ERR(EILSEQ)
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 64;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            strcpy((char *)ubuf, "ABC");
+            rc = u8lwr_s(ubuf, RSIZE_MAX_STR + 1);
+            ERR(ESLEMAX)
+            rc = u8lwr_s(ubuf, usize);
+            ERR(EOK)
+            EXPSTR((char *)ubuf, "abc")
+            free(ubuf);
+        }
+    }
+
     return (errs);
 }
 

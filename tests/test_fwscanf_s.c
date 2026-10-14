@@ -10,6 +10,7 @@
 #include "safe_str_lib.h"
 #include "safe_lib.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <stdarg.h>
 #include <unistd.h>
 #include <locale.h>
@@ -289,6 +290,116 @@ int test_fwscanf_s(void) {
             }
         }
         setlocale(LC_CTYPE, saved[0] ? saved : "C");
+    }
+#endif
+
+#ifndef HAVE_FWSCANF_S
+    /* numeric conversions on a real stream are delegated to fwscanf() */
+    {
+        FILE *fs;
+        int a = 0, b = 0;
+        unsigned int ua = 0;
+        signed char sc = 0;
+        short sh = 0;
+        long lv = 0;
+        size_t zv = 0;
+        void *pv = NULL;
+        float f = 0;
+        double d = 0;
+        long double ld = 0;
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
+        long long llv = 0;
+#endif
+#define FWNUM(txt)                                                             \
+    fs = fopen(TMP "n", "w+");                                                 \
+    if (fs) {                                                                  \
+        fwprintf(fs, L"%ls\n", txt);                                           \
+        rewind(fs);                                                            \
+    }
+#define FWEND                                                                  \
+    if (fs)                                                                    \
+        fclose(fs);
+
+        FWNUM(L"-17 42 0x1f")
+        rc = fwscanf_s(fs, L"%d %u %i", &a, &ua, &b);
+        ERR(3)
+        if (a != -17 || ua != 42 || b != 31) {
+            debug_printf("%s %u wrong ints %d %u %d\n", __FUNCTION__, __LINE__,
+                         a, ua, b);
+            errs++;
+        }
+        FWEND
+        FWNUM(L"300 70000 123456789012 123")
+        rc = fwscanf_s(fs, L"%hhd %hd %ld %zu", &sc, &sh, &lv, &zv);
+        ERR(4)
+        if (sc != (signed char)300 || sh != (short)70000 ||
+            lv != 123456789012L || zv != 123) {
+            debug_printf("%s %u wrong sized ints\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        FWEND
+#ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
+        FWNUM(L"-9876543210 5432109876")
+        rc = fwscanf_s(fs, L"%lld %jd", &llv, &llv);
+        ERR(2)
+        if (llv != 5432109876LL) {
+            debug_printf("%s %u wrong long long\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        FWEND
+#endif
+        FWNUM(L"17 ff FF 0x1234")
+        rc = fwscanf_s(fs, L"%o %x %X %p", &ua, &ua, &ua, &pv);
+        ERR(4)
+        if ((uintptr_t)pv != 0x1234) {
+            debug_printf("%s %u wrong %%p\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        FWEND
+        FWNUM(L"12345 99")
+        rc = fwscanf_s(fs, L"%2d%*d %d", &a, &b);
+        ERR(2)
+        if (a != 12 || b != 99) {
+            debug_printf("%s %u wrong width %d %d\n", __FUNCTION__, __LINE__, a,
+                         b);
+            errs++;
+        }
+        FWEND
+        FWNUM(L"3.5 -2.25e1 1.5 0x1p3 1e2")
+        rc = fwscanf_s(fs, L"%f %lf %Lf %la %g", &f, &d, &ld, &d, &f);
+        ERR(5)
+        if (f != 100.0f || d != 8.0 || ld != 1.5L) {
+            debug_printf("%s %u wrong floats\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        FWEND
+        /* no digits: matching failure */
+        FWNUM(L"abc")
+        rc = fwscanf_s(fs, L"%d", &a);
+        ERR(0)
+        FWEND
+        FWNUM(L"abc")
+        rc = fwscanf_s(fs, L"%lf", &d);
+        ERR(0)
+        FWEND
+        FWNUM(L"x")
+        rc = fwscanf_s(fs, L"%x%x", &ua, &ua);
+        ERR(0)
+        FWEND
+        /* a %n is rejected, and a bad destination size */
+        FWNUM(L"1")
+        errno = 0;
+        rc = fwscanf_s(fs, L"%5n", &a);
+        ERR(EOF)
+        ERRNO(EINVAL)
+        FWEND
+        FWNUM(L"1")
+        errno = 0;
+        rc = fwscanf_s(fs, L"%s", str3, (rsize_t)0);
+        ERR(EOF)
+        ERRNO(ESZEROL)
+        FWEND
+        unlink(TMP "n");
     }
 #endif
 

@@ -188,5 +188,25 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz);
+        len = strnterminate_s(hp, RSIZE_MAX_STR + 1);
+        if (len != 0) {
+            debug_printf("%s %u   Len=%u \n", __FUNCTION__, __LINE__,
+                         (unsigned)len);
+            errs++;
+        }
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

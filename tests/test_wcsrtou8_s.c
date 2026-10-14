@@ -10,6 +10,8 @@
 
 #define LEN (128)
 
+static volatile size_t vlen = LEN;
+
 int test_wcsrtou8_s(void);
 
 int test_wcsrtou8_s(void) {
@@ -85,6 +87,59 @@ int test_wcsrtou8_s(void) {
 #endif
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+    /* no room in dest: nothing consumed */
+
+    memset(&ps, 0, sizeof(ps));
+    {
+        const wchar_t *p = L"abc";
+        const wchar_t *p0 = p;
+        char8_t one[1];
+
+        n = 99;
+        rc = wcsrtou8_s(&n, one, 1, &p, vlen, &ps);
+        ERR(EOK)
+        if (n != 0 || p != p0 || one[0] != '\0') {
+            debug_printf("%s %u  n=%zu, p advanced\n", __FUNCTION__, __LINE__,
+                         n);
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+    /* dest overlaps src */
+
+    memset(&ps, 0, sizeof(ps));
+    {
+        wchar_t ov[8];
+        const wchar_t *p = ov;
+        n = 0;
+        rc = wcsrtou8_s(&n, (char8_t *)(void *)ov, sizeof(ov), &p, vlen, &ps);
+        ERR(ESOVRLP)
+    }
+
+    /*--------------------------------------------------*/
+    /* dmax > RSIZE_MAX_STR is only checked for a dest of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        const wchar_t *p = L"abc";
+        if (!hp)
+            return errs + 1;
+        memset(&ps, 0, sizeof(ps));
+        n = 0;
+        rc = wcsrtou8_s(&n, hp, RSIZE_MAX_STR + 1, &p, 3, &ps);
+        ERR(ESLEMAX)
+        rc = wcsrtou8_s(&n, hp, 16, &p, 3, &ps);
+        ERR(EOK)
+        if (n != 3 || strcmp((char *)hp, "abc") != 0) {
+            debug_printf("%s %u  wrong result\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        free(hp);
+    }
 
     return (errs);
 }

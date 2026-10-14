@@ -7,6 +7,7 @@
  */
 
 #include "test_private.h"
+#include <stdlib.h>
 #include "safe_str_lib.h"
 
 #define LEN (128)
@@ -239,6 +240,20 @@ int test_wcsstr_s(void) {
         errs++;
     }
     /*--------------------------------------------------*/
+
+    /* the compiler does not know the size: BOS_UNKNOWN path */
+    {
+        static volatile size_t hsz = LEN * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+
+        if (!hd)
+            return errs + 1;
+        wcscpy(hd, L"abc");
+        rc = wcsstr_s(hd, RSIZE_MAX_WSTR + 1, wstr2, 1, &sub);
+        ERR(ESLEMAX)
+        WSUBNULL();
+        free(hd);
+    }
 
     return (errs);
 }

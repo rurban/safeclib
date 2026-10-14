@@ -64,6 +64,35 @@ int test_u8cspn_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* slen and dmax limits */
+    {
+        static volatile size_t usize = 16;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            strcpy((char *)ubuf, "hello");
+            rc = u8cspn_s(ubuf, RSIZE_MAX_STR + 1, (char8_t *)"o", 2, &cnt);
+            ERR(ESLEMAX)
+            rc = u8cspn_s(ubuf, usize, (char8_t *)"o", RSIZE_MAX_STR + 1, &cnt);
+            ERR(ESLEMAX)
+            rc = u8cspn_s(ubuf, usize, (char8_t *)"o", 2, &cnt);
+            ERR(EOK)
+            if (cnt != 4) {
+                debug_printf("%s %u  cnt=%u, expected 4\n", __FUNCTION__,
+                             __LINE__, (unsigned)cnt);
+                errs++;
+            }
+            free(ubuf);
+        }
+    }
+
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("slen exceeds src")
+    rc = u8cspn_s(str, LEN, str, LEN + 1, &cnt);
+    ERR(EOVERFLOW)
+#endif
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

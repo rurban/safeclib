@@ -271,6 +271,40 @@ int test_memccpy_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* unknown dest size, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64;
+        char *xhp = (char *)malloc(xhsz);
+
+        if (!xhp) {
+            return errs + 1;
+        }
+        memset(xhp, 'x', xhsz);
+
+        rc = memccpy_s(xhp, RSIZE_MAX_MEM + 1, "abcdef", 'c', 6);
+        ERR(ESLEMAX);
+        if (xhp[0] != 'x') {
+            debug_printf("%s %u  dest changed\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+
+        rc = memccpy_s(xhp, 64, "abcdef", 'c', 6);
+        ERR(EOK);
+        if (xhp[0] != 'a' || xhp[1] != 'b' || xhp[2] != 'c') {
+            debug_printf("%s %u  wrong copy\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+#ifdef SAFECLIB_STR_NULL_SLACK
+        if (xhp[3] != 0 || xhp[5] != 0) {
+            debug_printf("%s %u  no slack after found char\n", __FUNCTION__,
+                         __LINE__);
+            errs++;
+        }
+#endif
+        free(xhp);
+    }
+
     return (errs);
 }
 

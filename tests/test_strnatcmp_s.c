@@ -131,6 +131,111 @@ int test_strnatcmp_s(void) {
 
     /*--------------------------------------------------*/
 
+    rc = strnatcmp_s("img12", 6, "img10", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcmp_s("img10", 6, "img12", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("img9", 5, "img10", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("img10", 6, "img9", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcmp_s("img10", 6, "img10", &ind);
+    ERR(EOK)
+    INDCMP(!= 0)
+
+    rc = strnatcmp_s("a19", 4, "a28", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("a29", 4, "a18", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcmp_s("a15", 4, "a2", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcmp_s("a12b", 5, "a13c", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("x01", 4, "x02", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("x02", 4, "x01", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcmp_s("a0", 3, "a01", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("a01", 4, "a0", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcmp_s("a01x", 5, "a01y", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("a01", 4, "a01", &ind);
+    ERR(EOK)
+    INDCMP(!= 0)
+
+    rc = strnatcmp_s("a05", 4, "a1", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcmp_s("a1", 3, "a05", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    /* case folding */
+    rc = strnatcasecmp_s("ABC", 4, "abd", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    rc = strnatcasecmp_s("abd", 4, "ABC", &ind);
+    ERR(EOK)
+    INDCMP(!= 1)
+
+    rc = strnatcasecmp_s("AbC", 4, "aBc", &ind);
+    ERR(EOK)
+    INDZERO()
+
+    rc = strnatcmp_s("AbC", 4, "aBc", &ind);
+    ERR(EOK)
+    INDCMP(!= -1)
+
+    /*--------------------------------------------------*/
+
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        int r;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strnatcmp_s(hp, RSIZE_MAX_STR + 1, "a", &r);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

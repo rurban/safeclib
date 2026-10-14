@@ -7,6 +7,7 @@
  */
 
 #include "test_private.h"
+#include <stdlib.h>
 #include "safe_str_lib.h"
 
 #define sgn(i) ((i) > 0 ? 1 : ((i) < 0 ? -1 : 0))
@@ -185,6 +186,20 @@ int test_wcscoll_s(void) {
     STDCMP()
 
     /*--------------------------------------------------*/
+
+    /* the compiler does not know the size: BOS_UNKNOWN path */
+    {
+        static volatile size_t hsz = LEN * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+
+        if (!hd)
+            return errs + 1;
+        wcscpy(hd, L"abc");
+        rc = wcscoll_s(hd, RSIZE_MAX_STR + 1, str2, LEN, &ind);
+        ERR(ESLEMAX)
+        INDZERO()
+        free(hd);
+    }
 
     return (errs);
 }

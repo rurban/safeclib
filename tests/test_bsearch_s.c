@@ -149,6 +149,28 @@ int test_bsearch_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* unknown base size: nmemb or size > RSIZE_MAX_MEM */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 32;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        key.iv = 1;
+        errno = 0;
+        vitem = bsearch_s(&key, hp, RSIZE_MAX_MEM + 1, 1, comp, NULL);
+        PTRNULL(vitem);
+        ERRNO(ESLEMAX);
+        errno = 0;
+        vitem = bsearch_s(&key, hp, 1, RSIZE_MAX_MEM + 1, comp, NULL);
+        PTRNULL(vitem);
+        ERRNO(ESLEMAX);
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

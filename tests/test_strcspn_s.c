@@ -161,6 +161,39 @@ int test_strcspn_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        rsize_t r;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strcspn_s(hp, RSIZE_MAX_STR + 1, "a", 1, &r);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* slen > size of src, unknown at compile-time */
+    {
+        static volatile size_t xlen = 9;
+        rsize_t cnt;
+        char dst[8] = "abc";
+
+        rc = strcspn_s(dst, sizeof(dst), "ab", xlen, &cnt);
+        ERR(EOVERFLOW)
+        if (cnt != 0) {
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

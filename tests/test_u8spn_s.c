@@ -75,6 +75,61 @@ int test_u8spn_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* slen beyond the src object: known src size */
+#ifndef HAVE_CT_BOS_OVR
+    strcpy((char *)str, "aaabbb");
+    EXPECT_BOS("slen exceeds src")
+    rc = u8spn_s(str, LEN, (char8_t *)"a", 3, &cnt);
+    ERR(EOVERFLOW)
+    if (cnt != 0) {
+        debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
+                     (unsigned)cnt);
+        errs++;
+    }
+    EXPECT_BOS("slen exceeds max")
+    rc = u8spn_s(str, LEN, (char8_t *)"a", RSIZE_MAX_STR + 1, &cnt);
+    ERR(ESLEMAX)
+    if (cnt != 0) {
+        debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
+                     (unsigned)cnt);
+        errs++;
+    }
+#endif
+
+    /*--------------------------------------------------*/
+    /* dmax/slen > RSIZE_MAX_STR is only checked for objects of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        strcpy((char *)hp, "aab");
+        rc = u8spn_s(hp, RSIZE_MAX_STR + 1, (char8_t *)"a", 2, &cnt);
+        ERR(ESLEMAX)
+        if (cnt != 0) {
+        debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
+                     (unsigned)cnt);
+        errs++;
+    }
+        rc = u8spn_s(str, LEN, hp, RSIZE_MAX_STR + 1, &cnt);
+        ERR(ESLEMAX)
+        if (cnt != 0) {
+        debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
+                     (unsigned)cnt);
+        errs++;
+    }
+        rc = u8spn_s(str, LEN, hp, 2, &cnt);
+        ERR(EOK)
+        if (cnt != 3) {
+            debug_printf("%s %u  cnt=%u, expected 3\n", __FUNCTION__, __LINE__,
+                         (unsigned)cnt);
+            errs++;
+        }
+        free(hp);
+    }
+
     return (errs);
 }
 

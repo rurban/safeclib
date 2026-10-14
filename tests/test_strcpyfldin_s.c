@@ -203,5 +203,45 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strcpyfldin_s(hp, RSIZE_MAX_STR + 1, "a", 1);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* dmax > 0x20: the slack of the field is cleared with memset */
+    memset(str1, 'x', LEN);
+    strcpy(str2, "abc");
+    rc = strcpyfldin_s(str1, 64, str2, 3);
+    ERR(EOK)
+    if (memcmp(str1, "abc", 3) != 0) {
+        errs++;
+    }
+    for (j = 3; j < 64; j++) {
+        if (str1[j] != '\0') {
+            debug_printf("%s %u  slack not cleared at %u\n", __FUNCTION__,
+                         __LINE__, (unsigned)j);
+            errs++;
+            break;
+        }
+    }
+    if (str1[64] != 'x') {
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

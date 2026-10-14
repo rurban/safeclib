@@ -108,5 +108,23 @@ int main(void) {
     ERR(EOK)
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strprefix_s(hp, RSIZE_MAX_STR + 1, "a");
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

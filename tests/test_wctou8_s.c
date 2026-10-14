@@ -72,6 +72,20 @@ int test_wctou8_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* dmax > RSIZE_MAX_STR is only checked for a dest of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        int n1 = 0;
+        rc = wctou8_s(&n1, hp, RSIZE_MAX_STR + 1, L'A');
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
     return (errs);
 }
 

@@ -362,6 +362,39 @@ int test_strncat_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* dest is terminated before src, but the copy runs into src */
+    if (!use_msvcrt) {
+        strcpy(str1, "ab");
+        strcpy(&str1[3], "def");
+
+        GCC_PUSH_WARN_DMAX
+        rc = strncat_s(&str1[0], 12, &str1[3], 4);
+        GCC_POP_WARN_DMAX
+        ERR(ESOVRLP);
+        EXPNULL(str1)
+    }
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        strcpy(hp, "ab");
+        rc = strncat_s(hp, RSIZE_MAX_STR + 1, "cd", 2);
+        ERR(ESLEMAX);
+        if (strcmp(hp, "ab") != 0) { /* not touched */
+            errs++;
+        }
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

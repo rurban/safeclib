@@ -15,6 +15,9 @@
 
 #define LEN (128)
 
+static size_t *volatile vnulls = NULL;
+static volatile size_t vzero = 0;
+
 int test_u8norm_s(void);
 
 /*#define PERL_TEST*/
@@ -27,6 +30,291 @@ int test_u8norm_s(void);
 #define PERL "perl5.32"
 #endif
 #define TESTPL "test-norm.pl"
+
+/* Non-starter run "x" + n times U+0301 (COMBINING ACUTE ACCENT, cc 230) */
+static size_t make_marks(char8_t *buf, size_t n) {
+    size_t i;
+    buf[0] = 'x';
+    for (i = 0; i < n; i++) {
+        buf[1 + 2 * i] = 0xCC;
+        buf[2 + 2 * i] = 0x81;
+    }
+    buf[1 + 2 * n] = '\0';
+    return 1 + 2 * n;
+}
+
+/* Branches of the decompose/reorder/compose steps which u8norm_s() with a
+   sufficiently big dest never reaches. */
+static int check_norm_edges(void) {
+    errno_t rc;
+    int errs = 0;
+    rsize_t ind = 0;
+    static char8_t buf[256];
+    static char8_t src[128];
+    static char8_t out[128];
+    static char8_t big[300];
+    static char8_t longsrc[201];
+    size_t n;
+
+    /*--------------------------------------------------*/
+    /* decompose: dest == src */
+
+    strcpy((char *)buf, "abc");
+    rc = u8norm_decompose_s(buf, 16, buf, &ind, false);
+    ERR(ESOVRLP)
+
+    /* decompose: dest < src, both layouts. */
+    {
+        char8_t *d = buf;
+        char8_t *s = buf + 64;
+
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)s, "ab\xC3\xA9");
+        rc = u8norm_decompose_s(d, 32, s, &ind, false);
+        ERR(EOK)
+        EXPSTR((char *)d, "abe\xCC\x81");
+        INDCMP(!= 5)
+
+        /* cp > U+10FFFF */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)s, "\xF4\x9F\xBF\xBF");
+        rc = u8norm_decompose_s(d, 32, s, &ind, false);
+        ERR(ESLEMAX)
+
+        /* overlapping: dest runs into src */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)buf + 1, "abc");
+        rc = u8norm_decompose_s(buf, 16, buf + 1, &ind, false);
+        ERR(ESOVRLP)
+
+        /* too small dmax for the decomposition, in the dest < src branch */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)s, "abc");
+        rc = u8norm_decompose_s(d, 5, s, &ind, false);
+        ERR(ESNOSPC)
+
+        /* hangul syllable needs 3 bytes of room, only 2 left */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)s, "\xEA\xB0\x80\xEA\xB0\x80");
+        rc = u8norm_decompose_s(d, 5, s, &ind, false);
+        ERR(ESNOSPC)
+    }
+
+    /* decompose: dest > src */
+    {
+        char8_t *s = buf;
+        char8_t *d = buf + 64;
+
+        /* overlapping: src runs into dest */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)buf, "abc");
+        rc = u8norm_decompose_s(buf + 1, 16, buf, &ind, false);
+        ERR(ESOVRLP)
+
+        /* too small dmax for the decomposition */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)s, "abc");
+        rc = u8norm_decompose_s(d, 5, s, &ind, false);
+        ERR(ESNOSPC)
+
+        /* hangul syllable needs 3 bytes of room, only 2 left */
+        memset(buf, 'X', sizeof(buf));
+        strcpy((char *)s, "\xEA\xB0\x80\xEA\xB0\x80");
+        rc = u8norm_decompose_s(d, 5, s, &ind, false);
+        ERR(ESNOSPC)
+    }
+
+    /* codepoints in planes without any decomposition (U+E0001) */
+    rc = u8norm_s(out, 32, (const char8_t *)"\xF3\xA0\x80\x81", WCSNORM_NFD,
+                  &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xF3\xA0\x80\x81");
+    INDCMP(!= 4)
+
+    /*--------------------------------------------------*/
+    /* u8norm_s with a result longer than the stack scratch buffer */
+
+    memset(longsrc, 'a', 200);
+    longsrc[200] = '\0';
+    rc = u8norm_s(big, sizeof(big), longsrc, WCSNORM_NFD, &ind);
+    ERR(EOK)
+    INDCMP(!= 200)
+    EXPSTR((char *)big, (char *)longsrc);
+
+    rc = u8norm_s(big, sizeof(big), longsrc, WCSNORM_NFC, &ind);
+    ERR(EOK)
+    INDCMP(!= 200)
+    EXPSTR((char *)big, (char *)longsrc);
+
+    /*--------------------------------------------------*/
+    /* reorder */
+
+    rc = u8norm_reorder_s(out, vzero, (const char8_t *)"", 0);
+    ERR(ESNOSPC)
+
+    /* more non-starters than the stack scratch area: heap extension */
+    n = make_marks(src, 20);
+    rc = u8norm_reorder_s(out, sizeof(out), src, n);
+    ERR(EOK)
+    EXPSTR((char *)out, (char *)src);
+
+    /* too small dmax in the non-starter run */
+    n = make_marks(src, 12);
+    rc = u8norm_reorder_s(out, 10, src, n);
+    ERR(ESNOSPC)
+
+    /* too small dmax at a following starter */
+    n = make_marks(src, 12);
+    memcpy(&src[n], "bcd", 4);
+    rc = u8norm_reorder_s(out, 27, src, n + 3);
+    ERR(ESNOSPC)
+
+    /* too small dmax for a plain starter run */
+    rc = u8norm_reorder_s(out, 4, (const char8_t *)"abcdef", 6);
+    ERR(ESNOSPC)
+
+    /*--------------------------------------------------*/
+    /* compose */
+
+    /* hangul: L + V, then LV + T */
+    rc = u8norm_s(out, 32, (const char8_t *)"\xE1\x84\x80\xE1\x85\xA1",
+                  WCSNORM_NFC, &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xEA\xB0\x80");
+    INDCMP(!= 3)
+
+    rc = u8norm_s(out, 32,
+                  (const char8_t *)"\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8",
+                  WCSNORM_NFC, &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xEA\xB0\x81");
+    INDCMP(!= 3)
+
+    /* starters without any composition entry: sparse table rows/planes */
+    rc = u8norm_s(out, 32, (const char8_t *)"\xE4\xB8\x80\xCC\x81", WCSNORM_NFC,
+                  &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xE4\xB8\x80\xCC\x81");
+    INDCMP(!= 5)
+
+    rc = u8norm_s(out, 32, (const char8_t *)"\xF3\xA0\x80\x81\xCC\x81",
+                  WCSNORM_NFC, &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xF3\xA0\x80\x81\xCC\x81");
+    INDCMP(!= 6)
+
+    /* starters beyond U+105D2 use the long composition list:
+       KAITHI LETTER U+11099 + SIGN NUKTA U+110BA => U+1109A */
+    rc = u8norm_s(out, 32, (const char8_t *)"\xF0\x91\x82\x99\xF0\x91\x82\xBA",
+                  WCSNORM_NFC, &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xF0\x91\x82\x9A");
+    INDCMP(!= 4)
+
+    /* ... and a pair which doesn't compose */
+    rc = u8norm_s(out, 32, (const char8_t *)"\xF0\x91\x82\x99\xCC\x81",
+                  WCSNORM_NFC, &ind);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xF0\x91\x82\x99\xCC\x81");
+    INDCMP(!= 6)
+
+    /* leading non-starter is copied as is */
+    ind = 3;
+    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"\xCC\x81x", &ind,
+                          false);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xCC\x81x");
+    INDCMP(!= 3)
+
+    ind = 2;
+    rc = u8norm_compose_s(out, 2, (const char8_t *)"\xCC\x81", &ind, false);
+    ERR(ESNOSPC)
+
+    /* blocked by the same combining class: x + U+0301 + U+0301 */
+    n = make_marks(src, 2);
+    ind = n;
+    rc = u8norm_compose_s(out, sizeof(out), src, &ind, false);
+    ERR(EOK)
+    EXPSTR((char *)out, (char *)src);
+    INDCMP(!= (int)n)
+
+    /* FCC: a + U+0323 (cc 220) composes to U+1EA1, the following U+0301
+       has no composition with it */
+    ind = 5;
+    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"a\xCC\xA3\xCC\x81",
+                          &ind, true);
+    ERR(EOK)
+    EXPSTR((char *)out, "\xE1\xBA\xA1\xCC\x81");
+
+    /* more non-starters than the stack scratch area: heap extension */
+    n = make_marks(src, 20);
+    ind = n;
+    rc = u8norm_compose_s(out, sizeof(out), src, &ind, false);
+    ERR(EOK)
+    EXPSTR((char *)out, (char *)src);
+    INDCMP(!= (int)n)
+
+    /* too small dmax at the starter, with a heap extended run */
+    n = make_marks(src, 12);
+    ind = n;
+    rc = u8norm_compose_s(out, 1, src, &ind, false);
+    ERR(ESNOSPC)
+
+    /* too small dmax in the non-starter run */
+    n = make_marks(src, 12);
+    ind = n;
+    rc = u8norm_compose_s(out, 10, src, &ind, false);
+    ERR(ESNOSPC)
+
+    /* too small dmax for a starter run */
+    ind = 2;
+    rc = u8norm_compose_s(out, 1, (const char8_t *)"ab", &ind, false);
+    ERR(ESNOSPC)
+
+    /* an embedded NUL within len is a codepoint 0 which never composes */
+    memset(out, 'Q', sizeof(out));
+    ind = 3;
+    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"a\0"
+                                                             "b",
+                          &ind, false);
+    ERR(EOK)
+    INDCMP(!= 3)
+    if (out[0] != 'a' || out[1] != '\0' || out[2] != 'b' || out[3] != '\0') {
+        debug_printf("%s %u  wrong result for an embedded NUL\n", __FUNCTION__,
+                     __LINE__);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+    /* sizes only known at runtime: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        ind = 1;
+        rc = u8norm_reorder_s(hp, RSIZE_MAX_STR + 1, (const char8_t *)"a", 1);
+        ERR(ESLEMAX)
+        ind = 1;
+        rc = u8norm_compose_s(hp, RSIZE_MAX_STR + 1, (const char8_t *)"a", &ind,
+                              false);
+        ERR(ESLEMAX)
+        INDCMP(!= 0)
+        free(hp);
+    }
+
+    /* lenp is NULL */
+    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"a", vnulls, false);
+    ERR(ESNULLP)
+
+    /* cp > 0x10ffff is an error, not a composite which drops the starter */
+    ind = 5;
+    rc = u8norm_compose_s(out, sizeof(out),
+                          (const char8_t *)"a\xF4\x9F\xBF\xBF", &ind, false);
+    ERR(ESLEMAX)
+
+    return errs;
+}
 
 int test_u8norm_s(void) {
     errno_t rc;
@@ -542,6 +830,8 @@ int test_u8norm_s(void) {
 #endif /* PERL_TEST */
 
     /*--------------------------------------------------*/
+
+    errs += check_norm_edges();
 
     return (errs);
 }

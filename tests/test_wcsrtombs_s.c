@@ -26,6 +26,9 @@
 
 static char dest[LEN];
 static wchar_t src[LEN];
+static volatile size_t v20 = 20;
+static volatile size_t vrmw = RSIZE_MAX_WSTR + 1;
+
 int test_wcsrtombs_s(void);
 
 #ifdef HAVE_WCHAR_H
@@ -267,7 +270,7 @@ int test_wcsrtombs_s(void) {
         }
         CLRPS;
         memset(hp, 'x', hsz);
-        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abcdefghijklmnopqrst", &cs), 20,
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abcdefghijklmnopqrst", &cs), v20,
                          &ps);
         ERR(ESNOSPC);
         for (i = 8; i < 8 + 32; i++) {
@@ -281,7 +284,7 @@ int test_wcsrtombs_s(void) {
 
         CLRPS;
         memset(hp, 'x', hsz);
-        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), 20, &ps);
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), v20, &ps);
         ERR(EOK);
         INDCMP(!= 3);
         if (strcmp(hp, "abc") != 0) {
@@ -299,7 +302,7 @@ int test_wcsrtombs_s(void) {
         rc = wcsrtombs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = L"abc", &cs), 3,
                          &ps);
         ERR(ESLEMAX);
-        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), RSIZE_MAX_WSTR + 1,
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), vrmw,
                          &ps);
         ERR(ESLEMAX);
         free(hp);
@@ -365,7 +368,7 @@ int test_wcsrtombs_s(void) {
         CLRPS;
         memset(hp, 'x', hsz);
         rc = wcsrtombs_s(&ind, hp, 8,
-                         (cs = L"abcdefghijklmnopq\xd800rst", &cs), 20, &ps);
+                         (cs = L"abcdefghijklmnopq\xd800rst", &cs), v20, &ps);
         ERR(EILSEQ);
         INDCMP(!= -1);
         for (i = 8; i < 8 + 32; i++) {

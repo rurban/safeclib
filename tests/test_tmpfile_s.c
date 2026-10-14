@@ -8,6 +8,9 @@
 
 #include "test_private.h"
 #include "safe_lib.h"
+#ifdef __linux__
+#include <sys/resource.h>
+#endif
 
 #ifdef HAVE_TMPFILE_S
 #define HAVE_NATIVE 1
@@ -46,6 +49,40 @@ int test_tmpfile_s(void) {
         debug_printf("%s %u   Error rc=%d \n", __FUNCTION__, __LINE__, rc);
         errs++;
     }
+
+    if (rc == 0)
+        fclose(tmp);
+
+    /*--------------------------------------------------*/
+
+#ifdef __linux__
+    /* exhaust the fd limit: tmpfile() fails with EMFILE */
+    {
+        struct rlimit old, lim;
+        FILE *files[64];
+        int n = 0;
+        if (getrlimit(RLIMIT_NOFILE, &old) == 0) {
+            lim = old;
+            lim.rlim_cur = 16;
+            if (setrlimit(RLIMIT_NOFILE, &lim) == 0) {
+                do {
+                    tmp = (FILE *)1;
+                    rc = tmpfile_s(&tmp);
+                    if (rc == 0 && n < 64)
+                        files[n++] = tmp;
+                } while (rc == 0 && n < 64);
+                if (rc != EMFILE || tmp != NULL) {
+                    debug_printf("%s %u   Error rc=%d \n", __FUNCTION__,
+                                 __LINE__, rc);
+                    errs++;
+                }
+                while (n > 0)
+                    fclose(files[--n]);
+                setrlimit(RLIMIT_NOFILE, &old);
+            }
+        }
+    }
+#endif
 
     /*--------------------------------------------------*/
 

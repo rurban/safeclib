@@ -90,6 +90,42 @@ int test_u8upr_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+
+    /* illegal utf-8: stack buffer (small dmax) and heap buffer (large dmax) */
+    strcpy((char *)str, "ab\xFF" "cd");
+    rc = u8upr_s(str, 8);
+    ERR(EILSEQ)
+
+    strcpy((char *)str, "ab\xFF" "cd");
+    rc = u8upr_s(str, LEN);
+    ERR(EILSEQ)
+
+    /* too small dmax with a heap buffer (dmax * 4 > 128) */
+    memset(str, 'a', 40);
+    str[40] = '\0';
+    rc = u8upr_s(str, 33);
+    ERR(ESNOSPC)
+
+    /*--------------------------------------------------*/
+    /* dmax > RSIZE_MAX_STR is only checked for a dest of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        strcpy((char *)hp, "abc");
+        rc = u8upr_s(hp, RSIZE_MAX_STR + 1);
+        ERR(ESLEMAX)
+        rc = u8upr_s(hp, hsz);
+        ERR(EOK)
+        if (strcmp((char *)hp, "ABC") != 0) {
+            errs++;
+        }
+        free(hp);
+    }
+
     return (errs);
 }
 

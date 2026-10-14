@@ -76,6 +76,28 @@ int test_u8coll_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 16;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            strcpy((char *)ubuf, "abc");
+            strcpy((char *)str2, "abc");
+            rc = u8coll_s(ubuf, RSIZE_MAX_STR + 1, str2, &result);
+            ERR(ESLEMAX)
+            rc = u8coll_s(ubuf, usize, str2, &result);
+            ERR(EOK)
+            if (result != 0) {
+                debug_printf("%s %u  result=%d, expected 0\n", __FUNCTION__,
+                             __LINE__, result);
+                errs++;
+            }
+            free(ubuf);
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

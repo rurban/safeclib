@@ -121,5 +121,23 @@ int main(void) {
     }
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        char *r;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strlastchar_s(hp, RSIZE_MAX_STR + 1, 'a', &r);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

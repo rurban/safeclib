@@ -7,9 +7,12 @@
  */
 
 #include "test_private.h"
+#include <stdlib.h>
 #include "safe_str_lib.h"
 
 #define LEN (128)
+
+static volatile wchar_t vbadwc = (wchar_t)0x110000;
 
 int main(void) {
     errno_t rc;
@@ -122,6 +125,31 @@ int main(void) {
     }
 
     /*--------------------------------------------------*/
+
+#if SIZEOF_WCHAR_T > 2
+    wcscpy(str1, L"abc");
+    rc = wcsnset_s(str1, LEN, vbadwc, 2);
+    ERR(ESLEMAX)
+    WEXPSTR(str1, L"abc")
+#endif
+
+    /* the compiler does not know the size: BOS_UNKNOWN path */
+    {
+        static volatile size_t hsz = LEN * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+
+        if (!hd)
+            return errs + 1;
+        wcscpy(hd, L"abcdef");
+        rc = wcsnset_s(hd, RSIZE_MAX_WSTR + 1, L'x', 2);
+        ERR(ESLEMAX)
+        WEXPSTR(hd, L"abcdef")
+
+        rc = wcsnset_s(hd, LEN, L'x', 2);
+        ERR(EOK)
+        WEXPSTR(hd, L"xxcdef")
+        free(hd);
+    }
 
     return (errs);
 }

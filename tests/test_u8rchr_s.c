@@ -62,6 +62,27 @@ int test_u8rchr_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* dmax > RSIZE_MAX_STR is only checked for a dest of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        rc = u8rchr_s(hp, RSIZE_MAX_STR + 1, 'x', &sub);
+        ERR(ESLEMAX)
+        SUBNULL()
+        free(hp);
+    }
+    {
+        /* empty string */
+        char8_t e[4] = {0, 0, 0, 0};
+        rc = u8rchr_s(e, sizeof(e), 'a', &sub);
+        ERR(ESZEROL)
+        SUBNULL()
+    }
+
     return (errs);
 }
 

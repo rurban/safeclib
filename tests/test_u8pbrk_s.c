@@ -57,6 +57,42 @@ int test_u8pbrk_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* set string longer than slen: not found */
+    strcpy((char *)str, "hello world");
+    rc = u8pbrk_s(str, LEN, (char8_t *)"xyz", 2, &sub);
+    ERR(ESNOTFND)
+    SUBNULL()
+
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("slen exceeds src")
+    rc = u8pbrk_s(str, LEN, (char8_t *)"ow", 10, &sub);
+    ERR(EOVERFLOW)
+    SUBNULL()
+#endif
+
+    /*--------------------------------------------------*/
+    /* dmax/slen > RSIZE_MAX_STR is only checked for objects of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        strcpy((char *)hp, "ow");
+        strcpy((char *)str, "hello world"); /* cleared by the overflow above */
+        rc = u8pbrk_s(hp, RSIZE_MAX_STR + 1, (char8_t *)"ow", 3, &sub);
+        ERR(ESLEMAX)
+        SUBNULL()
+        rc = u8pbrk_s(str, LEN, hp, RSIZE_MAX_STR + 1, &sub);
+        ERR(ESLEMAX)
+        SUBNULL()
+        rc = u8pbrk_s(str, LEN, hp, 3, &sub);
+        ERR(EOK)
+        PTREQ(sub, &str[4])
+        free(hp);
+    }
+
     return (errs);
 }
 

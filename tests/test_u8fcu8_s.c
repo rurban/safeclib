@@ -13,6 +13,8 @@
 static char8_t str1[LEN];
 static char8_t str2[LEN];
 static char8_t *sub;
+static volatile size_t vzero = 0;
+
 int test_u8fcu8_s(void);
 
 int test_u8fcu8_s(void) {
@@ -81,6 +83,70 @@ int test_u8fcu8_s(void) {
     }
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+
+    /* pattern longer than the remaining haystack */
+    strcpy((char *)str1, "ab");
+    strcpy((char *)str2, "abc");
+    rc = u8fcu8_s(str1, LEN, str2, 3, &sub);
+    ERR(ESNOTFND)
+    if (sub != NULL) {
+        debug_printf("%s %u  expected NULL substring\n", __FUNCTION__,
+                     __LINE__);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* zero slen */
+    rc = u8fcu8_s(str1, LEN, str2, vzero, &sub);
+    ERR(ESZEROL)
+
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("slen exceeds src")
+    rc = u8fcu8_s(str1, LEN, str2, LEN + 1, &sub);
+    ERR(EOVERFLOW)
+#endif
+
+    /*--------------------------------------------------*/
+
+    /* illegal UTF-8 in the pattern */
+    strcpy((char *)str1, "Hello");
+    strcpy((char *)str2, "\xC0\x80");
+    rc = u8fcu8_s(str1, LEN, str2, 2, &sub);
+    ERR(EILSEQ)
+
+    /* illegal UTF-8 in the haystack, reached while matching */
+    strcpy((char *)str1, "a\xC0\x80z");
+    strcpy((char *)str2, "az");
+    rc = u8fcu8_s(str1, LEN, str2, 2, &sub);
+    ERR(EILSEQ)
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest and src sizes: dmax and slen exceeding RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 32;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        char8_t *usrc = (char8_t *)malloc(usize);
+        if (ubuf && usrc) {
+            strcpy((char *)ubuf, "Hello World");
+            strcpy((char *)usrc, "WORLD");
+            rc = u8fcu8_s(ubuf, RSIZE_MAX_STR + 1, usrc, 5, &sub);
+            ERR(ESLEMAX)
+            rc = u8fcu8_s(ubuf, usize, usrc, RSIZE_MAX_STR + 1, &sub);
+            ERR(ESLEMAX)
+            rc = u8fcu8_s(ubuf, usize, usrc, 5, &sub);
+            ERR(EOK)
+            if (sub != ubuf + 6) {
+                debug_printf("%s %u  sub mismatch\n", __FUNCTION__, __LINE__);
+                errs++;
+            }
+        }
+        free(ubuf);
+        free(usrc);
+    }
 
     return (errs);
 }

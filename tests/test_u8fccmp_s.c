@@ -102,6 +102,104 @@ int test_u8fccmp_s(void) {
         errs++;
     }
 
+    /*--------------------------------------------------*/
+
+    /* empty strings (minimum normalization scratch size) */
+    str1[0] = 0;
+    str2[0] = 0;
+    rc = u8fccmp_s(str1, LEN, str2, &result);
+    ERR(EOK)
+    if (result != 0) {
+        debug_printf("%s %u  result=%d, expected 0\n", __FUNCTION__, __LINE__,
+                     result);
+        errs++;
+    }
+    strcpy((char *)str2, "a");
+    rc = u8fccmp_s(str1, LEN, str2, &result);
+    ERR(EOK)
+    if (result >= 0) {
+        debug_printf("%s %u  result=%d, expected <0\n", __FUNCTION__, __LINE__,
+                     result);
+        errs++;
+    }
+    rc = u8fccmp_s(str2, LEN, str1, &result);
+    ERR(EOK)
+    if (result <= 0) {
+        debug_printf("%s %u  result=%d, expected >0\n", __FUNCTION__, __LINE__,
+                     result);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* codepoint beyond U+10FFFF in dest or src is rejected by normalization */
+    strcpy((char *)str1, "a\xF4\x90\x80\x80");
+    strcpy((char *)str2, "a");
+    rc = u8fccmp_s(str1, LEN, str2, &result);
+    ERR(ESLEMAX)
+    rc = u8fccmp_s(str2, LEN, str1, &result);
+    ERR(ESLEMAX)
+
+    /*--------------------------------------------------*/
+
+    /* long strings need heap scratch buffers (> 128 bytes normalized) */
+    {
+        static char8_t big1[400], big2[400];
+        memset(big1, 'A', 300);
+        big1[300] = 0;
+        memset(big2, 'a', 300);
+        big2[300] = 0;
+        rc = u8fccmp_s(big1, sizeof(big1), big2, &result);
+        ERR(EOK)
+        if (result != 0) {
+            debug_printf("%s %u  result=%d, expected 0\n", __FUNCTION__,
+                         __LINE__, result);
+            errs++;
+        }
+        big2[299] = 'b';
+        rc = u8fccmp_s(big1, sizeof(big1), big2, &result);
+        ERR(EOK)
+        if (result >= 0) {
+            debug_printf("%s %u  result=%d, expected <0\n", __FUNCTION__,
+                         __LINE__, result);
+            errs++;
+        }
+
+        /* too-large codepoint after heap allocation of dest, or of src */
+        big1[10] = (char8_t)0xF4;
+        big1[11] = (char8_t)0x90;
+        big1[12] = (char8_t)0x80;
+        big1[13] = (char8_t)0x80;
+        rc = u8fccmp_s(big1, sizeof(big1), str2, &result);
+        ERR(ESLEMAX)
+        rc = u8fccmp_s(str2, LEN, big1, &result);
+        ERR(ESLEMAX)
+        rc = u8fccmp_s(big2, sizeof(big2), big1, &result);
+        ERR(ESLEMAX)
+    }
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 16;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            strcpy((char *)ubuf, "Ab");
+            strcpy((char *)str2, "aB");
+            rc = u8fccmp_s(ubuf, RSIZE_MAX_STR + 1, str2, &result);
+            ERR(ESLEMAX)
+            rc = u8fccmp_s(ubuf, usize, str2, &result);
+            ERR(EOK)
+            if (result != 0) {
+                debug_printf("%s %u  result=%d, expected 0\n", __FUNCTION__,
+                             __LINE__, result);
+                errs++;
+            }
+            free(ubuf);
+        }
+    }
+
     return (errs);
 }
 

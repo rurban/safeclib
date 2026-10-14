@@ -26,6 +26,8 @@ EXTERN errno_t memmove_s(void *dest, rsize_t dmax, const void *src,
 static uint8_t mem1[LEN + 1];
 static uint8_t mem2[LEN];
 int test_memmove_s(void);
+/* unguarded primitive, not used by any public function */
+extern void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len);
 
 int test_memmove_s(void) {
     errno_t rc;
@@ -273,6 +275,137 @@ int test_memmove_s(void) {
     }
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+    /* unknown dest and src sizes, hidden from the compiler */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 64;
+        uint8_t *hp = (uint8_t *)malloc(hsz);
+        uint8_t *hs = (uint8_t *)malloc(hsz);
+
+        if (!hp || !hs) {
+            free(hp);
+            free(hs);
+            return errs + 1;
+        }
+        memset(hs, 7, hsz);
+        memset(hp, 9, hsz);
+
+        rc = memmove_s(hp, RSIZE_MAX_MEM + 1, hs, 8);
+        ERR(ESLEMAX);
+        EXPMEM(hp, 0, 8, 9, 1);
+
+        rc = memmove_s(hp, 64, hs, 16);
+        ERR(EOK);
+        EXPMEM(hp, 0, 16, 7, 1);
+        EXPMEM(hp, 16, 64, 9, 1);
+
+        /* known too small src, unknown dest */
+#ifndef HAVE_CT_BOS_OVR
+        {
+            uint8_t small[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+            rc = memmove_s(hp, 64, small, 16);
+            ERR(EOVERFLOW);
+            EXPMEM(hp, 0, 16, 7, 1);
+        }
+#endif
+        free(hp);
+        free(hs);
+    }
+
+    /*--------------------------------------------------*/
+    /* all sizes and alignments, overlapping forward and backward, through
+       the mem primitives */
+    if (!use_msvcrt) {
+        static uint8_t buf[2048];
+        static uint8_t ref[2048];
+        static const size_t big[] = {100, 127, 128, 255, 256, 257, 511, 512,
+                                     1000};
+        size_t sz, so, d_o, k, n;
+
+        for (n = 0; n < 71 + sizeof(big) / sizeof(big[0]); n++) {
+            sz = n < 71 ? n : big[n - 71];
+            for (so = 0; so < 10; so++) {
+                for (d_o = 0; d_o < 10; d_o++) {
+                    for (k = 0; k < sizeof(buf); k++) {
+                        buf[k] = (uint8_t)(k * 13 + 5);
+                    }
+                    memcpy(ref, buf, sizeof(buf));
+                    memmove(ref + 16 + d_o, ref + 16 + so, sz);
+                    rc = memmove_s(buf + 16 + d_o, sz + 1, buf + 16 + so, sz);
+                    ERR(EOK);
+                    if (memcmp(buf, ref, sizeof(buf)) != 0) {
+                        debug_printf("%s %u  size %lu so %lu do %lu wrong\n",
+                                     __FUNCTION__, __LINE__, (unsigned long)sz,
+                                     (unsigned long)so, (unsigned long)d_o);
+                        errs++;
+                    }
+                }
+            }
+        }
+
+        /* separate buffers, both directions */
+        for (n = 0; n < 71; n++) {
+            for (so = 0; so < 8; so++) {
+                for (d_o = 0; d_o < 8; d_o++) {
+                    for (k = 0; k < 1024; k++) {
+                        buf[k] = (uint8_t)(k * 13 + 5);
+                        buf[1024 + k] = 0xEE;
+                    }
+                    rc = memmove_s(buf + 1024 + 8 + d_o, n + 1, buf + 8 + so,
+                                   n);
+                    ERR(EOK);
+                    if (memcmp(buf + 1024 + 8 + d_o, buf + 8 + so, n) != 0) {
+                        debug_printf("%s %u  fwd size %lu so %lu do %lu\n",
+                                     __FUNCTION__, __LINE__, (unsigned long)n,
+                                     (unsigned long)so, (unsigned long)d_o);
+                        errs++;
+                    }
+                    rc = memmove_s(buf + 8 + d_o, n + 1, buf + 1024 + 8 + so,
+                                   n);
+                    ERR(EOK);
+                    if (memcmp(buf + 8 + d_o, buf + 1024 + 8 + so, n) != 0) {
+                        debug_printf("%s %u  bwd size %lu so %lu do %lu\n",
+                                     __FUNCTION__, __LINE__, (unsigned long)n,
+                                     (unsigned long)so, (unsigned long)d_o);
+                        errs++;
+                    }
+                }
+            }
+        }
+    }
+
+    /*--------------------------------------------------*/
+    /* the unguarded uint8_t primitive, overlapping forward and backward */
+    {
+        static uint8_t pbuf[2048];
+        static uint8_t pref[2048];
+        static const size_t pbig[] = {100, 127, 128, 255, 256, 257, 511, 512,
+                                      1000};
+        size_t psz, pso, pdo, pk, pn;
+
+        for (pn = 0; pn < 71 + sizeof(pbig) / sizeof(pbig[0]); pn++) {
+            psz = pn < 71 ? pn : pbig[pn - 71];
+            for (pso = 0; pso < 4; pso++) {
+                for (pdo = 0; pdo < 4; pdo++) {
+                    for (pk = 0; pk < sizeof(pbuf); pk++) {
+                        pbuf[pk] = (uint8_t)(pk * 13 + 5);
+                    }
+                    memcpy(pref, pbuf, sizeof(pbuf));
+                    memmove(pref + 16 + pdo, pref + 16 + pso, psz);
+                    mem_prim_move8(pbuf + 16 + pdo, pbuf + 16 + pso,
+                                   (uint32_t)psz);
+                    if (memcmp(pbuf, pref, sizeof(pbuf)) != 0) {
+                        debug_printf("%s %u  size %lu so %lu do %lu wrong\n",
+                                     __FUNCTION__, __LINE__,
+                                     (unsigned long)psz, (unsigned long)pso,
+                                     (unsigned long)pdo);
+                        errs++;
+                    }
+                }
+            }
+        }
+    }
 
     return (errs);
 }

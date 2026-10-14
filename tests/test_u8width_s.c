@@ -152,6 +152,78 @@ int test_u8width_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* extended grapheme cluster rules (TR29) */
+
+    /* CR LF is one cluster (GB3) */
+    len = u8width_s((const char8_t *)"\r\n", LEN);
+    EXPLEN(1)
+
+    /* break after control (GB4) */
+    len = u8width_s((const char8_t *)"\na", LEN);
+    EXPLEN(2)
+
+    /* break before control (GB5) */
+    len = u8width_s((const char8_t *)"a\n", LEN);
+    EXPLEN(2)
+
+    /* break around CR */
+    len = u8width_s((const char8_t *)"a\rb", LEN);
+    EXPLEN(3)
+
+    /* L x L (GB6) */
+    len = u8width_s((const char8_t *)"\xE1\x84\x80\xE1\x84\x80", LEN);
+    EXPLEN(1)
+
+    /* L x V (GB6) */
+    len = u8width_s((const char8_t *)"\xE1\x84\x80\xE1\x85\xA1", LEN);
+    EXPLEN(1)
+
+    /* L x LV (GB6) */
+    len = u8width_s((const char8_t *)"\xE1\x84\x80\xEA\xB0\x80", LEN);
+    EXPLEN(1)
+
+    /* L x LVT (GB6) */
+    len = u8width_s((const char8_t *)"\xE1\x84\x80\xEA\xB0\x81", LEN);
+    EXPLEN(1)
+
+    /* LV x V (GB7) */
+    len = u8width_s((const char8_t *)"\xEA\xB0\x80\xE1\x85\xA1", LEN);
+    EXPLEN(1)
+
+    /* V x T (GB7) */
+    len = u8width_s((const char8_t *)"\xE1\x85\xA1\xE1\x86\xA8", LEN);
+    EXPLEN(1)
+
+    /* T x T (GB8) */
+    len = u8width_s((const char8_t *)"\xE1\x86\xA8\xE1\x86\xA8", LEN);
+    EXPLEN(1)
+
+    /* LVT x T (GB8) */
+    len = u8width_s((const char8_t *)"\xEA\xB0\x81\xE1\x86\xA8", LEN);
+    EXPLEN(1)
+
+    /* combining mark is Extend (GB9) */
+    len = u8width_s((const char8_t *)"e\xCC\x81", LEN);
+    EXPLEN(1)
+
+    /* ZWJ (GB9) */
+    len = u8width_s((const char8_t *)"a\xE2\x80\x8D", LEN);
+    EXPLEN(1)
+
+    /* SpacingMark (GB9a) */
+    len = u8width_s((const char8_t *)"\xE0\xA4\x95\xE0\xA4\x83", LEN);
+    EXPLEN(1)
+
+    /* Prepend (GB9b) */
+    len = u8width_s((const char8_t *)"\xD8\x80" "a", LEN);
+    EXPLEN(1)
+
+    /* clusters are counted separately */
+    len = u8width_s((const char8_t *)"e\xCC\x81" "e\xCC\x81" "x", LEN);
+    EXPLEN(3)
+
+
     return (errs);
 }
 

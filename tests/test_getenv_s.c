@@ -149,6 +149,24 @@ int test_getenv_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        len = 5;
+        rc = getenv_s(&len, hp, RSIZE_MAX_STR + 1, "PATH");
+        ERR(ESLEMAX);
+        ind = len;
+        INDCMP(!= 0);
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

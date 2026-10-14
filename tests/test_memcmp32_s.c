@@ -11,6 +11,8 @@
 
 #define LEN (128)
 
+static volatile size_t vrmm = RSIZE_MAX_MEM32 + 1;
+
 int main(void) {
     errno_t rc;
     uint32_t len;
@@ -166,6 +168,59 @@ int main(void) {
     INDCMP(<= 0);
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+    /* unknown dest and src sizes, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64 * sizeof(uint32_t);
+        uint32_t *xhp = (uint32_t *)malloc(xhsz);
+        uint32_t *xhs = (uint32_t *)malloc(xhsz);
+        int xdiff = 5;
+
+        if (!xhp || !xhs) {
+            free(xhp);
+            free(xhs);
+            return errs + 1;
+        }
+        memset(xhp, 1, xhsz);
+        memset(xhs, 1, xhsz);
+
+        /* unknown dest too large */
+        rc = memcmp32_s(xhp, RSIZE_MAX_MEM32 + 1, xhs, 8, &xdiff);
+        ERR(ESLEMAX);
+        if (xdiff != -1) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+
+        /* unknown src too large, known dest */
+        rc = memcmp32_s(mem1, LEN, xhs, vrmm, &xdiff);
+        ERR(ESLEMAX);
+
+        /* both unknown */
+        rc = memcmp32_s(xhp, 64, xhs, 64, &xdiff);
+        ERR(EOK);
+        if (xdiff != 0) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+        xhs[63] = 2;
+        rc = memcmp32_s(xhp, 64, xhs, 64, &xdiff);
+        ERR(EOK);
+        if (xdiff == 0) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+
+        /* known dest, dlen larger than dest but not larger than max */
+        {
+            static volatile size_t xbig = LEN + 1;
+            rc = memcmp32_s(mem1, xbig, mem2, 1, &xdiff);
+            ERR(EOVERFLOW);
+        }
+        free(xhp);
+        free(xhs);
+    }
 
     return (errs);
 }

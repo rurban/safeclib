@@ -56,6 +56,14 @@ int test_vu8sprintf_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* truncated numeric output: the result length reaches dmax */
+    strcpy((char *)str1, "aaaaaaaaaa");
+    rc = vtu8printf_s(str1, 3, "%d", 123456);
+    ERR(-ESNOSPC);
+    EXPNULL((char *)str1)
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

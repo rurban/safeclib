@@ -24,6 +24,24 @@
 static uint8_t mem1[LEN + 2];
 static uint8_t mem2[LEN + 2];
 int test_memcpy_s(void);
+extern void handle_mem_bos_chk_warn(const char *restrict func,
+                                    void *restrict dest, const rsize_t dmax,
+                                    const size_t destbos);
+
+static int hcalls, hcalls2;
+static errno_t herr;
+static void count_handler(const char *msg, void *ptr, errno_t error) {
+    (void)msg;
+    (void)ptr;
+    hcalls++;
+    herr = error;
+}
+static void count_handler2(const char *msg, void *ptr, errno_t error) {
+    (void)msg;
+    (void)ptr;
+    hcalls2++;
+    herr = error;
+}
 
 int test_memcpy_s(void) {
     errno_t rc;
@@ -274,6 +292,199 @@ int test_memcpy_s(void) {
     }
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+    /* unknown dest and src sizes, hidden from the compiler */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 64;
+        uint8_t *hp = (uint8_t *)malloc(hsz);
+        uint8_t *hs = (uint8_t *)malloc(hsz);
+
+        if (!hp || !hs) {
+            free(hp);
+            free(hs);
+            return errs + 1;
+        }
+        memset(hs, 7, hsz);
+        memset(hp, 9, hsz);
+
+        rc = memcpy_s(hp, RSIZE_MAX_MEM + 1, hs, 8);
+        ERR(ESLEMAX);
+        EXPMEM(hp, 0, 8, 9, 1);
+
+        rc = memcpy_s(hp, 64, hs, 16);
+        ERR(EOK);
+        EXPMEM(hp, 0, 16, 7, 1);
+        EXPMEM(hp, 16, 64, 9, 1);
+
+        /* known too small src, unknown dest */
+#ifndef HAVE_CT_BOS_OVR
+        {
+            uint8_t small[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+            rc = memcpy_s(hp, 64, small, 16);
+            ERR(EOVERFLOW);
+            EXPMEM(hp, 0, 16, 7, 1);
+        }
+#endif
+        free(hp);
+        free(hs);
+    }
+
+    /*--------------------------------------------------*/
+    /* all sizes known: the unchecked worker */
+    if (!use_msvcrt) {
+        uint8_t ex[32];
+
+        for (i = 0; i < 32; i++) {
+            ex[i] = (uint8_t)(i + 1);
+        }
+        /* partial overlap is still detected: dest cleared. The offset is
+           volatile, else the compile-time check rejects the call. */
+        {
+            static volatile size_t off = 8;
+            rc = memcpy_s(ex, 32, ex + off, 16);
+        }
+        ERR(ESOVRLP);
+        EXPMEM(ex, 0, 32, 0, 1);
+
+        /* the unchecked worker called directly */
+        for (i = 0; i < 32; i++) {
+            ex[i] = (uint8_t)(i + 1);
+        }
+        rc = _memcpy_s_uchk(ex, 32, ex + 8, 16);
+        ERR(ESOVRLP);
+        EXPMEM(ex, 0, 32, 0, 1);
+        for (i = 0; i < 32; i++) {
+            ex[i] = (uint8_t)(i + 1);
+        }
+        rc = _memcpy_s_uchk(ex + 16, 16, ex, 16);
+        ERR(EOK);
+        if (ex[16] != 1 || ex[31] != 16 || ex[15] != 16) {
+            debug_printf("%s %u  uchk copy wrong\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+
+        /* same src and dest is allowed */
+        for (i = 0; i < 32; i++) {
+            ex[i] = (uint8_t)(i + 1);
+        }
+        rc = memcpy_s(ex, 32, ex, 16);
+        ERR(EOK);
+        if (ex[0] != 1 || ex[15] != 16 || ex[31] != 32) {
+            debug_printf("%s %u  same-ptr copy changed data\n", __FUNCTION__,
+                         __LINE__);
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+    /* all sizes and alignments through the mem primitives */
+    if (!use_msvcrt) {
+        static uint8_t sbuf[LEN + 16];
+        static uint8_t dbuf[LEN + 16];
+        static volatile size_t hdmax = LEN;
+        size_t sz, so, d_o;
+        int dir;
+        static const size_t big[] = {100, 127, 128, 255, 256, 257, 511, 512,
+                                     1000};
+
+        for (i = 0; i < sizeof(sbuf); i++) {
+            sbuf[i] = (uint8_t)(i * 7 + 3);
+        }
+        /* dir 0: sbuf -> dbuf, dir 1: dbuf -> sbuf, so that dest is below
+           and above src. Both are non-overlapping */
+        for (dir = 0; dir < 2; dir++) {
+            uint8_t *from = dir ? dbuf : sbuf;
+            uint8_t *to = dir ? sbuf : dbuf;
+            for (i = 0; i < 71 + sizeof(big) / sizeof(big[0]); i++) {
+                sz = i < 71 ? i : big[i - 71];
+                for (so = 0; so < 8; so++) {
+                    for (d_o = 0; d_o < 8; d_o++) {
+                        size_t k;
+                        if (dir) {
+                            for (k = 0; k < sizeof(dbuf); k++)
+                                dbuf[k] = (uint8_t)(k * 7 + 3);
+                            memset(sbuf, 0xEE, sizeof(sbuf));
+                        } else {
+                            memset(dbuf, 0xEE, sizeof(dbuf));
+                        }
+                        rc = memcpy_s(to + d_o, hdmax, from + so, sz);
+                        ERR(EOK);
+                        for (k = 0; k < sz; k++) {
+                            if (to[d_o + k] != from[so + k]) {
+                                debug_printf("%s %u  size %lu so %lu do %lu "
+                                             "differs at %lu\n",
+                                             __FUNCTION__, __LINE__,
+                                             (unsigned long)sz,
+                                             (unsigned long)so,
+                                             (unsigned long)d_o,
+                                             (unsigned long)k);
+                                errs++;
+                                break;
+                            }
+                        }
+                        if (to[d_o + sz] != 0xEE ||
+                            (d_o && to[d_o - 1] != 0xEE)) {
+                            debug_printf("%s %u  size %lu so %lu do %lu "
+                                         "overflow\n",
+                                         __FUNCTION__, __LINE__,
+                                         (unsigned long)sz, (unsigned long)so,
+                                         (unsigned long)d_o);
+                            errs++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*--------------------------------------------------*/
+    /* constraint handlers */
+    {
+        constraint_handler_t prev;
+        static void *volatile hnull = NULL;
+
+        hcalls = 0;
+        prev = set_mem_constraint_handler_s(count_handler);
+        rc = memcpy_s(hnull, 8, mem2, 8);
+        ERR_MSVC(ESNULLP, EINVAL);
+        if (!use_msvcrt && (hcalls != 1 || herr != ESNULLP)) {
+            debug_printf("%s %u  global handler calls=%d err=%d\n",
+                         __FUNCTION__, __LINE__, hcalls, (int)herr);
+            errs++;
+        }
+        /* the thread-local handler overrides the global one */
+        hcalls = 0;
+        thrd_set_mem_constraint_handler_s(count_handler2);
+        rc = memcpy_s(hnull, 8, mem2, 8);
+        ERR_MSVC(ESNULLP, EINVAL);
+        if (!use_msvcrt && (hcalls != 0 || hcalls2 != 1 || herr != ESNULLP)) {
+            debug_printf("%s %u  thrd handler calls=%d/%d err=%d\n",
+                         __FUNCTION__, __LINE__, hcalls, hcalls2, (int)herr);
+            errs++;
+        }
+        /* the dmax != sizeof(dest) warning, only reached with --enable-warn-dmax
+           from the CHK macros */
+        hcalls = 0;
+        handle_mem_bos_chk_warn("memcpy_s", mem1, 8, 4);
+        if (hcalls2 != 2 || herr != ESLEWRNG) {
+            debug_printf("%s %u  bos warn handler calls=%d err=%d\n",
+                         __FUNCTION__, __LINE__, hcalls2, (int)herr);
+            errs++;
+        }
+        /* NULL resets to the default handler, returning the previous one */
+        if (thrd_set_mem_constraint_handler_s(NULL) != count_handler2) {
+            debug_printf("%s %u  wrong previous thrd handler\n", __FUNCTION__,
+                         __LINE__);
+            errs++;
+        }
+        if (set_mem_constraint_handler_s(NULL) != count_handler) {
+            debug_printf("%s %u  wrong previous handler\n", __FUNCTION__,
+                         __LINE__);
+            errs++;
+        }
+        (void)set_mem_constraint_handler_s(prev);
+    }
 
     return (errs);
 }

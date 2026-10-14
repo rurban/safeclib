@@ -346,6 +346,20 @@ int test_strcat_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* dest is terminated before src, but the copy runs into src */
+    if (!use_msvcrt) {
+        strcpy(str1, "ab");
+        strcpy(&str1[3], "def");
+
+        GCC_PUSH_WARN_DMAX
+        rc = strcat_s(&str1[0], 12, &str1[3]);
+        GCC_POP_WARN_DMAX
+        ERR(ESOVRLP);
+        EXPNULL(str1)
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

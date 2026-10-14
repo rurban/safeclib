@@ -133,6 +133,36 @@ int test_memchr_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* unknown dest size, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64;
+        char *xhp = (char *)malloc(xhsz);
+        void *xres = &errs;
+
+        if (!xhp) {
+            return errs + 1;
+        }
+        memset(xhp, 'a', xhsz);
+        xhp[10] = 'b';
+
+        rc = memchr_s(xhp, RSIZE_MAX_MEM + 1, 'b', &xres);
+        ERR(ESLEMAX);
+        if (xres != NULL) {
+            debug_printf("%s %u  result not cleared\n", __FUNCTION__,
+                         __LINE__);
+            errs++;
+        }
+
+        rc = memchr_s(xhp, 64, 'b', &xres);
+        ERR(EOK);
+        if (xres != &xhp[10]) {
+            debug_printf("%s %u  wrong result\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        free(xhp);
+    }
+
     return (errs);
 }
 

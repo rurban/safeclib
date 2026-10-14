@@ -250,6 +250,28 @@ int test_wcsfc_s(void) {
                  L"\x304"); /* no reordering */
     WEXPSTR(str, str1);
 
+    /* dmax too small */
+    ind = 99;
+    rc = wcsfc_s(str, 4, L"abcd", &ind);
+    ERR(ESNOSPC)
+
+    ind = 99;
+    rc = wcsfc_s(str, 2, L"\xdf\xdf", &ind); /* 2 chars each */
+    ERR(ESNOSPC)
+    INDCMP_(!= 2)
+
+    /* a multi-char fold must not underflow dmax nor write past it */
+    {
+        wchar_t buf[8];
+        wmemset(buf, L'x', 8);
+        rc = wcsfc_s(buf, 3, L"\xdf\xdf", &ind);
+        ERR(ESNOSPC)
+        if (buf[3] != L'x' || buf[4] != L'x') {
+            debug_printf("%s %u  wrote past dmax\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+    }
+
     /* no ordering defined, both CC 230 */
     /*rc = wcsnorm_reorder_s(str, LEN, L"U" L"\x304" L"\x308", 3);
     wcscpy(str1, L"U" L"\x304" L"\x308");

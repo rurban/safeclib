@@ -217,5 +217,54 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        int r;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strcmpfld_s(hp, RSIZE_MAX_STR + 1, "a", &r);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* mismatch inside dmax stops the compare */
+    memset(str1, 'a', LEN);
+    memset(str2, 'a', LEN);
+    str2[3] = 'b';
+    rc = strcmpfld_s(str1, LEN, str2, &ind);
+    ERR(EOK)
+    INDCMP(!= ('a' - 'b'))
+
+    rc = strcmpfld_s(str2, LEN, str1, &ind);
+    ERR(EOK)
+    INDCMP(!= ('b' - 'a'))
+
+    /* mismatch just beyond dmax is not compared */
+    memset(str1, 'a', LEN);
+    memset(str2, 'a', LEN);
+    str2[3] = 'b';
+    rc = strcmpfld_s(str1, 3, str2, &ind);
+    ERR(EOK)
+    INDCMP(!= 0)
+
+    /* dmax equals the buffer size: no read past the end */
+    {
+        static char a4[4] = {'a', 'a', 'a', 'a'};
+        static char b4[4] = {'a', 'a', 'a', 'a'};
+        rc = strcmpfld_s(a4, 4, b4, &ind);
+        ERR(EOK)
+        INDCMP(!= 0)
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

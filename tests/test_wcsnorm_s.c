@@ -21,6 +21,8 @@
 #else
 EXTERN uint32_t _dec_w16(wchar_t *src);
 #endif
+static size_t *volatile vnulls = NULL;
+
 int test_wcsnorm_s(void);
 
 #define TESTPL "test-norm.pl"
@@ -611,6 +613,326 @@ int test_wcsnorm_s(void) {
 #endif
     }
 #endif /* PERL_TEST */
+
+    /*--------------------------------------------------*/
+    /* decompose: overlaps, errors and short buffers */
+    {
+        wchar_t buf[2 * LEN];
+        wchar_t *volatile vp = buf;
+        wchar_t *same = vp;
+
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(buf, L"abc");
+        ind = 4;
+        rc = wcsnorm_decompose_s(buf, LEN, same, &ind, false);
+        ERR(ESOVRLP)
+        INDCMP(!= 0)
+
+        /* dest < src: dest runs into src */
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(&buf[2], L"abcd");
+        rc = wcsnorm_decompose_s(buf, LEN, &buf[2], &ind, false);
+        ERR(ESOVRLP)
+
+        /* dest > src: src runs into dest */
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(buf, L"abcd");
+        rc = wcsnorm_decompose_s(&buf[2], LEN, buf, &ind, false);
+        ERR(ESOVRLP)
+
+        /* only dmax-4 chars can be decomposed: each one needs 5 spare */
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(&buf[LEN], L"abcde");
+        rc = wcsnorm_decompose_s(buf, 5, &buf[LEN], &ind, false);
+        ERR(ESNOSPC)
+
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(buf, L"abcde");
+        rc = wcsnorm_decompose_s(&buf[LEN], 5, buf, &ind, false);
+        ERR(ESNOSPC)
+
+        /* the decomposition does not fit into the remaining space */
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(&buf[LEN], L"ab\xc0");
+        rc = wcsnorm_decompose_s(buf, 5, &buf[LEN], &ind, false);
+        ERR(ESNOSPC)
+
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(buf, L"ab\xc0");
+        rc = wcsnorm_decompose_s(&buf[LEN], 5, buf, &ind, false);
+        ERR(ESNOSPC)
+
+        /* ditto for a hangul syllable (needs 4) */
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(&buf[LEN], L"a\xac00\xac00");
+        rc = wcsnorm_decompose_s(buf, 5, &buf[LEN], &ind, false);
+        ERR(ESNOSPC)
+
+        wmemset(buf, L'x', 2 * LEN);
+        wcscpy(buf, L"a\xac00\xac00");
+        rc = wcsnorm_decompose_s(&buf[LEN], 5, buf, &ind, false);
+        ERR(ESNOSPC)
+
+        rc = wcsnorm_decompose_s(str, LEN, L"a\xac01", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"a\x1100\x1161\x11a8")
+        INDCMP(!= 4)
+
+#if SIZEOF_WCHAR_T >= 4
+        /* too high, with dest < src */
+        wmemset(buf, L'x', 2 * LEN);
+        buf[LEN] = 0x110000;
+        buf[LEN + 1] = 0;
+        rc = wcsnorm_decompose_s(buf, LEN, &buf[LEN], &ind, false);
+        ERR(ESLEMAX)
+
+        /* a plane without any decomposition table is copied */
+        rc = wcsnorm_decompose_s(str, LEN, L"a\x50000", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"a\x50000")
+        INDCMP(!= 2)
+#endif
+    }
+
+    /*--------------------------------------------------*/
+    /* reorder */
+    {
+        wchar_t src[32];
+        int i;
+        static volatile size_t hsz = 8 * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+
+        if (!hd)
+            return errs + 1;
+        /* the compiler does not know the size of dest */
+        rc = wcsnorm_reorder_s(hd, RSIZE_MAX_WSTR + 1, L"abc", 3);
+        ERR(ESLEMAX)
+        free(hd);
+
+        /* more combining marks than fit into the stack buffer.
+           the lower class is sorted before the 16 others. */
+        src[0] = L'b';
+        for (i = 1; i <= 16; i++)
+            src[i] = 0x301; /* 230 */
+        src[17] = 0x323;    /* 220 */
+        src[18] = 0;
+        rc = wcsnorm_reorder_s(str, LEN, src, 18);
+        ERR(EOK)
+        if (str[0] != L'b' || str[1] != 0x323 || str[18] != 0)
+            errs++;
+        for (i = 2; i <= 17; i++) {
+            if (str[i] != 0x301) {
+                debug_printf("%s %u  Error str[%d]=0x%x\n", __FUNCTION__,
+                             __LINE__, i, (unsigned)str[i]);
+                errs++;
+            }
+        }
+
+        /* dmax too small for the sequence of marks */
+        rc = wcsnorm_reorder_s(str, 3, L"a\x300\x301", 3);
+        ERR(ESNOSPC)
+
+        /* dmax too small for the last char */
+        rc = wcsnorm_reorder_s(str, 1, L"a", 1);
+        ERR(ESNOSPC)
+    }
+
+    /*--------------------------------------------------*/
+    /* compose */
+    {
+        /* handle_werror() clears RSIZE_MAX_WSTR elements on ESLEMAX */
+        static volatile size_t hsz = RSIZE_MAX_WSTR * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+        wchar_t src[32];
+        int i;
+
+        if (!hd)
+            return errs + 1;
+#ifndef HAVE_CT_BOS_OVR
+        ind = 3;
+        EXPECT_BOS("empty dest")
+        rc = wcsnorm_compose_s(NULL, LEN, L"abc", &ind, false);
+        ERR(ESNULLP)
+        INDCMP(!= 0)
+
+        ind = 3;
+        EXPECT_BOS("empty src")
+        rc = wcsnorm_compose_s(str, LEN, NULL, &ind, false);
+        ERR(ESNULLP)
+        INDCMP(!= 0)
+#endif
+        /* the compiler does not know the size of dest */
+        ind = 3;
+        rc = wcsnorm_compose_s(hd, RSIZE_MAX_WSTR + 1, L"abc", &ind, false);
+        ERR(ESLEMAX)
+        INDCMP(!= 0)
+        free(hd);
+
+        /* dest must not be cleared beyond element 0 for a huge dmax */
+        {
+            static volatile size_t hsz = 8 * sizeof(wchar_t);
+            wchar_t *h8 = (wchar_t *)malloc(hsz);
+            if (!h8)
+                return errs + 1;
+            wmemset(h8, L'x', 8);
+            ind = 3;
+            rc = wcsnorm_compose_s(h8, RSIZE_MAX_WSTR + 1, L"abc", &ind, false);
+            ERR(ESLEMAX)
+            INDCMP(!= 0)
+            if (h8[1] != L'x' || h8[7] != L'x') {
+                debug_printf("%s %u  dest cleared\n", __FUNCTION__, __LINE__);
+                errs++;
+            }
+            free(h8);
+        }
+
+        /* lenp is NULL */
+        rc = wcsnorm_compose_s(str, LEN, L"a", vnulls, false);
+        ERR(ESNULLP)
+#if SIZEOF_WCHAR_T >= 4
+        /* cp > 0x10ffff is an error, not a composite */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"a\x110000", &ind, false);
+        ERR(ESLEMAX)
+#endif
+
+        /* leading combining mark without a starter is copied */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\x301"
+                                         L"a",
+                               &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\x301"
+                     L"a")
+        INDCMP(!= 2)
+
+        ind = 2;
+        rc = wcsnorm_compose_s(str, 1, L"\x301\x302", &ind, false);
+        ERR(ESNOSPC)
+
+        /* dmax too small for the starter */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, 1, L"ab", &ind, false);
+        ERR(ESNOSPC)
+
+        /* starter + starter, one trailing char */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"ab", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"ab")
+        INDCMP(!= 2)
+
+        /* hangul L+V and LV+T */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\x1100\x1161", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\xac00")
+        INDCMP(!= 1)
+
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\xac00\x11a8", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\xac01")
+        INDCMP(!= 1)
+
+        /* a mark blocked by a mark with a higher class, not reordered */
+        ind = 3;
+        rc = wcsnorm_compose_s(str, LEN, L"b\x301\x323", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"b\x301\x323")
+        INDCMP(!= 3)
+
+        /* starter in a row without composites, or without any entry */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\x4e00"
+                                         L"a",
+                               &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\x4e00"
+                     L"a")
+        INDCMP(!= 2)
+
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"qa", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"qa")
+        INDCMP(!= 2)
+
+        /* more marks than fit into the stack buffer, same class */
+        src[0] = L'b';
+        for (i = 1; i <= 17; i++)
+            src[i] = 0x301;
+        src[18] = 0;
+        ind = 18;
+        rc = wcsnorm_compose_s(str1, LEN, src, &ind, false);
+        ERR(EOK)
+        INDCMP(!= 18)
+        if (wcscmp(str1, src))
+            errs++;
+
+        /* an embedded \0 is passed through */
+        src[0] = L'a';
+        src[1] = 0;
+        src[2] = L'b';
+        src[3] = 0;
+        ind = 3;
+        rc = wcsnorm_compose_s(str, LEN, src, &ind, false);
+        ERR(EOK)
+        INDCMP(!= 3)
+        if (str[0] != L'a' || str[1] != 0 || str[2] != L'b')
+            errs++;
+
+#if SIZEOF_WCHAR_T >= 4
+        /* no composition table for this plane */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\x50000"
+                                         L"a",
+                               &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\x50000"
+                     L"a")
+        INDCMP(!= 2)
+
+        /* composites of 32bit codepoints */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\x11099\x110ba", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\x1109a")
+        INDCMP(!= 1)
+
+        /* the list of the starter is sorted and stops before this one */
+        ind = 2;
+        rc = wcsnorm_compose_s(str, LEN, L"\x11099\x110b0", &ind, false);
+        ERR(EOK)
+        WEXPSTR(str, L"\x11099\x110b0")
+        INDCMP(!= 2)
+#endif
+    }
+
+    /*--------------------------------------------------*/
+    /* wcsnorm_s with scratch space on the heap */
+    {
+        wchar_t bigsrc[256];
+        wchar_t bigdest[256];
+        int i;
+
+        for (i = 0; i < 130; i++)
+            bigsrc[i] = L'a';
+        bigsrc[130] = 0x301;
+        bigsrc[131] = 0;
+
+        rc = wcsnorm_s(bigdest, 256, bigsrc, WCSNORM_NFD, &ind);
+        ERR(EOK)
+        INDCMP(!= 131)
+        if (wcscmp(bigdest, bigsrc))
+            errs++;
+
+        rc = wcsnorm_s(bigdest, 256, bigsrc, WCSNORM_NFC, &ind);
+        ERR(EOK)
+        INDCMP(!= 130)
+        if (bigdest[129] != 0xe1 || bigdest[130] != 0 || bigdest[128] != L'a')
+            errs++;
+    }
 
     /*--------------------------------------------------*/
 

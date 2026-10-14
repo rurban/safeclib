@@ -256,5 +256,62 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        char *r;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strcasestr_s(hp, RSIZE_MAX_STR + 1, "a", 1, &r);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* substring not found */
+    {
+        char *sub;
+        char dst[8] = "abcdef";
+
+        rc = strcasestr_s(dst, sizeof(dst), "xyz", 3, &sub);
+        ERR(ESNOTFND)
+        if (sub != NULL) {
+            errs++;
+        }
+        rc = strcasestr_s(dst, sizeof(dst), "DEx", 3, &sub);
+        ERR(ESNOTFND)
+        if (sub != NULL) {
+            errs++;
+        }
+        rc = strcasestr_s(dst, sizeof(dst), "CDE", 3, &sub);
+        ERR(EOK)
+        if (sub != &dst[2]) {
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
+    /* slen > size of src, unknown at compile-time */
+    {
+        static volatile size_t xlen = 9;
+        char *r;
+        char dst[16] = "abcdefgh";
+
+        rc = strcasestr_s(dst, sizeof(dst), "ab", xlen, &r);
+        ERR(ESLEMAX)
+        if (r != NULL) {
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

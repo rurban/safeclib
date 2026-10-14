@@ -13,6 +13,8 @@
 
 static uint8_t mem1[LEN];
 static uint8_t mem2[LEN];
+static volatile size_t vrmm = RSIZE_MAX_MEM + 1;
+
 int test_memcmp_s(void);
 
 int test_memcmp_s(void) {
@@ -195,6 +197,52 @@ int test_memcmp_s(void) {
         errs++;
     }
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+    /* unknown dest and src sizes, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64 * sizeof(uint8_t);
+        uint8_t *xhp = (uint8_t *)malloc(xhsz);
+        uint8_t *xhs = (uint8_t *)malloc(xhsz);
+        int xdiff = 5;
+
+        if (!xhp || !xhs) {
+            free(xhp);
+            free(xhs);
+            return errs + 1;
+        }
+        memset(xhp, 1, xhsz);
+        memset(xhs, 1, xhsz);
+
+        /* unknown dest too large */
+        rc = memcmp_s(xhp, RSIZE_MAX_MEM + 1, xhs, 8, &xdiff);
+        ERR(ESLEMAX);
+        if (xdiff != -1) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+
+        /* unknown src too large, known dest */
+        rc = memcmp_s(mem1, LEN, xhs, vrmm, &xdiff);
+        ERR(ESLEMAX);
+
+        /* both unknown */
+        rc = memcmp_s(xhp, 64, xhs, 64, &xdiff);
+        ERR(EOK);
+        if (xdiff != 0) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+        xhs[63] = 2;
+        rc = memcmp_s(xhp, 64, xhs, 64, &xdiff);
+        ERR(EOK);
+        if (xdiff == 0) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+        free(xhp);
+        free(xhs);
+    }
 
     return (errs);
 }

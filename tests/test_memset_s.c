@@ -196,6 +196,67 @@ int test_memset_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* unknown dest size, hidden from the compiler */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 64;
+        uint8_t *hp = (uint8_t *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 1, hsz);
+        rc = memset_s(hp, MAX + 1, 2, 8);
+        ERR(ESLEMAX);
+        EXPMEM(hp, 0, 8, 1, 1);
+
+        rc = memset_s(hp, 64, 2, 8);
+        ERR(EOK);
+        EXPMEM(hp, 0, 8, 2, 1);
+        EXPMEM(hp, 8, 64, 1, 1);
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+    /* the unchecked worker, called directly */
+    {
+        uint8_t ex[16];
+        memset(ex, 1, sizeof(ex));
+        rc = _memset_s_uchk(ex + 2, 5, 12);
+        ERR(EOK);
+        EXPMEM(ex, 0, 2, 1, 1);
+        EXPMEM(ex, 2, 14, 5, 1);
+        EXPMEM(ex, 14, 16, 1, 1);
+    }
+
+    /*--------------------------------------------------*/
+    /* all sizes and alignments through the mem primitives */
+    {
+        static uint8_t buf[1100];
+        static const size_t big[] = {100, 127, 128, 255, 256, 257, 511, 512,
+                                     1000};
+        size_t sz, off, n, k;
+
+        for (n = 0; n < 71 + sizeof(big) / sizeof(big[0]); n++) {
+            sz = n < 71 ? n : big[n - 71];
+            for (off = 0; off < 10; off++) {
+                memset(buf, 0xEE, sizeof(buf));
+                rc = memset_s(buf + off, sz + 1, 0x5A, sz);
+                ERR(EOK);
+                for (k = 0; k < sizeof(buf); k++) {
+                    uint8_t exp = (k >= off && k < off + sz) ? 0x5A : 0xEE;
+                    if (buf[k] != exp) {
+                        debug_printf("%s %u  size %lu off %lu wrong at %lu\n",
+                                     __FUNCTION__, __LINE__, (unsigned long)sz,
+                                     (unsigned long)off, (unsigned long)k);
+                        errs++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     return (errs);
 }
 

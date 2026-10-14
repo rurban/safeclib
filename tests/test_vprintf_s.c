@@ -74,6 +74,24 @@ int test_vprintf_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* write error: stdout reopened read-only */
+    {
+        FILE *saved = fdopen(dup(fileno(stdout)), "w");
+        fflush(stdout);
+        if (saved && freopen("/dev/null", "r", stdout)) {
+            errno = 0;
+            rc = vtprintf_s("%s", "x");
+            if (rc >= 0) {
+                fprintf(stderr, "%s %u  Error rc=%d\n", __FUNCTION__, __LINE__, (int)rc);
+                errs++;
+            }
+            ERRNO(EBADF);
+            stdout = saved;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

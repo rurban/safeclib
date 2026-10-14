@@ -117,6 +117,22 @@ int test_vu8sscanf_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* %n is forbidden (but a literal %%n is fine) */
+    {
+        int cnt = -1;
+        strcpy((char *)str1, "24 25");
+        rc = vtu8sscanf_s(str1, "%n", &cnt);
+        ERREOF(EINVAL);
+        rc = vtu8sscanf_s(str1, "%d%n", &num, &cnt);
+        ERREOF(EINVAL);
+        if (cnt != -1) {
+            debug_printf("%s %u  cnt=%d modified\n", __FUNCTION__, __LINE__,
+                         cnt);
+            errs++;
+        }
+    }
+
     return (errs);
 }
 

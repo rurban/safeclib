@@ -112,6 +112,45 @@ int test_ctime_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* just big enough: 25 chars + \0 */
+    timer = 0;
+    rc = ctime_s(str1, 26, &timer);
+    if (!(use_msvcrt && rc == EINVAL)) {
+        ERR(EOK);
+        if (strlen(str1) != 25) {
+            debug_printf("%s %u  wrong length %d\n", __FUNCTION__, __LINE__,
+                         (int)strlen(str1));
+            errs++;
+        }
+        if (str1[24] != '\n') { /* timezone independent */
+            debug_printf("%s %u  wrong result %s\n", __FUNCTION__, __LINE__,
+                         str1);
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 32;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        strcpy(hp, "ab");
+        timer = 0;
+        rc = ctime_s(hp, RSIZE_MAX_STR + 1, &timer);
+        ERR(ESLEMAX);
+        if (strcmp(hp, "ab") != 0) { /* not touched */
+            errs++;
+        }
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

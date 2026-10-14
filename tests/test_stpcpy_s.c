@@ -195,13 +195,96 @@ int test_stpcpy_s(void) {
     dest = stpcpy_s(str1, 10, str2, &rc);
     ERR(EOK);
     EXPSTR(str1, str2);
+    if (dest != &str1[2]) {
+        errs++;
+    }
     CHECK_SLACK(&str1[2], 8);
+
+    strcpy(str1, "qqweqeqeqeq");
+    strcpy(str2, "keep");
+    dest = stpcpy_s(str1, LEN, str2, &rc);
+    ERR(EOK);
+    EXPSTR(str1, "keep");
+    if (dest != &str1[4]) {
+        errs++;
+    }
+    str1[0] = '\0';
+    dest = stpcpy_s(str1, 5, str2, &rc);
+    ERR(EOK);
+    if (dest != &str1[4]) {
+        errs++;
+    }
     /*for (i=0; i<10; i++) {
         debug_printf("str1[%i] = %d \n", i, str1[i]);
     }*/
     /*--------------------------------------------------*/
 
     (void)dest;
+
+#ifndef HAVE_CT_BOS_OVR
+    EXPECT_BOS("empty errp")
+    dest = stpcpy_s(str1, LEN, str2, NULL);
+    if (dest != NULL) {
+        errs++;
+    }
+#endif
+
+    /*--------------------------------------------------*/
+
+    /* dest == src without a terminator within dmax */
+    strcpy(str1, "aaaaa");
+    GCC_PUSH_WARN_RESTRICT
+    dest = stpcpy_s(str1, 3, str1, &rc);
+    GCC_POP_WARN_RESTRICT
+    ERR(ESNOSPC);
+    if (dest != NULL) {
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* dmax > RSIZE_MAX_STR with unknown dest size */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        dest = stpcpy_s(hp, RSIZE_MAX_STR + 1, "a", &rc);
+        ERR(ESLEMAX);
+        if (dest != NULL) {
+            errs++;
+        }
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* unterminated src of known size; the two orders put dest once below
+       and once above src */
+    {
+        static char p[4];
+        static char q[4];
+
+        memset(p, 'x', sizeof(p));
+        memset(q, 'y', sizeof(q));
+        dest = stpcpy_s(p, 4, q, &rc);
+        ERR(ESUNTERM);
+        if (dest != NULL) {
+            errs++;
+        }
+
+        dest = stpcpy_s(q, 4, p, &rc);
+        ERR(ESUNTERM);
+        if (dest != NULL) {
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
 
     return (errs);
 }

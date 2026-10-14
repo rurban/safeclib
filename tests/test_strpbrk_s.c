@@ -221,6 +221,63 @@ int test_strpbrk_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_STR with unknown dest size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        char hsrc[2] = "a";
+        char *r;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        rc = strpbrk_s(hp, RSIZE_MAX_STR + 1, hsrc, 1, &r);
+        ERR(ESLEMAX)
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* slen > RSIZE_MAX_STR with unknown src size (hidden from the compiler) */
+    {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        char *hs = (char *)malloc(hsz);
+        char *r;
+
+        if (!hp || !hs) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz - 1);
+        hp[hsz - 1] = '\0';
+        memset(hs, 'y', hsz - 1);
+        hs[hsz - 1] = '\0';
+        rc = strpbrk_s(hp, 16, hs, RSIZE_MAX_STR + 1, &r);
+        ERR(ESLEMAX)
+        free(hp);
+        free(hs);
+    }
+
+    /*--------------------------------------------------*/
+
+    /* slen 0, unknown at compile-time */
+    {
+        static volatile size_t zlen = 0;
+        char *r;
+        char set[2] = "a";
+        char dst[8] = "abc";
+
+        rc = strpbrk_s(dst, sizeof(dst), set, zlen, &r);
+        ERR(ESZEROL)
+        if (r != NULL) {
+            errs++;
+        }
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

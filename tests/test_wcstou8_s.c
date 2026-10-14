@@ -76,6 +76,35 @@ int test_wcstou8_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* dest overlaps src */
+
+#ifndef HAVE_CT_BOS_OVR
+    n = 0;
+    rc = wcstou8_s(&n, dest, LEN, (const wchar_t *)(void *)dest, LEN);
+    ERR(ESOVRLP)
+#endif
+
+    /*--------------------------------------------------*/
+    /* dmax > RSIZE_MAX_STR is only checked for a dest of unknown size.
+       Hide the size from the compiler. */
+    {
+        static volatile size_t hsz = 16;
+        char8_t *hp = (char8_t *)malloc(hsz);
+        if (!hp)
+            return errs + 1;
+        n = 0;
+        rc = wcstou8_s(&n, hp, RSIZE_MAX_STR + 1, L"abc", 3);
+        ERR(ESLEMAX)
+        rc = wcstou8_s(&n, hp, 16, L"abc", 3);
+        ERR(EOK)
+        if (n != 3 || strcmp((char *)hp, "abc") != 0) {
+            debug_printf("%s %u  wrong result\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        free(hp);
+    }
+
     return (errs);
 }
 

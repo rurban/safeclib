@@ -182,5 +182,110 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* unknown dest and src sizes, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64 * 4;
+        uint32_t *xhp = (uint32_t *)malloc(xhsz);
+        uint32_t *xhs = (uint32_t *)malloc(xhsz);
+        size_t xk;
+
+        if (!xhp || !xhs) {
+            free(xhp);
+            free(xhs);
+            return errs + 1;
+        }
+        for (xk = 0; xk < 64; xk++) {
+            xhs[xk] = (uint32_t)(xk + 1);
+            xhp[xk] = 0x7E;
+        }
+
+        rc = memmove32_s(xhp, RSIZE_MAX_MEM + 1, xhs, 8);
+        ERR(ESLEMAX);
+        if (xhp[0] != 0x7E) {
+            debug_printf("%s %u  dest changed\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+
+        rc = memmove32_s(xhp, xhsz, xhs, 16);
+        ERR(EOK);
+        for (xk = 0; xk < 64; xk++) {
+            if (xhp[xk] != (xk < 16 ? (uint32_t)(xk + 1) : (uint32_t)0x7E)) {
+                debug_printf("%s %u  wrong at %lu\n", __FUNCTION__, __LINE__,
+                             (unsigned long)xk);
+                errs++;
+                break;
+            }
+        }
+
+        /* known too small src, unknown dest */
+#ifndef HAVE_CT_BOS_OVR
+        {
+            uint32_t xsmall[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+            rc = memmove32_s(xhp, xhsz, xsmall, 16);
+            ERR(EOVERFLOW);
+        }
+#endif
+        free(xhp);
+        free(xhs);
+    }
+
+    /*--------------------------------------------------*/
+    /* overlapping forward and backward through the mem primitives */
+    {
+        static uint32_t xbuf[2048];
+        static uint32_t xref[2048];
+        static const size_t xbig[] = {100, 127, 128, 255, 256, 257, 511, 512, 1000};
+        size_t xsz, xso, xdo, xk, xn;
+
+        for (xn = 0; xn < 71 + sizeof(xbig) / sizeof(xbig[0]); xn++) {
+            xsz = xn < 71 ? xn : xbig[xn - 71];
+            for (xso = 0; xso < 6; xso++) {
+                for (xdo = 0; xdo < 6; xdo++) {
+                    for (xk = 0; xk < 2048; xk++) {
+                        xbuf[xk] = (uint32_t)(xk * 13 + 5);
+                    }
+                    memcpy(xref, xbuf, sizeof(xbuf));
+                    memmove(xref + 16 + xdo, xref + 16 + xso, xsz * 4);
+                    rc = memmove32_s(xbuf + 16 + xdo, (xsz + 1) * 4,
+                              xbuf + 16 + xso, xsz);
+                    ERR(EOK);
+                    if (memcmp(xbuf, xref, sizeof(xbuf)) != 0) {
+                        debug_printf("%s %u  size %lu so %lu do %lu wrong\n",
+                                     __FUNCTION__, __LINE__,
+                                     (unsigned long)xsz, (unsigned long)xso,
+                                     (unsigned long)xdo);
+                        errs++;
+                    }
+                }
+            }
+        }
+        /* separate buffers, both directions */
+        for (xn = 0; xn < 71; xn++) {
+            for (xso = 0; xso < 6; xso++) {
+                for (xdo = 0; xdo < 6; xdo++) {
+                    for (xk = 0; xk < 1024; xk++) {
+                        xbuf[xk] = (uint32_t)(xk * 13 + 5);
+                        xbuf[1024 + xk] = 0xEE;
+                    }
+                    rc = memmove32_s(xbuf + 1024 + 8 + xdo, (xn + 1) * 4,
+                              xbuf + 8 + xso, xn);
+                    ERR(EOK);
+                    if (memcmp(xbuf + 1024 + 8 + xdo, xbuf + 8 + xso,
+                               xn * 4) != 0) {
+                        errs++;
+                    }
+                    rc = memmove32_s(xbuf + 8 + xdo, (xn + 1) * 4,
+                              xbuf + 1024 + 8 + xso, xn);
+                    ERR(EOK);
+                    if (memcmp(xbuf + 8 + xdo, xbuf + 1024 + 8 + xso,
+                               xn * 4) != 0) {
+                        errs++;
+                    }
+                }
+            }
+        }
+    }
+
     return (errs);
 }

@@ -7,6 +7,7 @@
  */
 
 #include "test_private.h"
+#include <stdlib.h>
 #include "safe_mem_lib.h"
 
 #define LEN (128)
@@ -234,6 +235,42 @@ int main(void) {
 #endif
 
     /*--------------------------------------------------*/
+
+    /* the compiler does not know the sizes: BOS_UNKNOWN paths */
+    {
+        static volatile size_t hsz = LEN * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+        wchar_t *hs = (wchar_t *)malloc(hsz);
+
+        if (!hd || !hs) {
+            free(hd);
+            free(hs);
+            return errs + 1;
+        }
+        wmemset(hd, L'a', LEN);
+        wmemset(hs, L'a', LEN);
+
+        rc = wmemcmp_s(hd, RSIZE_MAX_WMEM + 1, hs, 1, &ind);
+        if (rc != ESLEMAX) {
+            debug_printf("%s %u  Error rc=%u \n", __FUNCTION__, __LINE__, rc);
+            errs++;
+        }
+
+        rc = wmemcmp_s(hd, LEN, hs, RSIZE_MAX_WMEM + 1, &ind);
+        if (rc != ESLEMAX) {
+            debug_printf("%s %u  Error rc=%u \n", __FUNCTION__, __LINE__, rc);
+            errs++;
+        }
+
+        rc = wmemcmp_s(hd, LEN, hs, LEN, &ind);
+        if (rc != EOK || ind != 0) {
+            debug_printf("%s %u  Ind=%d  Error rc=%u \n", __FUNCTION__,
+                         __LINE__, ind, rc);
+            errs++;
+        }
+        free(hd);
+        free(hs);
+    }
 
     return (errs);
 }

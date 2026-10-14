@@ -108,5 +108,87 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* unknown dest size, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64 * 2;
+        uint16_t *xhp = (uint16_t *)malloc(xhsz);
+        size_t xk;
+
+        if (!xhp) {
+            return errs + 1;
+        }
+        for (xk = 0; xk < 64; xk++) {
+            xhp[xk] = 1;
+        }
+        rc = memzero16_s(xhp, RSIZE_MAX_MEM16 + 1);
+        ERR(ESLEMAX);
+        if (xhp[0] != 1) {
+            debug_printf("%s %u  dest changed\n", __FUNCTION__, __LINE__);
+            errs++;
+        }
+        rc = memzero16_s(xhp, 8);
+        ERR(EOK);
+        for (xk = 0; xk < 64; xk++) {
+            if (xhp[xk] != (xk < 8 ? 0 : 1)) {
+                debug_printf("%s %u  wrong at %lu\n", __FUNCTION__, __LINE__,
+                             (unsigned long)xk);
+                errs++;
+                break;
+            }
+        }
+        free(xhp);
+    }
+
+    /*--------------------------------------------------*/
+    /* the unchecked worker, called directly */
+    {
+        uint16_t xex[16];
+        size_t xk;
+        for (xk = 0; xk < 16; xk++) {
+            xex[xk] = 1;
+        }
+        rc = _memzero16_s_uchk(xex + 2, 12);
+        ERR(EOK);
+        for (xk = 0; xk < 16; xk++) {
+            if (xex[xk] != ((xk >= 2 && xk < 14) ? 0 : 1)) {
+                debug_printf("%s %u  wrong at %lu\n", __FUNCTION__, __LINE__,
+                             (unsigned long)xk);
+                errs++;
+                break;
+            }
+        }
+    }
+
+    /*--------------------------------------------------*/
+    /* all sizes and alignments through the mem primitives */
+    {
+        static uint16_t xbuf[1100];
+        static const size_t xbig[] = {100, 127, 128, 255, 256, 257, 511, 512, 1000};
+        size_t xsz, xoff, xn, xk;
+
+        for (xn = 1; xn < 71 + sizeof(xbig) / sizeof(xbig[0]); xn++) {
+            xsz = xn < 71 ? xn : xbig[xn - 71];
+            for (xoff = 0; xoff < 6; xoff++) {
+                for (xk = 0; xk < 1100; xk++) {
+                    xbuf[xk] = 0xEE;
+                }
+                rc = memzero16_s(xbuf + xoff, xsz);
+                ERR(EOK);
+                for (xk = 0; xk < 1100; xk++) {
+                    uint16_t xexp = (xk >= xoff && xk < xoff + xsz) ? 0 : 0xEE;
+                    if (xbuf[xk] != xexp) {
+                        debug_printf("%s %u  size %lu off %lu wrong at %lu\n",
+                                     __FUNCTION__, __LINE__,
+                                     (unsigned long)xsz, (unsigned long)xoff,
+                                     (unsigned long)xk);
+                        errs++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     return (errs);
 }

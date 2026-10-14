@@ -12,6 +12,8 @@
 
 static char8_t str1[LEN];
 static char8_t str2[LEN];
+static volatile size_t vrms = RSIZE_MAX_STR + 1;
+
 int test_u8icmp_s(void);
 
 int test_u8icmp_s(void) {
@@ -75,6 +77,56 @@ int test_u8icmp_s(void) {
     }
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+
+    /* first differing byte stops the comparison */
+    strcpy((char *)str1, "abc");
+    strcpy((char *)str2, "abd");
+    rc = u8icmp_s(str1, LEN, str2, &result);
+    ERR(EOK)
+    if (result >= 0) {
+        debug_printf("%s %u  result=%d, expected <0\n", __FUNCTION__, __LINE__,
+                     result);
+        errs++;
+    }
+    rc = u8icmp_s(str2, LEN, str1, &result);
+    ERR(EOK)
+    if (result <= 0) {
+        debug_printf("%s %u  result=%d, expected >0\n", __FUNCTION__, __LINE__,
+                     result);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* both strings equal and unterminated within the src bound */
+    memset(str1, 'a', LEN);
+    memset(str2, 'a', LEN);
+    rc = u8icmp_s(str1, LEN, str2, &result);
+    ERR(ESUNTERM)
+
+    /*--------------------------------------------------*/
+
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 16;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            strcpy((char *)ubuf, "abc");
+            strcpy((char *)str2, "abc");
+            rc = u8icmp_s(ubuf, vrms, str2, &result);
+            ERR(ESLEMAX)
+            rc = u8icmp_s(ubuf, usize, str2, &result);
+            ERR(EOK)
+            if (result != 0) {
+                debug_printf("%s %u  result=%d, expected 0\n", __FUNCTION__,
+                             __LINE__, result);
+                errs++;
+            }
+            free(ubuf);
+        }
+    }
 
     return (errs);
 }

@@ -69,6 +69,95 @@ int test_u8cat_s(void) {
     ERR(EILSEQ)
 
     /*--------------------------------------------------*/
+    /* src above dest in one buffer (dest < src branch) */
+    {
+        static char8_t buf[256];
+        char8_t *d = buf, *s = buf + 100;
+
+        memset(buf, 0, sizeof(buf));
+        strcpy((char *)d, "ab");
+        strcpy((char *)s, "c\xE2\x9C\x93");
+        rc = u8cat_s(d, 16, s);
+        ERR(EOK)
+        EXPSTR((char *)d, "abc\xE2\x9C\x93")
+
+        /* illegal sequence in src */
+        memset(buf, 0, sizeof(buf));
+        strcpy((char *)d, "ab");
+        strcpy((char *)s, "\xC0\x80");
+        rc = u8cat_s(d, 64, s);
+        ERR(EILSEQ)
+
+        /* not enough space: "ab" + "cdef" in 4 */
+        memset(buf, 0, sizeof(buf));
+        strcpy((char *)d, "ab");
+        strcpy((char *)s, "cdef");
+        rc = u8cat_s(d, 4, s);
+        ERR(ESNOSPC)
+
+        /* dest unterminated within dmax */
+        memset(buf, 'a', 100);
+        strcpy((char *)s, "cd");
+        rc = u8cat_s(d, 10, s);
+        ERR(ESUNTERM)
+
+        /* dest runs into src before its terminator */
+        memset(buf, 'a', 100);
+        memset(s, 'x', 20);
+        rc = u8cat_s(d, 200, s);
+        ERR(ESOVRLP)
+
+        /* src is the terminator of dest */
+        memset(buf, 0, sizeof(buf));
+        strcpy((char *)d, "ab");
+        rc = u8cat_s(d, 64, d + 2);
+        ERR(ESOVRLP)
+
+        /* src below dest: not enough space */
+        memset(buf, 0, sizeof(buf));
+        strcpy((char *)(buf + 100), "ab");
+        strcpy((char *)buf, "cdef");
+        rc = u8cat_s(buf + 100, 4, buf);
+        ERR(ESNOSPC)
+
+        /* src below dest, dest unterminated */
+        memset(buf, 0, sizeof(buf));
+        memset(buf + 100, 'b', 20);
+        strcpy((char *)buf, "cd");
+        rc = u8cat_s(buf + 100, 10, buf);
+        ERR(ESUNTERM)
+
+        /* src below dest and runs into dest */
+        memset(buf, 0, sizeof(buf));
+        memset(buf, 'a', 5);
+        memset(buf + 5, 'b', 2);
+        rc = u8cat_s(buf + 5, 100, buf);
+        ERR(ESOVRLP)
+
+        /* src below dest: illegal sequence */
+        memset(buf, 0, sizeof(buf));
+        strcpy((char *)(buf + 100), "ab");
+        strcpy((char *)buf, "\xE2\x9C");
+        rc = u8cat_s(buf + 100, 64, buf);
+        ERR(EILSEQ)
+    }
+    /*--------------------------------------------------*/
+    /* unknown dest size: dmax > RSIZE_MAX_STR */
+    {
+        static volatile size_t usize = 32;
+        char8_t *ubuf = (char8_t *)malloc(usize);
+        if (ubuf) {
+            ubuf[0] = 0;
+            rc = u8cat_s(ubuf, RSIZE_MAX_STR + 1, (char8_t *)"a");
+            ERR(ESLEMAX)
+            rc = u8cat_s(ubuf, usize, (char8_t *)"ab");
+            ERR(EOK)
+            EXPSTR((char *)ubuf, "ab")
+            free(ubuf);
+        }
+    }
+
+    /*--------------------------------------------------*/
 
     return (errs);
 }

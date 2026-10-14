@@ -13,6 +13,8 @@
 
 #define LEN (128)
 
+static volatile size_t vrmm = RSIZE_MAX_MEM16 + 1;
+
 int main(void) {
     errno_t rc;
 
@@ -178,6 +180,68 @@ int main(void) {
     }
 
     /*--------------------------------------------------*/
+
+    /*--------------------------------------------------*/
+    /* unknown dest and src sizes, hidden from the compiler */
+    {
+        static volatile size_t xhsz = 64 * sizeof(uint16_t);
+        uint16_t *xhp = (uint16_t *)malloc(xhsz);
+        uint16_t *xhs = (uint16_t *)malloc(xhsz);
+        int xdiff = 5;
+
+        if (!xhp || !xhs) {
+            free(xhp);
+            free(xhs);
+            return errs + 1;
+        }
+        memset(xhp, 1, xhsz);
+        memset(xhs, 1, xhsz);
+
+        /* unknown dest too large */
+        rc = memcmp16_s(xhp, RSIZE_MAX_MEM16 + 1, xhs, 8, &xdiff);
+        ERR(ESLEMAX);
+        if (xdiff != -1) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+
+        /* unknown src too large, known dest */
+        rc = memcmp16_s(mem1, LEN, xhs, vrmm, &xdiff);
+        ERR(ESLEMAX);
+
+        /* both unknown */
+        rc = memcmp16_s(xhp, 64, xhs, 64, &xdiff);
+        ERR(EOK);
+        if (xdiff != 0) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+        xhs[63] = 2;
+        rc = memcmp16_s(xhp, 64, xhs, 64, &xdiff);
+        ERR(EOK);
+        if (xdiff == 0) {
+            debug_printf("%s %u  diff=%d\n", __FUNCTION__, __LINE__, xdiff);
+            errs++;
+        }
+
+        /* unknown dest, dlen in elements below max (but dmax in bytes
+           above it) */
+        {
+            static volatile size_t xmid = RSIZE_MAX_MEM16 / 2 + 1;
+            xdiff = 5;
+            rc = memcmp16_s(xhp, xmid, xhs, 1, &xdiff);
+            ERR(EOK);
+        }
+
+        /* known dest, dlen larger than dest but not larger than max */
+        {
+            static volatile size_t xbig = LEN + 1;
+            rc = memcmp16_s(mem1, xbig, mem2, 1, &xdiff);
+            ERR(EOVERFLOW);
+        }
+        free(xhp);
+        free(xhs);
+    }
 
     return (errs);
 }

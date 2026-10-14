@@ -33,6 +33,9 @@ static char src[LEN];
 #endif
 
 #define CLRPS memset(&ps, '\0', sizeof(mbstate_t))
+static volatile size_t v20 = 20;
+static volatile size_t vrmw = RSIZE_MAX_WSTR + 1;
+
 int test_mbsrtowcs_s(void);
 
 int test_mbsrtowcs_s(void) {
@@ -309,7 +312,7 @@ int test_mbsrtowcs_s(void) {
         for (i = 0; i < hsz; i++) {
             hp[i] = L'x';
         }
-        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abcdefghijklmnopqrst", &cs), 20,
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abcdefghijklmnopqrst", &cs), v20,
                          &ps);
         ERR(ESNOSPC);
         for (i = 8; i < 8 + 32; i++) {
@@ -325,7 +328,7 @@ int test_mbsrtowcs_s(void) {
         for (i = 0; i < hsz; i++) {
             hp[i] = L'x';
         }
-        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abc", &cs), 20, &ps);
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abc", &cs), v20, &ps);
         ERR(EOK);
         INDCMP(!= 3);
         if (hp[0] != L'a' || hp[2] != L'c' || hp[3] != L'\0') {
@@ -343,7 +346,7 @@ int test_mbsrtowcs_s(void) {
         rc = mbsrtowcs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = "abc", &cs), 3,
                          &ps);
         ERR(ESLEMAX);
-        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abc", &cs), RSIZE_MAX_WSTR + 1,
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abc", &cs), vrmw,
                          &ps);
         ERR(ESLEMAX);
         free(hp);
@@ -409,7 +412,7 @@ int test_mbsrtowcs_s(void) {
             hp[i] = L'x';
         }
         rc = mbsrtowcs_s(&ind, hp, 8,
-                         (cs = "abcdefghijklmnopq\xc0\x80rst", &cs), 20, &ps);
+                         (cs = "abcdefghijklmnopq\xc0\x80rst", &cs), v20, &ps);
         ERR(EILSEQ);
         INDCMP(!= -1);
         for (i = 8; i < 8 + 32; i++) {
@@ -425,7 +428,7 @@ int test_mbsrtowcs_s(void) {
         for (i = 0; i < hsz; i++) {
             hp[i] = L'x';
         }
-        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "ab\xff", &cs), 20, &ps);
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "ab\xff", &cs), v20, &ps);
         ERR(EILSEQ);
         INDCMP(!= -1);
         for (i = 8; i < 8 + 32; i++) {

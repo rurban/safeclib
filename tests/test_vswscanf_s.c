@@ -35,7 +35,36 @@ int test_vswscanf_s(void) {
     size_t len2;
     size_t len3;
     int num = 0;
+    float fv = -7;
+    int iv = -1;
     int errs = 0;
+
+    /*--------------------------------------------------*/
+
+    /* no digits: matching failure; in-memory input: no unget after EOF or
+       the width limit (glibc oracle, except the invalid-exponent case, which
+       follows musl) */
+    rc = vtwscanf_s(L"-", L"%f", &fv);
+    ERR(0);
+    ind = (int)fv;
+    if (ind != -7) {
+        debug_printf("%s %u  stored %d\n", __FUNCTION__, __LINE__, ind);
+        errs++;
+    }
+    rc = vtwscanf_s(L"0xg", L"%f", &fv);
+    ERR(0);
+    rc = vtwscanf_s(L"1ex", L"%f", &fv);
+    ERR(1);
+    rc = vtwscanf_s(L"12", L"%d %d", &iv, &num);
+    ERR(1);
+    rc = vtwscanf_s(L"1234", L"%2d%d", &iv, &num);
+    ERR(2);
+    if (iv != 12 || num != 34) {
+        debug_printf("%s %u  wrong ints %d %d\n", __FUNCTION__, __LINE__, iv,
+                     num);
+        errs++;
+    }
+    num = 0;
 
     /*--------------------------------------------------*/
 

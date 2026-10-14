@@ -197,6 +197,23 @@ int test_vsprintf_s(void) {
     ERRNO_MSVC(0, ERANGE);
     EXPNULL(str1)
 
+    /* exactly dmax chars are formatted, but no room for the \0:
+       caught by vsprintf_s itself, not by the output function */
+    strcpy(str1, "aaaaaaaaaa");
+    rc = vtprintf_s(str1, 5, "%d", 12345);
+    ERR_MSVC(-ESNOSPC, -1);
+    EXPNULL(str1)
+
+    strcpy(str1, "aaaaaaaaaa");
+    rc = vtprintf_s(str1, 4, "ab%c%c", 'c', 'd');
+    ERR_MSVC(-ESNOSPC, -1);
+    EXPNULL(str1)
+
+    /* one less fits */
+    rc = vtprintf_s(str1, 6, "%d", 12345);
+    ERR(5)
+    EXPSTR(str1, "12345");
+
     rc = vtprintf_s(str1, 5, "%ld", -10000000L);
     ERR_MSVC(-ESNOSPC, -1);
     ERRNO_MSVC(0, ERANGE);

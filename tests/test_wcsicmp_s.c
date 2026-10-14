@@ -7,6 +7,7 @@
  */
 
 #include "test_private.h"
+#include <stdlib.h>
 #include "safe_str_lib.h"
 
 #define sgn(i) ((i) > 0 ? 1 : ((i) < 0 ? -1 : 0))
@@ -124,8 +125,8 @@ int test_wcsicmp_s(void) {
     wcscpy(str1, L"Keep it simple");
     wcscpy(str2, L"keep it simple");
 
-    rc = wcsicmp_s(str1, 5, str2, LEN, &ind);
-    ERR(ESNOSPC)
+    rc = wcsicmp_s(str1, 15, str2, LEN, &ind);
+    ERR(EOK)
     INDZERO()
 
     /*--------------------------------------------------*/
@@ -190,6 +191,43 @@ int test_wcsicmp_s(void) {
     RELAXEDCMP()
 
     /*--------------------------------------------------*/
+
+    /* the compiler does not know the sizes: BOS_UNKNOWN paths */
+    {
+        static volatile size_t hsz = LEN * sizeof(wchar_t);
+        wchar_t *hd = (wchar_t *)malloc(hsz);
+
+        if (!hd)
+            return errs + 1;
+        wcscpy(hd, L"abc");
+        rc = wcsicmp_s(hd, RSIZE_MAX_STR + 1, str2, LEN, &ind);
+        ERR(ESLEMAX)
+        INDZERO()
+
+        wcscpy(str2, L"ABC");
+        rc = wcsicmp_s(hd, LEN, str2, LEN, &ind);
+        ERR(EOK)
+        INDZERO()
+        free(hd);
+    }
+
+    /* multi-char folds fit into the fold buffer */
+    wcscpy(str1, L"\x1f82\x1f82");
+    wcscpy(str2, L"a");
+    rc = wcsicmp_s(str1, 2, str2, LEN, &ind);
+    ERR(EOK)
+    INDCMP(<= 0)
+
+    rc = wcsicmp_s(str2, LEN, str1, 2, &ind);
+    ERR(EOK)
+    INDCMP(>= 0)
+
+    /* wcsfc_s needs spare room: smax equals the string length */
+    wcscpy(str1, L"abc");
+    wcscpy(str2, L"ABC");
+    rc = wcsicmp_s(str1, 3, str2, 3, &ind);
+    ERR(EOK)
+    INDZERO()
 
     return (errs);
 }
