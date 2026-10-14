@@ -126,7 +126,6 @@ typedef unsigned long uint64_t;
  */
 
 typedef int (*cmpfun)(const void *, const void *, void *);
-static unsigned char tmp[256];
 #ifdef HAVE___BUILTIN_CTZ
 #define ntz(x) __builtin_ctz((x))
 #else
@@ -169,18 +168,20 @@ static inline int pntz(size_t p[2]) {
 
 static void cycle(size_t width, unsigned char *ar[], int n) {
     size_t l;
+    unsigned char tmp[256]; /* on the stack: qsort_s must be thread-safe */
     int i;
 
     if (n < 2)
         return;
-    ar[n] = tmp;
     while (width) {
         l = sizeof(tmp) < width ? sizeof(tmp) : width;
-        memcpy(ar[n], ar[0], l);
-        for (i = 0; i < n; i++) {
+        memcpy(tmp, ar[0], l);
+        for (i = 0; i < n - 1; i++) {
             memcpy(ar[i], ar[i + 1], l);
             ar[i] += l;
         }
+        memcpy(ar[n - 1], tmp, l);
+        ar[n - 1] += l;
         width -= l;
     }
 }

@@ -689,8 +689,8 @@ static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
                               long double value, unsigned int prec,
                               unsigned int width, unsigned int flags,
                               const char *format) {
-    static char buf[64];
-    char *p = (char *)buf;
+    char buf[64];
+    char *p = buf;
     int rc = 0;
     (void)funcname; // FIXME
     (void)prec;
@@ -751,8 +751,8 @@ static inline size_t safec_atoa(out_fct_type out, const char *funcname,
                                 double value, unsigned int prec,
                                 unsigned int width, unsigned int flags,
                                 const char *format) {
-    static char buf[64];
-    char *p = (char *)buf;
+    char buf[64];
+    char *p = buf;
     int rc = 0;
     (void)funcname; // FIXME
     (void)prec;

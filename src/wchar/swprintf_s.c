@@ -200,19 +200,17 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
         if (unlikely(dmax == 1))
             goto nospc;
         errno = 0;
-        if (likely(dmax < 512)) { /* stacksize 2k */
-            static wchar_t tmp[512];
-            va_start(ap2, fmt);
-            ret = vswprintf(tmp, 512, fmt, ap2);
-            va_end(ap2);
-        } else {
-            wchar_t *tmp = (wchar_t *)malloc(dmax * sizeof(wchar_t));
+        /* a temp. buffer to find out if it would fit; on the heap, a static
+         * one is not thread-safe */
+        {
+            size_t n = dmax < 512 ? 512 : dmax;
+            wchar_t *tmp = (wchar_t *)malloc(n * sizeof(wchar_t));
             if (!tmp) {
                 handle_werror(dest, dmax, "swprintf_s: malloc failed", ENOMEM);
                 return -(ENOMEM);
             }
             va_start(ap2, fmt);
-            ret = vswprintf(tmp, dmax, fmt, ap2);
+            ret = vswprintf(tmp, n, fmt, ap2);
             va_end(ap2);
             free(tmp);
         }

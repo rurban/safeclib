@@ -181,18 +181,16 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
     /* check for ESNOSPC or some other error */
     if (unlikely(ret == -1)) {
-        if (likely(dmax < 512)) { /* stacksize 2k */
-            static wchar_t tmp[512];
-            if (dmax == 1)
-                goto nospc;
-            ret = vswprintf(tmp, 512, fmt, ap2);
-        } else {
-            wchar_t *tmp = (wchar_t *)malloc(RSIZE_MAX_WSTR * sizeof(wchar_t));
-            if (!tmp)
-                return -(ESNOSPC);
-            ret = vswprintf(tmp, RSIZE_MAX_WSTR, fmt, ap2);
-            free(tmp);
-        }
+        /* a temp. buffer to find out if it would fit; on the heap, a static
+         * one is not thread-safe */
+        wchar_t *tmp;
+        if (dmax == 1)
+            goto nospc;
+        tmp = (wchar_t *)malloc(RSIZE_MAX_WSTR * sizeof(wchar_t));
+        if (!tmp)
+            return -(ESNOSPC);
+        ret = vswprintf(tmp, RSIZE_MAX_WSTR, fmt, ap2);
+        free(tmp);
         if (ret > 0) {
         nospc:
             errno = 0;

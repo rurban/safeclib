@@ -163,8 +163,8 @@ EXPORT errno_t _ctime_s_chk(char *dest, rsize_t dmax, const time_t *timer,
             return -1;
         }
     } else {
-        static char tmp[120];
-        buf = ctime_r(timer, (char *)&tmp);
+        char tmp[120];
+        buf = ctime_r(timer, tmp);
         if (!buf)
             return -1;
         len = strlen(buf);

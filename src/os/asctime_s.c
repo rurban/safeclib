@@ -179,8 +179,8 @@ EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
             return -1;
         }
     } else {
-        static char tmp[120];
-        buf = asctime_r(tm, (char *)&tmp);
+        char tmp[120];
+        buf = asctime_r(tm, tmp);
         if (!buf)
             return -1;
         len = strlen(buf);
