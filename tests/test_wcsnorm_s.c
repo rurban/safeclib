@@ -810,6 +810,30 @@ int test_wcsnorm_s(void) {
         rc = wcsnorm_compose_s(str, 1, L"\x301\x302", &ind, false);
         ERR(ESNOSPC)
 
+        /* starter + 3 marks + NUL do not fit into dmax 4: nothing may be
+           written past dmax. Hide the size from the compiler. */
+        {
+            static volatile size_t hsz = 4 + 8;
+            wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+            size_t i;
+            if (!hp)
+                return errs + 1;
+            for (i = 0; i < hsz; i++)
+                hp[i] = L'x';
+            ind = 4;
+            rc = wcsnorm_compose_s(hp, 4, L"b\x301\x323\x324", &ind, false);
+            ERR(ESNOSPC)
+            for (i = 4; i < 4 + 8; i++) {
+                if (hp[i] != L'x') {
+                    debug_printf("%s %u written past dmax\n", __FUNCTION__,
+                                 __LINE__);
+                    errs++;
+                    break;
+                }
+            }
+            free(hp);
+        }
+
         /* dmax too small for the starter */
         ind = 2;
         rc = wcsnorm_compose_s(str, 1, L"ab", &ind, false);

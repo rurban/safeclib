@@ -721,10 +721,26 @@ EXPORT errno_t _u8norm_reorder_s_chk(char8_t *restrict dest, rsize_t dmax,
                 seq_max = cc_pos + CC_SEQ_STEP; /* new size */
                 if (CC_SEQ_SIZE == cc_pos) {    /* seq_ary full */
                     seq_ext = (UN8IF_cc *)malloc(seq_max * sizeof(UN8IF_cc));
+                    if (!seq_ext) {
+                        handle_error(orig_dest, orig_dmax,
+                                     "u8norm_reorder_s: "
+                                     "Cannot allocate memory",
+                                     ENOMEM);
+                        return RCNEGATE(ENOMEM);
+                    }
                     memcpy(seq_ext, seq_ary, cc_pos * sizeof(UN8IF_cc));
                 } else {
-                    seq_ext = (UN8IF_cc *)realloc(seq_ext,
-                                                  seq_max * sizeof(UN8IF_cc));
+                    UN8IF_cc *seq_new = (UN8IF_cc *)realloc(
+                        seq_ext, seq_max * sizeof(UN8IF_cc));
+                    if (!seq_new) {
+                        free(seq_ext);
+                        handle_error(orig_dest, orig_dmax,
+                                     "u8norm_reorder_s: "
+                                     "Cannot reallocate memory",
+                                     ENOMEM);
+                        return RCNEGATE(ENOMEM);
+                    }
+                    seq_ext = seq_new;
                 }
                 seq_ptr = seq_ext; /* use seq_ext from now */
             }
@@ -967,10 +983,26 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
                         if (CC_SEQ_SIZE == cc_pos) {    /* seq_ary full */
                             seq_ext =
                                 (uint32_t *)malloc(seq_max * sizeof(uint32_t));
+                            if (!seq_ext) {
+                                handle_error(orig_dest, orig_dmax,
+                                             "u8norm_compose_s: "
+                                             "Cannot allocate memory",
+                                             ENOMEM);
+                                return RCNEGATE(ENOMEM);
+                            }
                             memcpy(seq_ext, seq_ary, cc_pos * sizeof(uint32_t));
                         } else {
-                            seq_ext = (uint32_t *)realloc(
+                            uint32_t *seq_new = (uint32_t *)realloc(
                                 seq_ext, seq_max * sizeof(uint32_t));
+                            if (!seq_new) {
+                                free(seq_ext);
+                                handle_error(orig_dest, orig_dmax,
+                                             "u8norm_compose_s: "
+                                             "Cannot reallocate memory",
+                                             ENOMEM);
+                                return RCNEGATE(ENOMEM);
+                            }
+                            seq_ext = seq_new;
                         }
                         seq_ptr = seq_ext; /* use seq_ext from now */
                     }
@@ -1114,8 +1146,16 @@ EXPORT errno_t _u8norm_s_chk(char8_t *restrict dest, rsize_t dmax,
     /* temp. scratch space, on stack or heap */
     if (len + 2 < 128)
         tmp_ptr = tmp_stack;
-    else
+    else {
         tmp_ptr = tmp = (char8_t *)malloc((len + 2));
+        if (!tmp) {
+            handle_error((char *)dest, dmax,
+                         "u8norm_s: "
+                         "Cannot allocate memory",
+                         ENOMEM);
+            return RCNEGATE(ENOMEM);
+        }
+    }
 
     rc = _u8norm_reorder_s_chk(tmp_ptr, len + 2, dest, len, destbos);
     if (unlikely(rc)) {

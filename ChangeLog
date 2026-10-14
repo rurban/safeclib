@@ -7,6 +7,8 @@ Changes in 3.15
 	  RSIZE_MAX_WSTR elements on dmax > max, accepting code points above
 	  U+10FFFF as composites, and leaking seq_ext. strcmpfld_s read one
 	  byte past dmax.
+	- Fix wcsnorm_compose_s writing past dmax with a pending combining
+	  sequence, and check the allocations in u8norm_s (ENOMEM).
 	- Fix stpcpy_s/stpncpy_s returning the end of dest instead of the
 	  terminating NUL, and stpncpy_s rejecting valid known-size sources.
 	- Fix memccpy_s zeroing the found char with SAFECLIB_STR_NULL_SLACK,
