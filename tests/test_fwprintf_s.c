@@ -9,6 +9,7 @@
 #include "test_private.h"
 #include "safe_str_lib.h"
 #include <unistd.h>
+#include <locale.h>
 
 #define TMP "tmpfwp"
 #define LEN (128)
@@ -78,7 +79,42 @@ int test_fwprintf_s(void) {
     }
 
     /*--------------------------------------------------*/
+
+    /* write to a read-only stream: the underlying vfwprintf fails */
     fclose(out);
+    out = fopen(TMP, "r");
+    if (out) {
+        rc = fwprintf_s(out, L"%ls", wstr);
+        ANYERR();
+        fclose(out);
+    }
+
+#if !defined(HAVE_MINGW32) && !defined(_WIN32)
+    /* illegal multibyte sequence in a %s argument: EILSEQ */
+    {
+        char *oldloc = setlocale(LC_CTYPE, NULL);
+        char saved[64];
+        saved[0] = '\0';
+        if (oldloc) {
+            strncpy(saved, oldloc, sizeof(saved) - 1);
+            saved[sizeof(saved) - 1] = '\0';
+        }
+        if (setlocale(LC_CTYPE, "C.UTF-8") ||
+            setlocale(LC_CTYPE, "C.utf8") ||
+            setlocale(LC_CTYPE, "en_US.UTF-8")) {
+            out = fopen(TMP, "w");
+            if (out) {
+                errno = 0;
+                rc = fwprintf_s(out, L"%s", "\xff\xfe");
+                ANYERR();
+                ERRNO(EILSEQ);
+                fclose(out);
+            }
+        }
+        setlocale(LC_CTYPE, saved[0] ? saved : "C");
+    }
+#endif
+
     unlink(TMP);
 
     return (errs);

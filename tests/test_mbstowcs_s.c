@@ -306,6 +306,92 @@ int test_mbstowcs_s(void) {
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
 
+    /* more illegal, truncated and overlong sequences */
+    {
+        static const char *const bad[] = {
+            "\xe2\x86",             /* truncated 3-byte */
+            "\xe0\x80\x80",         /* overlong 3-byte */
+            "\x80",                 /* lone continuation */
+            "\xfe",
+            "\xff",
+            "ab\xc0\x80",           /* valid chars first */
+            "abc\xe2\x86",
+            "a\xffz"};
+        size_t i;
+        for (i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
+            size_t n = strlen(bad[i]);
+            wmemset(dest, L'x', LEN);
+            rc = mbstowcs_s(&ind, dest, LEN, bad[i], n);
+            ERR(EILSEQ);
+            INDCMP(!= -1);
+            WCHECK_SLACK(dest, LEN);
+
+            /* only counting, no dest */
+            rc = mbstowcs_s(&ind, NULL, 0, bad[i], n);
+            ERR(EILSEQ);
+            INDCMP(!= -1);
+        }
+    }
+
+    /* len > dmax with an illegal sequence: EILSEQ, no write past dmax */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8 + 32;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+        size_t i;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbstowcs_s(&ind, hp, 8,
+                        (cs = "abcdefghijklmnopq\xc0\x80rst", cs), 20);
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                debug_printf("%s %u  overflow at %u\n", __FUNCTION__, __LINE__,
+                             (unsigned)i);
+                errs++;
+                break;
+            }
+        }
+
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbstowcs_s(&ind, hp, 8, (cs = "ab\xff", cs), 20);
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                errs++;
+                break;
+            }
+        }
+        free(hp);
+    }
+
+
+    /* 5-byte sequence: beyond Unicode, rejected by strict libcs, but glibc
+       decodes it as legacy U+200000 */
+    wmemset(dest, L'x', LEN);
+    rc = mbstowcs_s(&ind, dest, LEN, (cs = "\xf8\x88\x80\x80\x80", cs), 5);
+    if (rc == 0) {
+        INDCMP(!= 1);
+    } else {
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        WCHECK_SLACK(dest, LEN);
+    }
+    rc = mbstowcs_s(&ind, NULL, 0, cs, 5);
+    if (rc == 0) {
+        INDCMP(!= 1);
+    } else {
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+    }
     /*--------------------------------------------------*/
 
     return (errs);

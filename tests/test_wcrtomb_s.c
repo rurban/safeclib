@@ -202,6 +202,44 @@ int test_wcrtomb_s(void) {
     }
     CLRPS;
 
+#if SIZEOF_WCHAR_T > 2
+    /* illegal wide chars in UTF-8: surrogates always, > 0x10ffff on strict
+       libcs (glibc encodes those as 4-6 byte legacy sequences) */
+    {
+        static const unsigned long bad[] = {0xd800UL, 0xdfffUL, 0x110000UL,
+                                            0x7fffffffUL};
+        size_t i;
+        for (i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
+            memset(dest, ' ', LEN);
+            rc = wcrtomb_s(&ind, dest, LEN, (wchar_t)bad[i], &ps);
+            if (rc != 0 || bad[i] < 0x110000UL) {
+                ERR(EILSEQ);
+                INDCMP(!= -1);
+                if (!use_msvcrt) {
+                    CHECK_SLACK(dest, LEN);
+                }
+            } else {
+                INDCMP(< 4);
+            }
+            CLRPS;
+        }
+    }
+#endif
+
+    /* unknown dest size: dmax above RSIZE_MAX_WSTR */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz);
+        rc = wcrtomb_s(&ind, hp, RSIZE_MAX_WSTR + 1, L'a', &ps);
+        ERR(ESLEMAX);
+        free(hp);
+        CLRPS;
+    }
+
 #if 0
     /* illegal unicode. but some may allow it: 0xf0 0x9d 0x8c 0x81 */
     /* wc =  0x10000 + ((0xd834 & 0x3ff) << 10) + (0xdf01 & 0x3ff); */

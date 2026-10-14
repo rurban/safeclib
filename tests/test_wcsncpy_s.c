@@ -284,6 +284,21 @@ int test_wcsncpy_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* dmax > RSIZE_MAX_WSTR with an unknown dest size */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 16;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+        if (!hp)
+            return errs + 1;
+        wcscpy(hp, L"abc");
+        rc = wcsncpy_s(hp, RSIZE_MAX_WSTR + 1, L"xy", 2);
+        ERR(ESLEMAX)
+        WEXPSTR(hp, L"abc")
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }
 

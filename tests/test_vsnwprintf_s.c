@@ -10,15 +10,29 @@
 #include "safe_str_lib.h"
 #include <stdlib.h>
 #include <stdarg.h>
+#include <locale.h>
 
 #define LEN (128)
 
 static wchar_t str1[LEN];
 static wchar_t str2[LEN];
+static wchar_t big[1024];
+static wchar_t bigsrc[1100];
 static inline int vtwprintf_s(wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict fmt, ...) BOSW_CHK(dest)
     BOS_NULL(fmt);
 int test_vsnwprintf_s(void);
+
+static int vtwprintf_chk_s(wchar_t *restrict dest, rsize_t dmax,
+                           const size_t destbos, const wchar_t *restrict fmt,
+                           ...) {
+    int rc;
+    va_list ap;
+    va_start(ap, fmt);
+    rc = _vsnwprintf_s_chk(dest, dmax, destbos, fmt, ap);
+    va_end(ap);
+    return rc;
+}
 
 static inline int vtwprintf_s(wchar_t *restrict dest, rsize_t dmax,
                               const wchar_t *restrict fmt, ...) {
@@ -217,7 +231,7 @@ int test_vsnwprintf_s(void) {
         wchar_t *wstr3;
         *str1 = 0;
         /* not the fast stack-branch */
-        wstr3 = (wchar_t *)malloc(513);
+        wstr3 = (wchar_t *)malloc(513 * sizeof(wchar_t));
         rc = vtwprintf_s(wstr3, 513, L"%vls", str1);
 #if defined(__GLIBC__) || defined(BSD_OR_WINDOWS_LIKE)
         /* they print unknown formats verbatim */
@@ -229,6 +243,83 @@ int test_vsnwprintf_s(void) {
         free(wstr3);
     }
 
+#endif
+
+    /*--------------------------------------------------*/
+
+    /* dmax larger than the known size of dest */
+    rc = vtwprintf_chk_s(str1, LEN + 1, sizeof(str1), L"%ls", str2);
+    NEGERR(EOVERFLOW);
+
+    /*--------------------------------------------------*/
+
+    /* output exactly dmax long: needs one more for the NUL. Nothing beyond
+       dmax may be written, the returned length is the untruncated one. */
+    wmemset(str1, L'x', LEN);
+    wcscpy(str2, L"keep it simp");
+    rc = vtwprintf_s(str1, 12, L"%ls", str2);
+    ERR(12);
+    if (wmemcmp(str1, L"keep it sim", 11)) {
+        debug_printf("%s %u truncation wrong\n", __FUNCTION__, __LINE__);
+        errs++;
+    }
+    if (str1[12] != L'x') {
+        debug_printf("%s %u written past dmax\n", __FUNCTION__, __LINE__);
+        errs++;
+    }
+
+    /*--------------------------------------------------*/
+
+    /* output longer than the internal 512 temp buffer: the underlying
+       vswprintf fails again and the error is returned. */
+    wmemset(bigsrc, L'a', 1099);
+    bigsrc[1099] = L'\0';
+    wcscpy(str1, L"keep");
+    rc = vtwprintf_s(str1, 20, L"%ls", bigsrc);
+    ANYERR();
+
+    /* dmax >= 512: a bigger temp buffer is allocated. Too long for dmax. */
+    wmemset(bigsrc, L'a', 700);
+    bigsrc[700] = L'\0';
+    rc = vtwprintf_s(big, 600, L"%ls", bigsrc);
+    ANYERR();
+
+    /* dmax >= 512 and it fits */
+    rc = vtwprintf_s(big, 800, L"%ls", bigsrc);
+    ERR(700);
+    len2 = wcslen(big);
+    if (len2 != 700) {
+        debug_printf("%s %u lengths wrong: %d\n", __FUNCTION__, __LINE__,
+                     (int)len2);
+        errs++;
+    }
+
+#if !defined(HAVE_MINGW32) && !defined(_WIN32)
+    /* illegal multibyte sequence in a %s argument: EILSEQ, both with a small
+       and a large dmax */
+    {
+        char *oldloc = setlocale(LC_CTYPE, NULL);
+        char saved[64];
+        saved[0] = '\0';
+        if (oldloc) {
+            strncpy(saved, oldloc, sizeof(saved) - 1);
+            saved[sizeof(saved) - 1] = '\0';
+        }
+        if (setlocale(LC_CTYPE, "C.UTF-8") ||
+            setlocale(LC_CTYPE, "C.utf8") ||
+            setlocale(LC_CTYPE, "en_US.UTF-8")) {
+            errno = 0;
+            rc = vtwprintf_s(str1, LEN, L"%s", "\xff\xfe");
+            ERR(-1);
+            ERRNO(EILSEQ);
+
+            errno = 0;
+            rc = vtwprintf_s(big, 600, L"%s", "\xff\xfe");
+            ERR(-1);
+            ERRNO(EILSEQ);
+        }
+        setlocale(LC_CTYPE, saved[0] ? saved : "C");
+    }
 #endif
 
     /*--------------------------------------------------*/

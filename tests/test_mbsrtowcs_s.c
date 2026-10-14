@@ -349,6 +349,94 @@ int test_mbsrtowcs_s(void) {
         free(hp);
     }
 
+    /* more illegal, truncated and overlong sequences */
+    {
+        static const char *const bad[] = {
+            "\xe2\x86",     /* truncated 3-byte */
+            "\xe0\x80\x80", /* overlong 3-byte */
+            "\x80",         /* lone continuation */
+            "\xfe",
+            "\xff",
+            "ab\xc0\x80", /* valid chars first */
+            "abc\xe2\x86",
+            "a\xffz"};
+        size_t i;
+        for (i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
+            size_t n = strlen(bad[i]);
+            wmemset(dest, L'x', LEN);
+            CLRPS;
+            rc = mbsrtowcs_s(&ind, dest, LEN, (cs = bad[i], &cs), n, &ps);
+            ERR(EILSEQ);
+            INDCMP(!= -1);
+            WCHECK_SLACK(dest, LEN);
+
+            /* only counting, no dest */
+            if (!use_msvcrt) {
+                CLRPS;
+                rc = mbsrtowcs_s(&ind, NULL, 0, (cs = bad[i], &cs), n, &ps);
+                ERR(EILSEQ);
+                INDCMP(!= -1);
+            }
+        }
+    }
+
+    /* 5-byte sequence: beyond Unicode, rejected by strict libcs, but glibc
+       decodes it as legacy U+200000 */
+    wmemset(dest, L'x', LEN);
+    CLRPS;
+    rc = mbsrtowcs_s(&ind, dest, LEN, (cs = "\xf8\x88\x80\x80\x80", &cs), 5,
+                     &ps);
+    if (rc == 0) {
+        INDCMP(!= 1);
+    } else {
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        WCHECK_SLACK(dest, LEN);
+    }
+    CLRPS;
+
+    /* len > dmax with an illegal sequence: EILSEQ, no write past dmax */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8 + 32;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+        size_t i;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        CLRPS;
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbsrtowcs_s(&ind, hp, 8,
+                         (cs = "abcdefghijklmnopq\xc0\x80rst", &cs), 20, &ps);
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                debug_printf("%s %u  overflow at %u\n", __FUNCTION__, __LINE__,
+                             (unsigned)i);
+                errs++;
+                break;
+            }
+        }
+
+        CLRPS;
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "ab\xff", &cs), 20, &ps);
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                errs++;
+                break;
+            }
+        }
+        free(hp);
+    }
+
     /*--------------------------------------------------*/
 
     return (errs);

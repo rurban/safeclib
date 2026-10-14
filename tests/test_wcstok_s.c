@@ -364,5 +364,28 @@ int main(void) {
     }
     /*--------------------------------------------------*/
 
+    /* *dmaxp exceeds the compile-time known dest size */
+#ifndef HAVE_CT_BOS_OVR
+    wcscpy(str1, L"one,two");
+    wcscpy(str2, L",");
+    p2str = NULL;
+    len = LEN + 10;
+    rc = wcstok_s(str1, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO_MSVC(EOVERFLOW, 0);
+#endif
+
+    /* delim unterminated within STRTOK_DELIM_MAX_LEN */
+    wcscpy(str1, L"abc");
+    wmemset(str2, L'z', STRTOK_DELIM_MAX_LEN + 4);
+    str2[STRTOK_DELIM_MAX_LEN + 4] = L'\0';
+    p2str = NULL;
+    len = wcslen(str1);
+    rc = wcstok_s(str1, &len, str2, &p2str);
+    ERRPTR(NULL);
+    ERRNO_MSVC(ESUNTERM, 0);
+
+    /*--------------------------------------------------*/
+
     return (errs);
 }

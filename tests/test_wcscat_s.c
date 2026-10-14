@@ -273,6 +273,49 @@ int test_wcscat_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* overlap found while appending: src is behind the dest terminator */
+
+    wcscpy(str1, L"abcdefghij");
+    str1[2] = L'\0';
+
+    rc = wcscat_s(&str1[0], 8, &str1[5]);
+    ERR_MSVC(ESOVRLP, EINVAL);
+    WEXPNULL(str1)
+    WCHECK_SLACK(str1, 8);
+
+    /*--------------------------------------------------*/
+    /* dmax exceeds max, hidden dest size */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 16;
+        static volatile size_t hbig = RSIZE_MAX_WSTR + 1;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+
+        if (!hp) {
+            return errs + 1;
+        }
+        wcscpy(hp, L"abc");
+        wcscpy(str2, L"def");
+        rc = wcscat_s(hp, hbig, str2);
+        ERR(ESLEMAX);
+        WEXPSTR(hp, L"abc");
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+    /* src below dest, long tail is slack-cleared */
+
+    wmemset(str1, L'x', LEN - 1);
+    str1[LEN - 1] = L'\0';
+    wcscpy(str1, L"ab");
+    wcscpy(&str1[40], L"cd");
+    memset(&str1[43], 'y', 40 * sizeof(wchar_t));
+
+    rc = wcscat_s(&str1[40], 80, &str1[0]);
+    ERR(EOK);
+    WEXPSTR(&str1[40], L"cdab");
+    WCHECK_SLACK(&str1[44], 76);
+
     return (errs);
 }
 

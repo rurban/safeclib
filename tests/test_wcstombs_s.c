@@ -213,6 +213,76 @@ int test_wcstombs_s(void) {
         free(hp);
     }
 
+    /* illegal wide chars in UTF-8: surrogates always, > 0x10ffff only on
+       strict libcs (glibc encodes them as 4-6 byte legacy sequences) */
+#if SIZEOF_WCHAR_T > 2
+    {
+        static const unsigned long bad[] = {0xdf81UL, 0xd800UL, 0xdfffUL,
+                                            0x110000UL, 0x7fffffffUL};
+        size_t i;
+        for (i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
+            /* illegal after valid chars */
+            src[0] = L'a';
+            src[1] = L'b';
+            src[2] = (wchar_t)bad[i];
+            src[3] = L'c';
+            src[4] = 0;
+            memset(dest, 'x', LEN);
+            rc = wcstombs_s(&ind, dest, LEN, src, 4);
+            if (rc != 0 || bad[i] < 0x110000UL) {
+                ERR(EILSEQ);
+                INDCMP(!= -1);
+                CHECK_SLACK(&dest[0], LEN);
+            }
+
+            /* illegal first */
+            src[0] = (wchar_t)bad[i];
+            src[1] = 0;
+            memset(dest, 'x', LEN);
+            rc = wcstombs_s(&ind, dest, LEN, src, LEN);
+            if (rc != 0 || bad[i] < 0x110000UL) {
+                ERR(EILSEQ);
+                INDCMP(!= -1);
+                CHECK_SLACK(&dest[0], LEN);
+            }
+
+            /* count only, no dest */
+            rc = wcstombs_s(&ind, NULL, 0, src, 1);
+            if (bad[i] < 0x110000UL) {
+                ERR(EILSEQ);
+                INDCMP(!= -1);
+            }
+        }
+    }
+#endif
+
+    /* len > dmax with an illegal wide char: EILSEQ, no write past dmax */
+#if SIZEOF_WCHAR_T > 2
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8 + 32;
+        char *hp = (char *)malloc(hsz);
+        size_t i;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz);
+        rc = wcstombs_s(&ind, hp, 8,
+                        (cs = L"abcdefghijklmnopq\xd800rst", cs), 20);
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != 'x') {
+                debug_printf("%s %u  overflow at %u\n", __FUNCTION__, __LINE__,
+                             (unsigned)i);
+                errs++;
+                break;
+            }
+        }
+        free(hp);
+    }
+#endif
+
     /*--------------------------------------------------*/
 
     return (errs);

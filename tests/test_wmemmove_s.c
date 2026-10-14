@@ -200,5 +200,34 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* hidden sizes: reach the BOS_UNKNOWN and srcbos branches */
+    if (!use_msvcrt) {
+        static volatile size_t hcnt = LEN + 1;
+        static volatile size_t hbig = RSIZE_MAX_WMEM + 1;
+        wchar_t *hp = (wchar_t *)malloc((LEN + 1) * sizeof(wchar_t));
+        size_t hn = hcnt;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        for (i = 0; i <= LEN; i++) {
+            hp[i] = 33;
+        }
+        for (i = 0; i < LEN; i++) {
+            mem2[i] = 44;
+        }
+        /* dmax exceeds max, unknown dest size */
+        rc = wmemmove_s(hp, hbig, mem2, 1);
+        ERR(ESLEMAX);
+        EXPMEM(hp, 0, LEN + 1, 33, sizeof(wchar_t));
+
+        /* count exceeds the known src size: cleared */
+        rc = wmemmove_s(hp, hn, mem2, hn);
+        ERR(EOVERFLOW);
+        EXPMEM(hp, 0, hn, 0, sizeof(wchar_t));
+        free(hp);
+    }
+
     return (errs);
 }

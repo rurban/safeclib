@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <locale.h>
 
 #undef USE_PIPE
 
@@ -255,6 +256,56 @@ static int test_vfwscanf_s(void) {
 #endif
 
     /*--------------------------------------------------*/
+
+    /* input failure before the first conversion: EOF is returned and
+       propagated through the constraint handler */
+    stream = fopen(TMP, "w"); /* write-only: reading fails */
+    if (stream) {
+        wstr2[0] = L'\0';
+        rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
+        ERR(EOF);
+        fclose(stream);
+    }
+    stream = fopen(TMP, "r"); /* empty file: immediate EOF */
+    if (stream) {
+        wstr2[0] = L'\0';
+        rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
+        ERR(EOF);
+        WEXPSTR(wstr2, L"");
+        fclose(stream);
+    }
+
+#if !defined(HAVE_MINGW32) && !defined(_WIN32)
+    /* illegal multibyte sequence in the input: EILSEQ */
+    {
+        char *oldloc = setlocale(LC_CTYPE, NULL);
+        char saved[64];
+        saved[0] = '\0';
+        if (oldloc) {
+            strncpy(saved, oldloc, sizeof(saved) - 1);
+            saved[sizeof(saved) - 1] = '\0';
+        }
+        if (setlocale(LC_CTYPE, "C.UTF-8") ||
+            setlocale(LC_CTYPE, "C.utf8") ||
+            setlocale(LC_CTYPE, "en_US.UTF-8")) {
+            stream = fopen(TMP, "wb");
+            if (stream) {
+                fputs("\xff\xfe\n", stream);
+                fclose(stream);
+                stream = fopen(TMP, "r");
+            }
+            if (stream) {
+                wstr2[0] = L'\0';
+                errno = 0;
+                rc = vtwscanf_s(stream, L"%ls", wstr2, LEN);
+                ERR(EOF);
+                ERRNO(EILSEQ);
+                fclose(stream);
+            }
+        }
+        setlocale(LC_CTYPE, saved[0] ? saved : "C");
+    }
+#endif
 
     unlink(TMP);
 

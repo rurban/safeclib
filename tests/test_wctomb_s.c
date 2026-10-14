@@ -177,6 +177,40 @@ int test_wctomb_s(void) {
     CHECK_SLACK(&dest[0], LEN);
 #endif
 
+#if SIZEOF_WCHAR_T > 2
+    /* illegal wide chars in UTF-8: surrogates always, > 0x10ffff on strict
+       libcs (glibc encodes those as 4-6 byte legacy sequences) */
+    {
+        static const unsigned long bad[] = {0xd800UL, 0xdfffUL, 0x110000UL,
+                                            0x7fffffffUL};
+        size_t i;
+        for (i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
+            memset(dest, ' ', LEN);
+            rc = wctomb_s(&ind, dest, LEN, (wchar_t)bad[i]);
+            if (rc != 0 || bad[i] < 0x110000UL) {
+                ERR(EILSEQ);
+                INDCMP(!= -1);
+                CHECK_SLACK(&dest[0], LEN);
+            } else {
+                INDCMP(< 4);
+            }
+        }
+    }
+#endif
+
+    /* unknown dest size: dmax above RSIZE_MAX_WSTR */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 16;
+        char *hp = (char *)malloc(hsz);
+        if (!hp) {
+            return errs + 1;
+        }
+        memset(hp, 'x', hsz);
+        rc = wctomb_s(&ind, hp, RSIZE_MAX_WSTR + 1, L'a');
+        ERR(ESLEMAX);
+        free(hp);
+    }
+
     /*--------------------------------------------------*/
 
     return (errs);

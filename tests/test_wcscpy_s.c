@@ -191,6 +191,36 @@ int test_wcscpy_s(void) {
 
     /*--------------------------------------------------*/
 
+    /*--------------------------------------------------*/
+    /* dmax exceeds max, hidden dest size */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 16;
+        static volatile size_t hbig = RSIZE_MAX_WSTR + 1;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+
+        if (!hp) {
+            return errs + 1;
+        }
+        wcscpy(hp, L"abc");
+        wcscpy(str2, L"def");
+        rc = wcscpy_s(hp, hbig, str2);
+        ERR(ESLEMAX);
+        WEXPSTR(hp, L"abc");
+        free(hp);
+    }
+
+    /*--------------------------------------------------*/
+    /* src below dest, long tail is slack-cleared */
+
+    wmemset(str1, L'x', LEN - 1);
+    str1[LEN - 1] = L'\0';
+    wcscpy(str1, L"ab");
+
+    rc = wcscpy_s(&str1[40], 80, &str1[0]);
+    ERR(EOK);
+    WEXPSTR(&str1[40], L"ab");
+    WCHECK_SLACK(&str1[43], 77);
+
     return (errs);
 }
 
