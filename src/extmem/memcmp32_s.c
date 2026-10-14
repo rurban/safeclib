@@ -132,7 +132,7 @@ EXPORT errno_t _memcmp32_s_chk(const uint32_t *dest, rsize_t dlen,
         if (unlikely(dmax > destbos)) {
             if (unlikely(dlen > RSIZE_MAX_MEM32)) {
                 invoke_safe_mem_constraint_handler(
-                    "memcmp32_s: slen exceeds max", (void *)src, ESLEMAX);
+                    "memcmp32_s: dlen exceeds max", (void *)dest, ESLEMAX);
                 return (RCNEGATE(ESLEMAX));
             } else {
                 invoke_safe_mem_constraint_handler(

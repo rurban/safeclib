@@ -198,14 +198,20 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #endif
                     d = _decomp_s(tmpd, 8, cp1, false);
                     if (d) { /* decomp. max 4 */
+                        if (unlikely((rsize_t)d > dmax))
+                            goto too_small;
                         memcpy(dest, tmpd, d * sizeof(wchar_t));
                         dest += d;
                         dmax -= d;
                     } else {
+                        if (unlikely(dmax < 2))
+                            goto too_small;
                         _ENC_W16(dest, dmax, cp1);
                     }
                 }
             } else {
+                if (unlikely((rsize_t)c > dmax))
+                    goto too_small;
                 memcpy(dest, tmp, c * sizeof(wchar_t));
                 dest += c;
                 dmax -= c;
@@ -234,18 +240,24 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
                    http://unicode.org/reports/tr21/tr21-5.html#SpecialCasing */
                 switch (*src) {
                 case 0xcc:
+                    if (unlikely(dmax < 3))
+                        goto too_small;
                     *dest++ = 0x69;
                     *dest++ = 0x307;
                     *dest++ = 0x300;
                     dmax -= 3;
                     break;
                 case 0xcd:
+                    if (unlikely(dmax < 3))
+                        goto too_small;
                     *dest++ = 0x69;
                     *dest++ = 0x307;
                     *dest++ = 0x301;
                     dmax -= 3;
                     break;
                 case 0x128:
+                    if (unlikely(dmax < 3))
+                        goto too_small;
                     *dest++ = 0x69;
                     *dest++ = 0x307;
                     *dest++ = 0x303;
@@ -255,6 +267,8 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
                 case 0x4A:
                     /* lt More_Above */
                     if (_is_lt_accented(*(src + 1))) {
+                        if (unlikely(dmax < 2))
+                            goto too_small;
                         /*towfc_s(tmp, 4, 0x0130);*/
                         *dest++ = (*src + 0x20);
                         *dest++ = 0x307;
@@ -265,6 +279,8 @@ EXPORT errno_t _wcsfc_s_chk(wchar_t *restrict dest, rsize_t dmax,
                     /* FALLTHRU */
                 case 0x12e:
                     if (_is_lt_accented(*(src + 1))) {
+                        if (unlikely(dmax < 2))
+                            goto too_small;
                         *dest++ = 0x12f;
                         *dest++ = 0x307;
                         dmax -= 2;

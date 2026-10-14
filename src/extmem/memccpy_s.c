@@ -144,7 +144,7 @@ EXPORT errno_t _memccpy_s_uchk(void *dest, rsize_t dmax, const void *src, int c,
         *dp = *sp;
         if (*dp == c) { /* found */
 #ifdef SAFECLIB_STR_NULL_SLACK
-            mem_prim_set(dp, n, 0);
+            mem_prim_set(dp + 1, n - 1, 0);
             MEMORY_BARRIER;
 #endif
             return RCNEGATE(EOK);

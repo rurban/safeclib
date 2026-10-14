@@ -383,12 +383,6 @@ static uint32_t _composite_cp(uint32_t cp, uint32_t cp2) {
         return 0;
     }
 
-#if SIZEOF_WCHAR_T > 2
-    if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
-        return -(ESLEMAX);
-    }
-#endif
-
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
         uint32_t lindex = cp - Hangul_LBase;
         uint32_t vindex = cp2 - Hangul_VBase;
@@ -634,7 +628,7 @@ EXPORT errno_t _wcsnorm_decompose_s_chk(wchar_t *restrict dest, rsize_t dmax,
                               "wcsnorm_decompose_s: "
                               "decomposition error",
                               -c);
-                return -c;
+                return RCNEGATE(-c);
             }
             src++;
         }
@@ -904,7 +898,7 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
 #endif
 {
     wchar_t *p = (wchar_t *)src;
-    const wchar_t *e = p + *lenp;
+    const wchar_t *e;
     uint32_t cpS = 0;       /* starter code point */
     bool valid_cpS = false; /* if false, cpS isn't initialized yet */
     uint8_t pre_cc = 0;
@@ -925,38 +919,51 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
             *lenp = 0;
         return RCNEGATE(ESNULLP);
     }
-    if (unlikely(lenp == NULL)) {
-        handle_werror(dest, destbos / sizeof(wchar_t),
-                      "wcsnorm_compose_s: lenp is null", ESNULLP);
-        return RCNEGATE(ESNULLP);
-    }
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_WSTR)) {
-            *lenp = 0;
-            handle_werror(dest, RSIZE_MAX_WSTR,
-                          "wcsnorm_compose_s: dmax exceeds max", ESLEMAX);
-            return ESLEMAX;
+            if (lenp)
+                *lenp = 0;
+            invoke_safe_str_constraint_handler("wcsnorm_compose_s: "
+                                               "dmax exceeds max",
+                                               (void *)dest, ESLEMAX);
+            return RCNEGATE(ESLEMAX);
         }
         BND_CHK_PTR_BOUNDS(dest, dmax * sizeof(wchar_t));
     } else {
         const size_t destsz = dmax * sizeof(wchar_t);
         if (unlikely(destsz > destbos)) {
-            *lenp = 0;
+            if (lenp)
+                *lenp = 0;
             handle_werror(dest, destbos / sizeof(wchar_t),
                           "wcsnorm_compose_s: dmax exceeds dest", EOVERFLOW);
-            return EOVERFLOW;
+            return RCNEGATE(EOVERFLOW);
         }
+    }
+    if (unlikely(lenp == NULL)) {
+        handle_werror(dest, dmax, "wcsnorm_compose_s: lenp is null", ESNULLP);
+        return RCNEGATE(ESNULLP);
     }
     if (unlikely(src == NULL)) {
         *lenp = 0;
-        handle_werror(dest, destbos / sizeof(wchar_t),
-                      "wcsnorm_compose_s: src is null", ESNULLP);
+        handle_werror(dest, dmax, "wcsnorm_compose_s: src is null", ESNULLP);
         return RCNEGATE(ESNULLP);
     }
+    e = p + *lenp;
 
     while (p < e) {
         uint8_t cur_cc;
         uint32_t cp = _dec_w16(p);
+#if SIZEOF_WCHAR_T > 2
+        if (unlikely(_UNICODE_MAX < cp)) {
+            if (seq_ext)
+                free(seq_ext);
+            handle_werror(orig_dest, orig_dmax,
+                          "wcsnorm_compose_s: "
+                          "cp is too high",
+                          ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
+#endif
         p++;
 #if SIZEOF_WCHAR_T == 2
         if (cp > 0xffff) {
@@ -1054,6 +1061,8 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
         /* output */
         _ENC_W16(dest, dmax, cpS); /* starter (composed or not) */
         if (unlikely(!dmax)) {
+            if (seq_ext)
+                free(seq_ext);
             handle_werror(orig_dest, orig_dmax,
                           "wcsnorm_compose_s: "
                           "dmax too small",

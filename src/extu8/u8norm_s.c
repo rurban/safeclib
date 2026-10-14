@@ -362,10 +362,6 @@ static uint32_t _composite_cp(uint32_t cp, uint32_t cp2) {
         return 0;
     }
 
-    if (unlikely((_UNICODE_MAX < cp) || (_UNICODE_MAX < cp2))) {
-        return -(ESLEMAX);
-    }
-
     if (Hangul_IsL(cp) && Hangul_IsV(cp2)) {
         uint32_t lindex = cp - Hangul_LBase;
         uint32_t vindex = cp2 - Hangul_VBase;
@@ -598,7 +594,7 @@ EXPORT errno_t _u8norm_decompose_s_chk(char8_t *restrict dest, rsize_t dmax,
                              "u8norm_decompose_s: "
                              "decomposition error",
                              -c);
-                return -c;
+                return RCNEGATE(-c);
             }
         }
     } else {
@@ -844,7 +840,7 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
 #endif
 {
     char *p = (char *)src;
-    const char *e = p + *lenp;
+    const char *e;
     uint32_t cpS = 0;       /* starter code point */
     bool valid_cpS = false; /* if false, cpS isn't initialized yet */
     uint8_t pre_cc = 0;
@@ -857,28 +853,60 @@ EXPORT errno_t _u8norm_compose_s_chk(char8_t *restrict dest, rsize_t dmax,
     char *orig_dest = (char *)dest;
     rsize_t orig_dmax = dmax;
 
+    if (unlikely(dest == NULL)) {
+        invoke_safe_str_constraint_handler("u8norm_compose_s: "
+                                           "dest is null",
+                                           (void *)dest, ESNULLP);
+        if (lenp)
+            *lenp = 0;
+        return RCNEGATE(ESNULLP);
+    }
     if (destbos == BOS_UNKNOWN) {
         if (unlikely(dmax > RSIZE_MAX_STR)) {
-            *lenp = 0;
+            if (lenp)
+                *lenp = 0;
             invoke_safe_str_constraint_handler("u8norm_compose_s: "
                                                "dmax exceeds max",
                                                (void *)dest, ESLEMAX);
-            return ESLEMAX;
+            return RCNEGATE(ESLEMAX);
         }
         BND_CHK_PTR_BOUNDS(dest, dmax);
     } else {
         const size_t destsz = dmax;
         if (unlikely(destsz > destbos)) {
-            *lenp = 0;
+            if (lenp)
+                *lenp = 0;
             handle_error((char *)dest, destbos,
                          "u8norm_compose_s: dmax exceeds dest", EOVERFLOW);
-            return EOVERFLOW;
+            return RCNEGATE(EOVERFLOW);
         }
     }
+    if (unlikely(lenp == NULL)) {
+        handle_error((char *)dest, dmax, "u8norm_compose_s: lenp is null",
+                     ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
+    if (unlikely(src == NULL)) {
+        *lenp = 0;
+        handle_error((char *)dest, dmax, "u8norm_compose_s: src is null",
+                     ESNULLP);
+        return RCNEGATE(ESNULLP);
+    }
+    e = p + *lenp;
 
     while (p < e) {
         uint8_t cur_cc;
         uint32_t cp = dec_utf8((char8_t **)&p);
+
+        if (unlikely(_UNICODE_MAX < cp)) {
+            if (seq_ext)
+                free(seq_ext);
+            handle_error(orig_dest, orig_dmax,
+                         "u8norm_compose_s: "
+                         "cp is too high",
+                         ESLEMAX);
+            return RCNEGATE(ESLEMAX);
+        }
 
         cur_cc = _combin_class(cp);
 

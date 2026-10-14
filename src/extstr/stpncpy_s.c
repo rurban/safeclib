@@ -218,15 +218,9 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
             if (*dest == '\0')
                 goto eok;
             dmax--;
-            slen++;
+            slen--;
             dest++;
             src++;
-            if (unlikely(slen >= srcbos)) {
-                invoke_safe_str_constraint_handler(
-                    "stpncpy_s: src unterminated", (void *)src, ESUNTERM);
-                *errp = RCNEGATE(ESUNTERM);
-                return NULL;
-            }
         }
     } else {
         overlap_bumper = dest;
@@ -257,10 +251,10 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
                 if (dmax > 0x20)
                     memset(dest, 0, dmax);
                 else {
+                    char *p = dest;
                     while (dmax) {
-                        *dest = '\0';
+                        *p++ = '\0';
                         dmax--;
-                        dest++;
                     }
                 }
 #endif
@@ -269,15 +263,9 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
             }
 
             dmax--;
-            slen++;
+            slen--;
             dest++;
             src++;
-            if (unlikely(slen >= srcbos)) {
-                invoke_safe_str_constraint_handler(
-                    "stpncpy_s: src unterminated", (void *)src, ESUNTERM);
-                *errp = RCNEGATE(ESUNTERM);
-                return NULL;
-            }
         }
     }
 

@@ -121,7 +121,7 @@ EXPORT errno_t _memcmp16_s_chk(const uint16_t *dest, rsize_t dlen,
     dmax = dlen * 2;
     smax = slen * 2;
     if (destbos == BOS_UNKNOWN) {
-        if (unlikely(dmax > RSIZE_MAX_MEM16)) {
+        if (unlikely(dlen > RSIZE_MAX_MEM16)) {
             invoke_safe_mem_constraint_handler("memcmp16_s: dlen exceeds max",
                                                (void *)dest, ESLEMAX);
             return (RCNEGATE(ESLEMAX));
@@ -130,7 +130,7 @@ EXPORT errno_t _memcmp16_s_chk(const uint16_t *dest, rsize_t dlen,
         BND_CHK_PTR_BOUNDS(dest, smax);
     } else {
         if (unlikely(dmax > destbos)) {
-            if (unlikely(dmax > RSIZE_MAX_MEM16)) {
+            if (unlikely(dlen > RSIZE_MAX_MEM16)) {
                 invoke_safe_mem_constraint_handler(
                     "memcmp16_s: dlen exceeds max", (void *)dest, ESLEMAX);
                 return (RCNEGATE(ESLEMAX));

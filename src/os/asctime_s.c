@@ -130,7 +130,7 @@ EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
     } else {
         CHK_DEST_OVR("asctime_s", destbos)
         if (unlikely(destbos < 26)) {
-            invoke_safe_str_constraint_handler("ctime_s: dmax is too small",
+            invoke_safe_str_constraint_handler("asctime_s: dmax is too small",
                                                dest, ESLEMIN);
             return ESLEMIN;
         }

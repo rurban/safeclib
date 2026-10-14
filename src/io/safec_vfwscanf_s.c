@@ -114,21 +114,28 @@ typedef struct {
     long lim;
     long cnt;
     int last;
+    int eof; /* get() hit EOF or the width limit: nothing to unget */
 } safec_wcur_ctx;
 static int safec_wcur_get(void *v) {
     safec_wcur_ctx *x = (safec_wcur_ctx *)v;
     int c;
-    if (x->lim > 0 && x->cnt >= x->lim)
+    if (x->lim > 0 && x->cnt >= x->lim) {
+        x->eof = 1;
         return -1;
-    c = safec_wgetc(x->sf);
-    if (c >= 0) {
-        x->cnt++;
-        x->last = c;
     }
+    c = safec_wgetc(x->sf);
+    if (c < 0) {
+        x->eof = 1;
+        return -1;
+    }
+    x->cnt++;
+    x->last = c;
     return c;
 }
 static void safec_wcur_unget(void *v) {
     safec_wcur_ctx *x = (safec_wcur_ctx *)v;
+    if (x->eof)
+        return;
     if (x->cnt > 0)
         x->cnt--;
     safec_wungetc(x->last, x->sf);
@@ -137,6 +144,7 @@ static void safec_wcur_setlim(void *v, long lim) {
     safec_wcur_ctx *x = (safec_wcur_ctx *)v;
     x->lim = lim;
     x->cnt = 0;
+    x->eof = 0;
 }
 
 static void *safec_arg_n(va_list ap, unsigned int n) {
@@ -532,7 +540,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
                 /* In-memory wchar_t* source: no real FILE* to hand to
                  * fscanf(), so drive the shared numeric engine through
                  * a wide cursor instead. */
-                safec_wcur_ctx wctx = {sf, 0, 0, -1};
+                safec_wcur_ctx wctx = {sf, 0, 0, -1, 0};
                 safec_scan_cursor cur = {&wctx, safec_wcur_get,
                                          safec_wcur_unget, safec_wcur_setlim};
                 safec_wcur_setlim(&wctx, width);

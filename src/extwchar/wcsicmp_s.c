@@ -118,20 +118,21 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
         }
     }
 
-    d1 = (wchar_t *)malloc(2 * destsz);
+    /* wcsfc_s needs 5 spare elements per char, and expands up to 4 */
+    d1 = (wchar_t *)malloc((4 * dmax + 5) * sizeof(wchar_t));
     if (!d1) {
         invoke_safe_str_constraint_handler("wcsicmp_s"
                                            ": Cannot allocate memory",
                                            (void *)src, ENOMEM);
         return RCNEGATE(ENOMEM);
     }
-    rc = wcsfc_s(d1, dmax * 2, (wchar_t *restrict)dest, &l1);
+    rc = wcsfc_s(d1, 4 * dmax + 5, (wchar_t *restrict)dest, &l1);
     if (rc != EOK) {
         free(d1);
         return rc;
     }
 
-    d2 = (wchar_t *)malloc(2 * srcsz);
+    d2 = (wchar_t *)malloc((4 * smax + 5) * sizeof(wchar_t));
     if (!d2) {
         free(d1);
         invoke_safe_str_constraint_handler("wcsicmp_s"
@@ -139,15 +140,16 @@ EXPORT errno_t _wcsicmp_s_chk(const wchar_t *restrict dest, rsize_t dmax,
                                            (void *)src, ENOMEM);
         return RCNEGATE(ENOMEM);
     }
-    rc = wcsfc_s(d2, smax * 2, (wchar_t *restrict)src, &l2);
+    rc = wcsfc_s(d2, 4 * smax + 5, (wchar_t *restrict)src, &l2);
     if (rc != EOK) {
         free(d1);
         free(d2);
         return rc;
     }
 
-    rc = _wcscmp_s_chk(d1, dmax * 2, d2, smax * 2, resultp, 2 * destsz,
-                       2 * srcsz);
+    rc = _wcscmp_s_chk(d1, l1 + 1, d2, l2 + 1, resultp,
+                       (4 * dmax + 5) * sizeof(wchar_t),
+                       (4 * smax + 5) * sizeof(wchar_t));
     free(d1);
     free(d2);
     return rc;

@@ -213,10 +213,10 @@ EXPORT char *_stpcpy_s_chk(char *restrict dest, rsize_t dmax,
                 if (dmax > 0x20)
                     memset(dest, 0, dmax);
                 else {
+                    char *p = dest;
                     while (dmax) {
-                        *dest = '\0';
+                        *p++ = '\0';
                         dmax--;
-                        dest++;
                     }
                 }
 #endif

@@ -297,6 +297,8 @@ static size_t safec_ntoa_format(out_fct_type out, const char *funcname,
                                 char *buf, size_t len, bool negative,
                                 unsigned int base, unsigned int prec,
                                 unsigned int width, unsigned int flags) {
+    // number of real digits, before any padding
+    const size_t ndigits = len;
     // pad leading zeros
     if (!(flags & FLAGS_LEFT)) {
         if (width && (flags & FLAGS_ZEROPAD) &&
@@ -314,24 +316,33 @@ static size_t safec_ntoa_format(out_fct_type out, const char *funcname,
 
     // handle hash
     if (flags & FLAGS_HASH) {
-        if (!(flags & FLAGS_PRECISION) && len &&
-            ((len == prec) || (len == width))) {
-            len--;
-            if (len && (base == 16U)) {
-                len--;
+        if (base == 8U) {
+            // octal: a leading 0, unless the padding already provides one
+            if (!len || buf[len - 1] != '0') {
+                if (len < PRINTF_NTOA_BUFFER_SIZE) {
+                    buf[len++] = '0';
+                }
             }
-        }
-        if ((base == 16U) && !(flags & FLAGS_UPPERCASE) &&
-            (len < PRINTF_NTOA_BUFFER_SIZE)) {
-            buf[len++] = 'x';
-        } else if ((base == 16U) && (flags & FLAGS_UPPERCASE) &&
-                   (len < PRINTF_NTOA_BUFFER_SIZE)) {
-            buf[len++] = 'X';
-        } else if ((base == 2U) && (len < PRINTF_NTOA_BUFFER_SIZE)) {
-            buf[len++] = 'b';
-        }
-        if (len < PRINTF_NTOA_BUFFER_SIZE) {
-            buf[len++] = '0';
+        } else if ((base == 16U) || (base == 2U)) {
+            // the 0x/0b prefix is part of the zero-padded width
+            if (!(flags & FLAGS_PRECISION)) {
+                size_t pfx = 2;
+                while (pfx-- && len > ndigits) {
+                    len--;
+                }
+            }
+            if ((base == 16U) && !(flags & FLAGS_UPPERCASE) &&
+                (len < PRINTF_NTOA_BUFFER_SIZE)) {
+                buf[len++] = 'x';
+            } else if ((base == 16U) && (flags & FLAGS_UPPERCASE) &&
+                       (len < PRINTF_NTOA_BUFFER_SIZE)) {
+                buf[len++] = 'X';
+            } else if ((base == 2U) && (len < PRINTF_NTOA_BUFFER_SIZE)) {
+                buf[len++] = 'b';
+            }
+            if (len < PRINTF_NTOA_BUFFER_SIZE) {
+                buf[len++] = '0';
+            }
         }
     }
 
@@ -416,26 +427,56 @@ static size_t safec_ntoa_long_long(out_fct_type out, const char *funcname,
 
 #ifdef PRINTF_SUPPORT_FLOAT
 
-#ifdef PRINTF_SUPPORT_EXPONENTIAL
-// forward declaration so that safec_ftoa can switch to exp notation for values
-// > PRINTF_MAX_FLOAT
-static size_t safec_etoa(out_fct_type out, const char *funcname, char *buffer,
-                         size_t idx, size_t maxlen, double value,
-                         unsigned int prec, unsigned int width,
-                         unsigned int flags);
-#ifdef PRINTF_SUPPORT_LONG_DOUBLE
-static size_t safec_etoa_long(out_fct_type out, const char *funcname,
+// internal formatting of a finite double via libc: reconstructs the format
+// from flags, width and precision. 'conv' is one of f, e, g (lowercase).
+static size_t safec_dtoa_libc(out_fct_type out, const char *funcname,
                               char *buffer, size_t idx, size_t maxlen,
-                              long double value, unsigned int prec,
+                              double value, unsigned int prec,
                               unsigned int width, unsigned int flags,
-                              const char *format);
-static size_t safec_ftoa_long(out_fct_type out, const char *funcname,
-                              char *buffer, size_t idx, size_t maxlen,
-                              long double value, unsigned int prec,
-                              unsigned int width, unsigned int flags,
-                              const char *format);
-#endif // PRINTF_SUPPORT_LONG_DOUBLE
-#endif // PRINTF_SUPPORT_EXPONENTIAL
+                              char conv) {
+    char fmt[32];
+    char *f = fmt;
+    char *s, *p;
+    int n;
+
+    *f++ = '%';
+    if (flags & FLAGS_LEFT)
+        *f++ = '-';
+    if (flags & FLAGS_PLUS)
+        *f++ = '+';
+    if (flags & FLAGS_SPACE)
+        *f++ = ' ';
+    if (flags & FLAGS_HASH)
+        *f++ = '#';
+    if (flags & FLAGS_ZEROPAD)
+        *f++ = '0';
+    if (width)
+        f += sprintf(f, "%u", width);
+    if (flags & FLAGS_PRECISION)
+        f += sprintf(f, ".%u", prec);
+    *f++ = (flags & FLAGS_UPPERCASE) ? (char)(conv - 'a' + 'A') : conv;
+    *f = '\0';
+
+    n = snprintf(NULL, 0, fmt, value);
+    if (n < 0)
+        return (size_t)-EINVAL;
+    s = (char *)malloc((size_t)n + 1);
+    if (!s) {
+        invoke_safe_str_constraint_handler(
+            "vsnprintf_s: malloc float arg failed", buffer, RCNEGATE(ENOMEM));
+        return (size_t)-ENOMEM;
+    }
+    snprintf(s, (size_t)n + 1, fmt, value);
+    for (p = s; *p; p++) {
+        int rc = out(*p, buffer, idx++, maxlen);
+        if (unlikely(rc < 0)) {
+            free(s);
+            return rc;
+        }
+    }
+    free(s);
+    return idx;
+}
 
 // internal ftoa for fixed decimal floating point
 static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
@@ -443,7 +484,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
                          unsigned int prec, unsigned int width,
                          unsigned int flags) {
     char buf[PRINTF_FTOA_BUFFER_SIZE + 1]; // Add extra byte for safety
-    size_t len = 0U, off = 0U;
+    size_t len = 0U;
     double tmp;
     double diff = 0.0;
     unsigned long frac;
@@ -481,23 +522,13 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
     // standard printf behavior is to print EVERY whole number digit -- which
     // could be 100s of characters overflowing your buffers == bad
     if ((value > PRINTF_MAX_FLOAT) || (value < -PRINTF_MAX_FLOAT)) {
-#ifdef PRINTF_SUPPORT_EXPONENTIAL
-#ifdef PRINTF_SUPPORT_LONG_DOUBLE
-        // TODO Is %le good?
-        return safec_etoa_long(out, funcname, buffer, idx, maxlen,
-                               (long double)value, prec, width, flags, "%le");
-#else
-        return safec_etoa(out, funcname, buffer, idx, maxlen, value, prec,
-                          width, flags);
-#endif // PRINTF_SUPPORT_LONG_DOUBLE
-#else
-        return 0U;
-#endif // PRINTF_SUPPORT_EXPONENTIAL
+        return safec_dtoa_libc(out, funcname, buffer, idx, maxlen, value, prec,
+                               width, flags, 'f');
     }
 
     // test for negative
     negative = false;
-    if (value < 0) {
+    if (signbit(value)) {
         negative = true;
         value = 0 - value;
     }
@@ -525,8 +556,8 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
             ++whole;
         }
     } else if (diff < 0.5) {
-    } else if ((frac == 0U) || (frac & 1U)) {
-        // if halfway, round up if odd OR if last digit is 0
+    } else if (prec == 0U ? (whole & 1) : ((frac == 0U) || (frac & 1U))) {
+        // if halfway, round up if odd (prec 0) OR if last digit is 0
         ++frac;
         // handle rollover, e.g. case 0.95 with prec 1 is 1.0
         if (frac >= pow10[prec]) {
@@ -535,14 +566,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
-    if (prec == 0U) {
-        diff = value - (double)whole;
-        if ((!(diff < 0.5) || (diff > 0.5)) && (whole & 1)) {
-            // exactly 0.5 and ODD, then round up
-            // 1.5 -> 2, but 2.5 -> 2
-            ++whole;
-        }
-    } else {
+    if (prec != 0U) {
         unsigned int count = prec;
         // now do fractional part, as an unsigned number
         while (len < PRINTF_FTOA_BUFFER_SIZE) {
@@ -580,21 +604,6 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
-    // strip leading zeros and dots
-    if ((flags & FLAGS_ADAPT_EXP) && !(flags & FLAGS_HASH)) {
-        size_t olen = len;
-        while (buf[off] == '0') {
-            off++;
-            len--;
-            if (off >= olen)
-                break;
-        }
-        if (buf[off] == '.' && off < olen) {
-            off++;
-            len--;
-        }
-    }
-
     if (len < PRINTF_FTOA_BUFFER_SIZE) {
         if (negative) {
             buf[len++] = '-';
@@ -605,7 +614,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
-    return safec_out_rev(out, buffer, idx, maxlen, &buf[off], len, width,
+    return safec_out_rev(out, buffer, idx, maxlen, buf, len, width,
                          flags);
 }
 
@@ -776,139 +785,19 @@ static inline size_t safec_atoa(out_fct_type out, const char *funcname,
     return idx;
 }
 
-// internal ftoa variant for exponential floating-point type, contributed by
-// Martijn Jasperse <m.jasperse@gmail.com>
+// internal ftoa variant for exponential floating-point type (%e and %g).
+// The correctly rounded digit generation is delegated to libc.
 static size_t safec_etoa(out_fct_type out, const char *funcname, char *buffer,
                          size_t idx, size_t maxlen, double value,
                          unsigned int prec, unsigned int width,
                          unsigned int flags) {
-    union {
-        uint64_t U;
-        double F;
-    } conv;
-    int exp2, expval;
-    unsigned int minwidth, fwidth;
-    bool negative;
-
-    // check for NaN and special values
-    if ((value != value) || (!(flags & FLAGS_LONG_DOUBLE) &&
-                             ((value > DBL_MAX) || (value < -DBL_MAX)))) {
+    // NaN and inf are handled in safec_ftoa
+    if (!isfinite(value)) {
         return safec_ftoa(out, funcname, buffer, idx, maxlen, value, prec,
                           width, flags);
     }
-
-    // determine the sign
-    negative = value < 0;
-    if (negative) {
-        value = -value;
-    }
-
-    // default precision
-    if (!(flags & FLAGS_PRECISION)) {
-        prec = PRINTF_DEFAULT_FLOAT_PRECISION;
-    }
-
-    // determine the decimal exponent
-    // based on the algorithm by David Gay
-    // (https://www.ampl.com/netlib/fp/dtoa.c)
-    conv.F = value;
-    exp2 = (int)((conv.U >> 52U) & 0x07FFU) - 1023; // effectively log2
-    conv.U = (conv.U & ((1ULL << 52U) - 1U)) |
-             (1023ULL << 52U); // drop the exponent so conv.F is now in [1,2)
-    // now approximate log10 from the log2 integer part and an expansion of ln
-    // around 1.5
-    expval = (int)(0.1760912590558 + exp2 * 0.301029995663981 +
-                   (conv.F - 1.5) * 0.289529654602168);
-    // now we want to compute 10^expval but we want to be sure it won't overflow
-    exp2 = (int)(expval * 3.321928094887362 + 0.5);
-    {
-        const double z = expval * 2.302585092994046 - exp2 * 0.6931471805599453;
-        const double z2 = z * z;
-        conv.U = (uint64_t)(exp2 + 1023) << 52U;
-        // compute exp(z) using continued fractions, see
-        // https://en.wikipedia.org/wiki/Exponential_function#Continued_fractions_for_ex
-        conv.F *= 1 + 2 * z / (2 - z + (z2 / (6 + (z2 / (10 + z2 / 14)))));
-        // correct for rounding errors
-        if (value < conv.F) {
-            expval--;
-            conv.F /= 10;
-        }
-    }
-
-    // the exponent format is "%+03d" and largest value is "307", so set aside
-    // 4-5 characters
-    minwidth = ((expval < 100) && (expval > -100)) ? 4U : 5U;
-
-    // in "%g" mode, "prec" is the number of *significant figures* not decimals
-    if (flags & FLAGS_ADAPT_EXP) {
-        // do we want to fall-back to "%f" mode?
-        if ((flags & FLAGS_HASH) || ((value >= 1e-4) && (value < 1e6))) {
-            if ((int)prec > expval) {
-                prec = (unsigned)((int)prec - expval - 1);
-            } else {
-                prec = 0;
-            }
-            flags |= FLAGS_PRECISION; // make sure safec_ftoa respects precision
-            // no characters in exponent
-            minwidth = 0U;
-            expval = 0;
-        } else {
-            // we use one sigfig for the whole part
-            if ((prec > 0) && (flags & FLAGS_PRECISION)) {
-                --prec;
-            }
-        }
-    }
-
-    // will everything fit?
-    fwidth = width;
-    if (width > minwidth) {
-        // we didn't fall-back so subtract the characters required for the
-        // exponent
-        fwidth -= minwidth;
-    } else {
-        // not enough characters, so go back to default sizing
-        fwidth = 0U;
-    }
-    if ((flags & FLAGS_LEFT) && minwidth) {
-        // if we're padding on the right, DON'T pad the floating part
-        fwidth = 0U;
-    }
-
-    // rescale the float value
-    if (expval && conv.F != 0.0) {
-        value /= conv.F;
-    }
-
-    // output the floating part
-    {
-        const size_t start_idx = idx;
-        idx = safec_ftoa(out, funcname, buffer, idx, maxlen,
-                         negative ? -value : value, prec, fwidth, flags);
-
-        // output the exponent part
-        if (minwidth) {
-            // output the exponential symbol
-            int rc = out((flags & FLAGS_UPPERCASE) ? 'E' : 'e', buffer, idx++,
-                         maxlen);
-            if (unlikely(rc < 0))
-                return rc;
-            // output the exponent value
-            idx =
-                safec_ntoa_long(out, funcname, buffer, idx, maxlen,
-                                (expval < 0) ? -expval : expval, expval < 0, 10,
-                                0, minwidth - 1, FLAGS_ZEROPAD | FLAGS_PLUS);
-            // might need to right-pad spaces
-            if (flags & FLAGS_LEFT) {
-                while (idx - start_idx < width) {
-                    out(' ', buffer, idx++, maxlen);
-                    if (unlikely(rc < 0))
-                        return rc;
-                }
-            }
-        }
-    }
-    return idx;
+    return safec_dtoa_libc(out, funcname, buffer, idx, maxlen, value, prec,
+                           width, flags, (flags & FLAGS_ADAPT_EXP) ? 'g' : 'e');
 }
 #endif // PRINTF_SUPPORT_EXPONENTIAL
 #endif // PRINTF_SUPPORT_FLOAT
@@ -1297,11 +1186,10 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                     snprintf(msg, sizeof msg, "%s: wctomb for %%lc arg failed",
                              funcname);
                     invoke_safe_str_constraint_handler(msg, buffer,
-                                                       RCNEGATE(-len));
-                    return len;
+                                                       RCNEGATE(EILSEQ));
+                    return -(EILSEQ);
                 }
                 wstr[len] = '\0';
-                memcpy(buffer, wstr, len + 1);
 #else
                 char msg[80];
                 snprintf(msg, sizeof msg, "%s: unsupported %%lc arg", funcname);
@@ -1371,7 +1259,8 @@ int safec_vsnprintf_s(out_fct_type out, const char *funcname, char *buffer,
                              "%s: wcstombs_s for %%ls arg failed", funcname);
                     invoke_safe_str_constraint_handler(msg, buffer,
                                                        RCNEGATE(err));
-                    return err;
+                    free(p);
+                    return -err;
                 }
 #else
                 {

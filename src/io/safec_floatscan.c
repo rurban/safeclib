@@ -46,6 +46,7 @@
 #include "io/safec_scan.h"
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #endif
 
 /* e.g. sdcc has only atof(), float and no NAN */
@@ -76,93 +77,101 @@ static int is_ascii_space(int c) {
            c == '\r';
 }
 
-static void bufput(char *buf, size_t *n, size_t cap, int c) {
-    if (*n < cap - 1)
-        buf[(*n)++] = (char)c;
+/* Collected mantissa digits, without the radix point and without leading
+ * zeros. Digits that do not fit are dropped, but accounted for in `exp`
+ * (the exponent adjustment in the token's base: 10 for decimal, 2 for hex),
+ * so that long inputs keep their magnitude, like musl. */
+typedef struct {
+    char *buf;
+    size_t n, cap;
+    long exp;
+    int sticky; /* a nonzero digit was dropped */
+} mant_t;
+
+static void mant_put(mant_t *m, int c, int gotrad, int shift) {
+    if (m->n == 0 && c == '0') { /* leading zero */
+        if (gotrad)
+            m->exp -= shift;
+        return;
+    }
+    if (m->n < m->cap) {
+        m->buf[m->n++] = (char)c;
+        if (gotrad)
+            m->exp -= shift;
+    } else {
+        if (c != '0')
+            m->sticky = 1;
+        if (!gotrad)
+            m->exp += shift;
+    }
 }
 
-/* Scan a decimal-exponent suffix ([eE][+-]?digits) onto the buffer.
- * On entry `c` is the character immediately following the mantissa
- * (already fetched, not yet consumed into the buffer). If it starts
- * a valid exponent, appends it and returns the next not-yet-consumed
- * char (pushed back by the caller as usual); if not, pushes back
- * everything it spuriously consumed and returns the original `c'. */
-static int scan_exponent(safec_scan_cursor *cur, char *buf, size_t *n,
-                         size_t cap, int c) {
-    int pending = 1; /* the 'e'/'E' itself, already fetched by the caller */
+/* Scan a [eE]/[pP] exponent suffix ([+-]?digits). On entry `c` is the
+ * exponent letter, already fetched. If a valid exponent follows, stores it
+ * in *e, sets *valid and returns the next, not yet consumed char. If not,
+ * pushes back exactly the chars fetched here (after the letter), clears
+ * *valid and returns `c`, which the caller pushes back like any other
+ * unconsumed char. */
+static int scan_exponent(safec_scan_cursor *cur, int c, long *e, int *valid) {
+    int pending = 1; /* chars fetched after the letter */
     int ec = cur->get(cur->ctx);
-    int esign = 0;
-    pending++;
+    int eneg = 0;
+    long v = 0;
     if (ec == '+' || ec == '-') {
-        esign = ec;
+        eneg = (ec == '-');
         ec = cur->get(cur->ctx);
         pending++;
     }
     if (ec >= '0' && ec <= '9') {
-        bufput(buf, n, cap, c);
-        if (esign)
-            bufput(buf, n, cap, esign);
-        while (ec >= '0' && ec <= '9') {
-            bufput(buf, n, cap, ec);
-            ec = cur->get(cur->ctx);
-        }
+        for (; ec >= '0' && ec <= '9'; ec = cur->get(cur->ctx))
+            if (v < 100000000L)
+                v = v * 10 + (ec - '0');
+        *e = eneg ? -v : v;
+        *valid = 1;
         return ec;
     }
-    /* invalid exponent: undo every char fetched in this function */
     while (pending-- > 0)
         cur->unget(cur->ctx);
+    *valid = 0;
     return c;
 }
 
-/* Decimal mantissa + optional exponent, "c" is the first digit or '.'
- * already fetched. Returns the parsed value; errno is set to EINVAL
- * and 0 is returned if no digits were found at all. */
-static long double scan_decimal(safec_scan_cursor *cur, int c, int neg,
-                                char *buf, size_t *n, size_t cap) {
-    int gotdig = 0, gotrad = 0;
-
-    for (; (c >= '0' && c <= '9') || c == '.'; c = cur->get(cur->ctx)) {
-        if (c == '.') {
-            if (gotrad)
-                break;
-            gotrad = 1;
-        } else {
-            gotdig = 1;
-        }
-        bufput(buf, n, cap, c);
-    }
-    if (!gotdig) {
-        if (c >= 0)
-            cur->unget(cur->ctx);
-        if (gotrad) {
-            if (*n)
-                (*n)--;
-            cur->unget(cur->ctx);
-        }
-        errno = EINVAL;
-        return 0;
-    }
-    if ((c | 32) == 'e') {
-        c = scan_exponent(cur, buf, n, cap, c);
-    }
+/* No digits: push back all `prefix` already consumed chars (sign, 0x),
+ * the radix point and the lookahead char, and reset the consumed count so
+ * the caller sees a matching failure. */
+static long double scan_nodigits(safec_scan_cursor *cur, int c, int gotrad,
+                                 int prefix) {
     if (c >= 0)
         cur->unget(cur->ctx);
-    buf[*n] = 0;
-    return safec_strtold(buf) * (neg ? -1 : 1);
+    if (gotrad)
+        cur->unget(cur->ctx);
+    while (prefix-- > 0)
+        cur->unget(cur->ctx);
+    errno = EINVAL;
+    cur->setlim(cur->ctx, 0);
+    return 0;
 }
 
-/* 0x-prefixed hex float, "c" is the first char after "0x"/"0X". A
- * missing binary exponent (p/P suffix) is tolerated, matching the
- * permissive grammar scanf's %a historically accepts; strtold()
- * requires one, so synthesize "p0". */
-static long double scan_hexfloat(safec_scan_cursor *cur, int c, int neg,
-                                 char *buf, size_t *n, size_t cap) {
-    int gotdig = 0, gotrad = 0, gotexp = 0;
+/* Common decimal (shift 1, exponent letter 'e') and hex (shift 4, 'p')
+ * scanner. "c" is the first char after the sign or the "0x" prefix;
+ * `prefix` counts the already consumed prefix chars. The token is
+ * reassembled as [0x]digits + exponent and converted with strtold(). */
+static long double scan_mantissa(safec_scan_cursor *cur, int c, int neg,
+                                 int hex, int prefix, char *buf, size_t cap) {
+    int gotdig = 0, gotrad = 0, valid;
+    long e = 0;
+    mant_t m;
+    char *tok;
 
-    bufput(buf, n, cap, '0');
-    bufput(buf, n, cap, 'x');
-    for (; (c >= '0' && c <= '9') || ((c | 32) >= 'a' && (c | 32) <= 'f') ||
-           c == '.';
+    /* buf = "0x" + digits + exponent ("p-123456789") + NUL */
+    m.buf = buf + 2;
+    m.n = 0;
+    m.cap = cap - 2 - 16;
+    m.exp = 0;
+    m.sticky = 0;
+
+    for (; (c >= '0' && c <= '9') ||
+           (hex && (c | 32) >= 'a' && (c | 32) <= 'f') || c == '.';
          c = cur->get(cur->ctx)) {
         if (c == '.') {
             if (gotrad)
@@ -170,40 +179,40 @@ static long double scan_hexfloat(safec_scan_cursor *cur, int c, int neg,
             gotrad = 1;
         } else {
             gotdig = 1;
-        }
-        bufput(buf, n, cap, c);
-    }
-    if (!gotdig) {
-        if (c >= 0)
-            cur->unget(cur->ctx);
-        if (gotrad) {
-            if (*n)
-                (*n)--;
-            cur->unget(cur->ctx);
-        }
-        errno = EINVAL;
-        return 0;
-    }
-    if ((c | 32) == 'p') {
-        int after = scan_exponent(cur, buf, n, cap, c);
-        if (after != c) {
-            gotexp = 1;
-            c = after;
+            mant_put(&m, c, gotrad, hex ? 4 : 1);
         }
     }
-    if (!gotexp) {
-        bufput(buf, n, cap, 'p');
-        bufput(buf, n, cap, '0');
+    if (!gotdig)
+        return scan_nodigits(cur, c, gotrad, prefix);
+    if ((c | 32) == (hex ? 'p' : 'e')) {
+        c = scan_exponent(cur, c, &e, &valid);
+        if (!valid)
+            e = 0;
     }
     if (c >= 0)
         cur->unget(cur->ctx);
-    buf[*n] = 0;
-    return safec_strtold(buf) * (neg ? -1 : 1);
+
+    if (!m.n)
+        m.buf[m.n++] = '0';
+    else if (m.sticky && m.buf[m.n - 1] == '0')
+        m.buf[m.n - 1] = '1'; /* a dropped nonzero tail: break ties right */
+    e += m.exp;
+    if (e > 99999999L)
+        e = 99999999L;
+    else if (e < -99999999L)
+        e = -99999999L;
+    snprintf(m.buf + m.n, 16, hex ? "p%ld" : "e%ld", e);
+    tok = buf + 2;
+    if (hex) {
+        buf[0] = '0';
+        buf[1] = 'x';
+        tok = buf;
+    }
+    return safec_strtold(tok) * (neg ? -1 : 1);
 }
 
 long double safec_floatscan(safec_scan_cursor *cur, int prec, int pok) {
     char buf[SAFEC_FLOATSCAN_BUFSZ];
-    size_t n = 0;
     int c, sign = 0, neg;
     int i;
 
@@ -265,11 +274,11 @@ long double safec_floatscan(safec_scan_cursor *cur, int prec, int pok) {
         c = cur->get(cur->ctx);
         if ((c | 32) == 'x') {
             c = cur->get(cur->ctx);
-            return scan_hexfloat(cur, c, neg, buf, &n, sizeof buf);
+            return scan_mantissa(cur, c, neg, 1, sign + 2, buf, sizeof buf);
         }
         cur->unget(cur->ctx);
         c = '0';
     }
-    return scan_decimal(cur, c, neg, buf, &n, sizeof buf);
+    return scan_mantissa(cur, c, neg, 0, sign, buf, sizeof buf);
 }
 #endif // PRINTF_DISABLE_SUPPORT_FLOAT

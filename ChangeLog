@@ -2,6 +2,21 @@
         ChangeLog file for safeclib
 
 Changes in 3.15
+	- Fix memory safety: wcsfc_s writing past dmax on multi-char folds,
+	  wcsnorm_compose_s/u8norm_compose_s crashing on a NULL lenp, clearing
+	  RSIZE_MAX_WSTR elements on dmax > max, accepting code points above
+	  U+10FFFF as composites, and leaking seq_ext. strcmpfld_s read one
+	  byte past dmax.
+	- Fix stpcpy_s/stpncpy_s returning the end of dest instead of the
+	  terminating NUL, and stpncpy_s rejecting valid known-size sources.
+	- Fix memccpy_s zeroing the found char with SAFECLIB_STR_NULL_SLACK,
+	  and the memcmp16_s dmax limit.
+	- Fix wcsicmp_s/wcsnaticmp_s/wcsnatcmp_s fold buffer sizes and
+	  wcsnaticmp_s returning ESUNTERM for equal strings.
+	- Fix vsnprintf_s %e, %g, large %f, the # flag, %.0f rounding, %lc
+	  and %ls error handling.
+	- Fix scanf float parsing: invalid exponents, inputs without digits,
+	  more than 559 digits, and unget at EOF for in-memory wide input.
 	- Security: fix write past dmax in wcstombs_s, mbstowcs_s,
 	  wcsrtombs_s and mbsrtowcs_s when len >= dmax and the dest size is not
 	  known at compile-time. They now measure first and return ESNOSPC

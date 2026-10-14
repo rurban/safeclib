@@ -114,7 +114,7 @@ EXPORT errno_t _strcmpfld_s_uchk(const char *dest, rsize_t dmax,
         dmax--;
     }
 
-    *resultp = *dest - *src;
+    *resultp = dmax ? *dest - *src : 0;
     return (EOK);
 }
 #endif
