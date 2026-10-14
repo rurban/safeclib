@@ -183,7 +183,21 @@ EXPORT errno_t _mbsrtowcs_s_chk(size_t *restrict retvalp,
     orig_dest = dest;
     memcpy(&orig_ps, ps, sizeof(orig_ps));
 
-    *retvalp = mbsrtowcs(dest, srcp, len, ps);
+    /* The libc converter writes up to len wchar_t, so with len >= dmax
+     * first measure the needed size without writing (on copies of *srcp
+     * and *ps) and only convert when it fits into dest. Else we would
+     * write past dmax. */
+    if (dest && len >= dmax) {
+        const char *tmp_src = *srcp;
+        mbstate_t tmp_ps;
+        memcpy(&tmp_ps, ps, sizeof(tmp_ps));
+        *retvalp = mbsrtowcs(NULL, &tmp_src, len, &tmp_ps);
+        if (*retvalp < dmax) {
+            *retvalp = mbsrtowcs(dest, srcp, dmax, ps);
+        }
+    } else {
+        *retvalp = mbsrtowcs(dest, srcp, len, ps);
+    }
 
     if (likely(*retvalp < dmax)) {
         if (dest) {

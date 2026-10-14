@@ -167,6 +167,47 @@ int test_mbstowcs_s(void) {
 #endif
     }
 
+    /* len > dmax must not write past dmax. Hide the size from the compiler. */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8 + 32;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+        size_t i;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbstowcs_s(&ind, hp, 8, (cs = "abcdefghijklmnopqrst", cs), 20);
+        ERR(ESNOSPC);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                debug_printf("%s %u  overflow at %u\n", __FUNCTION__, __LINE__,
+                             (unsigned)i);
+                errs++;
+                break;
+            }
+        }
+
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbstowcs_s(&ind, hp, 8, (cs = "abc", cs), 20);
+        ERR(EOK);
+        INDCMP(!= 3);
+        if (hp[0] != L'a' || hp[2] != L'c' || hp[3] != L'\0') {
+            errs++;
+        }
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                errs++;
+                break;
+            }
+        }
+        free(hp);
+    }
+
     /* illegal sequences (locale dependent) */
 #ifdef HAVE_CYGWIN64
     return (errs);

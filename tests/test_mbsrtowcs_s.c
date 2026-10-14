@@ -287,6 +287,50 @@ int test_mbsrtowcs_s(void) {
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
 
+    /* len > dmax must not write past dmax. Hide the size from the compiler. */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8 + 32;
+        wchar_t *hp = (wchar_t *)malloc(hsz * sizeof(wchar_t));
+        size_t i;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        CLRPS;
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abcdefghijklmnopqrst", &cs), 20,
+                         &ps);
+        ERR(ESNOSPC);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                debug_printf("%s %u  overflow at %u\n", __FUNCTION__, __LINE__,
+                             (unsigned)i);
+                errs++;
+                break;
+            }
+        }
+
+        CLRPS;
+        for (i = 0; i < hsz; i++) {
+            hp[i] = L'x';
+        }
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abc", &cs), 20, &ps);
+        ERR(EOK);
+        INDCMP(!= 3);
+        if (hp[0] != L'a' || hp[2] != L'c' || hp[3] != L'\0') {
+            errs++;
+        }
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != L'x') {
+                errs++;
+                break;
+            }
+        }
+        free(hp);
+    }
+
     /*--------------------------------------------------*/
 
     return (errs);

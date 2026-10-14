@@ -190,8 +190,18 @@ EXPORT errno_t _wcstombs_s_chk(size_t *restrict retvalp, char *restrict dest,
         return RCNEGATE(ESOVRLP);
     }
 
-    /* l is the strlen, excluding NULL */
-    l = *retvalp = wcstombs(dest, src, len);
+    /* l is the strlen, excluding NULL.
+     * The libc converter writes up to len bytes, so with len >= dmax
+     * first measure the needed size without writing and only convert
+     * when it fits into dest. Else we would write past dmax. */
+    if (dest && len >= dmax) {
+        l = *retvalp = wcstombs(NULL, src, len);
+        if (l < dmax) {
+            l = *retvalp = wcstombs(dest, src, dmax);
+        }
+    } else {
+        l = *retvalp = wcstombs(dest, src, len);
+    }
 
     if (likely(l > 0 && (rsize_t)l < dmax)) {
         if (dest) {

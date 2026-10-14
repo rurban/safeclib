@@ -180,7 +180,17 @@ EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
     orig_dest = dest;
     errno = 0;
 
-    *retvalp = mbstowcs(dest, src, len);
+    /* The libc converter writes up to len wchar_t, so with len >= dmax
+     * first measure the needed size without writing and only convert
+     * when it fits into dest. Else we would write past dmax. */
+    if (dest && len >= dmax) {
+        *retvalp = mbstowcs(NULL, src, len);
+        if (*retvalp < dmax) {
+            *retvalp = mbstowcs(dest, src, dmax);
+        }
+    } else {
+        *retvalp = mbstowcs(dest, src, len);
+    }
 
     if (likely(*retvalp < dmax)) {
         if (dest) {

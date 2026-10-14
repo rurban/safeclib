@@ -202,7 +202,21 @@ EXPORT errno_t _wcsrtombs_s_chk(size_t *restrict retvalp, char *restrict dest,
         return RCNEGATE(ESOVRLP);
     }
 
-    l = *retvalp = wcsrtombs(dest, srcp, len, ps);
+    /* The libc converter writes up to len bytes, so with len >= dmax
+     * first measure the needed size without writing (on copies of *srcp
+     * and *ps) and only convert when it fits into dest. Else we would
+     * write past dmax. */
+    if (dest && len >= dmax) {
+        const wchar_t *tmp_src = *srcp;
+        mbstate_t tmp_ps;
+        memcpy(&tmp_ps, ps, sizeof(tmp_ps));
+        l = *retvalp = wcsrtombs(NULL, &tmp_src, len, &tmp_ps);
+        if (l < dmax) {
+            l = *retvalp = wcsrtombs(dest, srcp, dmax, ps);
+        }
+    } else {
+        l = *retvalp = wcsrtombs(dest, srcp, len, ps);
+    }
 
     if (likely(l > 0 && l < dmax)) {
 #ifdef SAFECLIB_STR_NULL_SLACK

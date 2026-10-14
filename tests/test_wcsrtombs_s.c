@@ -256,6 +256,46 @@ int test_wcsrtombs_s(void) {
     ERR(EOK);
     INDCMP(!= 1);
 
+    /* len > dmax must not write past dmax. Hide the size from the compiler. */
+    if (!use_msvcrt) {
+        static volatile size_t hsz = 8 + 32;
+        char *hp = (char *)malloc(hsz);
+        size_t i;
+
+        if (!hp) {
+            return errs + 1;
+        }
+        CLRPS;
+        memset(hp, 'x', hsz);
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abcdefghijklmnopqrst", &cs), 20,
+                         &ps);
+        ERR(ESNOSPC);
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != 'x') {
+                debug_printf("%s %u  overflow at %u\n", __FUNCTION__, __LINE__,
+                             (unsigned)i);
+                errs++;
+                break;
+            }
+        }
+
+        CLRPS;
+        memset(hp, 'x', hsz);
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), 20, &ps);
+        ERR(EOK);
+        INDCMP(!= 3);
+        if (strcmp(hp, "abc") != 0) {
+            errs++;
+        }
+        for (i = 8; i < 8 + 32; i++) {
+            if (hp[i] != 'x') {
+                errs++;
+                break;
+            }
+        }
+        free(hp);
+    }
+
     /*--------------------------------------------------*/
 
     return (errs);
