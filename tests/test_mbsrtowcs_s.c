@@ -286,6 +286,15 @@ int test_mbsrtowcs_s(void) {
     ERR(EILSEQ);
     INDCMP(!= -1);
     WCHECK_SLACK(dest, LEN);
+    CLRPS;
+
+    /* dest NULL: illegal sequence is reported via errno */
+    if (!use_msvcrt) {
+        rc = mbsrtowcs_s(&ind, NULL, 0, (cs = "\x80\xbf\x80", &cs), 3, &ps);
+        ERR(EILSEQ);
+        INDCMP(!= -1);
+        CLRPS;
+    }
 
     /* len > dmax must not write past dmax. Hide the size from the compiler. */
     if (!use_msvcrt) {
@@ -328,6 +337,15 @@ int test_mbsrtowcs_s(void) {
                 break;
             }
         }
+
+        /* unknown dest size: dmax or len above RSIZE_MAX_WSTR */
+        CLRPS;
+        rc = mbsrtowcs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = "abc", &cs), 3,
+                         &ps);
+        ERR(ESLEMAX);
+        rc = mbsrtowcs_s(&ind, hp, 8, (cs = "abc", &cs), RSIZE_MAX_WSTR + 1,
+                         &ps);
+        ERR(ESLEMAX);
         free(hp);
     }
 

@@ -293,6 +293,15 @@ int test_wcsrtombs_s(void) {
                 break;
             }
         }
+
+        /* unknown dest size: dmax or len above RSIZE_MAX_WSTR */
+        CLRPS;
+        rc = wcsrtombs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = L"abc", &cs), 3,
+                         &ps);
+        ERR(ESLEMAX);
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), RSIZE_MAX_WSTR + 1,
+                         &ps);
+        ERR(ESLEMAX);
         free(hp);
     }
 

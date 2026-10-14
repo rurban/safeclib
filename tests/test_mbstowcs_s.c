@@ -205,6 +205,12 @@ int test_mbstowcs_s(void) {
                 break;
             }
         }
+
+        /* unknown dest size: dmax or len above RSIZE_MAX_WSTR */
+        rc = mbstowcs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = "abc", cs), 3);
+        ERR(ESLEMAX);
+        rc = mbstowcs_s(&ind, hp, 8, (cs = "abc", cs), RSIZE_MAX_WSTR + 1);
+        ERR(ESLEMAX);
         free(hp);
     }
 

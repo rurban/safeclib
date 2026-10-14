@@ -204,6 +204,12 @@ int test_wcstombs_s(void) {
                 break;
             }
         }
+
+        /* unknown dest size: dmax or len above RSIZE_MAX_WSTR */
+        rc = wcstombs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = L"abc", cs), 3);
+        ERR(ESLEMAX);
+        rc = wcstombs_s(&ind, hp, 8, (cs = L"abc", cs), RSIZE_MAX_WSTR + 1);
+        ERR(ESLEMAX);
         free(hp);
     }
 
