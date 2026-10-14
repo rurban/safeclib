@@ -1356,9 +1356,9 @@ AC_SUBST([TARBALL_VERSION_FILE])
 # version information, refer to the libtool manual, section "Updating
 # library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([SAFEC_SO_VERSION], [3:14:0])
+AC_SUBST([SAFEC_SO_VERSION], [3:15:0])
 # no patch version here
-AC_SUBST([SAFEC_API_VERSION], [3.14])
+AC_SUBST([SAFEC_API_VERSION], [3.15])
 
 AC_MSG_CHECKING([package version])
 AC_MSG_RESULT($PACKAGE_VERSION)

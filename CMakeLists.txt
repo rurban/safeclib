@@ -28,7 +28,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 project(safeclib
-    VERSION 3.9.2
+    VERSION 3.15
     DESCRIPTION "Safe C Library"
     HOMEPAGE_URL "http://github.com/rurban/safeclib/"
     LANGUAGES C

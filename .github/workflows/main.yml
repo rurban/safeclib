@@ -38,7 +38,7 @@ jobs:
     - run: make check-log
     - name: Upload configure artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: linux-config-${{ strategy.job-index }}
         path: |
@@ -97,7 +97,7 @@ jobs:
         t_u8scanf_s t_getenv_s"
     - name: Upload configure artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: arm-none-eabi-config
         path: |
@@ -170,7 +170,7 @@ jobs:
     - run: make check-log
     - name: Upload config artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: macOS-config
         path: |
@@ -245,7 +245,7 @@ jobs:
       run: make V=1
     - name: Upload config artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: mingw-${{ matrix.msystem }}-config
         path: |
