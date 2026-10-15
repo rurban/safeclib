@@ -448,7 +448,8 @@ static int test_wscan_core(void) {
             }
             SETLOCALE_C;
             errno = 0;
-#if !defined(__APPLE__) && !defined(__NEWLIB__) /* its C locale converts any wchar_t */
+#if !defined(__APPLE__) && !defined(__NEWLIB__) && !defined(_WIN32)
+            /* the C locale of those converts any wchar_t */
             rc = swscanf_s(wide, L"%s", mb, (rsize_t)32); /* EILSEQ */
             WCKRC(EOF)
             rc = swscanf_s(wide, L"%mc", &p1);
@@ -572,17 +573,18 @@ static int test_wscan_core(void) {
             wchar_t w1 = '?', w2 = '?';
             rc = swscanf_s(L"12", L"%d %d", &ia, &ib);
             WCKRC(1) WCKINT(ia, 12) WCKINT(ib, -1)
-            rc = swscanf_s(L"12", L"%d%lc", &ia, &w1, 1);
+            rc = swscanf_s(L"12", L"%d%lc", &ia, &w1, (rsize_t)1);
             WCKRC(1) WCKINT(ia, 12)
             rc = swscanf_s(L"1234", L"%2d%d", &ia, &ib);
             WCKRC(2) WCKINT(ia, 12) WCKINT(ib, 34)
-            rc = swscanf_s(L"1234", L"%2d%lc%lc", &ia, &w1, 1, &w2, 1);
+            rc = swscanf_s(L"1234", L"%2d%lc%lc", &ia, &w1, (rsize_t)1, &w2,
+                           (rsize_t)1);
             WCKRC(3) WCKINT(ia, 12) WCKINT(w1, '3') WCKINT(w2, '4')
-            rc = swscanf_s(L"1234", L"%2x%lc", &ia, &w1, 1);
+            rc = swscanf_s(L"1234", L"%2x%lc", &ia, &w1, (rsize_t)1);
             WCKRC(2) WCKINT(ia, 0x12) WCKINT(w1, '3')
-            rc = swscanf_s(L"1.25", L"%3f%lc", &g0, &w1, 1);
+            rc = swscanf_s(L"1.25", L"%3f%lc", &g0, &w1, (rsize_t)1);
             WCKRC(2) WCKINT(g0 * 100, 120) WCKINT(w1, '5')
-            rc = swscanf_s(L"7", L"%d%lc", &ia, &w1, 1);
+            rc = swscanf_s(L"7", L"%d%lc", &ia, &w1, (rsize_t)1);
             WCKRC(1) WCKINT(ia, 7)
         }
         /* invalid exponent: the e/p and what follows are pushed back exactly
@@ -590,15 +592,19 @@ static int test_wscan_core(void) {
         {
             wchar_t c1 = '?', c2 = '?';
             float g = -7;
-            rc = swscanf_s(L"1ex", L"%f%lc%lc", &g, &c1, 1, &c2, 1);
+            rc = swscanf_s(L"1ex", L"%f%lc%lc", &g, &c1, (rsize_t)1, &c2,
+                           (rsize_t)1);
             WCKRC(3) WCKINT(g, 1) WCKINT(c1, 'e') WCKINT(c2, 'x')
-            rc = swscanf_s(L"1e-x", L"%f%lc%lc", &g, &c1, 1, &c2, 1);
+            rc = swscanf_s(L"1e-x", L"%f%lc%lc", &g, &c1, (rsize_t)1, &c2,
+                           (rsize_t)1);
             WCKRC(3) WCKINT(g, 1) WCKINT(c1, 'e') WCKINT(c2, '-')
-            rc = swscanf_s(L"0x1pz", L"%f%lc%lc", &g, &c1, 1, &c2, 1);
+            rc = swscanf_s(L"0x1pz", L"%f%lc%lc", &g, &c1, (rsize_t)1, &c2,
+                           (rsize_t)1);
             WCKRC(3) WCKINT(g, 1) WCKINT(c1, 'p') WCKINT(c2, 'z')
-            rc = swscanf_s(L"0x1p-z", L"%f%lc%lc", &g, &c1, 1, &c2, 1);
+            rc = swscanf_s(L"0x1p-z", L"%f%lc%lc", &g, &c1, (rsize_t)1, &c2,
+                           (rsize_t)1);
             WCKRC(3) WCKINT(g, 1) WCKINT(c1, 'p') WCKINT(c2, '-')
-            rc = swscanf_s(L"1e5x", L"%f%lc", &g, &c1, 1);
+            rc = swscanf_s(L"1e5x", L"%f%lc", &g, &c1, (rsize_t)1);
             WCKRC(2) WCKINT(g, 100000) WCKINT(c1, 'x')
             rc = swscanf_s(L"1ex", L"%f", &g);
             WCKRC(1) WCKINT(g, 1)

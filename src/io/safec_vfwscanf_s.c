@@ -85,8 +85,9 @@ static int safec_wgetc(_SAFEC_FILE *sf) {
     if (sf->f) {
         wint_t wc = fgetwc(sf->f);
 #ifdef _WIN32
-        /* Windows CRTs flag _IOERR on a write-only stream but leave errno 0 */
-        if (wc == WEOF && ferror(sf->f) && errno == 0)
+        /* Windows CRTs may leave errno 0 (and not even set ferror) when
+           reading a write-only stream. A failed read without EOF is EBADF. */
+        if (wc == WEOF && !feof(sf->f) && errno == 0)
             errno = EBADF;
 #endif
         return wc == WEOF ? -1 : (int)wc;

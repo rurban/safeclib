@@ -330,11 +330,11 @@ int test_fwscanf_s(void) {
         }
         FWEND
 #ifndef __NEWLIB__ /* its fwscanf crashes with %hhd/%zu on cortex-m0 */
-        FWNUM(L"300 70000 123456789012 123")
+        FWNUM(L"300 70000 1234567890 123") /* fits a 32-bit long (LLP64) */
         rc = fwscanf_s(fs, L"%hhd %hd %ld %zu", &sc, &sh, &lv, &zv);
         ERR(4)
         if (sc != (signed char)300 || sh != (short)70000 ||
-            lv != 123456789012L || zv != 123) {
+            lv != 1234567890L || zv != 123) {
             debug_printf("%s %u wrong sized ints\n", __FUNCTION__, __LINE__);
             errs++;
         }

@@ -33,6 +33,12 @@
 #ifndef __TEST_PRIVATE_H__
 #define __TEST_PRIVATE_H__
 
+/* Use the C99 conforming mingw-w64 printf family (long double, %a), like the
+   library does, not the UCRT one. Must precede any system header. */
+#if defined(__MINGW32__) && !defined(__USE_MINGW_ANSI_STDIO)
+#define __USE_MINGW_ANSI_STDIO 1
+#endif
+
 #include "config.h"
 #include "safe_config.h"
 
