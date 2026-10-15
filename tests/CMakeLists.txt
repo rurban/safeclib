@@ -321,6 +321,10 @@ function(add_safec_test test_name)
 
     # Add common headers
     list(APPEND sources ${SAFEC_TEST_COMMON})
+    if(MSVC)
+        # no modal debug CRT dialogs on CI
+        list(APPEND sources ${CMAKE_CURRENT_SOURCE_DIR}/msvc/test_crt_init.c)
+    endif()
 
     # Determine if we need msvcrt support
     set(need_msvcrt FALSE)
