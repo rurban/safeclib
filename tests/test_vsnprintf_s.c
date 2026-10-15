@@ -463,8 +463,10 @@ int test_vsnprintf_s(void) {
     /* surrogates are not convertible: wctomb fails */
     CHK(-EILSEQ, "", LEN, "%lc|", (wint_t)0xD800)
     CHK(-EILSEQ, "", LEN, "%lc|", (wint_t)0x7fffffff)
+#ifndef __NEWLIB__ /* its wcstombs converts surrogates */
     /* not convertible with wcstombs_s: negative EILSEQ */
     CHK(-EILSEQ, "", LEN, "%ls|", L"ab\xD800")
+#endif
 #endif
     EXPNULL(str1)
 
@@ -584,7 +586,9 @@ int test_vsnprintf_s(void) {
     CHK(4, "-inf", LEN, "%a", -INFINITY)
     CHK(4, "+inf", LEN, "%+a", INFINITY)
     CHK(4, "+INF", LEN, "%+A", INFINITY)
+#ifndef __NEWLIB__ /* no %a, converts any wchar_t */
     CHK(-ESNOSPC, "", 5, "%a", 1.0)
+#endif
 #endif /* PRINTF_SUPPORT_EXPONENTIAL */
 
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE
@@ -610,7 +614,9 @@ int test_vsnprintf_s(void) {
     CHKLIBC("%La|", 1.0L)
     CHK(3, "inf", LEN, "%Le", HUGE_VALL)
     CHK(3, "inf", LEN, "%La", HUGE_VALL)
+#ifndef __NEWLIB__ /* no %a, converts any wchar_t */
     CHK(-ESNOSPC, "", 5, "%La", 1.0L)
+#endif
 #endif
 #endif /* PRINTF_SUPPORT_LONG_DOUBLE */
 #endif /* PRINTF_SUPPORT_FLOAT */

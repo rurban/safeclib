@@ -329,6 +329,7 @@ int test_fwscanf_s(void) {
             errs++;
         }
         FWEND
+#ifndef __NEWLIB__ /* its fwscanf crashes with %hhd/%zu on cortex-m0 */
         FWNUM(L"300 70000 123456789012 123")
         rc = fwscanf_s(fs, L"%hhd %hd %ld %zu", &sc, &sh, &lv, &zv);
         ERR(4)
@@ -338,6 +339,7 @@ int test_fwscanf_s(void) {
             errs++;
         }
         FWEND
+#endif
 #ifndef PRINTF_DISABLE_SUPPORT_LONG_LONG
         FWNUM(L"-9876543210 5432109876")
         rc = fwscanf_s(fs, L"%lld %jd", &llv, &llv);
@@ -365,6 +367,7 @@ int test_fwscanf_s(void) {
             errs++;
         }
         FWEND
+#ifndef __NEWLIB__ /* its fwscanf crashes with %Lf and %la on cortex-m0 */
         FWNUM(L"3.5 -2.25e1 1.5 0x1p3 1e2")
         rc = fwscanf_s(fs, L"%f %lf %Lf %la %g", &f, &d, &ld, &d, &f);
         ERR(5)
@@ -373,6 +376,7 @@ int test_fwscanf_s(void) {
             errs++;
         }
         FWEND
+#endif
         /* no digits: matching failure */
         FWNUM(L"abc")
         rc = fwscanf_s(fs, L"%d", &a);

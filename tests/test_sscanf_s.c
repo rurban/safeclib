@@ -128,12 +128,14 @@ static int test_scan_core(void) {
     sh = 0;
     rc = sscanf_s("70000", "%hd", &sh);
     CKRC(1) CKINT(sh, (short)70000)
+#if LONG_MAX > 2147483647L
     lv = 0;
     rc = sscanf_s("-123456789012", "%ld", &lv);
     CKRC(1) CKINT(lv, -123456789012L)
     ulv = 0;
     rc = sscanf_s("123456789012", "%lu", &ulv);
     CKRC(1) CKINT(ulv, 123456789012UL)
+#endif
     zv = 0;
     rc = sscanf_s("123", "%zu", &zv);
     CKRC(1) CKINT(zv, 123)

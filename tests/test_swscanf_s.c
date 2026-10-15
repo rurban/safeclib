@@ -128,12 +128,14 @@ static int test_wscan_core(void) {
     sh = 0;
     rc = swscanf_s(L"70000", L"%hd", &sh);
     WCKRC(1) WCKINT(sh, (short)70000)
+#if LONG_MAX > 2147483647L
     lv = 0;
     rc = swscanf_s(L"-123456789012", L"%ld", &lv);
     WCKRC(1) WCKINT(lv, -123456789012L)
     ulv = 0;
     rc = swscanf_s(L"123456789012", L"%lu", &ulv);
     WCKRC(1) WCKINT(ulv, 123456789012UL)
+#endif
     zv = 0;
     rc = swscanf_s(L"123", L"%zu", &zv);
     WCKRC(1) WCKINT(zv, 123)
@@ -446,7 +448,7 @@ static int test_wscan_core(void) {
             }
             SETLOCALE_C;
             errno = 0;
-#ifndef __APPLE__ /* its C locale converts any wchar_t */
+#if !defined(__APPLE__) && !defined(__NEWLIB__) /* its C locale converts any wchar_t */
             rc = swscanf_s(wide, L"%s", mb, (rsize_t)32); /* EILSEQ */
             WCKRC(EOF)
             rc = swscanf_s(wide, L"%mc", &p1);

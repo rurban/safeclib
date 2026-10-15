@@ -749,7 +749,7 @@ void mem_prim_move(void *dest, const void *src, uint32_t len) {
  *
  */
 
-void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len) {
+EXPORT void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len) {
     uint8_t *dp = dest;
     const uint8_t *sp = src;
     /*
