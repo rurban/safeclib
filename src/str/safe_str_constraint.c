@@ -165,7 +165,7 @@ EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
 #define invoke_safe_str_constraint_handler(msg, ptr, error)
 #endif
 
-int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
+EXPORT int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
                             const rsize_t dmax) {
     /* clear the min of strlen and dmax(=destbos) */
     size_t len = strnlen_s(dest, dmax);
@@ -183,7 +183,7 @@ EXPORT_SYMBOL(handle_str_bos_overflow);
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 
-void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
+EXPORT void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
                              const rsize_t dmax, const size_t destbos) {
     char msg[128];
     sprintf(msg, "%s: wrong dmax %lu, dest has size %lu", func,
@@ -194,7 +194,7 @@ void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
 EXPORT_SYMBOL(handle_str_bos_chk_warn);
 #endif
 
-void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
+EXPORT void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
                                  const rsize_t smax, const size_t srcbos,
                                  const char *srcname, const char *smaxname) {
     char msg[128];

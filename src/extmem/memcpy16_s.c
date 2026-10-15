@@ -103,7 +103,8 @@ EXPORT errno_t _memcpy16_s_chk(uint16_t *dest, rsize_t dmax,
         BND_CHK_PTR_BOUNDS(dest, smax);
     } else {
         CHK_DEST_MEM_OVR("memcpy16_s", destbos)
-        dmax = destbos;
+        /* Note: like memcpy_s, we don't set dmax to destbos. It is only an
+           upper bound with a variable offset, and would fake an overlap. */
     }
     CHK_SRC_MEM_NULL_CLEAR("memcpy16_s", src)
     CHK_SLEN_MEM_MAX_NOSPC_CLEAR("memcpy16_s", smax, RSIZE_MAX_MEM)

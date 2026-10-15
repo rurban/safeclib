@@ -24,9 +24,9 @@
 static uint8_t mem1[LEN + 2];
 static uint8_t mem2[LEN + 2];
 int test_memcpy_s(void);
-extern void handle_mem_bos_chk_warn(const char *restrict func,
-                                    void *restrict dest, const rsize_t dmax,
-                                    const size_t destbos);
+EXTERN void handle_mem_bos_chk_warn(const char *restrict func,
+                                   void *restrict dest, const rsize_t dmax,
+                                   const size_t destbos);
 
 static int hcalls, hcalls2;
 static errno_t herr;

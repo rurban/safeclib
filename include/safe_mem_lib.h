@@ -227,12 +227,12 @@ EXTERN errno_t _memcpy16_s_uchk(uint16_t *dest, rsize_t dmax,
 #else
 #define _memcpy16_s_uchk_inl _memcpy16_s_uchk
 #endif
-/* the _chk variant overrides a known dmax with the dest size */
+/* the _chk variant checks dmax against the dest size */
 #define memcpy16_s(dest, dmax, src, slen)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (size_t)(slen) != 0 &&            \
                   (size_t)(slen) <= (size_t)(dmax) / 2 &&                      \
                   _BOS_SRC_OK(src, slen, 2),                                   \
-              _memcpy16_s_uchk_inl(dest, BOS(dest), src, slen),                \
+              _memcpy16_s_uchk_inl(dest, dmax, src, slen),                     \
               _memcpy16_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src)))
 
 /* copy uint32_t memory */
@@ -253,12 +253,12 @@ EXTERN errno_t _memcpy32_s_uchk(uint32_t *dest, rsize_t dmax,
 #else
 #define _memcpy32_s_uchk_inl _memcpy32_s_uchk
 #endif
-/* the _chk variant overrides a known dmax with the dest size */
+/* the _chk variant checks dmax against the dest size */
 #define memcpy32_s(dest, dmax, src, slen)                                      \
     _BOS_UCHK(_BOS_DMAX_OK(dest, dmax, 1) && (size_t)(slen) != 0 &&            \
                   (size_t)(slen) <= (size_t)(dmax) / 4 &&                      \
                   _BOS_SRC_OK(src, slen, 4),                                   \
-              _memcpy32_s_uchk_inl(dest, BOS(dest), src, slen),                \
+              _memcpy32_s_uchk_inl(dest, dmax, src, slen),                     \
               _memcpy32_s_chk(dest, dmax, src, slen, BOS(dest), BOS(src)))
 
 /* uint16_t move memory, including overlapping memory */

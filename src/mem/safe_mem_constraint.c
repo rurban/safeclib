@@ -167,7 +167,7 @@ EXPORT_SYMBOL(invoke_safe_mem_constraint_handler);
 #define invoke_safe_mem_constraint_handler(msg, ptr, error)
 #else
 
-void handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
+EXPORT void handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
                              const rsize_t dmax, const size_t destbos) {
     char msg[128];
     sprintf(msg, "%s: wrong dmax %lu, dest has size %lu", func,

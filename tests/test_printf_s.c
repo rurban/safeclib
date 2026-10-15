@@ -98,6 +98,8 @@ int test_printf_s(void) {
 
     /*--------------------------------------------------*/
 
+    /* bare-metal newlib has no dup() */
+#if !defined(__NEWLIB__) || defined(__CYGWIN__)
     /* write error: stdout reopened read-only */
     {
         FILE *saved = fdopen(dup(fileno(stdout)), "w");
@@ -113,6 +115,7 @@ int test_printf_s(void) {
             stdout = saved;
         }
     }
+#endif
 
     /*--------------------------------------------------*/
 
