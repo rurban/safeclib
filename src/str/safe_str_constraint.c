@@ -177,6 +177,9 @@ int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
     handle_error(dest, len, msg, err);
     return RCNEGATE(err);
 }
+#ifdef __KERNEL__
+EXPORT_SYMBOL(handle_str_bos_overflow);
+#endif
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 
@@ -187,6 +190,9 @@ void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
             (unsigned long)dmax, (unsigned long)destbos);
     invoke_safe_str_constraint_handler(msg, (void *)dest, ESLEWRNG);
 }
+#ifdef __KERNEL__
+EXPORT_SYMBOL(handle_str_bos_chk_warn);
+#endif
 
 void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
                                  const rsize_t smax, const size_t srcbos,
@@ -196,5 +202,8 @@ void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
             (unsigned long)smax, srcname, (unsigned long)srcbos);
     invoke_safe_str_constraint_handler(msg, (void *)dest, ESLEWRNG);
 }
+#ifdef __KERNEL__
+EXPORT_SYMBOL(handle_str_src_bos_chk_warn);
+#endif
 
 #endif

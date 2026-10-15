@@ -174,5 +174,8 @@ void handle_mem_bos_chk_warn(const char *restrict func, void *restrict dest,
             (unsigned long)dmax, (unsigned long)destbos);
     invoke_safe_mem_constraint_handler(msg, dest, ESLEWRNG);
 }
+#ifdef __KERNEL__
+EXPORT_SYMBOL(handle_mem_bos_chk_warn);
+#endif
 
 #endif

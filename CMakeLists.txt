@@ -340,6 +340,7 @@ include(CheckCSourceCompiles)
 set(CMAKE_REQUIRED_FLAGS -O2)
 # __builtin_object_size
 check_c_source_compiles("
+#include <stddef.h>
 int main() {
     char buf[10];
     return __builtin_object_size(buf, 0) != (size_t)-1 ? 0 : 1;

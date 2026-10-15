@@ -901,6 +901,10 @@ void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len) {
 
     return;
 }
+#ifdef __KERNEL__
+#include <linux/export.h>
+EXPORT_SYMBOL(mem_prim_move8);
+#endif
 
 /**
  * @brief
