@@ -48,8 +48,14 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/ctype.h>
+#include <linux/slab.h>
+#define malloc(n) kmalloc((n), GFP_KERNEL)
+#define free(p)   kfree(p)
 
 #include <linux/string.h>
+/* strncpy() was removed from recent kernels. Tests only use it to copy
+   a NUL-terminated message into a bounded buffer. */
+#define strncpy(d, s, n) ((void)strscpy((d), (s), (n)), (d))
 #ifdef SAFECLIB_HAVE_C99
 #define printf(...) printk(KERN_INFO __VA_ARGS__)
 #endif

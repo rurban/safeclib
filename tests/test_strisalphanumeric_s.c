@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_strisalphanumeric_s.c
  * File 'extstr/strisalphanumeric_s.c'
- * Lines executed:92.86% of 14
+ * Lines executed:100.00% of 14
  *
  *------------------------------------------------------------------
  */

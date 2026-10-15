@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------
  * test_wcsrtombs_s
  * File 'wchar/wcsrtombs_s.c'
- * Lines executed:90.91% of 33
+ * Lines executed:100.00% of 39
  *
  * wine tested with wine-2.0.4
  * msvcrt.dll 7.0.9200.16384 (win8 64bit default)
