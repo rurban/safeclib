@@ -174,7 +174,7 @@
 extern void mem_prim_move(void *dest, const void *src, uint32_t len);
 
 /* uint8_t moves (handles overlap) memory */
-extern void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len);
+EXTERN void mem_prim_move8(uint8_t *dest, const uint8_t *src, uint32_t len);
 
 /* uint16_t moves (handles overlap) memory */
 extern void mem_prim_move16(uint16_t *dest, const uint16_t *src, uint32_t len);

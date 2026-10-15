@@ -12,6 +12,16 @@
 #include <stddef.h> // do we have ptrdiff_t?
 #endif
 
+/* MSVC rejects constant 0.0/0.0 and 1.0/0.0 (C2124) */
+#ifdef _MSC_VER
+#include <math.h>
+#define TEST_NAN NAN
+#define TEST_INF INFINITY
+#else
+#define TEST_NAN (0.0 / 0.0)
+#define TEST_INF (1.0 / 0.0)
+#endif
+
 #ifdef PRINTF_INCLUDE_CONFIG_H
 #include "printf_config.h"
 #endif
@@ -430,28 +440,28 @@ int test_sprintf_s(void) {
     EXPSTR(str2, "0x1.99999ap-4")
 #endif
 
-    rc = sprintf_s(str2, LEN, "%g", 0.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%g", TEST_NAN);
     NOERRNULL()
     EXPSTR(str2, "nan")
-    rc = sprintf_s(str2, LEN, "%G", 0.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%G", TEST_NAN);
     NOERRNULL()
     EXPSTR(str2, "NAN")
-    rc = sprintf_s(str2, LEN, "%g", 1.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%g", TEST_INF);
     NOERRNULL()
     EXPSTR(str2, "inf")
-    rc = sprintf_s(str2, LEN, "%g", -1.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%g", -TEST_INF);
     NOERRNULL()
     EXPSTR_OR(str2, "-inf", "inf") // "inf" on BSD/mingw
-    rc = sprintf_s(str2, LEN, "%G", 1.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%G", TEST_INF);
     NOERRNULL()
     EXPSTR(str2, "INF")
-    rc = sprintf_s(str2, LEN, "%G", -1.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%G", -TEST_INF);
     NOERRNULL()
     EXPSTR_OR(str2, "-INF", "INF") // "INF" on BSD/mingw
-    rc = sprintf_s(str2, LEN, "%+g", 1.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%+g", TEST_INF);
     NOERRNULL()
     EXPSTR(str2, "+inf")
-    rc = sprintf_s(str2, LEN, "%+G", 1.0 / 0.0);
+    rc = sprintf_s(str2, LEN, "%+G", TEST_INF);
     NOERRNULL()
     EXPSTR(str2, "+INF")
 #endif

@@ -105,20 +105,23 @@ static inline void handle_werror(wchar_t *restrict dest, const rsize_t dmax,
  * Safe C Lib internal string handlers to handle overflows with compile-time
  * known dest and dmax sizes.
  */
-int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
-                            const rsize_t dmax);
+EXTERN int handle_str_bos_overflow(const char *restrict msg,
+                                   char *restrict dest, const rsize_t dmax);
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 /*
  * Safe C Lib internal string handler to handle deviating compile-time known
  * dest and dmax sizes, when dest != sizeof(dest).
  */
-void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
-                             const rsize_t dmax, const size_t destbos);
+EXTERN void handle_str_bos_chk_warn(const char *restrict func,
+                                    char *restrict dest, const rsize_t dmax,
+                                    const size_t destbos);
 
-void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
-                                 const rsize_t smax, const size_t srcbos,
-                                 const char *srcname, const char *smaxname);
+EXTERN void handle_str_src_bos_chk_warn(const char *restrict func,
+                                        char *restrict dest, const rsize_t smax,
+                                        const size_t srcbos,
+                                        const char *srcname,
+                                        const char *smaxname);
 #endif /* SAFECLIB_DISABLE_CONSTRAINT_HANDLER */
 
 #endif /* __SAFE_STR_CONSTRAINT_H__ */
