@@ -1,0 +1,15 @@
+<map id="safe_types.h" name="safe_types.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="255,5,360,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,71,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="258,36,86,83,85,77,257,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="94,81,190,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="280,33,186,77,184,72,275,34"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="214,81,300,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="301,32,276,70,273,66,296,35"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="324,81,394,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="318,31,344,69,339,68,315,36"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="419,81,486,109"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="334,31,416,74,411,74,333,36"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="511,81,592,109"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="351,31,499,77,493,77,351,36"/>
+</map>
