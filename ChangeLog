@@ -33,6 +33,29 @@ Changes in 3.15
 	  NUL-terminated with SAFECLIB_STR_NULL_SLACK. snwprintf_s now calls
 	  vsnwprintf_s.
 	- Extend wchar test coverage, esp. ESLEMAX and EILSEQ.
+	- Fix memcpy16_s/memcpy32_s reporting a false ESOVRLP, when the dest
+	  offset is not constant and the object is followed by another one:
+	  dmax is no longer replaced by the upper bound __builtin_object_size.
+	- Fix stpncpy_s not terminating dest without SAFECLIB_STR_NULL_SLACK
+	  when slen was exhausted.
+	- Preserve errno when formatting the constraint message in the
+	  printf/scanf families: strerror() resets it on unknown codes (macOS),
+	  which lost ESZEROL and ESNOSPC.
+	- Fix the kernel module build (slkm, testslkm) with recent kernels:
+	  export the internal handle_*_bos_* and mem_prim_move8 symbols, no
+	  strncpy, malloc and free in the tests.
+	- Fix the cmake __builtin_object_size check (missing stddef.h), which
+	  disabled the compile-time size checks, and export the
+	  handle_*_bos_* helpers from the mingw DLL.
+	- Fix tests for --disable-nullslack, --disable-wchar, bare-metal newlib
+	  (no dup) and macOS.
+	- Fix the scanf family on Windows (mingw): reading from a write-only
+	  stream in fscanf_s, vfscanf_s, fwscanf_s and vfwscanf_s now fails
+	  with EBADF, the CRT leaves errno 0.
+	- Fix the scanf and printf tests on Windows: pass size arguments as
+	  rsize_t (a plain int left garbage in the upper half of the Win64
+	  varargs slot), use the mingw C99 printf as reference, fit %ld values
+	  into a 32-bit long, and skip the C locale EILSEQ checks.
 
 Changes in 3.14
 	- Add strlcpy()/strlcat() only when missing.
