@@ -52,7 +52,8 @@ static int check_layout(int fwd) {
         EXPSTR((char *)d, "")
 
         /* illegal UTF-8 in src */
-        strcpy((char *)s, "ab\xFF" "cd");
+        strcpy((char *)s, "ab\xFF"
+                          "cd");
         rc = u8ncpy_s(d, dm, s, 5);
         ERR(EILSEQ)
     }
@@ -77,7 +78,6 @@ static int check_layout(int fwd) {
 
     return errs;
 }
-
 
 int test_u8ncpy_s(void) {
     errno_t rc;
@@ -177,9 +177,11 @@ int test_u8ncpy_s(void) {
     rc = u8ncpy_s(dest, LEN, (char8_t *)"abc", RSIZE_MAX_STR + 1);
     ERR(ESLEMAX)
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("slen exceeds src")
     rc = u8ncpy_s(dest, LEN, (char8_t *)"abc", 10);
     ERR(EOVERFLOW)
+#endif
 #endif
 
     /*--------------------------------------------------*/

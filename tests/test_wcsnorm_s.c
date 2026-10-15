@@ -798,8 +798,9 @@ int test_wcsnorm_s(void) {
 
         /* leading combining mark without a starter is copied */
         ind = 2;
-        rc = wcsnorm_compose_s(str, LEN, L"\x301"
-                                         L"a",
+        rc = wcsnorm_compose_s(str, LEN,
+                               L"\x301"
+                               L"a",
                                &ind, false);
         ERR(EOK)
         WEXPSTR(str, L"\x301"
@@ -868,8 +869,9 @@ int test_wcsnorm_s(void) {
 
         /* starter in a row without composites, or without any entry */
         ind = 2;
-        rc = wcsnorm_compose_s(str, LEN, L"\x4e00"
-                                         L"a",
+        rc = wcsnorm_compose_s(str, LEN,
+                               L"\x4e00"
+                               L"a",
                                &ind, false);
         ERR(EOK)
         WEXPSTR(str, L"\x4e00"
@@ -909,8 +911,9 @@ int test_wcsnorm_s(void) {
 #if SIZEOF_WCHAR_T >= 4
         /* no composition table for this plane */
         ind = 2;
-        rc = wcsnorm_compose_s(str, LEN, L"\x50000"
-                                         L"a",
+        rc = wcsnorm_compose_s(str, LEN,
+                               L"\x50000"
+                               L"a",
                                &ind, false);
         ERR(EOK)
         WEXPSTR(str, L"\x50000"

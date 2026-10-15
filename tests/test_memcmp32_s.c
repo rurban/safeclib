@@ -212,12 +212,14 @@ int main(void) {
             errs++;
         }
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
         /* known dest, dlen larger than dest but not larger than max */
         {
             static volatile size_t xbig = LEN + 1;
             rc = memcmp32_s(mem1, xbig, mem2, 1, &xdiff);
             ERR(EOVERFLOW);
         }
+#endif
         free(xhp);
         free(xhs);
     }

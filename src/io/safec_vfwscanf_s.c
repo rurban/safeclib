@@ -53,6 +53,14 @@
 #define FLOCK(sf)
 #define FUNLOCK(sf)
 
+#ifdef _MSC_VER
+/* The UCRT's scanf (and wine's) does not scan a "0x" prefix with %p and
+   hex floats reliably. Use our own numeric engine on streams too. */
+#define SAFEC_OWN_NUMSCAN 1
+#else
+#define SAFEC_OWN_NUMSCAN 0
+#endif
+
 static void safec_store_int(void *dest, int size, unsigned long long i) {
     if (!dest)
         return;
@@ -206,7 +214,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
 #ifndef PRINTF_DISABLE_SUPPORT_FLOAT
     long double y;
 #endif
-    safec_off_t cnt;
+    long long cnt; /* written by %lln: must be 8 bytes, off_t/long may not be */
     static const wchar_t *size_pfx[] = {L"hh", L"h", L"", L"l", L"L", L"ll"};
     char numfmt[3 * sizeof(int) + 10];
     wchar_t wnumfmt[3 * sizeof(int) + 10];
@@ -299,13 +307,17 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
 #endif
             break;
         case 'z':
+#ifdef _WIN64 /* LLP64: size_t is wider than long */
+            size = SIZE_ll;
+#else
             size = SIZE_l;
+#endif
             break;
         case 't':
 #ifdef PRINTF_DISABLE_SUPPORT_PTRDIFF_T
             goto fmt_fail;
 #else
-#ifdef _WIN32
+#ifdef _WIN64
             size = SIZE_ll;
 #else
             size = SIZE_l;
@@ -526,7 +538,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
         case 'p':
             if (width < 1)
                 width = 0;
-            if (sf->f) {
+            if (sf->f && !SAFEC_OWN_NUMSCAN) {
                 /* Real stream: delegate to the platform's fwscanf().
                  * Must build a *wide* format string and call the wide
                  * entry point: once fwide() has oriented the stream
@@ -535,7 +547,7 @@ int _safec_vfwscanf_impl(_SAFEC_FILE *sf, const char *funcname,
                  * such restriction, which is why musl's own vfwscanf()
                  * gets away with delegating to plain fscanf() here). */
                 swprintf(wnumfmt, sizeof(wnumfmt) / sizeof(wchar_t),
-                         L"%.*s%.0d%ls%lc%%lln", 1 + !dest, L"%*", width,
+                         L"%.*ls%.0d%ls%lc%%lln", 1 + !dest, L"%*", width,
                          size_pfx[size + 2], (wint_t)t);
                 cnt = 0;
                 if (fwscanf(sf->f, wnumfmt, dest ? dest : &cnt, &cnt) == -1)

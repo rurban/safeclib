@@ -100,11 +100,14 @@ int test_u8icmp_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* both strings equal and unterminated within the src bound */
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* both strings equal and unterminated within the src bound
+       (needs the known src size) */
     memset(str1, 'a', LEN);
     memset(str2, 'a', LEN);
     rc = u8icmp_s(str1, LEN, str2, &result);
     ERR(ESUNTERM)
+#endif
 
     /*--------------------------------------------------*/
 

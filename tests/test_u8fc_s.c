@@ -126,19 +126,19 @@ int test_u8fc_s(void) {
             const char *in;
             const char *out;
         } tbl[] = {
-            {"\xC4\xB0", "i\xCC\x87"},                 /* U+0130 */
-            {"\xC5\x89", "\xCA\xBCn"},                 /* U+0149 */
-            {"\xEF\xAC\x83", "ffi"},                   /* U+FB03 */
-            {"\xEF\xAC\x84", "ffl"},                   /* U+FB04 */
+            {"\xC4\xB0", "i\xCC\x87"},                    /* U+0130 */
+            {"\xC5\x89", "\xCA\xBCn"},                    /* U+0149 */
+            {"\xEF\xAC\x83", "ffi"},                      /* U+FB03 */
+            {"\xEF\xAC\x84", "ffl"},                      /* U+FB04 */
             {"\xE1\xBF\xB7", "\xCF\x89\xCD\x82\xCE\xB9"}, /* U+1FF7 */
-            {"\xF0\x9D\xBE\x95", "ss"},               /* U+1DF95 */
-            {"\xC2\xB5", "\xCE\xBC"},                 /* U+00B5 */
-            {"\xC5\xBF", "s"},                         /* U+017F */
-            {"\xCD\x85", "\xCE\xB9"},                 /* U+0345 */
-            {"\xCF\x82", "\xCF\x83"},                 /* U+03C2 */
-            {"\xCF\x91", "\xCE\xB8"},                 /* U+03D1 */
-            {"\xCF\xB1", "\xCF\x81"},                 /* U+03F1 */
-            {"\xE1\xBA\x9E", "ss"},                   /* U+1E9E */
+            {"\xF0\x9D\xBE\x95", "ss"},                   /* U+1DF95 */
+            {"\xC2\xB5", "\xCE\xBC"},                     /* U+00B5 */
+            {"\xC5\xBF", "s"},                            /* U+017F */
+            {"\xCD\x85", "\xCE\xB9"},                     /* U+0345 */
+            {"\xCF\x82", "\xCF\x83"},                     /* U+03C2 */
+            {"\xCF\x91", "\xCE\xB8"},                     /* U+03D1 */
+            {"\xCF\xB1", "\xCF\x81"},                     /* U+03F1 */
+            {"\xE1\xBA\x9E", "ss"},                       /* U+1E9E */
         };
         size_t i;
         for (i = 0; i < sizeof(tbl) / sizeof(tbl[0]); i++) {
@@ -177,7 +177,8 @@ int test_u8fc_s(void) {
                 continue;
             }
             rc = u8fc_s(dest2, LEN, dest, &len2);
-            if (rc != EOK || len2 != len || strcmp((char *)dest, (char *)dest2)) {
+            if (rc != EOK || len2 != len ||
+                strcmp((char *)dest, (char *)dest2)) {
                 debug_printf("%s %u  U+%04X not idempotent\n", __FUNCTION__,
                              __LINE__, cp);
                 errs++;

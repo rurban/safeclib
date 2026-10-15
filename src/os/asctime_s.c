@@ -117,6 +117,9 @@ EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
 {
     const char *buf;
     size_t len;
+#ifndef HAVE_ASCTIME_R
+    int leap = 0;
+#endif
 
     CHK_DEST_NULL("asctime_s")
     if (unlikely(dmax < 26)) {
@@ -192,6 +195,15 @@ EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
         }
     }
 #else
+    struct tm leaptm;
+    if (tm->tm_sec == 60) {
+        /* a leap second: some libcs (UCRT) reject sec > 59. Format with 59
+           and patch the seconds field "hh:mm:ss" of dest afterwards. */
+        leaptm = *tm;
+        leaptm.tm_sec = 59;
+        tm = &leaptm;
+        leap = 1;
+    }
     buf = asctime(tm);
     if (0)
         goto esnospc;
@@ -202,6 +214,12 @@ EXPORT errno_t _asctime_s_chk(char *dest, rsize_t dmax, const struct tm *tm,
 
     if (likely(len < dmax)) {
         strcpy_s(dest, dmax, buf);
+#ifndef HAVE_ASCTIME_R
+        if (leap && len > 18) {
+            dest[17] = '6';
+            dest[18] = '0';
+        }
+#endif
     } else {
     esnospc:
         invoke_safe_str_constraint_handler("asctime_s: dmax is too small", dest,

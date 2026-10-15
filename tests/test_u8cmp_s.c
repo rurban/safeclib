@@ -125,10 +125,12 @@ int test_u8cmp_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* src not terminated within its bound */
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* src not terminated within its bound (needs the known src size) */
     memset(str2, 'a', LEN);
     rc = u8cmp_s(str1, LEN, str2, &result);
     ERR(ESUNTERM)
+#endif
 
     /*--------------------------------------------------*/
 

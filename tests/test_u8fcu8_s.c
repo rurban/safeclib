@@ -103,7 +103,7 @@ int test_u8fcu8_s(void) {
     rc = u8fcu8_s(str1, LEN, str2, vzero, &sub);
     ERR(ESZEROL)
 
-#ifndef HAVE_CT_BOS_OVR
+#if defined(HAVE___BUILTIN_OBJECT_SIZE) && !defined(HAVE_CT_BOS_OVR)
     EXPECT_BOS("slen exceeds src")
     rc = u8fcu8_s(str1, LEN, str2, LEN + 1, &sub);
     ERR(EOVERFLOW)

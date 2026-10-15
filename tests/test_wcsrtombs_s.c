@@ -185,7 +185,8 @@ int test_wcsrtombs_s(void) {
     CHKLOCALE_C;
 
     /* no-breaking space illegal in ASCII, but legal in C */
-    cs = L"\x00a0abc";
+    cs = L"\x00a0"
+         L"abc"; /* not \x00a0abc: hex digits */
     rc = wcsrtombs_s(&ind, dest, LEN, &cs, 32, &ps);
     if (rc == 0) { /* legal */
         ERR(EOK);
@@ -302,8 +303,7 @@ int test_wcsrtombs_s(void) {
         rc = wcsrtombs_s(&ind, hp, RSIZE_MAX_WSTR + 1, (cs = L"abc", &cs), 3,
                          &ps);
         ERR(ESLEMAX);
-        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), vrmw,
-                         &ps);
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abc", &cs), vrmw, &ps);
         ERR(ESLEMAX);
         free(hp);
     }
@@ -367,8 +367,8 @@ int test_wcsrtombs_s(void) {
         }
         CLRPS;
         memset(hp, 'x', hsz);
-        rc = wcsrtombs_s(&ind, hp, 8,
-                         (cs = L"abcdefghijklmnopq\xd800rst", &cs), v20, &ps);
+        rc = wcsrtombs_s(&ind, hp, 8, (cs = L"abcdefghijklmnopq\xd800rst", &cs),
+                         v20, &ps);
         ERR(EILSEQ);
         INDCMP(!= -1);
         for (i = 8; i < 8 + 32; i++) {

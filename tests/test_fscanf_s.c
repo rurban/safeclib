@@ -210,7 +210,8 @@ int test_fscanf_s(void) {
             rc = fscanf_s(wo, "%d", &i1);
             ERR(EOF);
             if (errno != EBADF) {
-                debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__, errno);
+                debug_printf("%s %u  Error errno=%d \n", __FUNCTION__, __LINE__,
+                             errno);
                 errs++;
             }
             fclose(wo);

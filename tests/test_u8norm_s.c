@@ -241,8 +241,8 @@ static int check_norm_edges(void) {
     /* FCC: a + U+0323 (cc 220) composes to U+1EA1, the following U+0301
        has no composition with it */
     ind = 5;
-    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"a\xCC\xA3\xCC\x81",
-                          &ind, true);
+    rc = u8norm_compose_s(out, sizeof(out),
+                          (const char8_t *)"a\xCC\xA3\xCC\x81", &ind, true);
     ERR(EOK)
     EXPSTR((char *)out, "\xE1\xBA\xA1\xCC\x81");
 
@@ -274,8 +274,9 @@ static int check_norm_edges(void) {
     /* an embedded NUL within len is a codepoint 0 which never composes */
     memset(out, 'Q', sizeof(out));
     ind = 3;
-    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"a\0"
-                                                             "b",
+    rc = u8norm_compose_s(out, sizeof(out),
+                          (const char8_t *)"a\0"
+                                           "b",
                           &ind, false);
     ERR(EOK)
     INDCMP(!= 3)
@@ -304,7 +305,8 @@ static int check_norm_edges(void) {
     }
 
     /* lenp is NULL */
-    rc = u8norm_compose_s(out, sizeof(out), (const char8_t *)"a", vnulls, false);
+    rc =
+        u8norm_compose_s(out, sizeof(out), (const char8_t *)"a", vnulls, false);
     ERR(ESNULLP)
 
     /* cp > 0x10ffff is an error, not a composite which drops the starter */

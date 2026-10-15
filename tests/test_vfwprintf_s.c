@@ -111,8 +111,7 @@ int test_vfwprintf_s(void) {
             strncpy(saved, oldloc, sizeof(saved) - 1);
             saved[sizeof(saved) - 1] = '\0';
         }
-        if (setlocale(LC_CTYPE, "C.UTF-8") ||
-            setlocale(LC_CTYPE, "C.utf8") ||
+        if (setlocale(LC_CTYPE, "C.UTF-8") || setlocale(LC_CTYPE, "C.utf8") ||
             setlocale(LC_CTYPE, "en_US.UTF-8")) {
             out = fopen(TMP, "w");
             if (out) {

@@ -165,8 +165,8 @@ EXPORT_SYMBOL(invoke_safe_str_constraint_handler);
 #define invoke_safe_str_constraint_handler(msg, ptr, error)
 #endif
 
-EXPORT int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
-                            const rsize_t dmax) {
+EXPORT int handle_str_bos_overflow(const char *restrict msg,
+                                   char *restrict dest, const rsize_t dmax) {
     /* clear the min of strlen and dmax(=destbos) */
     size_t len = strnlen_s(dest, dmax);
     errno_t err = EOVERFLOW; // not ESNOSPC. msvcrt returns EOVERFLOW
@@ -183,8 +183,9 @@ EXPORT_SYMBOL(handle_str_bos_overflow);
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 
-EXPORT void handle_str_bos_chk_warn(const char *restrict func, char *restrict dest,
-                             const rsize_t dmax, const size_t destbos) {
+EXPORT void handle_str_bos_chk_warn(const char *restrict func,
+                                    char *restrict dest, const rsize_t dmax,
+                                    const size_t destbos) {
     char msg[128];
     sprintf(msg, "%s: wrong dmax %lu, dest has size %lu", func,
             (unsigned long)dmax, (unsigned long)destbos);
@@ -194,9 +195,11 @@ EXPORT void handle_str_bos_chk_warn(const char *restrict func, char *restrict de
 EXPORT_SYMBOL(handle_str_bos_chk_warn);
 #endif
 
-EXPORT void handle_str_src_bos_chk_warn(const char *restrict func, char *restrict dest,
-                                 const rsize_t smax, const size_t srcbos,
-                                 const char *srcname, const char *smaxname) {
+EXPORT void handle_str_src_bos_chk_warn(const char *restrict func,
+                                        char *restrict dest, const rsize_t smax,
+                                        const size_t srcbos,
+                                        const char *srcname,
+                                        const char *smaxname) {
     char msg[128];
     sprintf(msg, "%s: wrong %s %lu, %s has size %lu", func, smaxname,
             (unsigned long)smax, srcname, (unsigned long)srcbos);

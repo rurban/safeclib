@@ -149,9 +149,10 @@ int test_qsort_s(void) {
                 for (j = 0; j < n; j++) {
                     sum1 += big[j].iv;
                     if (j && big[j - 1].iv > big[j].iv) {
-                        debug_printf("%s %u  pattern %d n=%u not sorted at %u\n",
-                                     __FUNCTION__, __LINE__, pattern,
-                                     (unsigned)n, (unsigned)j);
+                        debug_printf(
+                            "%s %u  pattern %d n=%u not sorted at %u\n",
+                            __FUNCTION__, __LINE__, pattern, (unsigned)n,
+                            (unsigned)j);
                         errs++;
                         break;
                     }

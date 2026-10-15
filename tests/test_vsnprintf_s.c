@@ -61,7 +61,7 @@ int test_vsnprintf_s(void);
 #define CHK(erc, estr, dmax, ...)                                              \
     rc = vtprintf_s(str1, dmax, __VA_ARGS__);                                  \
     if (rc != (erc) || strcmp(str1, (estr)) != 0) {                            \
-        debug_printf("%s %u  Expected %d \"%s\", got %d \"%s\"\n",            \
+        debug_printf("%s %u  Expected %d \"%s\", got %d \"%s\"\n",             \
                      __FUNCTION__, __LINE__, (int)(erc), (estr), (int)rc,      \
                      str1);                                                    \
         errs++;                                                                \
@@ -71,7 +71,7 @@ int test_vsnprintf_s(void);
     rc = vtprintf_s(str1, LEN, fmt, arg);                                      \
     len2 = snprintf(str2, LEN, fmt, arg);                                      \
     if (rc != len2 || strcmp(str1, str2) != 0) {                               \
-        debug_printf("%s %u  Expected %d \"%s\", got %d \"%s\"\n",            \
+        debug_printf("%s %u  Expected %d \"%s\", got %d \"%s\"\n",             \
                      __FUNCTION__, __LINE__, (int)len2, str2, (int)rc, str1);  \
         errs++;                                                                \
     }
@@ -79,8 +79,8 @@ int test_vsnprintf_s(void);
 #define CHKSANE(fmt, arg)                                                      \
     rc = vtprintf_s(str1, LEN, fmt, arg);                                      \
     if (rc <= 0 || (size_t)rc != strlen(str1)) {                               \
-        debug_printf("%s %u  \"%s\" got %d \"%s\"\n", __FUNCTION__,           \
-                     __LINE__, fmt, (int)rc, str1);                            \
+        debug_printf("%s %u  \"%s\" got %d \"%s\"\n", __FUNCTION__, __LINE__,  \
+                     fmt, (int)rc, str1);                                      \
         errs++;                                                                \
     }
 #endif
@@ -337,7 +337,8 @@ int test_vsnprintf_s(void) {
     /*--------------------------------------------------*/
 
 #ifndef USE_MSVCRT
-    /* integer conversions: flags, widths, precisions, bases, length modifiers */
+    /* integer conversions: flags, widths, precisions, bases, length modifiers
+     */
     CHK(2, "12", LEN, "%d", 12)
     CHK(3, " 12", LEN, "% d", 12)
     CHK(3, "-12", LEN, "% d", -12)
@@ -622,7 +623,8 @@ int test_vsnprintf_s(void) {
 #endif /* PRINTF_SUPPORT_FLOAT */
 
     /* an illegal %L with integer conversions */
-#if defined(PRINTF_SUPPORT_LONG_DOUBLE) && !defined(ENABLE_ILLEGAL_FORMATSPECIFIER)
+#if defined(PRINTF_SUPPORT_LONG_DOUBLE) &&                                     \
+    !defined(ENABLE_ILLEGAL_FORMATSPECIFIER)
     CHK(-1, "", LEN, "%Lx", 1)
 #endif
 #endif /* USE_MSVCRT */

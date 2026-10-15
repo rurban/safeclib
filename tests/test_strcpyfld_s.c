@@ -229,7 +229,7 @@ int main(void) {
     {
         static volatile size_t hsz = 16;
         char *hp = (char *)malloc(hsz);
-        
+
 
         if (!hp) {
             return errs + 1;

@@ -233,8 +233,8 @@ int test_memset_s(void) {
     /* all sizes and alignments through the mem primitives */
     {
         static uint8_t buf[1100];
-        static const size_t big[] = {100, 127, 128, 255, 256, 257, 511, 512,
-                                     1000};
+        static const size_t big[] = {100, 127, 128, 255, 256,
+                                     257, 511, 512, 1000};
         size_t sz, off, n, k;
 
         for (n = 0; n < 71 + sizeof(big) / sizeof(big[0]); n++) {

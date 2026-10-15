@@ -123,7 +123,7 @@ int test_wcsnatcmp_s(void) {
 
     /*--------------------------------------------------*/
 
-#ifndef HAVE_CT_BOS_OVR
+#if defined(HAVE___BUILTIN_OBJECT_SIZE) && !defined(HAVE_CT_BOS_OVR)
     EXPECT_BOS("src overflow")
     rc = wcsnatcmp_s(str1, LEN, str2, LEN + 1, &ind);
     ERR(EOVERFLOW)

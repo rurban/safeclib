@@ -46,6 +46,12 @@
 #if defined(__MINGW32__) && !defined(__USE_MINGW_ANSI_STDIO)
 #define __USE_MINGW_ANSI_STDIO 1
 #endif
+#if defined(_MSC_VER) && !defined(_CRT_STDIO_ISO_WIDE_SPECIFIERS) &&           \
+    !defined(_CRT_STDIO_LEGACY_WIDE_SPECIFIERS)
+/* The UCRT wide printf/scanf family takes wchar_t* for %s and wint_t for %c
+   by default. Our wide API follows ISO C: %s is a char*, %ls a wchar_t*. */
+#define _CRT_STDIO_ISO_WIDE_SPECIFIERS 1
+#endif
 
 #ifdef __KERNEL__
 /* linux kernel environment */
@@ -238,13 +244,16 @@ typedef unsigned long uintptr_t;
 #endif
 #endif
 
-#ifdef _WIN32
+#include "safe_config.h"
+
+/* the declarations are dllimport, unless DISABLE_DLLIMPORT with the static
+   lib: then dllexport would be added to the definitions */
+#if defined(_WIN32) && !defined(DISABLE_DLLIMPORT)
 #define EXPORT __declspec(dllexport)
 #else
 #define EXPORT
 #endif
 
-#include "safe_config.h"
 #include "safe_lib_errno.h"
 #include "safe_types.h"
 

@@ -365,7 +365,7 @@ int main(void) {
     /*--------------------------------------------------*/
 
     /* *dmaxp exceeds the compile-time known dest size */
-#ifndef HAVE_CT_BOS_OVR
+#if !defined(HAVE_CT_BOS_OVR) && defined(HAVE___BUILTIN_OBJECT_SIZE)
     wcscpy(str1, L"one,two");
     wcscpy(str2, L",");
     p2str = NULL;

@@ -149,8 +149,7 @@ int test_memchr_s(void) {
         rc = memchr_s(xhp, RSIZE_MAX_MEM + 1, 'b', &xres);
         ERR(ESLEMAX);
         if (xres != NULL) {
-            debug_printf("%s %u  result not cleared\n", __FUNCTION__,
-                         __LINE__);
+            debug_printf("%s %u  result not cleared\n", __FUNCTION__, __LINE__);
             errs++;
         }
 

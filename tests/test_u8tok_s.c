@@ -141,7 +141,7 @@ int test_u8tok_s(void) {
     TOKERR(ESLEMAX)
 
     /* *dmaxp > size of the known dest */
-#ifndef HAVE_CT_BOS_OVR
+#if defined(HAVE___BUILTIN_OBJECT_SIZE) && !defined(HAVE_CT_BOS_OVR)
     dmax = LEN + 1;
     EXPECT_BOS("dmax exceeds dest")
     tok = u8tok_s(str1, &dmax, (char8_t *)",", &ptr);

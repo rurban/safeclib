@@ -31,8 +31,8 @@ int test_strcpy_s(void);
 
 #ifndef SAFECLIB_DISABLE_CONSTRAINT_HANDLER
 /* internal constraint handler helpers, exported by libsafec */
-EXTERN int handle_str_bos_overflow(const char *restrict msg, char *restrict dest,
-                                   const rsize_t dmax);
+EXTERN int handle_str_bos_overflow(const char *restrict msg,
+                                   char *restrict dest, const rsize_t dmax);
 EXTERN void handle_str_bos_chk_warn(const char *restrict func,
                                     char *restrict dest, const rsize_t dmax,
                                     const size_t destbos);
@@ -272,8 +272,7 @@ int test_strcpy_s(void) {
         }
         prev = set_str_constraint_handler_s(test_handler2);
         if (prev != test_handler1) {
-            debug_printf("%s %u  wrong prev handler\n", __FUNCTION__,
-                         __LINE__);
+            debug_printf("%s %u  wrong prev handler\n", __FUNCTION__, __LINE__);
             errs++;
         }
         rc = strcpy_s(np, LEN, str2);
@@ -286,8 +285,7 @@ int test_strcpy_s(void) {
         /* NULL resets to the default handler (ignore_handler_s) */
         prev = set_str_constraint_handler_s(NULL);
         if (prev != test_handler2) {
-            debug_printf("%s %u  wrong prev handler\n", __FUNCTION__,
-                         __LINE__);
+            debug_printf("%s %u  wrong prev handler\n", __FUNCTION__, __LINE__);
             errs++;
         }
         prev = set_str_constraint_handler_s(test_handler1);
@@ -314,8 +312,7 @@ int test_strcpy_s(void) {
         if (h1_calls != 1 || h1_err != ESLEWRNG || h1_ptr != (void *)str1 ||
             strcmp(h1_msg, "func: wrong dmax 10, dest has size 5") != 0) {
             debug_printf("%s %u  bos_chk_warn calls=%d err=%d msg=%s\n",
-                         __FUNCTION__, __LINE__, h1_calls, (int)h1_err,
-                         h1_msg);
+                         __FUNCTION__, __LINE__, h1_calls, (int)h1_err, h1_msg);
             errs++;
         }
         h1_calls = 0;
@@ -323,8 +320,7 @@ int test_strcpy_s(void) {
         if (h1_calls != 1 || h1_err != ESLEWRNG || h1_ptr != (void *)str1 ||
             strcmp(h1_msg, "func: wrong slen 10, src has size 5") != 0) {
             debug_printf("%s %u  src_bos_chk_warn calls=%d err=%d msg=%s\n",
-                         __FUNCTION__, __LINE__, h1_calls, (int)h1_err,
-                         h1_msg);
+                         __FUNCTION__, __LINE__, h1_calls, (int)h1_err, h1_msg);
             errs++;
         }
 

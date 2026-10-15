@@ -11,7 +11,11 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
-if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+if(MSVC)
+  # no <unistd.h>
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/msvc)
+endif()
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND NOT MSVC)
   add_compile_options(-Wall -Wextra)
   add_compile_options(-g)
 endif()
@@ -365,7 +369,7 @@ function(add_safec_test test_name)
     endif()
 
     # Special link flags
-    if(need_math)
+    if(need_math AND NOT MSVC) # the math functions are in the UCRT
         target_link_libraries(${test_name} m)
     endif()
 

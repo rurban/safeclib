@@ -216,13 +216,17 @@ int test_u8width_s(void) {
     EXPLEN(1)
 
     /* Prepend (GB9b) */
-    len = u8width_s((const char8_t *)"\xD8\x80" "a", LEN);
+    len = u8width_s((const char8_t *)"\xD8\x80"
+                                     "a",
+                    LEN);
     EXPLEN(1)
 
     /* clusters are counted separately */
-    len = u8width_s((const char8_t *)"e\xCC\x81" "e\xCC\x81" "x", LEN);
+    len = u8width_s((const char8_t *)"e\xCC\x81"
+                                     "e\xCC\x81"
+                                     "x",
+                    LEN);
     EXPLEN(3)
-
 
     return (errs);
 }

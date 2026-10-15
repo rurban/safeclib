@@ -164,7 +164,8 @@ int main(void) {
     /* all sizes and alignments through the mem primitives */
     {
         static uint16_t xbuf[1100];
-        static const size_t xbig[] = {100, 127, 128, 255, 256, 257, 511, 512, 1000};
+        static const size_t xbig[] = {100, 127, 128, 255, 256,
+                                      257, 511, 512, 1000};
         size_t xsz, xoff, xn, xk;
 
         for (xn = 1; xn < 71 + sizeof(xbig) / sizeof(xbig[0]); xn++) {
@@ -179,9 +180,8 @@ int main(void) {
                     uint16_t xexp = (xk >= xoff && xk < xoff + xsz) ? 0 : 0xEE;
                     if (xbuf[xk] != xexp) {
                         debug_printf("%s %u  size %lu off %lu wrong at %lu\n",
-                                     __FUNCTION__, __LINE__,
-                                     (unsigned long)xsz, (unsigned long)xoff,
-                                     (unsigned long)xk);
+                                     __FUNCTION__, __LINE__, (unsigned long)xsz,
+                                     (unsigned long)xoff, (unsigned long)xk);
                         errs++;
                         break;
                     }

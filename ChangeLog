@@ -1,6 +1,21 @@
 
         ChangeLog file for safeclib
 
+Changes in 3.16
+	- Add Windows support to cmake with Visual Studio (cl.exe, or clang-cl)
+	  and the UCRT, without the GNU extensions: C11 via /std:c11, no -W*
+	  flags, restrict as __restrict, the Windows secure API functions
+	  (fopen_s, gmtime_s, ...) and the inline UCRT scanf_s/printf_s family
+	  are not overridden, the static lib is named safec-static.lib and
+	  defines DISABLE_DLLIMPORT for its users. Fix the cmake probes for the
+	  functions the UCRT only defines inline (snprintf, vswprintf, ...),
+	  HAVE_LONG_LONG and HAVE_LONG_DOUBLE, which were never defined by
+	  cmake, and the evaluation order of DISABLE_DLLIMPORT. Fix asctime_s
+	  with a leap second where asctime() rejects it (UCRT).
+	  Tests: add a unistd.h shim for MSVC, and skip the test cases which
+	  need __builtin_object_size, which cl.exe does not have.
+	  New CI job msvc.
+
 Changes in 3.15
 	- Make qsort_s, ctime_s, asctime_s, swprintf_s, vswprintf_s and the
 	  vsnprintf_s %a/%Lf paths thread-safe: no static temp. buffers anymore.

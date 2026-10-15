@@ -614,8 +614,7 @@ static size_t safec_ftoa(out_fct_type out, const char *funcname, char *buffer,
         }
     }
 
-    return safec_out_rev(out, buffer, idx, maxlen, buf, len, width,
-                         flags);
+    return safec_out_rev(out, buffer, idx, maxlen, buf, len, width, flags);
 }
 
 #ifdef PRINTF_SUPPORT_LONG_DOUBLE

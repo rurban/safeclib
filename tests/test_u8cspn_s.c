@@ -85,7 +85,7 @@ int test_u8cspn_s(void) {
         }
     }
 
-#ifndef HAVE_CT_BOS_OVR
+#if defined(HAVE___BUILTIN_OBJECT_SIZE) && !defined(HAVE_CT_BOS_OVR)
     EXPECT_BOS("slen exceeds src")
     rc = u8cspn_s(str, LEN, str, LEN + 1, &cnt);
     ERR(EOVERFLOW)

@@ -95,10 +95,12 @@ int test_u8str_s(void) {
     PTREQ(sub, str1)
 
 #ifndef HAVE_CT_BOS_OVR
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("slen exceeds src")
     rc = u8str_s(str1, LEN, (char8_t *)"ab", 10, &sub);
     ERR(EOVERFLOW)
     SUBNULL()
+#endif
 
     EXPECT_BOS("slen exceeds max")
     rc = u8str_s(str1, LEN, (char8_t *)"ab", RSIZE_MAX_STR + 1, &sub);

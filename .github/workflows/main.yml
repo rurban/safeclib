@@ -287,6 +287,24 @@ jobs:
     #    asset_path: ./configure.gz
     #    asset_name: configure.gz
     #    asset_content_type: application/gzip
+  msvc:
+    # Visual Studio (cl.exe) with cmake, the native msvc/UCRT toolchain
+    name: Visual Studio ${{ matrix.arch }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, Win32]
+    steps:
+    - run: git config --global core.autocrlf input
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 1
+    # no -G: cmake picks the newest Visual Studio installed on the runner
+    - run: cmake -B build -A ${{ matrix.arch }} -DBUILD_SHARED_LIBS=ON
+    - run: cmake --build build --config Debug --parallel
+    - run: ctest --test-dir build -C Debug --output-on-failure
   aarch64:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30

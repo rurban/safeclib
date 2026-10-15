@@ -132,6 +132,8 @@ EXTERN char *_gets_s_chk(char *dest, rsize_t dmax, const size_t destbos)
    mingw-w64 has repeatedly renamed/removed the header macros across
    releases, so the configure probe is the authoritative signal whenever
    it's available. */
+/* The MSVC UCRT stdio.h always declares them */
+#ifndef _MSC_VER
 #if !defined(HAVE_TMPFILE_S) && !defined(MINGW_HAS_SECURE_API) &&              \
     !defined(_STDIO_S_DEFINED)
 EXTERN errno_t tmpfile_s(FILE *restrict *restrict streamptr);
@@ -148,6 +150,7 @@ EXTERN errno_t freopen_s(FILE *restrict *restrict newstreamptr,
                          const char *restrict filename,
                          const char *restrict mode, FILE *restrict stream);
 #endif
+#endif /* _MSC_VER */
 #endif /* __KERNEL__ */
 
 #ifndef SAFECLIB_DISABLE_IO

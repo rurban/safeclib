@@ -57,9 +57,10 @@ extern "C" {
 #include <wchar.h>
 #endif
 
-/* The mingw-w64 UCRT stdio.h and wchar.h (included above) define these
-   static inline, with different semantics. Use ours under safec_ names. */
-#if defined(__MINGW32__) && defined(_UCRT)
+/* The mingw-w64 and MSVC UCRT stdio.h and wchar.h (included above) define
+   these static inline, with different semantics. Use ours under safec_
+   names. */
+#if (defined(__MINGW32__) && defined(_UCRT)) || defined(_MSC_VER)
 #define sscanf_s safec_sscanf_s
 #define fscanf_s safec_fscanf_s
 #define scanf_s safec_scanf_s

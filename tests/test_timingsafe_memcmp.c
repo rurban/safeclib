@@ -111,6 +111,7 @@ int test_timingsafe_memcmp(void) {
     /*--------------------------------------------------*/
 
     /*--------------------------------------------------*/
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     /* n larger than the known sizes of b1 or b2 */
     {
         static uint8_t small[8];
@@ -133,6 +134,7 @@ int test_timingsafe_memcmp(void) {
             errs++;
         }
     }
+#endif
 
     /*--------------------------------------------------*/
     /* unknown sizes, hidden from the compiler */

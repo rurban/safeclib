@@ -180,7 +180,8 @@ int test_fprintf_s(void) {
             errno = 0;
             rc = fprintf_s(ro, "%s", "x");
             if (rc >= 0) {
-                debug_printf("%s %u  Error rc=%d \n", __FUNCTION__, __LINE__, (int)rc);
+                debug_printf("%s %u  Error rc=%d \n", __FUNCTION__, __LINE__,
+                             (int)rc);
                 errs++;
             }
             ERRNO(EBADF);

@@ -263,6 +263,7 @@ int test_stpcpy_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     /* unterminated src of known size; the two orders put dest once below
        and once above src */
     {
@@ -283,6 +284,7 @@ int test_stpcpy_s(void) {
             errs++;
         }
     }
+#endif
 
     /*--------------------------------------------------*/
 

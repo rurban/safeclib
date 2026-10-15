@@ -89,7 +89,7 @@ int test_printf_s(void) {
 #endif
 
     /* this segfaults under darwin */
-    rc = printf_s("%s\n", L'\xd834df01');
+    rc = printf_s("%s\n", (wchar_t)0xd834df01UL);
     ANYERR();
 
     rc = printf_s("%*9$d", 0);
@@ -99,7 +99,8 @@ int test_printf_s(void) {
     /*--------------------------------------------------*/
 
     /* bare-metal newlib has no dup(), mingw no /dev/null */
-#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) /* stdout is no lvalue */
+#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) &&                           \
+    !defined(_WIN32) /* stdout is no lvalue */
     /* write error: stdout reopened read-only */
     {
         FILE *saved = fdopen(dup(fileno(stdout)), "w");
@@ -108,7 +109,8 @@ int test_printf_s(void) {
             errno = 0;
             rc = printf_s("%s", "x");
             if (rc >= 0) {
-                fprintf(stderr, "%s %u  Error rc=%d\n", __FUNCTION__, __LINE__, (int)rc);
+                fprintf(stderr, "%s %u  Error rc=%d\n", __FUNCTION__, __LINE__,
+                        (int)rc);
                 errs++;
             }
             ERRNO(EBADF);

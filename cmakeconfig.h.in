@@ -46,6 +46,13 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #cmakedefine HAVE_ERRNO_H 1
 
+/* Define to 1 if the compiler has the `long long' type. Needed for %llu, and
+   for %zu, %ju and %tu where long is 32bit (windows). */
+#cmakedefine HAVE_LONG_LONG 1
+
+/* Define to 1 if the compiler has the `long double' type. */
+#cmakedefine HAVE_LONG_DOUBLE 1
+
 /* Define to 1 if you have the <wchar.h> header file. */
 #cmakedefine HAVE_WCHAR_H 1
 
@@ -260,6 +267,15 @@
 
 /* Define to 1 if you have the `strerror' function. */
 #cmakedefine HAVE_STRERROR 1
+
+/* Define to 1 if the libc has the C11 `tmpfile_s' function (windows secure API). */
+#cmakedefine HAVE_TMPFILE_S 1
+
+/* Define to 1 if the libc has the C11 `fopen_s' function (windows secure API). */
+#cmakedefine HAVE_FOPEN_S 1
+
+/* Define to 1 if the libc has the C11 `freopen_s' function (windows secure API). */
+#cmakedefine HAVE_FREOPEN_S 1
 
 /* Define to 1 if you have the `fileno' function. */
 #cmakedefine HAVE_FILENO 1

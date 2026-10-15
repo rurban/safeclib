@@ -9,6 +9,9 @@
 #include "test_private.h"
 #include "safe_lib.h"
 #include <unistd.h>
+#ifdef _MSC_VER
+#include <stdlib.h>
+#endif
 
 #define TMP "tmpfopen"
 
@@ -20,6 +23,22 @@
 #include "test_msvcrt.h"
 int test_fopen_s(void);
 
+#ifdef _MSC_VER
+/* The UCRT's own fopen_s is used, which aborts the process in its invalid
+   parameter handler (0xc0000417) instead of returning EINVAL. */
+static void __cdecl ignore_invalid_parameter(const wchar_t *expr,
+                                             const wchar_t *func,
+                                             const wchar_t *file,
+                                             unsigned int line,
+                                             uintptr_t reserved) {
+    (void)expr;
+    (void)func;
+    (void)file;
+    (void)line;
+    (void)reserved;
+}
+#endif
+
 int test_fopen_s(void) {
     errno_t rc;
     int errs = 0;
@@ -27,6 +46,9 @@ int test_fopen_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifdef _MSC_VER
+    _set_invalid_parameter_handler(ignore_invalid_parameter);
+#endif
     print_msvcrt(use_msvcrt);
     rc = fopen_s(NULL, TMP, "r");
     init_msvcrt(rc == ESNULLP, &use_msvcrt);

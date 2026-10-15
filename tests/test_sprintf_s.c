@@ -423,7 +423,12 @@ int test_sprintf_s(void) {
     EXPSTR(str2, "0.1")
     rc = sprintf_s(str2, LEN, "%a", 0.1f);
     NOERRNULL()
+#ifdef _MSC_VER
+    /* UCRT prints all 13 hex digits of the double mantissa */
+    EXPSTR(str2, "0x1.99999a0000000p-4")
+#else
     EXPSTR(str2, "0x1.99999ap-4")
+#endif
 
     rc = sprintf_s(str2, LEN, "%g", 0.0 / 0.0);
     NOERRNULL()

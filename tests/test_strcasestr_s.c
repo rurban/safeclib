@@ -298,6 +298,7 @@ int main(void) {
 
     /*--------------------------------------------------*/
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     /* slen > size of src, unknown at compile-time */
     {
         static volatile size_t xlen = 9;
@@ -310,6 +311,7 @@ int main(void) {
             errs++;
         }
     }
+#endif
 
     /*--------------------------------------------------*/
 

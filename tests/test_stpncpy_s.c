@@ -295,6 +295,7 @@ int test_stpncpy_s(void) {
 
     /*--------------------------------------------------*/
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     /* slen exceeds the known size of src, unknown at compile-time */
     {
         static volatile size_t xlen = 9;
@@ -308,6 +309,7 @@ int test_stpncpy_s(void) {
             errs++;
         }
     }
+#endif
 
     /*--------------------------------------------------*/
 

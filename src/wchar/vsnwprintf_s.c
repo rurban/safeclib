@@ -203,8 +203,8 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
     /* dest is too small (errno E2BIG or EOVERFLOW, libc dependent) or some
      * other error. vswprintf does not return the needed length, so format
      * into a growing heap buffer until it fits to get it, and truncate. */
-    if (unlikely(ret == -1) && (errno == 0 || errno == E2BIG ||
-                                errno == EOVERFLOW)) {
+    if (unlikely(ret == -1) &&
+        (errno == 0 || errno == E2BIG || errno == EOVERFLOW)) {
         size_t n = dmax < 512 ? 512 : dmax * 2;
         wchar_t *tmp = NULL;
         while (1) {

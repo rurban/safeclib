@@ -93,11 +93,13 @@ int test_u8upr_s(void) {
     /*--------------------------------------------------*/
 
     /* illegal utf-8: stack buffer (small dmax) and heap buffer (large dmax) */
-    strcpy((char *)str, "ab\xFF" "cd");
+    strcpy((char *)str, "ab\xFF"
+                        "cd");
     rc = u8upr_s(str, 8);
     ERR(EILSEQ)
 
-    strcpy((char *)str, "ab\xFF" "cd");
+    strcpy((char *)str, "ab\xFF"
+                        "cd");
     rc = u8upr_s(str, LEN);
     ERR(EILSEQ)
 

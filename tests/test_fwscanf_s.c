@@ -271,8 +271,7 @@ int test_fwscanf_s(void) {
             strncpy(saved, oldloc, sizeof(saved) - 1);
             saved[sizeof(saved) - 1] = '\0';
         }
-        if (setlocale(LC_CTYPE, "C.UTF-8") ||
-            setlocale(LC_CTYPE, "C.utf8") ||
+        if (setlocale(LC_CTYPE, "C.UTF-8") || setlocale(LC_CTYPE, "C.utf8") ||
             setlocale(LC_CTYPE, "en_US.UTF-8")) {
             stream = fopen(TMP, "wb");
             if (stream) {
@@ -333,8 +332,8 @@ int test_fwscanf_s(void) {
         FWNUM(L"300 70000 1234567890 123") /* fits a 32-bit long (LLP64) */
         rc = fwscanf_s(fs, L"%hhd %hd %ld %zu", &sc, &sh, &lv, &zv);
         ERR(4)
-        if (sc != (signed char)300 || sh != (short)70000 ||
-            lv != 1234567890L || zv != 123) {
+        if (sc != (signed char)300 || sh != (short)70000 || lv != 1234567890L ||
+            zv != 123) {
             debug_printf("%s %u wrong sized ints\n", __FUNCTION__, __LINE__);
             errs++;
         }

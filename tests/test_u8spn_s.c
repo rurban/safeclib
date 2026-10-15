@@ -78,6 +78,7 @@ int test_u8spn_s(void) {
     /*--------------------------------------------------*/
     /* slen beyond the src object: known src size */
 #ifndef HAVE_CT_BOS_OVR
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     strcpy((char *)str, "aaabbb");
     EXPECT_BOS("slen exceeds src")
     rc = u8spn_s(str, LEN, (char8_t *)"a", 3, &cnt);
@@ -87,6 +88,7 @@ int test_u8spn_s(void) {
                      (unsigned)cnt);
         errs++;
     }
+#endif
     EXPECT_BOS("slen exceeds max")
     rc = u8spn_s(str, LEN, (char8_t *)"a", RSIZE_MAX_STR + 1, &cnt);
     ERR(ESLEMAX)
@@ -109,17 +111,17 @@ int test_u8spn_s(void) {
         rc = u8spn_s(hp, RSIZE_MAX_STR + 1, (char8_t *)"a", 2, &cnt);
         ERR(ESLEMAX)
         if (cnt != 0) {
-        debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
-                     (unsigned)cnt);
-        errs++;
-    }
+            debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
+                         (unsigned)cnt);
+            errs++;
+        }
         rc = u8spn_s(str, LEN, hp, RSIZE_MAX_STR + 1, &cnt);
         ERR(ESLEMAX)
         if (cnt != 0) {
-        debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
-                     (unsigned)cnt);
-        errs++;
-    }
+            debug_printf("%s %u  cnt=%u, expected 0\n", __FUNCTION__, __LINE__,
+                         (unsigned)cnt);
+            errs++;
+        }
         rc = u8spn_s(str, LEN, hp, 2, &cnt);
         ERR(EOK)
         if (cnt != 3) {

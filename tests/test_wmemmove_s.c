@@ -222,10 +222,12 @@ int main(void) {
         ERR(ESLEMAX);
         EXPMEM(hp, 0, LEN + 1, 33, sizeof(wchar_t));
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
         /* count exceeds the known src size: cleared */
         rc = wmemmove_s(hp, hn, mem2, hn);
         ERR(EOVERFLOW);
         EXPMEM(hp, 0, hn, 0, sizeof(wchar_t));
+#endif
         free(hp);
     }
 

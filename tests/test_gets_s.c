@@ -54,10 +54,12 @@ int test_gets_s(void) {
     SUBNULL();
     ERRNO(ESLEMAX);
 
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
     EXPECT_BOS("dest overflow")
     sub = gets_s(dest, LEN + 1);
     SUBNULL();
     ERRNO(EOVERFLOW);
+#endif
 #endif
 
     /* unknown dest size: dmax > RSIZE_MAX_STR */
@@ -131,7 +133,7 @@ int test_gets_s(void) {
     SUBNULL();
     /* musl does not return EBADF when fgets from the closed fd */
     if (errno && errno != EBADF) {
-#ifndef HAVE_MINGW32
+#if !defined(HAVE_MINGW32) && !defined(_MSC_VER) /* UCRT fgets sets no errno */
         ERRNO(EBADF);
 #else
         ERRNO(ESNOSPC);

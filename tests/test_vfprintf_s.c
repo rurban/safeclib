@@ -68,7 +68,7 @@ static size_t cmp_and_reset(FILE *out, const char *s) {
     return pos;
 }
 
-#if !(defined(HAVE_FTRUNCATE) && defined(HAVE_FILENO))
+#if !(defined(HAVE_FTRUNCATE) && defined(HAVE_FILENO)) && !defined(_MSC_VER)
 size_t ftruncate(int fd, long length) { return 0UL; }
 int fileno(const char *path) { return 0; }
 #endif
@@ -193,7 +193,7 @@ int test_vfprintf_s(void) {
 
 #if 0
     /* segfaults */
-    rc = printf_s("%s\n", L'\xd834df01');
+    rc = printf_s("%s\n", (wchar_t)0xd834df01UL);
     ANYERR();
 #endif
 

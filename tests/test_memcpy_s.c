@@ -318,7 +318,7 @@ int test_memcpy_s(void) {
         EXPMEM(hp, 16, 64, 9, 1);
 
         /* known too small src, unknown dest */
-#ifndef HAVE_CT_BOS_OVR
+#if !defined(HAVE_CT_BOS_OVR) && defined(HAVE___BUILTIN_OBJECT_SIZE)
         {
             uint8_t small[8] = {1, 2, 3, 4, 5, 6, 7, 8};
             rc = memcpy_s(hp, 64, small, 16);

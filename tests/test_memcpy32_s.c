@@ -211,7 +211,7 @@ int main(void) {
         }
 
         /* known too small src, unknown dest */
-#ifndef HAVE_CT_BOS_OVR
+#if !defined(HAVE_CT_BOS_OVR) && defined(HAVE___BUILTIN_OBJECT_SIZE)
         {
             uint32_t xsmall[8] = {1, 2, 3, 4, 5, 6, 7, 8};
             rc = memcpy32_s(xhp, xhsz, xsmall, 16);

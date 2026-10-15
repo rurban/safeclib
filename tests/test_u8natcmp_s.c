@@ -101,8 +101,9 @@ int test_u8natcmp_s(void) {
     rc = u8natcmp_s(str1, LEN, str2, &result);
     ERR(EOK)
     if (CMPSIGN(result) != -1) {
-        debug_printf("%s %u  \"file2\" <=> \"file10\" result=%d, expected sign -1\n",
-                     __FUNCTION__, __LINE__, result);
+        debug_printf(
+            "%s %u  \"file2\" <=> \"file10\" result=%d, expected sign -1\n",
+            __FUNCTION__, __LINE__, result);
         errs++;
     }
 
@@ -112,8 +113,9 @@ int test_u8natcmp_s(void) {
     rc = u8natcmp_s(str1, LEN, str2, &result);
     ERR(EOK)
     if (CMPSIGN(result) != 1) {
-        debug_printf("%s %u  \"file10\" <=> \"file2\" result=%d, expected sign 1\n",
-                     __FUNCTION__, __LINE__, result);
+        debug_printf(
+            "%s %u  \"file10\" <=> \"file2\" result=%d, expected sign 1\n",
+            __FUNCTION__, __LINE__, result);
         errs++;
     }
 
@@ -123,8 +125,9 @@ int test_u8natcmp_s(void) {
     rc = u8natcmp_s(str1, LEN, str2, &result);
     ERR(EOK)
     if (CMPSIGN(result) != 1) {
-        debug_printf("%s %u  \"file29\" <=> \"file12\" result=%d, expected sign 1\n",
-                     __FUNCTION__, __LINE__, result);
+        debug_printf(
+            "%s %u  \"file29\" <=> \"file12\" result=%d, expected sign 1\n",
+            __FUNCTION__, __LINE__, result);
         errs++;
     }
 
@@ -134,8 +137,9 @@ int test_u8natcmp_s(void) {
     rc = u8natcmp_s(str1, LEN, str2, &result);
     ERR(EOK)
     if (CMPSIGN(result) != -1) {
-        debug_printf("%s %u  \"file12\" <=> \"file29\" result=%d, expected sign -1\n",
-                     __FUNCTION__, __LINE__, result);
+        debug_printf(
+            "%s %u  \"file12\" <=> \"file29\" result=%d, expected sign -1\n",
+            __FUNCTION__, __LINE__, result);
         errs++;
     }
 
@@ -145,8 +149,9 @@ int test_u8natcmp_s(void) {
     rc = u8natcmp_s(str1, LEN, str2, &result);
     ERR(EOK)
     if (CMPSIGN(result) != -1) {
-        debug_printf("%s %u  \"a01b\" <=> \"a01c\" result=%d, expected sign -1\n",
-                     __FUNCTION__, __LINE__, result);
+        debug_printf(
+            "%s %u  \"a01b\" <=> \"a01c\" result=%d, expected sign -1\n",
+            __FUNCTION__, __LINE__, result);
         errs++;
     }
 
@@ -178,8 +183,9 @@ int test_u8natcmp_s(void) {
     rc = u8natcmp_s(str1, LEN, str2, &result);
     ERR(EOK)
     if (CMPSIGN(result) != -1) {
-        debug_printf("%s %u  \"a01\" <=> \"a012\" result=%d, expected sign -1\n",
-                     __FUNCTION__, __LINE__, result);
+        debug_printf(
+            "%s %u  \"a01\" <=> \"a012\" result=%d, expected sign -1\n",
+            __FUNCTION__, __LINE__, result);
         errs++;
     }
 
@@ -249,7 +255,8 @@ int test_u8natcmp_s(void) {
         errs++;
     }
 
-    /* unterminated src */
+#ifdef HAVE___BUILTIN_OBJECT_SIZE
+    /* unterminated src (needs the known src size) */
     {
         char8_t usrc[8];
         memset(usrc, 'a', sizeof(usrc));
@@ -258,6 +265,7 @@ int test_u8natcmp_s(void) {
         rc = u8natcmp_s(str1, LEN, usrc, &result);
         ERR(ESUNTERM)
     }
+#endif
 
     /* dmax > RSIZE_MAX_STR is only checked for a dest of unknown size.
        Hide the size from the compiler. */

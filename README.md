@@ -290,6 +290,9 @@ The library has been tested on the following systems:
 - i386-mingw32 cross-compiled
 - MSYS2 MINGW64, MINGW32 and UCRT64 (keeps its own printf/scanf family,
   renamed to `safec_*`, on UCRT64; see `doc/libc-overview.md`)
+- Visual Studio (cl.exe and the UCRT, x64 and Win32) with `cmake`, without
+  the GNU extensions: no compile-time size checks, as cl.exe has no
+  `__builtin_object_size`. See the `msvc` CI job.
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
 - freebsd 10 - 13 amd64

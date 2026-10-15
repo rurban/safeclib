@@ -45,6 +45,9 @@ extern "C" {
 # else
 #   define HAVE_MINGW32  /* old mingw */
 # endif
+#elif defined(_MSC_VER) /* cl.exe or clang-cl */
+# define HAVE_MSVC
+# define HAVE_MINGW64 /* has the same windows secure API as mingw-w64 */
 #endif
 
 /*

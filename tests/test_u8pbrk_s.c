@@ -64,7 +64,7 @@ int test_u8pbrk_s(void) {
     ERR(ESNOTFND)
     SUBNULL()
 
-#ifndef HAVE_CT_BOS_OVR
+#if defined(HAVE___BUILTIN_OBJECT_SIZE) && !defined(HAVE_CT_BOS_OVR)
     EXPECT_BOS("slen exceeds src")
     rc = u8pbrk_s(str, LEN, (char8_t *)"ow", 10, &sub);
     ERR(EOVERFLOW)

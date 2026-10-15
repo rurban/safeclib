@@ -273,7 +273,8 @@ endif
 
 SAFEC_TEST_COMMON = \
 	test_private.h \
-	test_uni.h
+	test_uni.h \
+	msvc/unistd.h
 SAFEC_TEST_MSVCRT = \
 	test_msvcrt.h \
 	test_msvcrt.c

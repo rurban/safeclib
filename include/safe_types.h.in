@@ -69,6 +69,10 @@ typedef int errno_t;
 
 #ifndef __cplusplus
 @INSERT_BOOL_SUPPORT@
+# if defined(_MSC_VER) && !defined(restrict)
+/* cl.exe only knows __restrict */
+#  define restrict __restrict
+# endif
 #else
 # undef restrict
 # define restrict __restrict

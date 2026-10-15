@@ -42,6 +42,12 @@
 #include "config.h"
 #include "safe_config.h"
 
+#ifdef _MSC_VER
+/* POSIX names of the UCRT */
+#define strcasecmp _stricmp
+#define strncasecmp _strnicmp
+#endif
+
 #ifndef PERL
 #define PERL "perl"
 #ifndef PERL_VERSION
@@ -56,7 +62,7 @@
 #include <linux/ctype.h>
 #include <linux/slab.h>
 #define malloc(n) kmalloc((n), GFP_KERNEL)
-#define free(p)   kfree(p)
+#define free(p) kfree(p)
 
 #include <linux/string.h>
 /* strncpy() was removed from recent kernels. Tests only use it to copy
@@ -77,7 +83,7 @@
 #endif
 
 /* --disable-shared: ignore the sec_api */
-#if defined(_WIN32) && defined(DISABLE_DLLIMPORT)
+#if defined(_WIN32) && defined(DISABLE_DLLIMPORT) && !defined(_MSC_VER)
 /* ignore the sec_api imports. with DISABLE_DLLIMPORT we want our own */
 #undef _SECIMP
 #define _SECIMP

@@ -46,6 +46,22 @@ int vtwprintf_s(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
                 const wchar_t *restrict fmt, ...);
 int test_vswprintf_s(void);
 
+#ifdef _MSC_VER
+/* The UCRT aborts the process in its invalid parameter handler (0xc0000417)
+   on a malformed format string instead of failing with EINVAL. */
+static void __cdecl ignore_invalid_parameter(const wchar_t *expr,
+                                             const wchar_t *func,
+                                             const wchar_t *file,
+                                             unsigned int line,
+                                             uintptr_t reserved) {
+    (void)expr;
+    (void)func;
+    (void)file;
+    (void)line;
+    (void)reserved;
+}
+#endif
+
 int vtwprintf_s(wchar_t *restrict dest, rsize_t dmax, const size_t destbos,
                 const wchar_t *restrict fmt, ...) {
     int rc;
@@ -268,10 +284,22 @@ int test_vswprintf_s(void) {
     /*--------------------------------------------------*/
 
 #ifndef __APPLE__
+#ifdef _MSC_VER
+    /* The UCRT validates the format: with the ignoring handler it fails with
+       EINVAL (-1), some implementations (wine) just skip the bogus '%'. */
+    _set_invalid_parameter_handler(ignore_invalid_parameter);
+#endif
     rc = vtwprintf_s(str1, 10, BOS(str1), L"%vls", str2);
 #if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE) || defined(__MINGW32__)
     /* they print unknown formats verbatim */
     NOERR();
+#elif defined(_MSC_VER)
+    if (rc == -1) {
+        WEXPNULL(str1);
+    } else {
+        ERR(3);
+        WEXPSTR(str1, L"vls");
+    }
 #else /* musl and darwin disallow this */
     ERR(-1);
     /* darwin throws Illegal byte sequence */
@@ -284,6 +312,13 @@ int test_vswprintf_s(void) {
 #if defined(__GLIBC__) || defined(BSD_OR_NEWLIB_LIKE) || defined(__MINGW32__)
     /* they print unknown formats verbatim */
     NOERR();
+#elif defined(_MSC_VER)
+    if (rc == -1) {
+        WEXPNULL(wstr3);
+    } else {
+        ERR(3);
+        WEXPSTR(wstr3, L"vls");
+    }
 #else /* musl and darwin disallow this */
     ERR(-1);
     WEXPNULL(str1)
@@ -346,8 +381,7 @@ int test_vswprintf_s(void) {
             strncpy(saved, oldloc, sizeof(saved) - 1);
             saved[sizeof(saved) - 1] = '\0';
         }
-        if (setlocale(LC_CTYPE, "C.UTF-8") ||
-            setlocale(LC_CTYPE, "C.utf8") ||
+        if (setlocale(LC_CTYPE, "C.UTF-8") || setlocale(LC_CTYPE, "C.utf8") ||
             setlocale(LC_CTYPE, "en_US.UTF-8")) {
             errno = 0;
             rc = vtwprintf_s(str1, LEN, BOS(str1), L"%s", "\xff\xfe");

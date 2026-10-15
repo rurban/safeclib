@@ -1060,8 +1060,7 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
         /* output: starter (composed or not), the pending sequence and the
          * final NUL need room. A cp needs 2 wchar_t with surrogates. */
-        if (unlikely((cc_pos + 1) * (SIZEOF_WCHAR_T > 2 ? 1 : 2) + 1 >
-                     dmax)) {
+        if (unlikely((cc_pos + 1) * (SIZEOF_WCHAR_T > 2 ? 1 : 2) + 1 > dmax)) {
             if (seq_ext)
                 free(seq_ext);
             handle_werror(orig_dest, orig_dmax,

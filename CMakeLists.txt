@@ -95,8 +95,9 @@ else()
     endif()
 endif()
 
-# Compiler detection
-if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+# Compiler detection. MSVC is cl.exe, or clang-cl with its MSVC-like command
+# line: both do not know the GNU flags, attributes and builtins.
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND NOT MSVC)
     set(COMPILER_GNU TRUE)
 else()
     set(COMPILER_GNU FALSE)
@@ -121,23 +122,70 @@ include(CheckCSourceCompiles)
 include(CheckCXXSourceCompiles)
 include(TestBigEndian)
 
-# Check C99 support
-check_c_compiler_flag("-std=c99" HAVE_C99_FLAG)
-if(HAVE_C99_FLAG)
-    set(CMAKE_C_STANDARD 99)
-    set(CMAKE_C_STANDARD_REQUIRED ON)
-    set(SAFECLIB_HAVE_C99 1)
+# check_function_exists links against a symbol, which fails for the functions
+# the MSVC UCRT only defines inline in its headers (snprintf, vswprintf, ...).
+# There we look for the declaration.
+set(SAFEC_FUNC_HEADERS stdio.h stdlib.h string.h wchar.h wctype.h time.h
+    math.h ctype.h malloc.h)
+function(safec_check_function func var)
+    if(MSVC)
+        check_symbol_exists(${func} "${SAFEC_FUNC_HEADERS}" ${var})
+    else()
+        check_function_exists(${func} ${var})
+    endif()
+endfunction()
+
+# flags for the probes below: warnings as errors, optimized
+if(MSVC)
+    set(SAFEC_PROBE_WERROR /WX)
+    set(SAFEC_PROBE_OPT /O2)
 else()
-    set(SAFECLIB_HAVE_C99 0)
-    message(WARNING "Compiler may not support C99")
+    set(SAFEC_PROBE_WERROR -Werror)
+    set(SAFEC_PROBE_OPT -O2)
 endif()
 
-# Check C11 support
-check_c_compiler_flag("-std=c11" HAVE_C11_FLAG)
-if(HAVE_C11_FLAG)
+# Check C99 support
+if(MSVC)
+    # cl.exe has no -std=c99, but /std:c11 (VS 2019 16.8+), with the C99 library
+    # and the C11 keywords (_Thread_local). The UCRT is C99 conforming. In
+    # CMAKE_C_FLAGS, so that the probes below see it also.
+    check_c_compiler_flag("/std:c11" HAVE_STD_C11_MSVC)
+    if(HAVE_STD_C11_MSVC)
+        string(APPEND CMAKE_C_FLAGS " /std:c11")
+    endif()
+    # The traditional preprocessor does not handle our variadic macros.
+    check_c_compiler_flag("/Zc:preprocessor" HAVE_ZC_PREPROCESSOR)
+    if(HAVE_ZC_PREPROCESSOR)
+        add_compile_options(/Zc:preprocessor)
+    endif()
+    # source and execution charset are UTF-8, as in the tests
+    add_compile_options(/utf-8)
+    # no deprecation noise for the unsafe libc functions we wrap
+    # /std:c11 defines __STDC__, which hides the POSIX names of the UCRT
+    # (fileno, unlink, ...). The probes need them also.
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_WARNINGS
+                            _CRT_DECLARE_NONSTDC_NAMES=1)
+    set(CMAKE_REQUIRED_DEFINITIONS -D_CRT_DECLARE_NONSTDC_NAMES=1)
+    set(SAFECLIB_HAVE_C99 1)
     set(HAVE_C11 1)
 else()
-    set(HAVE_C11 0)
+    check_c_compiler_flag("-std=c99" HAVE_C99_FLAG)
+    if(HAVE_C99_FLAG)
+        set(CMAKE_C_STANDARD 99)
+        set(CMAKE_C_STANDARD_REQUIRED ON)
+        set(SAFECLIB_HAVE_C99 1)
+    else()
+        set(SAFECLIB_HAVE_C99 0)
+        message(WARNING "Compiler may not support C99")
+    endif()
+
+    # Check C11 support
+    check_c_compiler_flag("-std=c11" HAVE_C11_FLAG)
+    if(HAVE_C11_FLAG)
+        set(HAVE_C11 1)
+    else()
+        set(HAVE_C11 0)
+    endif()
 endif()
 
 # thread-local constraint handlers. Not on every newlib, which lacks
@@ -152,6 +200,11 @@ int main(void) { safec_tls = 1; return safec_tls; }
 " HAVE___THREAD)
 
 
+# Check warnings. The MSVC-like frontends have a different set, and /Wall
+# is -Weverything with clang-cl.
+if(MSVC)
+    add_compile_options(/W3)
+else()
 # Check warnings
 set(COMMON_WARNINGS
     -Wall
@@ -214,6 +267,7 @@ endif()
 # Apply all supported warnings
 add_compile_options(${WARN_CFLAGS})
 message(STATUS "WARN_CFLAGS: ${WARN_CFLAGS}")
+endif() # NOT MSVC warnings
 
 # Check headers
 check_include_file("time.h" HAVE_TIME_H)
@@ -295,7 +349,7 @@ if(HAVE_STDINT_H)
 endif()
 
 # probe flags only, keep the user (toolchain) CMAKE_C_FLAGS
-set(CMAKE_REQUIRED_FLAGS -Werror)
+set(CMAKE_REQUIRED_FLAGS ${SAFEC_PROBE_WERROR})
 # Check for errno_t
 check_c_source_compiles("
 #include <errno.h>
@@ -337,7 +391,7 @@ check_c_source_compiles("__float128 x = 1.0Q; int main() { return 0; }" HAVE_FLO
 # Check compiler builtins
 include(CheckCSourceCompiles)
 
-set(CMAKE_REQUIRED_FLAGS -O2)
+set(CMAKE_REQUIRED_FLAGS ${SAFEC_PROBE_OPT})
 # __builtin_object_size
 check_c_source_compiles("
 #include <stddef.h>
@@ -404,7 +458,7 @@ int main() {
 }
 " HAVE___BUILTIN_ISINFL)
 
-set(CMAKE_REQUIRED_FLAGS -Werror)
+set(CMAKE_REQUIRED_FLAGS ${SAFEC_PROBE_WERROR})
 # Check function attributes
 check_c_source_compiles("
 void __attribute__((format(printf, 1, 2))) myprintf(const char *fmt, ...);
@@ -457,9 +511,9 @@ int main() {
 unset(CMAKE_REQUIRED_FLAGS)
 
 # Check functions
-check_function_exists(vswprintf HAVE_VSWPRINTF)
-check_function_exists(vswscanf HAVE_VSWSCANF)
-check_function_exists(mbsrtowcs HAVE_MBSRTOWCS)
+safec_check_function(vswprintf HAVE_VSWPRINTF)
+safec_check_function(vswscanf HAVE_VSWSCANF)
+safec_check_function(mbsrtowcs HAVE_MBSRTOWCS)
 
 # Determine wchar support
 if(HAVE_WCHAR_H AND HAVE_VSWPRINTF AND HAVE_MBSRTOWCS AND HAVE_VSWSCANF)
@@ -478,41 +532,44 @@ endif()
 option(ENABLE_U8 "Enable u8 UTF-8 support" ${ENABLE_U8_DEFAULT})
 
 # Standard functions
-check_function_exists(memcmp HAVE_MEMCMP)
-check_function_exists(memset HAVE_MEMSET)
-check_function_exists(strcmp HAVE_STRCMP)
-check_function_exists(strcasecmp HAVE_STRCASECMP)
-check_function_exists(strcasestr HAVE_STRCASESTR)
-check_function_exists(strcspn HAVE_STRCSPN)
-check_function_exists(strpbrk HAVE_STRPBRK)
-check_function_exists(strspn HAVE_STRSPN)
-check_function_exists(strnstr HAVE_STRNSTR)
-check_function_exists(strnlen HAVE_STRNLEN)
-check_function_exists(strrchr HAVE_STRRCHR)
-check_function_exists(memrchr HAVE_MEMRCHR)
-check_function_exists(strstr HAVE_STRSTR)
-check_function_exists(bcmp HAVE_BCMP)
-check_function_exists(secure_getenv HAVE_SECURE_GETENV)
-check_function_exists(timingsafe_memcmp HAVE_TIMINGSAFE_MEMCMP)
-check_function_exists(timingsafe_bcmp HAVE_TIMINGSAFE_BCMP)
-check_function_exists(explicit_bzero HAVE_EXPLICIT_BZERO)
-check_function_exists(explicit_memset HAVE_EXPLICIT_MEMSET)
-check_function_exists(asctime_r HAVE_ASCTIME_R)
-check_function_exists(ctime_r HAVE_CTIME_R)
-check_function_exists(gmtime_r HAVE_GMTIME_R)
-check_function_exists(localtime_r HAVE_LOCALTIME_R)
-check_function_exists(memccpy HAVE_MEMCCPY)
-check_function_exists(stpcpy HAVE_STPCPY)
-check_function_exists(stpncpy HAVE_STPNCPY)
-check_function_exists(strerror HAVE_STRERROR)
-check_function_exists(fileno HAVE_FILENO)
-check_function_exists(ftruncate HAVE_FTRUNCATE)
-check_function_exists(popen HAVE_POPEN)
-check_function_exists(strtold HAVE_STRTOLD)
-check_function_exists(strtod HAVE_STRTOD)
-check_function_exists(snprintf HAVE_SNPRINTF)
-check_function_exists(strlcpy HAVE_STRLCPY)
-check_function_exists(strlcat HAVE_STRLCAT)
+safec_check_function(memcmp HAVE_MEMCMP)
+safec_check_function(memset HAVE_MEMSET)
+safec_check_function(strcmp HAVE_STRCMP)
+safec_check_function(strcasecmp HAVE_STRCASECMP)
+safec_check_function(strcasestr HAVE_STRCASESTR)
+safec_check_function(strcspn HAVE_STRCSPN)
+safec_check_function(strpbrk HAVE_STRPBRK)
+safec_check_function(strspn HAVE_STRSPN)
+safec_check_function(strnstr HAVE_STRNSTR)
+safec_check_function(strnlen HAVE_STRNLEN)
+safec_check_function(strrchr HAVE_STRRCHR)
+safec_check_function(memrchr HAVE_MEMRCHR)
+safec_check_function(strstr HAVE_STRSTR)
+safec_check_function(bcmp HAVE_BCMP)
+safec_check_function(secure_getenv HAVE_SECURE_GETENV)
+safec_check_function(timingsafe_memcmp HAVE_TIMINGSAFE_MEMCMP)
+safec_check_function(timingsafe_bcmp HAVE_TIMINGSAFE_BCMP)
+safec_check_function(explicit_bzero HAVE_EXPLICIT_BZERO)
+safec_check_function(explicit_memset HAVE_EXPLICIT_MEMSET)
+safec_check_function(asctime_r HAVE_ASCTIME_R)
+safec_check_function(ctime_r HAVE_CTIME_R)
+safec_check_function(gmtime_r HAVE_GMTIME_R)
+safec_check_function(localtime_r HAVE_LOCALTIME_R)
+safec_check_function(memccpy HAVE_MEMCCPY)
+safec_check_function(stpcpy HAVE_STPCPY)
+safec_check_function(stpncpy HAVE_STPNCPY)
+safec_check_function(strerror HAVE_STRERROR)
+safec_check_function(tmpfile_s HAVE_TMPFILE_S)
+safec_check_function(fopen_s HAVE_FOPEN_S)
+safec_check_function(freopen_s HAVE_FREOPEN_S)
+safec_check_function(fileno HAVE_FILENO)
+safec_check_function(ftruncate HAVE_FTRUNCATE)
+safec_check_function(popen HAVE_POPEN)
+safec_check_function(strtold HAVE_STRTOLD)
+safec_check_function(strtod HAVE_STRTOD)
+safec_check_function(snprintf HAVE_SNPRINTF)
+safec_check_function(strlcpy HAVE_STRLCPY)
+safec_check_function(strlcat HAVE_STRLCAT)
 if(HAVE_STRLCPY)
     set(INSERT_STRLCPY "#define HAVE_STRLCPY 1")
 else()
@@ -530,21 +587,21 @@ if(ENABLE_MINIMAL OR NOT HAVE_SNPRINTF)
     set(ENABLE_FLOAT OFF)
     set(ENABLE_LONG_DOUBLE OFF)
 endif()
-check_function_exists(isinfl HAVE_ISINFL)
-check_function_exists(isinf HAVE_ISINF)
+safec_check_function(isinfl HAVE_ISINFL)
+safec_check_function(isinf HAVE_ISINF)
 
 if(ENABLE_WCHAR)
-    check_function_exists(wmemchr HAVE_WMEMCHR)
-    check_function_exists(wmemcmp HAVE_WMEMCMP)
-    check_function_exists(wcscmp HAVE_WCSCMP)
-    check_function_exists(wcsstr HAVE_WCSSTR)
-    check_function_exists(vsnwprintf HAVE_VSNWPRINTF)
-    check_function_exists(mbstowcs HAVE_MBSTOWCS)
-    check_function_exists(iswdigit HAVE_ISWDIGIT)
-    check_function_exists(iswspace HAVE_ISWSPACE)
-    check_function_exists(towlower HAVE_TOWLOWER)
-    check_function_exists(towupper HAVE_TOWUPPER)
-    check_function_exists(towctrans HAVE_TOWCTRANS)
+    safec_check_function(wmemchr HAVE_WMEMCHR)
+    safec_check_function(wmemcmp HAVE_WMEMCMP)
+    safec_check_function(wcscmp HAVE_WCSCMP)
+    safec_check_function(wcsstr HAVE_WCSSTR)
+    safec_check_function(vsnwprintf HAVE_VSNWPRINTF)
+    safec_check_function(mbstowcs HAVE_MBSTOWCS)
+    safec_check_function(iswdigit HAVE_ISWDIGIT)
+    safec_check_function(iswspace HAVE_ISWSPACE)
+    safec_check_function(towlower HAVE_TOWLOWER)
+    safec_check_function(towupper HAVE_TOWUPPER)
+    safec_check_function(towctrans HAVE_TOWCTRANS)
 endif()
 
 # Check for various __*_chk functions
@@ -558,19 +615,19 @@ set(CHK_FUNCS
 foreach(func ${CHK_FUNCS})
     string(TOUPPER "${func}" FUNC_UPPER)
     string(REPLACE "__" "" FUNC_NAME "${FUNC_UPPER}")
-    check_function_exists(${func} HAVE_${FUNC_NAME})
+    safec_check_function(${func} HAVE_${FUNC_NAME})
 endforeach()
 
 if(ENABLE_WCHAR)
-    check_function_exists(__swprintf_chk HAVE_SWPRINTF_CHK)
-    check_function_exists(__vfwprintf_chk HAVE_VFWPRINTF_CHK)
-    check_function_exists(__vswscanf_chk HAVE_VSWSCANF_CHK)
+    safec_check_function(__swprintf_chk HAVE_SWPRINTF_CHK)
+    safec_check_function(__vfwprintf_chk HAVE_VFWPRINTF_CHK)
+    safec_check_function(__vswscanf_chk HAVE_VSWSCANF_CHK)
 endif()
 
 # Check for MPX builtins
-check_function_exists(__bnd_chk_ptr_bounds HAVE___BND_CHK_PTR_BOUNDS)
-check_function_exists(__bnd_set_ptr_bounds HAVE___BND_SET_PTR_BOUNDS)
-check_function_exists(__bnd_null_ptr_bounds HAVE___BND_NULL_PTR_BOUNDS)
+safec_check_function(__bnd_chk_ptr_bounds HAVE___BND_CHK_PTR_BOUNDS)
+safec_check_function(__bnd_set_ptr_bounds HAVE___BND_SET_PTR_BOUNDS)
+safec_check_function(__bnd_null_ptr_bounds HAVE___BND_NULL_PTR_BOUNDS)
 
 # Check for ARM barriers
 check_c_source_compiles("__dsb(); int main() { __dsb(); return 0; }" HAVE___DSB)
@@ -617,10 +674,13 @@ if (ENABLE_U8)
 else()
   set(INSERT_U8 "#undef SAFECLIB_ENABLE_U8")
 endif()
-if (DISABLE_DLLIMPORT)
+# DLL import/export handling, only relevant to windows. The header is shared by
+# the DLL and the static lib: the static lib passes DISABLE_DLLIMPORT to its
+# users (target_compile_definitions PUBLIC) if both are built.
+if (NOT BUILD_SHARED_LIBS)
   set(INSERT_DISABLE_DLLIMPORT "#define DISABLE_DLLIMPORT 1")
 else()
-  set(INSERT_DISABLE_DLLIMPORT "#undef DISABLE_DLLIMPORT")
+  set(INSERT_DISABLE_DLLIMPORT "/* DISABLE_DLLIMPORT is defined with a static libsafec */")
 endif()
 if (SAFECLIB_HAVE_C99)
   set(INSERT_SAFECLIB_HAVE_C99 "#define SAFECLIB_HAVE_C99 1")
@@ -713,7 +773,7 @@ else()
 endif()
 
 # Compiler flags
-if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+if(COMPILER_GNU)
     add_compile_options(-Wall -Wextra)
 
     if(ENABLE_HARDENING)
@@ -760,7 +820,13 @@ int main(void) { return f(1); }
 endif()
 
 # Debug/Release flags
-if(ENABLE_DEBUG)
+if(MSVC)
+    # multi-config generators: the configuration is chosen at build time
+    # (--config), keep the CMake defaults for /O2, /Zi and the runtime.
+    if(ENABLE_DEBUG)
+        add_compile_definitions(DEBUG)
+    endif()
+elseif(ENABLE_DEBUG)
     if(ENABLE_GCOV)
         set(CMAKE_C_FLAGS_DEBUG "-g")
     else()
@@ -851,13 +917,6 @@ elseif(DEFAULT_HANDLER STREQUAL "abort")
 else()
     # Runtime selection
     set(SAFECLIB_DEFAULT_HANDLER "")
-endif()
-
-# DLL import/export handling
-if(BUILD_SHARED_LIBS)
-    set(DISABLE_DLLIMPORT 0)
-else()
-    set(DISABLE_DLLIMPORT 1)
 endif()
 
 # Configure files
@@ -1212,9 +1271,20 @@ endif()
 
 if(BUILD_STATIC_LIBS)
     add_library(safec_static STATIC ${SAFEC_SOURCES_WITH_PATH})
-    set_target_properties(safec_static PROPERTIES
-        OUTPUT_NAME safec
-    )
+    if(MSVC)
+        # safec.lib is already the import library of the DLL
+        set_target_properties(safec_static PROPERTIES
+            OUTPUT_NAME safec-static
+        )
+    else()
+        set_target_properties(safec_static PROPERTIES
+            OUTPUT_NAME safec
+        )
+    endif()
+    if(WIN32)
+        # the header imports the DLL symbols, not wanted with the static lib
+        target_compile_definitions(safec_static PUBLIC DISABLE_DLLIMPORT)
+    endif()
 endif()
 
 # Alias target
