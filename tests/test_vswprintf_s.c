@@ -300,7 +300,7 @@ int test_vswprintf_s(void) {
     bigsrc[1099] = L'\0';
     wcscpy(str1, L"keep");
     rc = vtwprintf_s(str1, 20, BOS(str1), L"%ls", bigsrc);
-    if (!use_msvcrt) {
+    if (!use_msvcrt && sizeof(wchar_t) > 2) { /* 16-bit: ESNOSPC */
         ERR(-1);
     } else {
         ANYERR();
@@ -309,7 +309,7 @@ int test_vswprintf_s(void) {
     /* dmax >= 512: a bigger temp buffer is used. Too long for the temp
        buffer also. */
     rc = vtwprintf_s(big, 600, BOS(big), L"%ls", bigsrc);
-    if (!use_msvcrt) {
+    if (!use_msvcrt && sizeof(wchar_t) > 2) { /* 16-bit: ESNOSPC */
         ERR(-1);
     } else {
         ANYERR();

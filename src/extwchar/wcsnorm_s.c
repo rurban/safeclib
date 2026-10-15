@@ -1072,13 +1072,12 @@ EXPORT errno_t _wcsnorm_compose_s_chk(wchar_t *restrict dest, rsize_t dmax,
         }
         _ENC_W16(dest, dmax, cpS);
 
-        if (cc_pos == 1) {
-            _ENC_W16(dest, dmax, *seq_ptr);
-            cc_pos = 0;
-        } else if (cc_pos > 1) {
-            memcpy(dest, seq_ptr, cc_pos * sizeof(wchar_t));
-            dest += cc_pos;
-            dmax -= cc_pos;
+        if (cc_pos > 0) {
+            /* seq_ptr holds code points, encode them (surrogates, 16-bit) */
+            size_t si;
+            for (si = 0; si < (size_t)cc_pos; si++) {
+                _ENC_W16(dest, dmax, seq_ptr[si]);
+            }
             cc_pos = 0;
         }
 

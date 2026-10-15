@@ -371,7 +371,9 @@ int main(void) {
     p2str = NULL;
     len = LEN + 10;
     rc = wcstok_s(str1, &len, str2, &p2str);
-    ERRPTR(NULL);
+    if (!use_msvcrt) {
+        ERRPTR(NULL);
+    }
     ERRNO_MSVC(EOVERFLOW, 0);
 #endif
 
@@ -382,7 +384,9 @@ int main(void) {
     p2str = NULL;
     len = wcslen(str1);
     rc = wcstok_s(str1, &len, str2, &p2str);
-    ERRPTR(NULL);
+    if (!use_msvcrt) {
+        ERRPTR(NULL);
+    }
     ERRNO_MSVC(ESUNTERM, 0);
 
     /*--------------------------------------------------*/

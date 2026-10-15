@@ -98,8 +98,8 @@ int test_printf_s(void) {
 
     /*--------------------------------------------------*/
 
-    /* bare-metal newlib has no dup() */
-#if !defined(__NEWLIB__) || defined(__CYGWIN__)
+    /* bare-metal newlib has no dup(), mingw no /dev/null */
+#if (!defined(__NEWLIB__) || defined(__CYGWIN__)) && !defined(_WIN32) /* stdout is no lvalue */
     /* write error: stdout reopened read-only */
     {
         FILE *saved = fdopen(dup(fileno(stdout)), "w");

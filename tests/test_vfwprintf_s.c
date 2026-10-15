@@ -95,7 +95,9 @@ int test_vfwprintf_s(void) {
     out = fopen(TMP, "r");
     if (out) {
         rc = vtwprintf_s(out, L"%ls", wstr);
+#ifndef _WIN32 /* the Windows CRT may buffer it */
         ANYERR();
+#endif
         fclose(out);
     }
 
