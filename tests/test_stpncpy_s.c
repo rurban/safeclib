@@ -130,7 +130,7 @@ int test_stpncpy_s(void) {
     dest = stpncpy_s(str2, LEN, str1, slen, &rc);
     ERR(EOK)
     EXPSTR(str1, str2);
-    CHECK_SLACK(&str2[len], LEN - len);
+    CHECK_SLACK_FILLED(&str2[len], LEN - len);
 
     /*--------------------------------------------------*/
 
@@ -192,7 +192,7 @@ int test_stpncpy_s(void) {
     dest = stpncpy_s(str1, 3, str2, 2, &rc);
     ERR(EOK)
     EXPSTR(str1, str2);
-    CHECK_SLACK(&str1[2], 1);
+    CHECK_SLACK_FILLED(&str1[2], 1);
 
     /*--------------------------------------------------*/
 
@@ -202,7 +202,7 @@ int test_stpncpy_s(void) {
     dest = stpncpy_s(str1, 10, str2, 2, &rc);
     ERR(EOK);
     EXPSTR(str1, str2);
-    CHECK_SLACK(&str1[2], 8);
+    CHECK_SLACK_FILLED(&str1[2], 8);
     /*for (i=0; i<10; i++) {
         debug_printf("str1[%i] = %d \n", i, str1[i]);
     }*/

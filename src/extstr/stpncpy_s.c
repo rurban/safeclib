@@ -257,6 +257,8 @@ EXPORT char *_stpncpy_s_chk(char *restrict dest, rsize_t dmax,
                         dmax--;
                     }
                 }
+#else
+                *dest = '\0';
 #endif
                 *errp = RCNEGATE(EOK);
                 return dest;

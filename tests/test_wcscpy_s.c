@@ -219,7 +219,7 @@ int test_wcscpy_s(void) {
     rc = wcscpy_s(&str1[40], 80, &str1[0]);
     ERR(EOK);
     WEXPSTR(&str1[40], L"ab");
-    WCHECK_SLACK(&str1[43], 77);
+    WCHECK_SLACK_FILLED(&str1[43], 77);
 
     return (errs);
 }

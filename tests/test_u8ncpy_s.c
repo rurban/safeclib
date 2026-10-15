@@ -34,7 +34,7 @@ static int check_layout(int fwd) {
         rc = u8ncpy_s(d, dm, s, 10);
         ERR(EOK)
         EXPSTR((char *)d, "yo")
-        CHECK_SLACK(&d[3], dm - 3);
+        CHECK_SLACK_FILLED(&d[3], dm - 3);
 
         /* slen truncates before a multi-byte character */
         memset(buf, 'X', sizeof(buf));

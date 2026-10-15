@@ -443,6 +443,15 @@ static inline void *bnd_chk_malloc(size_t n) {
 #define CHECK_SLACK(dest, dmax) EXPNULL(dest)
 #define WCHECK_SLACK(dest, dmax) WEXPNULL(dest)
 #endif
+/* the slack check, for dest regions which were filled with data before:
+   only the null slack clears them. */
+#ifdef SAFECLIB_STR_NULL_SLACK
+#define CHECK_SLACK_FILLED(dest, dmax) CHECK_SLACK(dest, dmax)
+#define WCHECK_SLACK_FILLED(dest, dmax) WCHECK_SLACK(dest, dmax)
+#else
+#define CHECK_SLACK_FILLED(dest, dmax)
+#define WCHECK_SLACK_FILLED(dest, dmax)
+#endif
 
 #define INDZERO()                                                              \
     if (ind != 0) {                                                            \

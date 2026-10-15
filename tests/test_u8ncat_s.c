@@ -35,7 +35,7 @@ static int check_layout(int fwd) {
         rc = u8ncat_s(d, dm, s, 10);
         ERR(EOK)
         EXPSTR((char *)d, "hiyo")
-        CHECK_SLACK(&d[5], dm - 5);
+        CHECK_SLACK_FILLED(&d[5], dm - 5);
 
         /* slen exhausted before the end of src */
         memset(buf, 'X', sizeof(buf));
@@ -44,7 +44,7 @@ static int check_layout(int fwd) {
         rc = u8ncat_s(d, dm, s, 2);
         ERR(EOK)
         EXPSTR((char *)d, "hiyo")
-        CHECK_SLACK(&d[5], dm - 5);
+        CHECK_SLACK_FILLED(&d[5], dm - 5);
 
         /* slen truncates before a multi-byte character */
         memset(buf, 'X', sizeof(buf));
@@ -53,7 +53,7 @@ static int check_layout(int fwd) {
         rc = u8ncat_s(d, dm, s, 2);
         ERR(EOK)
         EXPSTR((char *)d, "hia")
-        CHECK_SLACK(&d[4], dm - 4);
+        CHECK_SLACK_FILLED(&d[4], dm - 4);
 
         /* slen == 0 */
         memset(buf, 'X', sizeof(buf));
@@ -62,7 +62,7 @@ static int check_layout(int fwd) {
         rc = u8ncat_s(d, dm, s, 0);
         ERR(EOK)
         EXPSTR((char *)d, "hi")
-        CHECK_SLACK(&d[3], dm - 3);
+        CHECK_SLACK_FILLED(&d[3], dm - 3);
 
         /* illegal UTF-8 in src */
         strcpy((char *)d, "hi");
