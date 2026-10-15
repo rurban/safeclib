@@ -40,6 +40,6 @@ make docs
 make gh-pages
 
 git branch | grep '^\* gh-pages'
-git commit -m "Update to v${version}"
+git commit -m "Update to v${version}" -n
 git push gh-pages
 git checkout master
