@@ -76,6 +76,11 @@ size_t safec_stream_read(_SAFEC_FILE *sf, unsigned char *buf, size_t len) {
     }
     n = fread(sf->buf, 1, sf->buf_size, sf->f);
     if (!n) {
+#ifdef _WIN32
+        /* Windows CRTs flag _IOERR on a write-only stream but leave errno 0 */
+        if (ferror(sf->f) && errno == 0)
+            errno = EBADF;
+#endif
         sf->rpos = sf->rend = sf->buf;
         return 0;
     }

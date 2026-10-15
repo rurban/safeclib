@@ -84,6 +84,11 @@ static void safec_store_int(void *dest, int size, unsigned long long i) {
 static int safec_wgetc(_SAFEC_FILE *sf) {
     if (sf->f) {
         wint_t wc = fgetwc(sf->f);
+#ifdef _WIN32
+        /* Windows CRTs flag _IOERR on a write-only stream but leave errno 0 */
+        if (wc == WEOF && ferror(sf->f) && errno == 0)
+            errno = EBADF;
+#endif
         return wc == WEOF ? -1 : (int)wc;
     } else {
         const wchar_t *p = (const wchar_t *)sf->cookie;

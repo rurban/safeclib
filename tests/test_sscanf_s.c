@@ -42,9 +42,8 @@ int test_sscanf_s(void);
     }
 #define CKINT(v, exp)                                                          \
     if ((long long)(v) != (long long)(exp)) {                                  \
-        debug_printf("%s %u  Error value=%lld, expected %lld\n",               \
-                     __FUNCTION__, __LINE__, (long long)(v),                   \
-                     (long long)(exp));                                        \
+        debug_printf("%s %u  Error value=%lld, expected %lld\n", __FUNCTION__, \
+                     __LINE__, (long long)(v), (long long)(exp));              \
         errs++;                                                                \
     }
 #define CKERRNO(exp)                                                           \
@@ -71,6 +70,7 @@ static int test_scan_core(void) {
     char *lc_cat;
     const char *lang = "";
 
+    // clang-format off
     GCC_DIAG_IGNORE(-Wformat)
     GCC_DIAG_IGNORE(-Wformat-extra-args)
     GCC_DIAG_IGNORE(-Wformat-security)
@@ -560,15 +560,19 @@ static int test_scan_core(void) {
         {
             char c1 = '?', c2 = '?';
             float g = -7;
-            rc = sscanf_s("1ex", "%f%c%c", &g, &c1, 1, &c2, 1);
+            rc = sscanf_s("1ex", "%f%c%c", &g, &c1, (rsize_t)1, &c2,
+                          (rsize_t)1);
             CKRC(3) CKINT(g, 1) CKINT(c1, 'e') CKINT(c2, 'x')
-            rc = sscanf_s("1e-x", "%f%c%c", &g, &c1, 1, &c2, 1);
+            rc = sscanf_s("1e-x", "%f%c%c", &g, &c1, (rsize_t)1, &c2,
+                          (rsize_t)1);
             CKRC(3) CKINT(g, 1) CKINT(c1, 'e') CKINT(c2, '-')
-            rc = sscanf_s("0x1pz", "%f%c%c", &g, &c1, 1, &c2, 1);
+            rc = sscanf_s("0x1pz", "%f%c%c", &g, &c1, (rsize_t)1, &c2,
+                          (rsize_t)1);
             CKRC(3) CKINT(g, 1) CKINT(c1, 'p') CKINT(c2, 'z')
-            rc = sscanf_s("0x1p-z", "%f%c%c", &g, &c1, 1, &c2, 1);
+            rc = sscanf_s("0x1p-z", "%f%c%c", &g, &c1, (rsize_t)1, &c2,
+                          (rsize_t)1);
             CKRC(3) CKINT(g, 1) CKINT(c1, 'p') CKINT(c2, '-')
-            rc = sscanf_s("1e5x", "%f%c", &g, &c1, 1);
+            rc = sscanf_s("1e5x", "%f%c", &g, &c1, (rsize_t)1);
             CKRC(2) CKINT(g, 100000) CKINT(c1, 'x')
             rc = sscanf_s("1ex", "%f", &g);
             CKRC(1) CKINT(g, 1)
@@ -816,6 +820,7 @@ static int test_scan_core(void) {
         CKRC(1) CKINT(d, 1)
     }
 #endif /* !FLOAT */
+    // clang-format off
 
     GCC_DIAG_RESTORE
     GCC_DIAG_RESTORE
