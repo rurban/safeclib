@@ -417,7 +417,9 @@ int test_vsnprintf_s(void) {
     CHK(-ESNOSPC, "", 3, "abcdef")
     CHK(-ESNOSPC, "", 3, "abc%%")
     CHK(-ESNOSPC, "", 3, "abc%c", 'x')
+#ifndef SAFECLIB_DISABLE_WCHAR
     CHK(-ESNOSPC, "", 3, "abc%lc", (wint_t)'x')
+#endif
     CHK(-ESNOSPC, "", 3, "%5d", 5)
     CHK(-ESNOSPC, "", 5, "%-10d", 5)
     CHK(-ESNOSPC, "", 3, "%x", 0xffff)
@@ -439,6 +441,7 @@ int test_vsnprintf_s(void) {
     CHK(-1, "", LEN, "%Ld", 1)
 #endif
 
+#ifndef SAFECLIB_DISABLE_WCHAR
     /* wide strings and chars */
     CHK(4, "abc|", LEN, "%ls|", L"abc")
     CHK(3, "ab|", LEN, "%.2ls|", L"abc")
@@ -462,6 +465,7 @@ int test_vsnprintf_s(void) {
     CHK(-EILSEQ, "", LEN, "%lc|", (wint_t)0x7fffffff)
     /* not convertible with wcstombs_s: negative EILSEQ */
     CHK(-EILSEQ, "", LEN, "%ls|", L"ab\xD800")
+#endif
     EXPNULL(str1)
 
 #ifdef PRINTF_SUPPORT_FLOAT

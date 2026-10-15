@@ -382,6 +382,7 @@ static int test_scan_core(void) {
         }
     }
 
+#ifndef SAFECLIB_DISABLE_WCHAR
     /* wide destinations from the byte scanner */
     {
         wchar_t wb[32];
@@ -446,6 +447,7 @@ static int test_scan_core(void) {
             }
         }
     }
+#endif
 
     /* floating point */
 #ifndef PRINTF_DISABLE_SUPPORT_FLOAT
