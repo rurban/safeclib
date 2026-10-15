@@ -211,7 +211,11 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
     } else if (unlikely(ret < 0)) {
 #ifndef HAVE_VSNWPRINTF_S
         char errstr[128] = "vswprintf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         handle_werror(dest, dmax, errstr, -ret);
 #endif
         *dest = 0;

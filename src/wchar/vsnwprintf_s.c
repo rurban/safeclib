@@ -243,7 +243,11 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
     if (unlikely(ret < 0)) {
         /* no truncation. some other error */
         char errstr[128] = "vsnwprintf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         handle_werror(dest, dmax, errstr, -ret);
         return ret;
     }

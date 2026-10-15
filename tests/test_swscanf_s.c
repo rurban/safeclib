@@ -446,10 +446,12 @@ static int test_wscan_core(void) {
             }
             SETLOCALE_C;
             errno = 0;
+#ifndef __APPLE__ /* its C locale converts any wchar_t */
             rc = swscanf_s(wide, L"%s", mb, (rsize_t)32); /* EILSEQ */
             WCKRC(EOF)
             rc = swscanf_s(wide, L"%mc", &p1);
             WCKRC(EOF)
+#endif
         }
         {
             /* code points above 255 are no digits */

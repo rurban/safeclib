@@ -135,7 +135,11 @@ EXPORT int swscanf_s(const wchar_t *restrict src, const wchar_t *restrict fmt,
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "swscanf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         invoke_safe_str_constraint_handler(errstr, (void *)src, errno);
     }
 

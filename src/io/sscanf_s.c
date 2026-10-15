@@ -142,7 +142,11 @@ EXPORT int sscanf_s(const char *restrict buffer, const char *restrict fmt,
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "sscanf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
 

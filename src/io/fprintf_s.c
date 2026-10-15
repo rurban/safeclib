@@ -101,7 +101,11 @@ EXPORT int fprintf_s(FILE *restrict stream, const char *restrict fmt, ...) {
 
     if (unlikely(ret < 0 && errno != 0)) {
         char errstr[128] = "fprintf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         invoke_safe_str_constraint_handler(errstr, NULL, -ret);
     }
 

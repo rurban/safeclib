@@ -124,7 +124,11 @@ EXPORT int vscanf_s(const char *restrict fmt, va_list ap) {
 
     if (unlikely(ret < 0)) { /* always -1 EOF */
         char errstr[128] = "vscanf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         invoke_safe_str_constraint_handler(errstr, NULL, errno);
     }
 

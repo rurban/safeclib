@@ -226,7 +226,11 @@ EXPORT int swprintf_s(wchar_t *restrict dest, rsize_t dmax,
         goto nospc;
     } else if (unlikely(ret < 0)) {
         char errstr[128] = "swprintf_s: ";
-        strcat(errstr, strerror(errno));
+        { /* strerror() resets errno for unknown codes, e.g. on macOS */
+            int saved_errno = errno;
+            strcat(errstr, strerror(saved_errno));
+            errno = saved_errno;
+        }
         handle_werror(dest, dmax, errstr, -ret);
     }
 
