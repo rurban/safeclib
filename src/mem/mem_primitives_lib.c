@@ -1230,3 +1230,81 @@ void mem_prim_move32(uint32_t *dest, const uint32_t *src, uint32_t len) {
 
     return;
 }
+
+#ifdef ENABLE_CACHE_FLUSH
+/*
+ * Write the cache lines of [p, p+len) back to DRAM, so that the old
+ * contents of a cleared secret do not survive there (cold boot attacks,
+ * hibernation or crash dumps, DMA from non-coherent devices). Expensive.
+ * x86: clflush + mfence. ARM64: dc cvac + dsb. Elsewhere only the
+ * MEMORY_BARRIER of the caller.
+ */
+#if defined(__x86_64__) || defined(_M_X64) || defined(_M_IX86) ||              \
+    (defined(__i386__) && defined(__SSE2__))
+#include <emmintrin.h>
+#if defined(_MSC_VER)
+#include <intrin.h>
+#elif defined(__GNUC__)
+#include <cpuid.h>
+#endif
+
+/* clflush line size from CPUID.1:EBX[15:8] * 8, cached. The unsynchronized
+   cache is benign, all threads compute the same value. */
+static size_t flush_linesize(void) {
+    static size_t cached;
+    size_t line = cached;
+    if (line)
+        return line;
+    line = 64;
+#if defined(_MSC_VER)
+    {
+        int r[4];
+        __cpuid(r, 1);
+        if (r[3] & (1 << 19) && ((r[1] >> 8) & 0xff))
+            line = (size_t)((r[1] >> 8) & 0xff) * 8;
+    }
+#elif defined(__GNUC__)
+    {
+        unsigned int a, b, c, d;
+        if (__get_cpuid(1, &a, &b, &c, &d) && (d & (1u << 19)) &&
+            ((b >> 8) & 0xff))
+            line = (size_t)((b >> 8) & 0xff) * 8;
+    }
+#endif
+    cached = line;
+    return line;
+}
+
+void mem_prim_flush(const void *ptr, size_t len) {
+    if (len) {
+        const size_t line = flush_linesize();
+        uintptr_t p = (uintptr_t)ptr & ~(uintptr_t)(line - 1);
+        const uintptr_t end = (uintptr_t)ptr + len;
+        for (; p < end; p += line)
+            _mm_clflush((const void *)p);
+        _mm_mfence();
+    }
+}
+#elif defined(__aarch64__) && defined(__GNUC__)
+void mem_prim_flush(const void *ptr, size_t len) {
+    if (len) {
+        unsigned long ctr;
+        size_t line;
+        uintptr_t p, end;
+        __asm__ volatile("mrs %0, ctr_el0" : "=r"(ctr));
+        line = (size_t)4 << ((ctr >> 16) & 0xf); /* CTR_EL0.DminLine */
+        p = (uintptr_t)ptr & ~(uintptr_t)(line - 1);
+        end = (uintptr_t)ptr + len;
+        for (; p < end; p += line)
+            __asm__ volatile("dc cvac, %0" : : "r"(p) : "memory");
+        __asm__ volatile("dsb sy" : : : "memory");
+    }
+}
+#else
+void mem_prim_flush(const void *ptr, size_t len) {
+    (void)ptr;
+    (void)len;
+    MEMORY_BARRIER;
+}
+#endif
+#endif /* ENABLE_CACHE_FLUSH */

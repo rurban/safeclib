@@ -72,9 +72,24 @@
  *       erroneous value of dmax does not expose the impending buffer
  *       overflow.
  * @note C11 uses RSIZE_MAX, not RSIZE_MAX_MEM.
- * @note memset_s provides a memory barrier for modern out-of-order CPU's
- *       to ensure a cache flush or at least a compiler barrier fallback to
- *       ensure that is not optimized away by optimizing compilers.
+ * @note memset_s provides a memory barrier for modern out-of-order CPU's,
+ *       or at least a compiler barrier fallback, to ensure that the stores
+ *       are ordered before later loads and are not optimized away by
+ *       optimizing compilers.
+ * @note The memory barrier is not a cache flush. CPU caches are coherent, so
+ *       after memset_s no core sees the old contents in its caches, and a
+ *       flush would not help against Meltdown, MDS, L1TF or Spectre style
+ *       attacks, which leak data that was visible before the overwrite
+ *       (mitigated by microcode, VERW and kernel changes). Flush+Reload
+ *       leaks only which lines were accessed, not their contents.
+ * @note Cold boot attacks (and hibernation or crash dumps, or DMA by
+ *       non-coherent devices) are different. The new contents may still be
+ *       dirty in the cache while the old secret is still in DRAM, until the
+ *       line is written back. To force the write-back of the range, use
+ *       clflushopt or clflush followed by sfence on x86, clwb for persistent
+ *       memory, dc cvac on ARM64. memset_s does not do this, as it is
+ *       expensive. Use full memory encryption or avoid keeping secrets in
+ *       memory for long when cold boot attacks are in your threat model.
  *
  * @return  If there is a runtime-constraints violation, and if dest is not a
  * null pointer, and if dmax is not too large, then, before reporting the
@@ -129,6 +144,7 @@ EXPORT errno_t _memset_s_chk(void *dest, rsize_t dmax, int value, rsize_t n,
     }
 
     mem_prim_set(dest, n, (uint8_t)value);
+    MEMORY_FLUSH(dest, n);
     MEMORY_BARRIER;
 
     return (RCNEGATE(err));
@@ -141,6 +157,7 @@ EXPORT_SYMBOL(_memset_s_chk);
 /* All constraints are already proven at compile-time. GH #48 */
 EXPORT errno_t _memset_s_uchk(void *dest, int value, rsize_t n) {
     mem_prim_set(dest, n, (uint8_t)value);
+    MEMORY_FLUSH(dest, n);
     MEMORY_BARRIER;
     return RCNEGATE(EOK);
 }

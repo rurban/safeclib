@@ -143,6 +143,7 @@ set(SAFEC_EXT_TESTS
     t_memset32_s
     t_memset16_s
     t_memzero_s
+    t_memory_barrier
     t_memzero32_s
     t_memzero16_s
     t_stpcpy_s

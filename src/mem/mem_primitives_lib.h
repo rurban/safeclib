@@ -170,6 +170,43 @@
 #define MEMORY_BARRIER COMPILER_BARRIER
 #endif
 
+#ifdef TEST_MEMORY_BARRIER
+/* Test hook (tests/test_memory_barrier.c): count every executed
+   MEMORY_BARRIER, and still execute the real one. */
+extern void test_memory_barrier(void);
+static inline void safec_real_memory_barrier(void) { MEMORY_BARRIER; }
+#undef MEMORY_BARRIER
+#define MEMORY_BARRIER                                                         \
+    do {                                                                       \
+        test_memory_barrier();                                                 \
+        safec_real_memory_barrier();                                           \
+    } while (0)
+#endif
+
+/* Optional --enable-cache-flush: write the cleared range back to DRAM
+   (clflush on x86, dc cvac on ARM64), against cold boot attacks. A no-op on
+   other architectures. Call before MEMORY_BARRIER. */
+#ifdef ENABLE_CACHE_FLUSH
+extern void mem_prim_flush(const void *p, size_t len);
+#define MEMORY_FLUSH(p, n) mem_prim_flush((p), (n))
+#else
+#define MEMORY_FLUSH(p, n) ((void)(p), (void)(n))
+#endif
+
+#if defined(TEST_MEMORY_BARRIER) && defined(ENABLE_CACHE_FLUSH)
+/* Test hook: count every executed MEMORY_FLUSH, and still execute it. */
+extern void test_memory_flush(const void *p, size_t len);
+static inline void safec_real_memory_flush(const void *p, size_t len) {
+    MEMORY_FLUSH(p, len);
+}
+#undef MEMORY_FLUSH
+#define MEMORY_FLUSH(p, n)                                                     \
+    do {                                                                       \
+        test_memory_flush((p), (n));                                           \
+        safec_real_memory_flush((p), (n));                                     \
+    } while (0)
+#endif
+
 /*
  * These are prototypes for _unguarded_ memory routines.  The caller must
  * validate all parameters prior to invocation.  Useful for diagnostics

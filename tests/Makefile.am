@@ -120,6 +120,7 @@ SAFEC_BUILT_TESTS += \
 	t_memset32_s          \
 	t_memset16_s          \
 	t_memzero_s           \
+	t_memory_barrier      \
 	t_memzero32_s         \
 	t_memzero16_s         \
 	t_stpcpy_s            \
@@ -513,6 +514,9 @@ t_memmove16_s_SOURCES         = test_memmove16_s.c $(SAFEC_TEST_COMMON) test_exp
 t_memset32_s_SOURCES          = test_memset32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_memset16_s_SOURCES          = test_memset16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_memzero_s_SOURCES           = test_memzero_s.c $(SAFEC_TEST_COMMON) test_expmem.h
+t_memory_barrier_SOURCES      = test_memory_barrier.c $(SAFEC_TEST_COMMON)
+t_memory_barrier_CFLAGS       = $(CFLAGS) $(AM_CFLAGS) -I$(top_srcdir)/src
+t_memory_barrier_LDFLAGS      = $(top_builddir)/src/mem/mem_primitives_lib.lo $(LDADD)
 t_memzero32_s_SOURCES         = test_memzero32_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_memzero16_s_SOURCES         = test_memzero16_s.c $(SAFEC_TEST_COMMON) test_expmem.h
 t_stpcpy_s_SOURCES            = test_stpcpy_s.c $(SAFEC_TEST_COMMON)

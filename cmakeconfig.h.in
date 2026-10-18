@@ -357,6 +357,9 @@
 /* Define to 1 if error_dmax is enabled */
 #cmakedefine HAVE_ERROR_DMAX 1
 
+/* Flush the cache of memset_s and memzero_s results */
+#cmakedefine ENABLE_CACHE_FLUSH 1
+
 /* Define to 1 if building on Windows/MinGW */
 #cmakedefine HAVE_MINGW 1
 

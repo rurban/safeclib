@@ -129,6 +129,15 @@ With valid dest and dmax values, dest is cleared. With the optional
 `--disable-null-slack` only the first value of dest is cleared,
 otherwise the whole dest buffer.
 
+`memset_s` and `memzero_s` end with a memory barrier, not a cache flush.
+Against cold boot attacks (hibernation, crash dumps, DMA from non-coherent
+devices), where the old secret may still be in DRAM while the zeros are
+dirty in the cache, use the optional `--enable-cache-flush` (cmake
+`-DENABLE_CACHE_FLUSH=ON`). It writes the cleared range back to DRAM
+(`clflush` + `mfence` on x86, `dc cvac` + `dsb` on ARM64, only the barrier
+elsewhere). This is slow, and does not help against Meltdown, MDS, L1TF or
+Spectre style attacks.
+
 `rsize_t`
 The specification defines a new type. This type, `rsize_t`, is
 conditionally defined in the `safe_lib.h` header file.

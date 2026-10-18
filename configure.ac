@@ -472,6 +472,23 @@ else
 	AC_MSG_RESULT([no (default)])
 fi
 
+AC_ARG_ENABLE(cache-flush,
+	AS_HELP_STRING([--enable-cache-flush],
+		       [Write memset_s and memzero_s results back to DRAM (clflush on x86, dc cvac on ARM64), against cold boot attacks. Slow. @<:@default=no@:>@]),
+	[case "${enableval}" in
+	yes) enable_cache_flush=true ;;
+	no)  enable_cache_flush=false ;;
+	*)   AC_MSG_ERROR([bad value ${enableval} for --enable-cache-flush]) ;;
+	esac], [enable_cache_flush=false ])
+AC_MSG_CHECKING([for --enable-cache-flush])
+if test "$enable_cache_flush" = "true" ; then
+	AC_MSG_RESULT([yes])
+	AC_DEFINE([ENABLE_CACHE_FLUSH], [1],
+		  [Define to flush the cache of memset_s and memzero_s results])
+else
+	AC_MSG_RESULT([no (default)])
+fi
+
 AC_ARG_WITH(default-handler,
 	AS_HELP_STRING([--with-default-handler=<ignore|abort>],
 	               [enforce compile-time default-handler]),

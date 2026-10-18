@@ -101,6 +101,7 @@ EXPORT errno_t _memzero_s_chk(void *dest, rsize_t len, const size_t destbos)
 #else
     mem_prim_set(dest, len, 0);
 #endif
+    MEMORY_FLUSH(dest, len);
     MEMORY_BARRIER;
 
     return (RCNEGATE(EOK));
@@ -117,6 +118,7 @@ EXPORT errno_t _memzero_s_uchk(void *dest, rsize_t len) {
 #else
     mem_prim_set(dest, len, 0);
 #endif
+    MEMORY_FLUSH(dest, len);
     MEMORY_BARRIER;
     return (RCNEGATE(EOK));
 }
