@@ -630,8 +630,10 @@ safec_check_function(__bnd_set_ptr_bounds HAVE___BND_SET_PTR_BOUNDS)
 safec_check_function(__bnd_null_ptr_bounds HAVE___BND_NULL_PTR_BOUNDS)
 
 # Check for ARM barriers
-check_c_source_compiles("__dsb(); int main() { __dsb(); return 0; }" HAVE___DSB)
-check_c_source_compiles("__isb(); int main() { __isb(); return 0; }" HAVE___ISB)
+check_c_source_compiles("#include <arm_acle.h>
+int main() { __dsb(15); return 0; }" HAVE___DSB)
+check_c_source_compiles("#include <arm_acle.h>
+int main() { __isb(15); return 0; }" HAVE___ISB)
 
 # More configs
 if (ENABLE_NULLSLACK)

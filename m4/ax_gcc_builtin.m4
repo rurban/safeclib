@@ -134,13 +134,16 @@
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 9
+#serial 10
 
 AC_DEFUN([AX_GCC_BUILTIN], [
     AS_VAR_PUSHDEF([ac_var], [ax_cv_have_$1])
 
     AC_CACHE_CHECK([for $1], [ac_var], [
-        AC_LINK_IFELSE([AC_LANG_PROGRAM([], [
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([
+            m4_case([$1],
+                [__dsb], [@%:@include <arm_acle.h>],
+                [__isb], [@%:@include <arm_acle.h>])], [
             m4_case([$1],
                 [__builtin_assume_aligned], [$1("", 0)],
                 [__builtin___bnd_set_ptr_bounds], [$1("", 0)],
@@ -239,6 +242,8 @@ AC_DEFUN([AX_GCC_BUILTIN], [
                 [__builtin_trap], [$1()],
                 [__builtin_types_compatible_p], [$1(int, int)],
                 [__builtin_unreachable], [$1()],
+                [__dsb], [$1(15)],
+                [__isb], [$1(15)],
                 [m4_warn([syntax], [Unsupported built-in $1, the test may fail])
                  $1()]
             )

@@ -31,7 +31,7 @@
 #
 
 # Autoconf requirements
-AC_PREREQ([2.69])
+AC_PREREQ([2.71])
 
 # information on the package
 AC_INIT([Safe C Library],
@@ -895,9 +895,9 @@ AX_VALGRIND_CHECK()
 
 AC_MSG_NOTICE([Check header files])
 # ===============================================
-AC_HEADER_STDC
+dnl AC_HEADER_STDC is obsolete; C89 standard headers are assumed.
+AC_DEFINE([STDC_HEADERS], [1], [Define to 1 if all of the C89 standard headers exist.])
 AC_HEADER_STDBOOL
-AC_HEADER_TIME
 AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_HEADERS([stdlib.h	\
                   memory.h	\
@@ -1139,11 +1139,9 @@ AX_GCC_BUILTIN(__builtin___bnd_chk_ptr_bounds)
 #AX_GCC_BUILTIN(__builtin___bnd_get_ptr_lbound)
 #AX_GCC_BUILTIN(__builtin___bnd_get_ptr_ubound)
 
-dnl arm intrinsic barriers
+dnl arm intrinsic barriers, declared in arm_acle.h
 AX_GCC_BUILTIN(__dsb)
 AX_GCC_BUILTIN(__isb)
-AX_GCC_BUILTIN(__builtin___dsb)
-AX_GCC_BUILTIN(__builtin___isb)
 
 AC_CHECK_FUNCS([ vswprintf vswscanf mbsrtowcs ])
 

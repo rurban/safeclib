@@ -36,16 +36,10 @@
 #include "safe_config.h"
 
 #ifndef __KERNEL__
-#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
-#else
+#endif
 #include <time.h>
-#endif
-#endif
 #elif !defined(__x86_64__) && !defined(__i386__)
 #error Not supported in Linux kernel space
 #endif

@@ -15,6 +15,14 @@ Changes in 3.16
 	  Tests: add a unistd.h shim for MSVC, and skip the test cases which
 	  need __builtin_object_size, which cl.exe does not have.
 	  New CI job msvc.
+	- Fix the ARM memory barrier: the __dsb/__isb branch in
+	  mem_primitives_lib.h tested the misspelled HAVE___DSM and never
+	  included <arm_acle.h>. The autoconf and cmake probes for __dsb/__isb
+	  now include <arm_acle.h> (gcc does not provide them, clang does), and
+	  the header includes it when they are found. Drop the bogus
+	  __builtin___dsb/__builtin___isb probes.
+	- Update to autoconf 2.71+: drop the obsolete AC_HEADER_STDC and
+	  AC_HEADER_TIME, so autogen.sh runs without warnings.
 
 Changes in 3.15
 	- Make qsort_s, ctime_s, asctime_s, swprintf_s, vswprintf_s and the

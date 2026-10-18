@@ -97,6 +97,11 @@
 #define HAVE_SOLARIS_MBARRIER
 #include <mbarrier.h>
 #endif
+#if defined(__GNUC__) && defined(HAVE_ARM_ACLE_H) && defined(HAVE___DSB) &&    \
+    defined(HAVE___ISB)
+/* ARM __dsb/__isb barrier intrinsics */
+#include <arm_acle.h>
+#endif
 #endif
 
 #ifndef __WORDSIZE
@@ -153,7 +158,8 @@
 #elif defined(HAVE_COMPAT_XMM) || defined(HAVE__MM_SFENCE)
 /* x86-compat headers (e.g. rs6000, arm, ...) have no mfence */
 #define MEMORY_BARRIER _mm_sfence()
-#elif defined(__GNUC__) && defined(HAVE___DSM) && defined(HAVE___ISB)
+#elif defined(__GNUC__) && defined(HAVE_ARM_ACLE_H) && \
+    defined(HAVE___DSB) && defined(HAVE___ISB)
 #define MEMORY_BARRIER                                                         \
     __dsb(15);                                                                 \
     __isb(15)
