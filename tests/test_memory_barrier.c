@@ -78,6 +78,13 @@ static int all_eq(const uint8_t *p, size_t n, uint8_t v) {
 
 int main(void) {
     uint8_t mem[LEN];
+    /* volatile indirection: keep these non-constant to the compiler so
+       clang's diagnose_if (BOS_CHK) does not flag the deliberate
+       constraint violations below as compile-time errors; they must
+       still be caught at runtime by the _chk functions. */
+    void *volatile bad_dest = NULL;
+    volatile rsize_t big_n = LEN;
+    volatile rsize_t zero_dmax = 0;
 
     /* memset_s: barrier after the write */
     memset(mem, 0, LEN);
@@ -95,7 +102,7 @@ int main(void) {
 
     /* n > dmax: dmax bytes are still written, so the barrier must run */
     memset(mem, 0, LEN);
-    EXPECT_BARRIERS(tb_memset_s_chk(mem, LEN / 2, 0x33, LEN, BOS_UNKNOWN),
+    EXPECT_BARRIERS(tb_memset_s_chk(mem, LEN / 2, 0x33, big_n, BOS_UNKNOWN),
                     ESNOSPC, 1);
 #ifdef ENABLE_CACHE_FLUSH
     /* the flushed range is exactly the written range */
@@ -107,7 +114,7 @@ int main(void) {
 #endif
 
     /* constraint violation before any write: no barrier */
-    EXPECT_BARRIERS(tb_memset_s_chk(NULL, LEN, 0x5A, LEN, BOS_UNKNOWN), ESNULLP,
+    EXPECT_BARRIERS(tb_memset_s_chk(bad_dest, LEN, 0x5A, LEN, BOS_UNKNOWN), ESNULLP,
                     0);
 
     /* memzero_s */
@@ -123,8 +130,8 @@ int main(void) {
         debug_printf("%d memzero_s_uchk did not zero\n", __LINE__);
         errs++;
     }
-    EXPECT_BARRIERS(tb_memzero_s_chk(NULL, LEN, BOS_UNKNOWN), ESNULLP, 0);
-    EXPECT_BARRIERS(tb_memzero_s_chk(mem, 0, BOS_UNKNOWN), ESZEROL, 0);
+    EXPECT_BARRIERS(tb_memzero_s_chk(bad_dest, LEN, BOS_UNKNOWN), ESNULLP, 0);
+    EXPECT_BARRIERS(tb_memzero_s_chk(mem, zero_dmax, BOS_UNKNOWN), ESZEROL, 0);
 
     return errs;
 }

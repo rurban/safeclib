@@ -1286,15 +1286,36 @@ void mem_prim_flush(const void *ptr, size_t len) {
     }
 }
 #elif defined(__aarch64__) && defined(__GNUC__)
+/* XNU/Apple Silicon traps EL0 reads of CTR_EL0 (SIGILL); query the line
+   size via sysctl there instead. Everywhere else CTR_EL0 is readable from
+   EL0 per the ARMv8 base architecture. */
+#if defined(__APPLE__)
+#include <sys/sysctl.h>
+static size_t flush_linesize(void) {
+    static size_t cached;
+    size_t line = cached;
+    size_t outlen = sizeof(line);
+    if (line)
+        return line;
+    line = 64;
+    if (sysctlbyname("hw.cachelinesize", &line, &outlen, NULL, 0) != 0 ||
+        !line)
+        line = 64;
+    cached = line;
+    return line;
+}
+#else
+static size_t flush_linesize(void) {
+    unsigned long ctr;
+    __asm__ volatile("mrs %0, ctr_el0" : "=r"(ctr));
+    return (size_t)4 << ((ctr >> 16) & 0xf); /* CTR_EL0.DminLine */
+}
+#endif
 void mem_prim_flush(const void *ptr, size_t len) {
     if (len) {
-        unsigned long ctr;
-        size_t line;
-        uintptr_t p, end;
-        __asm__ volatile("mrs %0, ctr_el0" : "=r"(ctr));
-        line = (size_t)4 << ((ctr >> 16) & 0xf); /* CTR_EL0.DminLine */
-        p = (uintptr_t)ptr & ~(uintptr_t)(line - 1);
-        end = (uintptr_t)ptr + len;
+        const size_t line = flush_linesize();
+        uintptr_t p = (uintptr_t)ptr & ~(uintptr_t)(line - 1);
+        const uintptr_t end = (uintptr_t)ptr + len;
         for (; p < end; p += line)
             __asm__ volatile("dc cvac, %0" : : "r"(p) : "memory");
         __asm__ volatile("dsb sy" : : : "memory");
