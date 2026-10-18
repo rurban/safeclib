@@ -303,6 +303,9 @@ docs man: Doxyfile doc/footer $(BUILT_SOURCES) README.rst \
 if HAVE_PANDOC
 README.rst: README.md
 	pandoc -o README.rst README.md
+else
+README.rst: README.md
+	@echo "README.rst is older than README.md and pandoc is missing" >&2; false
 endif
 all-local: Doxyfile doc/footer
 clean-local:
@@ -365,6 +368,6 @@ endif
 	rm -rf inst
 gh-pages: docs
 	build-aux/gh-pages.sh $(SAFEC_API_VERSION)
-release: docs distcheck
+release: README.rst docs distcheck
 	build-aux/release-checks.sh $(PACKAGE_VERSION)
 	build-aux/release-build.sh $(PACKAGE_VERSION)

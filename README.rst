@@ -141,6 +141,16 @@ valid dest and dmax values, dest is cleared. With the optional
 ``--disable-null-slack`` only the first value of dest is cleared,
 otherwise the whole dest buffer.
 
+``memset_s`` and ``memzero_s`` end with a memory barrier, not a cache
+flush. Against cold boot attacks (hibernation, crash dumps, DMA from
+non-coherent devices), where the old secret may still be in DRAM while
+the zeros are dirty in the cache, use the optional
+``--enable-cache-flush`` (cmake ``-DENABLE_CACHE_FLUSH=ON``). It writes
+the cleared range back to DRAM (``clflush`` + ``mfence`` on x86,
+``dc cvac`` + ``dsb`` on ARM64, only the barrier elsewhere). This is
+slow, and does not help against Meltdown, MDS, L1TF or Spectre style
+attacks.
+
 ``rsize_t`` The specification defines a new type. This type,
 ``rsize_t``, is conditionally defined in the ``safe_lib.h`` header file.
 
@@ -319,6 +329,9 @@ The library has been tested on the following systems:
 - i386-mingw32 cross-compiled
 - MSYS2 MINGW64, MINGW32 and UCRT64 (keeps its own printf/scanf family,
   renamed to ``safec_*``, on UCRT64; see ``doc/libc-overview.md``)
+- Visual Studio (cl.exe and the UCRT, x64 and Win32) with ``cmake``,
+  without the GNU extensions: no compile-time size checks, as cl.exe has
+  no ``__builtin_object_size``. See the ``msvc`` CI job.
 - cygwin32 gcc (newlib)
 - cygwin64 gcc -std=c99 (newlib)
 - freebsd 10 - 13 amd64
