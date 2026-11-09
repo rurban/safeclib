@@ -87,11 +87,14 @@ jobs:
         fetch-depth: 1
     - run: sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi qemu-user
     - run: sh build-aux/autogen.sh
-    - run: ./configure --host=arm-none-eabi --disable-shared CFLAGS="-mcpu=cortex-m0 -mthumb -O2" LDFLAGS="--specs=rdimon.specs"
+    # Newlib's wordwise memrchr uses unaligned LDR instructions, which fault
+    # on Cortex-M0. Use safeclib's bytewise fallback for this target.
+    - run: ac_cv_func_memrchr=no ./configure --host=arm-none-eabi --disable-shared CFLAGS="-mcpu=cortex-m0 -mthumb -O2" LDFLAGS="--specs=rdimon.specs"
     - run: make
-    # known newlib/semihosting failures: no env, stdin, files, locales
+    # rdimon links the first LOAD segment at address zero. Offset guest
+    # mappings above Linux's mmap_min_addr (QEMU issue #1890).
     - run: >-
-        make check-log LOG_COMPILER="qemu-arm -cpu cortex-m0"
+        make check-log LOG_COMPILER="qemu-arm -B 0x100000 -cpu cortex-m0"
         XFAIL_TESTS="t_sprintf_s t_strerrorlen_s t_vwscanf_s t_wscanf_s
         t_wcstombs_s t_mbstowcs_s t_gets_s t_vfprintf_s t_vu8scanf_s
         t_u8scanf_s t_getenv_s"
