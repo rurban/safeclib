@@ -160,6 +160,8 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
         }
         if (len)
             *len = 0;
+        if (0 == errno)
+            errno = l_errno;
         return -1;
     }
 
@@ -168,6 +170,8 @@ EXPORT errno_t _getenv_s_chk(size_t *restrict len, char *restrict dest,
         if (len)
             *len = 0;
         handle_error(dest, dmax, "getenv_s: dmax is too small", ESNOSPC);
+        if (0 == errno)
+            errno = l_errno;
         return RCNEGATE(ESNOSPC);
     } else {
         if (len)

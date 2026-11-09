@@ -40,8 +40,9 @@ int test_gmtime_s(void) {
     /*--------------------------------------------------*/
 
     timer = 0;
+    errno = EDOM;
     tmptr = gmtime_s(&timer, &tm);
-    ERRNO(0);
+    ERRNO(EDOM);
     PTRNN(tmptr);
 #ifdef BSD_OR_DARWIN_LIKE
     /* leak needs to be supressed, darwin valgrind bug */

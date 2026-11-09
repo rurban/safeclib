@@ -189,13 +189,17 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
         if (dmax == 1)
             goto nospc;
         tmp = (wchar_t *)malloc(RSIZE_MAX_WSTR * sizeof(wchar_t));
-        if (!tmp)
+        if (!tmp) {
+            if (0 == errno)
+                errno = l_errno;
             return -(ESNOSPC);
+        }
         ret = vswprintf(tmp, RSIZE_MAX_WSTR, fmt, ap2);
         free(tmp);
         if (ret > 0) {
         nospc:
-            // errno = 0;
+            if (0 == errno)
+                errno = l_errno;
             handle_werror(dest, dmax, "vswprintf_s: len exceeds dmax", ESNOSPC);
             return -(ESNOSPC);
         }
@@ -204,7 +208,8 @@ EXPORT int _vswprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
 
     if (unlikely(ret >= (int)dmax)) {
 #ifdef HAVE_VSNWPRINTF_S
-        errno = 0;
+        if (0 == errno)
+            errno = l_errno;
         handle_werror(dest, dmax, "vswprintf_s: len exceeds dmax", ESNOSPC);
         return -(ESNOSPC);
 #else

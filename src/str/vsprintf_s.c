@@ -113,6 +113,8 @@ EXPORT int _vsprintf_s_chk(char *restrict dest, const rsize_t dmax,
 #endif
     ) {
         handle_error(dest, dmax, "vsprintf_s: len exceeds dmax", ESNOSPC);
+        if (0 == errno)
+            errno = l_errno;
         return -ESNOSPC; /* different to the standard (=0),
                             but like all other implementations */
     }

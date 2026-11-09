@@ -202,6 +202,7 @@ EXPORT int snwprintf_s(wchar_t *restrict dest, rsize_t dmax,
 #endif
     va_end(ap);
 
+
     if (0 == errno)
         errno = l_errno;
     return ret;

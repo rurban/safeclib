@@ -141,11 +141,17 @@ int test_getenv_s(void) {
         EXPNULL(dest);
     }
 
+    errno = EDOM;
     rc = getenv_s(&len, dest, LEN, "c#hewhc&wehc%erwhc$weh");
     ERR_MSVC(-1, 0);
     ind = len;
     INDCMP(!= 0);
     EXPNULL(dest);
+    if (!use_msvcrt) {
+        ERRNO(EDOM);
+        errno = 0;
+    }
+
 
     /*--------------------------------------------------*/
 

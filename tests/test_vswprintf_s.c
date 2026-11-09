@@ -38,6 +38,20 @@
         ERRNO_BROKEN(err);                                                     \
     }
 
+#define ERRNO_NOT_CLEARED_MSVC(rc, err)                                        \
+    if (!use_msvcrt) {                                                         \
+        ERR(rc);                                                               \
+        if (errno == 0) {                                                      \
+            debug_printf("%s %u  Error errno was cleared\n", __FUNCTION__,     \
+                         __LINE__);                                             \
+            errs++;                                                            \
+        }                                                                      \
+        errno = 0;                                                             \
+    } else {                                                                   \
+        ERR(0);                                                                \
+        ERRNO(err);                                                            \
+    }
+
 static wchar_t str1[LEN];
 static wchar_t str2[LEN];
 static wchar_t big[1024];
@@ -161,8 +175,9 @@ int test_vswprintf_s(void) {
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
+    errno = EDOM;
     rc = vtwprintf_s(str1, 1, BOS(str1), L"%ls", str2);
-    ERRNO_MSVC(-ESNOSPC, ERANGE);
+    ERRNO_NOT_CLEARED_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
     /*--------------------------------------------------*/
@@ -170,8 +185,9 @@ int test_vswprintf_s(void) {
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
+    errno = EDOM;
     rc = vtwprintf_s(str1, 2, BOS(str1), L"%ls", str2);
-    ERRNO_MSVC(-ESNOSPC, ERANGE);
+    ERRNO_NOT_CLEARED_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
     /*--------------------------------------------------*/
@@ -215,14 +231,16 @@ int test_vswprintf_s(void) {
     wcscpy(str1, L"1234");
     wcscpy(str2, L"keep it simple");
 
+    errno = EDOM;
     rc = vtwprintf_s(str1, 12, BOS(str1), L"%ls", str2);
-    ERRNO_MSVC(-ESNOSPC, ERANGE);
+    ERRNO_NOT_CLEARED_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
     wcscpy(str1, L"1234");
 
+    errno = EDOM;
     rc = vtwprintf_s(str1, 5, BOS(str1), L"%ls", str2);
-    ERRNO_MSVC(-ESNOSPC, ERANGE);
+    ERRNO_NOT_CLEARED_MSVC(-ESNOSPC, ERANGE);
     WEXPNULL(str1)
 
     /*--------------------------------------------------*/

@@ -160,9 +160,11 @@ _bsearch_s_chk(const void *key, const void *base, rsize_t nmemb, rsize_t size,
     while (nmemb > 0) {
         void *ptry = (char *)base + size * (nmemb / 2);
         int sign = compar(key, ptry, context);
-        if (!sign)
+        if (!sign) {
+            if (0 == errno)
+                errno = l_errno;
             return ptry;
-        else if (nmemb == 1)
+        } else if (nmemb == 1)
             break;
         else if (sign < 0) {
             nmemb /= 2;

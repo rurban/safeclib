@@ -108,11 +108,12 @@ library does not set ``errno`` in most functions, only in ``bsearch_s``,
 ``vfwscanf_s``, ``vsscanf_s``, ``vswscanf_s``, ``wcstok_s``,
 ``wscanf_s``.
 
-In most cases the safeclib extended ES\* errors do not set ``errno``,
-only when the underlying insecure system call fails, errno is set. The
-library does use ``errno`` return codes as required by functional APIs.
-Specific Safe C String and Safe C Memory errno codes are defined in the
-``safe_errno.h`` file.
+In most cases the safeclib extended ES\* errors do not set ``errno``;
+only failures in the underlying insecure system call set it. When an
+underlying call leaves ``errno`` unchanged, the wrapper preserves the
+caller’s incoming value. The library does use ``errno`` return codes as
+required by functional APIs. Specific Safe C String and Safe C Memory
+errno codes are defined in the ``safe_errno.h`` file.
 
 - Runtime-constraints
 

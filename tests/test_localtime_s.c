@@ -42,8 +42,9 @@ int test_localtime_s(void) {
 /* unreliable on BSD or DARWIN, esp. with TZ!=GMT */
 #ifndef BSD_OR_DARWIN_LIKE
     timer = 12; /* This is timezone sensitive, may lead to <0 if 0 */
+    errno = EDOM;
     tmptr = localtime_s(&timer, &tm);
-    ERRNO(0);
+    ERRNO(EDOM);
     PTRNN(tmptr);
     /* leak needs to be supressed, darwin valgrind bug */
 #endif

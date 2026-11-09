@@ -349,6 +349,8 @@ EXPORT char *_strtok_s_chk(char *restrict dest, rsize_t *restrict dmaxp,
                 *dest = '\0';
                 *ptr = (dest + 1); /* return pointer for next scan */
                 *dmaxp = dlen - 1; /* account for the nulled delimiter */
+                if (0 == errno)
+                    errno = l_errno;
                 return (ptoken);
             } else {
                 /*

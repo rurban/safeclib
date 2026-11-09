@@ -176,6 +176,8 @@ Changes in 3.9.2
 	- Fixed kernel compilation, no __attribute__((noreturn))
 	  without slabort
 	- Update Unicode to 17
+        - Preserve incoming errno when wrapped libc calls leave it unchanged.
+          GH #129.
 	- Update Dockerfiles and CI
 	- Add ENOMEM errors when malloc fails
 	  in wcsicmp_s.c, wcsnatcmp_s, wcsnorm_s.c,

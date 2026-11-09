@@ -219,6 +219,7 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
                               ENOMEM);
                 if (0 == errno)
                     errno = l_errno;
+
                 return -(ENOMEM);
             }
             tmp = t;
@@ -253,6 +254,8 @@ EXPORT int _vsnwprintf_s_chk(wchar_t *restrict dest, rsize_t dmax,
             errno = saved_errno;
         }
         handle_werror(dest, dmax, errstr, -ret);
+        if (0 == errno)
+            errno = l_errno;
         return ret;
     }
 #endif

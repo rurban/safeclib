@@ -105,6 +105,7 @@ int main(void) {
 
     strcpy(str2, "fedcba");
 
+    errno = 0;
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok != NULL) {
         debug_printf("%s %u token -%s-  remaining -%s- Error \n", __FUNCTION__,
@@ -137,6 +138,7 @@ int main(void) {
 
     strcpy(str2, "fedcba");
 
+    errno = 0;
     p2tok = strtok_s(str1, &len, str2, &p2str);
     if (p2tok == NULL) {
         debug_printf("%s %u token -%s-  remaining -%s- Error \n", __FUNCTION__,
@@ -188,8 +190,10 @@ int main(void) {
 
     strcpy(str2, "?");
 
+    errno = EDOM;
     p2tok = strtok_s(str1, &len, str2, &p2str);
-    ERRNO(EOK);
+    ERRNO(EDOM);
+    errno = 0;
 
     if (strcmp(p2tok, "a")) {
         debug_printf("%s %u token -%s-  -%s- len=%d error \n", __FUNCTION__,
@@ -228,6 +232,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 
@@ -252,6 +257,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
+    errno = 0;
     xdebug_printf("  p2tok = strtok_s(str1, &len, str2, &p2str); \n");
     p2tok = strtok_s(str1, &len, str2, &p2str);
     ERRNO(EOK);
@@ -300,6 +306,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 
@@ -324,6 +331,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 
@@ -352,6 +360,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%s\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 

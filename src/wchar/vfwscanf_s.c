@@ -101,7 +101,6 @@ EXPORT int vfwscanf_s(FILE *restrict stream, const wchar_t *restrict fmt,
     }
 #ifdef HAVE_MINGW32
     if (unlikely(!*fmt)) {
-        // errno = 0;
         return EOF;
     }
 #endif

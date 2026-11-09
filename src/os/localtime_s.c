@@ -94,6 +94,7 @@ struct tm *localtime_r(const time_t * __restrict, struct tm * __restrict);
 
 EXPORT struct tm *localtime_s(const time_t *restrict timer,
                               struct tm *restrict dest) {
+    int l_errno;
 
     if (unlikely(dest == NULL)) {
         invoke_safe_str_constraint_handler("localtime_s: dest is null", NULL,
@@ -123,12 +124,15 @@ EXPORT struct tm *localtime_s(const time_t *restrict timer,
         return NULL;
     }
 
+    l_errno = errno;
     errno = 0;
 #if defined(HAVE_LOCALTIME_R)
     dest = localtime_r(timer, dest);
 #else
     dest = localtime(timer);
 #endif
+    if (0 == errno)
+        errno = l_errno;
 
     return dest;
 }

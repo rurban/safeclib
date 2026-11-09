@@ -133,8 +133,15 @@ int test_snwprintf_s(void) {
     str1[0] = '\0';
     wcscpy(str2, L"keep it simple");
 
+    errno = EDOM;
     rc = snwprintf_s(str1, 1, L"%ls", str2);
     NOERR() /* truncation */
+    if (errno == 0) {
+        debug_printf("%s %u  Error errno was cleared\n", __FUNCTION__,
+                     __LINE__);
+        errs++;
+    }
+    errno = 0;
     WEXPNULL(str1)
 
     str1[0] = '\0';

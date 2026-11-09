@@ -101,6 +101,7 @@ int test_bsearch_s(void) {
 
     /* allow empty array? msvcrt disallows it */
     key.iv = 0;
+    errno = 0;
     vitem = bsearch_s(&key, NULL, 0, 0, comp, NULL);
     PTRNULL(vitem);
     ERRNO_MSVC(0, EINVAL);
@@ -146,6 +147,14 @@ int test_bsearch_s(void) {
                                      array);
     PTRNN(item);
     ERRNO(-1);
+
+    errno = EDOM;
+    key.iv = 5;
+    item = (struct items *)bsearch_s(&key, array, LEN, sizeof(array[0]), comp,
+                                     NULL);
+    PTRNN(item);
+    ERRNO(EDOM);
+    errno = 0;
 
     /*--------------------------------------------------*/
 

@@ -150,12 +150,14 @@ int test_vsprintf_s(void) {
     strcpy(str1, "aaaaaaaaaa");
     strcpy(str2, "keep it simple");
 
+    errno = EDOM;
     rc = vtprintf_s(str1, 1, "%s", str2);
 #ifdef _WIN32
     init_msvcrt(rc == -ESNOSPC, &use_msvcrt);
 #endif
     ERR_MSVC(-ESNOSPC, -1);
-    ERRNO_MSVC(0, ERANGE);
+    ERRNO_MSVC(EDOM, ERANGE);
+    errno = 0;
     EXPNULL(str1)
 
     /*--------------------------------------------------*/

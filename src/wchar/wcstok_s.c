@@ -359,6 +359,8 @@ EXPORT wchar_t *_wcstok_s_chk(wchar_t *restrict dest, rsize_t *restrict dmaxp,
                 *dest = L'\0';
                 *ptr = (dest + 1); /* return pointer for next scan */
                 *dmaxp = dlen - 1; /* account for the nulled delimiter */
+                if (0 == errno)
+                    errno = l_errno;
                 return (ptoken);
             } else {
                 /*

@@ -98,6 +98,7 @@ int main(void) {
 
     wcscpy(str2, L"fedcba");
 
+    errno = 0;
     p2tok = wcstok_s(str1, &len, str2, &p2str);
     if (p2tok) {
         debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
@@ -130,6 +131,7 @@ int main(void) {
 
     wcscpy(str2, L"fedcba");
 
+    errno = 0;
     p2tok = wcstok_s(str1, &len, str2, &p2str);
     if (!p2tok) {
         debug_printf("%s %u token -%ls-  remaining -%ls- Error \n",
@@ -179,8 +181,10 @@ int main(void) {
 
     wcscpy(str2, L"?");
 
+    errno = EDOM;
     p2tok = wcstok_s(str1, &len, str2, &p2str);
-    ERRNO(EOK);
+    ERRNO(EDOM);
+    errno = 0;
 
     if (wcscmp(p2tok, L"a")) {
         debug_printf("%s %u token -%ls-  -%ls- len=%d Error \n", __FUNCTION__,
@@ -297,6 +301,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 
@@ -321,6 +326,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 
@@ -347,6 +353,7 @@ int main(void) {
                   (unsigned)len);
     xdebug_printf("String of delimiters str2 = \"%ls\" \n", str2);
 
+    errno = 0;
     p2str = str1;
     p2tok = str1;
 

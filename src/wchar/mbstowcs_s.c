@@ -206,7 +206,6 @@ EXPORT errno_t _mbstowcs_s_chk(size_t *restrict retvalp, wchar_t *restrict dest,
     } else {
         if (dest) {
             size_t tmp = 0;
-            // errno = 0;
             if (*retvalp > RSIZE_MAX_WSTR) { /* else ESNOSPC */
                 tmp = mbstowcs(NULL, src, len);
             }
