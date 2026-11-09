@@ -29,6 +29,9 @@ Changes in 3.16
 	  __builtin___dsb/__builtin___isb probes.
 	- Update to autoconf 2.71+: drop the obsolete AC_HEADER_STDC and
 	  AC_HEADER_TIME, so autogen.sh runs without warnings.
+	- Fix the arm-none-eabi newlib CI job by using the bytewise memrchr_s
+	  fallback on Cortex-M0 and setting a qemu-arm guest base on hosts that
+	  prohibit mappings below mmap_min_addr.
 
 Changes in 3.15
 	- Make qsort_s, ctime_s, asctime_s, swprintf_s, vswprintf_s and the
