@@ -7,6 +7,7 @@
 
 #include "test_private.h"
 #include "safe_u8_lib.h"
+#include "safe_mem_lib.h"
 
 #define LEN (128)
 
@@ -24,8 +25,8 @@ int test_wcsrtou8_s(void) {
     /*--------------------------------------------------*/
     /* one-shot conversion */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const wchar_t *p = L"hi\x00E9";
         n = 0;
         rc = wcsrtou8_s(&n, dest, LEN, &p, LEN, &ps);
@@ -42,8 +43,8 @@ int test_wcsrtou8_s(void) {
     /*--------------------------------------------------*/
     /* restartable: convert one wide char at a time */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const wchar_t *p = L"ab";
         char8_t chunk[4];
 
@@ -62,8 +63,8 @@ int test_wcsrtou8_s(void) {
     /*--------------------------------------------------*/
     /* illegal wide character: encoded surrogate half */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         wchar_t wsrc[2];
         const wchar_t *p;
         wsrc[0] = 0xD800;
@@ -91,8 +92,8 @@ int test_wcsrtou8_s(void) {
     /*--------------------------------------------------*/
     /* no room in dest: nothing consumed */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const wchar_t *p = L"abc";
         const wchar_t *p0 = p;
         char8_t one[1];
@@ -110,8 +111,8 @@ int test_wcsrtou8_s(void) {
     /*--------------------------------------------------*/
     /* dest overlaps src */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         wchar_t ov[8];
         const wchar_t *p = ov;
         n = 0;
@@ -128,7 +129,8 @@ int test_wcsrtou8_s(void) {
         const wchar_t *p = L"abc";
         if (!hp)
             return errs + 1;
-        memset(&ps, 0, sizeof(ps));
+        rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+        ERR(EOK)
         n = 0;
         rc = wcsrtou8_s(&n, hp, RSIZE_MAX_STR + 1, &p, 3, &ps);
         ERR(ESLEMAX)

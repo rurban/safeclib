@@ -7,6 +7,7 @@
 
 #include "test_private.h"
 #include "safe_u8_lib.h"
+#include "safe_mem_lib.h"
 
 #define LEN (128)
 
@@ -25,8 +26,8 @@ int test_u8rtowcs_s(void) {
     /*--------------------------------------------------*/
     /* one-shot conversion */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const char8_t *p = (const char8_t *)"hi\xC3\xA9";
         n = 0;
         rc = u8rtowcs_s(&n, wdest, LEN, &p, LEN, &ps);
@@ -43,8 +44,8 @@ int test_u8rtowcs_s(void) {
     /*--------------------------------------------------*/
     /* restartable: convert in two chunks of 2 chars each */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const char8_t *p = (const char8_t *)"abcdef";
         wchar_t chunk[3];
 
@@ -77,8 +78,8 @@ int test_u8rtowcs_s(void) {
     /*--------------------------------------------------*/
     /* illegal UTF-8 */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const char8_t *p = (const char8_t *)"\xC0\x80";
         n = 0;
         rc = u8rtowcs_s(&n, wdest, LEN, &p, LEN, &ps);
@@ -102,8 +103,8 @@ int test_u8rtowcs_s(void) {
     /*--------------------------------------------------*/
     /* no room in dest: nothing consumed */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         const char8_t *p = (const char8_t *)"abc";
         const char8_t *p0 = p;
         wchar_t one[1];
@@ -121,8 +122,8 @@ int test_u8rtowcs_s(void) {
     /*--------------------------------------------------*/
     /* dest overlaps src */
 
-    memset(&ps, 0, sizeof(ps));
-    {
+    rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+    ERR(EOK) {
         wchar_t ov[8];
         const char8_t *p = (const char8_t *)(void *)ov;
         n = 0;
@@ -139,7 +140,8 @@ int test_u8rtowcs_s(void) {
         const char8_t *p = (const char8_t *)"abc";
         if (!hp)
             return errs + 1;
-        memset(&ps, 0, sizeof(ps));
+        rc = memset_s(&ps, sizeof(ps), 0, sizeof(ps));
+        ERR(EOK)
         n = 0;
         rc = u8rtowcs_s(&n, hp, RSIZE_MAX_WSTR + 1, &p, 3, &ps);
         ERR(ESLEMAX)
